@@ -1,15 +1,44 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { classroomDoors } from '../src/maps/doors.js';
+import { readDoors } from '../src/maps/doors.js';
 
 const map = JSON.parse(readFileSync(new URL('../public/assets/maps/classroom.tmj', import.meta.url)));
+const classroomDoors = readDoors(map);
 const collision = map.layers.find((layer) => layer.name === 'Collision');
-const blocked = (x, y) => collision.data[y * map.width + x] !== 0;
+const blocked = (x, y) => collision.objects.some((area) =>
+  x * map.tilewidth >= area.x && x * map.tilewidth < area.x + area.width &&
+  y * map.tileheight >= area.y && y * map.tileheight < area.y + area.height);
+
+test('both maps have exactly the requested layer names and types', () => {
+  const empty = JSON.parse(readFileSync(new URL('../public/assets/maps/outside.tmj', import.meta.url)));
+  const expected = [
+    ['Floor', 'tilelayer'], ['Walls', 'tilelayer'], ['Decoration', 'tilelayer'],
+    ['Entities', 'objectgroup'], ['Collision', 'objectgroup'], ['Doors', 'objectgroup'],
+    ['Spawns', 'objectgroup'], ['Notes', 'objectgroup'],
+  ];
+  for (const source of [map, empty]) {
+    assert.deepEqual(source.layers.map((layer) => [layer.name, layer.type]), expected);
+    const ids = source.layers.flatMap((layer) => (layer.objects ?? []).map((object) => object.id));
+    assert.equal(new Set(ids).size, ids.length, 'Tiled object IDs must remain unique');
+  }
+});
+
+test('visual tiles moved into notes are preserved in Decoration with their annotations', () => {
+  const decoration = map.layers.find((layer) => layer.name === 'Decoration');
+  const notes = map.layers.find((layer) => layer.name === 'Notes');
+  for (const object of notes.objects) {
+    const gid = object.properties?.find((prop) => prop.name === 'originalGid')?.value;
+    if (!gid) continue;
+    const index = (object.y / map.tileheight) * map.width + object.x / map.tilewidth;
+    assert.equal(decoration.data[index], gid);
+    assert.equal(object.properties.find((prop) => prop.name === 'replaceWith').value, 'sink');
+  }
+});
 
 test('Collision is a separate hidden layer with all six desk footprints', () => {
   assert.equal(collision.visible, false);
-  assert.equal(collision.data.length, map.width * map.height);
+  assert.equal(collision.type, 'objectgroup');
   for (const x of [26, 30, 34]) {
     for (const y of [17, 25]) {
       for (let dx = 0; dx < 2; dx++) {
@@ -49,11 +78,11 @@ function canReach(target, closedDoors) {
 }
 
 test('classroom exit cannot be bypassed when closed and opens to the corridor', () => {
-  assert.equal(canReach([19, 14], [classroomDoors[0]]), false);
+  assert.equal(canReach([19, 14], classroomDoors.filter(d => d.id.startsWith('note-door-'))), false);
   assert.equal(canReach([19, 14], []), true);
 });
 
 test('bathroom is reachable only after its doorway is opened', () => {
-  assert.equal(canReach([12, 6], [classroomDoors[1]]), false);
+  assert.equal(canReach([12, 6], classroomDoors.filter(d => d.id === 'bathroom-entry')), false);
   assert.equal(canReach([12, 6], []), true);
 });

@@ -1,0 +1,271 @@
+{
+  "compressionlevel": -1,
+  "width": 30,
+  "height": 24,
+  "tilewidth": 32,
+  "tileheight": 32,
+  "infinite": false,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "type": "map",
+  "version": "1.10",
+  "tiledversion": "1.12.2",
+  "nextlayerid": 9,
+  "nextobjectid": 53,
+  "properties": [
+    {
+      "name": "defaultSpawn",
+      "type": "string",
+      "value": "schoolEntrance"
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "value": "Pátio da escola"
+    },
+    {
+      "name": "escapeReturn",
+      "type": "bool",
+      "value": true
+    }
+  ],
+  "tilesets": [
+    {
+      "firstgid": 1,
+      "source": "../tilessets/school/floorsbase.tsx"
+    },
+    {
+      "firstgid": 65,
+      "source": "../campus/materials.tsx"
+    },
+    {
+      "firstgid": 100,
+      "source": "../campus/prototype.tsx"
+    }
+  ],
+  "layers": [
+    {
+      "id": 1,
+      "name": "Floor",
+      "type": "tilelayer",
+      "width": 30,
+      "height": 24,
+      "x": 0,
+      "y": 0,
+      "visible": true,
+      "opacity": 1,
+      "data": [
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+        25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25,
+        66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66,
+        66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66,
+        66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Walls",
+      "type": "tilelayer",
+      "width": 30,
+      "height": 24,
+      "x": 0,
+      "y": 0,
+      "visible": true,
+      "opacity": 1,
+      "data": [
+        0, 0, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 0, 0,
+        0, 0, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 0, 0,
+        0, 0, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 0, 0,
+        0, 0, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 0, 0,
+        0, 0, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 0, 0,
+        0, 0, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 0, 0,
+        0, 0, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Decoration",
+      "type": "tilelayer",
+      "width": 30,
+      "height": 24,
+      "x": 0,
+      "y": 0,
+      "visible": true,
+      "opacity": 1,
+      "data": [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Entities",
+      "type": "objectgroup",
+      "draworder": "index",
+      "x": 0,
+      "y": 0,
+      "visible": true,
+      "opacity": 1,
+      "objects": [
+        {"id":4,"name":"window-112-46","type":"prop","x":112,"y":102,"width":40,"height":56,"rotation":0,"visible":true,"gid":101,"properties":[{"name":"depth","type":"float","value":-0.4}]},
+        {"id":5,"name":"window-216-46","type":"prop","x":216,"y":102,"width":40,"height":56,"rotation":0,"visible":true,"gid":101,"properties":[{"name":"depth","type":"float","value":-0.4}]},
+        {"id":6,"name":"window-320-46","type":"prop","x":320,"y":102,"width":40,"height":56,"rotation":0,"visible":true,"gid":101,"properties":[{"name":"depth","type":"float","value":-0.4}]},
+        {"id":7,"name":"window-600-46","type":"prop","x":600,"y":102,"width":40,"height":56,"rotation":0,"visible":true,"gid":101,"properties":[{"name":"depth","type":"float","value":-0.4}]},
+        {"id":8,"name":"window-704-46","type":"prop","x":704,"y":102,"width":40,"height":56,"rotation":0,"visible":true,"gid":101,"properties":[{"name":"depth","type":"float","value":-0.4}]},
+        {"id":9,"name":"window-808-46","type":"prop","x":808,"y":102,"width":40,"height":56,"rotation":0,"visible":true,"gid":101,"properties":[{"name":"depth","type":"float","value":-0.4}]},
+        {"id":10,"name":"window-112-120","type":"prop","x":112,"y":176,"width":40,"height":56,"rotation":0,"visible":true,"gid":101,"properties":[{"name":"depth","type":"float","value":-0.4}]},
+        {"id":11,"name":"window-216-120","type":"prop","x":216,"y":176,"width":40,"height":56,"rotation":0,"visible":true,"gid":101,"properties":[{"name":"depth","type":"float","value":-0.4}]},
+        {"id":12,"name":"window-320-120","type":"prop","x":320,"y":176,"width":40,"height":56,"rotation":0,"visible":true,"gid":101,"properties":[{"name":"depth","type":"float","value":-0.4}]},
+        {"id":13,"name":"window-600-120","type":"prop","x":600,"y":176,"width":40,"height":56,"rotation":0,"visible":true,"gid":101,"properties":[{"name":"depth","type":"float","value":-0.4}]},
+        {"id":14,"name":"window-704-120","type":"prop","x":704,"y":176,"width":40,"height":56,"rotation":0,"visible":true,"gid":101,"properties":[{"name":"depth","type":"float","value":-0.4}]},
+        {"id":15,"name":"window-808-120","type":"prop","x":808,"y":176,"width":40,"height":56,"rotation":0,"visible":true,"gid":101,"properties":[{"name":"depth","type":"float","value":-0.4}]},
+        {"id":16,"name":"canopy","type":"prop","x":408,"y":195,"width":144,"height":22,"rotation":0,"visible":true,"gid":118,"properties":[{"name":"depth","type":"float","value":-0.3}]},
+        {"id":17,"name":"DAA","type":"prop","x":432,"y":170,"width":96,"height":24,"rotation":0,"visible":true,"gid":119,"properties":[{"name":"depth","type":"float","value":-0.2}]},
+        {"id":18,"name":"four-steps","type":"prop","x":416,"y":288,"width":128,"height":64,"rotation":0,"visible":true,"gid":113,"properties":[{"name":"depth","type":"float","value":-1.4}]},
+        {"id":22,"name":"left-garden","type":"prop","x":48,"y":576,"width":304,"height":128,"rotation":0,"visible":true,"gid":114,"properties":[{"name":"depth","type":"float","value":-1.3}]},
+        {"id":25,"name":"right-garden","type":"prop","x":608,"y":560,"width":272,"height":208,"rotation":0,"visible":true,"gid":114,"properties":[{"name":"depth","type":"float","value":-1.3}]},
+        {"id":28,"name":"gazebo","type":"prop","x":96,"y":428,"width":224,"height":148,"rotation":0,"visible":true,"gid":117,"properties":[{"name":"depth","type":"float","value":452}]},
+        {"id":31,"name":"gazebo-bench","type":"prop","x":128,"y":410,"width":144,"height":32,"rotation":0,"visible":true,"gid":102,"properties":[{"name":"depth","type":"float","value":420}]},
+        {"id":33,"name":"bench-left","type":"prop","x":200,"y":626,"width":112,"height":30,"rotation":0,"visible":true,"gid":102},
+        {"id":35,"name":"bench-right","type":"prop","x":659,"y":625,"width":128,"height":32,"rotation":0,"visible":true,"gid":102},
+        {"id":37,"name":"tree-left","type":"prop","x":67,"y":539,"width":96,"height":128,"rotation":0,"visible":true,"gid":116},
+        {"id":39,"name":"tree-right","type":"prop","x":647,"y":478,"width":110,"height":145,"rotation":0,"visible":true,"gid":116},
+        {"id":41,"name":"tree-back","type":"prop","x":804,"y":387,"width":86,"height":120,"rotation":0,"visible":true,"gid":116},
+        {"id":43,"name":"shrub-168-477","type":"prop","x":168,"y":517,"width":56,"height":40,"rotation":0,"visible":true,"gid":115},
+        {"id":44,"name":"shrub-256-499","type":"prop","x":256,"y":539,"width":56,"height":40,"rotation":0,"visible":true,"gid":115},
+        {"id":45,"name":"shrub-642-473","type":"prop","x":642,"y":513,"width":56,"height":40,"rotation":0,"visible":true,"gid":115},
+        {"id":46,"name":"shrub-765-490","type":"prop","x":765,"y":530,"width":56,"height":40,"rotation":0,"visible":true,"gid":115},
+        {"id":47,"name":"shrub-784-388","type":"prop","x":784,"y":428,"width":56,"height":40,"rotation":0,"visible":true,"gid":115},
+        {"id":52,"name":"entry-shadow","type":"prop","gid":122,"x":432,"y":224,"width":96,"height":32,"rotation":0,"visible":true,"properties":[{"name":"depth","type":"float","value":-0.3}]}
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Collision",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "x": 0,
+      "y": 0,
+      "visible": false,
+      "opacity": 1,
+      "objects": [
+        {"id":1,"name":"facade","type":"","x":64,"y":0,"width":832,"height":192,"rotation":0,"visible":true},
+        {"id":2,"name":"facade-left-door","type":"","x":64,"y":192,"width":368,"height":32,"rotation":0,"visible":true},
+        {"id":3,"name":"facade-right-door","type":"","x":528,"y":192,"width":368,"height":32,"rotation":0,"visible":true},
+        {"id":23,"name":"left-garden-middle","type":"","x":48,"y":469.3333333333333,"width":304,"height":85.33333333333333,"rotation":0,"visible":true},
+        {"id":24,"name":"left-garden-ends","type":"","x":86,"y":448,"width":228,"height":128,"rotation":0,"visible":true},
+        {"id":26,"name":"right-garden-middle","type":"","x":608,"y":386.6666666666667,"width":272,"height":138.66666666666666,"rotation":0,"visible":true},
+        {"id":27,"name":"right-garden-ends","type":"","x":642,"y":352,"width":204,"height":208,"rotation":0,"visible":true},
+        {"id":29,"name":"gazebo-left-post","type":"","x":105.333,"y":325,"width":8.167,"height":99.167,"rotation":0,"visible":true},
+        {"id":30,"name":"gazebo-right-post","type":"","x":301.333,"y":325,"width":8.167,"height":99.167,"rotation":0,"visible":true},
+        {"id":32,"name":"gazebo-bench","type":"","x":128,"y":385,"width":144,"height":22,"rotation":0,"visible":true},
+        {"id":34,"name":"bench-left","type":"","x":200,"y":603,"width":112,"height":20,"rotation":0,"visible":true},
+        {"id":36,"name":"bench-right","type":"","x":659,"y":600,"width":128,"height":22,"rotation":0,"visible":true},
+        {"id":38,"name":"tree-left-trunk","type":"","x":107.32,"y":503.15999999999997,"width":12.48,"height":29.44,"rotation":0,"visible":true},
+        {"id":40,"name":"tree-right-trunk","type":"","x":693.2,"y":437.4,"width":14.3,"height":33.35,"rotation":0,"visible":true},
+        {"id":42,"name":"tree-back-trunk","type":"","x":840.12,"y":353.4,"width":11.18,"height":27.6,"rotation":0,"visible":true},
+        {"id":48,"name":"map-left","type":"","x":0,"y":0,"width":16,"height":768,"rotation":0,"visible":true},
+        {"id":49,"name":"map-right","type":"","x":944,"y":0,"width":16,"height":768,"rotation":0,"visible":true},
+        {"id":50,"name":"street-limit","type":"","x":0,"y":744,"width":960,"height":24,"rotation":0,"visible":true}
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Doors",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "x": 0,
+      "y": 0,
+      "visible": true,
+      "opacity": 1,
+      "objects": [
+        {"id":19,"name":"school-main-entry","type":"","x":432,"y":192,"width":96,"height":32,"rotation":0,"visible":true,"properties":[{"name":"open","type":"bool","value":true},{"name":"locked","type":"bool","value":false},{"name":"label","type":"string","value":"Entrada da escola"},{"name":"transition","type":"bool","value":true},{"name":"targetMap","type":"string","value":"school"},{"name":"targetSpawn","type":"string","value":"mainEntrance"}]}
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Spawns",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "x": 0,
+      "y": 0,
+      "visible": true,
+      "opacity": 1,
+      "objects": [
+        {"id":20,"name":"schoolEntrance","type":"","x":480,"y":322,"width":0,"height":0,"rotation":0,"visible":true,"point":true},
+        {"id":21,"name":"from-classroom","type":"","x":480,"y":322,"width":0,"height":0,"rotation":0,"visible":true,"point":true}
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Notes",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "x": 0,
+      "y": 0,
+      "visible": true,
+      "opacity": 1,
+      "objects": [
+        {"id":51,"name":"Referência exterior","type":"","x":32,"y":640,"width":250,"height":48,"rotation":0,"visible":true,"text":{"text":"Fachada DAA / pátio simplificado.\nPosições e colisões editáveis.","pixelsize":12,"color":"#315b9c"}}
+      ]
+    }
+  ]
+}

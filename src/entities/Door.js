@@ -15,7 +15,8 @@ export class Door {
   applyState() {
     const visual = this.open ? this.openVisual : this.closedVisual;
     this.visual.setTexture(visual.texture, visual.frame ?? 0)
-      .setDisplaySize(this.width, this.height);
+      .setDisplaySize(visual.width ?? this.width, visual.height ?? this.height);
+    this.visual.setPosition(this.x + (visual.offsetX ?? 0), this.y + (visual.offsetY ?? 0));
     this.blocker.body.enable = !this.open;
   }
 
@@ -36,6 +37,7 @@ export class Door {
 
   toggle(body) {
     if (this.locked) return 'Porta trancada.';
+    if (this.interactive === false) return 'Passagem fixa.';
     // Never create a solid body on top of the player's feet.
     if (this.open && this.overlaps(body)) return 'Saia da passagem para fechar a porta.';
     this.open = !this.open;
@@ -44,7 +46,10 @@ export class Door {
   }
 
   getDestination() {
-    if (!this.open || this.locked || !this.targetMap) return null;
-    return { targetMap: this.targetMap, targetX: this.targetX, targetY: this.targetY };
+    if (!this.open || this.locked || this.transition === false || !this.targetMap) return null;
+    return {
+      targetMap: this.targetMap, targetSpawn: this.targetSpawn,
+      targetX: this.targetX, targetY: this.targetY,
+    };
   }
 }

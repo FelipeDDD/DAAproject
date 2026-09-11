@@ -1,114 +1,142 @@
-﻿# DAAproject
+# DAAproject — escola e pátio
 
-Protótipo local em JavaScript, Phaser e Vite. O mapa atual vem do Tiled,
-com seis mesas, colisão e duas portas de teste. Sem multiplayer ou backend.
+JavaScript, Phaser e Vite. Os mapas, posições e colisões vêm do Tiled.
+Sem backend/multiplayer ou novas dependências.
 
 ## Executar
-
-Na pasta do projeto:
 
 ```powershell
 npm.cmd install
 npm.cmd run dev
+npm.cmd test
+npm.cmd run build
 ```
 
-Abra o endereço indicado pelo Vite. Use WASD ou setas para andar, **E** perto
-de uma porta para abrir/fechar e **F** para acessar o destino de uma porta aberta.
-Na área placeholder, **Esc** volta à escola na posição anterior. Os estados das
-portas são preservados durante essa visita, mas reiniciam ao recarregar a página.
+WASD/setas: andar. **E**: abrir/fechar a porta próxima. **F**: atravessar uma porta
+aberta com destino. **Esc** no exterior: voltar à posição anterior no interior.
+A entrada principal interna é uma passagem fixa, entreaberta (`interactive: false`),
+conforme a anotação: use F perto dela. A entrada externa permite voltar pelo mesmo
+sistema de Doors. As cenas adormecem entre visitas, preservando os estados locais
+das portas; recarregar a página reinicia os valores do Tiled.
 
-`npm.cmd test` executa testes com o Node; `npm.cmd run build` compila o projeto.
+## Onde editar
 
-## Colisão no Tiled
+- Interior: `public/assets/maps/classroom.tmj` (cena `school`).
+- Exterior: `public/assets/maps/outside.tmj` (cena `outside`).
+- Arte provisória editável: `public/assets/campus/prototype.svg` e `materials.svg`.
 
-Arquivo: `public/assets/maps/classroom.tmj`, layer **Collision**.
+O antigo mapa vazio e sua cena foram substituídos pelo exterior. A câmera, escala,
+velocidade e hitbox não mudaram; ficam em `src/game/settings.js` e `Player.js`.
 
-- Qualquer tile pintado nessa layer bloqueia os pés do personagem; apague o tile
-  para liberar a passagem. Não é necessário definir uma propriedade `collides`.
-- A layer é sempre invisível no jogo, mesmo que você a deixe visível no editor.
-- Já estão marcados os limites e as seis mesas de 2×4 tiles da sala principal:
-  colunas 26, 30 e 34, nas linhas 17 e 25 (coordenadas iniciando em zero).
-- `Floor`, `Walls` e `Objects` são visuais: não criam colisão automaticamente.
-  Se mover uma mesa ou parede, mova sua marcação na `Collision` também.
-- Deixe as aberturas das portas vazias em `Collision`; os bloqueadores das portas
-  controlam essas passagens. Pintá-las nessa layer as bloquearia permanentemente.
-- Como alternativa aos tiles, pode substituir `Collision` por uma object layer
-  com o mesmo nome e retângulos sem rotação. Polígonos/elipses não são suportados.
-  Use apenas uma layer com esse nome, na raiz do mapa.
+| Layer | Tipo | Função |
+| --- | --- | --- |
+| Floor | Tile | Chão; sem colisão automática. |
+| Walls | Tile | Paredes visuais; sem colisão automática. |
+| Decoration | Tile | Decoração visual; sem colisão automática. |
+| Entities | Object | Móveis/vegetação e outros objetos visuais. |
+| Collision | Object | Retângulos sólidos, sempre invisíveis no jogo. |
+| Doors | Object | Retângulos que controlam portas e transições. |
+| Spawns | Object | Pontos nomeados de entrada. |
+| Notes | Object | Instruções de edição, nunca renderizadas pelo Phaser. |
 
-O carregamento está em `src/maps/collision.js`, chamado por `SchoolScene.js`.
-A hitbox em `src/entities/Player.js` continua com tamanho 20×12 e offset (6,44),
-em pixels da textura antes da escala. A câmera e a escala continuam definidas em
-`src/game/settings.js`, sem alterações nesta implementação.
+Use essas layers na raiz, sem duplicar nomes. Mova/redimensione objetos no Tiled;
+não há ajuste à grade no Phaser. Para objetos de tile, o Tiled usa x/y no canto
+inferior esquerdo: o carregador respeita essa convenção, a dimensão e os flips.
+Mova também a Collision correspondente ao deslocar um móvel sólido. Não desenhe
+Collision sobre o vão de uma porta: ela possui um bloqueador próprio.
 
-## Configurar portas
+## Anotações do interior
 
-Edite **`src/maps/doors.js`**. Cada entrada define os estados iniciais `open` e
-`locked`, posição, dimensões, imagens e destino opcional. Todas as coordenadas
-são **pixels do mundo**, sem multiplicar pelo zoom.
+Foram resolvidos os 37 Notes e os 10 marcadores de teclado que estavam sem arte
+em Entities. Os teclados originais foram movidos para Notes antes da conversão.
+As anotações continuam preservadas, com `resolvedEntity` apontando para o objeto
+criado; os objetos criados têm `sourceNote` para rastrear a origem.
 
-As duas portas de teste estão em:
+Inclui cadeiras, teclados, mesa de escritório com monitor/computador/caderno/caneta,
+mesa de café, armário, pias, secador, sanitários e divisórias decorativas. As duas
+notas de porta viraram portas locais. A saída principal adicionada pelo editor
+foi ligada ao exterior. Valores booleanos escritos como texto foram normalizados
+no TMJ. As Tile Layers existentes do interior não foram redesenhadas.
 
-- `classroom-exit`: trecho estreito de saída para o corredor, tile (18,15),
-  cobrindo três tiles na horizontal. Possui destino de teste.
-- `bathroom-entry`: abertura existente no banheiro ao norte, tile (12,7).
-  Só abre/fecha, sem destino.
+Retângulos mantiveram sua geometria exata. Para pontos/objetos sem dimensões, foi
+usado um tamanho provisório de sprite, centrado no marcador; os pontos originais
+não foram movidos. As notas de portas respeitam a extensão de um tile solicitada.
 
-Para trancar uma porta:
+## Portas e destinos
 
-```js
-open: false,
-locked: true,
+Em Doors, use retângulos sem rotação. Propriedades customizadas:
+
+- `id` e `label` (string): identificador único e nome exibido; o nome do objeto é fallback.
+- `open`, `locked`, `transition`, `interactive` (**bool**, não string).
+- `targetMap` (string): `school` ou `outside`.
+- `targetSpawn` (string): nome do ponto de destino; tem prioridade sobre X/Y.
+- `targetX`, `targetY` (float): alternativa, em pixels do mundo.
+- `closedTexture`, `openTexture` (string) e `closedFrame`, `openFrame` (int/string): arte opcional.
+
+`locked: true` fecha a porta e impede abrir/viajar. `interactive: false` mantém
+seu estado fixo, mas F continua disponível quando a passagem está aberta.
+Uma porta não fecha sobre os pés do jogador.
+
+A entrada externa usa `targetMap: school`, `targetSpawn: mainEntrance`.
+A saída interna usa `targetMap: outside`, `targetSpawn: schoolEntrance`.
+A saída de teste anterior também leva ao pátio. Portas sem destino só abrem/fecham.
+
+Para criar um spawn, use **Inserir ponto** em Spawns e defina seu Nome. A posição
+é a dos pés. Nome `default`, propriedade de mapa `defaultSpawn` ou primeiro ponto
+servem para a entrada inicial. Deixe spawns fora de colisões e portas fechadas.
+
+## Exterior e arte provisória
+
+Pátio compacto de 30×24 tiles: fachada de tijolos/janelas, entrada central, quatro
+degraus, calçamento, canteiros escalonados, árvores/arbustos, bancos, gazebo e uma
+faixa de calçada/rua. Fachada, canteiros, troncos, bancos e pilares sólidos têm
+retângulos separados em Collision. As escadas e o caminho central estão livres.
+
+O piso reutiliza o tileset existente `floorsbase`. A arte nova é um atlas SVG
+simples, referenciado por um TSX e editável/substituível. Árvores, mobiliário,
+fachada e gazebo continuam provisórios. As portas e os monitores antigos ainda
+usam desenhos locais do Phaser. A layer Notes não aparece no jogo.
+
+Não há posições importantes do mapa hardcoded no runtime. Apenas receitas de
+arte, configuração da câmera e registro de cenas ficam no código. Os scripts
+abaixo contêm a construção inicial dos dados, mas não rodam ao iniciar o jogo:
+
+```powershell
+node scripts/campus-art.mjs
+node scripts/author-campus.mjs
 ```
 
-Uma porta trancada não abre nem permite viajar. Se `open` e `locked` começarem
-ambos como `true`, ela será criada fechada. Os estados em execução ficam nas
-instâncias de `Door` em `SchoolScene.doors`; use `toggle(player.body)` para alternar
-com atualização de visual e física. A porta não fecha sobre os pés do jogador.
+O primeiro regenera o atlas; não execute depois de editar manualmente esses SVGs
+sem guardar sua versão. O segundo resolve apenas Notes ainda sem resolvedEntity
+e cria outside.tmj **somente se ele não existir**. Depois da criação, edite os
+mapas diretamente no Tiled. Backups ficam em `.map-recovery/`, ignorados pelo Git.
+Recarregue o arquivo do disco no Tiled antes de continuar numa janela antiga.
 
-Para configurar o destino da saída:
+## Código e validação
 
-```js
-targetMap: 'empty-area',
-targetX: 320,
-targetY: 256,
-```
+`MapScene.js` centraliza carregamento de TMJ/TSX, sprites, colisão e transição.
+`SchoolScene.js` e `OutsideScene.js` apenas escolhem os arquivos de mapa.
+`maps/doors.js` lê propriedades; `entities/Door.js` controla visual e bloqueador.
 
-Nesta primeira versão, `targetMap` é a **chave de uma cena Phaser registrada**,
-não o caminho de um arquivo TMJ. `empty-area` usa `src/scenes/EmptyAreaScene.js`.
-Para um mapa real, registre sua cena em `src/game/config.js`, faça-a carregar o
-TMJ e usar `targetX`/`targetY` recebidos em `create(data)` como posição dos pés.
-Remova `targetMap` para uma porta que só abre/fecha, como a do banheiro.
+26 testes passaram: estados e trava, conversão das notas, dimensões fracionárias,
+spawns livres/recíprocos, portas sem bloqueio permanente e acesso às escadas,
+gazebo, canteiros e calçada com a hitbox escalada. Compilação passou (aviso de
+bundle grande por incluir Phaser). Os dois mapas foram renderizados com o
+renderizador do Tiled, confirmando a leitura dos SVGs/TSX e a composição.
+O navegador de teste estava indisponível: ainda falta o playtest real no navegador.
 
-**E** abre/fecha; **F**, perto da porta aberta, pausa a escola e inicia a cena de
-destino. Caminhar pela porta aberta também permite seguir no mapa atual. A
-transição explícita evita trocar de área por acidente durante os testes.
+## Placeholders e ajustes de portas
 
-Para trocar a arte sem animação, configure duas texturas ou frames:
+Use retângulos em `Notes` para delimitar o espaço completo de cada objeto.
+Use `description` para detalhes e `facing` (`left/right/up/down`) para a face
+voltada ao jogador. Pontos indicam apenas o centro, sem definir tamanho.
+Para um conjunto, marque seu contorno e os componentes, incluindo passagens livres.
+`preserveBounds`, `hinge` e `opensToward` servem como instruções de autoria;
+não geram arte ou animação automaticamente. As anotações precisam ser interpretadas.
 
-```js
-closedVisual: { texture: 'meu-spritesheet', frame: 0 },
-openVisual: { texture: 'meu-spritesheet', frame: 1 },
-```
-
-Carregue essa textura/spritesheet no `preload` da cena. Os desenhos provisórios
-ficam em `src/art/doors.js`; a lógica e o bloqueador ficam em `src/entities/Door.js`.
-O visual se ajusta a `width`/`height` da porta, sem mudar seu bloqueador ao abrir.
-
-## Validação
-
-Testes automatizados verificam abertura/fechamento, trava, proteção contra fechar
-sobre os pés, seleção de frames, destino opcional, colisão nas seis mesas,
-aberturas livres na layer e caminhos que não contornam portas fechadas.
-Os testes de portas usam adaptadores de render/física; os de caminhos verificam
-a geometria do mapa. Não substituem um teste do Arcade Physics no navegador.
-
-Compilação passou, com o aviso de bundle maior que 500 kB por incluir Phaser.
-O navegador de teste estava indisponível nesta sessão. Conferência manual pendente:
-
-1. Encostar nas mesas e paredes; os pés devem parar, inclusive na diagonal.
-2. Tentar atravessar a saída fechada; abrir com E, atravessar e fechar pelo outro lado.
-3. Com os pés na abertura, pressionar E: a porta deve continuar aberta.
-4. Abrir a saída e pressionar F; andar na área vazia e retornar com Esc.
-5. Ir ao banheiro pelo corredor, abrir/fechar sua porta com E, sem trocar de cena.
-6. Definir `locked: true`, recarregar e confirmar que a porta não abre.
+O retângulo em `Doors` define o vão e o bloqueador. O desenho pode ocupar mais
+espaço usando `openWidth`, `openHeight`, `openOffsetX`, `openOffsetY` e os
+equivalentes `closed...` (propriedades numéricas em pixels). Isso permite uma
+folha aberta perpendicular à parede e uma saída mais alta sem aumentar a colisão.
+Os frames continuam selecionados por `openTexture` e `closedTexture`.
+As paredes e as colisões devem terminar nas duas bordas do vão.

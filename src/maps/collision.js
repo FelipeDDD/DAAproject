@@ -1,14 +1,6 @@
 // Only a layer named Collision creates map collision. Visual layers are ignored.
-export function addMapCollision(scene, map, tilesets, player) {
-  if (map.getLayer('Collision')) {
-    const layer = map.createLayer('Collision', tilesets, 0, 0);
-    layer.setVisible(false);
-    layer.setCollisionByExclusion([-1]);
-    scene.physics.add.collider(player, layer);
-    return layer;
-  }
-
-  // Optional alternative in Tiled: an object layer with axis-aligned rectangles.
+export function addMapCollision(scene, map, player) {
+  // Collision is now an object layer with axis-aligned rectangles.
   const objects = map.getObjectLayer('Collision');
   if (!objects) return null;
   const rectangles = scene.physics.add.staticGroup();

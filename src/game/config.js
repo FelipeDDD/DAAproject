@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { SchoolScene } from '../scenes/SchoolScene.js';
-import { EmptyAreaScene } from '../scenes/EmptyAreaScene.js';
+import { OutsideScene } from '../scenes/OutsideScene.js';
 
 export const gameConfig = {
   type: Phaser.AUTO,
@@ -18,5 +18,5 @@ export const gameConfig = {
     default: 'arcade',
     arcade: { gravity: { x: 0, y: 0 }, debug: false },
   },
-  scene: [SchoolScene, EmptyAreaScene],
+  scene: [SchoolScene, OutsideScene],
 };

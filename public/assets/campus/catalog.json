@@ -1,0 +1,122 @@
+{
+  "brick": {
+    "frame": 0,
+    "width": 32,
+    "height": 32
+  },
+  "window": {
+    "frame": 1,
+    "width": 40,
+    "height": 56
+  },
+  "bench": {
+    "frame": 2,
+    "width": 96,
+    "height": 32
+  },
+  "office-chair": {
+    "frame": 3,
+    "width": 28,
+    "height": 32
+  },
+  "luxury-chair": {
+    "frame": 4,
+    "width": 32,
+    "height": 36
+  },
+  "keyboard": {
+    "frame": 5,
+    "width": 12,
+    "height": 28
+  },
+  "office-table": {
+    "frame": 6,
+    "width": 64,
+    "height": 96
+  },
+  "coffee-table": {
+    "frame": 7,
+    "width": 64,
+    "height": 96
+  },
+  "cabinet": {
+    "frame": 8,
+    "width": 48,
+    "height": 128
+  },
+  "sink": {
+    "frame": 9,
+    "width": 32,
+    "height": 34
+  },
+  "dryer": {
+    "frame": 10,
+    "width": 18,
+    "height": 22
+  },
+  "toilet": {
+    "frame": 11,
+    "width": 40,
+    "height": 40
+  },
+  "partition": {
+    "frame": 12,
+    "width": 64,
+    "height": 8
+  },
+  "stairs": {
+    "frame": 13,
+    "width": 128,
+    "height": 64
+  },
+  "planter": {
+    "frame": 14,
+    "width": 128,
+    "height": 96
+  },
+  "shrub": {
+    "frame": 15,
+    "width": 56,
+    "height": 40
+  },
+  "tree": {
+    "frame": 16,
+    "width": 96,
+    "height": 128
+  },
+  "gazebo": {
+    "frame": 17,
+    "width": 192,
+    "height": 128
+  },
+  "canopy": {
+    "frame": 18,
+    "width": 144,
+    "height": 22
+  },
+  "sign": {
+    "frame": 19,
+    "width": 96,
+    "height": 24
+  },
+  "street": {
+    "frame": 20,
+    "width": 32,
+    "height": 32
+  },
+  "trim": {
+    "frame": 21,
+    "width": 32,
+    "height": 32
+  },
+  "entry": {
+    "frame": 22,
+    "width": 96,
+    "height": 32
+  },
+  "side-wall": {
+    "frame": 23,
+    "width": 32,
+    "height": 32
+  }
+}
