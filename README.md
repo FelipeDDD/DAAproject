@@ -1,62 +1,114 @@
-# DAAproject · v0.1
+﻿# DAAproject
 
-Protótipo local de uma sala de TI 2D em JavaScript, Phaser e Vite. Paredes brancas,
-piso claro e quatro mesas com computadores provisórios. Uma porta aberta ao sul
-leva a um pequeno corredor no mesmo mapa, sem transição de cena ou interação.
+Protótipo local em JavaScript, Phaser e Vite. O mapa atual vem do Tiled,
+com seis mesas, colisão e duas portas de teste. Sem multiplayer ou backend.
 
 ## Executar
 
-Na pasta do projeto, com Node.js instalado:
+Na pasta do projeto:
 
 ```powershell
 npm.cmd install
 npm.cmd run dev
 ```
 
-Abra o endereço indicado pelo Vite. Use WASD ou setas. Precisa de teclado;
-controles de toque não fazem parte desta versão. Para compilar: `npm.cmd run build`.
-Para visualizar a compilação: `npm.cmd run preview`.
+Abra o endereço indicado pelo Vite. Use WASD ou setas para andar, **E** perto
+de uma porta para abrir/fechar e **F** para acessar o destino de uma porta aberta.
+Na área placeholder, **Esc** volta à escola na posição anterior. Os estados das
+portas são preservados durante essa visita, mas reiniciam ao recarregar a página.
 
-## Organização
+`npm.cmd test` executa testes com o Node; `npm.cmd run build` compila o projeto.
 
-- `src/main.js`: inicia e encerra o jogo no hot reload.
-- `src/game/config.js`: Phaser, Arcade Physics e resolução lógica de 960×640.
-- `src/game/settings.js`: zoom, escala do personagem e velocidade ajustáveis.
-- `src/scenes/SchoolScene.js`: montagem, colisões e câmera.
-- `src/entities/Player.js`: movimento local, velocidade e corpo de colisão.
-- `src/maps/classroom.js`: geometria em tiles e ponto inicial em pixels.
-- `src/art/placeholders.js`: texturas geradas e decoração provisória.
-- `src/style.css`: apresentação da página.
+## Colisão no Tiled
 
-Mapa de sala e corredor de 26×20 tiles de 32×32. Personagem de 32×56 com escala
-1,35× (43,2×75,6 no mundo), origem nos pés e corpo de colisão de 20×12 antes
-da escala (27×16,2 no mundo). Zoom 3×: a câmera mostra cerca de 10×6,7 tiles e segue
-o jogador até os limites da sala. O canvas se ajusta à página mantendo a proporção.
-Velocidade de 144 pixels/segundo, inclusive na diagonal, aplicada pela física.
+Arquivo: `public/assets/maps/classroom.tmj`, layer **Collision**.
 
-## Trocas futuras
+- Qualquer tile pintado nessa layer bloqueia os pés do personagem; apague o tile
+  para liberar a passagem. Não é necessário definir uma propriedade `collides`.
+- A layer é sempre invisível no jogo, mesmo que você a deixe visível no editor.
+- Já estão marcados os limites e as seis mesas de 2×4 tiles da sala principal:
+  colunas 26, 30 e 34, nas linhas 17 e 25 (coordenadas iniciando em zero).
+- `Floor`, `Walls` e `Objects` são visuais: não criam colisão automaticamente.
+  Se mover uma mesa ou parede, mova sua marcação na `Collision` também.
+- Deixe as aberturas das portas vazias em `Collision`; os bloqueadores das portas
+  controlam essas passagens. Pintá-las nessa layer as bloquearia permanentemente.
+- Como alternativa aos tiles, pode substituir `Collision` por uma object layer
+  com o mesmo nome e retângulos sem rotação. Polígonos/elipses não são suportados.
+  Use apenas uma layer com esse nome, na raiz do mapa.
 
-A arte pode ser substituída mantendo a chave `student`, tamanho e origem;
-se o tamanho mudar, ajuste o corpo e offset em `Player.js`. O mapa está separado
-da cena para futuramente carregar um tilemap do Tiled e suas colisões. O desenho
-provisório da sala será substituído nesse passo.
+O carregamento está em `src/maps/collision.js`, chamado por `SchoolScene.js`.
+A hitbox em `src/entities/Player.js` continua com tamanho 20×12 e offset (6,44),
+em pixels da textura antes da escala. A câmera e a escala continuam definidas em
+`src/game/settings.js`, sem alterações nesta implementação.
 
-Não há Convex, rede, chat, NPCs ou transições nesta versão. Uma futura camada de
-sincronização pode ler o estado do jogador em intervalos moderados, sem transferir
-o controle do movimento local para o backend. Nenhuma infraestrutura futura foi criada.
+## Configurar portas
 
-## Verificação manual
+Edite **`src/maps/doors.js`**. Cada entrada define os estados iniciais `open` e
+`locked`, posição, dimensões, imagens e destino opcional. Todas as coordenadas
+são **pixels do mundo**, sem multiplicar pelo zoom.
 
-Validação executada: compilação de produção e respostas HTTP 200 da página e dos
-módulos no servidor Vite. O build emite um aviso de bundle maior que 500 kB
-(inclui Phaser), sem falhar. A conferência visual e de teclado abaixo está pendente:
-o navegador de teste não estava disponível na sessão de implementação.
+As duas portas de teste estão em:
 
-1. Andar nos quatro sentidos com WASD e repetir com as setas.
-2. Soltar as teclas: o personagem deve parar. Diagonais não devem acelerar.
-3. Caminhar contra cada parede e os cantos: os pés ficam dentro da sala.
-4. Atravessar a sala: câmera acompanha e para nos limites do mapa.
-5. Trocar de janela durante o movimento e voltar: nenhuma tecla fica presa.
-6. Redimensionar a janela: proporção preservada e sem rolagem ao usar setas.
-7. Sair pela abertura central da parede sul e voltar pelo corredor.
-8. Caminhar contra as mesas: os pés não atravessam os móveis.
+- `classroom-exit`: trecho estreito de saída para o corredor, tile (18,15),
+  cobrindo três tiles na horizontal. Possui destino de teste.
+- `bathroom-entry`: abertura existente no banheiro ao norte, tile (12,7).
+  Só abre/fecha, sem destino.
+
+Para trancar uma porta:
+
+```js
+open: false,
+locked: true,
+```
+
+Uma porta trancada não abre nem permite viajar. Se `open` e `locked` começarem
+ambos como `true`, ela será criada fechada. Os estados em execução ficam nas
+instâncias de `Door` em `SchoolScene.doors`; use `toggle(player.body)` para alternar
+com atualização de visual e física. A porta não fecha sobre os pés do jogador.
+
+Para configurar o destino da saída:
+
+```js
+targetMap: 'empty-area',
+targetX: 320,
+targetY: 256,
+```
+
+Nesta primeira versão, `targetMap` é a **chave de uma cena Phaser registrada**,
+não o caminho de um arquivo TMJ. `empty-area` usa `src/scenes/EmptyAreaScene.js`.
+Para um mapa real, registre sua cena em `src/game/config.js`, faça-a carregar o
+TMJ e usar `targetX`/`targetY` recebidos em `create(data)` como posição dos pés.
+Remova `targetMap` para uma porta que só abre/fecha, como a do banheiro.
+
+**E** abre/fecha; **F**, perto da porta aberta, pausa a escola e inicia a cena de
+destino. Caminhar pela porta aberta também permite seguir no mapa atual. A
+transição explícita evita trocar de área por acidente durante os testes.
+
+Para trocar a arte sem animação, configure duas texturas ou frames:
+
+```js
+closedVisual: { texture: 'meu-spritesheet', frame: 0 },
+openVisual: { texture: 'meu-spritesheet', frame: 1 },
+```
+
+Carregue essa textura/spritesheet no `preload` da cena. Os desenhos provisórios
+ficam em `src/art/doors.js`; a lógica e o bloqueador ficam em `src/entities/Door.js`.
+O visual se ajusta a `width`/`height` da porta, sem mudar seu bloqueador ao abrir.
+
+## Validação
+
+Testes automatizados verificam abertura/fechamento, trava, proteção contra fechar
+sobre os pés, seleção de frames, destino opcional, colisão nas seis mesas,
+aberturas livres na layer e caminhos que não contornam portas fechadas.
+Os testes de portas usam adaptadores de render/física; os de caminhos verificam
+a geometria do mapa. Não substituem um teste do Arcade Physics no navegador.
+
+Compilação passou, com o aviso de bundle maior que 500 kB por incluir Phaser.
+O navegador de teste estava indisponível nesta sessão. Conferência manual pendente:
+
+1. Encostar nas mesas e paredes; os pés devem parar, inclusive na diagonal.
+2. Tentar atravessar a saída fechada; abrir com E, atravessar e fechar pelo outro lado.
+3. Com os pés na abertura, pressionar E: a porta deve continuar aberta.
+4. Abrir a saída e pressionar F; andar na área vazia e retornar com Esc.
+5. Ir ao banheiro pelo corredor, abrir/fechar sua porta com E, sem trocar de cena.
+6. Definir `locked: true`, recarregar e confirmar que a porta não abre.

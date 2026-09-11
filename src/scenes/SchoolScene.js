@@ -2,6 +2,10 @@ import Phaser from 'phaser';
 import { CAMERA_ZOOM } from '../game/settings.js';
 import { Player } from '../entities/Player.js';
 import { createPlaceholderTextures } from '../art/placeholders.js';
+import { Door } from '../entities/Door.js';
+import { classroomDoors } from '../maps/doors.js';
+import { addMapCollision } from '../maps/collision.js';
+import { createDoorTextures } from '../art/doors.js';
 
 // CAMERA_ZOOM, PLAYER_SCALE and PLAYER_SPEED stay in ../game/settings.js.
 const MAP_URL = `${import.meta.env.BASE_URL}assets/maps/classroom.tmj`;
@@ -119,12 +123,14 @@ export class SchoolScene extends Phaser.Scene {
     const data = {
       ...source,
       layers: source.layers
-        .filter((layer) => ['Floor', 'Objects', 'Walls'].includes(layer.name))
+        .filter((layer) => ['Floor', 'Objects', 'Walls', 'Collision'].includes(layer.name))
         .map((layer) => layer.name === 'Walls' ? {
           ...layer,
-          // Show authored walls only in the main room; do not edit the TMJ.
+          // Keep the existing main-room walls and the authored bathroom entrance.
           data: layer.data.map((gid, index) =>
-            isInMainRoom(index % layer.width, Math.floor(index / layer.width)) ? gid : 0),
+            (isInMainRoom(index % layer.width, Math.floor(index / layer.width)) ||
+              (index % layer.width >= 8 && index % layer.width <= 14 &&
+                Math.floor(index / layer.width) <= 7)) ? gid : 0),
         } : layer),
       tilesets: source.tilesets.map((reference, index) =>
         readTileset(this.cache.xml.get(`classroom-tileset-${index}`), reference.firstgid)),
@@ -148,6 +154,14 @@ export class SchoolScene extends Phaser.Scene {
     this.player = new Player(this,
       (PLAYER_SPAWN_TILE.x + 0.5) * map.tileWidth,
       (PLAYER_SPAWN_TILE.y + 0.5) * map.tileHeight);
+    this.collisionLayer = addMapCollision(this, map, tilesets, this.player);
+    createDoorTextures(this);
+    this.doors = classroomDoors.map((definition) => new Door(this, definition));
+    for (const door of this.doors) this.physics.add.collider(this.player, door.blocker);
+    this.interactKey = this.input.keyboard.addKey('E');
+    this.travelKey = this.input.keyboard.addKey('F');
+    this.hint = document.getElementById('interaction-hint');
+    this.doorMessage = '';
 
     this.cameras.main.setBounds(0, 0, width, height);
     this.cameras.main.setZoom(CAMERA_ZOOM);
@@ -166,5 +180,28 @@ export class SchoolScene extends Phaser.Scene {
 
   update() {
     this.player.update();
+    const nearby = this.doors.filter((door) => door.isNear(this.player.body))
+      .sort((a, b) => a.distanceTo(this.player.body) - b.distanceTo(this.player.body))[0];
+    if (nearby !== this.nearbyDoor) this.doorMessage = '';
+    this.nearbyDoor = nearby;
+    // Consume each press even when no door is nearby.
+    const interact = Phaser.Input.Keyboard.JustDown(this.interactKey);
+    const travel = Phaser.Input.Keyboard.JustDown(this.travelKey);
+    if (nearby && interact) this.doorMessage = nearby.toggle(this.player.body);
+    const destination = nearby?.getDestination();
+    const hint = nearby
+      ? `${nearby.label} · ${nearby.locked ? 'Trancada' : `E: ${nearby.open ? 'fechar' : 'abrir'}`}${destination ? ' · F: acessar outra área' : ''} ${this.doorMessage}`
+      : 'Aproxime-se de uma porta e pressione E.';
+    if (this.hint.textContent !== hint) this.hint.textContent = hint;
+    if (travel && destination) {
+      if (!this.scene.manager.keys[destination.targetMap]) {
+        this.hint.textContent = `Área não registrada: ${destination.targetMap}.`;
+        return;
+      }
+      this.player.setVelocity(0, 0);
+      this.input.keyboard.resetKeys();
+      this.scene.pause();
+      this.scene.launch(destination.targetMap, destination);
+    }
   }
 }
