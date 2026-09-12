@@ -15,9 +15,23 @@
         </div>
         <span class="version">v0.1 · Local</span>
       </header>
-      <div id="game" role="region" aria-label="Sala 2D. Use WASD ou as setas para mover o personagem."></div>
+      <section id="character-menu" aria-labelledby="character-title">
+        <h2 id="character-title">Escolha seu personagem</h2>
+        <p>Quatro colegas, uma escola. Quem vai entrar?</p>
+        <div id="character-list"></div>
+        <p id="character-message" role="status"></p>
+      </section>
+      <button id="change-character" hidden>Trocar personagem</button>
+      <section id="play-area" hidden>
+      <div id="game" tabindex="0" role="region" aria-label="Sala 2D. Use WASD ou as setas para mover o personagem."></div>
+      <section id="room-chat" hidden aria-label="Chat desta sala">
+        <ol id="chat-messages" aria-label="Mensagens"></ol>
+        <input id="chat-input" aria-label="Mensagem para esta sala" maxlength="200" placeholder="Enter para conversar…" autocomplete="off" />
+        <small id="chat-status" role="status"></small>
+      </section>
       <p class="controls">Explore com <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> ou as <kbd>setas</kbd>.</p>
       <p class="controls" id="interaction-hint" role="status">Aproxime-se de uma porta e pressione E.</p>
+      </section>
       <noscript>Ative o JavaScript para explorar a sala.</noscript>
     </main>
     <script type="module" src="/src/main.js"></script>

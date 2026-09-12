@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="128" shape-rendering="crispEdges">
+  <!-- One 2 x 4 tile desk: pale laminate, beveled edge and steel supports. -->
+  <path fill="#77858e" d="M0 0h64v128H0z"/>
+  <path fill="#b5bfc5" d="M1 1h62v122H1z"/>
+  <path fill="#edf0f2" d="M3 3h58v115H3z"/>
+  <path fill="#ffffff" d="M3 3h58v2H3zM3 5h2v111H3z"/>
+  <path fill="#d7dee3" d="M59 5h2v113h-2zM5 116h54v2H5z"/>
+  <path fill="#a3afb8" d="M2 119h60v3H2z"/>
+  <path fill="#5f6e78" d="M5 123h8v5H5zM51 123h8v5h-8z"/>
+  <path fill="#dce2e6" d="M5 62h54v1H5z"/>
+  <path fill="#fafcfd" d="M5 63h54v1H5z"/>
+  <!-- Small cable grommets at the two shared workstations. -->
+  <path fill="#9daab3" d="M29 28h6v4h-6zM29 91h6v4h-6z"/>
+  <path fill="#62727e" d="M30 29h4v2h-4zM30 92h4v2h-4z"/>
+</svg>

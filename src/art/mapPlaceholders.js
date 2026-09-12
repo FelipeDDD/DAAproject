@@ -18,17 +18,17 @@ export function drawMapPlaceholders(scene, source) {
         // Mirror a three-quarter view so both screens face their seating side.
         const polygon = (color, points) => g.fillStyle(color).fillPoints(
           points.map(([x, y]) => ({ x: -facing * x, y })), true);
+        // Paint keyboards first so the screen and its stand always cover them.
+        if (!props.hideKeyboard) {
+          polygon(0xa7b4bc, [[-17, 9], [-6, 13], [-2, 19], [-13, 15]]);
+          polygon(0xeaf0f2, [[-14, 11], [-7, 14], [-5, 16], [-12, 13]]);
+        }
         polygon(0x859397, [[-7, 10], [3, 13], [8, 10], [-2, 7]]);
         g.fillStyle(0x52616a).fillRect(-2, 1, 4, 10);
         polygon(0x52616a, [[-7, -14], [10, -8], [10, 9], [7, 11], [-7, 5]]);
         polygon(0x283a45, [[-9, -12], [7, -6], [7, 11], [-9, 5]]);
         polygon(0x86d4e4, [[-7, -9], [5, -5], [5, 8], [-7, 4]]);
         polygon(0xd4f4f5, [[-6, -8], [4, -5], [4, -3], [-6, -6]]);
-        // Keyboard follows the same diagonal on the outside of the screen.
-        if (!props.hideKeyboard) {
-          polygon(0xa7b4bc, [[-17, 9], [-6, 13], [-2, 19], [-13, 15]]);
-          polygon(0xeaf0f2, [[-14, 11], [-7, 14], [-5, 16], [-12, 13]]);
-        }
     }
   }
 }

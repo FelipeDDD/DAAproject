@@ -10,9 +10,10 @@ const classroomDoors = readDoors(source);
 // Headless adapter for render/physics ports; tests exercise Door's actual state logic.
 function makeDoor(overrides = {}, definition = {...classroomDoors.find(d => d.id === 'exit_main_door'), open: false, interactive: true}) {
   const visual = {
-    setOrigin() { return this; }, setDepth() { return this; },
+    setOrigin(x,y) { this.originX=x; this.originY=y; return this; }, setDepth() { return this; },
+    setAngle(angle) { this.angle=angle; return this; },
     setTexture(texture, frame) { this.texture = texture; this.frame = frame; return this; },
-    setDisplaySize() { return this; },
+    setDisplaySize(width,height) { this.width=width; this.height=height; return this; },
     setPosition(x,y) { this.x=x; this.y=y; return this; },
   };
   const blocker = { setOrigin() { return this; } };
@@ -23,6 +24,31 @@ function makeDoor(overrides = {}, definition = {...classroomDoors.find(d => d.id
   return new Door(scene, { ...definition, ...overrides });
 }
 const outside = { x: 0, y: 0, right: 23, bottom: 14 };
+
+test('side door rotates the same leaf inward without moving its hinge or resizing', () => {
+  const door=makeDoor({},classroomDoors.find(d=>d.id==='note-door-190'));
+  const geometry=()=>[door.visual.x,door.visual.y,door.visual.width,door.visual.height,door.visual.originX,door.visual.originY];
+  const closed=geometry(),texture=door.visual.texture;
+  assert.equal(door.visual.angle,0);
+  assert.deepEqual(closed,[door.x+door.width/2,door.y,door.width,door.height,0.5,0]);
+  door.toggle(outside);
+  assert.deepEqual(geometry(),closed);
+  assert.equal(door.visual.texture,texture);
+  assert.equal(door.visual.angle,-90);
+  assert.equal(door.blocker.body.enable,false);
+  door.toggle(outside);
+  assert.equal(door.visual.angle,0);
+  assert.equal(door.blocker.body.enable,true);
+});
+
+test('late shared close lets overlapping feet escape, then restores collision', () => {
+  const door=makeDoor({open:true});
+  door.applySharedState({open:false,locked:false},{x:door.x+1,y:door.y+1,right:door.x+24,bottom:door.y+15});
+  assert.equal(door.open,false);
+  assert.equal(door.blocker.body.enable,false);
+  door.updateBlocker(outside);
+  assert.equal(door.blocker.body.enable,true);
+});
 
 test('closed -> open -> closed updates the blocker and visual together', () => {
   const door = makeDoor();

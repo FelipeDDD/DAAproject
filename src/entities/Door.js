@@ -15,7 +15,9 @@ export class Door {
   applyState() {
     const visual = this.open ? this.openVisual : this.closedVisual;
     this.visual.setTexture(visual.texture, visual.frame ?? 0)
-      .setDisplaySize(visual.width ?? this.width, visual.height ?? this.height);
+      .setDisplaySize(visual.width ?? this.width, visual.height ?? this.height)
+      .setOrigin(visual.originX ?? 0, visual.originY ?? 0)
+      .setAngle(visual.angle ?? 0);
     this.visual.setPosition(this.x + (visual.offsetX ?? 0), this.y + (visual.offsetY ?? 0));
     this.blocker.body.enable = !this.open;
   }
@@ -24,6 +26,18 @@ export class Door {
     const dx = Math.max(this.x - body.right, body.x - this.x - this.width, 0);
     const dy = Math.max(this.y - body.bottom, body.y - this.y - this.height, 0);
     return Math.hypot(dx, dy);
+  }
+
+  applySharedState(state, body) {
+    this.locked = state.locked;
+    this.open = state.open && !state.locked;
+    this.applyState();
+    this.updateBlocker(body);
+  }
+
+  updateBlocker(body) {
+    // A late network close must never trap feet already inside the doorway.
+    this.blocker.body.enable = !this.open && !this.overlaps(body);
   }
 
   isNear(body) {

@@ -36,8 +36,8 @@ test('visual tiles moved into notes are preserved in Decoration with their annot
   }
 });
 
-test('Collision is a separate hidden layer with all six desk footprints', () => {
-  assert.equal(collision.visible, false);
+test('Collision is a separate object layer with all six desk footprints', () => {
+  // Editor visibility is independent of the non-rendering physics zones in-game.
   assert.equal(collision.type, 'objectgroup');
   for (const x of [26, 30, 34]) {
     for (const y of [17, 25]) {

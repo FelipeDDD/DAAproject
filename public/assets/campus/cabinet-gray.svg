@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="64" shape-rendering="crispEdges">
+  <!-- Top surface above a pair of doors facing down into the room. -->
+  <path fill="#414951" d="M0 0h96v64H0z"/>
+  <path fill="#aeb7bd" d="M2 2h92v18H2z"/>
+  <path fill="#d1d7db" d="M2 2h92v3H2z"/>
+  <path fill="#69747d" d="M3 22h90v37H3z"/>
+  <path fill="#919ca4" d="M5 24h41v32H5zM50 24h41v32H50z"/>
+  <path fill="#b2bbc1" d="M6 24h39v2H6zM51 24h39v2H51z"/>
+  <path fill="#354049" d="M38 35h3v12h-3zM55 35h3v12h-3z"/>
+  <path fill="#30383e" d="M3 60h90v4H3z"/>
+</svg>

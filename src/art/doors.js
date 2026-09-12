@@ -8,6 +8,11 @@ export function createDoorTextures(scene) {
   graphics.fillStyle(0x536c7b).fillRect(24, 23, 4, 2);
   graphics.generateTexture('door-closed', 32, 32);
   graphics.clear();
+  graphics.fillStyle(0x536c7b).fillRect(12, 0, 8, 32);
+  graphics.fillStyle(0xd7e2e8).fillRect(14, 1, 4, 30);
+  graphics.fillStyle(0x536c7b).fillRect(18, 24, 3, 2);
+  graphics.generateTexture('door-closed-side', 32, 32);
+  graphics.clear();
   graphics.fillStyle(0x536c7b).fillRect(0, 0, 3, 32);
   graphics.fillStyle(0xd7e2e8).fillRect(3, 0, 3, 32);
   graphics.generateTexture('door-open', 32, 32);

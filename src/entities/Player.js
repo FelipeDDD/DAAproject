@@ -15,6 +15,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.body.setOffset(6, 44);
     this.setCollideWorldBounds(true);
     this.speed = PLAYER_SPEED;
+    this.facing = 'down';
     this.direction = new Phaser.Math.Vector2();
     this.cursors = scene.input.keyboard.createCursorKeys();
     this.wasd = scene.input.keyboard.addKeys('W,A,S,D');
@@ -27,6 +28,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     const down = this.cursors.down.isDown || this.wasd.S.isDown;
 
     this.direction.set(Number(right) - Number(left), Number(down) - Number(up));
+    if (this.direction.x) this.facing = this.direction.x < 0 ? 'left' : 'right';
+    else if (this.direction.y) this.facing = this.direction.y < 0 ? 'up' : 'down';
     // Diagonals have the same speed as movement on a single axis.
     this.direction.normalize().scale(this.speed);
     this.setVelocity(this.direction.x, this.direction.y);

@@ -8,6 +8,11 @@ import { drawMapPlaceholders } from '../art/mapPlaceholders.js';
 import { readDoors } from '../maps/doors.js';
 import { addMapCollision } from '../maps/collision.js';
 import { objectsIn, propertiesOf, resolveSpawn } from '../maps/tiledObjects.js';
+import { getPresence } from '../multiplayer/client.js';
+import { RemotePlayers } from '../multiplayer/RemotePlayers.js';
+import { DoorSync } from '../multiplayer/DoorSync.js';
+import { CHARACTERS, characterById } from '../characters.js';
+import { RoomChat } from '../RoomChat.js';
 
 function readTileset(xml, firstgid) {
   const root = xml.documentElement;
@@ -31,6 +36,7 @@ export class MapScene extends Phaser.Scene {
   }
 
   preload() {
+    for(const c of CHARACTERS)if(!this.textures.exists(c.sprite))this.load.svg(c.sprite,`${import.meta.env.BASE_URL}${c.asset}`);
     const mapUrl = new URL(`${import.meta.env.BASE_URL}assets/maps/${this.filename}`, window.location.href);
     this.load.once(`filecomplete-json-${this.sourceKey}`, (_key, _type, data) => {
       data.tilesets.forEach((reference, index) => {
@@ -88,6 +94,7 @@ export class MapScene extends Phaser.Scene {
     }
     this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     this.player = new Player(this, 0, 0);
+    this.remotes = new RemotePlayers(this);
     this.collisionLayer = addMapCollision(this, map, this.player);
     this.doors = readDoors(this.source).map((definition) => new Door(this, definition));
     for (const door of this.doors) this.physics.add.collider(this.player, door.blocker);
@@ -101,9 +108,18 @@ export class MapScene extends Phaser.Scene {
 
     const stop = () => { this.input.keyboard.resetKeys(); this.player.setVelocity(0, 0); };
     const wake = (_systems, arrival) => this.enter(arrival);
+    const leave = () => {
+      this.chat?.close();this.chat=null;
+      this.doorSync?.close();
+      this.doorSync = null;
+      if (this.presence?.active?.room === this.mapKey) this.presence.leave();
+    };
+    this.events.on(Phaser.Scenes.Events.SLEEP, leave);
     this.events.on(Phaser.Scenes.Events.WAKE, wake);
     this.game.events.on(Phaser.Core.Events.BLUR, stop);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      leave();
+      this.events.off(Phaser.Scenes.Events.SLEEP, leave);
       this.game.events.off(Phaser.Core.Events.BLUR, stop);
       this.events.off(Phaser.Scenes.Events.WAKE, wake);
     });
@@ -113,6 +129,16 @@ export class MapScene extends Phaser.Scene {
     try {
       const spawn = resolveSpawn(this.source, destination);
       this.player.body.reset(spawn.x, spawn.y);
+      this.presence = getPresence();
+      const character=characterById(this.presence?.identity?.characterId);
+      if(character)this.player.setTexture(character.sprite);
+      this.presence?.enter(this.mapKey, () => ({
+        x: this.player.x, y: this.player.y, direction: this.player.facing,
+      }), rows => this.remotes.receive(rows));
+      this.doorSync?.close();
+      this.doorSync = this.presence ? new DoorSync(this.presence,this.mapKey,this.doors,()=>this.player.body) : null;
+      this.chat?.close();
+      this.chat=this.presence ? new RoomChat(this,this.presence) : null;
       this.returnDestination = destination.returnDestination;
       this.input.keyboard.resetKeys();
       this.doorMessage = '';
@@ -144,8 +170,12 @@ export class MapScene extends Phaser.Scene {
     else this.scene.launch(destination.targetMap, arrival);
   }
 
-  update() {
-    this.player.update();
+  update(_time, delta) {
+    if(this.chat?.focused)this.player.setVelocity(0,0);
+    else this.player.update();
+    this.remotes.update(delta);
+    if(this.doorSync)for(const door of this.doors)door.updateBlocker(this.player.body);
+    if(this.chat?.focused)return;
     const nearby = this.doors.filter((door) => door.isNear(this.player.body))
       .sort((a, b) => a.distanceTo(this.player.body) - b.distanceTo(this.player.body))[0];
     if (nearby !== this.nearbyDoor) this.doorMessage = '';
@@ -153,7 +183,12 @@ export class MapScene extends Phaser.Scene {
     const interact = Phaser.Input.Keyboard.JustDown(this.interactKey);
     const travel = Phaser.Input.Keyboard.JustDown(this.travelKey);
     const escape = Phaser.Input.Keyboard.JustDown(this.escapeKey);
-    if (nearby && interact) this.doorMessage = nearby.toggle(this.player.body);
+    if (nearby && interact) {
+      if(this.doorSync){
+        const sync=this.doorSync;
+        sync.toggle(nearby).then(message=>{if(this.doorSync===sync)this.doorMessage=message;});
+      }else this.doorMessage = nearby.toggle(this.player.body);
+    }
     const destination = nearby?.getDestination();
     const action = nearby?.interactive === false ? 'Passagem aberta' : `E: ${nearby?.open ? 'fechar' : 'abrir'}`;
     const hint = nearby

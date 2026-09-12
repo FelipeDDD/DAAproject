@@ -18,7 +18,7 @@ export function readDoors(source) {
       }
     }
     const visualGeometry = (state) => Object.fromEntries(
-      ['width', 'height', 'offsetX', 'offsetY'].flatMap((key) => {
+      ['width', 'height', 'offsetX', 'offsetY', 'originX', 'originY', 'angle'].flatMap((key) => {
         const value = props[state + key[0].toUpperCase() + key.slice(1)];
         return value === undefined ? [] : [[key, value]];
       }),
