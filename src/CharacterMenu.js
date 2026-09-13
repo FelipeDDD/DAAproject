@@ -7,7 +7,7 @@ export class CharacterMenu {
     this.sessionId=crypto.randomUUID();
     this.root=document.getElementById('character-menu');
     this.message=document.getElementById('character-message');
-    this.rows=[];this.ready=false;
+    this.rows=[];this.ready=false;this.connectionFailed=false;this.closed=false;
     let saved;try{saved=localStorage.getItem(CHARACTER_STORAGE_KEY);}catch{}
     this.cards=CHARACTERS.map(c=>{
       const button=document.createElement('button');button.className='character-card';
@@ -20,17 +20,34 @@ export class CharacterMenu {
       return {c,button,state};
     });
     this.message.textContent=presence?'Consultando disponibilidade…':'Configure o Convex para escolher um personagem.';
-    if(presence)this.unsubscribe=presence.client.onUpdate(presence.api.players.availability,{},rows=>{
-      this.rows=rows;this.ready=true;this.render();
-      if(!this.pending)this.message.textContent='Escolha um personagem disponível.';
-    },()=>{this.ready=false;this.message.textContent='Não foi possível consultar os personagens. Verifique o Convex.';this.render();});
+    if(presence){
+      const receiveRows=rows=>{
+        if(this.closed)return;
+        clearTimeout(this.connectionTimer);
+        this.rows=rows;this.ready=true;this.connectionFailed=false;this.render();
+        if(!this.pending)this.message.textContent='Escolha um personagem disponível.';
+      };
+      const showConnectionError=()=>{
+        if(this.closed||this.ready)return;
+        this.connectionFailed=true;
+        this.message.textContent='Convex indisponível. Execute “npm.cmd run convex” em outro terminal; a tela reconectará automaticamente.';
+        this.render();
+      };
+      this.unsubscribe=presence.client.onUpdate(
+        presence.api.players.availability,
+        {},
+        receiveRows,
+        showConnectionError,
+      );
+      this.connectionTimer=setTimeout(showConnectionError,5000);
+    }
     this.timer=setInterval(()=>this.render(),500);this.render();
   }
   render(){
     for(const {c,button,state}of this.cards){
       const busy=this.rows.some(r=>r.characterId===c.id&&Date.now()-r.lastSeen<STALE_MS);
       button.disabled=!this.ready||this.pending||busy;
-      state.textContent=busy?'Ocupado':this.ready?'Disponível':'Carregando…';
+      state.textContent=busy?'Ocupado':this.ready?'Disponível':this.connectionFailed?'Offline':'Carregando…';
     }
   }
   async choose(c){
@@ -49,5 +66,5 @@ export class CharacterMenu {
     finally{this.pending=false;this.render();}
   }
   show(){this.root.hidden=false;this.render();}
-  close(){clearInterval(this.timer);this.unsubscribe?.();}
+  close(){this.closed=true;clearInterval(this.timer);clearTimeout(this.connectionTimer);this.unsubscribe?.();}
 }

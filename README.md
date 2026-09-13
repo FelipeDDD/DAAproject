@@ -247,3 +247,36 @@ limpa o hist?rico anterior; trocar de personagem tamb?m encerra o chat anterior.
 As mensagens ficam armazenadas no Convex, sem sistema adicional de hist?rico.
 O painel exibe texto simples, sem interpretar HTML. Teste real: npm run test:chat
 (usa uma vaga livre e deixa duas mensagens identificadas como teste no backend local).
+
+## Lobby físico do quiz
+
+As quatro cadeiras da mesa com monitores duplos são objetos `quizSeat` na layer
+`Entities` de `classroom.tmj`. Cada uma possui `characterId`, `seatX`, `seatY` e
+`direction`. A disposição é Sarina/Felipe à esquerda (cima/baixo) e
+Michael/Jassine à direita (cima/baixo). `src/maps/quizSeats.js` lê esses dados;
+o Phaser não contém coordenadas das cadeiras.
+
+Perto da própria cadeira, o prompt local `[E] Sentar` usa apenas a posição e a
+hitbox locais. E chama `quizLobbies:join`, alinha o personagem e bloqueia o
+movimento. E novamente, Esc ou o botão do painel chamam `leave`.
+`src/QuizLobby.js` controla essa integração e o painel. O chat continua disponível
+enquanto o jogador está sentado.
+
+A tabela `quizLobbies` fica em `convex/schema.js`; as queries e mutations estão
+em `convex/quizLobbies.js`. O primeiro a sentar vira host. Se ele sair, o primeiro
+participante ativo restante vira host; sem participantes, o lobby é apagado.
+Somente o host vê o botão de início e pode mudar o status para `starting`, com 2
+a 4 participantes. Nesse momento, o Convex seleciona uma vez até cinco IDs do
+banco de `convex/quizQuestions.js`, sem repetição, e salva a sequência no lobby.
+Com apenas três perguntas cadastradas, todas são usadas. Cada item aceita `id`,
+`category`, `difficulty`, `question`, quatro `answers`, `correctAnswer` e uma
+`explanation` opcional. A escolha fica local até o jogador confirmar; então o
+Convex salva uma resposta por participante e pergunta na tabela `quizAnswers`.
+Quando todos os participantes ativos respondem, a alternativa correta e o
+feedback são revelados, o lobby soma um ponto por acerto e o host pode avançar.
+Depois da última pergunta, o painel mostra o resultado sincronizado. A limpeza de
+presença também repara ou remove lobbies a cada 5 segundos.
+
+`scripts/sync-door-definitions.mjs` também gera `convex/quizSeatDefinitions.js`
+a partir do Tiled antes de iniciar o Convex ou compilar. O teste real com dois
+clientes é `npm.cmd run test:quiz-lobby` com o backend local rodando.

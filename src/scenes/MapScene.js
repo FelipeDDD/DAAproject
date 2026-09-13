@@ -13,6 +13,8 @@ import { RemotePlayers } from '../multiplayer/RemotePlayers.js';
 import { DoorSync } from '../multiplayer/DoorSync.js';
 import { CHARACTERS, characterById } from '../characters.js';
 import { RoomChat } from '../RoomChat.js';
+import { readQuizSeats } from '../maps/quizSeats.js';
+import { QuizLobby } from '../QuizLobby.js';
 
 function readTileset(xml, firstgid) {
   const root = xml.documentElement;
@@ -97,6 +99,7 @@ export class MapScene extends Phaser.Scene {
     this.remotes = new RemotePlayers(this);
     this.collisionLayer = addMapCollision(this, map, this.player);
     this.doors = readDoors(this.source).map((definition) => new Door(this, definition));
+    this.quizSeats = readQuizSeats(this.source);
     for (const door of this.doors) this.physics.add.collider(this.player, door.blocker);
     this.interactKey = this.input.keyboard.addKey('E');
     this.travelKey = this.input.keyboard.addKey('F');
@@ -109,6 +112,7 @@ export class MapScene extends Phaser.Scene {
     const stop = () => { this.input.keyboard.resetKeys(); this.player.setVelocity(0, 0); };
     const wake = (_systems, arrival) => this.enter(arrival);
     const leave = () => {
+      this.quiz?.close();this.quiz=null;
       this.chat?.close();this.chat=null;
       this.doorSync?.close();
       this.doorSync = null;
@@ -139,6 +143,8 @@ export class MapScene extends Phaser.Scene {
       this.doorSync = this.presence ? new DoorSync(this.presence,this.mapKey,this.doors,()=>this.player.body) : null;
       this.chat?.close();
       this.chat=this.presence ? new RoomChat(this,this.presence) : null;
+      this.quiz?.close();
+      this.quiz=this.presence ? new QuizLobby(this,this.presence,this.quizSeats) : null;
       this.returnDestination = destination.returnDestination;
       this.input.keyboard.resetKeys();
       this.doorMessage = '';
@@ -171,18 +177,32 @@ export class MapScene extends Phaser.Scene {
   }
 
   update(_time, delta) {
-    if(this.chat?.focused)this.player.setVelocity(0,0);
+    if(this.chat?.focused||this.quiz?.seated)this.player.setVelocity(0,0);
     else this.player.update();
     this.remotes.update(delta);
     if(this.doorSync)for(const door of this.doors)door.updateBlocker(this.player.body);
-    if(this.chat?.focused)return;
+    if(this.chat?.focused){this.quiz?.updateSeatPrompt(false);return;}
+    const interact = Phaser.Input.Keyboard.JustDown(this.interactKey);
+    const escape = Phaser.Input.Keyboard.JustDown(this.escapeKey);
+    const quizSeat=this.quiz?.nearbySeat();
+    this.quiz?.updateSeatPrompt(quizSeat);
+    if(this.quiz?.seated){
+      if(interact||escape)this.quiz.leave();
+      const status=this.quiz.lobby?.status;
+      const hint=status==='finished'?'Quiz concluído · Esc: sair':status==='starting'?'Quiz em andamento · Esc: sair':'Sentado no lobby · E/Esc: sair';
+      if(this.hint.textContent!==hint)this.hint.textContent=hint;
+      return;
+    }
+    if(interact&&quizSeat){
+      this.quiz.interact();
+      if(this.hint.textContent!=='Entrando no lobby…')this.hint.textContent='Entrando no lobby…';
+      return;
+    }
     const nearby = this.doors.filter((door) => door.isNear(this.player.body))
       .sort((a, b) => a.distanceTo(this.player.body) - b.distanceTo(this.player.body))[0];
     if (nearby !== this.nearbyDoor) this.doorMessage = '';
     this.nearbyDoor = nearby;
-    const interact = Phaser.Input.Keyboard.JustDown(this.interactKey);
     const travel = Phaser.Input.Keyboard.JustDown(this.travelKey);
-    const escape = Phaser.Input.Keyboard.JustDown(this.escapeKey);
     if (nearby && interact) {
       if(this.doorSync){
         const sync=this.doorSync;
@@ -191,7 +211,9 @@ export class MapScene extends Phaser.Scene {
     }
     const destination = nearby?.getDestination();
     const action = nearby?.interactive === false ? 'Passagem aberta' : `E: ${nearby?.open ? 'fechar' : 'abrir'}`;
-    const hint = nearby
+    const hint = quizSeat
+      ? 'Sua cadeira do quiz · E: sentar'
+      : nearby
       ? `${nearby.label} · ${nearby.locked ? 'Trancada' : action}${destination ? ' · F: atravessar' : ''} ${this.doorMessage}`
       : `Aproxime-se de uma porta e pressione E. ${this.doorMessage}`;
     if (this.hint.textContent !== hint) this.hint.textContent = hint;

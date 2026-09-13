@@ -29,6 +29,26 @@
         <input id="chat-input" aria-label="Mensagem para esta sala" maxlength="200" placeholder="Enter para conversar…" autocomplete="off" />
         <small id="chat-status" role="status"></small>
       </section>
+      <section id="quiz-lobby" hidden aria-labelledby="quiz-lobby-title">
+        <h2 id="quiz-lobby-title">QUIZ LOBBY</h2>
+        <ul id="quiz-participants"></ul>
+        <section id="quiz-question" hidden aria-labelledby="quiz-question-text">
+          <h3 id="quiz-question-text"></h3>
+          <div id="quiz-alternatives" role="group" aria-label="Alternativas da pergunta"></div>
+          <p id="quiz-explanation" hidden></p>
+          <button id="confirm-answer" type="button">Confirmar resposta</button>
+        </section>
+        <section id="quiz-results" hidden aria-labelledby="quiz-results-title">
+          <h3 id="quiz-results-title">Resultado</h3>
+          <ul id="quiz-scores"></ul>
+        </section>
+        <div id="quiz-actions">
+          <button id="start-quiz" hidden>Iniciar quiz</button>
+          <button id="next-question" type="button" hidden>Próxima pergunta</button>
+          <button id="leave-quiz" type="button">Sair do lobby</button>
+        </div>
+        <small id="quiz-status" role="status"></small>
+      </section>
       <p class="controls">Explore com <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> ou as <kbd>setas</kbd>.</p>
       <p class="controls" id="interaction-hint" role="status">Aproxime-se de uma porta e pressione E.</p>
       </section>

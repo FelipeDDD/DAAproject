@@ -20,7 +20,10 @@ export class RoomChat {
         event.stopImmediatePropagation();
         if(event.isComposing)return;
         if(event.key==='Enter'){event.preventDefault();if(!event.repeat)this.send();}
-        else if(event.key==='Escape'){event.preventDefault();this.unfocus();}
+        else if(event.key==='Escape'){
+          event.preventDefault();this.unfocus();
+          if(this.scene.quiz?.seated)this.scene.quiz.leave();
+        }
       }else if(event.type==='keydown'&&event.key==='Enter'&&!event.repeat&&
         !event.target.closest?.('button,input,textarea,select,[contenteditable]')){
         event.preventDefault();event.stopImmediatePropagation();this.input.focus();

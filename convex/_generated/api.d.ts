@@ -13,6 +13,9 @@ import type * as doorDefinitions from "../doorDefinitions.js";
 import type * as doors from "../doors.js";
 import type * as messages from "../messages.js";
 import type * as players from "../players.js";
+import type * as quizLobbies from "../quizLobbies.js";
+import type * as quizQuestions from "../quizQuestions.js";
+import type * as quizSeatDefinitions from "../quizSeatDefinitions.js";
 
 import type {
   ApiFromModules,
@@ -26,6 +29,9 @@ declare const fullApi: ApiFromModules<{
   doors: typeof doors;
   messages: typeof messages;
   players: typeof players;
+  quizLobbies: typeof quizLobbies;
+  quizQuestions: typeof quizQuestions;
+  quizSeatDefinitions: typeof quizSeatDefinitions;
 }>;
 
 /**

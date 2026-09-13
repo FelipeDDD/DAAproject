@@ -20,7 +20,9 @@ const menu=new CharacterMenu(presence,()=>{
 
 async function changeCharacter(){
   if(menu.pending||pausedScene)return;
-  pausedScene=game?.scene.getScenes(true)[0];
+  const activeScene=game?.scene.getScenes(true)[0];
+  if(activeScene?.quiz?.seated&&!(await activeScene.quiz.leave()))return;
+  pausedScene=activeScene;
   if(pausedScene){
     pausedScene.chat?.close();pausedScene.chat=null;
     pausedScene.player.setVelocity(0,0);pausedScene.input.keyboard.resetKeys();
