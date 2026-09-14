@@ -13,11 +13,18 @@ export class Door {
   }
 
   applyState() {
-    const visual = this.open ? this.openVisual : this.closedVisual;
+    const logicalState = this.open ? 'open' : 'closed';
+    const state = this.interactive === false && this.visualState ? this.visualState : logicalState;
+    const visual = state === 'halfOpen'
+      ? this.halfOpenVisual
+      : state === 'open' ? this.openVisual : this.closedVisual;
+    this.displayedState = state;
     this.visual.setTexture(visual.texture, visual.frame ?? 0)
       .setDisplaySize(visual.width ?? this.width, visual.height ?? this.height)
       .setOrigin(visual.originX ?? 0, visual.originY ?? 0)
       .setAngle(visual.angle ?? 0);
+    this.visual.setFlipX?.(visual.flipX ?? false);
+    this.visual.setFlipY?.(visual.flipY ?? false);
     this.visual.setPosition(this.x + (visual.offsetX ?? 0), this.y + (visual.offsetY ?? 0));
     this.blocker.body.enable = !this.open;
   }

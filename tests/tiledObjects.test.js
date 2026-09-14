@@ -39,6 +39,38 @@ test('door states and frame custom properties are read from Tiled', () => {
   assert.deepEqual(result.closedVisual, {texture:'sheet',frame:3});
 });
 
+test('door orientation, hinge and independent half-open visual come from Tiled',()=>{
+  const doors=readDoors(source),side=doors.find(door=>door.id==='note-door-190');
+  const transition=doors.find(door=>door.id==='exit_main_door');
+  assert.equal(side.orientation,'vertical');assert.equal(side.hinge,'top');
+  assert.equal(side.closedVisual.texture,'door-closed-side');assert.equal(side.openVisual.angle,-90);
+  assert.equal(transition.orientation,'horizontal');assert.equal(transition.hinge,'left');
+  assert.equal(transition.visualState,'halfOpen');assert.equal(transition.halfOpenVisual.texture,'door-half-open');
+  assert.equal(transition.openVisual.texture,'door-open-south');
+});
+
+test('vertical defaults render sideways when closed and perpendicular when open',()=>{
+  const edited=structuredClone(source);
+  const door=edited.layers.find(layer=>layer.name==='Doors').objects.find(object=>object.name==='note-door-190');
+  door.properties=door.properties.filter(property=>!property.name.startsWith('closed')&&!property.name.startsWith('open'));
+  const result=readDoors(edited).find(item=>item.id==='note-door-190');
+  assert.equal(result.closedVisual.texture,'door-closed-side');
+  assert.equal(result.openVisual.texture,'door-closed-side');assert.equal(result.openVisual.angle,-90);
+  assert.equal(result.openVisual.originX,0.5);assert.equal(result.openVisual.originY,0);
+});
+
+test('invalid orientation, hinge, visual state and visual geometry fail clearly',()=>{
+  const mutate=(name,value,type='string')=>{
+    const edited=structuredClone(source),door=edited.layers.find(layer=>layer.name==='Doors').objects[0];
+    door.properties.push({name,type,value});return edited;
+  };
+  assert.throws(()=>readDoors(mutate('orientation','diagonal')),/orientation/);
+  assert.throws(()=>readDoors(mutate('hinge','top')),/horizontal door hinge/);
+  assert.throws(()=>readDoors(mutate('visualState','halfOpen')),/interactive: false/);
+  assert.throws(()=>readDoors(mutate('openWidth','wide')),/numeric/);
+  assert.throws(()=>readDoors(mutate('openFlipX','true')),/bool/);
+});
+
 test('invalid boolean types and duplicate ids fail clearly', () => {
   const edited = structuredClone(source);
   const layer = edited.layers.find((l) => l.name === 'Doors');

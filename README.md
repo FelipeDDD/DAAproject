@@ -137,10 +137,14 @@ Em Doors, use retângulos sem rotação. Propriedades customizadas:
 
 - `id` e `label` (string): identificador único e nome exibido; o nome do objeto é fallback.
 - `open`, `locked`, `transition`, `interactive` (**bool**, não string).
+- `orientation` (string): `horizontal` ou `vertical`.
+- `hinge` (string): `left`/`right` em portas horizontais; `top`/`bottom` em portas verticais.
+- `visualState` (string, opcional): `closed`, `open` ou `halfOpen`; use em portas não interativas com visual fixo.
 - `targetMap` (string): `school` ou `outside`.
 - `targetSpawn` (string): nome do ponto de destino; tem prioridade sobre X/Y.
 - `targetX`, `targetY` (float): alternativa, em pixels do mundo.
-- `closedTexture`, `openTexture` (string) e `closedFrame`, `openFrame` (int/string): arte opcional.
+- `closedTexture`, `openTexture`, `halfOpenTexture` (string) e os respectivos
+  `closedFrame`, `openFrame`, `halfOpenFrame` (int/string): arte opcional.
 
 `locked: true` fecha a porta e impede abrir/viajar. `interactive: false` mantém
 seu estado fixo, mas F continua disponível quando a passagem está aberta.
@@ -203,14 +207,16 @@ Use retângulos em `Notes` para delimitar o espaço completo de cada objeto.
 Use `description` para detalhes e `facing` (`left/right/up/down`) para a face
 voltada ao jogador. Pontos indicam apenas o centro, sem definir tamanho.
 Para um conjunto, marque seu contorno e os componentes, incluindo passagens livres.
-`preserveBounds`, `hinge` e `opensToward` servem como instruções de autoria;
+`preserveBounds` e `opensToward` servem como instruções de autoria;
 não geram arte ou animação automaticamente. As anotações precisam ser interpretadas.
 
-O retângulo em `Doors` define o vão e o bloqueador. O desenho pode ocupar mais
-espaço usando `openWidth`, `openHeight`, `openOffsetX`, `openOffsetY` e os
-equivalentes `closed...` (propriedades numéricas em pixels). Isso permite uma
-folha aberta perpendicular à parede e uma saída mais alta sem aumentar a colisão.
-Os frames continuam selecionados por `openTexture` e `closedTexture`.
+O retângulo em `Doors` define somente o vão, a interação e o bloqueador. Cada
+estado visual pode usar `Width`, `Height`, `OffsetX`, `OffsetY`, `OriginX`,
+`OriginY`, `Angle`, `FlipX` e `FlipY`, precedidos por `closed`, `open` ou
+`halfOpen`, por exemplo `openOffsetX` e `halfOpenAngle`. Assim a folha aberta
+pode ocupar espaço perpendicular à parede sem mudar a colisão. Para uma porta de
+transição entreaberta e atravessável, use `visualState: halfOpen`, `open: true` e
+`interactive: false`.
 As paredes e as colisões devem terminar nas duas bordas do vão.
 
 ## Portas compartilhadas

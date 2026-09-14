@@ -4993,6 +4993,16 @@
                          "value":false
                         }, 
                         {
+                         "name":"orientation",
+                         "type":"string",
+                         "value":"horizontal"
+                        },
+                        {
+                         "name":"hinge",
+                         "type":"string",
+                         "value":"left"
+                        },
+                        {
                          "name":"transition",
                          "type":"bool",
                          "value":false
@@ -5014,17 +5024,37 @@
                          "name":"closedHeight",
                          "type":"float",
                          "value":64
-                        }, 
+                        },
                         {
                          "name":"closedOffsetY",
                          "type":"float",
                          "value":-32
-                        }, 
+                        },
                         {
                          "name":"interactive",
                          "type":"bool",
                          "value":false
                         }, 
+                        {
+                         "name":"halfOpenHeight",
+                         "type":"float",
+                         "value":64
+                        },
+                        {
+                         "name":"halfOpenOffsetY",
+                         "type":"float",
+                         "value":-32
+                        },
+                        {
+                         "name":"halfOpenTexture",
+                         "type":"string",
+                         "value":"door-half-open"
+                        },
+                        {
+                         "name":"hinge",
+                         "type":"string",
+                         "value":"left"
+                        },
                         {
                          "name":"locked",
                          "type":"bool",
@@ -5048,7 +5078,12 @@
                         {
                          "name":"openTexture",
                          "type":"string",
-                         "value":"door-half-open"
+                         "value":"door-open-south"
+                        },
+                        {
+                         "name":"orientation",
+                         "type":"string",
+                         "value":"horizontal"
                         }, 
                         {
                          "name":"targetMap",
@@ -5139,6 +5174,11 @@
                          "value":false
                         }, 
                         {
+                         "name":"orientation",
+                         "type":"string",
+                         "value":"vertical"
+                        },
+                        {
                          "name":"openAngle",
                          "type":"float",
                          "value":-90
@@ -5206,6 +5246,11 @@
                          "type":"bool",
                          "value":false
                         }, 
+                        {
+                         "name":"orientation",
+                         "type":"string",
+                         "value":"horizontal"
+                        },
                         {
                          "name":"openHeight",
                          "type":"float",

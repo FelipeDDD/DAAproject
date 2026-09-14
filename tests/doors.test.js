@@ -18,7 +18,7 @@ function makeDoor(overrides = {}, definition = {...classroomDoors.find(d => d.id
   };
   const blocker = { setOrigin() { return this; } };
   const scene = {
-    add: { image: () => visual, zone: () => blocker },
+    add: { image: () => visual, zone: (x,y,width,height) => Object.assign(blocker,{x,y,width,height}) },
     physics: { add: { existing: (zone) => { zone.body = { enable: true }; } } },
   };
   return new Door(scene, { ...definition, ...overrides });
@@ -121,4 +121,23 @@ test('non-interactive open entrance keeps passage and transition available', () 
   assert.equal(door.open, true);
   assert.equal(door.blocker.body.enable, false);
   assert.equal(door.getDestination().targetMap, 'outside');
+});
+
+test('a fixed half-open transition keeps visual state separate from its open collision state',()=>{
+  const definition=classroomDoors.find(d=>d.id==='exit_main_door');
+  const door=makeDoor({},definition);
+  assert.equal(door.displayedState,'halfOpen');assert.equal(door.visual.texture,'door-half-open');
+  assert.equal(door.open,true);assert.equal(door.blocker.body.enable,false);
+  assert.equal(door.getDestination().targetSpawn,'schoolEntrance');
+});
+
+test('visual size and offsets never resize or move the collision doorway',()=>{
+  const door=makeDoor({
+    closedVisual:{texture:'sheet',frame:1,width:120,height:80,offsetX:-20,offsetY:-40},
+    openVisual:{texture:'sheet',frame:2,width:16,height:96,offsetX:50,offsetY:5},
+  });
+  const blocker=[door.blocker.x,door.blocker.y,door.blocker.width,door.blocker.height];
+  assert.deepEqual([door.visual.width,door.visual.height],[120,80]);door.toggle(outside);
+  assert.deepEqual([door.visual.width,door.visual.height],[16,96]);
+  assert.deepEqual([door.blocker.x,door.blocker.y,door.blocker.width,door.blocker.height],blocker);
 });

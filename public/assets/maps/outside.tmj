@@ -237,7 +237,7 @@
       "visible": true,
       "opacity": 1,
       "objects": [
-        {"id":19,"name":"school-main-entry","type":"","x":432,"y":192,"width":96,"height":32,"rotation":0,"visible":true,"properties":[{"name":"open","type":"bool","value":true},{"name":"locked","type":"bool","value":false},{"name":"label","type":"string","value":"School entrance"},{"name":"transition","type":"bool","value":true},{"name":"targetMap","type":"string","value":"school"},{"name":"targetSpawn","type":"string","value":"mainEntrance"}]}
+        {"id":19,"name":"school-main-entry","type":"","x":432,"y":192,"width":96,"height":32,"rotation":0,"visible":true,"properties":[{"name":"open","type":"bool","value":true},{"name":"locked","type":"bool","value":false},{"name":"label","type":"string","value":"School entrance"},{"name":"orientation","type":"string","value":"horizontal"},{"name":"hinge","type":"string","value":"left"},{"name":"transition","type":"bool","value":true},{"name":"targetMap","type":"string","value":"school"},{"name":"targetSpawn","type":"string","value":"mainEntrance"}]}
       ]
     },
     {
