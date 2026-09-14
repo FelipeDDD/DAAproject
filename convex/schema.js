@@ -8,6 +8,11 @@ export default defineSchema({
     questionIndex:v.optional(v.number()),
     questionDeadline:v.optional(v.number()),
     questionIds:v.optional(v.array(v.string())),
+    settings:v.optional(v.object({
+      category:v.union(v.string(),v.null()),
+      difficulty:v.union(v.literal('medium'),v.literal('hard'),v.null()),
+      count:v.union(v.number(),v.null()),
+    })),
     questions:v.optional(v.array(v.object({
       id:v.string(),category:v.string(),difficulty:v.string(),question:v.string(),
       answers:v.array(v.string()),correctAnswer:v.number(),
@@ -25,6 +30,11 @@ export default defineSchema({
     .index('by_lobby_character',['lobbyId','characterId'])
     .index('by_lobby_question',['lobbyId','questionId'])
     .index('by_lobby_question_character',['lobbyId','questionId','characterId']),
+  quizQuestionHistory: defineTable({
+    characterId:v.string(),
+    recentQuestions:v.array(v.object({questionId:v.string(),seenAt:v.number()})),
+    updatedAt:v.number(),
+  }).index('by_character',['characterId']),
   messages: defineTable({room:v.string(),characterId:v.string(),characterName:v.string(),text:v.string(),createdAt:v.number()})
     .index('by_room_createdAt',['room','createdAt']),
   doors: defineTable({room:v.string(),doorId:v.string(),open:v.boolean(),locked:v.boolean()})

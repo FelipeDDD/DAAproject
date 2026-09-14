@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { GENERATED_QUIZ_QUESTIONS } from '../convex/quizGeneratedQuestions.js';
 import { loadStaticQuizQuestions, serializeQuizModule } from './quiz-csv.mjs';
+import { validateQuizQuestion } from '../src/quizValidation.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dataDirectory = path.join(root, 'quiz-data');
@@ -13,6 +14,8 @@ const knownIds = new Set(result.questions.map((question) => question.id));
 
 for (const template of GENERATED_QUIZ_QUESTIONS) {
   if (knownIds.has(template.id)) result.errors.push(`ID duplicado no banco combinado: ${template.id}`);
+  result.errors.push(...validateQuizQuestion(template,{allowGenerated:true})
+    .map(message=>`convex/quizGeneratedQuestions.js (${template.id||'missing id'}): ${message}`));
   knownIds.add(template.id);
 }
 

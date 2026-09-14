@@ -19,6 +19,6 @@ test('chat rejects empty and overlong text; accepts exactly 200 characters',asyn
 });
 test('chat rejects another room, another session and expired presence',async()=>{
   for(const override of [{room:'outside'},{sessionId:'other'},{lastSeen:Date.now()-16_000}]){
-    const ctx=context(override);await assert.rejects(send._handler(ctx,args),/inválida/);assert.equal(ctx.inserted.length,0);
+    const ctx=context(override);await assert.rejects(send._handler(ctx,args),/Invalid session/);assert.equal(ctx.inserted.length,0);
   }
 });

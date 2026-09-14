@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { ConvexClient } from 'convex/browser';
 import { anyApi as api } from 'convex/server';
 import seatsByRoom from '../convex/quizSeatDefinitions.js';
-import { QUESTIONS_PER_QUIZ, QUIZ_QUESTIONS } from '../convex/quizQuestions.js';
+import { QUIZ_QUESTIONS } from '../convex/quizQuestions.js';
 import { claimTestCharacter, releaseTestCharacter } from './claim-test-character.mjs';
 
 const clients=[new ConvexClient(process.env.VITE_CONVEX_URL),new ConvexClient(process.env.VITE_CONVEX_URL)];
@@ -30,17 +30,25 @@ try{
   await clients[1].mutation(api.quizLobbies.join,args(1));
   await wait(()=>lobbyA?.participants.length===2&&lobbyB?.participants.length===2,'two participants');
   assert.equal(lobbyA.hostCharacterId,identities[0].characterId);
+  const settings={category:'Netzwerk',difficulty:'medium',count:5};
+  await assert.rejects(clients[1].mutation(api.quizLobbies.configure,{...args(1),...settings}),/host/);
+  await clients[0].mutation(api.quizLobbies.configure,{...args(0),...settings});
+  await wait(()=>lobbyA?.settings.difficulty==='medium'&&lobbyB?.settings.difficulty==='medium','shared host settings');
+  assert.deepEqual(lobbyA.settings,settings);assert.deepEqual(lobbyB.settings,settings);
+  assert.ok(lobbyA.configurationOptions.categories.includes('Programmierung'));
+  assert.deepEqual(lobbyA.configurationOptions.difficulties,['medium','hard']);
   await assert.rejects(clients[1].mutation(api.quizLobbies.start,args(1)),/host/);
   await clients[0].mutation(api.quizLobbies.start,args(0));
 
-  const expectedCount=Math.min(QUESTIONS_PER_QUIZ,QUIZ_QUESTIONS.length);
+  const expectedCount=5;
   const seenQuestionIds=new Set(),expectedScores=[0,0];
   for(let questionIndex=0;questionIndex<expectedCount;questionIndex++){
     await wait(()=>lobbyA?.questionIndex===questionIndex&&lobbyA?.question?.id===lobbyB?.question?.id,`shared question ${questionIndex+1}`);
-    const bankQuestion=QUIZ_QUESTIONS.find(question=>question.id===lobbyA.question.id);
-    assert.ok(bankQuestion);seenQuestionIds.add(bankQuestion.id);
+    const sourceQuestionId=lobbyA.question.id.replace(/#\d+$/,'');
+    const bankQuestion=QUIZ_QUESTIONS.find(question=>question.id===sourceQuestionId);
+    assert.ok(bankQuestion);seenQuestionIds.add(sourceQuestionId);
     assert.equal(lobbyA.questionCount,expectedCount);
-    assert.equal(lobbyA.question.id,bankQuestion.id);
+    assert.ok(lobbyA.question.id===bankQuestion.id||lobbyA.question.id.startsWith(`${bankQuestion.id}#`));
     assert.equal(lobbyA.question.category,bankQuestion.category);
     assert.equal(lobbyA.question.difficulty,bankQuestion.difficulty);
     assert.equal(typeof lobbyA.question.question,'string');
@@ -49,7 +57,7 @@ try{
     assert.equal(lobbyA.question.explanation,null);
     if(bankQuestion.type!=='generated'){
       assert.equal(lobbyA.question.question,bankQuestion.question);
-      assert.deepEqual(lobbyA.question.answers,bankQuestion.answers);
+      assert.deepEqual([...lobbyA.question.answers].sort(),[...bankQuestion.answers].sort());
       assert.deepEqual(lobbyA.question.media,bankQuestion.media);
     }
     assert.ok(lobbyA.questionDeadline>Date.now());
@@ -63,9 +71,9 @@ try{
     assert.equal(lobbyA.allAnswered,false);assert.equal(lobbyB.ownAnswerIndex,undefined);
     assert.equal(lobbyA.correctAnswerIndex,null);
     if(questionIndex===0){
-      await assert.rejects(clients[0].mutation(api.quizLobbies.nextQuestion,args(0)),/respondendo/);
+      await assert.rejects(clients[0].mutation(api.quizLobbies.nextQuestion,args(0)),/still answering/);
       await answer(0,choices[0]);
-      await assert.rejects(answer(0,2),/já respondeu/);
+      await assert.rejects(answer(0,2),/already answered/);
     }
 
     await answer(1,choices[1]);
@@ -73,6 +81,8 @@ try{
     assert.equal(lobbyA.correctAnswerIndex,lobbyB.correctAnswerIndex);
     assert.ok(Number.isInteger(lobbyA.correctAnswerIndex));
     assert.equal(lobbyA.question.answers[lobbyA.correctAnswerIndex],lobbyB.question.answers[lobbyB.correctAnswerIndex]);
+    if(bankQuestion.type!=='generated')
+      assert.equal(lobbyA.question.answers[lobbyA.correctAnswerIndex],bankQuestion.answers[bankQuestion.correctAnswer]);
     assert.equal(lobbyA.question.question,concreteQuestion.question);
     assert.deepEqual(lobbyA.question.answers,concreteQuestion.answers);
     if(bankQuestion.type==='generated')assert.ok(lobbyA.question.explanation);
@@ -98,8 +108,11 @@ try{
   await clients[0].mutation(api.quizLobbies.join,args(0));
   await clients[1].mutation(api.quizLobbies.join,args(1));
   await wait(()=>lobbyA?.participants.length===2,'second quiz participants');
+  await clients[0].mutation(api.quizLobbies.configure,{...args(0),...settings});
+  await wait(()=>lobbyA?.settings.category===settings.category&&lobbyB?.settings.category===settings.category,'second shared settings');
   await clients[0].mutation(api.quizLobbies.start,args(0));
-  await wait(()=>lobbyA?.status==='starting','second quiz started');
+  await wait(()=>lobbyA?.status==='starting'&&lobbyA?.question?.id===lobbyB?.question?.id,'second quiz started');
+  assert.ok(!seenQuestionIds.has(lobbyA.question.id.replace(/#\d+$/,'')));
   await clients[1].mutation(api.quizLobbies.leave,args(1));
   await wait(()=>lobbyA?.status==='finished','quiz ended with one participant');
   assert.equal(lobbyA.finishedReason,'insufficient-participants');

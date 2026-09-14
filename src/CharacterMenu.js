@@ -32,18 +32,18 @@ export class CharacterMenu {
       document.getElementById('character-list').append(button);
       return {c,button,state};
     });
-    this.message.textContent=presence?'Consultando disponibilidade…':'Configure o Convex para escolher um personagem.';
+    this.message.textContent=presence?'Checking availability…':'Configure Convex to choose a character.';
     if(presence){
       const receiveRows=rows=>{
         if(this.closed)return;
         clearTimeout(this.connectionTimer);
         this.rows=rows;this.ready=true;this.connectionFailed=false;this.render();
-        if(!this.pending)this.message.textContent='Escolha um personagem disponível.';
+        if(!this.pending)this.message.textContent='Choose an available character.';
       };
       const showConnectionError=()=>{
         if(this.closed||this.ready)return;
         this.connectionFailed=true;
-        this.message.textContent='Convex indisponível. Execute “npm.cmd run convex” em outro terminal; a tela reconectará automaticamente.';
+        this.message.textContent='Convex is unavailable. Run “npm.cmd run convex” in another terminal; this screen will reconnect automatically.';
         this.render();
       };
       this.unsubscribe=presence.client.onUpdate(
@@ -60,22 +60,22 @@ export class CharacterMenu {
     for(const {c,button,state}of this.cards){
       const busy=this.rows.some(r=>r.characterId===c.id&&Date.now()-r.lastSeen<STALE_MS);
       button.disabled=!this.ready||this.pending||busy;
-      state.textContent=busy?'Ocupado':this.ready?'Disponível':this.connectionFailed?'Offline':'Carregando…';
+      state.textContent=busy?'In use':this.ready?'Available':this.connectionFailed?'Offline':'Loading…';
     }
   }
   async choose(c){
     if(this.pending)return;
-    this.pending=true;this.render();this.message.textContent='Reservando personagem…';
+    this.pending=true;this.render();this.message.textContent='Claiming character…';
     try{
       const result=await this.presence.client.mutation(this.presence.api.players.claim,{characterId:c.id,sessionId:this.sessionId});
-      if(!result.ok){this.message.textContent='Este personagem acabou de ser escolhido por outra sessão.';return;}
+      if(!result.ok){this.message.textContent='Another session just selected this character.';return;}
       this.presence.identity={playerId:c.id,characterId:c.id,name:c.name,sessionId:this.sessionId};
       try{localStorage.setItem(CHARACTER_STORAGE_KEY,c.id);}catch{}
       // Keep the claim alive while Phaser loads its maps and sprites.
       this.presence.enter('selection',()=>({x:0,y:0,direction:'down'}),()=>{});
       this.root.hidden=true;
       this.onChoose(c);
-    }catch(error){this.message.textContent='Não foi possível entrar. Confira a conexão e tente novamente.';console.warn(error);}
+    }catch(error){this.message.textContent='Could not join. Check the connection and try again.';console.warn(error);}
     finally{this.pending=false;this.render();}
   }
   show(){this.root.hidden=false;this.render();}

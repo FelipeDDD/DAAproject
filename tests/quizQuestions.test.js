@@ -9,7 +9,9 @@ import {
   DECIMAL_VALUE_MIN,
   DECIMAL_VALUE_MAX,
   materializeQuizQuestion,
+  materializeQuizQuestions,
   selectQuizQuestionIds,
+  shuffleConcreteAnswers,
 } from '../convex/quizQuestions.js';
 
 function seededRandom(seed) {
@@ -27,13 +29,34 @@ function validateConcrete(question) {
 }
 
 test('question bank uses the editable metadata structure',()=>{
-  assert.equal(QUIZ_QUESTIONS.length,25);
+  assert.ok(QUIZ_QUESTIONS.length>=25);
   assert.equal(new Set(QUIZ_QUESTIONS.map(question=>question.id)).size,QUIZ_QUESTIONS.length);
   for(const item of QUIZ_QUESTIONS){
     assert.ok(item.category);
     assert.ok(QUIZ_DIFFICULTIES.includes(item.difficulty));
     if(item.type==='generated')assert.equal(typeof item.generate,'function');
     else validateConcrete(materializeQuizQuestion(item));
+  }
+});
+
+test('all static answers are shuffled without losing the correct answer',()=>{
+  const template=QUIZ_QUESTIONS.find(question=>question.type!=='generated');
+  const correctText=template.answers[template.correctAnswer],orders=new Set();
+  for(let seed=0;seed<100;seed++){
+    const question=materializeQuizQuestion(template,seededRandom(seed));
+    validateConcrete(question);orders.add(question.answers.join('|'));
+    assert.equal(question.answers[question.correctAnswer],correctText);
+  }
+  assert.ok(orders.size>1);
+});
+
+test('tagged shuffle keeps exactly one correct answer',()=>{
+  const source={id:'shuffle-test',answers:['A','B','C','D'],correctAnswer:2};
+  for(let seed=0;seed<100;seed++){
+    const shuffled=shuffleConcreteAnswers(source,seededRandom(seed));
+    assert.equal(shuffled.answers.length,4);
+    assert.equal(shuffled.answers[shuffled.correctAnswer],'C');
+    assert.equal(shuffled.answers.filter(answer=>answer==='C').length,1);
   }
 });
 
@@ -80,4 +103,20 @@ test('selection is ready for category, difficulty and amount filters',()=>{
     const item=QUIZ_QUESTIONS.find(question=>question.id===id);
     assert.equal(item.category,'Programmierung');assert.equal(item.difficulty,'medium');
   }
+});
+
+test('All quantity uses every compatible question without failing',()=>{
+  const ids=selectQuizQuestionIds({category:'Programmierung',difficulty:'medium',count:null,seed:'all'});
+  const compatible=QUIZ_QUESTIONS.filter(item=>item.category==='Programmierung'&&item.difficulty==='medium');
+  assert.equal(ids.length,compatible.length);assert.equal(new Set(ids).size,ids.length);
+});
+
+test('a generated category fills a five-question session with unique concrete questions',()=>{
+  const ids=selectQuizQuestionIds({category:'Netzwerk',difficulty:'medium',count:5,seed:'five-network'});
+  assert.equal(ids.length,5);
+  const questions=materializeQuizQuestions(ids,seededRandom(42));
+  assert.equal(questions.length,5);
+  assert.equal(new Set(questions.map(question=>question.id)).size,5);
+  assert.equal(new Set(questions.map(question=>question.question)).size,5);
+  for(const question of questions)validateConcrete(question);
 });

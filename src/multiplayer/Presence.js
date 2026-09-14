@@ -49,7 +49,7 @@ export class Presence {
       this.leave();
       if(typeof window!=='undefined')window.dispatchEvent(new Event('character-session-lost'));
     }
-    this.status('Multiplayer indisponível');
+    this.status('Multiplayer unavailable');
     if (!this.reportedError) console.warn('Convex:', error);
     this.reportedError = true;
   }

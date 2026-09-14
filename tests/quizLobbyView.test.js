@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createCharacterSessionId } from '../src/CharacterMenu.js';
-import { shouldConfirmQuizLeave, shouldShowStartButton } from '../src/QuizLobby.js';
+import { QuizLobby, shouldConfirmQuizLeave, shouldShowStartButton } from '../src/QuizLobby.js';
 
 test('character session id works without crypto.randomUUID',()=>{
   let value=0;
@@ -20,6 +20,27 @@ test('start button follows the current host and lobby status',()=>{
   assert.equal(shouldShowStartButton(lobby,'felipe'),true);
   lobby.status='starting';
   assert.equal(shouldShowStartButton(lobby,'felipe'),false);
+});
+
+test('changed quiz settings are captured before realtime rendering restores old values',async()=>{
+  let sent;
+  const quiz=Object.assign(Object.create(QuizLobby.prototype),{
+    pendingSettings:false,lobby:{status:'lobby',hostCharacterId:'michael'},room:'school',
+    categorySelect:{value:'Hardware'},difficultySelect:{value:'hard'},quantitySelect:{value:'10'},
+    presence:{identity:{characterId:'michael',sessionId:'session-123456789'},client:{
+      async mutation(_name,args){sent=args;},
+    },api:{quizLobbies:{configure:'configure'}}},
+    isHost(){return true;},
+    renderSettings(){
+      this.categorySelect.value='';this.difficultySelect.value='';this.quantitySelect.value='5';
+    },
+    render(){},
+  });
+  await quiz.updateSettings();
+  assert.deepEqual(sent,{
+    room:'school',characterId:'michael',sessionId:'session-123456789',
+    category:'Hardware',difficulty:'hard',count:10,
+  });
 });
 
 test('leaving needs confirmation only while a quiz is in progress',()=>{

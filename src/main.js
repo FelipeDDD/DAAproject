@@ -22,6 +22,7 @@ async function changeCharacter(){
   if(menu.pending||pausedScene)return;
   const activeScene=game?.scene.getScenes(true)[0];
   if(activeScene?.quiz?.seated&&!(await activeScene.quiz.leave()))return;
+  activeScene?.soloStudy?.closePanel();
   pausedScene=activeScene;
   if(pausedScene){
     pausedScene.chat?.close();pausedScene.chat=null;
@@ -33,7 +34,7 @@ async function changeCharacter(){
   const identity=presence?.identity;
   if(identity)try{
     await presence.client.mutation(presence.api.players.release,{characterId:identity.characterId,sessionId:identity.sessionId});
-  }catch{menu.message.textContent='A sessão anterior será liberada pelo timeout.';}
+  }catch{menu.message.textContent='The previous session will be released after its timeout.';}
   menu.pending=false;menu.render();
 }
 changeButton.addEventListener('click',changeCharacter);

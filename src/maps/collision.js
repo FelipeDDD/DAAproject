@@ -6,7 +6,7 @@ export function addMapCollision(scene, map, player) {
   const rectangles = scene.physics.add.staticGroup();
   for (const area of objects.objects) {
     if (area.rotation || area.ellipse || area.polygon || area.polyline || area.gid || area.point) {
-      throw new Error('Collision: use tiles ou retângulos sem rotação.');
+      throw new Error('Collision: use tiles or unrotated rectangles.');
     }
     const zone = scene.add.zone(area.x, area.y, area.width, area.height).setOrigin(0);
     rectangles.add(zone);

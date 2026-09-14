@@ -6,15 +6,15 @@ export function readDoors(source) {
   return objectsIn(source, 'Doors').map((object) => {
     const props = propertiesOf(object);
     const id = String(props.id ?? (object.name || object.id));
-    if (ids.has(id)) throw new Error(`Id de porta repetido: ${id}`);
+    if (ids.has(id)) throw new Error(`Duplicate door ID: ${id}`);
     ids.add(id);
     if (object.rotation || object.gid || object.point || object.ellipse || object.polygon || object.polyline ||
         !(object.width > 0 && object.height > 0)) {
-      throw new Error(`Porta ${id}: use um retângulo sem rotação na layer Doors.`);
+      throw new Error(`Door ${id}: use an unrotated rectangle in the Doors layer.`);
     }
     for (const name of ['open', 'locked', 'transition', 'interactive']) {
       if (props[name] !== undefined && typeof props[name] !== 'boolean') {
-        throw new Error(`Porta ${id}: ${name} deve ser uma propriedade bool no Tiled.`);
+        throw new Error(`Door ${id}: ${name} must be a bool property in Tiled.`);
       }
     }
     const visualGeometry = (state) => Object.fromEntries(

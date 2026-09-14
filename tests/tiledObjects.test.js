@@ -46,7 +46,7 @@ test('invalid boolean types and duplicate ids fail clearly', () => {
   assert.throws(() => readDoors(edited), /bool/);
   layer.objects[0].properties.find((p) => p.name === 'locked').value = false;
   layer.objects.push(structuredClone(layer.objects[0]));
-  assert.throws(() => readDoors(edited), /repetido/);
+  assert.throws(() => readDoors(edited), /Duplicate/);
 });
 
 test('moving a named destination spawn changes the arrival point', () => {
@@ -63,8 +63,8 @@ test('spawn supports default entry, named points and explicit coordinates includ
   assert.deepEqual(resolveSpawn(source), {x:entry.x,y:entry.y});
   assert.deepEqual(resolveSpawn(source, {targetSpawn:entry.name}), {x:entry.x,y:entry.y});
   assert.deepEqual(resolveSpawn(source, {targetX:0,targetY:0}), {x:0,y:0});
-  assert.throws(() => resolveSpawn(source, {targetSpawn:'missing'}), /não encontrado/);
-  assert.throws(() => resolveSpawn(source, {targetX:1}), /targetX e targetY/);
+  assert.throws(() => resolveSpawn(source, {targetSpawn:'missing'}), /not found/);
+  assert.throws(() => resolveSpawn(source, {targetX:1}), /targetX and targetY/);
 });
 
 test('temporary artwork positions follow the object layer, independent of Collision', () => {

@@ -11,7 +11,7 @@ export function getPresence() {
   try {
     presence = new Presence(new ConvexClient(url), anyApi, null, status);
     return presence;
-  } catch (error) { status('Convex não configurado'); console.warn(error); return null; }
+  } catch (error) { status('Convex is not configured'); console.warn(error); return null; }
 }
 
 export function closePresence() { const old = presence; presence = null; return old?.close(); }

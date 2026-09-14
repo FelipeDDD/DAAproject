@@ -1,18 +1,25 @@
 import { queryGeneric as query, mutationGeneric as mutation, internalMutationGeneric as internalMutation } from 'convex/server';
 import { v } from 'convex/values';
 import seatsByRoom from './quizSeatDefinitions.js';
-import { QUIZ_QUESTIONS, materializeQuizQuestions, selectQuizQuestionIds } from './quizQuestions.js';
+import {
+  QUESTIONS_PER_QUIZ,QUIZ_DIFFICULTIES,QUIZ_QUANTITIES,QUIZ_QUESTIONS,
+  materializeQuizQuestions,quizCategories,selectQuizQuestionIds,
+} from './quizQuestions.js';
+import { recentHistoriesFor,rememberQuestions } from './quizHistory.js';
 import { PLAYER_SCALE } from '../src/game/settings.js';
 import {
   QUIZ_QUESTION_DURATION_MS,quizQuestionComplete,quizQuestionExpired,shouldEndQuizForParticipants,
 } from '../src/quizTimer.js';
 
 const ACTIVE_MS = 15_000;
+const DEFAULT_SETTINGS=Object.freeze({category:null,difficulty:null,count:QUESTIONS_PER_QUIZ});
+
+function settingsFor(lobby){return {...DEFAULT_SETTINGS,...(lobby.settings??{})};}
 
 async function playerFor(ctx, characterId, sessionId, room) {
   const player = await ctx.db.query('players').withIndex('by_player', q => q.eq('playerId', characterId)).unique();
   if (!player || player.characterId !== characterId || player.sessionId !== sessionId ||
-      player.room !== room || Date.now() - player.lastSeen >= ACTIVE_MS) throw new Error('Sessão ou sala inválida.');
+      player.room !== room || Date.now() - player.lastSeen >= ACTIVE_MS) throw new Error('Invalid session or room.');
   return player;
 }
 
@@ -90,6 +97,8 @@ export const current = query({
     return {
       room:lobby.room,hostCharacterId:lobby.hostCharacterId,status:lobby.status,
       participants,createdAt:lobby.createdAt,questionIndex:lobby.questionIndex??0,
+      settings:settingsFor(lobby),
+      configurationOptions:{categories:quizCategories(),difficulties:QUIZ_DIFFICULTIES,quantities:QUIZ_QUANTITIES},
       questionDeadline:question?deadlineFor(lobby):null,
       finishedReason:lobby.finishedReason??null,
       questionCount:lobby.questions?.length??questionIdsFor(lobby).length,
@@ -113,26 +122,26 @@ export const join = mutation({
   handler: async (ctx,args) => {
     const player = await playerFor(ctx,args.characterId,args.sessionId,args.room);
     const seat = seatsByRoom[args.room]?.find(s => s.characterId === args.characterId);
-    if (!seat) throw new Error('Este personagem não possui cadeira nesta sala.');
+    if (!seat) throw new Error('This character has no quiz chair in this room.');
     const body={x:player.x-10*PLAYER_SCALE,right:player.x+10*PLAYER_SCALE,y:player.y-12*PLAYER_SCALE,bottom:player.y};
     const dx=Math.max(seat.x-body.right,body.x-seat.x-seat.width,0);
     const dy=Math.max(seat.y-body.bottom,body.y-seat.y-seat.height,0);
-    if (Math.hypot(dx,dy)>48) throw new Error('Aproxime-se da sua cadeira.');
+    if (Math.hypot(dx,dy)>48) throw new Error('Move closer to your chair.');
     let lobby = await ctx.db.query('quizLobbies').withIndex('by_room',q=>q.eq('room',args.room)).unique();
     let participants=[];
     if (lobby) {
       participants=await activeParticipants(ctx,lobby);
       if (!participants.length) { await deleteLobby(ctx,lobby); lobby=null; }
-      else if (lobby.status !== 'lobby') throw new Error('O lobby já foi iniciado.');
+      else if (lobby.status !== 'lobby') throw new Error('The lobby has already started.');
     }
     if (!lobby) {
       await ctx.db.insert('quizLobbies',{
         room:args.room,hostCharacterId:args.characterId,status:'lobby',participants:[args.characterId],
-        questionIndex:0,questionIds:[],scores:[],scoredQuestionIds:[],createdAt:Date.now(),
+        questionIndex:0,questionIds:[],settings:DEFAULT_SETTINGS,scores:[],scoredQuestionIds:[],createdAt:Date.now(),
       });
     } else {
       if (!participants.includes(args.characterId)) participants.push(args.characterId);
-      if (participants.length > 4) throw new Error('Lobby cheio.');
+      if (participants.length > 4) throw new Error('Lobby is full.');
       await ctx.db.patch(lobby._id,{participants,hostCharacterId:participants.includes(lobby.hostCharacterId)?lobby.hostCharacterId:participants[0]});
     }
     return {seatX:seat.seatX,seatY:seat.seatY,direction:seat.direction};
@@ -162,17 +171,43 @@ export const leave = mutation({
   },
 });
 
+export const configure = mutation({
+  args:{
+    room:v.string(),characterId:v.string(),sessionId:v.string(),
+    category:v.union(v.string(),v.null()),
+    difficulty:v.union(v.literal('medium'),v.literal('hard'),v.null()),
+    count:v.union(v.number(),v.null()),
+  },
+  handler:async(ctx,args)=>{
+    await playerFor(ctx,args.characterId,args.sessionId,args.room);
+    const lobby=await ctx.db.query('quizLobbies').withIndex('by_room',q=>q.eq('room',args.room)).unique();
+    if(!lobby||lobby.status!=='lobby'||lobby.hostCharacterId!==args.characterId)
+      throw new Error('Only the current host can change quiz settings.');
+    if(args.category!==null&&!quizCategories().includes(args.category))throw new Error('Invalid quiz category.');
+    if(args.difficulty!==null&&!QUIZ_DIFFICULTIES.includes(args.difficulty))throw new Error('Invalid quiz difficulty.');
+    if(args.count!==null&&!QUIZ_QUANTITIES.includes(args.count))throw new Error('Invalid quiz question count.');
+    await ctx.db.patch(lobby._id,{settings:{category:args.category,difficulty:args.difficulty,count:args.count}});
+  },
+});
+
 export const start = mutation({
   args: { room:v.string(), characterId:v.string(), sessionId:v.string() },
   handler: async (ctx,args) => {
     await playerFor(ctx,args.characterId,args.sessionId,args.room);
     const lobby = await ctx.db.query('quizLobbies').withIndex('by_room',q=>q.eq('room',args.room)).unique();
-    if (!lobby || lobby.status !== 'lobby' || lobby.hostCharacterId !== args.characterId) throw new Error('Somente o host pode iniciar.');
+    if (!lobby || lobby.status !== 'lobby' || lobby.hostCharacterId !== args.characterId) throw new Error('Only the host can start the quiz.');
     const participants = await activeParticipants(ctx,lobby);
-    if (participants.length < 2) throw new Error('São necessários pelo menos 2 jogadores.');
-    const questionIds=selectQuizQuestionIds({seed:`${lobby._id}:${Date.now()}`});
-    if(!questionIds.length)throw new Error('Nenhuma pergunta disponível.');
-    const questions=materializeQuizQuestions(questionIds);
+    if (participants.length < 2) throw new Error('At least 2 players are required.');
+    const settings=settingsFor(lobby);
+    const startedAt=Date.now();
+    const recentHistories=await recentHistoriesFor(ctx,participants);
+    const selectedIds=selectQuizQuestionIds({
+      ...settings,recentHistories,seed:`${lobby._id}:${startedAt}`,
+    });
+    if(!selectedIds.length)throw new Error('No questions match these settings.');
+    const questions=materializeQuizQuestions(selectedIds);
+    const questionIds=questions.map(question=>question.id);
+    await rememberQuestions(ctx,participants,questionIds.slice(0,1),startedAt);
     await ctx.db.patch(lobby._id,{
       participants,status:'starting',questionIndex:0,questionIds,questions,
       questionDeadline:Date.now()+QUIZ_QUESTION_DURATION_MS,
@@ -189,14 +224,14 @@ export const answer = mutation({
     const lobby=await ctx.db.query('quizLobbies').withIndex('by_room',q=>q.eq('room',args.room)).unique();
     const question=lobby&&questionFor(lobby);
     if(!lobby||lobby.status!=='starting'||!question||!lobby.participants.includes(args.characterId))
-      throw new Error('Quiz indisponível para este jogador.');
+      throw new Error('Quiz unavailable for this player.');
     if(!Number.isInteger(args.answerIndex)||args.answerIndex<0||args.answerIndex>=question.answers.length)
-      throw new Error('Alternativa inválida.');
-    if(quizQuestionExpired(deadlineFor(lobby)))throw new Error('O tempo desta pergunta terminou.');
+      throw new Error('Invalid answer.');
+    if(quizQuestionExpired(deadlineFor(lobby)))throw new Error('The time for this question has expired.');
     const existing=await ctx.db.query('quizAnswers').withIndex('by_lobby_question_character',q=>
       q.eq('lobbyId',lobby._id).eq('questionId',question.id).eq('characterId',args.characterId)).unique();
     if(existing){
-      if(existing.answerIndex!==args.answerIndex)throw new Error('Este jogador já respondeu.');
+      if(existing.answerIndex!==args.answerIndex)throw new Error('This player has already answered.');
       return {answerIndex:existing.answerIndex};
     }
     await ctx.db.insert('quizAnswers',{
@@ -219,13 +254,13 @@ export const finishTimedQuestion = mutation({
     const lobby=await ctx.db.query('quizLobbies').withIndex('by_room',q=>q.eq('room',args.room)).unique();
     const question=lobby&&questionFor(lobby);
     if(!lobby||lobby.status!=='starting'||!question||!lobby.participants.includes(args.characterId))
-      throw new Error('Quiz indisponível para este jogador.');
-    if(!quizQuestionExpired(deadlineFor(lobby)))throw new Error('A pergunta ainda está em andamento.');
+      throw new Error('Quiz unavailable for this player.');
+    if(!quizQuestionExpired(deadlineFor(lobby)))throw new Error('The question is still active.');
     let existing=await ctx.db.query('quizAnswers').withIndex('by_lobby_question_character',q=>
       q.eq('lobbyId',lobby._id).eq('questionId',question.id).eq('characterId',args.characterId)).unique();
     if(!existing&&args.answerIndex!==undefined){
       if(!Number.isInteger(args.answerIndex)||args.answerIndex<0||args.answerIndex>=question.answers.length)
-        throw new Error('Alternativa inválida.');
+        throw new Error('Invalid answer.');
       const answerId=await ctx.db.insert('quizAnswers',{
         lobbyId:lobby._id,room:args.room,questionId:question.id,
         characterId:args.characterId,answerIndex:args.answerIndex,createdAt:Date.now(),
@@ -247,12 +282,16 @@ export const nextQuestion = mutation({
     await playerFor(ctx,args.characterId,args.sessionId,args.room);
     let lobby=await ctx.db.query('quizLobbies').withIndex('by_room',q=>q.eq('room',args.room)).unique();
     if(!lobby||lobby.status!=='starting'||lobby.hostCharacterId!==args.characterId)
-      throw new Error('Somente o host pode avançar.');
+      throw new Error('Only the host can advance.');
     const participants=await activeParticipants(ctx,lobby);
     const completion=await scoreIfComplete(ctx,lobby,participants);lobby=completion.lobby;
-    if(!completion.allAnswered)throw new Error('Ainda existem jogadores respondendo.');
+    if(!completion.allAnswered)throw new Error('Some players are still answering.');
     const nextIndex=(lobby.questionIndex??0)+1;
     const questionCount=lobby.questions?.length??questionIdsFor(lobby).length;
+    if(nextIndex<questionCount){
+      const nextQuestionId=lobby.questions?.[nextIndex]?.id??questionIdsFor(lobby)[nextIndex];
+      await rememberQuestions(ctx,participants,[nextQuestionId]);
+    }
     await ctx.db.patch(lobby._id,nextIndex>=questionCount
       ? {status:'finished',questionIndex:nextIndex}
       : {questionIndex:nextIndex,questionDeadline:Date.now()+QUIZ_QUESTION_DURATION_MS,timedOutCharacterIds:[]});

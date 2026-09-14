@@ -25,7 +25,7 @@ export function renderQuizMedia(root, media) {
         // Ignore a late load error after the next question has replaced this image.
         if (!root.contains(content)) return;
         root.replaceChildren(element('p', 'quiz-media-text',
-          content.alt ? `Imagem indisponível: ${content.alt}` : 'Imagem indisponível.'));
+          content.alt ? `Image unavailable: ${content.alt}` : 'Image unavailable.'));
       }, { once: true });
       content.src = url.href;
       break;

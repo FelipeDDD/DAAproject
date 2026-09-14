@@ -3,13 +3,13 @@
   "height": 30,
   "infinite": false,
   "nextlayerid": 9,
-  "nextobjectid": 330,
+  "nextobjectid": 331,
   "orientation": "orthogonal",
   "properties": [
     {
       "name": "label",
       "type": "string",
-      "value": "Sala de TI"
+      "value": "IT Classroom"
     }
   ],
   "renderorder": "right-down",
@@ -351,7 +351,7 @@
         {"gid":2147485237,"height":32,"id":282,"name":"OfficeChair-219","opacity":1,"properties":[{"name":"direction","type":"string","value":"left"},{"name":"flipX","type":"bool","value":true},{"name":"sourceNote","type":"float","value":219}],"rotation":0,"type":"prop","visible":true,"width":28,"x":896.5,"y":912},
         {"gid":1593,"height":93,"id":283,"name":"TableCoffe-236","opacity":1,"properties":[{"name":"direction","type":"string","value":""},{"name":"flipX","type":"bool","value":false},{"name":"sourceNote","type":"float","value":236}],"rotation":0,"type":"prop","visible":true,"width":61,"x":1185.5,"y":768},
         {"gid":2147485242,"height":158,"id":285,"name":"Cabinet-238","opacity":1,"properties":[{"name":"direction","type":"string","value":"left"},{"name":"flipX","type":"bool","value":true},{"name":"sourceNote","type":"float","value":238}],"rotation":0,"type":"prop","visible":true,"width":43,"x":1206.5,"y":927},
-        {"gid":2147485238,"height":33,"id":287,"name":"chairLuxury-241","opacity":1,"properties":[{"name":"direction","type":"string","value":"left"},{"name":"flipX","type":"bool","value":true},{"name":"sourceNote","type":"float","value":241}],"rotation":0,"type":"prop","visible":true,"width":31,"x":580.5,"y":883.5},
+        {"gid":2147485238,"height":33,"id":287,"name":"chairLuxury-241","opacity":1,"properties":[{"name":"direction","type":"string","value":"left"},{"name":"flipX","type":"bool","value":true},{"name":"mode","type":"string","value":"study"},{"name":"seatX","type":"float","value":596},{"name":"seatY","type":"float","value":883.5},{"name":"sourceNote","type":"float","value":241}],"rotation":0,"type":"soloStudySeat","visible":true,"width":31,"x":580.5,"y":883.5},
         {"gid":1595,"height":33,"id":288,"name":"sinkBathroom-243","opacity":1,"properties":[{"name":"direction","type":"string","value":"right"},{"name":"flipX","type":"bool","value":false},{"name":"sourceNote","type":"float","value":243}],"rotation":0,"type":"prop","visible":true,"width":31.5,"x":288.5,"y":172},
         {"gid":1595,"height":33,"id":290,"name":"sinkBathroom-244","opacity":1,"properties":[{"name":"direction","type":"string","value":"right"},{"name":"flipX","type":"bool","value":false},{"name":"sourceNote","type":"float","value":244}],"rotation":0,"type":"prop","visible":true,"width":31.5,"x":287.75,"y":212.5},
         {"gid":1596,"height":22,"id":292,"name":"handDryer-245","opacity":1,"properties":[{"name":"direction","type":"string","value":"down"},{"name":"flipX","type":"bool","value":false},{"name":"sourceNote","type":"float","value":245}],"rotation":0,"type":"prop","visible":true,"width":18,"x":328.5,"y":144.5},
@@ -373,7 +373,8 @@
         {"height":32,"id":320,"name":"south-jamb-right","opacity":1,"properties":[{"name":"color","type":"string","value":"#ead4b4"}],"rotation":0,"type":"wall","visible":true,"width":32,"x":640,"y":752},
         {"gid":1609,"height":144,"id":321,"name":"west-wall-upper","opacity":1,"properties":[{"name":"depth","type":"float","value":-1}],"rotation":0,"type":"prop","visible":true,"width":32,"x":672,"y":688},
         {"gid":1609,"height":176,"id":322,"name":"west-wall-lower","opacity":1,"properties":[{"name":"depth","type":"float","value":-1}],"rotation":0,"type":"prop","visible":true,"width":32,"x":672,"y":928},
-        {"gid":1610,"height":63.6666666666667,"id":328,"name":"Cabinet-324","opacity":1,"properties":[{"name":"direction","type":"string","value":"down"},{"name":"sourceNote","type":"float","value":324}],"rotation":0,"type":"prop","visible":true,"width":94.6666666666666,"x":704,"y":607.666666666667}
+        {"gid":1610,"height":63.6666666666667,"id":328,"name":"Cabinet-324","opacity":1,"properties":[{"name":"direction","type":"string","value":"down"},{"name":"sourceNote","type":"float","value":324}],"rotation":0,"type":"prop","visible":true,"width":94.6666666666666,"x":704,"y":607.666666666667},
+        {"height":28,"id":330,"name":"studyModeSign","opacity":1,"properties":[{"name":"depth","type":"float","value":680}],"rotation":0,"text":{"bold":true,"color":"#315b9c","fontfamily":"sans-serif","halign":"center","pixelsize":14,"text":"Study Mode ↓","valign":"center","wrap":true},"type":"mapLabel","visible":true,"width":128,"x":560,"y":680}
       ]
     },
     {
@@ -442,7 +443,7 @@
       "x": 0,
       "y": 0,
       "objects": [
-        {"height":32,"id":2,"name":"bathroom-entry","opacity":1,"properties":[{"name":"id","type":"string","value":"bathroom-entry"},{"name":"label","type":"string","value":"Banheiro"},{"name":"locked","type":"bool","value":false},{"name":"open","type":"bool","value":false},{"name":"transition","type":"bool","value":false}],"rotation":0,"type":"","visible":true,"width":32,"x":384,"y":224},
+        {"height":32,"id":2,"name":"bathroom-entry","opacity":1,"properties":[{"name":"id","type":"string","value":"bathroom-entry"},{"name":"label","type":"string","value":"Restroom"},{"name":"locked","type":"bool","value":false},{"name":"open","type":"bool","value":false},{"name":"transition","type":"bool","value":false}],"rotation":0,"type":"","visible":true,"width":32,"x":384,"y":224},
         {"height":32,"id":254,"name":"exit_main_door","opacity":1,"properties":[{"name":"closedHeight","type":"float","value":64},{"name":"closedOffsetY","type":"float","value":-32},{"name":"interactive","type":"bool","value":false},{"name":"locked","type":"bool","value":false},{"name":"open","type":"bool","value":true},{"name":"openHeight","type":"float","value":64},{"name":"openOffsetY","type":"float","value":-32},{"name":"openTexture","type":"string","value":"door-half-open"},{"name":"targetMap","type":"string","value":"outside"},{"name":"targetSpawn","type":"string","value":"schoolEntrance"},{"name":"transition","type":"bool","value":true},{"name":"visualState","type":"string","value":"halfOpen"}],"rotation":0,"type":"","visible":true,"width":64,"x":352,"y":384},
         {"height":64,"id":255,"name":"note-door-190","opacity":1,"properties":[{"name":"closedAngle","type":"float","value":0},{"name":"closedOffsetX","type":"float","value":16},{"name":"closedOriginX","type":"float","value":0.5},{"name":"closedOriginY","type":"float","value":0},{"name":"closedTexture","type":"string","value":"door-closed-side"},{"name":"direction","type":"string","value":"open to right"},{"name":"fixThis","type":"string","value":"a porta está de frente, mas deveria ficar mais de lado. Quando aberta deveria ficar como está agora, está invertido."},{"name":"fixThisStatus","type":"string","value":"Aplicado: mesma folha lateral, dobradi?a superior fixa, abertura de 90 graus para dentro ? direita."},{"name":"hinge","type":"string","value":"top"},{"name":"locked","type":"bool","value":false},{"name":"open","type":"bool","value":false},{"name":"openAngle","type":"float","value":-90},{"name":"openOffsetX","type":"float","value":16},{"name":"openOriginX","type":"float","value":0.5},{"name":"openOriginY","type":"float","value":0},{"name":"openTexture","type":"string","value":"door-closed-side"},{"name":"opensToward","type":"string","value":"right"},{"name":"sourceNote","type":"float","value":190}],"rotation":0,"type":"","visible":true,"width":32,"x":672,"y":688},
         {"height":32,"id":256,"name":"note-door-192","opacity":1,"properties":[{"name":"direction","type":"string","value":"open to south"},{"name":"hinge","type":"string","value":"left"},{"name":"locked","type":"bool","value":false},{"name":"open","type":"bool","value":false},{"name":"openHeight","type":"float","value":64},{"name":"openTexture","type":"string","value":"door-open-south"},{"name":"opensToward","type":"string","value":"down"},{"name":"sourceNote","type":"float","value":192}],"rotation":0,"type":"","visible":true,"width":64,"x":576,"y":752}

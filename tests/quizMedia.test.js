@@ -73,7 +73,7 @@ test('images resolve asset paths, preserve alt text and handle broken URLs', () 
   assert.equal(img.src, 'https://quiz.example/assets/quiz/example.png');
   assert.equal(img.alt, '<b>Diagram</b>');
   img.events.error();
-  assert.equal(root.children[0].text, 'Imagem indisponível: <b>Diagram</b>');
+  assert.equal(root.children[0].text, 'Image unavailable: <b>Diagram</b>');
 });
 
 test('a late image error cannot replace the next question media', () => {

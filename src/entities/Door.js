@@ -50,13 +50,13 @@ export class Door {
   }
 
   toggle(body) {
-    if (this.locked) return 'Porta trancada.';
-    if (this.interactive === false) return 'Passagem fixa.';
+    if (this.locked) return 'Door locked.';
+    if (this.interactive === false) return 'Fixed passage.';
     // Never create a solid body on top of the player's feet.
-    if (this.open && this.overlaps(body)) return 'Saia da passagem para fechar a porta.';
+    if (this.open && this.overlaps(body)) return 'Move out of the doorway before closing the door.';
     this.open = !this.open;
     this.applyState();
-    return this.open ? 'Porta aberta.' : 'Porta fechada.';
+    return this.open ? 'Door open.' : 'Door closed.';
   }
 
   getDestination() {

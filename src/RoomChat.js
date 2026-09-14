@@ -7,7 +7,7 @@ export class RoomChat {
     this.input=document.getElementById('chat-input');
     this.status=document.getElementById('chat-status');
     this.root.hidden=false;this.list.replaceChildren();this.input.value='';
-    this.status.textContent='Carregando mensagens…';
+    this.status.textContent='Loading messages…';
     this.focus=()=>{
       this.focused=true;scene.input.keyboard.resetKeys();scene.input.keyboard.enabled=false;
       scene.player.setVelocity(0,0);
@@ -41,8 +41,8 @@ export class RoomChat {
         line.append(name,document.createTextNode(row.text));return line;
       }));
       if(nearBottom)this.list.scrollTop=this.list.scrollHeight;
-      this.status.textContent=rows.length?'Enter: conversar · Esc: voltar ao jogo':'Nenhuma mensagem nesta sala.';
-    },()=>{if(!this.closed)this.status.textContent='Chat indisponível. Verifique a conexão.';});
+      this.status.textContent=rows.length?'Enter: chat · Esc: return to game':'No messages in this room.';
+    },()=>{if(!this.closed)this.status.textContent='Chat unavailable. Check your connection.';});
   }
 
   unfocus(){this.input.blur();document.getElementById('game').focus({preventScroll:true});}
@@ -57,7 +57,7 @@ export class RoomChat {
     try{
       await this.presence.client.mutation(this.presence.api.messages.send,{room:this.room,characterId,sessionId,text});
     }catch{
-      if(!this.closed){if(!this.input.value)this.input.value=text;this.status.textContent='Mensagem não enviada. Pressione Enter para tentar novamente.';}
+      if(!this.closed){if(!this.input.value)this.input.value=text;this.status.textContent='Message not sent. Press Enter to try again.';}
     }finally{this.pending=false;}
   }
 

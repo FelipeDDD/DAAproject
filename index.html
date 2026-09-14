@@ -1,65 +1,103 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f8fafb" />
-    <title>DAAproject — Sala de TI</title>
+    <title>DAAproject — IT Classroom</title>
   </head>
   <body>
     <main>
       <header>
         <div>
           <p class="eyebrow">DAAPROJECT</p>
-          <h1>Sala de TI</h1>
+          <h1>IT Classroom</h1>
         </div>
         <span class="version">v0.1 · Local</span>
       </header>
       <section id="character-menu" aria-labelledby="character-title">
-        <h2 id="character-title">Escolha seu personagem</h2>
-        <p>Quatro colegas, uma escola. Quem vai entrar?</p>
+        <h2 id="character-title">Choose your character</h2>
+        <p>Four classmates, one school. Who will join?</p>
         <div id="character-list"></div>
         <p id="character-message" role="status"></p>
       </section>
-      <button id="change-character" hidden>Trocar personagem</button>
+      <button id="change-character" hidden>Change character</button>
       <section id="play-area" hidden>
-      <div id="game" tabindex="0" role="region" aria-label="Sala 2D. Use WASD ou as setas para mover o personagem."></div>
-      <section id="room-chat" hidden aria-label="Chat desta sala">
-        <ol id="chat-messages" aria-label="Mensagens"></ol>
-        <input id="chat-input" aria-label="Mensagem para esta sala" maxlength="200" placeholder="Enter para conversar…" autocomplete="off" />
+      <div id="game" tabindex="0" role="region" aria-label="2D room. Use WASD or the arrow keys to move your character."></div>
+      <section id="room-chat" hidden aria-label="Room chat">
+        <ol id="chat-messages" aria-label="Messages"></ol>
+        <input id="chat-input" aria-label="Message for this room" maxlength="200" placeholder="Press Enter to chat…" autocomplete="off" />
         <small id="chat-status" role="status"></small>
       </section>
       <section id="quiz-lobby" hidden aria-labelledby="quiz-lobby-title">
         <h2 id="quiz-lobby-title">QUIZ LOBBY</h2>
         <ul id="quiz-participants"></ul>
+        <section id="quiz-settings" hidden aria-labelledby="quiz-settings-title">
+          <h3 id="quiz-settings-title">Quiz settings</h3>
+          <div class="quiz-setting-fields">
+            <label>Category<select id="quiz-category"></select></label>
+            <label>Difficulty<select id="quiz-difficulty"></select></label>
+            <label>Questions<select id="quiz-quantity"></select></label>
+          </div>
+          <small id="quiz-settings-note"></small>
+        </section>
         <section id="quiz-question" hidden aria-labelledby="quiz-question-text">
           <div class="quiz-question-layout">
-            <div id="quiz-media" class="quiz-media" role="region" aria-label="Conteúdo auxiliar da pergunta" tabindex="0" hidden></div>
+            <div id="quiz-media" class="quiz-media" role="region" aria-label="Additional question content" tabindex="0" hidden></div>
             <div class="quiz-question-body">
-              <time id="quiz-timer" class="quiz-timer" aria-label="Tempo restante" hidden></time>
+              <time id="quiz-timer" class="quiz-timer" aria-label="Time remaining" hidden></time>
               <h3 id="quiz-question-text"></h3>
-              <div id="quiz-alternatives" role="group" aria-label="Alternativas da pergunta"></div>
+              <div id="quiz-alternatives" role="group" aria-label="Question answers"></div>
               <p id="quiz-explanation" hidden></p>
-              <button id="confirm-answer" type="button">Confirmar resposta</button>
+              <button id="confirm-answer" type="button">Confirm answer</button>
             </div>
           </div>
         </section>
         <section id="quiz-results" hidden aria-labelledby="quiz-results-title">
-          <h3 id="quiz-results-title">Resultado</h3>
+          <h3 id="quiz-results-title">Results</h3>
           <ul id="quiz-scores"></ul>
         </section>
         <div id="quiz-actions">
-          <button id="start-quiz" hidden>Iniciar quiz</button>
-          <button id="next-question" type="button" hidden>Próxima pergunta</button>
-          <button id="leave-quiz" type="button">Sair do lobby</button>
-          <button id="cancel-leave-quiz" type="button" hidden>Cancelar</button>
+          <button id="start-quiz" hidden>Start quiz</button>
+          <button id="next-question" type="button" hidden>Next question</button>
+          <button id="leave-quiz" type="button">Leave lobby</button>
+          <button id="cancel-leave-quiz" type="button" hidden>Cancel</button>
         </div>
         <small id="quiz-status" role="status"></small>
       </section>
-      <p class="controls">Explore com <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> ou as <kbd>setas</kbd>.</p>
-      <p class="controls" id="interaction-hint" role="status">Aproxime-se de uma porta e pressione E.</p>
+      <section id="solo-study" hidden aria-labelledby="solo-study-title">
+        <h2 id="solo-study-title">SOLO STUDY MODE</h2>
+        <section id="solo-config" aria-labelledby="solo-config-title">
+          <h3 id="solo-config-title">Study settings</h3>
+          <div class="quiz-setting-fields">
+            <label>Category<select id="solo-category"></select></label>
+            <label>Difficulty<select id="solo-difficulty"></select></label>
+            <label>Questions<select id="solo-quantity"></select></label>
+          </div>
+          <button id="start-solo-study" type="button">Start studying</button>
+        </section>
+        <section id="solo-question" hidden aria-labelledby="solo-question-text">
+          <p id="solo-progress" aria-label="Question progress"></p>
+          <div id="solo-media" class="quiz-media" role="region" aria-label="Additional question content" tabindex="0" hidden></div>
+          <h3 id="solo-question-text"></h3>
+          <div id="solo-alternatives" role="group" aria-label="Question answers"></div>
+          <p id="solo-feedback" hidden></p>
+          <p id="solo-explanation" hidden></p>
+          <button id="confirm-solo-answer" type="button">Confirm answer</button>
+          <button id="next-solo-question" type="button" hidden>Next question</button>
+        </section>
+        <section id="solo-results" hidden aria-labelledby="solo-results-title">
+          <h3 id="solo-results-title">Study complete</h3>
+          <p id="solo-result-text"></p>
+          <button id="study-again" type="button">Study again</button>
+        </section>
+        <button id="close-solo-study" type="button">Close</button>
+        <small id="solo-status" role="status"></small>
       </section>
-      <noscript>Ative o JavaScript para explorar a sala.</noscript>
+      <p class="controls">Explore with <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> or the <kbd>arrow keys</kbd>.</p>
+      <p class="controls" id="interaction-hint" role="status">Walk up to a door and press E.</p>
+      </section>
+      <noscript>Enable JavaScript to explore the school.</noscript>
     </main>
     <script type="module" src="/src/main.js"></script>
   </body>

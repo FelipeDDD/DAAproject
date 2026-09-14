@@ -17,7 +17,7 @@ try {
   await a.mutation(api.doors.setOpen,{...args,open:true});
   await wait(()=>states.find(d=>d.doorId===args.doorId).open);
   await send(400,245);
-  await assert.rejects(a.mutation(api.doors.setOpen,{...args,open:false}),/Passagem ocupada/);
+  await assert.rejects(a.mutation(api.doors.setOpen,{...args,open:false}),/Doorway occupied/);
   await send(400,280);
   await a.mutation(api.doors.setOpen,{...args,open:false});
   await wait(()=>!states.find(d=>d.doorId===args.doorId).open);

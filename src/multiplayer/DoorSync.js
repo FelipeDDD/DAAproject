@@ -13,18 +13,18 @@ export class DoorSync {
     },error=>{this.ready=false;presence.fail(error);});
   }
   async toggle(door) {
-    if(!this.ready)return 'Aguardando estado das portas…';
-    if(this.pending.has(door.id))return 'Atualizando porta…';
-    if(door.locked)return 'Porta trancada.';
-    if(!door.interactive)return 'Passagem fixa.';
-    if(door.open&&door.overlaps(this.body()))return 'Saia da passagem para fechar a porta.';
+    if(!this.ready)return 'Waiting for door state…';
+    if(this.pending.has(door.id))return 'Updating door…';
+    if(door.locked)return 'Door locked.';
+    if(!door.interactive)return 'Fixed passage.';
+    if(door.open&&door.overlaps(this.body()))return 'Move out of the doorway before closing the door.';
     this.pending.add(door.id);
     try {
       await this.presence.client.mutation(this.presence.api.doors.setOpen,{
         room:this.room,doorId:door.id,playerId:this.presence.identity.playerId,open:!door.open,
       });
       return '';
-    } catch(error){return error.message.includes('Passagem ocupada')?'Passagem ocupada.':'Não foi possível alterar a porta. Aproxime-se e tente novamente.';}
+    } catch(error){return error.message.includes('Doorway occupied')?'Doorway occupied.':'Could not update the door. Move closer and try again.';}
     finally{this.pending.delete(door.id);}
   }
   close(){this.closed=true;this.unsubscribe();}

@@ -31,7 +31,7 @@ if(!fs.existsSync('.map-recovery/before-campus.tmj'))fs.copyFileSync(path,'.map-
 const originalTiles=school.layers.filter(l=>l.type==='tilelayer').map(l=>structuredClone(l));
 if(!school.tilesets.some(t=>t.source==='../campus/prototype.tsx'))school.tilesets.push({firstgid:2000,source:'../campus/prototype.tsx'});
 const inside=editor(school,2000);
-set(school,'label','Sala de TI');
+set(school,'label','IT Classroom');
 // Entities with no art are requests, just like Notes. Preserve their original geometry.
 for(const o of [...inside.layer('Entities').objects])if(!o.gid&&!o.type&&o.name==='keyboard'){
   inside.layer('Entities').objects.splice(inside.layer('Entities').objects.indexOf(o),1);
@@ -87,7 +87,7 @@ const outsidePath='public/assets/maps/outside.tmj';
 if(!fs.existsSync(outsidePath)){
   const map={compressionlevel:-1,width:30,height:24,tilewidth:32,tileheight:32,infinite:false,orientation:'orthogonal',renderorder:'right-down',type:'map',version:'1.10',tiledversion:'1.12.2',nextlayerid:9,nextobjectid:1,properties:[{name:'defaultSpawn',type:'string',value:'schoolEntrance'}],tilesets:[{firstgid:1,source:'../tilessets/school/floorsbase.tsx'},{firstgid:65,source:'../campus/materials.tsx'},{firstgid:100,source:'../campus/prototype.tsx'}],layers:['Floor','Walls','Decoration','Entities','Collision','Doors','Spawns','Notes'].map((name,i)=>i<3?{id:i+1,name,type:'tilelayer',width:30,height:24,x:0,y:0,visible:true,opacity:1,data:Array(720).fill(i===0?17:0)}:{id:i+1,name,type:'objectgroup',draworder:'topdown',x:0,y:0,visible:name!=='Collision',opacity:1,objects:[]})};
   const e=editor(map,100);
-  set(map,'label','Pátio da escola');set(map,'escapeReturn',true);
+  set(map,'label','School Courtyard');set(map,'escapeReturn',true);
   e.layer('Entities').draworder='index';
   const tiles=(layer,x,y,w,h,gid)=>{for(let j=y;j<y+h;j++)for(let i=x;i<x+w;i++)e.layer(layer).data[j*30+i]=gid;};
   tiles('Walls',2,0,26,7,65);tiles('Walls',2,0,26,1,67);

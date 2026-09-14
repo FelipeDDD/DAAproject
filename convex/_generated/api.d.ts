@@ -12,11 +12,15 @@ import type * as crons from "../crons.js";
 import type * as doorDefinitions from "../doorDefinitions.js";
 import type * as doors from "../doors.js";
 import type * as messages from "../messages.js";
+import type * as playerSessions from "../playerSessions.js";
 import type * as players from "../players.js";
 import type * as quizGeneratedQuestions from "../quizGeneratedQuestions.js";
+import type * as quizHistory from "../quizHistory.js";
 import type * as quizLobbies from "../quizLobbies.js";
 import type * as quizQuestions from "../quizQuestions.js";
 import type * as quizSeatDefinitions from "../quizSeatDefinitions.js";
+import type * as quizSelection from "../quizSelection.js";
+import type * as soloStudy from "../soloStudy.js";
 
 import type {
   ApiFromModules,
@@ -29,11 +33,15 @@ declare const fullApi: ApiFromModules<{
   doorDefinitions: typeof doorDefinitions;
   doors: typeof doors;
   messages: typeof messages;
+  playerSessions: typeof playerSessions;
   players: typeof players;
   quizGeneratedQuestions: typeof quizGeneratedQuestions;
+  quizHistory: typeof quizHistory;
   quizLobbies: typeof quizLobbies;
   quizQuestions: typeof quizQuestions;
   quizSeatDefinitions: typeof quizSeatDefinitions;
+  quizSelection: typeof quizSelection;
+  soloStudy: typeof soloStudy;
 }>;
 
 /**

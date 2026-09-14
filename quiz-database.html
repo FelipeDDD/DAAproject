@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Quiz Database · Development Tool</title>
+  </head>
+  <body>
+    <main class="review-shell">
+      <header class="review-header">
+        <div><p class="eyebrow">INTERNAL DEVELOPMENT TOOL</p><h1>Quiz Database</h1></div>
+        <p>Inspect static CSV questions and generated templates without creating a Convex session.</p>
+      </header>
+      <section id="summary" class="summary" aria-label="Question bank summary"></section>
+      <section class="toolbar" aria-label="Question filters">
+        <label>Category<select id="category-filter"><option value="">All</option></select></label>
+        <label>Difficulty<select id="difficulty-filter"><option value="">All</option></select></label>
+        <label class="search-label">Search<input id="search-filter" type="search" placeholder="ID, question, or explanation" /></label>
+        <label>Sort<select id="sort-filter"><option value="id">ID</option><option value="category">Category</option></select></label>
+        <button id="random-question" type="button">Random question</button>
+      </section>
+      <div class="review-layout">
+        <aside class="question-browser" aria-labelledby="question-list-title">
+          <h2 id="question-list-title">Questions <span id="visible-count"></span></h2>
+          <ol id="question-list"></ol>
+        </aside>
+        <article id="question-detail" class="question-detail" aria-live="polite">
+          <p class="empty-state">Select a question to inspect it.</p>
+        </article>
+      </div>
+    </main>
+    <script type="module" src="/src/quiz-database/main.js"></script>
+  </body>
+</html>

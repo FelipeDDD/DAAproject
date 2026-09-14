@@ -3,6 +3,13 @@
 JavaScript, Phaser e Vite. Os mapas, posições e colisões vêm do Tiled.
 Presença, posição, portas e chat por sala via Convex, sem login.
 
+## Convenção de idiomas
+
+A interface do jogo é sempre em **inglês**, incluindo menus, botões, configurações,
+status e feedback do quiz. O conteúdo do banco de perguntas é sempre em **alemão**:
+perguntas, alternativas e explicações. As categorias do banco também usam nomes em
+alemão. Novos CSVs e templates gerados devem seguir essa convenção.
+
 ## Executar
 
 ```powershell
@@ -266,9 +273,9 @@ A tabela `quizLobbies` fica em `convex/schema.js`; as queries e mutations estão
 em `convex/quizLobbies.js`. O primeiro a sentar vira host. Se ele sair, o primeiro
 participante ativo restante vira host; sem participantes, o lobby é apagado.
 Somente o host vê o botão de início e pode mudar o status para `starting`, com 2
-a 4 participantes. Nesse momento, o Convex seleciona uma vez até cinco IDs do
+a 4 participantes. Nesse momento, o Convex seleciona uma vez a quantidade configurada de IDs do
 banco combinado por `convex/quizQuestions.js`, sem repetição, e salva a sequência
-no lobby. Atualmente há 23 perguntas estáticas e dois templates gerados. Cada item aceita `id`,
+no lobby. As perguntas estáticas são carregadas automaticamente dos CSVs, junto aos templates gerados. Cada item aceita `id`,
 `category`, `difficulty`, `question`, quatro `answers`, `correctAnswer` e uma
 `explanation` opcional. A escolha fica local até o jogador confirmar; então o
 Convex salva uma resposta por participante e pergunta na tabela `quizAnswers`.
@@ -277,11 +284,37 @@ feedback são revelados, o lobby soma um ponto por acerto e o host pode avançar
 Depois da última pergunta, o painel mostra o resultado sincronizado. A limpeza de
 presença também repara ou remove lobbies a cada 5 segundos.
 
+Antes de iniciar, o host escolhe uma categoria ou `All`, dificuldade `medium`,
+`hard` ou `All`, e quantidade 5, 10, 15 ou `All`. Essas configurações ficam em
+`quizLobbies.settings`, são visíveis para todos e editáveis somente pelo host. As
+categorias do seletor vêm automaticamente do banco combinado.
+
 O banco também aceita templates com `type: 'generated'` e `generate()`. Ao iniciar,
-o backend seleciona os IDs, executa cada template uma única vez e salva as cinco
-perguntas concretas em `quizLobbies.questions`. Os clientes recebem somente a
+o backend aplica os filtros, seleciona os IDs e gera cada pergunta concreta uma única vez,
+embaralha também as respostas estáticas e salva as perguntas concretas em
+`quizLobbies.questions`. Cada resposta é temporariamente associada a `isCorrect`
+durante o embaralhamento, e `correctAnswer` é recalculado depois. Os clientes recebem somente a
 pergunta materializada, nunca a função geradora ou uma versão calculada localmente.
 Avançar de pergunta apenas lê essa sequência salva e não executa o template outra vez.
+
+Quando uma categoria filtrada possui somente um template gerado, ele pode criar
+várias perguntas concretas distintas para preencher a quantidade escolhida. Cada
+instância recebe um ID próprio na sessão, evitando conflitos nas respostas e na pontuação.
+
+### Histórico recente e anti-repetição
+
+O Convex salva por personagem uma lista limitada em `quizQuestionHistory`. A seleção
+reutilizável fica em `convex/quizSelection.js`: primeiro aplica categoria e dificuldade,
+depois evita `max(5, ceil(pool filtrado × 0,10))` perguntas recentes de cada participante.
+As constantes `RECENT_EXCLUSION_PERCENT`, `RECENT_EXCLUSION_MINIMUM` e
+`RECENT_HISTORY_LIMIT` ficam no início desse arquivo.
+
+Perguntas que não são recentes para ninguém têm prioridade. Se elas não completarem
+a quantidade configurada, as recentes retornam da mais antiga para a mais nova, sem
+fazer a sessão falhar. Instâncias como `network-subnet-hosts-generated#2` são gravadas
+no histórico pelo ID do template `network-subnet-hosts-generated`. O helper
+`buildQuizQuestionSelection()` recebe o banco, filtros e históricos sem conhecer o
+lobby, podendo ser reutilizado futuramente pelos modos Study, Challenge e Time Attack.
 
 Os templates ficam em `convex/quizGeneratedQuestions.js`. Nesse arquivo,
 `network-subnet-hosts-generated` escolhe prefixos entre `SUBNET_PREFIX_MIN` (24) e
@@ -293,20 +326,33 @@ Os templates ficam em `convex/quizGeneratedQuestions.js`. Nesse arquivo,
 
 ### Manutenção das perguntas estáticas em CSV
 
-As perguntas estáticas ficam em `quiz-data/`, com um arquivo por categoria. O banco
-atual usa `hardware.csv` e `programming.csv`. O formato principal usa UTF-8 e ponto e
+As perguntas estáticas ficam em `quiz-data/`, com um arquivo por categoria. Todos os
+arquivos `.csv` dessa pasta são detectados automaticamente. O formato principal usa UTF-8 e ponto e
 vírgula, pois o Excel com configuração regional alemã normalmente reserva a vírgula
 para números decimais. Ao salvar, escolha **CSV UTF-8 (durch Trennzeichen getrennt)**
 e mantenha a extensão `.csv`; não salve a planilha como `.xlsx`. O importador detecta
 automaticamente `;` ou `,`, caso a configuração regional do Excel produza vírgulas.
 
+### Preview interno do banco de perguntas
+
+Com `npm.cmd run dev` em execução, abra
+`http://127.0.0.1:5173/quiz-database.html`. Essa página existe somente como
+ferramenta de desenvolvimento e não aparece na navegação normal do jogo. Ela lista
+as perguntas estáticas e os templates gerados, mostra origem, totais, filtros,
+busca, ordenação, resposta correta, explanation, media e avisos de validação.
+
+O botão `Generate again` materializa outra amostra local de um template dinâmico,
+sem criar ou alterar sessões no Convex. Depois de editar um CSV, execute
+`npm.cmd run sync:quiz` para atualizar o módulo consumido pelo jogo e pelo preview.
+As categorias são lidas do banco sincronizado e aparecem automaticamente.
+
 Cada arquivo contém estas colunas, nesta ordem:
 
 | Coluna | Conteúdo |
 | --- | --- |
-| `id` | Prefixo do nome do arquivo e número, como `hardware-001` |
+| `id` | Identificador único terminado em número, como `hardware-001` ou `Programmierung-001` |
 | `category` | Categoria exibida e usada pelos filtros |
-| `difficulty` | `easy`, `medium` ou `hard` |
+| `difficulty` | `medium` ou `hard` |
 | `question` | Texto da pergunta |
 | `answer1` até `answer4` | Exatamente quatro alternativas diferentes |
 | `correctAnswer` | Índice da resposta correta: `0` para `answer1` até `3` para `answer4` |
@@ -315,8 +361,8 @@ Cada arquivo contém estas colunas, nesta ordem:
 
 Para adicionar uma pergunta, abra o CSV da categoria no Excel, insira uma linha e use
 o próximo ID numérico livre. A posição física da linha não afeta o sorteio. Para uma
-categoria nova, copie o cabeçalho para um novo CSV e use o nome do arquivo como prefixo
-dos IDs. IDs precisam ser únicos entre todos os CSVs e também não podem coincidir com
+categoria nova, copie o cabeçalho para um novo CSV e mantenha um prefixo consistente
+nos IDs. IDs precisam ser únicos entre todos os CSVs e também não podem coincidir com
 um template gerado.
 
 Execute `npm.cmd run validate:quiz` depois de salvar. O comando aponta arquivo e linha
@@ -342,6 +388,20 @@ presença deixar apenas um participante, o Convex finaliza o quiz e mostra
 `scripts/sync-door-definitions.mjs` também gera `convex/quizSeatDefinitions.js`
 a partir do Tiled antes de iniciar o Convex ou compilar. O teste real com dois
 clientes é `npm.cmd run test:quiz-lobby` com o backend local rodando.
+
+### Solo Study Mode
+
+No mapa interno, aproxime-se da entidade `chairLuxury-241` e pressione **E**. Ela
+está marcada como `soloStudySeat` na layer `Entities`; posição, direção e ponto de
+assento ficam no TMJ. A placa `studyModeSign`, também em `Entities`, orienta o
+jogador pelo corredor e pode ser movida ou editada diretamente no Tiled.
+
+`convex/soloStudy.js` prepara a sequência usando o mesmo banco, filtros,
+anti-repetição, geração e shuffle do multiplayer. Ele grava as perguntas vistas
+na mesma tabela `quizQuestionHistory`. As escolhas, confirmações e o resultado
+da partida solo ficam localmente em `src/quiz/SoloStudySession.js`; essa classe
+independente de interface é a base reutilizável para modos solo futuros.
+`src/SoloStudyController.js` integra essa sessão ao Phaser e ao painel HTML.
 
 ## Conteúdo auxiliar por pergunta
 

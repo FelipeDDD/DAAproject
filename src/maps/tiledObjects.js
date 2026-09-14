@@ -20,15 +20,15 @@ export function resolveSpawn(source, destination = {}) {
   let spawn;
   if (destination.targetSpawn) {
     spawn = find(destination.targetSpawn);
-    if (!spawn) throw new Error(`Spawn não encontrado: ${destination.targetSpawn}`);
+    if (!spawn) throw new Error(`Spawn not found: ${destination.targetSpawn}`);
   } else if (destination.targetX !== undefined || destination.targetY !== undefined) {
     if (!Number.isFinite(destination.targetX) || !Number.isFinite(destination.targetY)) {
-      throw new Error('Informe targetX e targetY numéricos, ou targetSpawn.');
+      throw new Error('Provide numeric targetX and targetY values, or targetSpawn.');
     }
     return { x: destination.targetX, y: destination.targetY };
   } else {
     spawn = find(propertiesOf(source).defaultSpawn ?? 'default') ?? spawns[0];
-    if (!spawn) throw new Error('Adicione um ponto chamado default na object layer Spawns.');
+    if (!spawn) throw new Error('Add a point named default to the Spawns object layer.');
   }
   return { x: spawn.x, y: spawn.y };
 }
