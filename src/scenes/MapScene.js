@@ -18,6 +18,9 @@ import { QuizLobby } from '../QuizLobby.js';
 import { readSoloStudySeats } from '../maps/soloStudySeats.js';
 import { drawTiledTextObjects } from '../maps/tiledText.js';
 import { SoloStudyController } from '../SoloStudyController.js';
+import { EmoteRenderer } from '../emotes/EmoteRenderer.js';
+import { EmoteSync } from '../emotes/EmoteSync.js';
+import { EmoteBar } from '../emotes/EmoteBar.js';
 
 function readTileset(xml, firstgid) {
   const root = xml.documentElement;
@@ -117,6 +120,9 @@ export class MapScene extends Phaser.Scene {
     const stop = () => { this.input.keyboard.resetKeys(); this.player.setVelocity(0, 0); };
     const wake = (_systems, arrival) => this.enter(arrival);
     const leave = () => {
+      this.emoteBar?.close();this.emoteBar=null;
+      this.emoteSync?.close();this.emoteSync=null;
+      this.emoteRenderer?.close();this.emoteRenderer=null;
       this.soloStudy?.close();this.soloStudy=null;
       this.quiz?.close();this.quiz=null;
       this.chat?.close();this.chat=null;
@@ -153,6 +159,10 @@ export class MapScene extends Phaser.Scene {
       this.quiz=this.presence ? new QuizLobby(this,this.presence,this.quizSeats) : null;
       this.soloStudy?.close();
       this.soloStudy=this.presence ? new SoloStudyController(this,this.presence,this.soloStudySeats) : null;
+      this.emoteBar?.close();this.emoteSync?.close();this.emoteRenderer?.close();
+      this.emoteRenderer=this.presence ? new EmoteRenderer(this,this.mapKey,this.presence.identity.characterId,this.remotes) : null;
+      this.emoteSync=this.presence ? new EmoteSync(this.presence,this.mapKey,this.emoteRenderer) : null;
+      this.emoteBar=this.presence ? new EmoteBar(this.presence.identity.characterId,emote=>this.emoteSync.trigger(emote)) : null;
       this.returnDestination = destination.returnDestination;
       this.input.keyboard.resetKeys();
       this.doorMessage = '';
@@ -188,6 +198,7 @@ export class MapScene extends Phaser.Scene {
     if(this.chat?.focused||this.quiz?.seated||this.soloStudy?.active)this.player.setVelocity(0,0);
     else this.player.update();
     this.remotes.update(delta);
+    this.emoteRenderer?.update();
     if(this.doorSync)for(const door of this.doors)door.updateBlocker(this.player.body);
     if(this.chat?.focused){this.quiz?.updateSeatPrompt(false);this.soloStudy?.updateSeatPrompt(false);return;}
     const interact = Phaser.Input.Keyboard.JustDown(this.interactKey);

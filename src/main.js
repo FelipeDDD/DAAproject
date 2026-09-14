@@ -23,6 +23,11 @@ async function changeCharacter(){
   const activeScene=game?.scene.getScenes(true)[0];
   if(activeScene?.quiz?.seated&&!(await activeScene.quiz.leave()))return;
   activeScene?.soloStudy?.closePanel();
+  if(activeScene){
+    activeScene.emoteBar?.close();activeScene.emoteBar=null;
+    activeScene.emoteSync?.close();activeScene.emoteSync=null;
+    activeScene.emoteRenderer?.close();activeScene.emoteRenderer=null;
+  }
   pausedScene=activeScene;
   if(pausedScene){
     pausedScene.chat?.close();pausedScene.chat=null;

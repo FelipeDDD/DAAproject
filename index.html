@@ -66,9 +66,16 @@
         <small id="quiz-status" role="status"></small>
       </section>
       <section id="solo-study" hidden aria-labelledby="solo-study-title">
-        <h2 id="solo-study-title">SOLO STUDY MODE</h2>
+        <h2 id="solo-study-title">SOLO MODE</h2>
         <section id="solo-config" aria-labelledby="solo-config-title">
-          <h3 id="solo-config-title">Study settings</h3>
+          <h3 id="solo-config-title">Solo settings</h3>
+          <label class="solo-mode-field">Mode
+            <select id="solo-mode">
+              <option value="study">Study</option>
+              <option value="challenge">Challenge</option>
+            </select>
+          </label>
+          <small id="solo-mode-description"></small>
           <div class="quiz-setting-fields">
             <label>Category<select id="solo-category"></select></label>
             <label>Difficulty<select id="solo-difficulty"></select></label>
@@ -77,22 +84,42 @@
           <button id="start-solo-study" type="button">Start studying</button>
         </section>
         <section id="solo-question" hidden aria-labelledby="solo-question-text">
-          <p id="solo-progress" aria-label="Question progress"></p>
+          <div id="solo-hud">
+            <p id="solo-progress" aria-label="Question progress"></p>
+            <p id="solo-score" hidden></p>
+          </div>
           <div id="solo-media" class="quiz-media" role="region" aria-label="Additional question content" tabindex="0" hidden></div>
           <h3 id="solo-question-text"></h3>
           <div id="solo-alternatives" role="group" aria-label="Question answers"></div>
           <p id="solo-feedback" hidden></p>
           <p id="solo-explanation" hidden></p>
           <button id="confirm-solo-answer" type="button">Confirm answer</button>
+          <div id="solo-challenge-timer" hidden>
+            <div id="solo-timer-track" role="progressbar" aria-label="Time remaining" aria-valuemin="0" aria-valuemax="60">
+              <span id="solo-timer-bar"></span>
+            </div>
+            <small id="solo-timer-label">60s</small>
+          </div>
           <button id="next-solo-question" type="button" hidden>Next question</button>
         </section>
         <section id="solo-results" hidden aria-labelledby="solo-results-title">
           <h3 id="solo-results-title">Study complete</h3>
+          <p id="solo-result-score" hidden></p>
           <p id="solo-result-text"></p>
+          <p id="solo-assessment" hidden></p>
           <button id="study-again" type="button">Study again</button>
         </section>
         <button id="close-solo-study" type="button">Close</button>
         <small id="solo-status" role="status"></small>
+      </section>
+      <section id="emote-bar" hidden aria-label="Emote shortcuts">
+        <div id="emote-slots"></div>
+        <button id="emote-settings" type="button" aria-label="Customize emotes" title="Customize emotes">⚙</button>
+        <section id="emote-picker" hidden aria-labelledby="emote-picker-title">
+          <strong id="emote-picker-title"></strong>
+          <div id="emote-choices"></div>
+          <small>Right-click a slot to edit it directly.</small>
+        </section>
       </section>
       <p class="controls">Explore with <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> or the <kbd>arrow keys</kbd>.</p>
       <p class="controls" id="interaction-hint" role="status">Walk up to a door and press E.</p>

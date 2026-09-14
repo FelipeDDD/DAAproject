@@ -389,6 +389,21 @@ presença deixar apenas um participante, o Convex finaliza o quiz e mostra
 a partir do Tiled antes de iniciar o Convex ou compilar. O teste real com dois
 clientes é `npm.cmd run test:quiz-lobby` com o backend local rodando.
 
+### Emotes multiplayer
+
+A barra inferior possui seis slots acionados por clique ou pelas teclas **1–6**.
+O botão de engrenagem, ou clique direito em um slot, abre o catálogo. A escolha é
+salva por personagem em `localStorage`. Catálogo, defaults, duração e cooldown
+ficam centralizados em `src/emotes/config.js`.
+
+`src/emotes/EmoteSync.js` envia e assina somente os eventos da room atual;
+`EmoteRenderer.js` posiciona e anima o balão sobre os sprites; `EmoteBar.js` cuida
+apenas da interface. O Convex mantém no máximo um evento temporário por personagem
+em `emoteEvents`, sobrescreve-o no próximo uso e remove eventos expirados pelo cron.
+Uma futura radial wheel pode chamar o mesmo `EmoteSync.trigger()`.
+
+Teste realtime com o backend local rodando: `npm.cmd run test:emotes`.
+
 ### Solo Study Mode
 
 No mapa interno, aproxime-se da entidade `chairLuxury-241` e pressione **E**. Ela
@@ -402,6 +417,20 @@ na mesma tabela `quizQuestionHistory`. As escolhas, confirmações e o resultado
 da partida solo ficam localmente em `src/quiz/SoloStudySession.js`; essa classe
 independente de interface é a base reutilizável para modos solo futuros.
 `src/SoloStudyController.js` integra essa sessão ao Phaser e ao painel HTML.
+
+O mesmo painel permite escolher **Study** ou **Challenge** antes dos filtros.
+`src/quiz/SoloSession.js` contém seleção de alternativa, confirmação, progresso e
+resultado básico. `SoloStudySession.js` mantém a experiência sem score;
+`SoloChallengeSession.js` acrescenta 10 pontos por acerto, avaliação final e
+`completionRecord()`, cuja estrutura pode ser enviada ao Convex quando highscores
+forem implementados. `src/quiz/soloModes.js` centraliza a criação dos modos e é o
+ponto de extensão planejado para Time Attack.
+
+Challenge concede 60 segundos por pergunta, configurados por
+`CHALLENGE_QUESTION_DURATION_MS` em `SoloChallengeSession.js`. A barra do painel
+é atualizada apenas no cliente. Ao chegar a zero, a pergunta conta como incorreta,
+revela resposta e explicação e aguarda o botão **Next question**. Study continua
+sem limite de tempo.
 
 ## Conteúdo auxiliar por pergunta
 

@@ -35,6 +35,9 @@ export default defineSchema({
     recentQuestions:v.array(v.object({questionId:v.string(),seenAt:v.number()})),
     updatedAt:v.number(),
   }).index('by_character',['characterId']),
+  emoteEvents: defineTable({
+    characterId:v.string(),playerId:v.string(),room:v.string(),emote:v.string(),createdAt:v.number(),
+  }).index('by_room',['room']).index('by_character',['characterId']).index('by_createdAt',['createdAt']),
   messages: defineTable({room:v.string(),characterId:v.string(),characterName:v.string(),text:v.string(),createdAt:v.number()})
     .index('by_room_createdAt',['room','createdAt']),
   doors: defineTable({room:v.string(),doorId:v.string(),open:v.boolean(),locked:v.boolean()})
