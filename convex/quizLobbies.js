@@ -1,7 +1,7 @@
 import { queryGeneric as query, mutationGeneric as mutation, internalMutationGeneric as internalMutation } from 'convex/server';
 import { v } from 'convex/values';
 import seatsByRoom from './quizSeatDefinitions.js';
-import { QUIZ_QUESTIONS, selectQuizQuestionIds } from './quizQuestions.js';
+import { QUIZ_QUESTIONS, materializeQuizQuestions, selectQuizQuestionIds } from './quizQuestions.js';
 import { PLAYER_SCALE } from '../src/game/settings.js';
 import {
   QUIZ_QUESTION_DURATION_MS,quizQuestionComplete,quizQuestionExpired,shouldEndQuizForParticipants,
@@ -27,8 +27,10 @@ function questionIdsFor(lobby) {
 }
 
 function questionFor(lobby) {
+  if(lobby.questions?.length)return lobby.questions[lobby.questionIndex??0]??null;
   const id=questionIdsFor(lobby)[lobby.questionIndex??0];
-  return QUIZ_QUESTIONS.find(question=>question.id===id)??null;
+  const legacyQuestion=QUIZ_QUESTIONS.find(question=>question.id===id);
+  return legacyQuestion?.type==='generated'?null:(legacyQuestion??null);
 }
 
 function deadlineFor(lobby) {
@@ -90,7 +92,7 @@ export const current = query({
       participants,createdAt:lobby.createdAt,questionIndex:lobby.questionIndex??0,
       questionDeadline:question?deadlineFor(lobby):null,
       finishedReason:lobby.finishedReason??null,
-      questionCount:questionIdsFor(lobby).length,
+      questionCount:lobby.questions?.length??questionIdsFor(lobby).length,
       question:question?{
         id:question.id,category:question.category,difficulty:question.difficulty,
         question:question.question,answers:question.answers,
@@ -170,8 +172,9 @@ export const start = mutation({
     if (participants.length < 2) throw new Error('São necessários pelo menos 2 jogadores.');
     const questionIds=selectQuizQuestionIds({seed:`${lobby._id}:${Date.now()}`});
     if(!questionIds.length)throw new Error('Nenhuma pergunta disponível.');
+    const questions=materializeQuizQuestions(questionIds);
     await ctx.db.patch(lobby._id,{
-      participants,status:'starting',questionIndex:0,questionIds,
+      participants,status:'starting',questionIndex:0,questionIds,questions,
       questionDeadline:Date.now()+QUIZ_QUESTION_DURATION_MS,
       scores:participants.map(characterId=>({characterId,points:0})),scoredQuestionIds:[],
       timedOutCharacterIds:[],
@@ -249,7 +252,7 @@ export const nextQuestion = mutation({
     const completion=await scoreIfComplete(ctx,lobby,participants);lobby=completion.lobby;
     if(!completion.allAnswered)throw new Error('Ainda existem jogadores respondendo.');
     const nextIndex=(lobby.questionIndex??0)+1;
-    const questionCount=questionIdsFor(lobby).length;
+    const questionCount=lobby.questions?.length??questionIdsFor(lobby).length;
     await ctx.db.patch(lobby._id,nextIndex>=questionCount
       ? {status:'finished',questionIndex:nextIndex}
       : {questionIndex:nextIndex,questionDeadline:Date.now()+QUIZ_QUESTION_DURATION_MS,timedOutCharacterIds:[]});

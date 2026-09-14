@@ -1,0 +1,4 @@
+﻿id;category;difficulty;question;answer1;answer2;answer3;answer4;correctAnswer;explanation;media
+programming-001;Programmierung;medium;Qual linguagem está sendo usada no frontend deste projeto?;JavaScript;Python;Java;C#;0;O frontend do projeto foi escrito em JavaScript.;"{""type"":""code"",""language"":""javascript"",""content"":""const score = 0;\nconsole.log(score);""}"
+programming-002;Programmierung;medium;Qual ferramenta renderiza o mundo 2D deste projeto?;Convex;Phaser;Tiled Server;Vercel;1;Phaser é responsável pela renderização e lógica do mundo 2D.;
+programming-003;Programmierung;medium;Quantos personagens fixos existem nesta primeira versão?;Dois;Três;Quatro;Oito;2;;"{""type"":""table"",""columns"":[""Personagem"",""ID""],""rows"":[[""Michael"",""michael""],[""Jassine"",""jassine""],[""Sarina"",""sarina""],[""Felipe"",""felipe""]]}"

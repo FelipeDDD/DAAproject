@@ -1,67 +1,71 @@
-export const QUESTIONS_PER_QUIZ = 5;
-export const QUIZ_DIFFICULTIES = Object.freeze(['easy','medium','hard']);
+import STATIC_QUIZ_QUESTIONS from './quizStaticQuestions.generated.js';
+import { GENERATED_QUIZ_QUESTIONS } from './quizGeneratedQuestions.js';
 
-// Add and edit questions here. Filters already accept category and difficulty,
-// although the lobby does not expose those choices in its interface yet.
+export {
+  DECIMAL_VALUE_MAX,
+  DECIMAL_VALUE_MIN,
+  generateUniqueDistractors,
+  shuffleAnswers,
+  SUBNET_PREFIX_MAX,
+  SUBNET_PREFIX_MIN,
+} from './quizGeneratedQuestions.js';
+
+export const QUESTIONS_PER_QUIZ = 5;
+export const QUIZ_DIFFICULTIES = Object.freeze(['easy', 'medium', 'hard']);
 export const QUIZ_QUESTIONS = Object.freeze([
-  {
-    id: 'programming-001',
-    media: {
-      type: 'code',
-      language: 'javascript',
-      content: 'const score = 0;\nconsole.log(score);',
-    },
-    category: 'Programmierung',
-    difficulty: 'easy',
-    question: 'Qual linguagem está sendo usada no frontend deste projeto?',
-    answers: ['JavaScript', 'Python', 'Java', 'C#'],
-    correctAnswer: 0,
-    explanation: 'O frontend do projeto foi escrito em JavaScript.',
-  },
-  {
-    id: 'programming-002',
-    category: 'Programmierung',
-    difficulty: 'easy',
-    question: 'Qual ferramenta renderiza o mundo 2D deste projeto?',
-    answers: ['Convex', 'Phaser', 'Tiled Server', 'Vercel'],
-    correctAnswer: 1,
-    explanation: 'Phaser é responsável pela renderização e lógica do mundo 2D.',
-  },
-  {
-    id: 'programming-003',
-    media: {
-      type: 'table',
-      columns: ['Personagem', 'ID'],
-      rows: [['Michael', 'michael'], ['Jassine', 'jassine'], ['Sarina', 'sarina'], ['Felipe', 'felipe']],
-    },
-    category: 'Programmierung',
-    difficulty: 'easy',
-    question: 'Quantos personagens fixos existem nesta primeira versão?',
-    answers: ['Dois', 'Três', 'Quatro', 'Oito'],
-    correctAnswer: 2,
-  },
+  ...STATIC_QUIZ_QUESTIONS,
+  ...GENERATED_QUIZ_QUESTIONS,
 ]);
 
-function stableHash(value) {
-  let hash=2166136261;
-  for(const character of String(value)){
-    hash^=character.charCodeAt(0);
-    hash=Math.imul(hash,16777619);
+export function materializeQuizQuestion(template, random = Math.random) {
+  const generated = template.type === 'generated' ? template.generate(random) : template;
+  const concrete = {
+    id: template.id,
+    category: template.category,
+    difficulty: template.difficulty,
+    question: generated.question,
+    answers: [...generated.answers],
+    correctAnswer: generated.correctAnswer,
+    ...(generated.explanation !== undefined ? { explanation: generated.explanation } : {}),
+    ...(generated.media !== undefined ? { media: generated.media } : {}),
+  };
+  if (typeof concrete.question !== 'string' || concrete.answers.length !== 4
+    || new Set(concrete.answers).size !== 4 || !Number.isInteger(concrete.correctAnswer)
+    || concrete.correctAnswer < 0 || concrete.correctAnswer >= concrete.answers.length) {
+    throw new Error(`Invalid concrete quiz question: ${template.id}`);
   }
-  return hash>>>0;
+  return concrete;
+}
+
+export function materializeQuizQuestions(questionIds, random = Math.random) {
+  return questionIds.map((id) => {
+    const template = QUIZ_QUESTIONS.find((question) => question.id === id);
+    if (!template) throw new Error(`Unknown quiz question: ${id}`);
+    return materializeQuizQuestion(template, random);
+  });
+}
+
+function stableHash(value) {
+  let hash = 2166136261;
+  for (const character of String(value)) {
+    hash ^= character.charCodeAt(0);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
 }
 
 export function selectQuizQuestionIds({
   category,
   difficulty,
-  count=QUESTIONS_PER_QUIZ,
-  seed=Date.now(),
-}={}) {
-  const eligible=QUIZ_QUESTIONS.filter(item=>(!category||item.category===category)&&(!difficulty||item.difficulty===difficulty));
-  const amount=Math.min(Math.max(0,Math.trunc(count)),eligible.length);
+  count = QUESTIONS_PER_QUIZ,
+  seed = Date.now(),
+} = {}) {
+  const eligible = QUIZ_QUESTIONS.filter((item) => (!category || item.category === category)
+    && (!difficulty || item.difficulty === difficulty));
+  const amount = Math.min(Math.max(0, Math.trunc(count)), eligible.length);
   return eligible
-    .map(item=>({id:item.id,order:stableHash(`${seed}:${item.id}`)}))
-    .sort((a,b)=>a.order-b.order||a.id.localeCompare(b.id))
-    .slice(0,amount)
-    .map(item=>item.id);
+    .map((item) => ({ id: item.id, order: stableHash(`${seed}:${item.id}`) }))
+    .sort((left, right) => left.order - right.order || left.id.localeCompare(right.id))
+    .slice(0, amount)
+    .map((item) => item.id);
 }

@@ -1,4 +1,4 @@
-export const QUIZ_QUESTION_DURATION_MS = 30_000;
+export const QUIZ_QUESTION_DURATION_MS = 60_000;
 
 export function remainingQuizSeconds(deadline, now=Date.now()) {
   if (!Number.isFinite(deadline)) return null;

@@ -267,8 +267,8 @@ em `convex/quizLobbies.js`. O primeiro a sentar vira host. Se ele sair, o primei
 participante ativo restante vira host; sem participantes, o lobby é apagado.
 Somente o host vê o botão de início e pode mudar o status para `starting`, com 2
 a 4 participantes. Nesse momento, o Convex seleciona uma vez até cinco IDs do
-banco de `convex/quizQuestions.js`, sem repetição, e salva a sequência no lobby.
-Com apenas três perguntas cadastradas, todas são usadas. Cada item aceita `id`,
+banco combinado por `convex/quizQuestions.js`, sem repetição, e salva a sequência
+no lobby. Atualmente há 23 perguntas estáticas e dois templates gerados. Cada item aceita `id`,
 `category`, `difficulty`, `question`, quatro `answers`, `correctAnswer` e uma
 `explanation` opcional. A escolha fica local até o jogador confirmar; então o
 Convex salva uma resposta por participante e pergunta na tabela `quizAnswers`.
@@ -277,7 +277,56 @@ feedback são revelados, o lobby soma um ponto por acerto e o host pode avançar
 Depois da última pergunta, o painel mostra o resultado sincronizado. A limpeza de
 presença também repara ou remove lobbies a cada 5 segundos.
 
-Cada pergunta começa com 30 segundos, definidos por
+O banco também aceita templates com `type: 'generated'` e `generate()`. Ao iniciar,
+o backend seleciona os IDs, executa cada template uma única vez e salva as cinco
+perguntas concretas em `quizLobbies.questions`. Os clientes recebem somente a
+pergunta materializada, nunca a função geradora ou uma versão calculada localmente.
+Avançar de pergunta apenas lê essa sequência salva e não executa o template outra vez.
+
+Os templates ficam em `convex/quizGeneratedQuestions.js`. Nesse arquivo,
+`network-subnet-hosts-generated` escolhe prefixos entre `SUBNET_PREFIX_MIN` (24) e
+`SUBNET_PREFIX_MAX` (30); `number-decimal-binary-generated` escolhe valores entre
+`DECIMAL_VALUE_MIN` (0) e `DECIMAL_VALUE_MAX` (255).
+`generateUniqueDistractors()` e `shuffleAnswers()` concentram a geração de alternativas
+únicas e o embaralhamento. `materializeQuizQuestions()` permanece em
+`convex/quizQuestions.js` e converte a seleção para dados persistíveis.
+
+### Manutenção das perguntas estáticas em CSV
+
+As perguntas estáticas ficam em `quiz-data/`, com um arquivo por categoria. O banco
+atual usa `hardware.csv` e `programming.csv`. O formato principal usa UTF-8 e ponto e
+vírgula, pois o Excel com configuração regional alemã normalmente reserva a vírgula
+para números decimais. Ao salvar, escolha **CSV UTF-8 (durch Trennzeichen getrennt)**
+e mantenha a extensão `.csv`; não salve a planilha como `.xlsx`. O importador detecta
+automaticamente `;` ou `,`, caso a configuração regional do Excel produza vírgulas.
+
+Cada arquivo contém estas colunas, nesta ordem:
+
+| Coluna | Conteúdo |
+| --- | --- |
+| `id` | Prefixo do nome do arquivo e número, como `hardware-001` |
+| `category` | Categoria exibida e usada pelos filtros |
+| `difficulty` | `easy`, `medium` ou `hard` |
+| `question` | Texto da pergunta |
+| `answer1` até `answer4` | Exatamente quatro alternativas diferentes |
+| `correctAnswer` | Índice da resposta correta: `0` para `answer1` até `3` para `answer4` |
+| `explanation` | Explicação opcional |
+| `media` | Objeto JSON opcional para `image`, `table`, `text` ou `code` |
+
+Para adicionar uma pergunta, abra o CSV da categoria no Excel, insira uma linha e use
+o próximo ID numérico livre. A posição física da linha não afeta o sorteio. Para uma
+categoria nova, copie o cabeçalho para um novo CSV e use o nome do arquivo como prefixo
+dos IDs. IDs precisam ser únicos entre todos os CSVs e também não podem coincidir com
+um template gerado.
+
+Execute `npm.cmd run validate:quiz` depois de salvar. O comando aponta arquivo e linha
+para IDs duplicados, campos obrigatórios vazios, respostas ausentes ou repetidas,
+`correctAnswer` inválido, dificuldade não suportada e JSON de `media` inválido.
+`npm.cmd run sync:quiz` atualiza `convex/quizStaticQuestions.generated.js`; esse arquivo
+é gerado e não deve ser editado. `dev`, `build`, `convex` e `test` fazem essa sincronização
+automaticamente, portanto não é necessário copiar dados do CSV para JavaScript.
+
+Cada pergunta começa com X (60 atualmente) segundos, definidos por
 `QUIZ_QUESTION_DURATION_MS` em `src/quizTimer.js`. Antes de confirmar, o jogador
 pode trocar livremente a alternativa selecionada. O botão **Confirmar resposta**
 trava a escolha imediatamente. Se o contador chegar a `0s`, a última alternativa
@@ -296,36 +345,23 @@ clientes é `npm.cmd run test:quiz-lobby` com o backend local rodando.
 
 ## Conteúdo auxiliar por pergunta
 
-Em `convex/quizQuestions.js`, cada pergunta aceita um campo opcional `media`.
+Na coluna `media` dos CSVs, cada pergunta aceita um objeto JSON opcional.
 Perguntas sem esse campo mantêm a apresentação anterior. Os exemplos de código
-e tabela estão nas perguntas existentes `programming-001` e `programming-003`;
+e tabela estão em `quiz-data/programming.csv`, nas perguntas `programming-001` e
+`programming-003`;
 `programming-002` continua sem media. Não foram adicionadas perguntas ao sorteio.
 
-Use uma das estruturas abaixo como propriedade da pergunta:
+Use uma das estruturas abaixo como valor JSON da coluna. O Excel preserva e escapa
+as aspas da célula ao salvar o CSV:
 
-```js
-media: {
-  type: 'image',
-  src: '/assets/quiz/example.png',
-  alt: 'Descrição da imagem',
-}
+```json
+{"type":"image","src":"/assets/quiz/example.png","alt":"Descrição da imagem"}
 
-media: {
-  type: 'table',
-  columns: ['Gerät', 'IP-Adresse'],
-  rows: [['PC1', '192.168.1.10'], ['PC2', '192.168.1.11']],
-}
+{"type":"table","columns":["Gerät","IP-Adresse"],"rows":[["PC1","192.168.1.10"],["PC2","192.168.1.11"]]}
 
-media: {
-  type: 'text',
-  content: 'Informação adicional...',
-}
+{"type":"text","content":"Informação adicional..."}
 
-media: {
-  type: 'code',
-  language: 'javascript',
-  content: 'const x = 10;',
-}
+{"type":"code","language":"javascript","content":"const x = 10;"}
 ```
 
 Coloque imagens em `public/assets/quiz/` (crie a pasta ao adicionar a primeira).

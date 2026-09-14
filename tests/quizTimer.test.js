@@ -8,8 +8,8 @@ import {
   shouldEndQuizForParticipants,
 } from '../src/quizTimer.js';
 
-test('quiz timer defaults to thirty seconds and counts down to zero',()=>{
-  assert.equal(QUIZ_QUESTION_DURATION_MS,30_000);
+test('quiz timer defaults to sixty seconds and counts down to zero',()=>{
+  assert.equal(QUIZ_QUESTION_DURATION_MS,60_000);
   const deadline=40_000;
   assert.equal(remainingQuizSeconds(deadline,10_000),30);
   assert.equal(remainingQuizSeconds(deadline,39_001),1);

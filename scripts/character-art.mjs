@@ -14,6 +14,12 @@ for(const id of ['michael','jassine','sarina','felipe']){
   if(id==='sarina')for(const [x,y]of [[5,4],[11,2],[18,2],[24,5],[3,10],[24,12],[4,17],[24,19]])s+=rect(x,y,7,7,'#613d2e')+rect(x+1,y+1,3,2,'#845638');
   if(id==='felipe')s+=rect(6,3,21,8,'#17191e')+rect(6,8,4,25,'#17191e')+rect(24,8,4,25,'#17191e')+rect(10,28,13,2,'#e3e6e7')+rect(12,31,2,5,'#e3e6e7')+rect(18,31,2,5,'#e3e6e7');
   s+=rect(12,15,2,3,'#30313a')+rect(22,15,2,3,'#30313a');
+  if(id==='jassine'){
+    const glasses='#111318';
+    s+=rect(10,13,6,1,glasses)+rect(10,19,6,1,glasses)+rect(10,13,1,7,glasses)+rect(15,13,1,7,glasses);
+    s+=rect(20,13,6,1,glasses)+rect(20,19,6,1,glasses)+rect(20,13,1,7,glasses)+rect(25,13,1,7,glasses);
+    s+=rect(16,15,4,1,glasses)+rect(8,14,2,1,glasses)+rect(26,14,1,1,glasses);
+  }
   if(id==='michael')s+=rect(24,20,6,2,'#f2efdf')+rect(29,20,2,2,'#d57947');
   if(id==='sarina')s+=rect(26,35,6,5,'#eee1ba')+rect(26,34,6,2,'#684233')+rect(25,40,7,2,'#e7edf0');
   if(id==='felipe')s+=rect(26,33,5,9,'#202528')+rect(27,32,3,1,'#a8b2b6')+rect(27,35,1,4,'#8aca49')+rect(29,35,1,4,'#8aca49');

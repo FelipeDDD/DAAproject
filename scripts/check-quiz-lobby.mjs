@@ -40,13 +40,21 @@ try{
     const bankQuestion=QUIZ_QUESTIONS.find(question=>question.id===lobbyA.question.id);
     assert.ok(bankQuestion);seenQuestionIds.add(bankQuestion.id);
     assert.equal(lobbyA.questionCount,expectedCount);
-    assert.deepEqual(lobbyA.question,{
-      id:bankQuestion.id,category:bankQuestion.category,difficulty:bankQuestion.difficulty,
-      question:bankQuestion.question,answers:bankQuestion.answers,
-      ...(bankQuestion.media?{media:bankQuestion.media}:{}),explanation:null,
-    });
+    assert.equal(lobbyA.question.id,bankQuestion.id);
+    assert.equal(lobbyA.question.category,bankQuestion.category);
+    assert.equal(lobbyA.question.difficulty,bankQuestion.difficulty);
+    assert.equal(typeof lobbyA.question.question,'string');
+    assert.equal(lobbyA.question.answers.length,4);
+    assert.equal(new Set(lobbyA.question.answers).size,4);
+    assert.equal(lobbyA.question.explanation,null);
+    if(bankQuestion.type!=='generated'){
+      assert.equal(lobbyA.question.question,bankQuestion.question);
+      assert.deepEqual(lobbyA.question.answers,bankQuestion.answers);
+      assert.deepEqual(lobbyA.question.media,bankQuestion.media);
+    }
     assert.ok(lobbyA.questionDeadline>Date.now());
     assert.deepEqual(lobbyB.question,lobbyA.question);
+    const concreteQuestion=structuredClone(lobbyA.question);
     assert.equal(lobbyA.correctAnswerIndex,null);assert.equal(lobbyB.correctAnswerIndex,null);
 
     const choices=[0,1];
@@ -62,10 +70,14 @@ try{
 
     await answer(1,choices[1]);
     await wait(()=>lobbyA?.allAnswered&&lobbyB?.allAnswered,`reveal question ${questionIndex+1}`);
-    assert.equal(lobbyA.correctAnswerIndex,bankQuestion.correctAnswer);
-    assert.equal(lobbyB.correctAnswerIndex,bankQuestion.correctAnswer);
-    assert.equal(lobbyA.question.explanation,bankQuestion.explanation??null);
-    choices.forEach((choice,index)=>{if(choice===bankQuestion.correctAnswer)expectedScores[index]++;});
+    assert.equal(lobbyA.correctAnswerIndex,lobbyB.correctAnswerIndex);
+    assert.ok(Number.isInteger(lobbyA.correctAnswerIndex));
+    assert.equal(lobbyA.question.answers[lobbyA.correctAnswerIndex],lobbyB.question.answers[lobbyB.correctAnswerIndex]);
+    assert.equal(lobbyA.question.question,concreteQuestion.question);
+    assert.deepEqual(lobbyA.question.answers,concreteQuestion.answers);
+    if(bankQuestion.type==='generated')assert.ok(lobbyA.question.explanation);
+    else assert.equal(lobbyA.question.explanation,bankQuestion.explanation??null);
+    choices.forEach((choice,index)=>{if(choice===lobbyA.correctAnswerIndex)expectedScores[index]++;});
     if(questionIndex===0)await assert.rejects(clients[1].mutation(api.quizLobbies.nextQuestion,args(1)),/host/);
     await clients[0].mutation(api.quizLobbies.nextQuestion,args(0));
   }

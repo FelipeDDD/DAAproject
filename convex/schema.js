@@ -8,6 +8,11 @@ export default defineSchema({
     questionIndex:v.optional(v.number()),
     questionDeadline:v.optional(v.number()),
     questionIds:v.optional(v.array(v.string())),
+    questions:v.optional(v.array(v.object({
+      id:v.string(),category:v.string(),difficulty:v.string(),question:v.string(),
+      answers:v.array(v.string()),correctAnswer:v.number(),
+      explanation:v.optional(v.string()),media:v.optional(v.any()),
+    }))),
     scores:v.optional(v.array(v.object({characterId:v.string(),points:v.number()}))),
     scoredQuestionIds:v.optional(v.array(v.string())),
     timedOutCharacterIds:v.optional(v.array(v.string())),
