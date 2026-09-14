@@ -1,5 +1,7 @@
 import { CHARACTERS } from './characters.js';
 import { distanceToSeat, QUIZ_SEAT_DISTANCE } from './maps/quizSeats.js';
+import { renderQuizMedia } from './QuizMedia.js';
+import { remainingQuizSeconds } from './quizTimer.js';
 
 // World-space tuning for the prompt, anchored to the fixed Tiled seat position.
 export const QUIZ_SEAT_PROMPT = Object.freeze({text:'[E] Sentar',offsetX:0,offsetY:-70});
@@ -7,6 +9,8 @@ export const QUIZ_SEAT_PROMPT = Object.freeze({text:'[E] Sentar',offsetX:0,offse
 export function shouldShowStartButton(lobby,characterId){
   return lobby?.status==='lobby'&&lobby.hostCharacterId===characterId;
 }
+
+export function shouldConfirmQuizLeave(lobby){return lobby?.status==='starting';}
 
 export class QuizLobby {
   constructor(scene,presence,seats) {
@@ -21,8 +25,11 @@ export class QuizLobby {
     this.startButton=document.getElementById('start-quiz');
     this.nextButton=document.getElementById('next-question');
     this.leaveButton=document.getElementById('leave-quiz');
+    this.cancelLeaveButton=document.getElementById('cancel-leave-quiz');
     this.questionRoot=document.getElementById('quiz-question');
     this.questionText=document.getElementById('quiz-question-text');
+    this.questionMedia=document.getElementById('quiz-media');
+    this.timerElement=document.getElementById('quiz-timer');
     this.alternatives=document.getElementById('quiz-alternatives');
     this.explanation=document.getElementById('quiz-explanation');
     this.confirmButton=document.getElementById('confirm-answer');
@@ -36,6 +43,7 @@ export class QuizLobby {
     this.onStart=()=>this.start();
     this.onNext=()=>this.nextQuestion();
     this.onLeave=()=>this.leave();
+    this.onCancelLeave=()=>this.cancelLeave();
     this.onConfirm=()=>this.confirmAnswer();
     this.onAlternative=event=>{
       const button=event.target.closest('button[data-answer-index]');
@@ -44,8 +52,10 @@ export class QuizLobby {
     this.startButton.addEventListener('click',this.onStart);
     this.nextButton.addEventListener('click',this.onNext);
     this.leaveButton.addEventListener('click',this.onLeave);
+    this.cancelLeaveButton.addEventListener('click',this.onCancelLeave);
     this.confirmButton.addEventListener('click',this.onConfirm);
     this.alternatives.addEventListener('click',this.onAlternative);
+    this.timerInterval=setInterval(()=>this.updateTimer(),250);
 
     const {characterId}=presence.identity;
     this.unsubscribe=presence.client.onUpdate(presence.api.quizLobbies.current,{room:this.room,characterId},lobby=>{
@@ -87,6 +97,9 @@ export class QuizLobby {
   async leave(){
     if(!this.seated)return true;
     if(this.pending)return false;
+    if(shouldConfirmQuizLeave(this.lobby)&&!this.confirmingLeave){
+      this.confirmingLeave=true;this.render();return false;
+    }
     this.pending=true;
     try{
       const {characterId,sessionId}=this.presence.identity;
@@ -94,6 +107,11 @@ export class QuizLobby {
       this.standLocally();return true;
     }catch{this.status.textContent='Não foi possível sair do lobby.';return false;}
     finally{this.pending=false;}
+  }
+
+  cancelLeave(){
+    this.confirmingLeave=false;this.render();
+    document.getElementById('game').focus({preventScroll:true});
   }
 
   async start(){
@@ -108,12 +126,12 @@ export class QuizLobby {
   }
 
   selectAnswer(answerIndex){
-    if(this.confirmedAnswer!==null||this.pendingAnswer||this.lobby?.status!=='starting'||this.lobby?.allAnswered)return;
+    if(this.confirmedAnswer!==null||this.pendingAnswer||this.questionHasExpired()||this.lobby?.status!=='starting'||this.lobby?.allAnswered)return;
     this.selectedAnswer=answerIndex;this.answerError='';this.render();
   }
 
   async confirmAnswer(){
-    if(this.selectedAnswer===null||this.confirmedAnswer!==null||this.pendingAnswer||this.lobby?.status!=='starting')return;
+    if(this.selectedAnswer===null||this.confirmedAnswer!==null||this.pendingAnswer||this.questionHasExpired()||this.lobby?.status!=='starting')return;
     const answerIndex=this.selectedAnswer;
     this.pendingAnswer=true;this.answerError='';this.render();
     try{
@@ -123,6 +141,40 @@ export class QuizLobby {
     }catch{
       this.answerError='Não foi possível registrar a resposta.';
     }finally{this.pendingAnswer=false;this.render();}
+  }
+
+  questionHasExpired(){return remainingQuizSeconds(this.lobby?.questionDeadline)===0;}
+
+  updateTimer(){
+    const playing=this.lobby?.status==='starting'&&this.lobby?.question;
+    const seconds=playing?remainingQuizSeconds(this.lobby.questionDeadline):null;
+    this.timerElement.hidden=seconds===null;
+    if(seconds===null)return;
+    const expired=seconds===0;
+    this.timerElement.textContent=this.lobby.allAnswered&&!expired?'Concluída':`${seconds}s`;
+    this.timerElement.dateTime=`PT${seconds}S`;
+    this.timerElement.classList.toggle('urgent',!this.lobby.allAnswered&&seconds<=5);
+    if(expired&&!this.lobby.allAnswered&&!this.finishingTimedQuestion&&
+      Date.now()>=(this.timerRetryAt??0))this.finishTimedQuestion();
+  }
+
+  async finishTimedQuestion(){
+    const questionId=this.lobby?.question?.id;
+    if(!questionId||this.finishingTimedQuestion)return;
+    this.finishingTimedQuestion=true;this.answerError='';this.render();
+    try{
+      const {characterId,sessionId}=this.presence.identity;
+      const args={room:this.room,characterId,sessionId};
+      if(Number.isInteger(this.selectedAnswer))args.answerIndex=this.selectedAnswer;
+      const result=await this.presence.client.mutation(this.presence.api.quizLobbies.finishTimedQuestion,args);
+      if(Number.isInteger(result.answerIndex)){
+        this.confirmedAnswer=result.answerIndex;this.selectedAnswer=result.answerIndex;
+      }
+      this.timerRetryAt=Infinity;
+    }catch{
+      this.answerError='Não foi possível encerrar a pergunta. Tentando novamente…';
+      this.timerRetryAt=Date.now()+1000;
+    }finally{this.finishingTimedQuestion=false;this.render();}
   }
 
   async nextQuestion(){
@@ -138,21 +190,23 @@ export class QuizLobby {
   isHost(){return this.lobby?.hostCharacterId===this.presence.identity.characterId;}
 
   standLocally(){
-    this.seated=false;this.resetQuestionState();
+    this.seated=false;this.confirmingLeave=false;this.resetQuestionState();
     this.seatPrompt.setVisible(false);this.questionRoot.hidden=true;this.resultsRoot.hidden=true;this.root.hidden=true;
     this.scene.input.keyboard.resetKeys();
   }
 
   resetQuestionState(){
     this.renderedQuestionId=null;this.selectedAnswer=null;this.confirmedAnswer=null;
-    this.pendingAnswer=false;this.pendingNext=false;this.answerError='';
+    this.pendingAnswer=false;this.pendingNext=false;this.finishingTimedQuestion=false;
+    this.timerRetryAt=0;this.answerError='';
   }
 
   renderQuestion(question){
     this.questionRoot.hidden=!question;
-    if(!question)return;
+    if(!question){renderQuizMedia(this.questionMedia,null);return;}
     if(this.renderedQuestionId!==question.id){
       this.resetQuestionState();this.renderedQuestionId=question.id;this.questionText.textContent=question.question;
+      renderQuizMedia(this.questionMedia,question.media);
       this.alternatives.replaceChildren(...question.answers.map((text,index)=>{
         const button=document.createElement('button');button.type='button';
         button.dataset.answerIndex=String(index);button.textContent=`${index+1}. ${text}`;
@@ -162,6 +216,7 @@ export class QuizLobby {
     if(Number.isInteger(this.lobby?.ownAnswerIndex)){
       this.confirmedAnswer=this.lobby.ownAnswerIndex;this.selectedAnswer=this.confirmedAnswer;
     }
+    const expired=this.questionHasExpired();
     const revealed=this.lobby?.allAnswered&&Number.isInteger(this.lobby.correctAnswerIndex);
     this.explanation.hidden=!revealed||!question.explanation;
     this.explanation.textContent=revealed?(question.explanation??''):'';
@@ -171,10 +226,10 @@ export class QuizLobby {
       button.classList.toggle('correct',revealed&&index===this.lobby.correctAnswerIndex);
       button.classList.toggle('incorrect',revealed&&index===this.confirmedAnswer&&index!==this.lobby.correctAnswerIndex);
       button.setAttribute('aria-pressed',String(selected));
-      button.disabled=this.confirmedAnswer!==null||this.pendingAnswer||revealed;
+      button.disabled=this.confirmedAnswer!==null||this.pendingAnswer||expired||revealed;
     }
-    this.confirmButton.hidden=revealed;
-    this.confirmButton.disabled=this.selectedAnswer===null||this.confirmedAnswer!==null||this.pendingAnswer;
+    this.confirmButton.hidden=revealed||expired;
+    this.confirmButton.disabled=this.selectedAnswer===null||this.confirmedAnswer!==null||this.pendingAnswer||expired;
     this.confirmButton.textContent=this.pendingAnswer?'Enviando…':this.confirmedAnswer!==null?'Resposta confirmada':'Confirmar resposta';
   }
 
@@ -198,25 +253,33 @@ export class QuizLobby {
       return li;
     }));
     const playing=this.lobby?.status==='starting',finished=this.lobby?.status==='finished';
-    this.renderQuestion(playing?this.lobby?.question:null);this.renderResults();
-    if(finished)this.status.textContent='Quiz concluído · Esc para sair';
+    if(!playing)this.confirmingLeave=false;
+    this.renderQuestion(playing?this.lobby?.question:null);this.updateTimer();this.renderResults();
+    if(this.confirmingLeave)this.status.textContent='Deseja mesmo sair? O quiz continuará sem você.';
+    else if(finished&&this.lobby.finishedReason==='insufficient-participants')
+      this.status.textContent='Quiz encerrado por falta de participantes · Esc para sair';
+    else if(finished)this.status.textContent='Quiz concluído · Esc para sair';
     else if(playing&&this.lobby.allAnswered){
       this.status.textContent=this.confirmedAnswer===this.lobby.correctAnswerIndex?'Correto':'Incorreto';
     }else if(playing){
       this.status.textContent=this.answerError||(
+        this.finishingTimedQuestion?'Tempo encerrado. Salvando a última escolha…':
         this.pendingAnswer?'Enviando resposta…':this.confirmedAnswer!==null?'Resposta registrada. Aguardando os outros jogadores.':'Selecione uma alternativa e confirme.'
       );
     }else this.status.textContent='E, Esc ou botão para sair do lobby';
     this.startButton.hidden=!shouldShowStartButton(this.lobby,this.presence.identity.characterId);this.startButton.disabled=this.pending;
     this.nextButton.hidden=!playing||!this.lobby.allAnswered||!this.isHost();this.nextButton.disabled=this.pendingNext;
+    this.leaveButton.textContent=this.confirmingLeave?'Confirmar saída':'Sair do lobby';
     this.leaveButton.disabled=this.pending||this.pendingAnswer||this.pendingNext;
+    this.cancelLeaveButton.hidden=!this.confirmingLeave;this.cancelLeaveButton.disabled=this.pending;
   }
 
   close(){
-    this.closed=true;this.unsubscribe?.();
+    this.closed=true;this.unsubscribe?.();clearInterval(this.timerInterval);
     this.startButton.removeEventListener('click',this.onStart);
     this.nextButton.removeEventListener('click',this.onNext);
     this.leaveButton.removeEventListener('click',this.onLeave);
+    this.cancelLeaveButton.removeEventListener('click',this.onCancelLeave);
     this.confirmButton.removeEventListener('click',this.onConfirm);
     this.alternatives.removeEventListener('click',this.onAlternative);
     this.seatPrompt.destroy();this.root.hidden=true;

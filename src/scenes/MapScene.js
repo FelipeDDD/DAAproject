@@ -189,7 +189,8 @@ export class MapScene extends Phaser.Scene {
     if(this.quiz?.seated){
       if(interact||escape)this.quiz.leave();
       const status=this.quiz.lobby?.status;
-      const hint=status==='finished'?'Quiz concluído · Esc: sair':status==='starting'?'Quiz em andamento · Esc: sair':'Sentado no lobby · E/Esc: sair';
+      const hint=this.quiz.confirmingLeave?'Confirme ou cancele a saída no painel':
+        status==='finished'?'Quiz concluído · Esc: sair':status==='starting'?'Quiz em andamento · Esc: sair':'Sentado no lobby · E/Esc: sair';
       if(this.hint.textContent!==hint)this.hint.textContent=hint;
       return;
     }

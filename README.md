@@ -277,6 +277,79 @@ feedback são revelados, o lobby soma um ponto por acerto e o host pode avançar
 Depois da última pergunta, o painel mostra o resultado sincronizado. A limpeza de
 presença também repara ou remove lobbies a cada 5 segundos.
 
+Cada pergunta começa com 30 segundos, definidos por
+`QUIZ_QUESTION_DURATION_MS` em `src/quizTimer.js`. Antes de confirmar, o jogador
+pode trocar livremente a alternativa selecionada. O botão **Confirmar resposta**
+trava a escolha imediatamente. Se o contador chegar a `0s`, a última alternativa
+selecionada é confirmada automaticamente; sem seleção, o jogador não recebe ponto.
+O prazo é salvo no lobby para que todos vejam a mesma contagem. A pergunta só é
+revelada depois que cada participante ativo confirmou ou finalizou pelo tempo.
+Durante uma partida, E, Esc e **Sair do lobby** primeiro abrem uma confirmação;
+**Cancelar** mantém o jogador sentado. Uma saída confirmada não interrompe a
+partida enquanto restarem pelo menos duas pessoas. Se uma saída ou expiração de
+presença deixar apenas um participante, o Convex finaliza o quiz e mostra
+“Quiz encerrado por falta de participantes” para quem ficou.
+
 `scripts/sync-door-definitions.mjs` também gera `convex/quizSeatDefinitions.js`
 a partir do Tiled antes de iniciar o Convex ou compilar. O teste real com dois
 clientes é `npm.cmd run test:quiz-lobby` com o backend local rodando.
+
+## Conteúdo auxiliar por pergunta
+
+Em `convex/quizQuestions.js`, cada pergunta aceita um campo opcional `media`.
+Perguntas sem esse campo mantêm a apresentação anterior. Os exemplos de código
+e tabela estão nas perguntas existentes `programming-001` e `programming-003`;
+`programming-002` continua sem media. Não foram adicionadas perguntas ao sorteio.
+
+Use uma das estruturas abaixo como propriedade da pergunta:
+
+```js
+media: {
+  type: 'image',
+  src: '/assets/quiz/example.png',
+  alt: 'Descrição da imagem',
+}
+
+media: {
+  type: 'table',
+  columns: ['Gerät', 'IP-Adresse'],
+  rows: [['PC1', '192.168.1.10'], ['PC2', '192.168.1.11']],
+}
+
+media: {
+  type: 'text',
+  content: 'Informação adicional...',
+}
+
+media: {
+  type: 'code',
+  language: 'javascript',
+  content: 'const x = 10;',
+}
+```
+
+Coloque imagens em `public/assets/quiz/` (crie a pasta ao adicionar a primeira).
+O caminho público não inclui `public`. A imagem mantém a proporção e o texto
+`alt`; um arquivo indisponível mostra uma mensagem auxiliar. URLs de imagem
+aceitam HTTP/HTTPS, incluindo caminhos locais resolvidos contra a página.
+
+`src/QuizMedia.js` cria elementos DOM e usa `textContent`, sem interpretar HTML
+das perguntas. Código usa `<pre><code>` sem highlighting; `language` fica em
+`data-language`. Tipos desconhecidos ou estruturas incompletas são ignorados.
+A consulta do quiz apenas repassa `media` quando presente, sem mudar confirmação,
+feedback, pontuação, seleção, filtros, host ou resultado final.
+
+A área `.quiz-media` fica acima de `.quiz-question-body`, dentro de
+`.quiz-question-layout`. Ajustes estão em `src/style.css`:
+
+- `--quiz-media-max-height`: limite da área e da imagem (padrão: 240px).
+- `--quiz-media-gap`: distância para a pergunta (16px).
+- `.quiz-media-image`, `.quiz-media-table`, `.quiz-media-text` e `.quiz-media-code`:
+  estilos específicos de cada tipo.
+- Para experimentar media ao lado da pergunta em telas de pelo menos 900px,
+  aumente `--quiz-panel-width` e defina `--quiz-content-columns` como
+  `minmax(0, 1fr) minmax(0, 1fr)`. Telas menores continuam empilhadas, e perguntas
+  sem media continuam ocupando a largura inteira.
+
+Conteúdo longo tem rolagem dentro da área auxiliar. Os testes de renderização,
+texto literal, media ausente e troca de conteúdo rodam com `npm.cmd test`.

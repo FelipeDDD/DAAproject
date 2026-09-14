@@ -1,6 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { shouldShowStartButton } from '../src/QuizLobby.js';
+import { createCharacterSessionId } from '../src/CharacterMenu.js';
+import { shouldConfirmQuizLeave, shouldShowStartButton } from '../src/QuizLobby.js';
+
+test('character session id works without crypto.randomUUID',()=>{
+  let value=0;
+  const cryptoApi={getRandomValues(bytes){for(let index=0;index<bytes.length;index++)bytes[index]=value++;return bytes;}};
+  const id=createCharacterSessionId(cryptoApi);
+  assert.match(id,/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+  assert.ok(createCharacterSessionId(null).length>=16);
+});
 
 test('start button follows the current host and lobby status',()=>{
   const lobby={status:'lobby',hostCharacterId:'michael'};
@@ -11,4 +20,27 @@ test('start button follows the current host and lobby status',()=>{
   assert.equal(shouldShowStartButton(lobby,'felipe'),true);
   lobby.status='starting';
   assert.equal(shouldShowStartButton(lobby,'felipe'),false);
+});
+
+test('leaving needs confirmation only while a quiz is in progress',()=>{
+  assert.equal(shouldConfirmQuizLeave({status:'lobby'}),false);
+  assert.equal(shouldConfirmQuizLeave({status:'starting'}),true);
+  assert.equal(shouldConfirmQuizLeave({status:'finished'}),false);
+});
+
+test('first leave request asks for confirmation and the second leaves',async()=>{
+  let mutations=0;
+  const quiz=Object.assign(Object.create((await import('../src/QuizLobby.js')).QuizLobby.prototype),{
+    seated:true,pending:false,confirmingLeave:false,lobby:{status:'starting'},room:'school',
+    presence:{identity:{characterId:'michael',sessionId:'session-123456789'},client:{
+      async mutation(){mutations++;},
+    },api:{quizLobbies:{leave:'leave'}}},
+    render(){},standLocally(){this.seated=false;this.confirmingLeave=false;},status:{textContent:''},
+  });
+  assert.equal(await quiz.leave(),false);
+  assert.equal(quiz.confirmingLeave,true);
+  assert.equal(mutations,0);
+  assert.equal(await quiz.leave(),true);
+  assert.equal(quiz.seated,false);
+  assert.equal(mutations,1);
 });

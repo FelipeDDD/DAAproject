@@ -42,8 +42,10 @@ try{
     assert.equal(lobbyA.questionCount,expectedCount);
     assert.deepEqual(lobbyA.question,{
       id:bankQuestion.id,category:bankQuestion.category,difficulty:bankQuestion.difficulty,
-      question:bankQuestion.question,answers:bankQuestion.answers,explanation:null,
+      question:bankQuestion.question,answers:bankQuestion.answers,
+      ...(bankQuestion.media?{media:bankQuestion.media}:{}),explanation:null,
     });
+    assert.ok(lobbyA.questionDeadline>Date.now());
     assert.deepEqual(lobbyB.question,lobbyA.question);
     assert.equal(lobbyA.correctAnswerIndex,null);assert.equal(lobbyB.correctAnswerIndex,null);
 
@@ -79,7 +81,21 @@ try{
   await wait(()=>lobbyA?.hostCharacterId===identities[1].characterId,'host transfer after quiz');
   await clients[1].mutation(api.quizLobbies.leave,args(1));
   await wait(()=>lobbyA===null&&lobbyB===null,'empty lobby removal');
-  console.log('PASS: one shared non-repeating sequence, hidden answers, scores, host controls and final results.');
+
+  await Promise.all([updateAtSeat(0),updateAtSeat(1)]);
+  await clients[0].mutation(api.quizLobbies.join,args(0));
+  await clients[1].mutation(api.quizLobbies.join,args(1));
+  await wait(()=>lobbyA?.participants.length===2,'second quiz participants');
+  await clients[0].mutation(api.quizLobbies.start,args(0));
+  await wait(()=>lobbyA?.status==='starting','second quiz started');
+  await clients[1].mutation(api.quizLobbies.leave,args(1));
+  await wait(()=>lobbyA?.status==='finished','quiz ended with one participant');
+  assert.equal(lobbyA.finishedReason,'insufficient-participants');
+  assert.deepEqual(lobbyA.participants,[identities[0].characterId]);
+  assert.equal(lobbyA.question,null);
+  await clients[0].mutation(api.quizLobbies.leave,args(0));
+  await wait(()=>lobbyA===null,'ended lobby removal');
+  console.log('PASS: shared sequence, scores, host controls, final result and insufficient-participant ending.');
 } finally {
   await Promise.all(identities.map((identity,index)=>releaseTestCharacter(clients[index],identity)));
   unsubscribeA?.();unsubscribeB?.();

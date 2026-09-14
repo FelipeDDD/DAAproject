@@ -6,9 +6,12 @@ export default defineSchema({
     room:v.string(), hostCharacterId:v.string(), status:v.union(v.literal('lobby'),v.literal('starting'),v.literal('finished')),
     participants:v.array(v.string()), createdAt:v.number(),
     questionIndex:v.optional(v.number()),
+    questionDeadline:v.optional(v.number()),
     questionIds:v.optional(v.array(v.string())),
     scores:v.optional(v.array(v.object({characterId:v.string(),points:v.number()}))),
     scoredQuestionIds:v.optional(v.array(v.string())),
+    timedOutCharacterIds:v.optional(v.array(v.string())),
+    finishedReason:v.optional(v.literal('insufficient-participants')),
   }).index('by_room',['room']),
   quizAnswers: defineTable({
     lobbyId:v.id('quizLobbies'), room:v.string(), questionId:v.string(),

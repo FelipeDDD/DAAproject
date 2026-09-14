@@ -3,6 +3,9 @@ import { v } from 'convex/values';
 import seatsByRoom from './quizSeatDefinitions.js';
 import { QUIZ_QUESTIONS, selectQuizQuestionIds } from './quizQuestions.js';
 import { PLAYER_SCALE } from '../src/game/settings.js';
+import {
+  QUIZ_QUESTION_DURATION_MS,quizQuestionComplete,quizQuestionExpired,shouldEndQuizForParticipants,
+} from '../src/quizTimer.js';
 
 const ACTIVE_MS = 15_000;
 
@@ -28,6 +31,10 @@ function questionFor(lobby) {
   return QUIZ_QUESTIONS.find(question=>question.id===id)??null;
 }
 
+function deadlineFor(lobby) {
+  return lobby.questionDeadline??(lobby.createdAt+QUIZ_QUESTION_DURATION_MS);
+}
+
 function scoresFor(lobby,participants) {
   const saved=new Map((lobby.scores??[]).map(score=>[score.characterId,score.points]));
   return participants.map(characterId=>({characterId,points:saved.get(characterId)??0}));
@@ -49,7 +56,9 @@ async function scoreIfComplete(ctx,lobby,participants) {
   const question=questionFor(lobby);
   const answers=await answersForQuestion(ctx,lobby,question);
   const byCharacter=new Map(answers.map(answer=>[answer.characterId,answer]));
-  const allAnswered=Boolean(question&&participants.length&&participants.every(id=>byCharacter.has(id)));
+  const allAnswered=Boolean(question&&quizQuestionComplete(
+    participants,byCharacter.keys(),deadlineFor(lobby),lobby.timedOutCharacterIds??[],
+  ));
   const scoredQuestionIds=lobby.scoredQuestionIds??[];
   let scores=scoresFor(lobby,participants);
   if(allAnswered&&!scoredQuestionIds.includes(question.id)){
@@ -72,15 +81,20 @@ export const current = query({
     const question=lobby.status==='starting'?questionFor(lobby):null;
     const answers=await answersForQuestion(ctx,lobby,question);
     const activeAnswers=answers.filter(answer=>participants.includes(answer.characterId));
-    const allAnswered=Boolean(question&&participants.length&&activeAnswers.length===participants.length);
+    const allAnswered=Boolean(question&&quizQuestionComplete(
+      participants,activeAnswers.map(answer=>answer.characterId),deadlineFor(lobby),lobby.timedOutCharacterIds??[],
+    ));
     const ownAnswer=activeAnswers.find(answer=>answer.characterId===characterId);
     return {
       room:lobby.room,hostCharacterId:lobby.hostCharacterId,status:lobby.status,
       participants,createdAt:lobby.createdAt,questionIndex:lobby.questionIndex??0,
+      questionDeadline:question?deadlineFor(lobby):null,
+      finishedReason:lobby.finishedReason??null,
       questionCount:questionIdsFor(lobby).length,
       question:question?{
         id:question.id,category:question.category,difficulty:question.difficulty,
         question:question.question,answers:question.answers,
+        ...(question.media ? {media:question.media} : {}),
         explanation:allAnswered?(question.explanation??null):null,
       }:null,
       answeredCharacterIds:activeAnswers.map(answer=>answer.characterId),
@@ -137,9 +151,12 @@ export const leave = mutation({
       participants,
       hostCharacterId:lobby.hostCharacterId===args.characterId?participants[0]:lobby.hostCharacterId,
       scores:scoresFor(lobby,participants),
+      ...(shouldEndQuizForParticipants(lobby.status,participants.length)
+        ? {status:'finished',finishedReason:'insufficient-participants'} : {}),
     };
     await ctx.db.patch(lobby._id,patch);
-    if(lobby.status==='starting')await scoreIfComplete(ctx,{...lobby,...patch},participants);
+    if(lobby.status==='starting'&&!shouldEndQuizForParticipants(lobby.status,participants.length))
+      await scoreIfComplete(ctx,{...lobby,...patch},participants);
   },
 });
 
@@ -155,7 +172,9 @@ export const start = mutation({
     if(!questionIds.length)throw new Error('Nenhuma pergunta disponível.');
     await ctx.db.patch(lobby._id,{
       participants,status:'starting',questionIndex:0,questionIds,
+      questionDeadline:Date.now()+QUIZ_QUESTION_DURATION_MS,
       scores:participants.map(characterId=>({characterId,points:0})),scoredQuestionIds:[],
+      timedOutCharacterIds:[],
     });
   },
 });
@@ -170,6 +189,7 @@ export const answer = mutation({
       throw new Error('Quiz indisponível para este jogador.');
     if(!Number.isInteger(args.answerIndex)||args.answerIndex<0||args.answerIndex>=question.answers.length)
       throw new Error('Alternativa inválida.');
+    if(quizQuestionExpired(deadlineFor(lobby)))throw new Error('O tempo desta pergunta terminou.');
     const existing=await ctx.db.query('quizAnswers').withIndex('by_lobby_question_character',q=>
       q.eq('lobbyId',lobby._id).eq('questionId',question.id).eq('characterId',args.characterId)).unique();
     if(existing){
@@ -183,6 +203,38 @@ export const answer = mutation({
     const participants=await activeParticipants(ctx,lobby);
     await scoreIfComplete(ctx,lobby,participants);
     return {answerIndex:args.answerIndex};
+  },
+});
+
+export const finishTimedQuestion = mutation({
+  args: {
+    room:v.string(),characterId:v.string(),sessionId:v.string(),
+    answerIndex:v.optional(v.number()),
+  },
+  handler:async(ctx,args)=>{
+    await playerFor(ctx,args.characterId,args.sessionId,args.room);
+    const lobby=await ctx.db.query('quizLobbies').withIndex('by_room',q=>q.eq('room',args.room)).unique();
+    const question=lobby&&questionFor(lobby);
+    if(!lobby||lobby.status!=='starting'||!question||!lobby.participants.includes(args.characterId))
+      throw new Error('Quiz indisponível para este jogador.');
+    if(!quizQuestionExpired(deadlineFor(lobby)))throw new Error('A pergunta ainda está em andamento.');
+    let existing=await ctx.db.query('quizAnswers').withIndex('by_lobby_question_character',q=>
+      q.eq('lobbyId',lobby._id).eq('questionId',question.id).eq('characterId',args.characterId)).unique();
+    if(!existing&&args.answerIndex!==undefined){
+      if(!Number.isInteger(args.answerIndex)||args.answerIndex<0||args.answerIndex>=question.answers.length)
+        throw new Error('Alternativa inválida.');
+      const answerId=await ctx.db.insert('quizAnswers',{
+        lobbyId:lobby._id,room:args.room,questionId:question.id,
+        characterId:args.characterId,answerIndex:args.answerIndex,createdAt:Date.now(),
+      });
+      existing=await ctx.db.get(answerId);
+    }
+    const timedOutCharacterIds=Array.from(new Set([...(lobby.timedOutCharacterIds??[]),args.characterId]));
+    await ctx.db.patch(lobby._id,{timedOutCharacterIds});
+    const updatedLobby={...lobby,timedOutCharacterIds};
+    const participants=await activeParticipants(ctx,updatedLobby);
+    await scoreIfComplete(ctx,updatedLobby,participants);
+    return {answerIndex:existing?.answerIndex??null};
   },
 });
 
@@ -200,7 +252,7 @@ export const nextQuestion = mutation({
     const questionCount=questionIdsFor(lobby).length;
     await ctx.db.patch(lobby._id,nextIndex>=questionCount
       ? {status:'finished',questionIndex:nextIndex}
-      : {questionIndex:nextIndex});
+      : {questionIndex:nextIndex,questionDeadline:Date.now()+QUIZ_QUESTION_DURATION_MS,timedOutCharacterIds:[]});
   },
 });
 
@@ -212,7 +264,13 @@ export const cleanup = internalMutation({
       if(!participants.length){await deleteLobby(ctx,lobby);continue;}
       let currentLobby=lobby;
       if(participants.length!==lobby.participants.length||!participants.includes(lobby.hostCharacterId)){
-        const patch={participants,hostCharacterId:participants.includes(lobby.hostCharacterId)?lobby.hostCharacterId:participants[0],scores:scoresFor(lobby,participants)};
+        const patch={
+          participants,
+          hostCharacterId:participants.includes(lobby.hostCharacterId)?lobby.hostCharacterId:participants[0],
+          scores:scoresFor(lobby,participants),
+          ...(shouldEndQuizForParticipants(lobby.status,participants.length)
+            ? {status:'finished',finishedReason:'insufficient-participants'} : {}),
+        };
         await ctx.db.patch(lobby._id,patch);currentLobby={...lobby,...patch};
       }
       if(currentLobby.status==='starting')await scoreIfComplete(ctx,currentLobby,participants);

@@ -6,6 +6,11 @@ export const QUIZ_DIFFICULTIES = Object.freeze(['easy','medium','hard']);
 export const QUIZ_QUESTIONS = Object.freeze([
   {
     id: 'programming-001',
+    media: {
+      type: 'code',
+      language: 'javascript',
+      content: 'const score = 0;\nconsole.log(score);',
+    },
     category: 'Programmierung',
     difficulty: 'easy',
     question: 'Qual linguagem está sendo usada no frontend deste projeto?',
@@ -24,6 +29,11 @@ export const QUIZ_QUESTIONS = Object.freeze([
   },
   {
     id: 'programming-003',
+    media: {
+      type: 'table',
+      columns: ['Personagem', 'ID'],
+      rows: [['Michael', 'michael'], ['Jassine', 'jassine'], ['Sarina', 'sarina'], ['Felipe', 'felipe']],
+    },
     category: 'Programmierung',
     difficulty: 'easy',
     question: 'Quantos personagens fixos existem nesta primeira versão?',

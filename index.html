@@ -33,10 +33,16 @@
         <h2 id="quiz-lobby-title">QUIZ LOBBY</h2>
         <ul id="quiz-participants"></ul>
         <section id="quiz-question" hidden aria-labelledby="quiz-question-text">
-          <h3 id="quiz-question-text"></h3>
-          <div id="quiz-alternatives" role="group" aria-label="Alternativas da pergunta"></div>
-          <p id="quiz-explanation" hidden></p>
-          <button id="confirm-answer" type="button">Confirmar resposta</button>
+          <div class="quiz-question-layout">
+            <div id="quiz-media" class="quiz-media" role="region" aria-label="Conteúdo auxiliar da pergunta" tabindex="0" hidden></div>
+            <div class="quiz-question-body">
+              <time id="quiz-timer" class="quiz-timer" aria-label="Tempo restante" hidden></time>
+              <h3 id="quiz-question-text"></h3>
+              <div id="quiz-alternatives" role="group" aria-label="Alternativas da pergunta"></div>
+              <p id="quiz-explanation" hidden></p>
+              <button id="confirm-answer" type="button">Confirmar resposta</button>
+            </div>
+          </div>
         </section>
         <section id="quiz-results" hidden aria-labelledby="quiz-results-title">
           <h3 id="quiz-results-title">Resultado</h3>
@@ -46,6 +52,7 @@
           <button id="start-quiz" hidden>Iniciar quiz</button>
           <button id="next-question" type="button" hidden>Próxima pergunta</button>
           <button id="leave-quiz" type="button">Sair do lobby</button>
+          <button id="cancel-leave-quiz" type="button" hidden>Cancelar</button>
         </div>
         <small id="quiz-status" role="status"></small>
       </section>
