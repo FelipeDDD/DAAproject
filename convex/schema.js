@@ -10,11 +10,12 @@ export default defineSchema({
     questionIds:v.optional(v.array(v.string())),
     settings:v.optional(v.object({
       category:v.union(v.string(),v.null()),
+      topic:v.optional(v.union(v.string(),v.null())),
       difficulty:v.union(v.literal('medium'),v.literal('hard'),v.null()),
       count:v.union(v.number(),v.null()),
     })),
     questions:v.optional(v.array(v.object({
-      id:v.string(),category:v.string(),difficulty:v.string(),question:v.string(),
+      id:v.string(),category:v.string(),topic:v.optional(v.union(v.string(),v.null())),difficulty:v.string(),question:v.string(),
       answers:v.array(v.string()),correctAnswer:v.number(),
       explanation:v.optional(v.string()),media:v.optional(v.any()),
     }))),

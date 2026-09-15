@@ -10,6 +10,7 @@ import {
   DECIMAL_VALUE_MAX,
   materializeQuizQuestion,
   materializeQuizQuestions,
+  quizTopicsByCategory,
   selectQuizQuestionIds,
   shuffleConcreteAnswers,
 } from '../convex/quizQuestions.js';
@@ -103,6 +104,18 @@ test('selection is ready for category, difficulty and amount filters',()=>{
     const item=QUIZ_QUESTIONS.find(question=>question.id===id);
     assert.equal(item.category,'Programmierung');assert.equal(item.difficulty,'medium');
   }
+});
+
+test('Rechnungen topics are detected and filter the shared question bank',()=>{
+  const groups=quizTopicsByCategory();
+  const rechnungen=groups.find(group=>group.category==='Rechnungen')?.topics??[];
+  for(const topic of ['Dreisatz','Netto-Brutto','Prozentrechnung','Rabatt','Textverständnis'])
+    assert.ok(rechnungen.includes(topic));
+  assert.deepEqual(groups.find(group=>group.category==='Prüfungssprache')?.topics,
+    ['Aufgabenverben','Prüfungsformulierungen','Textverständnis']);
+  const ids=selectQuizQuestionIds({category:'Rechnungen',topic:'Rabatt',difficulty:'medium',count:null,seed:'rabatt'});
+  assert.equal(ids.length,2);
+  assert.ok(ids.every(id=>QUIZ_QUESTIONS.find(question=>question.id===id)?.topic==='Rabatt'));
 });
 
 test('All quantity uses every compatible question without failing',()=>{

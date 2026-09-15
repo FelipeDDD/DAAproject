@@ -34,6 +34,8 @@ export function validateQuizQuestion(question,{allowGenerated=false}={}) {
   const errors=[];
   if (!hasText(question?.id)) errors.push('id is required');
   if (!hasText(question?.category)) errors.push('category is required');
+  if (question?.topic !== undefined && question.topic !== null && typeof question.topic !== 'string')
+    errors.push('topic must be text or null');
   if (!SUPPORTED_QUIZ_DIFFICULTIES.includes(question?.difficulty)) errors.push('difficulty must be medium or hard');
   if (allowGenerated&&question?.type==='generated') {
     if (typeof question.generate!=='function') errors.push('generated question must provide generate()');

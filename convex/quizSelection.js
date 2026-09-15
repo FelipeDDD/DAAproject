@@ -35,9 +35,10 @@ function normalizedHistory(history,poolIds,limit) {
 }
 
 export function buildQuizQuestionSelection({
-  questionBank,category,difficulty,count=5,seed=Date.now(),recentHistories=[],
+  questionBank,category,topic,difficulty,count=5,seed=Date.now(),recentHistories=[],
 }={}) {
   const pool=(questionBank??[]).filter(question=>(!category||question.category===category)
+    &&(!topic||question.topic===topic)
     &&(!difficulty||question.difficulty===difficulty));
   const poolIds=new Set(pool.map(question=>question.id));
   const exclusionCount=recentExclusionCount(pool.length);

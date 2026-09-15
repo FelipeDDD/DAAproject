@@ -11,7 +11,7 @@ const records=createQuizReviewRecords(
   STATIC_QUIZ_QUESTIONS,GENERATED_QUIZ_QUESTIONS,materializeQuizQuestion,
 );
 const elements=Object.fromEntries([
-  'summary','category-filter','difficulty-filter','search-filter','sort-filter','random-question',
+  'summary','category-filter','topic-filter-field','topic-filter','difficulty-filter','search-filter','sort-filter','random-question',
   'question-list','question-list-title','visible-count','question-detail',
 ].map(id=>[id,document.getElementById(id)]));
 let selectedKey=records[0]?.key??null;
@@ -25,6 +25,19 @@ function initializeFilters(){
   const difficulties=[...new Set(records.map(record=>record.template.difficulty))].filter(Boolean).sort();
   categories.forEach(value=>addOption(elements['category-filter'],value));
   difficulties.forEach(value=>addOption(elements['difficulty-filter'],value));
+}
+
+function updateTopicFilter(){
+  const category=elements['category-filter'].value;
+  const topics=category?[...new Set(records
+    .filter(record=>record.template.category===category)
+    .map(record=>record.template.topic).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'de')):[];
+  const previous=elements['topic-filter'].value;
+  elements['topic-filter'].replaceChildren();addOption(elements['topic-filter'],'');
+  elements['topic-filter'].options[0].textContent='All';
+  topics.forEach(value=>addOption(elements['topic-filter'],value));
+  elements['topic-filter'].value=topics.includes(previous)?previous:'';
+  elements['topic-filter-field'].hidden=topics.length===0;
 }
 
 function summaryCard(label,value,tone=''){
@@ -45,7 +58,8 @@ function renderSummary(){
 }
 
 function filters(){return {
-  category:elements['category-filter'].value,difficulty:elements['difficulty-filter'].value,
+  category:elements['category-filter'].value,topic:elements['topic-filter'].value,
+  difficulty:elements['difficulty-filter'].value,
   search:elements['search-filter'].value,sort:elements['sort-filter'].value,
 };}
 
@@ -67,7 +81,10 @@ function renderList(){
     if(record.errors.length)top.append(badge(`${record.errors.length} warning${record.errors.length===1?'':'s'}`,'warning'));
     const text=document.createElement('span');text.className='question-row-text';
     text.textContent=record.preview.question??'Question preview unavailable';
-    const meta=document.createElement('small');meta.textContent=`${record.template.category||'No category'} · ${record.template.difficulty||'No difficulty'} · ${record.source}`;
+    const metadata=[record.template.category||'No category'];
+    if(record.template.topic)metadata.push(record.template.topic);
+    metadata.push(record.template.difficulty||'No difficulty',record.source);
+    const meta=document.createElement('small');meta.textContent=metadata.join(' · ');
     button.append(top,text,meta);button.addEventListener('click',()=>{selectedKey=record.key;render();});item.append(button);return item;
   }));
 }
@@ -86,11 +103,12 @@ function renderDetail(){
   const heading=document.createElement('h2');heading.textContent=question.question??record.template.id;
   const badges=document.createElement('div');badges.className='detail-badges';
   badges.append(badge(record.template.category||'Missing category'),badge(record.template.difficulty||'Missing difficulty'));
+  if(record.template.topic)badges.append(badge(record.template.topic));
   if(record.generated)badges.append(badge('Dynamic template','generated'));
   title.append(heading,badges);
 
   const metadata=document.createElement('dl');metadata.className='detail-metadata';
-  metadata.append(field('ID',question.id??record.template.id),field('Source',record.source));
+  metadata.append(field('ID',question.id??record.template.id),field('Topic',question.topic),field('Source',record.source));
 
   const actions=document.createElement('div');actions.className='detail-actions';
   if(record.generated){
@@ -125,7 +143,8 @@ function renderDetail(){
 
 function render(){renderSummary();renderList();renderDetail();}
 
-for(const id of ['category-filter','difficulty-filter','sort-filter'])elements[id].addEventListener('change',render);
+elements['category-filter'].addEventListener('change',()=>{updateTopicFilter();render();});
+for(const id of ['topic-filter','difficulty-filter','sort-filter'])elements[id].addEventListener('change',render);
 elements['search-filter'].addEventListener('input',render);
 elements['random-question'].addEventListener('click',()=>{
   const visible=visibleRecords();if(!visible.length)return;
@@ -133,4 +152,4 @@ elements['random-question'].addEventListener('click',()=>{
   elements.summary.scrollIntoView({behavior:'smooth',block:'start'});
 });
 
-initializeFilters();render();
+initializeFilters();updateTopicFilter();render();

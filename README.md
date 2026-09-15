@@ -286,7 +286,7 @@ Somente o host vê o botão de início e pode mudar o status para `starting`, co
 a 4 participantes. Nesse momento, o Convex seleciona uma vez a quantidade configurada de IDs do
 banco combinado por `convex/quizQuestions.js`, sem repetição, e salva a sequência
 no lobby. As perguntas estáticas são carregadas automaticamente dos CSVs, junto aos templates gerados. Cada item aceita `id`,
-`category`, `difficulty`, `question`, quatro `answers`, `correctAnswer` e uma
+`category`, `topic` opcional, `difficulty`, `question`, quatro `answers`, `correctAnswer` e uma
 `explanation` opcional. A escolha fica local até o jogador confirmar; então o
 Convex salva uma resposta por participante e pergunta na tabela `quizAnswers`.
 Quando todos os participantes ativos respondem, a alternativa correta e o
@@ -294,8 +294,9 @@ feedback são revelados, o lobby soma um ponto por acerto e o host pode avançar
 Depois da última pergunta, o painel mostra o resultado sincronizado. A limpeza de
 presença também repara ou remove lobbies a cada 5 segundos.
 
-Antes de iniciar, o host escolhe uma categoria ou `All`, dificuldade `medium`,
-`hard` ou `All`, e quantidade 5, 10, 15 ou `All`. Essas configurações ficam em
+Antes de iniciar, o host escolhe uma categoria ou `All`, topic ou `All` quando a
+categoria possui topics, dificuldade `medium`, `hard` ou `All`, e quantidade 5,
+10, 15 ou `All`. Essas configurações ficam em
 `quizLobbies.settings`, são visíveis para todos e editáveis somente pelo host. As
 categorias do seletor vêm automaticamente do banco combinado.
 
@@ -314,7 +315,7 @@ instância recebe um ID próprio na sessão, evitando conflitos nas respostas e 
 ### Histórico recente e anti-repetição
 
 O Convex salva por personagem uma lista limitada em `quizQuestionHistory`. A seleção
-reutilizável fica em `convex/quizSelection.js`: primeiro aplica categoria e dificuldade,
+reutilizável fica em `convex/quizSelection.js`: primeiro aplica categoria, topic e dificuldade,
 depois evita `max(5, ceil(pool filtrado × 0,10))` perguntas recentes de cada participante.
 As constantes `RECENT_EXCLUSION_PERCENT`, `RECENT_EXCLUSION_MINIMUM` e
 `RECENT_HISTORY_LIMIT` ficam no início desse arquivo.
@@ -349,7 +350,7 @@ Com `npm.cmd run dev` em execução, abra
 `http://127.0.0.1:5173/quiz-database.html`. Essa página existe somente como
 ferramenta de desenvolvimento e não aparece na navegação normal do jogo. Ela lista
 as perguntas estáticas e os templates gerados, mostra origem, totais, filtros,
-busca, ordenação, resposta correta, explanation, media e avisos de validação.
+busca, ordenação, resposta correta, topic, explanation, media e avisos de validação.
 
 O botão `Generate again` materializa outra amostra local de um template dinâmico,
 sem criar ou alterar sessões no Convex. Depois de editar um CSV, execute
@@ -360,8 +361,9 @@ Cada arquivo contém estas colunas, nesta ordem:
 
 | Coluna | Conteúdo |
 | --- | --- |
-| `id` | Identificador único terminado em número, como `hardware-001` ou `Programmierung-001` |
+| `id` | Identificador único terminado em número, como `hardware-001` ou `programming-001` |
 | `category` | Categoria exibida e usada pelos filtros |
+| `topic` | Subtema opcional; deixe vazio quando a categoria não usar topics |
 | `difficulty` | `medium` ou `hard` |
 | `question` | Texto da pergunta |
 | `answer1` até `answer4` | Exatamente quatro alternativas diferentes |
@@ -375,9 +377,16 @@ categoria nova, copie o cabeçalho para um novo CSV e mantenha um prefixo consis
 nos IDs. IDs precisam ser únicos entre todos os CSVs e também não podem coincidir com
 um template gerado.
 
+O cabeçalho novo é
+`id;category;topic;difficulty;question;answer1;answer2;answer3;answer4;correctAnswer;explanation;media`.
+O loader continua aceitando o cabeçalho antigo sem `topic`. Nos painéis, o fluxo é
+**Category → Topic → Difficulty → Quantity**; Topic desaparece quando a categoria
+selecionada não possui nenhum valor e volta para `All` ao trocar de categoria.
+
 Execute `npm.cmd run validate:quiz` depois de salvar. O comando aponta arquivo e linha
 para IDs duplicados, campos obrigatórios vazios, respostas ausentes ou repetidas,
-`correctAnswer` inválido, dificuldade não suportada e JSON de `media` inválido.
+`correctAnswer` inválido, dificuldade não suportada, `topic` estruturalmente inválido
+e JSON de `media` inválido. `topic` vazio é válido e não ativa nenhum filtro.
 `npm.cmd run sync:quiz` atualiza `convex/quizStaticQuestions.generated.js`; esse arquivo
 é gerado e não deve ser editado. `dev`, `build`, `convex` e `test` fazem essa sincronização
 automaticamente, portanto não é necessário copiar dados do CSV para JavaScript.

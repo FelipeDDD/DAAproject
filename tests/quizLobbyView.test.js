@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createCharacterSessionId } from '../src/CharacterMenu.js';
 import { QuizLobby, shouldConfirmQuizLeave, shouldShowStartButton } from '../src/QuizLobby.js';
+import { readQuizSettingsControls,topicsForQuizCategory } from '../src/quiz/QuizSettingsControls.js';
 
 test('character session id works without crypto.randomUUID',()=>{
   let value=0;
@@ -39,8 +40,23 @@ test('changed quiz settings are captured before realtime rendering restores old 
   await quiz.updateSettings();
   assert.deepEqual(sent,{
     room:'school',characterId:'michael',sessionId:'session-123456789',
-    category:'Hardware',difficulty:'hard',count:10,
+    category:'Hardware',topic:null,difficulty:'hard',count:10,
   });
+});
+
+test('topics are category-specific and an invalid topic resets to All',()=>{
+  const options={
+    categories:['Hardware','Rechnungen'],topicsByCategory:[
+      {category:'Rechnungen',topics:['Rabatt','Dreisatz','Prozentrechnung']},
+    ],difficulties:['medium','hard'],quantities:[5,10,15],
+  };
+  assert.deepEqual(topicsForQuizCategory(options,'Hardware'),[]);
+  assert.deepEqual(topicsForQuizCategory(options,'Rechnungen'),['Dreisatz','Prozentrechnung','Rabatt']);
+  const settings=readQuizSettingsControls({
+    categorySelect:{value:'Hardware'},topicSelect:{value:'Rabatt'},
+    difficultySelect:{value:'medium'},quantitySelect:{value:'5'},
+  },options);
+  assert.deepEqual(settings,{category:'Hardware',topic:null,difficulty:'medium',count:5});
 });
 
 test('leaving needs confirmation only while a quiz is in progress',()=>{

@@ -36,6 +36,7 @@
 #quiz-settings, #solo-config { margin: 0 0 22px; padding: 18px 0; border-top: 1px solid #cbd5dc; border-bottom: 1px solid #cbd5dc; }
 #quiz-settings h3, #solo-config h3 { margin: 0 0 12px; font-size: 17px; }
 .quiz-setting-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.quiz-setting-fields.has-topic { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .quiz-setting-fields label { display: grid; gap: 5px; color: #526b7a; font-size: 12px; font-weight: 600; }
 .quiz-setting-fields select { width: 100%; min-height: 38px; padding: 7px; color: #334550; background: #fff; border: 1px solid #aebdc6; border-radius: 5px; font: inherit; }
 #quiz-settings-note { display: block; margin-top: 10px; color: #627b89; }

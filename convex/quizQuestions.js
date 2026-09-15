@@ -24,6 +24,39 @@ export function quizCategories() {
     .sort((left, right) => left.localeCompare(right, 'de'));
 }
 
+export function quizTopicsByCategory() {
+  const groups=[];
+  for(const category of quizCategories()){
+    const values=[...new Set(QUIZ_QUESTIONS
+      .filter(question=>question.category===category&&question.topic)
+      .map(question=>question.topic))]
+      .sort((left,right)=>left.localeCompare(right,'de'));
+    // Convex restricts field names to ASCII, so Unicode category names must be values.
+    if(values.length)groups.push({category,topics:values});
+  }
+  return groups;
+}
+
+export function quizConfigurationOptions() {
+  return {
+    categories:quizCategories(),
+    topicsByCategory:quizTopicsByCategory(),
+    difficulties:QUIZ_DIFFICULTIES,
+    quantities:QUIZ_QUANTITIES,
+  };
+}
+
+export function validateQuizSettings({category=null,topic=null,difficulty=null,count=QUESTIONS_PER_QUIZ}={}) {
+  const options=quizConfigurationOptions();
+  if(category!==null&&!options.categories.includes(category))throw new Error('Invalid quiz category.');
+  const categoryTopics=options.topicsByCategory.find(group=>group.category===category)?.topics??[];
+  if(topic!==null&&(!category||!categoryTopics.includes(topic)))
+    throw new Error('Invalid quiz topic.');
+  if(difficulty!==null&&!options.difficulties.includes(difficulty))throw new Error('Invalid quiz difficulty.');
+  if(count!==null&&!options.quantities.includes(count))throw new Error('Invalid quiz question count.');
+  return {category,topic,difficulty,count};
+}
+
 export function shuffleConcreteAnswers(question, random = Math.random) {
   const tagged = question.answers.map((answer, index) => ({
     answer,
@@ -45,6 +78,7 @@ export function materializeQuizQuestion(template, random = Math.random) {
   const concrete = {
     id: template.id,
     category: template.category,
+    topic: generated.topic??template.topic??null,
     difficulty: template.difficulty,
     question: generated.question,
     answers: [...generated.answers],
@@ -85,12 +119,13 @@ export function materializeQuizQuestions(questionIds, random = Math.random) {
 
 export function selectQuizQuestionIds({
   category,
+  topic,
   difficulty,
   count = QUESTIONS_PER_QUIZ,
   seed = Date.now(),
   recentHistories = [],
 } = {}) {
   return buildQuizQuestionSelection({
-    questionBank:QUIZ_QUESTIONS,category,difficulty,count,seed,recentHistories,
+    questionBank:QUIZ_QUESTIONS,category,topic,difficulty,count,seed,recentHistories,
   }).questionIds;
 }

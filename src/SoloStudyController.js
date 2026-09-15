@@ -9,12 +9,14 @@ export class SoloStudyController {
   constructor(scene,presence,seats) {
     Object.assign(this,{
       scene,presence,seats,active:false,pending:false,session:null,options:DEFAULT_QUIZ_OPTIONS,
-      settings:{category:null,difficulty:null,count:5},mode:'study',completionResult:null,
+      settings:{category:null,topic:null,difficulty:null,count:5},mode:'study',completionResult:null,
     });
     this.root=document.getElementById('solo-study');this.title=document.getElementById('solo-study-title');
     this.configRoot=document.getElementById('solo-config');this.configTitle=document.getElementById('solo-config-title');
     this.modeSelect=document.getElementById('solo-mode');this.modeDescription=document.getElementById('solo-mode-description');
-    this.categorySelect=document.getElementById('solo-category');this.difficultySelect=document.getElementById('solo-difficulty');
+    this.categorySelect=document.getElementById('solo-category');
+    this.topicField=document.getElementById('solo-topic-field');this.topicSelect=document.getElementById('solo-topic');
+    this.difficultySelect=document.getElementById('solo-difficulty');
     this.quantitySelect=document.getElementById('solo-quantity');this.questionRoot=document.getElementById('solo-question');
     this.progress=document.getElementById('solo-progress');this.score=document.getElementById('solo-score');
     this.questionText=document.getElementById('solo-question-text');this.media=document.getElementById('solo-media');
@@ -34,12 +36,15 @@ export class SoloStudyController {
 
     this.onStart=()=>this.start();this.onConfirm=()=>this.confirm();this.onNext=()=>this.next();
     this.onAgain=()=>this.playAgain();this.onClose=()=>this.closePanel();
+    this.onSettingsChange=()=>{this.settings=readQuizSettingsControls(this,this.options);this.render();};
     this.onModeChange=()=>{this.mode=this.modeSelect.value;this.completionResult=null;this.renderMode();};
     this.onAlternative=event=>{
       const button=event.target.closest('button[data-answer-index]');
       if(button&&this.alternatives.contains(button)&&this.session?.select(Number(button.dataset.answerIndex)))this.renderQuestion();
     };
     this.startButton.addEventListener('click',this.onStart);this.modeSelect.addEventListener('change',this.onModeChange);
+    for(const select of [this.categorySelect,this.topicSelect,this.difficultySelect,this.quantitySelect])
+      select.addEventListener('change',this.onSettingsChange);
     this.confirmButton.addEventListener('click',this.onConfirm);this.nextButton.addEventListener('click',this.onNext);
     this.againButton.addEventListener('click',this.onAgain);this.closeButton.addEventListener('click',this.onClose);
     this.alternatives.addEventListener('click',this.onAlternative);
@@ -70,7 +75,7 @@ export class SoloStudyController {
 
   async start() {
     if(this.pending)return;
-    const settings=readQuizSettingsControls(this);this.settings=settings;this.mode=this.modeSelect.value;
+    const settings=readQuizSettingsControls(this,this.options);this.settings=settings;this.mode=this.modeSelect.value;
     this.pending=true;this.status.textContent='Preparing questions…';this.render();
     try{
       const {characterId,sessionId}=this.presence.identity;
@@ -154,7 +159,7 @@ export class SoloStudyController {
     this.againButton.textContent=challenge?'Challenge again':'Study again';
     if(challenge&&!this.completionResult)this.completionResult=this.session.completionRecord({
       characterId:this.presence.identity.characterId,category:this.settings.category,
-      difficulty:this.settings.difficulty,completedAt:Date.now(),
+      topic:this.settings.topic,difficulty:this.settings.difficulty,completedAt:Date.now(),
     });
   }
 
@@ -178,6 +183,8 @@ export class SoloStudyController {
   close() {
     this.closePanel();clearInterval(this.timerInterval);this.startButton.removeEventListener('click',this.onStart);
     this.modeSelect.removeEventListener('change',this.onModeChange);this.confirmButton.removeEventListener('click',this.onConfirm);
+    for(const select of [this.categorySelect,this.topicSelect,this.difficultySelect,this.quantitySelect])
+      select.removeEventListener('change',this.onSettingsChange);
     this.nextButton.removeEventListener('click',this.onNext);this.againButton.removeEventListener('click',this.onAgain);
     this.closeButton.removeEventListener('click',this.onClose);this.alternatives.removeEventListener('click',this.onAlternative);
     this.seatPrompt.destroy();

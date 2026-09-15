@@ -15,7 +15,7 @@ button { cursor: pointer; }
 .summary-card span { margin-top: 3px; color: #607782; font-size: 12px; white-space: nowrap; }
 .summary-card.warning { border-color: #d89b70; background: #fff8f1; }
 .summary-card.valid { border-color: #91c8a0; }
-.toolbar { display: grid; grid-template-columns: 180px 150px minmax(230px,1fr) 150px auto; gap: 12px; align-items: end; margin-bottom: 18px; padding: 16px; background: #fff; border: 1px solid #d1dce1; border-radius: 8px; }
+.toolbar { display: grid; grid-template-columns: 160px 160px 130px minmax(230px,1fr) 130px auto; gap: 12px; align-items: end; margin-bottom: 18px; padding: 16px; background: #fff; border: 1px solid #d1dce1; border-radius: 8px; }
 .toolbar label { display: grid; gap: 6px; color: #526a76; font-size: 12px; font-weight: 700; }
 .toolbar select, .toolbar input, .toolbar button, .detail-actions button { min-height: 40px; padding: 8px 11px; color: #263842; background: #fff; border: 1px solid #aebfc7; border-radius: 5px; }
 .toolbar button, .detail-actions button { color: #fff; background: #176f89; border-color: #176f89; font-weight: 700; }

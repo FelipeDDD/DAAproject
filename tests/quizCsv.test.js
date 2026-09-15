@@ -8,6 +8,7 @@ import { convertQuizCsv, loadStaticQuizQuestions } from '../scripts/quiz-csv.mjs
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const header = 'id;category;difficulty;question;answer1;answer2;answer3;answer4;correctAnswer;explanation;media';
+const topicHeader = 'id;category;topic;difficulty;question;answer1;answer2;answer3;answer4;correctAnswer;explanation;media';
 
 test('all CSV questions load with unique IDs, source files and quoted code intact', () => {
   const result = loadStaticQuizQuestions(path.join(root, 'quiz-data'));
@@ -20,6 +21,19 @@ test('all CSV questions load with unique IDs, source files and quoted code intac
   assert.equal(code.answers[0],'const score = 10;');
   assert.match(result.questions.find(({id})=>id==='Programmierung-014').question,/value = 5; if/);
   assert.ok(result.questions.filter(({ category }) => category === 'Hardware').length >= 20);
+  assert.equal(result.questions.find(({id})=>id==='hardware-001').topic,null);
+  const rechnungenTopics=[...new Set(result.questions
+    .filter(({category})=>category==='Rechnungen').map(({topic})=>topic))];
+  for(const topic of ['Dreisatz','Netto-Brutto','Prozentrechnung','Rabatt','Textverständnis'])
+    assert.ok(rechnungenTopics.includes(topic));
+  assert.equal(result.questions.filter(({category})=>category==='Prüfungssprache').length,50);
+});
+
+test('new CSV header reads optional topics while the old header remains compatible',()=>{
+  const withTopic=convertQuizCsv(`${topicHeader}\nrechnungen-999;Rechnungen;Rabatt;medium;Frage;A;B;C;D;0;;`,'rechnungen.csv');
+  const withoutTopic=convertQuizCsv(`${header}\nhardware-999;Hardware;medium;Frage;A;B;C;D;0;;`,'hardware.csv');
+  assert.deepEqual(withTopic.errors,[]);assert.equal(withTopic.questions[0].topic,'Rabatt');
+  assert.deepEqual(withoutTopic.errors,[]);assert.equal(withoutTopic.questions[0].topic,null);
 });
 
 test('quoted CSV fields preserve semicolons, quotes and line breaks', () => {

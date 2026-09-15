@@ -2,8 +2,8 @@ import { queryGeneric as query, mutationGeneric as mutation, internalMutationGen
 import { v } from 'convex/values';
 import seatsByRoom from './quizSeatDefinitions.js';
 import {
-  QUESTIONS_PER_QUIZ,QUIZ_DIFFICULTIES,QUIZ_QUANTITIES,QUIZ_QUESTIONS,
-  materializeQuizQuestions,quizCategories,selectQuizQuestionIds,
+  QUESTIONS_PER_QUIZ,QUIZ_QUESTIONS,
+  materializeQuizQuestions,quizConfigurationOptions,selectQuizQuestionIds,validateQuizSettings,
 } from './quizQuestions.js';
 import { recentHistoriesFor,rememberQuestions } from './quizHistory.js';
 import { PLAYER_SCALE } from '../src/game/settings.js';
@@ -12,7 +12,7 @@ import {
 } from '../src/quizTimer.js';
 import { isPresenceActive } from '../src/multiplayer/presencePolicy.js';
 
-const DEFAULT_SETTINGS=Object.freeze({category:null,difficulty:null,count:QUESTIONS_PER_QUIZ});
+const DEFAULT_SETTINGS=Object.freeze({category:null,topic:null,difficulty:null,count:QUESTIONS_PER_QUIZ});
 
 function settingsFor(lobby){return {...DEFAULT_SETTINGS,...(lobby.settings??{})};}
 
@@ -98,12 +98,12 @@ export const current = query({
       room:lobby.room,hostCharacterId:lobby.hostCharacterId,status:lobby.status,
       participants,createdAt:lobby.createdAt,questionIndex:lobby.questionIndex??0,
       settings:settingsFor(lobby),
-      configurationOptions:{categories:quizCategories(),difficulties:QUIZ_DIFFICULTIES,quantities:QUIZ_QUANTITIES},
+      configurationOptions:quizConfigurationOptions(),
       questionDeadline:question?deadlineFor(lobby):null,
       finishedReason:lobby.finishedReason??null,
       questionCount:lobby.questions?.length??questionIdsFor(lobby).length,
       question:question?{
-        id:question.id,category:question.category,difficulty:question.difficulty,
+        id:question.id,category:question.category,topic:question.topic??null,difficulty:question.difficulty,
         question:question.question,answers:question.answers,
         ...(question.media ? {media:question.media} : {}),
         explanation:allAnswered?(question.explanation??null):null,
@@ -175,6 +175,7 @@ export const configure = mutation({
   args:{
     room:v.string(),characterId:v.string(),sessionId:v.string(),
     category:v.union(v.string(),v.null()),
+    topic:v.optional(v.union(v.string(),v.null())),
     difficulty:v.union(v.literal('medium'),v.literal('hard'),v.null()),
     count:v.union(v.number(),v.null()),
   },
@@ -183,10 +184,8 @@ export const configure = mutation({
     const lobby=await ctx.db.query('quizLobbies').withIndex('by_room',q=>q.eq('room',args.room)).unique();
     if(!lobby||lobby.status!=='lobby'||lobby.hostCharacterId!==args.characterId)
       throw new Error('Only the current host can change quiz settings.');
-    if(args.category!==null&&!quizCategories().includes(args.category))throw new Error('Invalid quiz category.');
-    if(args.difficulty!==null&&!QUIZ_DIFFICULTIES.includes(args.difficulty))throw new Error('Invalid quiz difficulty.');
-    if(args.count!==null&&!QUIZ_QUANTITIES.includes(args.count))throw new Error('Invalid quiz question count.');
-    await ctx.db.patch(lobby._id,{settings:{category:args.category,difficulty:args.difficulty,count:args.count}});
+    const settings=validateQuizSettings(args);
+    await ctx.db.patch(lobby._id,{settings});
   },
 });
 

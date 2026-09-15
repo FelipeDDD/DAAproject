@@ -5,10 +5,11 @@ import {
 } from '../src/quizValidation.js';
 
 export const CSV_COLUMNS = Object.freeze([
-  'id', 'category', 'difficulty', 'question',
+  'id', 'category', 'topic', 'difficulty', 'question',
   'answer1', 'answer2', 'answer3', 'answer4',
   'correctAnswer', 'explanation', 'media',
 ]);
+export const LEGACY_CSV_COLUMNS = Object.freeze(CSV_COLUMNS.filter((column) => column !== 'topic'));
 export const SUPPORTED_DIFFICULTIES = SUPPORTED_QUIZ_DIFFICULTIES;
 export const SUPPORTED_MEDIA_TYPES = SUPPORTED_QUIZ_MEDIA_TYPES;
 
@@ -75,9 +76,11 @@ export function convertQuizCsv(input, source = '<csv>') {
   if (parsedRows.length === 0) return { questions: [], errors: [csvError(source, 1, 'arquivo vazio')] };
 
   const header = parsedRows[0].values;
-  if (header.length !== CSV_COLUMNS.length || header.some((column, index) => column !== CSV_COLUMNS[index])) {
+  const columns = [CSV_COLUMNS, LEGACY_CSV_COLUMNS].find((candidate) =>
+    header.length === candidate.length && header.every((column, index) => column === candidate[index]));
+  if (!columns) {
     errors.push(csvError(source, parsedRows[0].line,
-      `cabeçalho esperado (${CSV_COLUMNS.join(', ')}); use ; ou , como separador`));
+      `cabeçalho esperado (${CSV_COLUMNS.join(', ')}); topic pode ser omitido em CSVs antigos`));
     return { questions: [], errors };
   }
 
@@ -85,11 +88,11 @@ export function convertQuizCsv(input, source = '<csv>') {
   const categories = new Set();
   for (const { values, line } of parsedRows.slice(1)) {
     const context = `${source}:${line}`;
-    if (values.length !== CSV_COLUMNS.length) {
-      errors.push(`${context}: esperadas ${CSV_COLUMNS.length} colunas, encontradas ${values.length}`);
+    if (values.length !== columns.length) {
+      errors.push(`${context}: esperadas ${columns.length} colunas, encontradas ${values.length}`);
       continue;
     }
-    const record = Object.fromEntries(CSV_COLUMNS.map((column, index) => [column, values[index].trim()]));
+    const record = Object.fromEntries(columns.map((column, index) => [column, values[index].trim()]));
     if (record.id && !/^[\p{L}\p{N}_-]+-\d{3,}$/u.test(record.id)) {
       errors.push(`${context}: id deve terminar em -001, -002, ...`);
     }
@@ -108,6 +111,7 @@ export function convertQuizCsv(input, source = '<csv>') {
     const question={
       id: record.id,
       category: record.category,
+      topic: record.topic || null,
       difficulty: record.difficulty,
       question: record.question,
       answers,

@@ -65,3 +65,17 @@ test('generated concrete IDs use their template ID for recent history',()=>{
   });
   assert.deepEqual(result.questionIds,['hardware-000']);
 });
+
+test('topic All does not filter and a selected topic filters before anti-repetition',()=>{
+  const questionBank=[
+    ...bank(4,'Hardware').map((question,index)=>({...question,topic:index<2?'CPU':'RAM'})),
+    ...bank(2,'WiSo').map(question=>({...question,topic:null})),
+  ];
+  const all=buildQuizQuestionSelection({questionBank,category:'Hardware',topic:null,count:null,seed:'all-topics'});
+  assert.equal(all.questionIds.length,4);
+  const recent=[{questionId:'hardware-000',seenAt:100}];
+  const cpu=buildQuizQuestionSelection({
+    questionBank,category:'Hardware',topic:'CPU',count:1,seed:'cpu',recentHistories:[recent],
+  });
+  assert.deepEqual(cpu.questionIds,['hardware-001']);
+});

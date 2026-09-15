@@ -57,10 +57,10 @@ export class SoloChallengeSession extends SoloSession {
     return {...result,score:this.score,assessment:challengeAssessment(result.accuracy)};
   }
 
-  completionRecord({characterId,category=null,difficulty=null,completedAt=Date.now()}={}) {
+  completionRecord({characterId,category=null,topic=null,difficulty=null,completedAt=Date.now()}={}) {
     const result=this.result();
     return {
-      characterId,mode:this.mode,category,difficulty,questionCount:result.total,
+      characterId,mode:this.mode,category,topic,difficulty,questionCount:result.total,
       score:result.score,correctAnswers:result.correct,accuracy:result.accuracy,completedAt,
     };
   }

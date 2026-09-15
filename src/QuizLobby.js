@@ -26,6 +26,7 @@ export class QuizLobby {
     this.status=document.getElementById('quiz-status');
     this.settingsRoot=document.getElementById('quiz-settings');
     this.categorySelect=document.getElementById('quiz-category');
+    this.topicField=document.getElementById('quiz-topic-field');this.topicSelect=document.getElementById('quiz-topic');
     this.difficultySelect=document.getElementById('quiz-difficulty');
     this.quantitySelect=document.getElementById('quiz-quantity');
     this.settingsNote=document.getElementById('quiz-settings-note');
@@ -63,7 +64,7 @@ export class QuizLobby {
     this.cancelLeaveButton.addEventListener('click',this.onCancelLeave);
     this.confirmButton.addEventListener('click',this.onConfirm);
     this.alternatives.addEventListener('click',this.onAlternative);
-    for(const select of [this.categorySelect,this.difficultySelect,this.quantitySelect])
+    for(const select of [this.categorySelect,this.topicSelect,this.difficultySelect,this.quantitySelect])
       select.addEventListener('change',this.onSettingsChange);
     this.timerInterval=setInterval(()=>this.updateTimer(),250);
 
@@ -127,8 +128,9 @@ export class QuizLobby {
   renderSettings(){
     const visible=this.lobby?.status==='lobby';this.settingsRoot.hidden=!visible;
     if(!visible)return;
-    const options=this.lobby.configurationOptions??{categories:[],difficulties:['medium','hard'],quantities:[5,10,15]};
-    const settings=this.lobby.settings??{category:null,difficulty:null,count:5};
+    const options=this.lobby.configurationOptions??{categories:[],topicsByCategory:[],difficulties:['medium','hard'],quantities:[5,10,15]};
+    const settings=this.lobby.settings??{category:null,topic:null,difficulty:null,count:5};
+    this.options=options;
     const editable=this.isHost()&&!this.pendingSettings;
     renderQuizSettingsControls(this,options,settings,editable);
     this.settingsNote.textContent=this.settingsError||(this.isHost()?'Your settings are shared with everyone.':'Only the host can change these settings.');
@@ -136,7 +138,7 @@ export class QuizLobby {
 
   async updateSettings(){
     if(this.pendingSettings||!this.isHost()||this.lobby?.status!=='lobby')return;
-    const settings=readQuizSettingsControls(this);
+    const settings=readQuizSettingsControls(this,this.options);
     this.pendingSettings=true;this.settingsError='';this.renderSettings();
     try{
       const {characterId,sessionId}=this.presence.identity;
@@ -320,7 +322,7 @@ export class QuizLobby {
     this.cancelLeaveButton.removeEventListener('click',this.onCancelLeave);
     this.confirmButton.removeEventListener('click',this.onConfirm);
     this.alternatives.removeEventListener('click',this.onAlternative);
-    for(const select of [this.categorySelect,this.difficultySelect,this.quantitySelect])
+    for(const select of [this.categorySelect,this.topicSelect,this.difficultySelect,this.quantitySelect])
       select.removeEventListener('change',this.onSettingsChange);
     this.seatPrompt.destroy();this.root.hidden=true;
   }

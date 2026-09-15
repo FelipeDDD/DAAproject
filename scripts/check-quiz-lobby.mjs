@@ -30,12 +30,18 @@ try{
   await clients[1].mutation(api.quizLobbies.join,args(1));
   await wait(()=>lobbyA?.participants.length===2&&lobbyB?.participants.length===2,'two participants');
   assert.equal(lobbyA.hostCharacterId,identities[0].characterId);
-  const settings={category:'Netzwerk',difficulty:'medium',count:5};
+  const settings={category:'Netzwerk',topic:null,difficulty:'medium',count:5};
   await assert.rejects(clients[1].mutation(api.quizLobbies.configure,{...args(1),...settings}),/host/);
   await clients[0].mutation(api.quizLobbies.configure,{...args(0),...settings});
   await wait(()=>lobbyA?.settings.difficulty==='medium'&&lobbyB?.settings.difficulty==='medium','shared host settings');
   assert.deepEqual(lobbyA.settings,settings);assert.deepEqual(lobbyB.settings,settings);
   assert.ok(lobbyA.configurationOptions.categories.includes('Programmierung'));
+  const topicGroups=lobbyA.configurationOptions.topicsByCategory;
+  const rechnungenTopics=topicGroups.find(group=>group.category==='Rechnungen')?.topics??[];
+  for(const topic of ['Dreisatz','Netto-Brutto','Prozentrechnung','Rabatt','Textverständnis'])
+    assert.ok(rechnungenTopics.includes(topic));
+  assert.deepEqual(topicGroups.find(group=>group.category==='Prüfungssprache')?.topics,
+    ['Aufgabenverben','Prüfungsformulierungen','Textverständnis']);
   assert.deepEqual(lobbyA.configurationOptions.difficulties,['medium','hard']);
   await assert.rejects(clients[1].mutation(api.quizLobbies.start,args(1)),/host/);
   await clients[0].mutation(api.quizLobbies.start,args(0));

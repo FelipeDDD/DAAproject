@@ -56,7 +56,7 @@ test('Challenge result includes score, correct answers, accuracy and future high
   }
   assert.deepEqual(session.result(),{correct:3,total:4,accuracy:75,score:30,assessment:'Good'});
   assert.deepEqual(session.completionRecord({characterId:'felipe',category:'Hardware',difficulty:'medium',completedAt:123}),{
-    characterId:'felipe',mode:'challenge',category:'Hardware',difficulty:'medium',questionCount:4,
+    characterId:'felipe',mode:'challenge',category:'Hardware',topic:null,difficulty:'medium',questionCount:4,
     score:30,correctAnswers:3,accuracy:75,completedAt:123,
   });
 });

@@ -28,13 +28,14 @@ export function regenerateQuizRecord(record,materialize,random=Math.random) {
   return record;
 }
 
-export function filterQuizReviewRecords(records,{category='',difficulty='',search='',sort='id'}={}) {
+export function filterQuizReviewRecords(records,{category='',topic='',difficulty='',search='',sort='id'}={}) {
   const needle=search.trim().toLocaleLowerCase('de');
   const filtered=records.filter(record=>{
     const question=record.preview;
-    const haystack=[record.template.id,question.question,question.explanation]
+    const haystack=[record.template.id,record.template.topic,question.question,question.explanation]
       .filter(value=>typeof value==='string').join('\n').toLocaleLowerCase('de');
     return (!category||record.template.category===category)
+      &&(!topic||record.template.topic===topic)
       &&(!difficulty||record.template.difficulty===difficulty)
       &&(!needle||haystack.includes(needle));
   });
