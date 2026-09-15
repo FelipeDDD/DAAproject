@@ -1,11 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {send} from '../convex/messages.js';
+import { PRESENCE_TIMEOUT_MS } from '../src/multiplayer/presencePolicy.js';
 
 const args={room:'school',characterId:'michael',sessionId:'session',text:'  Olá  '};
 function context(overrides={}){
   const inserted=[];
-  const player={room:'school',characterId:'michael',name:'Michael',sessionId:'session',lastSeen:Date.now(),...overrides};
+  const player={playerId:'michael',room:'school',characterId:'michael',name:'Michael',sessionId:'session',lastSeen:Date.now(),...overrides};
   return {inserted,db:{query:()=>({withIndex:()=>({unique:async()=>player})}),insert:async(table,row)=>inserted.push(row)}};
 }
 test('chat trims text and derives the author from the selected character',async()=>{
@@ -18,7 +19,7 @@ test('chat rejects empty and overlong text; accepts exactly 200 characters',asyn
   const ctx=context();await send._handler(ctx,{...args,text:'x'.repeat(200)});assert.equal(ctx.inserted.length,1);
 });
 test('chat rejects another room, another session and expired presence',async()=>{
-  for(const override of [{room:'outside'},{sessionId:'other'},{lastSeen:Date.now()-16_000}]){
+  for(const override of [{room:'outside'},{sessionId:'other'},{lastSeen:Date.now()-PRESENCE_TIMEOUT_MS-1}]){
     const ctx=context(override);await assert.rejects(send._handler(ctx,args),/Invalid session/);assert.equal(ctx.inserted.length,0);
   }
 });

@@ -1,0 +1,28 @@
+ASSETALCHEMIST ASSET LICENSE
+Worn Beige Floor — Pixel Art Tileset
+
+Copyright (c) 2026 Assetalchemist
+
+YOU MAY:
+- Use these assets in personal projects.
+- Use these assets in commercial projects.
+- Modify, recolor, resize, crop, combine or otherwise adapt the assets for use
+  within your projects.
+- Use the assets in an unlimited number of your own end products.
+
+YOU MAY NOT:
+- Sell, redistribute, share, sublicense or give away the original asset files as
+  standalone assets or as part of another asset pack.
+- Sell, redistribute, share, sublicense or give away modified versions of the
+  assets when the primary value of the distributed product is the asset itself.
+- Upload the assets to stock-asset libraries, marketplaces, repositories or
+  similar services for others to download or reuse.
+- Claim authorship of the original asset pack.
+
+You may distribute a finished game, application, animation, image, video or other
+end product containing these assets, including commercial end products.
+
+Attribution to Assetalchemist is appreciated but not required.
+
+This license applies to the asset files contained in this package and does not
+transfer ownership of the original asset pack to the purchaser.

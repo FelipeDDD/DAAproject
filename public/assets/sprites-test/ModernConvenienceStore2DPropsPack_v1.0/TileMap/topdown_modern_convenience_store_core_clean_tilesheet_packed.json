@@ -1,0 +1,1410 @@
+{
+  "type": "packed-texture-atlas",
+  "image": "topdown_modern_convenience_store_core_clean_tilesheet_packed.png",
+  "count": 100,
+  "width": 2816,
+  "height": 2528,
+  "spacing": 4,
+  "frames": {
+    "locker_customer": {
+      "category": "storefront_decor",
+      "file": "Tiles/StorefrontDecor/store_storefront_decor_locker_customer_01.png",
+      "frame": {
+        "x": 4,
+        "y": 4,
+        "width": 251,
+        "height": 308
+      },
+      "anchor": {
+        "x": 125,
+        "y": 292
+      }
+    },
+    "rack_bread": {
+      "category": "shelving",
+      "file": "Tiles/Shelving/store_shelving_rack_bread_01.png",
+      "frame": {
+        "x": 259,
+        "y": 4,
+        "width": 256,
+        "height": 302
+      },
+      "anchor": {
+        "x": 128,
+        "y": 286
+      }
+    },
+    "flag_promo_blank": {
+      "category": "storefront_decor",
+      "file": "Tiles/StorefrontDecor/store_storefront_decor_flag_promo_blank_01.png",
+      "frame": {
+        "x": 519,
+        "y": 4,
+        "width": 164,
+        "height": 301
+      },
+      "anchor": {
+        "x": 82,
+        "y": 285
+      }
+    },
+    "floor_sidewalk_entrance": {
+      "category": "architecture",
+      "file": "Tiles/Architecture/store_architecture_floor_sidewalk_entrance_01.png",
+      "frame": {
+        "x": 687,
+        "y": 4,
+        "width": 300,
+        "height": 296
+      },
+      "anchor": {
+        "x": 150,
+        "y": 280
+      }
+    },
+    "floor_tile_white": {
+      "category": "architecture",
+      "file": "Tiles/Architecture/store_architecture_floor_tile_white_01.png",
+      "frame": {
+        "x": 991,
+        "y": 4,
+        "width": 299,
+        "height": 296
+      },
+      "anchor": {
+        "x": 149,
+        "y": 280
+      }
+    },
+    "floor_concrete": {
+      "category": "architecture",
+      "file": "Tiles/Architecture/store_architecture_floor_concrete_01.png",
+      "frame": {
+        "x": 1294,
+        "y": 4,
+        "width": 292,
+        "height": 296
+      },
+      "anchor": {
+        "x": 146,
+        "y": 280
+      }
+    },
+    "cooler_upright_glass": {
+      "category": "shelving",
+      "file": "Tiles/Shelving/store_shelving_cooler_upright_glass_01.png",
+      "frame": {
+        "x": 1590,
+        "y": 4,
+        "width": 218,
+        "height": 296
+      },
+      "anchor": {
+        "x": 109,
+        "y": 280
+      }
+    },
+    "floor_tile_gray": {
+      "category": "architecture",
+      "file": "Tiles/Architecture/store_architecture_floor_tile_gray_01.png",
+      "frame": {
+        "x": 1812,
+        "y": 4,
+        "width": 296,
+        "height": 295
+      },
+      "anchor": {
+        "x": 148,
+        "y": 279
+      }
+    },
+    "station_coffee": {
+      "category": "shelving",
+      "file": "Tiles/Shelving/store_shelving_station_coffee_01.png",
+      "frame": {
+        "x": 2112,
+        "y": 4,
+        "width": 263,
+        "height": 293
+      },
+      "anchor": {
+        "x": 131,
+        "y": 277
+      }
+    },
+    "umbrella_bucket": {
+      "category": "household_services",
+      "file": "Tiles/HouseholdServices/store_household_services_umbrella_bucket_01.png",
+      "frame": {
+        "x": 2379,
+        "y": 4,
+        "width": 195,
+        "height": 289
+      },
+      "anchor": {
+        "x": 97,
+        "y": 273
+      }
+    },
+    "cooler_open_grab_and_go": {
+      "category": "shelving",
+      "file": "Tiles/Shelving/store_shelving_cooler_open_grab_and_go_01.png",
+      "frame": {
+        "x": 4,
+        "y": 316,
+        "width": 249,
+        "height": 282
+      },
+      "anchor": {
+        "x": 124,
+        "y": 266
+      }
+    },
+    "charging_cables_board": {
+      "category": "household_services",
+      "file": "Tiles/HouseholdServices/store_household_services_charging_cables_board_01.png",
+      "frame": {
+        "x": 257,
+        "y": 316,
+        "width": 240,
+        "height": 282
+      },
+      "anchor": {
+        "x": 120,
+        "y": 266
+      }
+    },
+    "atm_machine": {
+      "category": "household_services",
+      "file": "Tiles/HouseholdServices/store_household_services_atm_machine_01.png",
+      "frame": {
+        "x": 501,
+        "y": 316,
+        "width": 202,
+        "height": 282
+      },
+      "anchor": {
+        "x": 101,
+        "y": 266
+      }
+    },
+    "shelf_endcap": {
+      "category": "shelving",
+      "file": "Tiles/Shelving/store_shelving_shelf_endcap_01.png",
+      "frame": {
+        "x": 707,
+        "y": 316,
+        "width": 177,
+        "height": 282
+      },
+      "anchor": {
+        "x": 88,
+        "y": 266
+      }
+    },
+    "shelf_wall_single": {
+      "category": "shelving",
+      "file": "Tiles/Shelving/store_shelving_shelf_wall_single_01.png",
+      "frame": {
+        "x": 888,
+        "y": 316,
+        "width": 236,
+        "height": 280
+      },
+      "anchor": {
+        "x": 118,
+        "y": 264
+      }
+    },
+    "lottery_machine_blank": {
+      "category": "household_services",
+      "file": "Tiles/HouseholdServices/store_household_services_lottery_machine_blank_01.png",
+      "frame": {
+        "x": 1128,
+        "y": 316,
+        "width": 223,
+        "height": 276
+      },
+      "anchor": {
+        "x": 111,
+        "y": 260
+      }
+    },
+    "tissue_packs": {
+      "category": "household_services",
+      "file": "Tiles/HouseholdServices/store_household_services_tissue_packs_01.png",
+      "frame": {
+        "x": 1355,
+        "y": 316,
+        "width": 223,
+        "height": 275
+      },
+      "anchor": {
+        "x": 111,
+        "y": 259
+      }
+    },
+    "kettle_station": {
+      "category": "household_services",
+      "file": "Tiles/HouseholdServices/store_household_services_kettle_station_01.png",
+      "frame": {
+        "x": 1582,
+        "y": 316,
+        "width": 188,
+        "height": 275
+      },
+      "anchor": {
+        "x": 94,
+        "y": 259
+      }
+    },
+    "detergent_bottle": {
+      "category": "household_services",
+      "file": "Tiles/HouseholdServices/store_household_services_detergent_bottle_01.png",
+      "frame": {
+        "x": 1774,
+        "y": 316,
+        "width": 178,
+        "height": 275
+      },
+      "anchor": {
+        "x": 89,
+        "y": 259
+      }
+    },
+    "mop_cleaning": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_mop_cleaning_01.png",
+      "frame": {
+        "x": 1956,
+        "y": 316,
+        "width": 176,
+        "height": 275
+      },
+      "anchor": {
+        "x": 88,
+        "y": 259
+      }
+    },
+    "door_auto_open": {
+      "category": "storefront_decor",
+      "file": "Tiles/StorefrontDecor/store_storefront_decor_door_auto_open_01.png",
+      "frame": {
+        "x": 2136,
+        "y": 316,
+        "width": 256,
+        "height": 273
+      },
+      "anchor": {
+        "x": 128,
+        "y": 257
+      }
+    },
+    "shelf_gondola_double": {
+      "category": "shelving",
+      "file": "Tiles/Shelving/store_shelving_shelf_gondola_double_01.png",
+      "frame": {
+        "x": 2396,
+        "y": 316,
+        "width": 268,
+        "height": 272
+      },
+      "anchor": {
+        "x": 134,
+        "y": 256
+      }
+    },
+    "lighter_box": {
+      "category": "household_services",
+      "file": "Tiles/HouseholdServices/store_household_services_lighter_box_01.png",
+      "frame": {
+        "x": 4,
+        "y": 602,
+        "width": 243,
+        "height": 272
+      },
+      "anchor": {
+        "x": 121,
+        "y": 256
+      }
+    },
+    "door_auto_closed": {
+      "category": "storefront_decor",
+      "file": "Tiles/StorefrontDecor/store_storefront_decor_door_auto_closed_01.png",
+      "frame": {
+        "x": 251,
+        "y": 602,
+        "width": 240,
+        "height": 272
+      },
+      "anchor": {
+        "x": 120,
+        "y": 256
+      }
+    },
+    "wet_floor_sign_blank": {
+      "category": "household_services",
+      "file": "Tiles/HouseholdServices/store_household_services_wet_floor_sign_blank_01.png",
+      "frame": {
+        "x": 495,
+        "y": 602,
+        "width": 203,
+        "height": 272
+      },
+      "anchor": {
+        "x": 101,
+        "y": 256
+      }
+    },
+    "column_interior": {
+      "category": "architecture",
+      "file": "Tiles/Architecture/store_architecture_column_interior_01.png",
+      "frame": {
+        "x": 702,
+        "y": 602,
+        "width": 124,
+        "height": 271
+      },
+      "anchor": {
+        "x": 62,
+        "y": 255
+      }
+    },
+    "instant_noodle_cups": {
+      "category": "packaged_food",
+      "file": "Tiles/PackagedFood/store_packaged_food_instant_noodle_cups_01.png",
+      "frame": {
+        "x": 830,
+        "y": 602,
+        "width": 275,
+        "height": 270
+      },
+      "anchor": {
+        "x": 137,
+        "y": 254
+      }
+    },
+    "cart_pallet": {
+      "category": "storefront_decor",
+      "file": "Tiles/StorefrontDecor/store_storefront_decor_cart_pallet_01.png",
+      "frame": {
+        "x": 1109,
+        "y": 602,
+        "width": 247,
+        "height": 270
+      },
+      "anchor": {
+        "x": 123,
+        "y": 254
+      }
+    },
+    "curb_outdoor": {
+      "category": "architecture",
+      "file": "Tiles/Architecture/store_architecture_curb_outdoor_01.png",
+      "frame": {
+        "x": 1360,
+        "y": 602,
+        "width": 299,
+        "height": 269
+      },
+      "anchor": {
+        "x": 149,
+        "y": 253
+      }
+    },
+    "partition_low_divider": {
+      "category": "architecture",
+      "file": "Tiles/Architecture/store_architecture_partition_low_divider_01.png",
+      "frame": {
+        "x": 1663,
+        "y": 602,
+        "width": 299,
+        "height": 268
+      },
+      "anchor": {
+        "x": 149,
+        "y": 252
+      }
+    },
+    "threshold_entrance": {
+      "category": "architecture",
+      "file": "Tiles/Architecture/store_architecture_threshold_entrance_01.png",
+      "frame": {
+        "x": 1966,
+        "y": 602,
+        "width": 290,
+        "height": 268
+      },
+      "anchor": {
+        "x": 145,
+        "y": 252
+      }
+    },
+    "cigarette_cabinet_blank": {
+      "category": "household_services",
+      "file": "Tiles/HouseholdServices/store_household_services_cigarette_cabinet_blank_01.png",
+      "frame": {
+        "x": 2260,
+        "y": 602,
+        "width": 257,
+        "height": 268
+      },
+      "anchor": {
+        "x": 128,
+        "y": 252
+      }
+    },
+    "shopping_bag_plastic": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_shopping_bag_plastic_01.png",
+      "frame": {
+        "x": 2521,
+        "y": 602,
+        "width": 200,
+        "height": 268
+      },
+      "anchor": {
+        "x": 100,
+        "y": 252
+      }
+    },
+    "trash_bin_indoor": {
+      "category": "household_services",
+      "file": "Tiles/HouseholdServices/store_household_services_trash_bin_indoor_01.png",
+      "frame": {
+        "x": 4,
+        "y": 878,
+        "width": 197,
+        "height": 267
+      },
+      "anchor": {
+        "x": 98,
+        "y": 251
+      }
+    },
+    "cash_register": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_cash_register_01.png",
+      "frame": {
+        "x": 205,
+        "y": 878,
+        "width": 251,
+        "height": 266
+      },
+      "anchor": {
+        "x": 125,
+        "y": 250
+      }
+    },
+    "bin_ashtray_outdoor": {
+      "category": "storefront_decor",
+      "file": "Tiles/StorefrontDecor/store_storefront_decor_bin_ashtray_outdoor_01.png",
+      "frame": {
+        "x": 460,
+        "y": 878,
+        "width": 234,
+        "height": 264
+      },
+      "anchor": {
+        "x": 117,
+        "y": 248
+      }
+    },
+    "lamp_ceiling_pendant": {
+      "category": "storefront_decor",
+      "file": "Tiles/StorefrontDecor/store_storefront_decor_lamp_ceiling_pendant_01.png",
+      "frame": {
+        "x": 698,
+        "y": 878,
+        "width": 163,
+        "height": 263
+      },
+      "anchor": {
+        "x": 81,
+        "y": 247
+      }
+    },
+    "cart_small": {
+      "category": "shelving",
+      "file": "Tiles/Shelving/store_shelving_cart_small_01.png",
+      "frame": {
+        "x": 865,
+        "y": 878,
+        "width": 228,
+        "height": 261
+      },
+      "anchor": {
+        "x": 114,
+        "y": 245
+      }
+    },
+    "chips_bags": {
+      "category": "packaged_food",
+      "file": "Tiles/PackagedFood/store_packaged_food_chips_bags_01.png",
+      "frame": {
+        "x": 1097,
+        "y": 878,
+        "width": 296,
+        "height": 260
+      },
+      "anchor": {
+        "x": 148,
+        "y": 244
+      }
+    },
+    "steamer_bun": {
+      "category": "shelving",
+      "file": "Tiles/Shelving/store_shelving_steamer_bun_01.png",
+      "frame": {
+        "x": 1397,
+        "y": 878,
+        "width": 191,
+        "height": 260
+      },
+      "anchor": {
+        "x": 95,
+        "y": 244
+      }
+    },
+    "warmer_hot_food": {
+      "category": "shelving",
+      "file": "Tiles/Shelving/store_shelving_warmer_hot_food_01.png",
+      "frame": {
+        "x": 1592,
+        "y": 878,
+        "width": 244,
+        "height": 257
+      },
+      "anchor": {
+        "x": 122,
+        "y": 241
+      }
+    },
+    "plant_entrance": {
+      "category": "storefront_decor",
+      "file": "Tiles/StorefrontDecor/store_storefront_decor_plant_entrance_01.png",
+      "frame": {
+        "x": 1840,
+        "y": 878,
+        "width": 229,
+        "height": 256
+      },
+      "anchor": {
+        "x": 114,
+        "y": 240
+      }
+    },
+    "bread_bags": {
+      "category": "packaged_food",
+      "file": "Tiles/PackagedFood/store_packaged_food_bread_bags_01.png",
+      "frame": {
+        "x": 2073,
+        "y": 878,
+        "width": 273,
+        "height": 255
+      },
+      "anchor": {
+        "x": 136,
+        "y": 239
+      }
+    },
+    "toothbrush_toothpaste_row": {
+      "category": "household_services",
+      "file": "Tiles/HouseholdServices/store_household_services_toothbrush_toothpaste_row_01.png",
+      "frame": {
+        "x": 2350,
+        "y": 878,
+        "width": 157,
+        "height": 255
+      },
+      "anchor": {
+        "x": 78,
+        "y": 239
+      }
+    },
+    "shampoo_bottles_row": {
+      "category": "household_services",
+      "file": "Tiles/HouseholdServices/store_household_services_shampoo_bottles_row_01.png",
+      "frame": {
+        "x": 2511,
+        "y": 878,
+        "width": 274,
+        "height": 254
+      },
+      "anchor": {
+        "x": 137,
+        "y": 238
+      }
+    },
+    "rack_magazine": {
+      "category": "shelving",
+      "file": "Tiles/Shelving/store_shelving_rack_magazine_01.png",
+      "frame": {
+        "x": 4,
+        "y": 1149,
+        "width": 243,
+        "height": 254
+      },
+      "anchor": {
+        "x": 121,
+        "y": 238
+      }
+    },
+    "shopping_bag_paper": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_shopping_bag_paper_01.png",
+      "frame": {
+        "x": 251,
+        "y": 1149,
+        "width": 197,
+        "height": 253
+      },
+      "anchor": {
+        "x": 98,
+        "y": 237
+      }
+    },
+    "window_glass_wall_segment": {
+      "category": "storefront_decor",
+      "file": "Tiles/StorefrontDecor/store_storefront_decor_window_glass_wall_segment_01.png",
+      "frame": {
+        "x": 452,
+        "y": 1149,
+        "width": 272,
+        "height": 252
+      },
+      "anchor": {
+        "x": 136,
+        "y": 236
+      }
+    },
+    "cookie_boxes": {
+      "category": "packaged_food",
+      "file": "Tiles/PackagedFood/store_packaged_food_cookie_boxes_01.png",
+      "frame": {
+        "x": 728,
+        "y": 1149,
+        "width": 256,
+        "height": 252
+      },
+      "anchor": {
+        "x": 128,
+        "y": 236
+      }
+    },
+    "boxes_restock_stack": {
+      "category": "storefront_decor",
+      "file": "Tiles/StorefrontDecor/store_storefront_decor_boxes_restock_stack_01.png",
+      "frame": {
+        "x": 988,
+        "y": 1149,
+        "width": 253,
+        "height": 252
+      },
+      "anchor": {
+        "x": 126,
+        "y": 236
+      }
+    },
+    "cat_food_bag": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_cat_food_bag_01.png",
+      "frame": {
+        "x": 1245,
+        "y": 1149,
+        "width": 187,
+        "height": 249
+      },
+      "anchor": {
+        "x": 93,
+        "y": 233
+      }
+    },
+    "cola_bottles_row": {
+      "category": "packaged_food",
+      "file": "Tiles/PackagedFood/store_packaged_food_cola_bottles_row_01.png",
+      "frame": {
+        "x": 1436,
+        "y": 1149,
+        "width": 277,
+        "height": 248
+      },
+      "anchor": {
+        "x": 138,
+        "y": 232
+      }
+    },
+    "counter_checkout": {
+      "category": "shelving",
+      "file": "Tiles/Shelving/store_shelving_counter_checkout_01.png",
+      "frame": {
+        "x": 1717,
+        "y": 1149,
+        "width": 277,
+        "height": 247
+      },
+      "anchor": {
+        "x": 138,
+        "y": 231
+      }
+    },
+    "candy_jar": {
+      "category": "packaged_food",
+      "file": "Tiles/PackagedFood/store_packaged_food_candy_jar_01.png",
+      "frame": {
+        "x": 1998,
+        "y": 1149,
+        "width": 202,
+        "height": 246
+      },
+      "anchor": {
+        "x": 101,
+        "y": 230
+      }
+    },
+    "wall_counter_back": {
+      "category": "architecture",
+      "file": "Tiles/Architecture/store_architecture_wall_counter_back_01.png",
+      "frame": {
+        "x": 2204,
+        "y": 1149,
+        "width": 301,
+        "height": 244
+      },
+      "anchor": {
+        "x": 150,
+        "y": 228
+      }
+    },
+    "wall_corner_l": {
+      "category": "architecture",
+      "file": "Tiles/Architecture/store_architecture_wall_corner_l_01.png",
+      "frame": {
+        "x": 2509,
+        "y": 1149,
+        "width": 297,
+        "height": 244
+      },
+      "anchor": {
+        "x": 148,
+        "y": 228
+      }
+    },
+    "shutter_rolling_closed": {
+      "category": "architecture",
+      "file": "Tiles/Architecture/store_architecture_shutter_rolling_closed_01.png",
+      "frame": {
+        "x": 4,
+        "y": 1407,
+        "width": 296,
+        "height": 244
+      },
+      "anchor": {
+        "x": 148,
+        "y": 228
+      }
+    },
+    "wall_backroom_shelving": {
+      "category": "architecture",
+      "file": "Tiles/Architecture/store_architecture_wall_backroom_shelving_01.png",
+      "frame": {
+        "x": 304,
+        "y": 1407,
+        "width": 293,
+        "height": 244
+      },
+      "anchor": {
+        "x": 146,
+        "y": 228
+      }
+    },
+    "door_glass_single": {
+      "category": "architecture",
+      "file": "Tiles/Architecture/store_architecture_door_glass_single_01.png",
+      "frame": {
+        "x": 601,
+        "y": 1407,
+        "width": 297,
+        "height": 243
+      },
+      "anchor": {
+        "x": 148,
+        "y": 227
+      }
+    },
+    "extinguisher_fire": {
+      "category": "storefront_decor",
+      "file": "Tiles/StorefrontDecor/store_storefront_decor_extinguisher_fire_01.png",
+      "frame": {
+        "x": 902,
+        "y": 1407,
+        "width": 136,
+        "height": 243
+      },
+      "anchor": {
+        "x": 68,
+        "y": 227
+      }
+    },
+    "water_bottles_row": {
+      "category": "packaged_food",
+      "file": "Tiles/PackagedFood/store_packaged_food_water_bottles_row_01.png",
+      "frame": {
+        "x": 1042,
+        "y": 1407,
+        "width": 276,
+        "height": 241
+      },
+      "anchor": {
+        "x": 138,
+        "y": 225
+      }
+    },
+    "promo_stand_blank": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_promo_stand_blank_01.png",
+      "frame": {
+        "x": 1322,
+        "y": 1407,
+        "width": 208,
+        "height": 240
+      },
+      "anchor": {
+        "x": 104,
+        "y": 224
+      }
+    },
+    "straw_dispenser": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_straw_dispenser_01.png",
+      "frame": {
+        "x": 1534,
+        "y": 1407,
+        "width": 204,
+        "height": 240
+      },
+      "anchor": {
+        "x": 102,
+        "y": 224
+      }
+    },
+    "dog_food_bag": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_dog_food_bag_01.png",
+      "frame": {
+        "x": 1742,
+        "y": 1407,
+        "width": 187,
+        "height": 240
+      },
+      "anchor": {
+        "x": 93,
+        "y": 224
+      }
+    },
+    "oden_bowl": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_oden_bowl_01.png",
+      "frame": {
+        "x": 1933,
+        "y": 1407,
+        "width": 254,
+        "height": 239
+      },
+      "anchor": {
+        "x": 127,
+        "y": 223
+      }
+    },
+    "cash_tray": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_cash_tray_01.png",
+      "frame": {
+        "x": 2191,
+        "y": 1407,
+        "width": 322,
+        "height": 237
+      },
+      "anchor": {
+        "x": 161,
+        "y": 221
+      }
+    },
+    "canned_goods": {
+      "category": "packaged_food",
+      "file": "Tiles/PackagedFood/store_packaged_food_canned_goods_01.png",
+      "frame": {
+        "x": 2517,
+        "y": 1407,
+        "width": 286,
+        "height": 236
+      },
+      "anchor": {
+        "x": 143,
+        "y": 220
+      }
+    },
+    "wall_doorway": {
+      "category": "architecture",
+      "file": "Tiles/Architecture/store_architecture_wall_doorway_01.png",
+      "frame": {
+        "x": 4,
+        "y": 1655,
+        "width": 293,
+        "height": 235
+      },
+      "anchor": {
+        "x": 146,
+        "y": 219
+      }
+    },
+    "freezer_chest_icecream": {
+      "category": "shelving",
+      "file": "Tiles/Shelving/store_shelving_freezer_chest_icecream_01.png",
+      "frame": {
+        "x": 301,
+        "y": 1655,
+        "width": 278,
+        "height": 235
+      },
+      "anchor": {
+        "x": 139,
+        "y": 219
+      }
+    },
+    "microwave_customer": {
+      "category": "household_services",
+      "file": "Tiles/HouseholdServices/store_household_services_microwave_customer_01.png",
+      "frame": {
+        "x": 583,
+        "y": 1655,
+        "width": 271,
+        "height": 235
+      },
+      "anchor": {
+        "x": 135,
+        "y": 219
+      }
+    },
+    "barcode_scanner": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_barcode_scanner_01.png",
+      "frame": {
+        "x": 858,
+        "y": 1655,
+        "width": 188,
+        "height": 235
+      },
+      "anchor": {
+        "x": 94,
+        "y": 219
+      }
+    },
+    "gate_antitheft": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_gate_antitheft_01.png",
+      "frame": {
+        "x": 1050,
+        "y": 1655,
+        "width": 125,
+        "height": 235
+      },
+      "anchor": {
+        "x": 62,
+        "y": 219
+      }
+    },
+    "wall_storefront_window": {
+      "category": "architecture",
+      "file": "Tiles/Architecture/store_architecture_wall_storefront_window_01.png",
+      "frame": {
+        "x": 1179,
+        "y": 1655,
+        "width": 301,
+        "height": 234
+      },
+      "anchor": {
+        "x": 150,
+        "y": 218
+      }
+    },
+    "milk_cartons_row": {
+      "category": "packaged_food",
+      "file": "Tiles/PackagedFood/store_packaged_food_milk_cartons_row_01.png",
+      "frame": {
+        "x": 1484,
+        "y": 1655,
+        "width": 300,
+        "height": 234
+      },
+      "anchor": {
+        "x": 150,
+        "y": 218
+      }
+    },
+    "chocolate_bars_box": {
+      "category": "packaged_food",
+      "file": "Tiles/PackagedFood/store_packaged_food_chocolate_bars_box_01.png",
+      "frame": {
+        "x": 1788,
+        "y": 1655,
+        "width": 286,
+        "height": 234
+      },
+      "anchor": {
+        "x": 143,
+        "y": 218
+      }
+    },
+    "baskets_stack": {
+      "category": "shelving",
+      "file": "Tiles/Shelving/store_shelving_baskets_stack_01.png",
+      "frame": {
+        "x": 2078,
+        "y": 1655,
+        "width": 214,
+        "height": 234
+      },
+      "anchor": {
+        "x": 107,
+        "y": 218
+      }
+    },
+    "wall_straight": {
+      "category": "architecture",
+      "file": "Tiles/Architecture/store_architecture_wall_straight_01.png",
+      "frame": {
+        "x": 2296,
+        "y": 1655,
+        "width": 297,
+        "height": 233
+      },
+      "anchor": {
+        "x": 148,
+        "y": 217
+      }
+    },
+    "magazine_stack_blank": {
+      "category": "household_services",
+      "file": "Tiles/HouseholdServices/store_household_services_magazine_stack_blank_01.png",
+      "frame": {
+        "x": 4,
+        "y": 1894,
+        "width": 250,
+        "height": 231
+      },
+      "anchor": {
+        "x": 125,
+        "y": 215
+      }
+    },
+    "ice_bag": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_ice_bag_01.png",
+      "frame": {
+        "x": 258,
+        "y": 1894,
+        "width": 192,
+        "height": 231
+      },
+      "anchor": {
+        "x": 96,
+        "y": 215
+      }
+    },
+    "dustpan_broom": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_dustpan_broom_01.png",
+      "frame": {
+        "x": 454,
+        "y": 1894,
+        "width": 163,
+        "height": 231
+      },
+      "anchor": {
+        "x": 81,
+        "y": 215
+      }
+    },
+    "price_tag_blank": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_price_tag_blank_01.png",
+      "frame": {
+        "x": 621,
+        "y": 1894,
+        "width": 135,
+        "height": 231
+      },
+      "anchor": {
+        "x": 67,
+        "y": 215
+      }
+    },
+    "yogurt_cups_row": {
+      "category": "packaged_food",
+      "file": "Tiles/PackagedFood/store_packaged_food_yogurt_cups_row_01.png",
+      "frame": {
+        "x": 760,
+        "y": 1894,
+        "width": 293,
+        "height": 227
+      },
+      "anchor": {
+        "x": 146,
+        "y": 211
+      }
+    },
+    "coffee_cup": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_coffee_cup_01.png",
+      "frame": {
+        "x": 1057,
+        "y": 1894,
+        "width": 160,
+        "height": 226
+      },
+      "anchor": {
+        "x": 80,
+        "y": 210
+      }
+    },
+    "gum_box": {
+      "category": "packaged_food",
+      "file": "Tiles/PackagedFood/store_packaged_food_gum_box_01.png",
+      "frame": {
+        "x": 1221,
+        "y": 1894,
+        "width": 298,
+        "height": 222
+      },
+      "anchor": {
+        "x": 149,
+        "y": 206
+      }
+    },
+    "counter_belt_extension": {
+      "category": "shelving",
+      "file": "Tiles/Shelving/store_shelving_counter_belt_extension_01.png",
+      "frame": {
+        "x": 1523,
+        "y": 1894,
+        "width": 286,
+        "height": 222
+      },
+      "anchor": {
+        "x": 143,
+        "y": 206
+      }
+    },
+    "paper_cups_stack": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_paper_cups_stack_01.png",
+      "frame": {
+        "x": 1813,
+        "y": 1894,
+        "width": 131,
+        "height": 215
+      },
+      "anchor": {
+        "x": 65,
+        "y": 199
+      }
+    },
+    "awning_striped_segment": {
+      "category": "storefront_decor",
+      "file": "Tiles/StorefrontDecor/store_storefront_decor_awning_striped_segment_01.png",
+      "frame": {
+        "x": 1948,
+        "y": 1894,
+        "width": 314,
+        "height": 214
+      },
+      "anchor": {
+        "x": 157,
+        "y": 198
+      }
+    },
+    "sandwich_boxes": {
+      "category": "packaged_food",
+      "file": "Tiles/PackagedFood/store_packaged_food_sandwich_boxes_01.png",
+      "frame": {
+        "x": 2266,
+        "y": 1894,
+        "width": 296,
+        "height": 214
+      },
+      "anchor": {
+        "x": 148,
+        "y": 198
+      }
+    },
+    "sign_lightbox_blank": {
+      "category": "storefront_decor",
+      "file": "Tiles/StorefrontDecor/store_storefront_decor_sign_lightbox_blank_01.png",
+      "frame": {
+        "x": 4,
+        "y": 2129,
+        "width": 296,
+        "height": 211
+      },
+      "anchor": {
+        "x": 148,
+        "y": 195
+      }
+    },
+    "bento_box": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_bento_box_01.png",
+      "frame": {
+        "x": 304,
+        "y": 2129,
+        "width": 298,
+        "height": 209
+      },
+      "anchor": {
+        "x": 149,
+        "y": 193
+      }
+    },
+    "batteries_row": {
+      "category": "household_services",
+      "file": "Tiles/HouseholdServices/store_household_services_batteries_row_01.png",
+      "frame": {
+        "x": 606,
+        "y": 2129,
+        "width": 285,
+        "height": 209
+      },
+      "anchor": {
+        "x": 142,
+        "y": 193
+      }
+    },
+    "energy_drinks_row": {
+      "category": "packaged_food",
+      "file": "Tiles/PackagedFood/store_packaged_food_energy_drinks_row_01.png",
+      "frame": {
+        "x": 895,
+        "y": 2129,
+        "width": 245,
+        "height": 209
+      },
+      "anchor": {
+        "x": 122,
+        "y": 193
+      }
+    },
+    "receipt_roll": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_receipt_roll_01.png",
+      "frame": {
+        "x": 1144,
+        "y": 2129,
+        "width": 219,
+        "height": 207
+      },
+      "anchor": {
+        "x": 109,
+        "y": 191
+      }
+    },
+    "mirror_security_round": {
+      "category": "storefront_decor",
+      "file": "Tiles/StorefrontDecor/store_storefront_decor_mirror_security_round_01.png",
+      "frame": {
+        "x": 1367,
+        "y": 2129,
+        "width": 216,
+        "height": 206
+      },
+      "anchor": {
+        "x": 108,
+        "y": 190
+      }
+    },
+    "display_promo_low": {
+      "category": "shelving",
+      "file": "Tiles/Shelving/store_shelving_display_promo_low_01.png",
+      "frame": {
+        "x": 1587,
+        "y": 2129,
+        "width": 289,
+        "height": 203
+      },
+      "anchor": {
+        "x": 144,
+        "y": 187
+      }
+    },
+    "beer_cans_row": {
+      "category": "packaged_food",
+      "file": "Tiles/PackagedFood/store_packaged_food_beer_cans_row_01.png",
+      "frame": {
+        "x": 1880,
+        "y": 2129,
+        "width": 280,
+        "height": 203
+      },
+      "anchor": {
+        "x": 140,
+        "y": 187
+      }
+    },
+    "camera_security": {
+      "category": "props",
+      "file": "Tiles/Props/store_props_camera_security_01.png",
+      "frame": {
+        "x": 2164,
+        "y": 2129,
+        "width": 195,
+        "height": 187
+      },
+      "anchor": {
+        "x": 97,
+        "y": 171
+      }
+    },
+    "rice_balls_stack": {
+      "category": "packaged_food",
+      "file": "Tiles/PackagedFood/store_packaged_food_rice_balls_stack_01.png",
+      "frame": {
+        "x": 2363,
+        "y": 2129,
+        "width": 325,
+        "height": 186
+      },
+      "anchor": {
+        "x": 162,
+        "y": 170
+      }
+    },
+    "door_mat": {
+      "category": "storefront_decor",
+      "file": "Tiles/StorefrontDecor/store_storefront_decor_door_mat_01.png",
+      "frame": {
+        "x": 4,
+        "y": 2344,
+        "width": 284,
+        "height": 177
+      },
+      "anchor": {
+        "x": 142,
+        "y": 161
+      }
+    },
+    "light_fluorescent_strip": {
+      "category": "storefront_decor",
+      "file": "Tiles/StorefrontDecor/store_storefront_decor_light_fluorescent_strip_01.png",
+      "frame": {
+        "x": 292,
+        "y": 2344,
+        "width": 276,
+        "height": 156
+      },
+      "anchor": {
+        "x": 138,
+        "y": 140
+      }
+    }
+  }
+}

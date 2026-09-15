@@ -41,8 +41,9 @@ retornar, reaparece. E altera o estado compartilhado da porta pelo Convex.
 
 - `convex/schema.js`: tabela players, com playerId, name, room, x, y, direction e lastSeen.
 - `convex/players.js`: atualização de posição e consulta indexada por room.
-- `src/multiplayer/Presence.js`: envia até **8 vezes/s** (125 ms), ou uma vez/s parado;
-  mantém só uma mutação em voo e assina apenas a room atual com `onUpdate`.
+- `src/multiplayer/Presence.js`: envia posição até **8 vezes/s** (125 ms) quando há
+  mudança e um heartbeat leve a cada 10 s quando está parado; mantém só uma mutação
+  em voo e assina apenas a room atual com `onUpdate`.
 - `src/multiplayer/RemotePlayers.js`: sprite remoto e suavização de aproximadamente 100 ms.
 - `src/scenes/MapScene.js`: associa a cena ativa à room, sem mudar os dados do Tiled.
 
@@ -50,8 +51,10 @@ retornar, reaparece. E altera o estado compartilhado da porta pelo Convex.
 A escolha fica em `localStorage['daa-character-id']` como preferência destacada no menu.
 Cada carregamento cria um `sessionId` em memória para reservar o personagem;
 nem duplicar uma aba permite usar a mesma vaga simultaneamente.
-Presenças sem atualização somem da tela após 15 segundos e são removidas do
-backend após aproximadamente 15–20 segundos (limpeza a cada 5 s). Não há colisão entre jogadores nem autenticação.
+Presenças sem heartbeat somem da tela após 60 segundos e são removidas do backend
+após aproximadamente 60–65 segundos (limpeza a cada 5 s). O heartbeat continua
+quando a aba está em background; blur e `visibilitychange` não liberam a reserva.
+Não há colisão entre jogadores nem autenticação.
 O backend local atende o teste no mesmo computador; jogar entre computadores
 exige configurar um deployment Convex acessível a todos.
 
@@ -73,8 +76,8 @@ disponibilidade retorna somente characterId e lastSeen, sem expor o identificado
 da sessão. Isso coordena o protótipo sem implementar autenticação real.
 
 Use **Trocar personagem** acima do jogo para liberar a vaga e escolher outra,
-preservando posição e mapa. Fechar/recarregar a aba libera a vaga pelo timeout;
-aguarde aproximadamente 15 segundos para escolher novamente o mesmo personagem.
+preservando posição e mapa. Ao fechar a página, o cliente tenta liberar a vaga;
+se a requisição não terminar, o timeout atua como fallback após cerca de 60 segundos.
 Se uma sessão suspensa perder sua reserva, ela volta à seleção ao tentar atualizar.
 
 Testes reais: `npm run test:characters`, `npm run test:multiplayer` e
@@ -237,7 +240,8 @@ os defaults do Tiled valem para portas ainda sem estado salvo. Não há interfac
 para alterar `locked` nesta etapa; o campo compartilhado é respeitado.
 
 Teste: duas abas na mesma área; pressione E perto da mesma porta e confira o
-outro jogador. Fechar uma aba remove sua presença após 15 s. O teste automatizado
+outro jogador. Fechar uma aba tenta liberar a presença imediatamente; como fallback,
+o backend remove a sessão sem heartbeat após aproximadamente 60–65 s. O teste automatizado
 real dessas duas funções é `npm.cmd run test:doors-online` (backend rodando).
 
 Correção do mapa: `note-door-190` atende a anotação `fixThis`; `wall-17-21`,

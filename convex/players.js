@@ -1,6 +1,11 @@
 import { queryGeneric as query, mutationGeneric as mutation, internalMutationGeneric as internalMutation } from 'convex/server';
 import { v } from 'convex/values';
 import { CHARACTERS, characterById } from '../src/characters.js';
+import {
+  isPresenceActive,
+  ownsCharacterSession,
+  PRESENCE_TIMEOUT_MS,
+} from '../src/multiplayer/presencePolicy.js';
 
 export const availability = query({
   args: {},
@@ -16,7 +21,7 @@ export const claim = mutation({
     const c=characterById(characterId);
     if(!c||sessionId.length<16||sessionId.length>100)throw new Error('Invalid character/session');
     const old=await ctx.db.query('players').withIndex('by_player',q=>q.eq('playerId',characterId)).unique();
-    if(old&&old.sessionId!==sessionId&&Date.now()-old.lastSeen<15_000)return {ok:false};
+    if(old&&old.sessionId!==sessionId&&isPresenceActive(old.lastSeen))return {ok:false};
     // One character per session, including simultaneous claims from this client.
     for(const row of await ctx.db.query('players').collect())if(row.sessionId===sessionId&&row._id!==old?._id)await ctx.db.delete(row._id);
     const state={playerId:c.id,characterId:c.id,name:c.name,sessionId,room:'selection',x:0,y:0,direction:'down',lastSeen:Date.now()};
@@ -51,9 +56,18 @@ export const update = mutation({
         !['school', 'outside', 'selection'].includes(args.room) ||
         !['up', 'down', 'left', 'right'].includes(args.direction)) throw new Error('Invalid player state');
     const existing = await ctx.db.query('players').withIndex('by_player', q => q.eq('playerId', args.playerId)).unique();
-    if(!existing||existing.sessionId!==args.sessionId||args.characterId!==args.playerId)throw new Error('CHARACTER_SESSION_LOST');
+    if(!ownsCharacterSession(existing,args.characterId,args.sessionId)||args.characterId!==args.playerId)throw new Error('CHARACTER_SESSION_LOST');
     const state = { ...args, name:characterById(args.characterId).name, lastSeen: Date.now() };
     await ctx.db.patch(existing._id, state);
+  },
+});
+
+export const heartbeat = mutation({
+  args: { characterId:v.string(), sessionId:v.string() },
+  handler: async (ctx, {characterId,sessionId}) => {
+    const existing=await ctx.db.query('players').withIndex('by_player',q=>q.eq('playerId',characterId)).unique();
+    if(!ownsCharacterSession(existing,characterId,sessionId))throw new Error('CHARACTER_SESSION_LOST');
+    await ctx.db.patch(existing._id,{lastSeen:Date.now()});
   },
 });
 
@@ -61,7 +75,9 @@ export const update = mutation({
 export const cleanup = internalMutation({
   args: {},
   handler: async ctx => {
-    const stale = await ctx.db.query('players').withIndex('by_lastSeen', q => q.lt('lastSeen', Date.now() - 15_000)).take(200);
+    const stale = await ctx.db.query('players').withIndex(
+      'by_lastSeen',q=>q.lt('lastSeen',Date.now()-PRESENCE_TIMEOUT_MS),
+    ).take(200);
     for (const player of stale) await ctx.db.delete(player._id);
   },
 });

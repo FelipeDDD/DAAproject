@@ -2,6 +2,7 @@ import { queryGeneric as query, mutationGeneric as mutation } from 'convex/serve
 import { v } from 'convex/values';
 import definitions from './doorDefinitions.js';
 import { PLAYER_SCALE } from '../src/game/settings.js';
+import { isPresenceActive } from '../src/multiplayer/presencePolicy.js';
 
 export const inRoom=query({
   args:{room:v.string()},
@@ -22,7 +23,7 @@ export const setOpen=mutation({
     const saved=await ctx.db.query('doors').withIndex('by_room_door',q=>q.eq('room',args.room).eq('doorId',args.doorId)).unique();
     if((saved?.locked??d.locked)||!d.interactive)throw new Error('Door locked or passage is fixed.');
     const players=await ctx.db.query('players').withIndex('by_room',q=>q.eq('room',args.room)).collect();
-    const active=players.filter(p=>Date.now()-p.lastSeen<15_000);
+    const active=players.filter(p=>isPresenceActive(p.lastSeen));
     const p=active.find(p=>p.playerId===args.playerId);
     const feet=p=>({x:p.x-10*PLAYER_SCALE,y:p.y-12*PLAYER_SCALE,right:p.x+10*PLAYER_SCALE,bottom:p.y});
     const body=p&&feet(p);

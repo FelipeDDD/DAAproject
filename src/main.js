@@ -18,10 +18,22 @@ const menu=new CharacterMenu(presence,()=>{
   }
 });
 
-async function changeCharacter(){
+function releaseCurrentCharacter(){
+  const identity=presence?.identity;
+  if(!identity)return Promise.resolve();
+  return presence.client.mutation(presence.api.players.release,{
+    characterId:identity.characterId,sessionId:identity.sessionId,
+  });
+}
+
+function releaseOnPageHide(){void releaseCurrentCharacter().catch(()=>{});}
+window.addEventListener('pagehide',releaseOnPageHide);
+
+async function changeCharacter(event){
   if(menu.pending||pausedScene)return;
   const activeScene=game?.scene.getScenes(true)[0];
-  if(activeScene?.quiz?.seated&&!(await activeScene.quiz.leave()))return;
+  const sessionLost=event?.type==='character-session-lost';
+  if(!sessionLost&&activeScene?.quiz?.seated&&!(await activeScene.quiz.leave()))return;
   activeScene?.soloStudy?.closePanel();
   if(activeScene){
     activeScene.emoteBar?.close();activeScene.emoteBar=null;
@@ -36,10 +48,8 @@ async function changeCharacter(){
     pausedScene.scene.pause();
   }
   presence?.leave();gameArea.hidden=true;changeButton.hidden=true;menu.pending=true;menu.show();
-  const identity=presence?.identity;
-  if(identity)try{
-    await presence.client.mutation(presence.api.players.release,{characterId:identity.characterId,sessionId:identity.sessionId});
-  }catch{menu.message.textContent='The previous session will be released after its timeout.';}
+  try{await releaseCurrentCharacter();}
+  catch{menu.message.textContent='The previous session will be released after its timeout.';}
   menu.pending=false;menu.render();
 }
 changeButton.addEventListener('click',changeCharacter);
@@ -51,6 +61,7 @@ if (import.meta.hot) {
     menu.close();game?.destroy(true);closePresence();
     changeButton.removeEventListener('click',changeCharacter);
     window.removeEventListener('character-session-lost',changeCharacter);
+    window.removeEventListener('pagehide',releaseOnPageHide);
     document.getElementById('character-list').replaceChildren();
   });
 }

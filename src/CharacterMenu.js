@@ -1,5 +1,5 @@
 import { CHARACTERS, CHARACTER_STORAGE_KEY } from './characters.js';
-import { STALE_MS } from './multiplayer/Presence.js';
+import { isPresenceActive } from './multiplayer/presencePolicy.js';
 
 export function createCharacterSessionId(cryptoApi=globalThis.crypto) {
   if (typeof cryptoApi?.randomUUID === 'function') return cryptoApi.randomUUID();
@@ -58,7 +58,7 @@ export class CharacterMenu {
   }
   render(){
     for(const {c,button,state}of this.cards){
-      const busy=this.rows.some(r=>r.characterId===c.id&&Date.now()-r.lastSeen<STALE_MS);
+      const busy=this.rows.some(r=>r.characterId===c.id&&isPresenceActive(r.lastSeen));
       button.disabled=!this.ready||this.pending||busy;
       state.textContent=busy?'In use':this.ready?'Available':this.connectionFailed?'Offline':'Loading…';
     }

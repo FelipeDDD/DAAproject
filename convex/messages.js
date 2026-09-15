@@ -1,5 +1,6 @@
 import { queryGeneric as query, mutationGeneric as mutation } from 'convex/server';
 import { v } from 'convex/values';
+import { isPresenceActive, ownsCharacterSession } from '../src/multiplayer/presencePolicy.js';
 
 export const inRoom = query({
   args: { room:v.string() },
@@ -13,7 +14,7 @@ export const send = mutation({
     const text=args.text.trim();
     if(!text||text.length>200)throw new Error('Messages must contain between 1 and 200 characters.');
     const player=await ctx.db.query('players').withIndex('by_player',q=>q.eq('playerId',args.characterId)).unique();
-    if(!player||player.sessionId!==args.sessionId||Date.now()-player.lastSeen>=15_000||
+    if(!ownsCharacterSession(player,args.characterId,args.sessionId)||!isPresenceActive(player.lastSeen)||
        player.room!==args.room||!['school','outside'].includes(args.room))throw new Error('Invalid session or room.');
     await ctx.db.insert('messages',{room:player.room,characterId:player.characterId,
       characterName:player.name,text,createdAt:Date.now()});

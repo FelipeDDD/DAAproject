@@ -10,8 +10,8 @@ import { PLAYER_SCALE } from '../src/game/settings.js';
 import {
   QUIZ_QUESTION_DURATION_MS,quizQuestionComplete,quizQuestionExpired,shouldEndQuizForParticipants,
 } from '../src/quizTimer.js';
+import { isPresenceActive } from '../src/multiplayer/presencePolicy.js';
 
-const ACTIVE_MS = 15_000;
 const DEFAULT_SETTINGS=Object.freeze({category:null,difficulty:null,count:QUESTIONS_PER_QUIZ});
 
 function settingsFor(lobby){return {...DEFAULT_SETTINGS,...(lobby.settings??{})};}
@@ -19,13 +19,13 @@ function settingsFor(lobby){return {...DEFAULT_SETTINGS,...(lobby.settings??{})}
 async function playerFor(ctx, characterId, sessionId, room) {
   const player = await ctx.db.query('players').withIndex('by_player', q => q.eq('playerId', characterId)).unique();
   if (!player || player.characterId !== characterId || player.sessionId !== sessionId ||
-      player.room !== room || Date.now() - player.lastSeen >= ACTIVE_MS) throw new Error('Invalid session or room.');
+      player.room !== room || !isPresenceActive(player.lastSeen)) throw new Error('Invalid session or room.');
   return player;
 }
 
 async function activeParticipants(ctx, lobby) {
   const players = await ctx.db.query('players').withIndex('by_room', q => q.eq('room', lobby.room)).collect();
-  const active = new Set(players.filter(p => Date.now() - p.lastSeen < ACTIVE_MS).map(p => p.characterId));
+  const active = new Set(players.filter(p => isPresenceActive(p.lastSeen)).map(p => p.characterId));
   return lobby.participants.filter(id => active.has(id));
 }
 

@@ -1,6 +1,11 @@
-export const SYNC_INTERVAL_MS = 125; // Maximum 8 updates/second, independent of FPS.
-export const HEARTBEAT_MS = 1000;
-export const STALE_MS = 15_000;
+import {
+  isPresenceActive,
+  PRESENCE_HEARTBEAT_MS,
+  PRESENCE_SYNC_INTERVAL_MS,
+  PRESENCE_TIMEOUT_MS,
+} from './presencePolicy.js';
+
+export { PRESENCE_HEARTBEAT_MS, PRESENCE_SYNC_INTERVAL_MS, PRESENCE_TIMEOUT_MS };
 
 export class Presence {
   constructor(client, api, identity, status = () => {}) {
@@ -18,25 +23,30 @@ export class Presence {
       active.rows = rows;
       this.deliver(active);
     }, error => this.fail(error));
-    this.timer = setInterval(() => { this.deliver(active); this.send(); }, SYNC_INTERVAL_MS);
+    this.timer = setInterval(() => { this.deliver(active); this.send(); }, PRESENCE_SYNC_INTERVAL_MS);
     this.send();
   }
 
   deliver(active) {
     if (this.active !== active) return;
-    active.receive(active.rows.filter(p => p.playerId !== this.identity.playerId &&
-      p.room === active.room && Date.now() - p.lastSeen < STALE_MS));
+    active.receive(active.rows.filter(p => p.playerId !== this.identity.playerId
+      && p.room === active.room && isPresenceActive(p.lastSeen)));
   }
 
-  async send() {
+  async send(now = Date.now()) {
     const active = this.active;
     if (!active || this.busy) return;
     const state = { ...this.identity, room: active.room, ...active.snapshot() };
-    const serialized = JSON.stringify(state), now = Date.now();
-    if (serialized === active.previous && now - active.sentAt < HEARTBEAT_MS) return;
+    const serialized = JSON.stringify(state);
+    const stateChanged = serialized !== active.previous;
+    if (!stateChanged && now - active.sentAt < PRESENCE_HEARTBEAT_MS) return;
     this.busy = true;
     try {
-      await this.client.mutation(this.api.players.update, state);
+      if (stateChanged) await this.client.mutation(this.api.players.update, state);
+      else await this.client.mutation(this.api.players.heartbeat, {
+        characterId: this.identity.characterId,
+        sessionId: this.identity.sessionId,
+      });
       active.previous = serialized;
       active.sentAt = now;
       if (this.active === active) this.status('Online');

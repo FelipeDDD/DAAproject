@@ -1,7 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { Presence, SYNC_INTERVAL_MS } from '../src/multiplayer/Presence.js';
+import { Presence } from '../src/multiplayer/Presence.js';
 import { interpolate } from '../src/multiplayer/RemotePlayers.js';
+import {
+  isPresenceActive,
+  PRESENCE_HEARTBEAT_MS,
+  PRESENCE_SYNC_INTERVAL_MS,
+  PRESENCE_TIMEOUT_MS,
+} from '../src/multiplayer/presencePolicy.js';
+import { cleanup, heartbeat, update } from '../convex/players.js';
 
 test('room subscription filters self and stale players; old callbacks cannot repopulate a new room', async () => {
   const callbacks=[],calls=[];
@@ -10,7 +17,9 @@ test('room subscription filters self and stale players; old callbacks cannot rep
   let rows;
   try {
     presence.enter('school',()=>({x:1,y:2,direction:'down'}),r=>rows=r);
-    callbacks[0](['me','other','expired'].map(playerId=>({playerId,room:'school',lastSeen:playerId==='expired'?0:Date.now()})));
+    callbacks[0](['me','other','expired'].map(playerId=>({
+      playerId,room:'school',lastSeen:playerId==='expired'?Date.now()-PRESENCE_TIMEOUT_MS-1:Date.now(),
+    })));
     assert.deepEqual(rows.map(p=>p.playerId),['other']);
     await Promise.resolve();
     presence.enter('outside',()=>({x:10,y:20,direction:'left'}),r=>rows=r);
@@ -31,8 +40,57 @@ test('network latency never queues a position per frame, and stationary heartbea
     finish(); await Promise.resolve();
     await presence.send();
     assert.equal(count,1);
-    assert.equal(1000/SYNC_INTERVAL_MS,8);
+    assert.equal(1000/PRESENCE_SYNC_INTERVAL_MS,8);
   } finally { presence.leave(); }
+});
+
+function stationaryPresence(mutation) {
+  const identity={playerId:'me',characterId:'me',name:'Me',sessionId:'session-123456789'};
+  const state={...identity,room:'school',x:10,y:20,direction:'down'};
+  const presence=new Presence({mutation},{players:{update:'update',heartbeat:'heartbeat'}},identity);
+  presence.active={room:'school',snapshot:()=>({x:10,y:20,direction:'down'}),previous:JSON.stringify(state),sentAt:0};
+  return presence;
+}
+
+test('a stationary player sends a lightweight heartbeat instead of full position state',async()=>{
+  const calls=[];const presence=stationaryPresence(async(fn,args)=>calls.push({fn,args}));
+  await presence.send(PRESENCE_HEARTBEAT_MS-1);
+  assert.equal(calls.length,0);
+  await presence.send(PRESENCE_HEARTBEAT_MS);
+  assert.deepEqual(calls,[{fn:'heartbeat',args:{characterId:'me',sessionId:'session-123456789'}}]);
+});
+
+test('a simulated background tab remains active while heartbeats continue',async()=>{
+  let serverLastSeen=0;
+  const presence=stationaryPresence(async(fn)=>{assert.equal(fn,'heartbeat');serverLastSeen=presence.active.sentAt+PRESENCE_HEARTBEAT_MS;});
+  for(let now=PRESENCE_HEARTBEAT_MS;now<=PRESENCE_TIMEOUT_MS*2;now+=PRESENCE_HEARTBEAT_MS){
+    await presence.send(now);serverLastSeen=now;
+    assert.equal(isPresenceActive(serverLastSeen,now+PRESENCE_HEARTBEAT_MS),true);
+  }
+});
+
+test('cleanup removes a session that has missed the configured timeout',async()=>{
+  const deleted=[];let cutoff;
+  const stale={_id:'stale-player',lastSeen:Date.now()-PRESENCE_TIMEOUT_MS-1};
+  const ctx={db:{
+    query:()=>({withIndex:(_name,build)=>{
+      build({lt:(_field,value)=>{cutoff=value;return {};}});return {take:async()=>[stale]};
+    }}),
+    delete:async id=>deleted.push(id),
+  }};
+  const before=Date.now()-PRESENCE_TIMEOUT_MS;
+  await cleanup._handler(ctx);
+  const after=Date.now()-PRESENCE_TIMEOUT_MS;
+  assert.ok(cutoff>=before&&cutoff<=after);
+  assert.deepEqual(deleted,['stale-player']);
+});
+
+test('an old session cannot update or heartbeat after another session owns the character',async()=>{
+  const current={_id:'player',playerId:'michael',characterId:'michael',sessionId:'new-session-123456',lastSeen:Date.now()};
+  const ctx={db:{query:()=>({withIndex:()=>({unique:async()=>current})}),patch:async()=>assert.fail('must not patch')}};
+  const state={playerId:'michael',characterId:'michael',sessionId:'old-session-123456',name:'Ignored',room:'school',x:1,y:2,direction:'down'};
+  await assert.rejects(update._handler(ctx,state),/CHARACTER_SESSION_LOST/);
+  await assert.rejects(heartbeat._handler(ctx,{characterId:'michael',sessionId:state.sessionId}),/CHARACTER_SESSION_LOST/);
 });
 
 test('remote smoothing converges without overshoot and is independent of frame rate', () => {
@@ -45,7 +103,9 @@ test('remote smoothing converges without overshoot and is independent of frame r
 test('cached remote expires even without a further realtime callback', () => {
   let rows;
   const presence=new Presence({}, {}, {playerId:'self'});
-  const active={room:'school',rows:[{playerId:'other',room:'school',lastSeen:Date.now()-16_000}],receive:r=>rows=r};
+  const active={room:'school',rows:[{
+    playerId:'other',room:'school',lastSeen:Date.now()-PRESENCE_TIMEOUT_MS-1,
+  }],receive:r=>rows=r};
   presence.active=active;
   presence.deliver(active);
   assert.deepEqual(rows,[]);
