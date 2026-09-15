@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { readDoors } from '../src/maps/doors.js';
+import { tileObjectFrame } from '../src/maps/tiledTileObjects.js';
 
 const map = JSON.parse(readFileSync(new URL('../public/assets/maps/classroom.tmj', import.meta.url)));
 const classroomDoors = readDoors(map);
@@ -10,18 +11,40 @@ const blocked = (x, y) => collision.objects.some((area) =>
   x * map.tilewidth >= area.x && x * map.tilewidth < area.x + area.width &&
   y * map.tileheight >= area.y && y * map.tileheight < area.y + area.height);
 
-test('both maps have exactly the requested layer names and types', () => {
+test('maps keep their required layers and the classroom supports object decoration', () => {
   const empty = JSON.parse(readFileSync(new URL('../public/assets/maps/outside.tmj', import.meta.url)));
-  const expected = [
+  const required = [
     ['Floor', 'tilelayer'], ['Walls', 'tilelayer'], ['Decoration', 'tilelayer'],
     ['Entities', 'objectgroup'], ['Collision', 'objectgroup'], ['Doors', 'objectgroup'],
     ['Spawns', 'objectgroup'], ['Notes', 'objectgroup'],
   ];
   for (const source of [map, empty]) {
-    assert.deepEqual(source.layers.map((layer) => [layer.name, layer.type]), expected);
+    const layers = source.layers.map((layer) => [layer.name, layer.type]);
+    for (const layer of required) assert.ok(layers.some((entry) => entry[0] === layer[0] && entry[1] === layer[1]));
     const ids = source.layers.flatMap((layer) => (layer.objects ?? []).map((object) => object.id));
     assert.equal(new Set(ids).size, ids.length, 'Tiled object IDs must remain unique');
   }
+  assert.equal(map.layers.find((layer) => layer.name === 'objectDecoration')?.type, 'objectgroup');
+});
+
+test('objectDecoration contains visual tile objects without owning collision', () => {
+  const decorationObjects = map.layers.find((layer) => layer.name === 'objectDecoration')?.objects ?? [];
+  assert.ok(decorationObjects.length > 0);
+  assert.ok(decorationObjects.every((object) => object.gid));
+  assert.ok(decorationObjects.every((object) => !object.properties?.some((property) => property.name === 'collides' && property.value)));
+  for (const object of decorationObjects) {
+    const resolved = tileObjectFrame(object.gid, map.tilesets.map((tileset, index, all) => ({
+      ...tileset,
+      tilecount: index + 1 < all.length ? all[index + 1].firstgid - tileset.firstgid : 18,
+    })));
+    assert.ok(resolved, `Missing tileset frame for object ${object.id}`);
+  }
+});
+
+test('tile object frames strip Tiled flip flags without changing the local frame', () => {
+  const tilesets = [{ firstgid: 1, tilecount: 10 }, { firstgid: 20, tilecount: 18 }];
+  assert.deepEqual(tileObjectFrame(25, tilesets), { tilesetIndex: 1, frame: 5 });
+  assert.deepEqual(tileObjectFrame((25 | 0x80000000) >>> 0, tilesets), { tilesetIndex: 1, frame: 5 });
 });
 
 test('visual tiles moved into notes are preserved in Decoration with their annotations', () => {

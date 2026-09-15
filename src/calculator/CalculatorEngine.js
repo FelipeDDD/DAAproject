@@ -5,6 +5,8 @@ const OPERATIONS=Object.freeze({
   '/':(left,right)=>right===0?null:left/right,
 });
 
+const OPERATOR_LABELS=Object.freeze({'*':'×','/':'÷','-':'−','+':'+'});
+
 function formatNumber(value){
   if(!Number.isFinite(value))return 'Error';
   const rounded=Number.parseFloat(value.toPrecision(12));
@@ -13,6 +15,12 @@ function formatNumber(value){
 
 export class CalculatorEngine {
   constructor(){this.clear();}
+
+  get displayText(){
+    if(this.error||this.operator===null||this.accumulator===null)return this.display;
+    const expression=`${formatNumber(this.accumulator)} ${OPERATOR_LABELS[this.operator]}`;
+    return this.waitingForOperand?expression:`${expression} ${this.display}`;
+  }
 
   clear(){
     this.display='0';this.accumulator=null;this.operator=null;

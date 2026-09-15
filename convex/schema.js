@@ -36,6 +36,32 @@ export default defineSchema({
     recentQuestions:v.array(v.object({questionId:v.string(),seenAt:v.number()})),
     updatedAt:v.number(),
   }).index('by_character',['characterId']),
+  soloQuizRuns: defineTable({
+    characterId:v.string(),sessionId:v.string(),mode:v.union(v.literal('study'),v.literal('challenge')),
+    settings:v.object({
+      category:v.union(v.string(),v.null()),topic:v.optional(v.union(v.string(),v.null())),
+      difficulty:v.union(v.literal('medium'),v.literal('hard'),v.null()),count:v.union(v.number(),v.null()),
+    }),
+    questions:v.array(v.object({
+      id:v.string(),category:v.string(),topic:v.union(v.string(),v.null()),difficulty:v.string(),
+      correctAnswer:v.number(),answerCount:v.number(),
+    })),
+    createdAt:v.number(),
+  }).index('by_character',['characterId']),
+  quizAttempts: defineTable({
+    attemptKey:v.string(),characterId:v.string(),questionId:v.string(),category:v.string(),
+    topic:v.union(v.string(),v.null()),difficulty:v.string(),
+    mode:v.union(v.literal('study'),v.literal('challenge'),v.literal('multiplayer')),
+    correct:v.boolean(),answeredAt:v.number(),
+  }).index('by_attempt_key',['attemptKey'])
+    .index('by_character_time',['characterId','answeredAt'])
+    .index('by_character_question',['characterId','questionId']),
+  quizPerformance: defineTable({
+    characterId:v.string(),category:v.string(),topic:v.union(v.string(),v.null()),difficulty:v.string(),
+    mode:v.union(v.literal('study'),v.literal('challenge'),v.literal('multiplayer')),
+    correct:v.number(),wrong:v.number(),answered:v.number(),updatedAt:v.number(),
+  }).index('by_character',['characterId'])
+    .index('by_character_bucket',['characterId','category','topic','difficulty','mode']),
   emoteEvents: defineTable({
     characterId:v.string(),playerId:v.string(),room:v.string(),emote:v.string(),createdAt:v.number(),
   }).index('by_room',['room']).index('by_character',['characterId']).index('by_createdAt',['createdAt']),

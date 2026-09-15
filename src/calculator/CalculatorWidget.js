@@ -27,7 +27,7 @@ export class CalculatorWidget {
     this.closeButton=makeButton(documentRef,'×','close');this.closeButton.className='calculator-close';
     this.closeButton.setAttribute('aria-label','Close calculator');this.header.append(title,this.closeButton);
     this.display=documentRef.createElement('output');this.display.className='calculator-display';
-    this.display.setAttribute('aria-live','polite');this.display.textContent=this.engine.display;
+    this.display.setAttribute('aria-live','polite');this.display.textContent=this.engine.displayText;
     this.keypad=documentRef.createElement('div');this.keypad.className='calculator-keypad';
     this.keypad.append(...KEYS.map(key=>makeButton(documentRef,...key)));
     this.panel.append(this.header,this.display,this.keypad);this.mount.prepend(this.launcher);documentRef.body.append(this.panel);
@@ -88,7 +88,7 @@ export class CalculatorWidget {
     if(action){event.preventDefault();this.handleAction(action);}
   }
 
-  renderDisplay(){this.display.textContent=this.engine.display;}
+  renderDisplay(){this.display.textContent=this.engine.displayText;}
 
   blockGameKeyboard(){
     const keyboard=this.scene?.input?.keyboard;

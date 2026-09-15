@@ -50,13 +50,13 @@ test('late shared close lets overlapping feet escape, then restores collision', 
   assert.equal(door.blocker.body.enable,true);
 });
 
-test('closed -> open -> closed updates the blocker and visual together', () => {
+test('transition door remains physically blocked while its destination is available', () => {
   const door = makeDoor();
   assert.equal(door.blocker.body.enable, true);
   assert.equal(door.getDestination(), null);
   door.toggle(outside);
   assert.equal(door.open, true);
-  assert.equal(door.blocker.body.enable, false);
+  assert.equal(door.blocker.body.enable, true);
   assert.equal(door.visual.texture, door.openVisual.texture);
   assert.deepEqual(door.getDestination(), {
     targetMap: 'outside', targetSpawn: 'schoolEntrance', targetX: undefined, targetY: undefined,
@@ -76,7 +76,7 @@ test('locked doors remain closed even with contradictory initial open: true', ()
 });
 
 test('door cannot close over feet, but can close after the player leaves', () => {
-  const door = makeDoor({ open: true });
+  const door = makeDoor({ open: true, transition: false });
   const inside = { x: door.x + 4, y: door.y + 4, right: door.x + 27, bottom: door.y + 18 };
   door.toggle(inside);
   assert.equal(door.open, true);
@@ -115,11 +115,11 @@ test('transition false prevents travel even when a targetMap is configured', () 
   assert.equal(door.blocker.body.enable, false);
 });
 
-test('non-interactive open entrance keeps passage and transition available', () => {
+test('non-interactive transition keeps its destination available and blocks walking through', () => {
   const door = makeDoor({ interactive: false, open: true });
   door.toggle(outside);
   assert.equal(door.open, true);
-  assert.equal(door.blocker.body.enable, false);
+  assert.equal(door.blocker.body.enable, true);
   assert.equal(door.getDestination().targetMap, 'outside');
 });
 
@@ -127,7 +127,7 @@ test('a fixed half-open transition keeps visual state separate from its open col
   const definition=classroomDoors.find(d=>d.id==='exit_main_door');
   const door=makeDoor({},definition);
   assert.equal(door.displayedState,'halfOpen');assert.equal(door.visual.texture,'door-half-open');
-  assert.equal(door.open,true);assert.equal(door.blocker.body.enable,false);
+  assert.equal(door.open,true);assert.equal(door.blocker.body.enable,true);
   assert.equal(door.getDestination().targetSpawn,'schoolEntrance');
 });
 

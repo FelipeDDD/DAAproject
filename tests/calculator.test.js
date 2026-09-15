@@ -13,6 +13,13 @@ test('calculator adds, subtracts, multiplies and divides without eval',()=>{
   assert.equal(calculate(12,'*',7),'84');assert.equal(calculate(12,'/',4),'3');
 });
 
+test('calculator keeps the complete expression visible while entering operands',()=>{
+  const engine=new CalculatorEngine();enter(engine,100);
+  engine.setOperator('*');assert.equal(engine.displayText,'100 ×');
+  enter(engine,5);assert.equal(engine.displayText,'100 × 5');
+  engine.equals();assert.equal(engine.displayText,'500');
+});
+
 test('calculator supports decimal values and percentage',()=>{
   assert.equal(calculate('1.5','+','2.25'),'3.75');
   const engine=new CalculatorEngine();enter(engine,25);engine.percent();assert.equal(engine.display,'0.25');

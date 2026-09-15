@@ -89,7 +89,6 @@
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1551, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -102,22 +101,25 @@
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1547, 1547, 1547, 1547, 0, 1611, 1612, 0, 0, 1611, 1612, 0, 0, 1611, 1612, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1547, 1547, 1547, 1547, 0, 1613, 1614, 0, 0, 1613, 1614, 0, 0, 1613, 1614, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1615, 1616, 0, 0, 1615, 1616, 0, 0, 1615, 1616, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1617, 1618, 0, 0, 1617, 1618, 0, 0, 1617, 1618, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1547, 1547, 1547, 1547, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1547, 1547, 1547, 1547, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1532, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1611, 1612, 0, 0, 1611, 1612, 0, 0, 1611, 1612, 0, 0, 1532, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1613, 1614, 0, 0, 1613, 1614, 0, 0, 1613, 1614, 0, 0, 1532, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1615, 1616, 0, 0, 1615, 1616, 0, 0, 1615, 1616, 0, 0, 1532, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1617, 1618, 0, 0, 1617, 1618, 0, 0, 1617, 1618, 0, 0, 1532, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1532, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1532, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1532, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1532, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          "height":30,
          "id":3,
          "name":"Decoration",
+         "offsetx":16,
+         "offsety":-16,
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
@@ -3699,151 +3701,6 @@
                  "y":883.5
                 }, 
                 {
-                 "gid":1595,
-                 "height":33,
-                 "id":288,
-                 "name":"sinkBathroom-243",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"right"
-                        }, 
-                        {
-                         "name":"flipX",
-                         "type":"bool",
-                         "value":false
-                        }, 
-                        {
-                         "name":"sourceNote",
-                         "type":"float",
-                         "value":243
-                        }],
-                 "rotation":0,
-                 "type":"prop",
-                 "visible":true,
-                 "width":31.5,
-                 "x":288.5,
-                 "y":172
-                }, 
-                {
-                 "gid":1595,
-                 "height":33,
-                 "id":290,
-                 "name":"sinkBathroom-244",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"right"
-                        }, 
-                        {
-                         "name":"flipX",
-                         "type":"bool",
-                         "value":false
-                        }, 
-                        {
-                         "name":"sourceNote",
-                         "type":"float",
-                         "value":244
-                        }],
-                 "rotation":0,
-                 "type":"prop",
-                 "visible":true,
-                 "width":31.5,
-                 "x":287.75,
-                 "y":212.5
-                }, 
-                {
-                 "gid":1596,
-                 "height":22,
-                 "id":292,
-                 "name":"handDryer-245",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"down"
-                        }, 
-                        {
-                         "name":"flipX",
-                         "type":"bool",
-                         "value":false
-                        }, 
-                        {
-                         "name":"sourceNote",
-                         "type":"float",
-                         "value":245
-                        }],
-                 "rotation":0,
-                 "type":"prop",
-                 "visible":true,
-                 "width":18,
-                 "x":328.5,
-                 "y":144.5
-                }, 
-                {
-                 "gid":1597,
-                 "height":37.5,
-                 "id":293,
-                 "name":"toilet-247",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"down"
-                        }, 
-                        {
-                         "name":"flipX",
-                         "type":"bool",
-                         "value":false
-                        }, 
-                        {
-                         "name":"sourceNote",
-                         "type":"float",
-                         "value":247
-                        }],
-                 "rotation":0,
-                 "type":"prop",
-                 "visible":true,
-                 "width":50,
-                 "x":295.5,
-                 "y":42
-                }, 
-                {
-                 "gid":1597,
-                 "height":37.5,
-                 "id":295,
-                 "name":"toilet-248",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"down"
-                        }, 
-                        {
-                         "name":"flipX",
-                         "type":"bool",
-                         "value":false
-                        }, 
-                        {
-                         "name":"sourceNote",
-                         "type":"float",
-                         "value":248
-                        }],
-                 "rotation":0,
-                 "type":"prop",
-                 "visible":true,
-                 "width":50,
-                 "x":391,
-                 "y":42.25
-                }, 
-                {
                  "gid":1598,
                  "height":5.75,
                  "id":297,
@@ -4374,6 +4231,147 @@
          "y":0
         }, 
         {
+         "draworder":"index",
+         "id":9,
+         "name":"objectDecoration",
+         "objects":[
+                {
+                 "gid":1620,
+                 "height":32,
+                 "id":336,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":401.25,
+                 "y":16
+                }, 
+                {
+                 "gid":1620,
+                 "height":32,
+                 "id":337,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":305,
+                 "y":15.75
+                }, 
+                {
+                 "gid":1626,
+                 "height":32,
+                 "id":338,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":401,
+                 "y":48
+                }, 
+                {
+                 "gid":1626,
+                 "height":32,
+                 "id":339,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":305,
+                 "y":47.5
+                }, 
+                {
+                 "gid":1625,
+                 "height":32,
+                 "id":340,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":372.25,
+                 "y":140.5
+                }, 
+                {
+                 "gid":2147485266,
+                 "height":32,
+                 "id":341,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":-90,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":303.5,
+                 "y":203
+                }, 
+                {
+                 "gid":1619,
+                 "height":32,
+                 "id":342,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":90,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":287.5,
+                 "y":202.75
+                }, 
+                {
+                 "gid":1618,
+                 "height":32,
+                 "id":345,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":-90,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":304,
+                 "y":176
+                }, 
+                {
+                 "gid":1630,
+                 "height":32,
+                 "id":343,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":-90,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":320,
+                 "y":176.5
+                }, 
+                {
+                 "gid":1631,
+                 "height":32,
+                 "id":344,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":-90,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":320,
+                 "y":145
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
          "draworder":"topdown",
          "id":5,
          "name":"Collision",
@@ -4757,78 +4755,6 @@
                  "y":769
                 }, 
                 {
-                 "height":33,
-                 "id":289,
-                 "name":"furniture-243",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"sourceEntity",
-                         "type":"float",
-                         "value":288
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":31.5,
-                 "x":288.5,
-                 "y":139
-                }, 
-                {
-                 "height":33,
-                 "id":291,
-                 "name":"furniture-244",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"sourceEntity",
-                         "type":"float",
-                         "value":290
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":31.5,
-                 "x":287.75,
-                 "y":179.5
-                }, 
-                {
-                 "height":37.5,
-                 "id":294,
-                 "name":"furniture-247",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"sourceEntity",
-                         "type":"float",
-                         "value":293
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":50,
-                 "x":295.5,
-                 "y":4.5
-                }, 
-                {
-                 "height":37.5,
-                 "id":296,
-                 "name":"furniture-248",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"sourceEntity",
-                         "type":"float",
-                         "value":295
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":50,
-                 "x":391,
-                 "y":4.75
-                }, 
-                {
                  "height":32,
                  "id":313,
                  "name":"exit-left",
@@ -4899,8 +4825,7 @@
                  "width":32,
                  "x":640,
                  "y":752
-                },
-            
+                }, 
                 {
                  "height":47.25,
                  "id":325,
@@ -4973,6 +4898,11 @@
                  "opacity":1,
                  "properties":[
                         {
+                         "name":"hinge",
+                         "type":"string",
+                         "value":"left"
+                        }, 
+                        {
                          "name":"id",
                          "type":"string",
                          "value":"bathroom-entry"
@@ -4996,12 +4926,7 @@
                          "name":"orientation",
                          "type":"string",
                          "value":"horizontal"
-                        },
-                        {
-                         "name":"hinge",
-                         "type":"string",
-                         "value":"left"
-                        },
+                        }, 
                         {
                          "name":"transition",
                          "type":"bool",
@@ -5024,37 +4949,37 @@
                          "name":"closedHeight",
                          "type":"float",
                          "value":64
-                        },
+                        }, 
                         {
                          "name":"closedOffsetY",
                          "type":"float",
                          "value":-32
-                        },
-                        {
-                         "name":"interactive",
-                         "type":"bool",
-                         "value":false
                         }, 
                         {
                          "name":"halfOpenHeight",
                          "type":"float",
                          "value":64
-                        },
+                        }, 
                         {
                          "name":"halfOpenOffsetY",
                          "type":"float",
                          "value":-32
-                        },
+                        }, 
                         {
                          "name":"halfOpenTexture",
                          "type":"string",
                          "value":"door-half-open"
-                        },
+                        }, 
                         {
                          "name":"hinge",
                          "type":"string",
                          "value":"left"
-                        },
+                        }, 
+                        {
+                         "name":"interactive",
+                         "type":"bool",
+                         "value":false
+                        }, 
                         {
                          "name":"locked",
                          "type":"bool",
@@ -5079,7 +5004,7 @@
                          "name":"openTexture",
                          "type":"string",
                          "value":"door-open-south"
-                        },
+                        }, 
                         {
                          "name":"orientation",
                          "type":"string",
@@ -5174,11 +5099,6 @@
                          "value":false
                         }, 
                         {
-                         "name":"orientation",
-                         "type":"string",
-                         "value":"vertical"
-                        },
-                        {
                          "name":"openAngle",
                          "type":"float",
                          "value":-90
@@ -5207,6 +5127,11 @@
                          "name":"opensToward",
                          "type":"string",
                          "value":"right"
+                        }, 
+                        {
+                         "name":"orientation",
+                         "type":"string",
+                         "value":"vertical"
                         }, 
                         {
                          "name":"sourceNote",
@@ -5247,11 +5172,6 @@
                          "value":false
                         }, 
                         {
-                         "name":"orientation",
-                         "type":"string",
-                         "value":"horizontal"
-                        },
-                        {
                          "name":"openHeight",
                          "type":"float",
                          "value":64
@@ -5265,6 +5185,11 @@
                          "name":"opensToward",
                          "type":"string",
                          "value":"down"
+                        }, 
+                        {
+                         "name":"orientation",
+                         "type":"string",
+                         "value":"horizontal"
                         }, 
                         {
                          "name":"sourceNote",
@@ -6194,147 +6119,6 @@
                  "y":850.5
                 }, 
                 {
-                 "height":33,
-                 "id":243,
-                 "name":"sinkBathroom",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"color",
-                         "type":"string",
-                         "value":"gray,white"
-                        }, 
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"right"
-                        }, 
-                        {
-                         "name":"resolvedEntity",
-                         "type":"float",
-                         "value":288
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":31.5,
-                 "x":288.5,
-                 "y":139
-                }, 
-                {
-                 "height":33,
-                 "id":244,
-                 "name":"sinkBathroom",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"color",
-                         "type":"string",
-                         "value":"gray,white"
-                        }, 
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"right"
-                        }, 
-                        {
-                         "name":"resolvedEntity",
-                         "type":"float",
-                         "value":290
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":31.5,
-                 "x":287.75,
-                 "y":179.5
-                }, 
-                {
-                 "height":0,
-                 "id":245,
-                 "name":"handDryer",
-                 "opacity":1,
-                 "point":true,
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"down"
-                        }, 
-                        {
-                         "name":"notes",
-                         "type":"string",
-                         "value":"can be a hand dryer or toilet paper, approximate is fine."
-                        }, 
-                        {
-                         "name":"resolvedEntity",
-                         "type":"float",
-                         "value":292
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":337.5,
-                 "y":133.5
-                }, 
-                {
-                 "height":37.5,
-                 "id":247,
-                 "name":"toilet",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"color",
-                         "type":"string",
-                         "value":"gray,white"
-                        }, 
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"down"
-                        }, 
-                        {
-                         "name":"resolvedEntity",
-                         "type":"float",
-                         "value":293
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":50,
-                 "x":295.5,
-                 "y":4.5
-                }, 
-                {
-                 "height":37.5,
-                 "id":248,
-                 "name":"toilet",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"color",
-                         "type":"string",
-                         "value":"gray,white"
-                        }, 
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"down"
-                        }, 
-                        {
-                         "name":"resolvedEntity",
-                         "type":"float",
-                         "value":295
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":50,
-                 "x":391,
-                 "y":4.75
-                }, 
-                {
                  "height":5.75,
                  "id":249,
                  "name":"doorToilet",
@@ -6461,8 +6245,7 @@
                  "width":0,
                  "x":1015,
                  "y":643.5
-                },
-            
+                }, 
                 {
                  "height":0,
                  "id":228,
@@ -6582,7 +6365,8 @@
                  "width":0,
                  "x":1141.5,
                  "y":902
-                }, 
+                },
+            
                 {
                  "height":0,
                  "id":233,
@@ -6670,8 +6454,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":9,
- "nextobjectid":331,
+ "nextlayerid":10,
+ "nextobjectid":346,
  "orientation":"orthogonal",
  "properties":[
         {
@@ -6700,8 +6484,8 @@
          "source":"..\/campus\/cabinet-gray.tsx"
         }, 
         {
-         "firstgid":1611,
-         "source":"..\/campus\/classroom-desk.tsx"
+         "firstgid":1615,
+         "source":"..\/tilessets\/school\/bathroom.tsx"
         }],
  "tilewidth":32,
  "type":"map",
