@@ -4,3 +4,7 @@ dist/
 *.tiled-session
 .map-recovery/
 .convex/
+.vercel/
+
+.vercel
+.env*

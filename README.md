@@ -31,6 +31,38 @@ Na primeira execução, `convex dev` configura o backend de desenvolvimento e gr
 local em `http://127.0.0.1:3210`, sem conta. Reinicie o Vite ao mudar essa variável.
 A seleção exige o Convex disponível para confirmar que o personagem está livre.
 
+## Deploy manual: Vercel + Convex
+
+O frontend usa `import.meta.env.VITE_CONVEX_URL`. Em produção, essa variável é
+fornecida automaticamente durante o build por `convex deploy`; a URL do deployment
+não fica gravada no código ou no repositório. O `vercel.json` desativa deployments
+automáticos originados por push no Git e configura o build combinado:
+
+```powershell
+npx convex deploy --cmd "npm run build" --cmd-url-env-var-name VITE_CONVEX_URL
+```
+
+Antes do primeiro deploy:
+
+1. No Convex Dashboard, selecione o deployment **Production** do projeto. Em
+   **Settings > General**, gere uma **Production Deploy Key** com a permissão
+   `deployment:deploy`.
+2. Na Vercel, abra o projeto em **Settings > Environment Variables** e crie
+   `CONVEX_DEPLOY_KEY` com essa chave. Marque somente o ambiente **Production**.
+   Não é necessário criar `VITE_CONVEX_URL` na Vercel.
+3. No primeiro uso da CLI, autentique-se e vincule esta pasta ao projeto Vercel
+   existente quando ela solicitar. A pasta local `.vercel/` fica ignorada pelo Git.
+
+Para publicar manualmente backend e frontend compatíveis:
+
+```powershell
+npm.cmd run deploy:prod
+```
+
+A Vercel executa o build configurado em `vercel.json`; o Convex escolhe o deployment
+associado a `CONVEX_DEPLOY_KEY`, injeta sua URL no Vite e publica as funções. Depois,
+a Vercel publica o `dist` produzido pelo mesmo processo.
+
 ## Multiplayer mínimo
 
 Abra `http://127.0.0.1:5173` em duas abas, escolha personagens diferentes e aguarde

@@ -20,6 +20,7 @@
     "preconvex": "node scripts/sync-quiz-data.mjs && node scripts/sync-door-definitions.mjs",
     "prebuild": "node scripts/sync-quiz-data.mjs && node scripts/sync-door-definitions.mjs",
     "build": "vite build",
+    "deploy:prod": "npx vercel@latest --prod",
     "preview": "vite preview"
   },
   "dependencies": {
