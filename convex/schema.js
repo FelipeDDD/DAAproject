@@ -48,18 +48,44 @@ export default defineSchema({
     })),
     createdAt:v.number(),
   }).index('by_character',['characterId']),
+  itChallengeRuns: defineTable({
+    characterId:v.string(),sessionId:v.string(),rulesKey:v.string(),rulesVersion:v.number(),
+    variant:v.string(),durationMs:v.number(),startedAt:v.number(),deadline:v.number(),
+    questions:v.array(v.object({
+      id:v.string(),category:v.string(),topic:v.union(v.string(),v.null()),difficulty:v.string(),
+      correctAnswer:v.number(),answerCount:v.number(),
+    })),
+    finishedAt:v.optional(v.number()),
+    result:v.optional(v.object({
+      score:v.number(),correct:v.number(),wrong:v.number(),skipped:v.number(),
+      manualSkip:v.number(),timeoutSkip:v.number(),mediumCorrect:v.number(),hardCorrect:v.number(),
+      totalAnswered:v.number(),accuracy:v.number(),
+    })),
+    wasPersonalBest:v.optional(v.boolean()),
+  }).index('by_character',['characterId']),
+  itChallengeHighScores: defineTable({
+    characterId:v.string(),rulesKey:v.string(),rulesVersion:v.number(),variant:v.string(),durationMs:v.number(),
+    score:v.number(),correct:v.number(),wrong:v.number(),skipped:v.number(),
+    manualSkip:v.number(),timeoutSkip:v.number(),mediumCorrect:v.number(),hardCorrect:v.number(),
+    achievedAt:v.number(),
+  }).index('by_character_rules',['characterId','rulesKey'])
+    .index('by_rules_score',['rulesKey','score']),
   quizAttempts: defineTable({
     attemptKey:v.string(),characterId:v.string(),questionId:v.string(),category:v.string(),
     topic:v.union(v.string(),v.null()),difficulty:v.string(),
     mode:v.union(v.literal('study'),v.literal('challenge'),v.literal('multiplayer')),
-    correct:v.boolean(),answeredAt:v.number(),
+    correct:v.optional(v.boolean()),
+    outcome:v.optional(v.union(v.literal('correct'),v.literal('wrong'),v.literal('manualSkip'),v.literal('timeoutSkip'))),
+    answeredAt:v.number(),
   }).index('by_attempt_key',['attemptKey'])
     .index('by_character_time',['characterId','answeredAt'])
     .index('by_character_question',['characterId','questionId']),
   quizPerformance: defineTable({
     characterId:v.string(),category:v.string(),topic:v.union(v.string(),v.null()),difficulty:v.string(),
     mode:v.union(v.literal('study'),v.literal('challenge'),v.literal('multiplayer')),
-    correct:v.number(),wrong:v.number(),answered:v.number(),updatedAt:v.number(),
+    correct:v.number(),wrong:v.number(),answered:v.number(),
+    skipped:v.optional(v.number()),manualSkip:v.optional(v.number()),timeoutSkip:v.optional(v.number()),
+    updatedAt:v.number(),
   }).index('by_character',['characterId'])
     .index('by_character_bucket',['characterId','category','topic','difficulty','mode']),
   emoteEvents: defineTable({

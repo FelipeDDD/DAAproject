@@ -12,6 +12,8 @@ import type * as crons from "../crons.js";
 import type * as doorDefinitions from "../doorDefinitions.js";
 import type * as doors from "../doors.js";
 import type * as emotes from "../emotes.js";
+import type * as itChallenge from "../itChallenge.js";
+import type * as itChallengeScoring from "../itChallengeScoring.js";
 import type * as messages from "../messages.js";
 import type * as playerSessions from "../playerSessions.js";
 import type * as players from "../players.js";
@@ -37,6 +39,8 @@ declare const fullApi: ApiFromModules<{
   doorDefinitions: typeof doorDefinitions;
   doors: typeof doors;
   emotes: typeof emotes;
+  itChallenge: typeof itChallenge;
+  itChallengeScoring: typeof itChallengeScoring;
   messages: typeof messages;
   playerSessions: typeof playerSessions;
   players: typeof players;

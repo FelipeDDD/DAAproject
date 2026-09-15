@@ -1,7 +1,10 @@
 import { SoloSession } from './SoloSession.js';
-
-export const CHALLENGE_POINTS_PER_CORRECT=10;
-export const CHALLENGE_QUESTION_DURATION_MS=60_000;
+import {
+  IT_CHALLENGE_DURATION_MS,
+  IT_CHALLENGE_FEEDBACK_DELAY_MS,
+  IT_CHALLENGE_POINTS,
+  IT_CHALLENGE_QUESTION_TIMEOUT_MS,
+} from './itChallengeRules.js';
 
 export function challengeAssessment(accuracy) {
   if(accuracy>=90)return 'Excellent';
@@ -10,58 +13,120 @@ export function challengeAssessment(accuracy) {
   return 'Needs practice';
 }
 
+export function challengeAccuracy(correct,wrong){
+  const answered=correct+wrong;
+  return answered?Math.round(correct/answered*1000)/10:0;
+}
+
 export class SoloChallengeSession extends SoloSession {
   constructor(questions,{
-    pointsPerCorrect=CHALLENGE_POINTS_PER_CORRECT,
-    questionDurationMs=CHALLENGE_QUESTION_DURATION_MS,
+    durationMs=IT_CHALLENGE_DURATION_MS,
+    questionTimeoutMs=IT_CHALLENGE_QUESTION_TIMEOUT_MS,
+    feedbackDelayMs=IT_CHALLENGE_FEEDBACK_DELAY_MS,
+    points=IT_CHALLENGE_POINTS,
     now=Date.now(),
   }={}) {
     super(questions,{mode:'challenge'});
-    this.pointsPerCorrect=pointsPerCorrect;this.questionDurationMs=questionDurationMs;this.score=0;
-    this.questionStartedAt=now;this.resolvedRemainingMs=null;this.timedOut=false;
+    Object.assign(this,{
+      durationMs,questionTimeoutMs,feedbackDelayMs,points,
+      startedAt:now,deadline:now+durationMs,questionStartedAt:now,
+      score:0,wrongCount:0,skippedCount:0,manualSkipCount:0,timeoutSkipCount:0,
+      mediumCorrect:0,hardCorrect:0,outcomes:[],feedbackUntil:null,finishReason:null,
+    });
   }
 
-  remainingMs(now=Date.now()) {
-    return this.resolvedRemainingMs??Math.max(0,this.questionDurationMs-(now-this.questionStartedAt));
+  get resolving(){return this.feedbackUntil!==null;}
+  get explanationVisible(){return false;}
+
+  remainingMs(now=Date.now()){return Math.max(0,this.deadline-now);}
+  totalTimeRatio(now=Date.now()){return this.durationMs?this.remainingMs(now)/this.durationMs:0;}
+  questionRemainingMs(now=Date.now()){
+    return Math.min(this.remainingMs(now),Math.max(0,this.questionTimeoutMs-(now-this.questionStartedAt)));
+  }
+  questionTimeRatio(now=Date.now()){
+    return this.questionTimeoutMs?this.questionRemainingMs(now)/this.questionTimeoutMs:0;
   }
 
-  timeRatio(now=Date.now()){return this.questionDurationMs?this.remainingMs(now)/this.questionDurationMs:0;}
+  select(answerIndex){
+    if(this.resolving||this.complete)return false;
+    return super.select(answerIndex);
+  }
 
   confirm(now=Date.now()) {
-    const remaining=this.remainingMs(now);
-    if(remaining<=0)return this.expire(now);
+    if(this.complete||this.resolving)return null;
+    if(this.remainingMs(now)<=0){this.finish('time');return {type:'complete'};}
+    if(this.questionRemainingMs(now)<=0)return this.skip('timeoutSkip',now);
     const result=super.confirm();
-    if(result){
-      this.resolvedRemainingMs=remaining;
-      if(result.correct)this.score+=this.pointsPerCorrect;
-    }
-    return result;
+    if(!result)return null;
+    const points=result.correct
+      ?(this.question.difficulty==='hard'?this.points.hardCorrect:this.points.mediumCorrect)
+      :this.points.wrong;
+    this.score+=points;
+    if(result.correct){
+      if(this.question.difficulty==='hard')this.hardCorrect+=1;
+      else this.mediumCorrect+=1;
+    }else this.wrongCount+=1;
+    const outcome={
+      questionIndex:this.index,type:'answer',answerIndex:result.answerIndex,
+      correct:result.correct,points,
+    };
+    this.outcomes.push(outcome);this.feedbackUntil=now+this.feedbackDelayMs;
+    return outcome;
   }
 
-  expire(now=Date.now()) {
-    if(this.confirmedAnswer!==null||this.remainingMs(now)>0)return null;
-    this.confirmedAnswer=-1;this.resolvedRemainingMs=0;this.timedOut=true;
-    return {correct:false,answerIndex:null,correctAnswer:this.question.correctAnswer,timedOut:true};
+  skip(type='manualSkip',now=Date.now()) {
+    if(!['manualSkip','timeoutSkip'].includes(type)||this.complete||this.resolving)return null;
+    if(this.remainingMs(now)<=0){this.finish('time');return {type:'complete'};}
+    this.score+=this.points.skip;this.skippedCount+=1;
+    if(type==='manualSkip')this.manualSkipCount+=1;
+    else this.timeoutSkipCount+=1;
+    const outcome={questionIndex:this.index,type,points:this.points.skip};
+    this.outcomes.push(outcome);
+    this.advance(now);
+    return outcome;
   }
 
-  next(now=Date.now()) {
-    const advanced=super.next();
-    if(advanced&&!this.complete){
-      this.questionStartedAt=now;this.resolvedRemainingMs=null;this.timedOut=false;
-    }
-    return advanced;
+  advance(now=Date.now()) {
+    if(this.index+1>=this.questions.length){this.finish('questions');return false;}
+    this.index+=1;this.selectedAnswer=null;this.confirmedAnswer=null;
+    this.feedbackUntil=null;this.questionStartedAt=now;
+    return true;
   }
+
+  tick(now=Date.now()) {
+    if(this.complete)return null;
+    if(this.remainingMs(now)<=0){this.finish('time');return {type:'complete'};}
+    if(this.resolving){
+      if(now<this.feedbackUntil)return null;
+      const advanced=this.advance(now);
+      return {type:advanced?'advanced':'complete'};
+    }
+    if(this.questionRemainingMs(now)<=0)return this.skip('timeoutSkip',now);
+    return null;
+  }
+
+  finish(reason='time'){
+    if(this.complete)return false;
+    this.complete=true;this.finishReason=reason;this.feedbackUntil=null;
+    return true;
+  }
+
+  next(){return false;}
 
   result() {
-    const result=super.result();
-    return {...result,score:this.score,assessment:challengeAssessment(result.accuracy)};
+    const totalAnswered=this.correctCount+this.wrongCount;
+    const accuracy=challengeAccuracy(this.correctCount,this.wrongCount);
+    return {
+      score:this.score,correct:this.correctCount,wrong:this.wrongCount,skipped:this.skippedCount,
+      manualSkip:this.manualSkipCount,timeoutSkip:this.timeoutSkipCount,
+      mediumCorrect:this.mediumCorrect,hardCorrect:this.hardCorrect,totalAnswered,accuracy,
+      assessment:challengeAssessment(accuracy),
+    };
   }
 
-  completionRecord({characterId,category=null,topic=null,difficulty=null,completedAt=Date.now()}={}) {
-    const result=this.result();
-    return {
-      characterId,mode:this.mode,category,topic,difficulty,questionCount:result.total,
-      score:result.score,correctAnswers:result.correct,accuracy:result.accuracy,completedAt,
-    };
+  submission(){
+    return this.outcomes.map(({questionIndex,type,answerIndex})=>({
+      questionIndex,type,...(answerIndex===undefined?{}:{answerIndex}),
+    }));
   }
 }

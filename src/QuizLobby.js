@@ -104,7 +104,7 @@ export class QuizLobby {
       this.scene.player.setVelocity(0,0);this.root.hidden=false;this.render();
     }catch(error){
       this.status.textContent=error.message.includes('already started')?'The lobby has already started.':'Could not sit down. Move closer to your chair.';
-    }finally{this.pending=false;}
+    }finally{this.pending=false;this.render();}
   }
 
   async leave(){

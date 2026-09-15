@@ -119,6 +119,7 @@ export function materializeQuizQuestions(questionIds, random = Math.random) {
 
 export function selectQuizQuestionIds({
   category,
+  categories,
   topic,
   difficulty,
   count = QUESTIONS_PER_QUIZ,
@@ -126,6 +127,6 @@ export function selectQuizQuestionIds({
   recentHistories = [],
 } = {}) {
   return buildQuizQuestionSelection({
-    questionBank:QUIZ_QUESTIONS,category,topic,difficulty,count,seed,recentHistories,
+    questionBank:QUIZ_QUESTIONS,category,categories,topic,difficulty,count,seed,recentHistories,
   }).questionIds;
 }

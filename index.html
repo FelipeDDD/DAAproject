@@ -79,18 +79,33 @@
           <label class="solo-mode-field">Mode
             <select id="solo-mode">
               <option value="study">Study</option>
-              <option value="challenge">Challenge</option>
+              <option value="challenge">IT Challenge</option>
             </select>
           </label>
           <small id="solo-mode-description"></small>
-          <div class="quiz-setting-fields">
+          <div id="solo-setting-fields" class="quiz-setting-fields">
             <label>Category<select id="solo-category"></select></label>
             <label id="solo-topic-field" hidden>Topic<select id="solo-topic"></select></label>
             <label>Difficulty<select id="solo-difficulty"></select></label>
             <label>Questions<select id="solo-quantity"></select></label>
           </div>
+          <section id="it-challenge-intro" hidden aria-labelledby="it-challenge-intro-title">
+            <h3 id="it-challenge-intro-title">5m IT Challenge</h3>
+            <ul>
+              <li>Medium correct: +10</li>
+              <li>Hard correct: +17</li>
+              <li>Wrong answer: -6</li>
+              <li>Skip: -3</li>
+            </ul>
+            <p>You have 5 minutes. Each question has a 30-second limit. Get the highest score possible.</p>
+            <label class="it-challenge-confirm-option">
+              <input id="it-challenge-confirm-toggle" type="checkbox" checked />
+              Confirm answer before submitting
+            </label>
+          </section>
           <button id="start-solo-study" type="button">Start studying</button>
           <button id="open-quiz-statistics" type="button">Statistics</button>
+          <button id="open-it-challenge-leaderboard" type="button">IT Challenge leaderboard</button>
         </section>
         <section id="solo-question" hidden aria-labelledby="solo-question-text">
           <div id="solo-hud">
@@ -103,7 +118,16 @@
           <p id="solo-feedback" hidden></p>
           <p id="solo-explanation" hidden></p>
           <button id="confirm-solo-answer" type="button">Confirm answer</button>
+          <button id="skip-it-challenge" type="button" hidden>SKIP</button>
+          <div id="it-challenge-global-timer" hidden>
+            <span>Total time</span>
+            <div id="it-challenge-global-track" role="progressbar" aria-label="Total challenge time remaining" aria-valuemin="0" aria-valuemax="300">
+              <span id="it-challenge-global-bar"></span>
+            </div>
+            <small id="it-challenge-global-label">5:00</small>
+          </div>
           <div id="solo-challenge-timer" hidden>
+            <span>Question</span>
             <div id="solo-timer-track" role="progressbar" aria-label="Time remaining" aria-valuemin="0" aria-valuemax="60">
               <span id="solo-timer-bar"></span>
             </div>
@@ -116,7 +140,15 @@
           <p id="solo-result-score" hidden></p>
           <p id="solo-result-text"></p>
           <p id="solo-assessment" hidden></p>
+          <p id="it-challenge-personal-best" hidden>NEW PERSONAL BEST!</p>
           <button id="study-again" type="button">Study again</button>
+          <button id="results-it-challenge-leaderboard" type="button" hidden>View leaderboard</button>
+        </section>
+        <section id="it-challenge-leaderboard" hidden aria-labelledby="it-challenge-leaderboard-title">
+          <h3 id="it-challenge-leaderboard-title">5m IT Challenge leaderboard</h3>
+          <ol id="it-challenge-leaderboard-list"></ol>
+          <small id="it-challenge-leaderboard-status" role="status"></small>
+          <button id="close-it-challenge-leaderboard" type="button">Back</button>
         </section>
         <section id="quiz-statistics" hidden aria-labelledby="quiz-statistics-title">
           <div class="quiz-statistics-heading">
@@ -125,7 +157,7 @@
               <select id="quiz-statistics-mode">
                 <option value="">All</option>
                 <option value="study">Study</option>
-                <option value="challenge">Challenge</option>
+                <option value="challenge">IT Challenge</option>
                 <option value="multiplayer">Multiplayer</option>
               </select>
             </label>

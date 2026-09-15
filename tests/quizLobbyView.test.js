@@ -81,3 +81,19 @@ test('first leave request asks for confirmation and the second leaves',async()=>
   assert.equal(quiz.seated,false);
   assert.equal(mutations,1);
 });
+
+test('joining renders once more after pending clears so Leave lobby is enabled',async()=>{
+  const renderedPending=[];
+  const quiz=Object.assign(Object.create((await import('../src/QuizLobby.js')).QuizLobby.prototype),{
+    pending:false,seated:false,seatPrompt:{setVisible(){}},status:{textContent:''},root:{hidden:true},
+    nearbySeat(){return {seatX:100,seatY:120,direction:'down'};},
+    presence:{identity:{characterId:'michael',sessionId:'session-123456789'},client:{
+      async mutation(){return {seatX:100,seatY:120,direction:'down'};},
+    },api:{quizLobbies:{join:'join'}}},room:'school',
+    scene:{player:{body:{reset(){}},setFlipX(){},setVelocity(){},facing:'down'}},
+    render(){renderedPending.push(this.pending);},
+  });
+  await quiz.interact();
+  assert.equal(quiz.seated,true);
+  assert.deepEqual(renderedPending,[true,false]);
+});

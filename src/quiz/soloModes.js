@@ -3,7 +3,7 @@ import { SoloStudySession } from './SoloStudySession.js';
 
 export const SOLO_MODES=Object.freeze([
   {id:'study',label:'Study',description:'Learn with immediate feedback, without a competitive score.'},
-  {id:'challenge',label:'Challenge',description:'Earn points and see a competitive result.'},
+  {id:'challenge',label:'IT Challenge',description:'Score as much as possible in five minutes of IT questions.'},
 ]);
 
 export function createSoloSession(mode,questions) {

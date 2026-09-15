@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { recordQuizAttempt } from '../convex/quizStatisticsStore.js';
+import { recordQuizAttempt,recordQuizSkip } from '../convex/quizStatisticsStore.js';
 import {
   applyAttemptToBucket,buildQuizStatisticsSummary,normalizeStatisticsQuestionId,statisticAccuracy,
   WEAK_STATISTICS_MINIMUM_ANSWERS,
@@ -42,6 +42,22 @@ test('the same attempt key is idempotent',async()=>{
   assert.equal((await recordQuizAttempt(ctx,attempt())).created,false);
   assert.equal(db.rows('quizAttempts').length,1);assert.equal(db.rows('quizPerformance')[0].answered,1);
 });
+
+test('manual and timeout skips are idempotent and stay outside answer accuracy',async()=>{
+  const db=new MemoryDatabase(),ctx={db};
+  await recordQuizAttempt(ctx,attempt());
+  const base=attempt({attemptKey:'challenge:skip:1',mode:'challenge'});delete base.correct;
+  assert.equal((await recordQuizSkip(ctx,{...base,outcome:'manualSkip'})).created,true);
+  assert.equal((await recordQuizSkip(ctx,{...base,outcome:'manualSkip'})).created,false);
+  await recordQuizSkip(ctx,{...base,attemptKey:'challenge:skip:2',outcome:'timeoutSkip'});
+  const challenge=db.rows('quizPerformance').find(row=>row.mode==='challenge');
+  assert.deepEqual({
+    correct:challenge.correct,wrong:challenge.wrong,answered:challenge.answered,
+    skipped:challenge.skipped,manualSkip:challenge.manualSkip,timeoutSkip:challenge.timeoutSkip,
+  },{correct:0,wrong:0,answered:0,skipped:2,manualSkip:1,timeoutSkip:1});
+  assert.equal(buildQuizStatisticsSummary(db.rows('quizPerformance')).overall.accuracy,100);
+});
+
 
 test('statistics aggregate category, topic, difficulty and mode with accurate percentages',()=>{
   const rows=[

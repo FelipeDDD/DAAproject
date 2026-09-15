@@ -471,19 +471,20 @@ da partida solo ficam localmente em `src/quiz/SoloStudySession.js`; essa classe
 independente de interface é a base reutilizável para modos solo futuros.
 `src/SoloStudyController.js` integra essa sessão ao Phaser e ao painel HTML.
 
-O mesmo painel permite escolher **Study** ou **Challenge** antes dos filtros.
-`src/quiz/SoloSession.js` contém seleção de alternativa, confirmação, progresso e
-resultado básico. `SoloStudySession.js` mantém a experiência sem score;
-`SoloChallengeSession.js` acrescenta 10 pontos por acerto, avaliação final e
-`completionRecord()`, cuja estrutura pode ser enviada ao Convex quando highscores
-forem implementados. `src/quiz/soloModes.js` centraliza a criação dos modos e é o
-ponto de extensão planejado para Time Attack.
+O mesmo painel permite escolher **Study** ou **IT Challenge**. Study conserva seus
+filtros e sua experiência sem score. O IT Challenge é exclusivamente solo, usa uma
+allowlist de categorias de TI e mistura automaticamente perguntas medium e hard.
+Suas regras ficam centralizadas em `src/quiz/itChallengeRules.js`: cinco minutos
+por partida, 30 segundos por pergunta, um segundo de feedback, +10 por medium,
++17 por hard, -6 por erro e -3 por skip. Timeout da pergunta é registrado como
+`timeoutSkip`; o botão SKIP registra `manualSkip`. Ambos ficam fora da accuracy.
 
-Challenge concede 60 segundos por pergunta, configurados por
-`CHALLENGE_QUESTION_DURATION_MS` em `SoloChallengeSession.js`. A barra do painel
-é atualizada apenas no cliente. Ao chegar a zero, a pergunta conta como incorreta,
-revela resposta e explicação e aguarda o botão **Next question**. Study continua
-sem limite de tempo.
+`convex/itChallenge.js` seleciona e materializa as perguntas com a infraestrutura
+existente, recalcula o resultado no backend e guarda somente o melhor recorde por
+personagem e versão compatível das regras. O leaderboard também pode ser aberto no
+painel. Para ligá-lo a um quadro no mapa, crie na layer `Entities` um objeto com
+Class/Type `challengeLeaderboard`; sua posição, tamanho e `interactionDistance`
+opcional virão do Tiled.
 
 ### Estatísticas do quiz
 
@@ -499,8 +500,15 @@ painel. Ambas ficam em `convex/schema.js`; mutations e query ficam em
 `convex/quizStatisticsModel.js`. IDs concretos de perguntas generated são reduzidos
 ao ID do template, da mesma forma que no anti-repetition.
 
-Study e Challenge mantêm respostas e score locais, mas o backend conserva um
-snapshot mínimo da sequência ativa em `soloQuizRuns` para validar cada tentativa.
+Skips do IT Challenge usam os mesmos buckets, mas possuem contadores separados de
+`manualSkip` e `timeoutSkip`; não incrementam correct, wrong ou answered. Assim a
+accuracy atual permanece baseada somente em respostas, enquanto a origem dos
+skips continua disponível para análise futura.
+
+Study mantém respostas localmente, e o backend conserva um snapshot mínimo da
+sequência ativa em `soloQuizRuns` para validar cada tentativa. O IT Challenge usa
+`itChallengeRuns`, acumula os resultados no cliente durante a partida e envia um
+lote final para o backend recalcular score, estatísticas e personal best.
 No multiplayer, a tentativa é registrada na mesma mutation que já grava a resposta.
 Categorias e topics só são classificados como pontos fracos após pelo menos 5
 respostas, configuradas por `WEAK_STATISTICS_MINIMUM_ANSWERS`.

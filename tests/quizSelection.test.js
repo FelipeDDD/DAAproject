@@ -79,3 +79,12 @@ test('topic All does not filter and a selected topic filters before anti-repetit
   });
   assert.deepEqual(cpu.questionIds,['hardware-001']);
 });
+
+test('a category allowlist filters before anti-repetition',()=>{
+  const questionBank=[...bank(6,'Hardware'),...bank(6,'Netzwerk'),...bank(6,'WiSo')];
+  const result=buildQuizQuestionSelection({
+    questionBank,categories:['Hardware','Netzwerk'],count:null,seed:'it-only',
+  });
+  assert.equal(result.poolSize,12);
+  assert.ok(result.questionIds.every(id=>!id.startsWith('wiso-')));
+});

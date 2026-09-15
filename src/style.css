@@ -79,7 +79,7 @@
 #quiz-lobby button:disabled, #solo-study button:disabled { cursor: not-allowed; }
 #quiz-status { display: block; margin-top: 14px; color: #526b7a; }
 #solo-study h2 { margin: 0 0 18px; font-size: 19px; }
-#start-solo-study, #open-quiz-statistics, #confirm-solo-answer, #next-solo-question { width: 100%; margin-top: 14px; }
+#start-solo-study, #open-quiz-statistics, #open-it-challenge-leaderboard, #confirm-solo-answer, #next-solo-question { width: 100%; margin-top: 14px; }
 .solo-mode-field { display: grid; gap: 5px; margin-bottom: 6px; color: #526b7a; font-size: 12px; font-weight: 600; }
 .solo-mode-field select { min-height: 40px; padding: 7px; color: #334550; background: #fff; border: 1px solid #aebdc6; border-radius: 5px; font: inherit; }
 #solo-mode-description { display: block; min-height: 32px; margin-bottom: 14px; color: #627b89; }
@@ -88,13 +88,24 @@
 #solo-question h3 { margin: 14px 0; font-size: 17px; line-height: 1.4; }
 #solo-feedback { font-weight: 700; }
 #solo-explanation { padding: 10px; color: #405b68; background: #edf4f6; border-radius: 5px; line-height: 1.45; }
-#solo-challenge-timer { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 9px; margin: 12px 0 2px; }
-#solo-timer-track { height: 7px; overflow: hidden; border-radius: 999px; background: #dce5e9; }
-#solo-timer-bar { display: block; width: 100%; height: 100%; transform: scaleX(1); transform-origin: left center; transition: transform .1s linear, background-color .2s; background: #39849a; }
-#solo-challenge-timer.urgent #solo-timer-bar { background: #c55353; }
-#solo-timer-label { min-width: 28px; color: #526b7a; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+#it-challenge-intro { margin-top: 14px; padding: 14px; border-radius: 6px; background: #edf4f6; }
+#it-challenge-intro h3 { margin: 0 0 10px; }
+#it-challenge-intro ul { margin: 0 0 12px; padding-left: 20px; line-height: 1.55; }
+.it-challenge-confirm-option { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+#skip-it-challenge { width: 100%; margin-top: 8px; background: #fff; border: 1px solid #aebdc6; }
+#it-challenge-global-timer, #solo-challenge-timer { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; align-items: center; gap: 9px; margin: 12px 0 2px; font-size: 12px; font-weight: 700; color: #526b7a; }
+#it-challenge-global-track, #solo-timer-track { height: 7px; overflow: hidden; border-radius: 999px; background: #dce5e9; }
+#it-challenge-global-bar, #solo-timer-bar { display: block; width: 100%; height: 100%; transform: scaleX(1); transform-origin: left center; transition: transform .1s linear, background-color .2s; background: #39849a; }
+#it-challenge-global-timer.urgent #it-challenge-global-bar, #solo-challenge-timer.urgent #solo-timer-bar { background: #c55353; }
+#it-challenge-global-label, #solo-timer-label { min-width: 36px; color: #526b7a; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
 #solo-results { margin-bottom: 18px; }
 #solo-result-score { font-size: 19px; font-weight: 700; }
+#solo-result-text { white-space: pre-line; line-height: 1.6; }
+#it-challenge-personal-best { padding: 9px; color: #245d34; border-radius: 5px; background: #ccebd5; font-weight: 800; text-align: center; }
+#results-it-challenge-leaderboard { width: 100%; margin-top: 8px; }
+#it-challenge-leaderboard-list { margin: 16px 0; padding-left: 28px; line-height: 2; }
+#it-challenge-leaderboard-list li { padding-left: 5px; }
+#it-challenge-leaderboard-status { display: block; margin: 10px 0; color: #627b89; }
 #solo-assessment { padding: 9px; border-radius: 5px; background: #edf4f6; font-weight: 700; }
 #close-solo-study { margin-top: 14px; }
 #solo-status { display: block; margin-top: 14px; color: #526b7a; }

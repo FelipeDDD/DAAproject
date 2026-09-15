@@ -22,6 +22,7 @@ import { SoloStudyController } from '../SoloStudyController.js';
 import { EmoteRenderer } from '../emotes/EmoteRenderer.js';
 import { EmoteSync } from '../emotes/EmoteSync.js';
 import { EmoteBar } from '../emotes/EmoteBar.js';
+import { readChallengeLeaderboards,nearbyChallengeLeaderboard } from '../maps/challengeLeaderboards.js';
 
 function readTileset(xml, firstgid) {
   const root = xml.documentElement;
@@ -120,6 +121,7 @@ export class MapScene extends Phaser.Scene {
     this.doors = readDoors(this.source).map((definition) => new Door(this, definition));
     this.quizSeats = readQuizSeats(this.source);
     this.soloStudySeats=readSoloStudySeats(this.source);
+    this.challengeLeaderboards=readChallengeLeaderboards(this.source);
     for (const door of this.doors) this.physics.add.collider(this.player, door.blocker);
     this.interactKey = this.input.keyboard.addKey('E');
     this.escapeKey = this.input.keyboard.addKey('ESC');
@@ -216,11 +218,12 @@ export class MapScene extends Phaser.Scene {
     const escape = Phaser.Input.Keyboard.JustDown(this.escapeKey);
     const quizSeat=this.quiz?.nearbySeat();
     const studySeat=this.soloStudy?.nearbySeat();
+    const challengeLeaderboard=nearbyChallengeLeaderboard(this.challengeLeaderboards,this.player.body);
     this.quiz?.updateSeatPrompt(!this.soloStudy?.active&&quizSeat);
     this.soloStudy?.updateSeatPrompt(!this.quiz?.seated&&studySeat);
     if(this.soloStudy?.active){
       if(escape)this.soloStudy.closePanel();
-      const hint='Solo Study Mode · Esc: close';
+      const hint=this.soloStudy.leaderboardOpen?'IT Challenge leaderboard · Esc: close':'Solo Mode · Esc: close';
       if(this.hint.textContent!==hint)this.hint.textContent=hint;
       return;
     }
@@ -242,6 +245,11 @@ export class MapScene extends Phaser.Scene {
       this.hint.textContent='Opening Study Mode…';
       return;
     }
+    if(interact&&challengeLeaderboard){
+      this.soloStudy.openLeaderboardFromMap();
+      this.hint.textContent='Opening IT Challenge leaderboard…';
+      return;
+    }
     const nearby = this.doors.filter((door) => door.isNear(this.player.body))
       .sort((a, b) => a.distanceTo(this.player.body) - b.distanceTo(this.player.body))[0];
     if (nearby !== this.nearbyDoor) this.doorMessage = '';
@@ -261,6 +269,8 @@ export class MapScene extends Phaser.Scene {
       ? 'Your quiz chair · E: sit'
       : studySeat
       ? 'Study Mode · E: sit'
+      : challengeLeaderboard
+      ? '[E] View leaderboard'
       : nearby
       ? [nearby.locked ? 'Door locked' : destination ? 'Press E to exit' : action,this.doorMessage]
         .filter(Boolean).join(' · ')

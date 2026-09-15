@@ -35,9 +35,11 @@ function normalizedHistory(history,poolIds,limit) {
 }
 
 export function buildQuizQuestionSelection({
-  questionBank,category,topic,difficulty,count=5,seed=Date.now(),recentHistories=[],
+  questionBank,category,categories,topic,difficulty,count=5,seed=Date.now(),recentHistories=[],
 }={}) {
+  const allowedCategories=Array.isArray(categories)&&categories.length?new Set(categories):null;
   const pool=(questionBank??[]).filter(question=>(!category||question.category===category)
+    &&(!allowedCategories||allowedCategories.has(question.category))
     &&(!topic||question.topic===topic)
     &&(!difficulty||question.difficulty===difficulty));
   const poolIds=new Set(pool.map(question=>question.id));
