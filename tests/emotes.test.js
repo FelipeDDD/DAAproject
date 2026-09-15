@@ -40,6 +40,15 @@ test('changing room clears old emotes and only accepts events from the active ro
   state.enter('outside');assert.deepEqual(state.active(now),[]);
 });
 
+test('emote duration starts on receipt even when the server clock is behind the browser',()=>{
+  const state=new EmoteState(2500),receivedAt=10_000;
+  state.enter('school');state.receive([
+    {characterId:'michael',room:'school',emote:'😂',createdAt:receivedAt-6000},
+  ],receivedAt);
+  assert.equal(state.active(receivedAt+2499).length,1);
+  assert.equal(state.active(receivedAt+2500).length,0);
+});
+
 function backendContext({existing=null}={}) {
   const rows=[],patched=[];
   const player={playerId:'michael',characterId:'michael',name:'Michael',sessionId:'session-123456789',room:'school',lastSeen:Date.now()};

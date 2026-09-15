@@ -1,0 +1,52 @@
+.calculator-launcher {
+  display: block;
+  width: 40px;
+  min-height: 36px !important;
+  margin: 0 0 8px auto;
+  padding: 5px !important;
+  border: 1px solid #aebdc6;
+  border-radius: 6px;
+  background: #edf4f6;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.calculator-launcher:hover,
+.calculator-launcher:focus-visible { background: #dce8ed; border-color: #749da8; }
+
+.calculator-widget {
+  position: fixed;
+  z-index: 20;
+  width: min(244px, calc(100vw - 16px));
+  padding: 10px;
+  border: 1px solid #8299a5;
+  border-radius: 8px;
+  color: #334550;
+  background: #f8fafbf5;
+  box-shadow: 0 8px 24px #24394345;
+}
+
+.calculator-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 34px;
+  margin: -10px -10px 10px;
+  padding: 5px 7px 5px 11px;
+  border-radius: 8px 8px 0 0;
+  background: #dce8ed;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.calculator-header:active { cursor: grabbing; }
+.calculator-close { width: 30px; min-height: 28px; padding: 2px; border: 0; background: transparent; font: 700 20px/1 system-ui, sans-serif; cursor: pointer; }
+.calculator-display { display: block; min-height: 47px; margin-bottom: 8px; padding: 9px; overflow: hidden; border: 1px solid #aebdc6; border-radius: 5px; background: #fff; text-align: right; font: 700 22px/1.25 ui-monospace, monospace; white-space: nowrap; }
+.calculator-keypad { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.calculator-keypad button { min-height: 39px; padding: 6px; border: 1px solid #b5c3ca; border-radius: 5px; color: #334550; background: #fff; font: 600 16px system-ui, sans-serif; cursor: pointer; }
+.calculator-keypad button:hover, .calculator-keypad button:focus-visible { background: #e7f0f3; border-color: #749da8; }
+.calculator-keypad [data-calculator-kind="operator"] { background: #e6eff2; }
+.calculator-keypad [data-calculator-kind="utility"] { background: #f1e9df; }
+.calculator-keypad [data-calculator-kind="equals"] { color: #fff; background: #246e83; border-color: #246e83; }
+.calculator-keypad [data-calculator-kind="wide"] { grid-column: span 2; }

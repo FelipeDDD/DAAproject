@@ -243,14 +243,15 @@ export class MapScene extends Phaser.Scene {
       }else this.doorMessage = nearby.toggle(this.player.body);
     }
     const destination = nearby?.getDestination();
-    const action = nearby?.interactive === false ? 'Open passage' : `E: ${nearby?.open ? 'close' : 'open'}`;
+    const action = nearby?.interactive === false ? 'Open passage' : `E to ${nearby?.open ? 'close' : 'open'} door`;
     const hint = quizSeat
       ? 'Your quiz chair · E: sit'
       : studySeat
       ? 'Study Mode · E: sit'
       : nearby
-      ? `${nearby.label} · ${nearby.locked ? 'Locked' : action}${destination ? ' · F: pass through' : ''} ${this.doorMessage}`
-      : `Walk up to a door and press E. ${this.doorMessage}`;
+      ? [nearby.locked ? 'Door locked' : action,destination ? 'F to pass through' : '',this.doorMessage]
+        .filter(Boolean).join(' · ')
+      : `Press E to interact. ${this.doorMessage}`;
     if (this.hint.textContent !== hint) this.hint.textContent = hint;
     if (travel && destination) this.travelTo(destination);
     else if (escape && propertiesOf(this.source).escapeReturn && this.returnDestination) this.travelTo(this.returnDestination);

@@ -21,7 +21,7 @@ export class EmoteRenderer {
         this.labels.set(event.characterId,label);
       }
       label.setText(event.emote);
-      const progress=Math.min(1,Math.max(0,(now-event.createdAt)/EMOTE_DURATION_MS));
+      const progress=Math.min(1,Math.max(0,(now-(event.displayedAt??event.createdAt))/EMOTE_DURATION_MS));
       label.setPosition(sprite.x,sprite.y-64*PLAYER_SCALE-progress*12).setAlpha(progress<0.7?1:(1-progress)/0.3);
     }
   }

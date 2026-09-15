@@ -24,11 +24,17 @@
       <button id="change-character" hidden>Change character</button>
       <section id="play-area" hidden>
       <div id="game" tabindex="0" role="region" aria-label="2D room. Use WASD or the arrow keys to move your character."></div>
-      <section id="room-chat" hidden aria-label="Room chat">
-        <ol id="chat-messages" aria-label="Messages"></ol>
-        <input id="chat-input" aria-label="Message for this room" maxlength="200" placeholder="Press Enter to chat…" autocomplete="off" />
-        <small id="chat-status" role="status"></small>
-      </section>
+      <div id="play-footer">
+        <section id="room-chat" hidden aria-label="Room chat">
+          <ol id="chat-messages" aria-label="Messages"></ol>
+          <input id="chat-input" aria-label="Message for this room" maxlength="200" placeholder="Press Enter to chat…" autocomplete="off" />
+          <small id="chat-status" role="status"></small>
+        </section>
+        <div id="game-guidance">
+          <p class="controls">Explore with <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> or the <kbd>arrow keys</kbd>.</p>
+          <p class="controls" id="interaction-hint" role="status">Walk up to a door and press E.</p>
+        </div>
+      </div>
       <section id="quiz-lobby" hidden aria-labelledby="quiz-lobby-title">
         <h2 id="quiz-lobby-title">QUIZ LOBBY</h2>
         <ul id="quiz-participants"></ul>
@@ -123,8 +129,6 @@
           <small>Right-click a slot to edit it directly.</small>
         </section>
       </section>
-      <p class="controls">Explore with <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> or the <kbd>arrow keys</kbd>.</p>
-      <p class="controls" id="interaction-hint" role="status">Walk up to a door and press E.</p>
       </section>
       <noscript>Enable JavaScript to explore the school.</noscript>
     </main>

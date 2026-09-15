@@ -3,6 +3,7 @@ import { distanceToSeat, QUIZ_SEAT_DISTANCE } from './maps/quizSeats.js';
 import { renderQuizMedia } from './QuizMedia.js';
 import { remainingQuizSeconds } from './quizTimer.js';
 import { readQuizSettingsControls,renderQuizSettingsControls } from './quiz/QuizSettingsControls.js';
+import { CalculatorWidget } from './calculator/CalculatorWidget.js';
 
 // World-space tuning for the prompt, anchored to the fixed Tiled seat position.
 export const QUIZ_SEAT_PROMPT = Object.freeze({text:'[E] Sit',offsetX:0,offsetY:-70});
@@ -43,6 +44,7 @@ export class QuizLobby {
     this.confirmButton=document.getElementById('confirm-answer');
     this.resultsRoot=document.getElementById('quiz-results');
     this.scoresList=document.getElementById('quiz-scores');
+    this.calculator=new CalculatorWidget({mount:this.questionRoot,scene});
     this.seatPrompt=scene.add.text(0,0,QUIZ_SEAT_PROMPT.text,{
       fontFamily:'system-ui, sans-serif',fontSize:'12px',fontStyle:'bold',color:'#ffffff',
       backgroundColor:'#334550',padding:{x:6,y:3},
@@ -229,6 +231,7 @@ export class QuizLobby {
   isHost(){return this.lobby?.hostCharacterId===this.presence.identity.characterId;}
 
   standLocally(){
+    this.calculator.close({reset:true});
     this.seated=false;this.confirmingLeave=false;this.resetQuestionState();
     this.seatPrompt.setVisible(false);this.questionRoot.hidden=true;this.resultsRoot.hidden=true;this.root.hidden=true;
     this.scene.input.keyboard.resetKeys();
@@ -315,6 +318,7 @@ export class QuizLobby {
   }
 
   close(){
+    this.calculator.destroy();
     this.closed=true;this.unsubscribe?.();clearInterval(this.timerInterval);
     this.startButton.removeEventListener('click',this.onStart);
     this.nextButton.removeEventListener('click',this.onNext);

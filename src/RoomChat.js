@@ -1,3 +1,5 @@
+import { appendChatMessageText } from './chat/renderMessageText.js';
+
 // DOM chat; scene lifecycle owns the subscription and keyboard handlers.
 export class RoomChat {
   constructor(scene,presence) {
@@ -25,7 +27,7 @@ export class RoomChat {
           if(this.scene.quiz?.seated)this.scene.quiz.leave();
         }
       }else if(event.type==='keydown'&&event.key==='Enter'&&!event.repeat&&
-        !event.target.closest?.('button,input,textarea,select,[contenteditable]')){
+        !event.target.closest?.('button,input,textarea,select,[contenteditable],[data-calculator-widget]')){
         event.preventDefault();event.stopImmediatePropagation();this.input.focus();
       }
     };
@@ -38,7 +40,7 @@ export class RoomChat {
       this.list.replaceChildren(...rows.map(row=>{
         const line=document.createElement('li'),name=document.createElement('strong');
         name.textContent=`${row.characterName}: `;
-        line.append(name,document.createTextNode(row.text));return line;
+        line.append(name);appendChatMessageText(line,row.text);return line;
       }));
       if(nearBottom)this.list.scrollTop=this.list.scrollHeight;
       this.status.textContent=rows.length?'Enter: chat · Esc: return to game':'No messages in this room.';

@@ -2,6 +2,7 @@ import { renderQuizMedia } from './QuizMedia.js';
 import { renderQuizSettingsControls,readQuizSettingsControls,DEFAULT_QUIZ_OPTIONS } from './quiz/QuizSettingsControls.js';
 import { createSoloSession,SOLO_MODES } from './quiz/soloModes.js';
 import { nearbySoloStudySeat } from './maps/soloStudySeats.js';
+import { CalculatorWidget } from './calculator/CalculatorWidget.js';
 
 export const SOLO_STUDY_PROMPT=Object.freeze({text:'[E] Study',offsetX:0,offsetY:-70});
 
@@ -29,6 +30,7 @@ export class SoloStudyController {
     this.timerRoot=document.getElementById('solo-challenge-timer');this.timerTrack=document.getElementById('solo-timer-track');
     this.timerBar=document.getElementById('solo-timer-bar');this.timerLabel=document.getElementById('solo-timer-label');
     this.againButton=document.getElementById('study-again');this.closeButton=document.getElementById('close-solo-study');
+    this.calculator=new CalculatorWidget({mount:this.questionRoot,scene});
     this.seatPrompt=scene.add.text(0,0,SOLO_STUDY_PROMPT.text,{
       fontFamily:'system-ui, sans-serif',fontSize:'12px',fontStyle:'bold',color:'#ffffff',
       backgroundColor:'#315b9c',padding:{x:6,y:3},
@@ -107,6 +109,7 @@ export class SoloStudyController {
 
   closePanel() {
     if(!this.active)return;
+    this.calculator.close({reset:true});
     this.active=false;this.session=null;this.completionResult=null;this.root.hidden=true;this.seatPrompt.setVisible(false);
     if(this.returnPosition)this.scene.player.body.reset(this.returnPosition.x,this.returnPosition.y);
     this.scene.input.keyboard.resetKeys();document.getElementById('game').focus({preventScroll:true});
@@ -181,7 +184,7 @@ export class SoloStudyController {
   }
 
   close() {
-    this.closePanel();clearInterval(this.timerInterval);this.startButton.removeEventListener('click',this.onStart);
+    this.closePanel();this.calculator.destroy();clearInterval(this.timerInterval);this.startButton.removeEventListener('click',this.onStart);
     this.modeSelect.removeEventListener('change',this.onModeChange);this.confirmButton.removeEventListener('click',this.onConfirm);
     for(const select of [this.categorySelect,this.topicSelect,this.difficultySelect,this.quantitySelect])
       select.removeEventListener('change',this.onSettingsChange);

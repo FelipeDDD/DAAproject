@@ -12,7 +12,10 @@ export class EmoteBar {
     this.onContext=event=>{const button=event.target.closest('button[data-emote-slot]');if(button){event.preventDefault();this.openPicker(Number(button.dataset.emoteSlot));}};
     this.onSettings=()=>this.picker.hidden?this.openPicker(this.editingSlot):this.closePicker();
     this.onChoice=event=>{const button=event.target.closest('button[data-emote-choice]');if(button)this.choose(button.dataset.emoteChoice);};
-    this.onKey=event=>{const slot=shortcutSlot(event);if(slot>=0){event.preventDefault();this.activate(slot);}};
+    this.onKey=event=>{
+      if(event.target.closest?.('[data-calculator-widget]'))return;
+      const slot=shortcutSlot(event);if(slot>=0){event.preventDefault();this.activate(slot);}
+    };
     this.slotsRoot.addEventListener('click',this.onClick);this.slotsRoot.addEventListener('contextmenu',this.onContext);
     this.settingsButton.addEventListener('click',this.onSettings);this.choices.addEventListener('click',this.onChoice);
     window.addEventListener('keydown',this.onKey,true);this.root.hidden=false;this.render();
