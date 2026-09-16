@@ -94,6 +94,21 @@ export class MapScene extends Phaser.Scene {
     createDoorTextures(this);
     drawMapPlaceholders(this, this.source);
     drawTiledTextObjects(this,this.source);
+    const floorDetails = this.source.layers.find((layer) => layer.name === 'FloorDetails');
+    if (floorDetails) {
+      for (const object of objectsIn(this.source, 'FloorDetails').filter((item) => item.gid)) {
+        const tileFrame = tileObjectFrame(object.gid, data.tilesets);
+        if (!tileFrame) throw new Error(`Unknown tile GID ${object.gid} on floor detail ${object.id}`);
+        const [sprite] = map.createFromObjects('FloorDetails', {
+          id: object.id,
+          key: `${this.mapKey}-tileset-${tileFrame.tilesetIndex}`,
+          frame: tileFrame.frame,
+        });
+        sprite.setDepth(-1.9);
+        sprite.setVisible(floorDetails.visible !== false && object.visible !== false);
+        sprite.setAlpha(floorDetails.opacity ?? 1);
+      }
+    }
     for (const layerName of ['Entities', 'objectDecoration']) {
       const objectLayer = this.source.layers.find((layer) => layer.name === layerName);
       if (!objectLayer) continue;

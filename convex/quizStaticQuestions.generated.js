@@ -881,6 +881,726 @@ export default [
     "source": "betriebssysteme.csv"
   },
   {
+    "id": "betriebssysteme-056",
+    "category": "Betriebssysteme",
+    "topic": "Systemverwaltung",
+    "difficulty": "medium",
+    "question": "Was ist ein typischer Vorteil regelmäßiger Betriebssystem-Updates?",
+    "answers": [
+      "Sie schließen Sicherheitslücken und beheben Fehler",
+      "Sie erhöhen automatisch den physischen RAM",
+      "Sie ersetzen Gerätetreiber immer vollständig",
+      "Sie formatieren die Systempartition"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Regelmäßige Updates verbessern Sicherheit, Stabilität und beheben bekannte Fehler",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-057",
+    "category": "Betriebssysteme",
+    "topic": "Virtualisierung",
+    "difficulty": "hard",
+    "question": "Was ist ein typischer Unterschied zwischen Host und Gast in einer Virtualisierungsumgebung?",
+    "answers": [
+      "Der Host stellt die physische Hardware und Ressourcen bereit, der Gast läuft als virtuelles System",
+      "Der Gast besitzt immer mehr RAM als der Host",
+      "Der Host ist immer Linux und der Gast immer Windows",
+      "Der Gast verwaltet die physische CPU direkt ohne Hypervisor"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Der Host ist das zugrunde liegende System mit der Hardware, während der Gast als virtuelle Maschine darauf ausgeführt wird",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-058",
+    "category": "Betriebssysteme",
+    "topic": "Windows",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe hat der Windows-Explorer hauptsächlich?",
+    "answers": [
+      "Dateien und Ordner verwalten",
+      "Treiber kompilieren",
+      "RAM reservieren",
+      "BIOS aktualisieren"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Der Windows-Explorer dient zur Verwaltung von Dateien, Ordnern und Laufwerken.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-059",
+    "category": "Betriebssysteme",
+    "topic": "Windows",
+    "difficulty": "medium",
+    "question": "Welches Windows-Werkzeug zeigt laufende Prozesse und deren Ressourcennutzung?",
+    "answers": [
+      "Task-Manager",
+      "Editor",
+      "Paint",
+      "Datenträgerbereinigung"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Der Task-Manager zeigt Prozesse sowie CPU-, RAM- und Datenträgerauslastung.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-060",
+    "category": "Betriebssysteme",
+    "topic": "Windows",
+    "difficulty": "medium",
+    "question": "Wofür wird der Geräte-Manager unter Windows verwendet?",
+    "answers": [
+      "Hardware und Treiber verwalten",
+      "Benutzerpasswörter speichern",
+      "Dateien komprimieren",
+      "Webseiten öffnen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Im Geräte-Manager lassen sich Hardwaregeräte und Treiber prüfen und verwalten.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-061",
+    "category": "Betriebssysteme",
+    "topic": "Windows",
+    "difficulty": "medium",
+    "question": "Welches Werkzeug hilft bei der Analyse von Windows-Systemereignissen und Fehlern?",
+    "answers": [
+      "Ereignisanzeige",
+      "Rechner",
+      "Zwischenablage",
+      "Editor"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die Ereignisanzeige protokolliert System-, Anwendungs- und Sicherheitsereignisse.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-062",
+    "category": "Betriebssysteme",
+    "topic": "Windows",
+    "difficulty": "medium",
+    "question": "Was ist ein Windows-Dienst?",
+    "answers": [
+      "Ein Hintergrundprozess, der Systemfunktionen bereitstellt",
+      "Ein Benutzerkonto",
+      "Ein Dateiformat",
+      "Eine Partition"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Windows-Dienste laufen häufig im Hintergrund und stellen bestimmte Funktionen bereit.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-063",
+    "category": "Betriebssysteme",
+    "topic": "Linux",
+    "difficulty": "medium",
+    "question": "Welcher Befehl zeigt unter Linux den Inhalt eines Verzeichnisses an?",
+    "answers": [
+      "ls",
+      "cd",
+      "pwd",
+      "rm"
+    ],
+    "correctAnswer": 0,
+    "explanation": "ls listet Dateien und Verzeichnisse auf.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-064",
+    "category": "Betriebssysteme",
+    "topic": "Linux",
+    "difficulty": "medium",
+    "question": "Welcher Linux-Befehl zeigt das aktuelle Arbeitsverzeichnis?",
+    "answers": [
+      "pwd",
+      "ls",
+      "mkdir",
+      "cat"
+    ],
+    "correctAnswer": 0,
+    "explanation": "pwd zeigt den Pfad des aktuellen Verzeichnisses.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-065",
+    "category": "Betriebssysteme",
+    "topic": "Linux",
+    "difficulty": "medium",
+    "question": "Welcher Befehl wird unter Linux verwendet, um in ein anderes Verzeichnis zu wechseln?",
+    "answers": [
+      "cd",
+      "cp",
+      "mv",
+      "touch"
+    ],
+    "correctAnswer": 0,
+    "explanation": "cd steht für change directory.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-066",
+    "category": "Betriebssysteme",
+    "topic": "Linux",
+    "difficulty": "medium",
+    "question": "Was macht der Befehl mkdir?",
+    "answers": [
+      "Er erstellt ein Verzeichnis",
+      "Er löscht ein Verzeichnis",
+      "Er zeigt Prozesse",
+      "Er ändert Dateirechte"
+    ],
+    "correctAnswer": 0,
+    "explanation": "mkdir erstellt ein neues Verzeichnis.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-067",
+    "category": "Betriebssysteme",
+    "topic": "Linux",
+    "difficulty": "medium",
+    "question": "Welcher Befehl zeigt den Inhalt einer Textdatei direkt im Terminal an?",
+    "answers": [
+      "cat",
+      "mkdir",
+      "ps",
+      "chmod"
+    ],
+    "correctAnswer": 0,
+    "explanation": "cat kann den Inhalt einer Textdatei im Terminal ausgeben.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-068",
+    "category": "Betriebssysteme",
+    "topic": "Linux",
+    "difficulty": "medium",
+    "question": "Wozu dient sudo unter Linux?",
+    "answers": [
+      "Einen Befehl mit erhöhten Rechten auszuführen",
+      "Ein Verzeichnis zu löschen",
+      "Den Rechner herunterzufahren",
+      "Dateien zu komprimieren"
+    ],
+    "correctAnswer": 0,
+    "explanation": "sudo erlaubt berechtigten Benutzern die Ausführung von Befehlen mit erhöhten Rechten.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-069",
+    "category": "Betriebssysteme",
+    "topic": "Dateisysteme",
+    "difficulty": "medium",
+    "question": "Welches Dateisystem wird häufig auf modernen Windows-Systempartitionen verwendet?",
+    "answers": [
+      "NTFS",
+      "ext4",
+      "HFS+",
+      "ISO 9660"
+    ],
+    "correctAnswer": 0,
+    "explanation": "NTFS ist das übliche Dateisystem für moderne Windows-Systemlaufwerke.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-070",
+    "category": "Betriebssysteme",
+    "topic": "Dateisysteme",
+    "difficulty": "medium",
+    "question": "Welches Dateisystem ist unter Linux weit verbreitet?",
+    "answers": [
+      "ext4",
+      "NTFS",
+      "APFS",
+      "FAT12"
+    ],
+    "correctAnswer": 0,
+    "explanation": "ext4 ist ein häufig verwendetes Linux-Dateisystem.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-071",
+    "category": "Betriebssysteme",
+    "topic": "Dateisysteme",
+    "difficulty": "medium",
+    "question": "Welcher Nachteil von FAT32 ist im Alltag besonders relevant?",
+    "answers": [
+      "Einzelne Dateien dürfen maximal etwa 4 GB groß sein",
+      "Es funktioniert nur mit Linux",
+      "Es unterstützt keine USB-Sticks",
+      "Es kann keine Ordner speichern"
+    ],
+    "correctAnswer": 0,
+    "explanation": "FAT32 hat eine Dateigrößenbegrenzung von ungefähr 4 GB.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-072",
+    "category": "Betriebssysteme",
+    "topic": "Dateisysteme",
+    "difficulty": "hard",
+    "question": "Ein USB-Stick soll sowohl unter Windows als auch Linux funktionieren und Dateien größer als 4 GB speichern. Welches Dateisystem ist dafür oft sinnvoll?",
+    "answers": [
+      "exFAT",
+      "FAT16",
+      "ISO 9660",
+      "ext2"
+    ],
+    "correctAnswer": 0,
+    "explanation": "exFAT wird häufig für plattformübergreifende Wechseldatenträger mit großen Dateien verwendet.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-073",
+    "category": "Betriebssysteme",
+    "topic": "Dateisysteme",
+    "difficulty": "medium",
+    "question": "Was ist eine Partition?",
+    "answers": [
+      "Ein logisch abgegrenzter Bereich eines Datenträgers",
+      "Ein Benutzerkonto",
+      "Ein Prozess",
+      "Ein Netzwerkprotokoll"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Partitionen teilen einen Datenträger in logisch getrennte Bereiche.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-074",
+    "category": "Betriebssysteme",
+    "topic": "Dateisysteme",
+    "difficulty": "medium",
+    "question": "Was bedeutet es, ein Dateisystem zu formatieren?",
+    "answers": [
+      "Eine Speicherstruktur für Dateien und Verzeichnisse einzurichten",
+      "RAM zu erweitern",
+      "Die CPU zu übertakten",
+      "Ein Benutzerkonto zu löschen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Beim Formatieren wird auf einer Partition ein Dateisystem eingerichtet.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-075",
+    "category": "Betriebssysteme",
+    "topic": "Prozesse",
+    "difficulty": "medium",
+    "question": "Was ist ein Prozess?",
+    "answers": [
+      "Eine laufende Instanz eines Programms",
+      "Ein Dateisystem",
+      "Ein Benutzerkonto",
+      "Ein Treiber"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ein Prozess ist ein aktuell ausgeführtes Programm mit eigenen Ressourcen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-076",
+    "category": "Betriebssysteme",
+    "topic": "Prozesse",
+    "difficulty": "medium",
+    "question": "Was ist ein Thread?",
+    "answers": [
+      "Ein Ausführungsstrang innerhalb eines Prozesses",
+      "Eine Partition",
+      "Ein Gerätetreiber",
+      "Ein Dateityp"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Threads sind Ausführungsstränge innerhalb eines Prozesses.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-077",
+    "category": "Betriebssysteme",
+    "topic": "Prozesse",
+    "difficulty": "hard",
+    "question": "Warum kann ein Programm mehrere Threads verwenden?",
+    "answers": [
+      "Um mehrere Aufgaben innerhalb eines Prozesses parallel oder nebenläufig zu bearbeiten",
+      "Um mehrere Betriebssysteme gleichzeitig zu installieren",
+      "Um automatisch mehr RAM einzubauen",
+      "Um Dateisysteme zu wechseln"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Mehrere Threads können unterschiedliche Aufgaben desselben Prozesses gleichzeitig oder überlappend bearbeiten.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-078",
+    "category": "Betriebssysteme",
+    "topic": "Prozesse",
+    "difficulty": "medium",
+    "question": "Was passiert typischerweise, wenn ein Prozess beendet wird?",
+    "answers": [
+      "Die von ihm belegten Ressourcen werden freigegeben",
+      "Das Betriebssystem wird gelöscht",
+      "Die CPU wird ausgeschaltet",
+      "Alle Benutzer werden abgemeldet"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Beim Beenden eines Prozesses gibt das Betriebssystem dessen Ressourcen wieder frei.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-079",
+    "category": "Betriebssysteme",
+    "topic": "Arbeitsspeicher",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe hat der RAM?",
+    "answers": [
+      "Aktuell benötigte Daten und Programme kurzfristig bereitzuhalten",
+      "Daten dauerhaft ohne Strom zu speichern",
+      "Das Betriebssystem zu starten",
+      "Netzwerkpakete zu routen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "RAM dient als schneller, flüchtiger Arbeitsspeicher.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-080",
+    "category": "Betriebssysteme",
+    "topic": "Arbeitsspeicher",
+    "difficulty": "medium",
+    "question": "Was bedeutet virtueller Speicher?",
+    "answers": [
+      "Datenträgerspeicher wird ergänzend zum RAM verwendet",
+      "Mehrere CPUs werden kombiniert",
+      "Ein virtuelles Netzwerk wird erstellt",
+      "Dateien werden verschlüsselt"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Virtueller Speicher nutzt Datenträgerplatz, wenn zusätzlicher Arbeitsspeicher benötigt wird.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-081",
+    "category": "Betriebssysteme",
+    "topic": "Arbeitsspeicher",
+    "difficulty": "medium",
+    "question": "Was ist unter Linux Swap?",
+    "answers": [
+      "Speicher auf einem Datenträger zur Ergänzung des RAM",
+      "Ein Dateisystemtreiber",
+      "Ein Paketmanager",
+      "Ein Bootloader"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Swap dient als Auslagerungsspeicher.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-082",
+    "category": "Betriebssysteme",
+    "topic": "Arbeitsspeicher",
+    "difficulty": "hard",
+    "question": "Warum ist Auslagerung auf SSD oder HDD deutlich langsamer als direkter RAM-Zugriff?",
+    "answers": [
+      "Massenspeicher hat wesentlich höhere Zugriffszeiten als RAM",
+      "Swap verwendet keine Dateien",
+      "RAM ist immer verschlüsselt",
+      "Die CPU darf nicht auf SSDs zugreifen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "RAM besitzt wesentlich geringere Zugriffszeiten und höhere Bandbreite als Massenspeicher.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-083",
+    "category": "Betriebssysteme",
+    "topic": "Benutzer und Rechte",
+    "difficulty": "medium",
+    "question": "Warum gibt es unterschiedliche Benutzerrechte in einem Betriebssystem?",
+    "answers": [
+      "Um Zugriffe auf Dateien und Systemfunktionen zu kontrollieren",
+      "Um die CPU schneller zu machen",
+      "Um mehr Speicherplatz zu erzeugen",
+      "Um Netzwerkkabel zu ersetzen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Berechtigungen schützen Daten und Systemfunktionen vor unerlaubtem Zugriff.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-084",
+    "category": "Betriebssysteme",
+    "topic": "Benutzer und Rechte",
+    "difficulty": "medium",
+    "question": "Welches Konto besitzt typischerweise umfangreichere Systemrechte?",
+    "answers": [
+      "Administrator",
+      "Gast",
+      "Standardbenutzer",
+      "Anonymer Benutzer"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Administratorkonten besitzen erweiterte Rechte zur Systemverwaltung.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-085",
+    "category": "Betriebssysteme",
+    "topic": "Benutzer und Rechte",
+    "difficulty": "medium",
+    "question": "Was bedeutet unter Linux die Berechtigung 'r'?",
+    "answers": [
+      "read",
+      "run",
+      "rename",
+      "root"
+    ],
+    "correctAnswer": 0,
+    "explanation": "r steht für read, also Lesen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-086",
+    "category": "Betriebssysteme",
+    "topic": "Benutzer und Rechte",
+    "difficulty": "medium",
+    "question": "Was bedeutet unter Linux die Berechtigung 'w'?",
+    "answers": [
+      "write",
+      "watch",
+      "wait",
+      "work"
+    ],
+    "correctAnswer": 0,
+    "explanation": "w steht für write, also Schreiben.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-087",
+    "category": "Betriebssysteme",
+    "topic": "Benutzer und Rechte",
+    "difficulty": "medium",
+    "question": "Was bedeutet unter Linux die Berechtigung 'x'?",
+    "answers": [
+      "execute",
+      "export",
+      "extract",
+      "exit"
+    ],
+    "correctAnswer": 0,
+    "explanation": "x steht für execute, also Ausführen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-088",
+    "category": "Betriebssysteme",
+    "topic": "Benutzer und Rechte",
+    "difficulty": "hard",
+    "question": "Welche Berechtigung benötigt ein Benutzer bei einer normalen Datei mindestens, um deren Inhalt verändern zu können?",
+    "answers": [
+      "write",
+      "execute",
+      "read-only",
+      "owner"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Zum Ändern einer Datei wird Schreibberechtigung benötigt.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-089",
+    "category": "Betriebssysteme",
+    "topic": "Treiber",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe hat ein Gerätetreiber?",
+    "answers": [
+      "Er ermöglicht die Kommunikation zwischen Betriebssystem und Hardware",
+      "Er ersetzt das Betriebssystem",
+      "Er speichert Benutzerpasswörter",
+      "Er vergibt IP-Adressen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Treiber stellen die Verbindung zwischen Hardware und Betriebssystem her.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-090",
+    "category": "Betriebssysteme",
+    "topic": "Treiber",
+    "difficulty": "medium",
+    "question": "Was kann passieren, wenn ein notwendiger Gerätetreiber fehlt?",
+    "answers": [
+      "Das Gerät funktioniert möglicherweise nicht korrekt",
+      "Der RAM verdoppelt sich",
+      "Das BIOS wird gelöscht",
+      "Das Dateisystem ändert sich automatisch"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ohne passenden Treiber kann Hardware nicht oder nur eingeschränkt funktionieren.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-091",
+    "category": "Betriebssysteme",
+    "topic": "Bootprozess",
+    "difficulty": "medium",
+    "question": "Welche Komponente startet nach dem Einschalten zunächst die Hardwareinitialisierung eines modernen PCs?",
+    "answers": [
+      "UEFI/BIOS",
+      "Webbrowser",
+      "Task-Manager",
+      "Datei-Explorer"
+    ],
+    "correctAnswer": 0,
+    "explanation": "UEFI bzw. BIOS initialisiert die Hardware und startet anschließend den Bootvorgang.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-092",
+    "category": "Betriebssysteme",
+    "topic": "Bootprozess",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe hat ein Bootloader?",
+    "answers": [
+      "Ein Betriebssystem bzw. dessen Kernel zu laden",
+      "Dateien zu komprimieren",
+      "Benutzer zu erstellen",
+      "Treiber zu deinstallieren"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Der Bootloader startet den Ladevorgang des Betriebssystems.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-093",
+    "category": "Betriebssysteme",
+    "topic": "Bootprozess",
+    "difficulty": "hard",
+    "question": "Warum kann die Bootreihenfolge im UEFI wichtig sein?",
+    "answers": [
+      "Sie bestimmt, von welchem Gerät zuerst nach einem bootfähigen System gesucht wird",
+      "Sie bestimmt die CPU-Taktrate",
+      "Sie vergibt Benutzerrechte",
+      "Sie ändert das Dateisystem automatisch"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die Bootreihenfolge legt fest, welche Geräte zuerst als Startmedium geprüft werden.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-094",
+    "category": "Betriebssysteme",
+    "topic": "Virtualisierung",
+    "difficulty": "medium",
+    "question": "Was ist eine virtuelle Maschine?",
+    "answers": [
+      "Ein softwarebasierter, isolierter Computer",
+      "Ein physischer Switch",
+      "Ein Dateisystem",
+      "Ein Benutzerkonto"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Eine VM bildet einen Computer softwareseitig nach.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-095",
+    "category": "Betriebssysteme",
+    "topic": "Virtualisierung",
+    "difficulty": "medium",
+    "question": "Welches Programm verwaltet virtuelle Maschinen und deren virtuelle Hardware?",
+    "answers": [
+      "Hypervisor",
+      "Bootloader",
+      "Dateimanager",
+      "Paketmanager"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ein Hypervisor stellt Ressourcen für virtuelle Maschinen bereit und verwaltet sie.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-096",
+    "category": "Betriebssysteme",
+    "topic": "Virtualisierung",
+    "difficulty": "medium",
+    "question": "Welcher Vorteil von Virtualisierung ist typisch?",
+    "answers": [
+      "Mehrere Betriebssysteme können auf einem Host betrieben werden",
+      "Jede VM benötigt zwingend einen eigenen physischen PC",
+      "RAM wird unbegrenzt",
+      "Netzwerke werden überflüssig"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Virtualisierung ermöglicht mehrere getrennte Systeme auf derselben physischen Hardware.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-097",
+    "category": "Betriebssysteme",
+    "topic": "Virtualisierung",
+    "difficulty": "hard",
+    "question": "Was passiert, wenn mehreren virtuellen Maschinen zusammen mehr RAM zugewiesen wird, als der Host sinnvoll bereitstellen kann?",
+    "answers": [
+      "Es kann zu starkem Leistungsabfall oder Auslagerung kommen",
+      "Die VMs erzeugen automatisch zusätzlichen physischen RAM",
+      "Der Hypervisor deaktiviert das Dateisystem",
+      "Die CPU wird verdoppelt"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Überbelegung von Arbeitsspeicher kann zu Auslagerung und deutlichen Performanceproblemen führen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-098",
+    "category": "Betriebssysteme",
+    "topic": "Systemverwaltung",
+    "difficulty": "medium",
+    "question": "Wozu dienen Betriebssystem-Updates?",
+    "answers": [
+      "Unter anderem Sicherheitslücken zu schließen und Fehler zu beheben",
+      "Die Netzwerkkarte physisch zu ersetzen",
+      "RAM dauerhaft zu vergrößern",
+      "Dateisysteme automatisch zu löschen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Updates liefern häufig Sicherheitskorrekturen, Fehlerbehebungen und Verbesserungen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-099",
+    "category": "Betriebssysteme",
+    "topic": "Systemverwaltung",
+    "difficulty": "medium",
+    "question": "Was ist ein Paketmanager unter Linux?",
+    "answers": [
+      "Ein Werkzeug zum Installieren, Aktualisieren und Entfernen von Softwarepaketen",
+      "Ein Dateisystem",
+      "Ein Bootloader",
+      "Ein Gerätetreiber"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Paketmanager verwalten Software und deren Abhängigkeiten.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-100",
+    "category": "Betriebssysteme",
+    "topic": "Systemverwaltung",
+    "difficulty": "hard",
+    "question": "Warum ist die Installation von Software über einen Paketmanager oft vorteilhaft?",
+    "answers": [
+      "Abhängigkeiten und Updates können zentral verwaltet werden",
+      "Programme erhalten automatisch Administratorrechte",
+      "Das Betriebssystem benötigt danach keinen Kernel mehr",
+      "Es verhindert jede Sicherheitslücke"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Paketmanager vereinfachen Installation, Abhängigkeitsverwaltung und Aktualisierung.",
+    "source": "betriebssysteme.csv"
+  },
+  {
     "id": "hardware-001",
     "category": "Hardware",
     "topic": null,
@@ -2065,7 +2785,7 @@ export default [
     "source": "hardware.csv"
   },
   {
-    "id": "netzwerk-002",
+    "id": "netzwerk-001",
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
@@ -2081,7 +2801,7 @@ export default [
     "source": "netzwerk.csv"
   },
   {
-    "id": "netzwerk-003",
+    "id": "netzwerk-002",
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
@@ -2097,7 +2817,7 @@ export default [
     "source": "netzwerk.csv"
   },
   {
-    "id": "netzwerk-004",
+    "id": "netzwerk-003",
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
@@ -2113,7 +2833,7 @@ export default [
     "source": "netzwerk.csv"
   },
   {
-    "id": "netzwerk-005",
+    "id": "netzwerk-004",
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
@@ -2129,7 +2849,7 @@ export default [
     "source": "netzwerk.csv"
   },
   {
-    "id": "netzwerk-006",
+    "id": "netzwerk-005",
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
@@ -2145,7 +2865,7 @@ export default [
     "source": "netzwerk.csv"
   },
   {
-    "id": "netzwerk-007",
+    "id": "netzwerk-006",
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
@@ -2161,7 +2881,7 @@ export default [
     "source": "netzwerk.csv"
   },
   {
-    "id": "netzwerk-008",
+    "id": "netzwerk-007",
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
@@ -2177,7 +2897,7 @@ export default [
     "source": "netzwerk.csv"
   },
   {
-    "id": "netzwerk-009",
+    "id": "netzwerk-008",
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
@@ -2193,7 +2913,7 @@ export default [
     "source": "netzwerk.csv"
   },
   {
-    "id": "netzwerk-010",
+    "id": "netzwerk-009",
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
@@ -2209,7 +2929,7 @@ export default [
     "source": "netzwerk.csv"
   },
   {
-    "id": "netzwerk-011",
+    "id": "netzwerk-010",
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "hard",
@@ -2225,7 +2945,7 @@ export default [
     "source": "netzwerk.csv"
   },
   {
-    "id": "netzwerk-012",
+    "id": "netzwerk-011",
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "hard",
@@ -2241,7 +2961,7 @@ export default [
     "source": "netzwerk.csv"
   },
   {
-    "id": "netzwerk-013",
+    "id": "netzwerk-012",
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "hard",
@@ -2257,7 +2977,7 @@ export default [
     "source": "netzwerk.csv"
   },
   {
-    "id": "netzwerk-014",
+    "id": "netzwerk-013",
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "hard",
@@ -2273,7 +2993,7 @@ export default [
     "source": "netzwerk.csv"
   },
   {
-    "id": "netzwerk-015",
+    "id": "netzwerk-014",
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "hard",
@@ -2289,7 +3009,7 @@ export default [
     "source": "netzwerk.csv"
   },
   {
-    "id": "netzwerk-001",
+    "id": "netzwerk-015",
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
@@ -2565,7 +3285,7 @@ export default [
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche ICMP-Nachricht ist für tracert/traceroute besonders wichtig?",
+    "question": "Welche ICMP -Nachricht ist für tracert/traceroute besonders wichtig?",
     "answers": [
       "Echo Redirect",
       "Time Exceeded",
@@ -3262,6 +3982,3158 @@ export default [
     ],
     "correctAnswer": 0,
     "explanation": "Beim Kapseln werden z. B. Anwendungsdaten in TCP/UDP, dann IP und schließlich Ethernet eingebettet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-076",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "medium",
+    "question": "Was beschreibt eine Netzwerktopologie?",
+    "answers": [
+      "Nur die IP-Adressen aller Geräte",
+      "Wie Geräte verbunden sind und wie Daten übertragen werden",
+      "Nur die verwendeten Betriebssysteme",
+      "Nur die Kabellänge eines Netzwerks"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Eine Netzwerktopologie beschreibt die Verbindung der Geräte und den Weg der Datenübertragung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-077",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "medium",
+    "question": "Was beschreibt die physikalische Topologie eines Netzwerks?",
+    "answers": [
+      "Wie die Kabel tatsächlich verlegt sind",
+      "Wie Daten logisch von A nach B reisen",
+      "Welche Ports ein Server verwendet",
+      "Welche IP-Adresse ein Router besitzt"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die physikalische Topologie beschreibt die tatsächlich sichtbare Verkabelung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-078",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "medium",
+    "question": "Was beschreibt die logische Topologie?",
+    "answers": [
+      "Die Position der Geräte im Raum",
+      "Die Kabelfarbe",
+      "Den digitalen Weg der Daten",
+      "Die Größe des Serverraums"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Die logische Topologie beschreibt, wie Daten von A nach B gelangen.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-079",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "medium",
+    "question": "Woran erkennt man eine Sterntopologie?",
+    "answers": [
+      "Alle Geräte teilen sich ein Hauptkabel",
+      "Alle Geräte sind einzeln mit einem zentralen Verteiler verbunden",
+      "Alle Geräte bilden einen geschlossenen Kreis",
+      "Jedes Gerät ist direkt mit jedem anderen verbunden"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Bei der Sterntopologie ist jedes Endgerät separat mit einem zentralen Verteiler, z. B. einem Switch, verbunden.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-080",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "medium",
+    "question": "Was passiert in einer Sterntopologie typischerweise, wenn nur das Kabel eines einzelnen PCs ausfällt?",
+    "answers": [
+      "Das gesamte Netz fällt aus",
+      "Nur dieser PC ist betroffen",
+      "Alle Switches starten neu",
+      "Die Broadcastadresse ändert sich"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Ein einzelner Kabel- oder PC-Ausfall bleibt bei der Sterntopologie normalerweise lokal.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-081",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "medium",
+    "question": "Welcher Nachteil ist typisch für die Sterntopologie?",
+    "answers": [
+      "Der zentrale Verteiler kann ein Single Point of Failure sein",
+      "Es gibt keine Erweiterungsmöglichkeit",
+      "Jedes Gerät benötigt zwingend zwei Netzwerkkarten",
+      "Es gibt keine eigene Bandbreite zum Verteiler"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Fällt der zentrale Switch aus, kann die gesamte Sternstruktur ausfallen.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-082",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "medium",
+    "question": "Welcher Vorteil passt zur Sterntopologie?",
+    "answers": [
+      "Sehr geringer Kabelaufwand",
+      "Leichte Fehlersuche",
+      "Keine zentrale Komponente",
+      "Keine Installationskosten"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Die getrennten Leitungen machen Fehler meist leichter lokalisierbar.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-083",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "medium",
+    "question": "Was kennzeichnet eine Bustopologie?",
+    "answers": [
+      "Alle Geräte hängen an einer gemeinsamen Bus-Leitung",
+      "Alle Geräte sind mit einem zentralen Switch verbunden",
+      "Jedes Gerät besitzt zwei redundante Verbindungen",
+      "Es gibt immer einen Server in der Mitte"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Bei der Bustopologie teilen sich die Geräte ein gemeinsames Hauptkabel.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-084",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe haben Terminatoren bei einer klassischen Bustopologie?",
+    "answers": [
+      "Sie vergeben IP-Adressen",
+      "Sie verhindern Signalreflexionen an den Kabelenden",
+      "Sie verschlüsseln Daten",
+      "Sie ersetzen einen Switch"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Terminatoren an beiden Enden verhindern, dass Signale zurückreflektiert werden.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-085",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "medium",
+    "question": "Welcher Vorteil ist typisch für die Bustopologie?",
+    "answers": [
+      "Extrem hohe Ausfallsicherheit",
+      "Geringer Kabelaufwand",
+      "Volle Redundanz",
+      "Leichte Fehlersuche bei Kabelbruch"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Die Busstruktur benötigt vergleichsweise wenig Kabel.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-086",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "medium",
+    "question": "Was ist ein typischer Nachteil der Bustopologie?",
+    "answers": [
+      "Hoher Verkabelungsaufwand",
+      "Kollisionsgefahr und Geschwindigkeitsverlust",
+      "Jedes Gerät benötigt einen eigenen Switch",
+      "Keine Geräte können hinzugefügt werden"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Da sich Geräte ein Medium teilen, können Kollisionen und Leistungsprobleme auftreten.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-087",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "medium",
+    "question": "Was beschreibt eine Ringtopologie am besten?",
+    "answers": [
+      "Alle Geräte sind kreisförmig miteinander verbunden",
+      "Alle Geräte verbinden sich nur mit einem Server",
+      "Alle Geräte teilen sich einen Terminator",
+      "Nur zwei Geräte sind direkt verbunden"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Bei der Ringtopologie bilden die Teilnehmer einen Ring.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-088",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "medium",
+    "question": "Welcher Nachteil passt zur Ringtopologie laut Unterrichtsmaterial?",
+    "answers": [
+      "Ein einzelner Unterbruch kann alles stoppen",
+      "Sie benötigt immer einen zentralen Switch",
+      "Sie ist besonders leicht erweiterbar",
+      "Sie hat keine Verzögerung bei der Weiterleitung"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Eine Unterbrechung im Ring kann die Kommunikation des gesamten Rings stoppen.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-089",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "medium",
+    "question": "Was kennzeichnet eine Baumtopologie bzw. erweiterte Sterntopologie?",
+    "answers": [
+      "Mehrere Sterne werden hierarchisch miteinander verbunden",
+      "Alle Geräte hängen an exakt einem Koaxialkabel",
+      "Es gibt keine zentralen Verteiler",
+      "Jedes Gerät ist mit jedem anderen direkt verbunden"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Mehrere Sternstrukturen werden hierarchisch zu einem Baum verbunden.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-090",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "hard",
+    "question": "Was passiert bei einer Baumtopologie, wenn ein Verteiler in einem Unterbaum ausfällt?",
+    "answers": [
+      "Nur ein einzelnes Endgerät ist betroffen",
+      "Der von diesem Verteiler abhängige Unterbaum kann unerreichbar werden",
+      "Das gesamte Internet fällt aus",
+      "Die IP-Adressen werden automatisch geändert"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Der Ausfall eines Verteilers betrifft typischerweise den daran hängenden Unterbaum.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-091",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "medium",
+    "question": "Was ist eine Punkt-zu-Punkt-Topologie?",
+    "answers": [
+      "Eine direkte Verbindung zwischen exakt zwei Geräten",
+      "Ein Ring aus zwei Switches und mehreren Clients",
+      "Ein Bus mit zwei Terminatoren",
+      "Ein vollständig vermaschtes Netz"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Punkt-zu-Punkt bedeutet eine direkte Verbindung zwischen genau zwei Partnern.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-092",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "medium",
+    "question": "Welcher Nachteil ist typisch für Punkt-zu-Punkt?",
+    "answers": [
+      "Keine Skalierbarkeit",
+      "Keine Geschwindigkeit",
+      "Hoher Verwaltungsaufwand durch viele Server",
+      "Immer hohe Kollisionsgefahr"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die direkte Verbindung ist einfach und schnell, aber nicht für große Netze skalierbar.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-093",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "medium",
+    "question": "Wann spricht man von einem vollständig vermaschten Netz (Full Mesh)?",
+    "answers": [
+      "Wenn jedes Gerät mit genau einem Switch verbunden ist",
+      "Wenn jeder Teilnehmer direkt mit jedem anderen verbunden ist",
+      "Wenn nur zwei Geräte verbunden sind",
+      "Wenn alle Geräte ein gemeinsames Kabel verwenden"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Full Mesh bedeutet direkte Verbindung jedes Teilnehmers mit jedem anderen.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-094",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "hard",
+    "question": "Wie viele direkte Verbindungen benötigt ein Full-Mesh-Netz mit 10 Teilnehmern laut Beispiel im Material?",
+    "answers": [
+      "10",
+      "20",
+      "45",
+      "90"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Für 10 Teilnehmer nennt das Material 45 Verbindungen.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-095",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "medium",
+    "question": "Welcher Vorteil passt besonders zu einer Mesh-Topologie?",
+    "answers": [
+      "Extrem hohe Ausfallsicherheit",
+      "Minimaler Verkabelungsaufwand",
+      "Sehr einfacher Aufbau",
+      "Keine alternativen Datenwege"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Mesh bietet mehrere mögliche Wege und dadurch hohe Ausfallsicherheit.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-096",
+    "category": "Netzwerk",
+    "topic": "Netzwerkarten",
+    "difficulty": "medium",
+    "question": "Welche Netzwerkart verbindet Geräte in der direkten Umgebung einer Person über wenige Meter?",
+    "answers": [
+      "PAN",
+      "LAN",
+      "MAN",
+      "WAN"
+    ],
+    "correctAnswer": 0,
+    "explanation": "PAN steht für Personal Area Network und umfasst die direkte persönliche Umgebung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-097",
+    "category": "Netzwerk",
+    "topic": "Netzwerkarten",
+    "difficulty": "medium",
+    "question": "Welche Netzwerkart passt typischerweise zu einem Raum, Gebäude oder Firmengelände?",
+    "answers": [
+      "PAN",
+      "LAN",
+      "MAN",
+      "GAN"
+    ],
+    "correctAnswer": 1,
+    "explanation": "LAN ist ein lokales Netzwerk in einem begrenzten Gebiet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-098",
+    "category": "Netzwerk",
+    "topic": "Netzwerkarten",
+    "difficulty": "medium",
+    "question": "Welche Netzwerkart beschreibt ein Netz über eine Stadt oder Region?",
+    "answers": [
+      "PAN",
+      "LAN",
+      "MAN",
+      "GAN"
+    ],
+    "correctAnswer": 2,
+    "explanation": "MAN steht für Metropolitan Area Network.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-099",
+    "category": "Netzwerk",
+    "topic": "Netzwerkarten",
+    "difficulty": "medium",
+    "question": "Welche Netzwerkart verbindet große Entfernungen wie mehrere Städte oder Länder?",
+    "answers": [
+      "PAN",
+      "LAN",
+      "WAN",
+      "VLAN"
+    ],
+    "correctAnswer": 2,
+    "explanation": "WAN steht für Wide Area Network.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-100",
+    "category": "Netzwerk",
+    "topic": "Netzwerkarten",
+    "difficulty": "medium",
+    "question": "Was beschreibt ein GAN am besten?",
+    "answers": [
+      "Ein Netzwerk innerhalb eines Zimmers",
+      "Ein weltweites Netzwerk über Länder und Kontinente",
+      "Eine direkte Verbindung zwischen zwei Geräten",
+      "Ein lokales Funknetz"
+    ],
+    "correctAnswer": 1,
+    "explanation": "GAN steht für Global Area Network.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-101",
+    "category": "Netzwerk",
+    "topic": "Netzwerkarchitektur",
+    "difficulty": "medium",
+    "question": "Was kennzeichnet ein Peer-to-Peer-Netzwerk (P2P)?",
+    "answers": [
+      "Es gibt zwingend einen zentralen Server",
+      "Alle Teilnehmer sind grundsätzlich gleichberechtigt",
+      "Nur ein Client darf Ressourcen anbieten",
+      "Es funktioniert nur mit WLAN"
+    ],
+    "correctAnswer": 1,
+    "explanation": "P2P verzichtet auf eine zentrale Steuereinheit; Teilnehmer können gleichberechtigt Ressourcen anbieten.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-102",
+    "category": "Netzwerk",
+    "topic": "Netzwerkarchitektur",
+    "difficulty": "medium",
+    "question": "Welcher Vorteil wird im Material für P2P genannt?",
+    "answers": [
+      "Kein Single Point of Failure",
+      "Zentrale und einfache Verwaltung",
+      "Keine Sicherheitsrisiken",
+      "Nur ein Gerät muss laufen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "P2P besitzt nicht zwingend einen einzelnen zentralen Ausfallpunkt.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-103",
+    "category": "Netzwerk",
+    "topic": "Netzwerkarchitektur",
+    "difficulty": "medium",
+    "question": "Welcher Nachteil passt zu P2P?",
+    "answers": [
+      "Schwierige Verwaltung",
+      "Zwingend sehr hohe Serverkosten",
+      "Keine Skalierbarkeit",
+      "Nur ein Gerät kann Daten senden"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die dezentrale Struktur kann Verwaltung und Sicherheit erschweren.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-104",
+    "category": "Netzwerk",
+    "topic": "Netzwerkarchitektur",
+    "difficulty": "medium",
+    "question": "Was ist die Grundidee eines Client-Server-Netzwerks?",
+    "answers": [
+      "Clients stellen immer alle Dienste bereit",
+      "Server bieten Dienste und Ressourcen an, die Clients nutzen",
+      "Alle Geräte sind ohne Rollen gleichberechtigt",
+      "Es gibt keine zentrale Ressource"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Im Client-Server-Modell stellen Server Dienste/Ressourcen bereit und Clients greifen darauf zu.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-105",
+    "category": "Netzwerk",
+    "topic": "Netzwerkarchitektur",
+    "difficulty": "hard",
+    "question": "Welche Aussage unterscheidet Client-Server am besten von P2P?",
+    "answers": [
+      "Client-Server kennt getrennte Rollen für Anbieter und Nutzer von Diensten",
+      "P2P benötigt zwingend einen Hauptserver",
+      "Client-Server funktioniert nur in WANs",
+      "P2P besitzt niemals Sicherheitsrisiken"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Client-Server trennt typischerweise Server- und Clientrollen, während P2P dezentraler und gleichberechtigter ist.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-106",
+    "category": "Netzwerk",
+    "topic": "IPv4",
+    "difficulty": "medium",
+    "question": "Was bedeutet bei 192.168.10.15/24 die Angabe /24?",
+    "answers": [
+      "24 Geräte sind erlaubt",
+      "Die ersten 24 Bit gehören zum Netzpräfix",
+      "Die letzten 24 Bit gehören zum Host",
+      "Port 24 wird verwendet"
+    ],
+    "correctAnswer": 1,
+    "explanation": "/24 bezeichnet die Länge des Netzpräfixes in Bit.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-107",
+    "category": "Netzwerk",
+    "topic": "IPv4",
+    "difficulty": "medium",
+    "question": "Welche Subnetzmaske entspricht einem /24-Netz?",
+    "answers": [
+      "255.0.0.0",
+      "255.255.0.0",
+      "255.255.255.0",
+      "255.255.255.255"
+    ],
+    "correctAnswer": 2,
+    "explanation": "/24 entspricht 255.255.255.0.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-108",
+    "category": "Netzwerk",
+    "topic": "IPv4",
+    "difficulty": "medium",
+    "question": "Welche Adresse ist im Beispielnetz 192.168.10.0/24 die Netzadresse?",
+    "answers": [
+      "192.168.10.0",
+      "192.168.10.1",
+      "192.168.10.254",
+      "192.168.10.255"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Im /24-Beispiel ist .0 die Netzadresse.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-109",
+    "category": "Netzwerk",
+    "topic": "IPv4",
+    "difficulty": "medium",
+    "question": "Welche Adresse ist im Beispielnetz 192.168.10.0/24 die Broadcastadresse?",
+    "answers": [
+      "192.168.10.0",
+      "192.168.10.1",
+      "192.168.10.254",
+      "192.168.10.255"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Im /24-Beispiel ist .255 die Broadcastadresse.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-110",
+    "category": "Netzwerk",
+    "topic": "IPv4",
+    "difficulty": "medium",
+    "question": "Wozu dient eine Broadcastadresse?",
+    "answers": [
+      "Um genau einen einzelnen Host anzusprechen",
+      "Um alle Geräte im jeweiligen Netzwerksegment anzusprechen",
+      "Um eine Domain in eine IP zu übersetzen",
+      "Um Ports zu verschlüsseln"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Broadcast ist für Nachrichten an alle Teilnehmer des jeweiligen Netzes vorgesehen.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-111",
+    "category": "Netzwerk",
+    "topic": "IPv4",
+    "difficulty": "medium",
+    "question": "Wie viele Bit enthält ein IPv4-Oktett?",
+    "answers": [
+      "4",
+      "8",
+      "16",
+      "32"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Ein IPv4-Oktett besteht aus 8 Bit.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-112",
+    "category": "Netzwerk",
+    "topic": "IPv4",
+    "difficulty": "medium",
+    "question": "Welchem Dezimalwert entspricht das Binärmuster 10000000?",
+    "answers": [
+      "64",
+      "128",
+      "192",
+      "255"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Das höchstwertige Bit eines Oktetts hat den Wert 128.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-113",
+    "category": "Netzwerk",
+    "topic": "IPv4",
+    "difficulty": "hard",
+    "question": "Welche Binärdarstellung entspricht dem Dezimalwert 192 in einem Oktett?",
+    "answers": [
+      "10000000",
+      "11000000",
+      "11100000",
+      "11111111"
+    ],
+    "correctAnswer": 1,
+    "explanation": "192 = 128 + 64, also 11000000.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-114",
+    "category": "Netzwerk",
+    "topic": "Subnetting",
+    "difficulty": "medium",
+    "question": "Was ist die Grundidee von Subnetting?",
+    "answers": [
+      "Ein großes Netzwerk in mehrere kleinere Unternetze aufzuteilen",
+      "Alle Geräte in ein einziges großes Broadcastnetz zu legen",
+      "DNS durch IP-Adressen zu ersetzen",
+      "Nur WLAN-Geräte zu verbinden"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Subnetting teilt ein größeres Netzwerk in kleinere eigenständige Teilnetze.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-115",
+    "category": "Netzwerk",
+    "topic": "Subnetting",
+    "difficulty": "medium",
+    "question": "Welcher Vorteil von Subnetting wird im Material genannt?",
+    "answers": [
+      "Mehr Datenstau",
+      "Weniger Datenstau",
+      "Keine IP-Adressen nötig",
+      "Keine Router mehr nötig"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Kleinere Netze können Datenstau reduzieren.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-116",
+    "category": "Netzwerk",
+    "topic": "Subnetting",
+    "difficulty": "medium",
+    "question": "Welcher Sicherheitsaspekt wird beim Subnetting im Material genannt?",
+    "answers": [
+      "Jedes Gerät kann fremden Datenverkehr besser mitlesen",
+      "Geräte können voneinander stärker getrennt werden",
+      "Alle Daten werden automatisch verschlüsselt",
+      "Es ersetzt Firewalls vollständig"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Segmentierung kann verhindern, dass Geräte fremden Datenverkehr einfach mitverfolgen.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-117",
+    "category": "Netzwerk",
+    "topic": "CSMA",
+    "difficulty": "medium",
+    "question": "Welches Verfahren wird im Material mit WLAN verbunden?",
+    "answers": [
+      "CSMA/CD",
+      "CSMA/CA",
+      "ARP",
+      "NAT"
+    ],
+    "correctAnswer": 1,
+    "explanation": "CSMA/CA steht für Collision Avoidance und wird dort WLAN zugeordnet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-118",
+    "category": "Netzwerk",
+    "topic": "CSMA",
+    "difficulty": "medium",
+    "question": "Was versucht CSMA/CA zu tun?",
+    "answers": [
+      "Kollisionen erst nachträglich erkennen",
+      "Vor dem Senden prüfen, ob das Medium frei ist",
+      "IP-Adressen automatisch vergeben",
+      "Pakete zu verschlüsseln"
+    ],
+    "correctAnswer": 1,
+    "explanation": "CSMA/CA versucht Kollisionen vorab zu vermeiden.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-119",
+    "category": "Netzwerk",
+    "topic": "CSMA",
+    "difficulty": "medium",
+    "question": "Welches Verfahren wird im Material mit kabelgebundenen Netzen verbunden?",
+    "answers": [
+      "CSMA/CA",
+      "CSMA/CD",
+      "DNS",
+      "DHCP"
+    ],
+    "correctAnswer": 1,
+    "explanation": "CSMA/CD steht für Collision Detection und wird kabelgebundenen Netzen zugeordnet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-120",
+    "category": "Netzwerk",
+    "topic": "CSMA",
+    "difficulty": "medium",
+    "question": "Was macht CSMA/CD bei einer Kollision?",
+    "answers": [
+      "Es erkennt die Kollision während der Übertragung und stoppt",
+      "Es verschlüsselt das Paket neu",
+      "Es ändert die IP-Adresse",
+      "Es startet DNS neu"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Collision Detection erkennt eine Kollision während der Übertragung und bricht die Sendung ab.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-121",
+    "category": "Netzwerk",
+    "topic": "OSI",
+    "difficulty": "medium",
+    "question": "Wozu dient das OSI-Modell laut Material hauptsächlich?",
+    "answers": [
+      "Als Referenzmodell für Kommunikation zwischen technischen Systemen",
+      "Zur Vergabe von IP-Adressen",
+      "Zum Speichern von Dateien",
+      "Zum Entwerfen von Webseiten"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Das OSI-Modell ist ein Referenzmodell für die Kommunikation zwischen technischen Systemen.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-122",
+    "category": "Netzwerk",
+    "topic": "OSI",
+    "difficulty": "medium",
+    "question": "Wie viele Schichten hat das OSI-Modell?",
+    "answers": [
+      "4",
+      "5",
+      "6",
+      "7"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Das OSI-Modell besteht aus sieben Schichten.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-123",
+    "category": "Netzwerk",
+    "topic": "OSI",
+    "difficulty": "medium",
+    "question": "Welche Reihenfolge beginnt oben bei Schicht 7?",
+    "answers": [
+      "Anwendung, Darstellung, Sitzung",
+      "Bitübertragung, Sicherung, Vermittlung",
+      "Transport, Vermittlung, Sicherung",
+      "Sitzung, Anwendung, Darstellung"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Schicht 7 bis 5 lauten Anwendung, Darstellung, Sitzung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-124",
+    "category": "Netzwerk",
+    "topic": "OSI",
+    "difficulty": "medium",
+    "question": "Welche Schichten gelten im Material als anwendungsorientiert?",
+    "answers": [
+      "1 bis 3",
+      "1 bis 4",
+      "5 bis 7",
+      "2 bis 5"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Schichten 7 bis 5 werden als anwendungsorientiert bezeichnet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-125",
+    "category": "Netzwerk",
+    "topic": "OSI",
+    "difficulty": "medium",
+    "question": "Welche Schichten gelten im Material als transportorientiert?",
+    "answers": [
+      "1 bis 4",
+      "4 bis 7",
+      "5 bis 7",
+      "2 bis 6"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Schichten 4 bis 1 werden als transportorientiert bezeichnet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-126",
+    "category": "Netzwerk",
+    "topic": "OSI",
+    "difficulty": "medium",
+    "question": "In welcher Richtung durchlaufen Daten beim Senden das OSI-Modell?",
+    "answers": [
+      "Von Schicht 1 nach 7",
+      "Von Schicht 7 nach 1",
+      "Nur Schicht 4",
+      "Zufällig"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Beim Senden werden die Schichten von oben nach unten durchlaufen.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-127",
+    "category": "Netzwerk",
+    "topic": "OSI",
+    "difficulty": "medium",
+    "question": "In welcher Richtung durchlaufen Daten beim Empfangen das OSI-Modell?",
+    "answers": [
+      "Von Schicht 1 nach 7",
+      "Von Schicht 7 nach 1",
+      "Nur Schicht 3 nach 2",
+      "Es gibt keine Reihenfolge"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Beim Empfangen werden die Schichten von unten nach oben durchlaufen.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-128",
+    "category": "Netzwerk",
+    "topic": "OSI",
+    "difficulty": "medium",
+    "question": "Welche OSI-Schicht ist für Kabel, Funkwellen oder Lichtpulse zuständig?",
+    "answers": [
+      "Schicht 1 Bitübertragung",
+      "Schicht 3 Vermittlung",
+      "Schicht 5 Sitzung",
+      "Schicht 7 Anwendung"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die Bitübertragungsschicht überträgt Bits über physische Medien.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-129",
+    "category": "Netzwerk",
+    "topic": "OSI",
+    "difficulty": "medium",
+    "question": "Welche OSI-Schicht wird im Material mit MAC-Adressen und lokalem Netz verbunden?",
+    "answers": [
+      "Schicht 1",
+      "Schicht 2",
+      "Schicht 4",
+      "Schicht 7"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Schicht 2 Sicherung wird mit MAC-Adressen und lokalem Netz verbunden.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-130",
+    "category": "Netzwerk",
+    "topic": "OSI",
+    "difficulty": "medium",
+    "question": "Welche OSI-Schicht wird mit IP-Adressen und Routing verbunden?",
+    "answers": [
+      "Schicht 2",
+      "Schicht 3",
+      "Schicht 5",
+      "Schicht 6"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Schicht 3 Vermittlung behandelt IP und Routing.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-131",
+    "category": "Netzwerk",
+    "topic": "OSI",
+    "difficulty": "medium",
+    "question": "Welche OSI-Schicht wird mit TCP/UDP verbunden?",
+    "answers": [
+      "Schicht 2",
+      "Schicht 3",
+      "Schicht 4",
+      "Schicht 7"
+    ],
+    "correctAnswer": 2,
+    "explanation": "TCP/UDP werden der Transportschicht 4 zugeordnet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-132",
+    "category": "Netzwerk",
+    "topic": "OSI",
+    "difficulty": "medium",
+    "question": "Welche OSI-Schicht hält Sitzungen bzw. Verbindungen aufrecht?",
+    "answers": [
+      "Schicht 2",
+      "Schicht 4",
+      "Schicht 5",
+      "Schicht 7"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Schicht 5 ist die Sitzungsschicht.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-133",
+    "category": "Netzwerk",
+    "topic": "OSI",
+    "difficulty": "medium",
+    "question": "Welche OSI-Schicht ist für Formatierung, Übersetzung und Darstellung zuständig?",
+    "answers": [
+      "Schicht 3",
+      "Schicht 5",
+      "Schicht 6",
+      "Schicht 7"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Schicht 6 ist die Darstellungsschicht.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-134",
+    "category": "Netzwerk",
+    "topic": "OSI",
+    "difficulty": "medium",
+    "question": "Welche OSI-Schicht stellt Netzwerkdienste für Anwendungen bereit?",
+    "answers": [
+      "Schicht 1",
+      "Schicht 4",
+      "Schicht 6",
+      "Schicht 7"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Schicht 7 ist die Anwendungsschicht.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-135",
+    "category": "Netzwerk",
+    "topic": "OSI",
+    "difficulty": "hard",
+    "question": "Welche Vorgehensweise zur Fehlersuche empfiehlt das Material?",
+    "answers": [
+      "Von oben nach unten, beginnend mit der Anwendung",
+      "Von unten nach oben, beginnend mit Kabel/WLAN",
+      "Nur Schicht 7 prüfen",
+      "Zuerst immer DNS löschen"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Das Material empfiehlt die Fehlersuche von unten nach oben: zuerst physische Verbindung, dann Netz, Verbindung und zuletzt Anwendung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-136",
+    "category": "Netzwerk",
+    "topic": "Anwendungsschicht",
+    "difficulty": "medium",
+    "question": "Was ist ein Protokoll im Netzwerk-Kontext?",
+    "answers": [
+      "Ein vereinbarter Satz von Regeln für die Kommunikation",
+      "Eine physische Netzwerkkarte",
+      "Eine IP-Adresse",
+      "Ein Dateiformat"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ein Protokoll legt Regeln wie Reihenfolge, Format und Antworten fest.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-137",
+    "category": "Netzwerk",
+    "topic": "HTTP-HTTPS",
+    "difficulty": "medium",
+    "question": "Wofür steht HTTP?",
+    "answers": [
+      "Hypertext Transfer Protocol",
+      "Host Transmission Routing Process",
+      "High Transfer Protection",
+      "Hyperlink Tunnel Relay Protocol"
+    ],
+    "correctAnswer": 0,
+    "explanation": "HTTP steht für Hypertext Transfer Protocol.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-138",
+    "category": "Netzwerk",
+    "topic": "HTTP-HTTPS",
+    "difficulty": "medium",
+    "question": "Wie läuft eine typische HTTP-Kommunikation ab?",
+    "answers": [
+      "Request vom Client, Response vom Server",
+      "Response vom Client, Request vom Server",
+      "Nur Broadcasts",
+      "Nur verschlüsselte UDP-Pakete"
+    ],
+    "correctAnswer": 0,
+    "explanation": "HTTP folgt typischerweise dem Anfrage-Antwort-Prinzip.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-139",
+    "category": "Netzwerk",
+    "topic": "HTTP-HTTPS",
+    "difficulty": "medium",
+    "question": "Was bedeutet HTTP-Statuscode 200?",
+    "answers": [
+      "Not Found",
+      "OK",
+      "Busy",
+      "Timeout"
+    ],
+    "correctAnswer": 1,
+    "explanation": "200 steht für eine erfolgreiche Antwort.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-140",
+    "category": "Netzwerk",
+    "topic": "HTTP-HTTPS",
+    "difficulty": "medium",
+    "question": "Was bedeutet HTTP-Statuscode 404?",
+    "answers": [
+      "OK",
+      "Not Found",
+      "Internal Server Error",
+      "Request Timeout"
+    ],
+    "correctAnswer": 1,
+    "explanation": "404 bedeutet, dass die angeforderte Ressource nicht gefunden wurde.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-141",
+    "category": "Netzwerk",
+    "topic": "HTTP-HTTPS",
+    "difficulty": "medium",
+    "question": "Was ist der zentrale Sicherheitsnachteil von normalem HTTP laut Material?",
+    "answers": [
+      "Es funktioniert nur offline",
+      "Daten werden unverschlüsselt als Klartext übertragen",
+      "Es unterstützt keine Webseiten",
+      "Es benötigt keinen Server"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Normales HTTP schützt den Inhalt nicht durch Verschlüsselung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-142",
+    "category": "Netzwerk",
+    "topic": "HTTP-HTTPS",
+    "difficulty": "medium",
+    "question": "Was ist HTTPS vereinfacht gesagt?",
+    "answers": [
+      "HTTP mit verschlüsselter Übertragung",
+      "HTTP ohne Server",
+      "DNS über WLAN",
+      "FTP mit Port 53"
+    ],
+    "correctAnswer": 0,
+    "explanation": "HTTPS schützt die HTTP-Kommunikation durch Verschlüsselung, typischerweise TLS.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-143",
+    "category": "Netzwerk",
+    "topic": "HTTP-HTTPS",
+    "difficulty": "medium",
+    "question": "Welches Protokoll gilt als moderner Nachfolger von SSL?",
+    "answers": [
+      "FTP",
+      "TLS",
+      "SMTP",
+      "POP3"
+    ],
+    "correctAnswer": 1,
+    "explanation": "TLS ist der moderne Nachfolger von SSL.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-144",
+    "category": "Netzwerk",
+    "topic": "HTTP-HTTPS",
+    "difficulty": "hard",
+    "question": "Welche Aussage zu SSL/TLS passt zum Material?",
+    "answers": [
+      "SSL ist moderner als TLS",
+      "TLS dient der sicheren Verschlüsselung im Internet",
+      "TLS ersetzt DNS",
+      "SSL/TLS sind reine Bildformate"
+    ],
+    "correctAnswer": 1,
+    "explanation": "TLS dient der verschlüsselten Datenübertragung; SSL wird als veraltet beschrieben.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-145",
+    "category": "Netzwerk",
+    "topic": "E-Mail-Protokolle",
+    "difficulty": "medium",
+    "question": "Welches Protokoll dient primär zum Senden und Weiterleiten von E-Mails?",
+    "answers": [
+      "SMTP",
+      "IMAP",
+      "POP3",
+      "DNS"
+    ],
+    "correctAnswer": 0,
+    "explanation": "SMTP ist das Standardprotokoll zum Senden und Weiterleiten von E-Mails.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-146",
+    "category": "Netzwerk",
+    "topic": "E-Mail-Protokolle",
+    "difficulty": "medium",
+    "question": "Was kann SMTP laut Material NICHT?",
+    "answers": [
+      "E-Mails versenden",
+      "E-Mails zwischen Mailservern weiterleiten",
+      "E-Mails abrufen",
+      "Mit einem Mailserver kommunizieren"
+    ],
+    "correctAnswer": 2,
+    "explanation": "SMTP dient dem Versand, nicht dem Abruf von E-Mails.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-147",
+    "category": "Netzwerk",
+    "topic": "E-Mail-Protokolle",
+    "difficulty": "medium",
+    "question": "Welches Protokoll eignet sich besonders für dieselbe Mailbox auf Smartphone, Tablet und Laptop?",
+    "answers": [
+      "IMAP",
+      "POP3",
+      "FTP",
+      "HTTP"
+    ],
+    "correctAnswer": 0,
+    "explanation": "IMAP hält die Mails auf dem Server und synchronisiert Zustände zwischen Geräten.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-148",
+    "category": "Netzwerk",
+    "topic": "E-Mail-Protokolle",
+    "difficulty": "medium",
+    "question": "Wo bleiben E-Mails bei IMAP typischerweise gespeichert?",
+    "answers": [
+      "Nur lokal auf einem Gerät",
+      "Auf dem Server",
+      "Nur im Router",
+      "Im DNS-Cache"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Bei IMAP bleiben die E-Mails auf dem Server.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-149",
+    "category": "Netzwerk",
+    "topic": "E-Mail-Protokolle",
+    "difficulty": "medium",
+    "question": "Was beschreibt POP3 im Material?",
+    "answers": [
+      "Mails werden typischerweise heruntergeladen und danach vom Server entfernt",
+      "Mails bleiben immer synchron auf mehreren Geräten",
+      "Es sendet ausschließlich E-Mails",
+      "Es verschlüsselt Webseiten"
+    ],
+    "correctAnswer": 0,
+    "explanation": "POP3 wird als Abrufverfahren beschrieben, bei dem Mails lokal gespeichert und vom Server entfernt werden können.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-150",
+    "category": "Netzwerk",
+    "topic": "E-Mail-Protokolle",
+    "difficulty": "hard",
+    "question": "Eine Nutzerin liest eine Mail auf dem Handy und sie erscheint auch auf dem Laptop als gelesen. Welches Protokoll passt am besten?",
+    "answers": [
+      "SMTP",
+      "POP3",
+      "IMAP",
+      "FTP"
+    ],
+    "correctAnswer": 2,
+    "explanation": "IMAP synchronisiert den Zustand der Mailbox über mehrere Geräte.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-151",
+    "category": "Netzwerk",
+    "topic": "FTP-SFTP",
+    "difficulty": "medium",
+    "question": "Wofür wird FTP verwendet?",
+    "answers": [
+      "Dateien hoch- und herunterladen",
+      "Domains in IP-Adressen auflösen",
+      "E-Mails synchronisieren",
+      "Sitzungen für VoIP aufbauen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "FTP dient der Dateiübertragung zwischen Client und Server.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-152",
+    "category": "Netzwerk",
+    "topic": "FTP-SFTP",
+    "difficulty": "medium",
+    "question": "Was ist der wesentliche Nachteil von normalem FTP laut Material?",
+    "answers": [
+      "Es kann keine Dateien übertragen",
+      "Daten und Passwörter können unverschlüsselt übertragen werden",
+      "Es funktioniert nur lokal",
+      "Es benötigt keinen Server"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Normales FTP wird als unsicher beschrieben, da Inhalte und Zugangsdaten im Klartext übertragen werden können.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-153",
+    "category": "Netzwerk",
+    "topic": "FTP-SFTP",
+    "difficulty": "medium",
+    "question": "Was ist SFTP?",
+    "answers": [
+      "Eine sichere, verschlüsselte Dateiübertragung über SSH",
+      "Ein DNS-Server",
+      "Ein E-Mail-Protokoll",
+      "Ein Webbrowser"
+    ],
+    "correctAnswer": 0,
+    "explanation": "SFTP verwendet SSH für eine verschlüsselte Dateiübertragung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-154",
+    "category": "Netzwerk",
+    "topic": "FTP-SFTP",
+    "difficulty": "hard",
+    "question": "Welche Kombination ist korrekt?",
+    "answers": [
+      "FTP = verschlüsselt, SFTP = Klartext",
+      "FTP = Klartext, SFTP = verschlüsselt",
+      "FTP = DNS, SFTP = SMTP",
+      "Beide sind ausschließlich E-Mail-Protokolle"
+    ],
+    "correctAnswer": 1,
+    "explanation": "FTP wird im Material als unverschlüsselt, SFTP als verschlüsselt dargestellt.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-155",
+    "category": "Netzwerk",
+    "topic": "DNS",
+    "difficulty": "medium",
+    "question": "Welche Hauptaufgabe hat DNS?",
+    "answers": [
+      "Namensauflösung von Domains zu IP-Adressen",
+      "Vergabe von MAC-Adressen",
+      "Verschlüsselung von Dateien",
+      "Übertragung von E-Mails"
+    ],
+    "correctAnswer": 0,
+    "explanation": "DNS übersetzt lesbare Namen in IP-Adressen.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-156",
+    "category": "Netzwerk",
+    "topic": "DNS",
+    "difficulty": "medium",
+    "question": "Welcher Vergleich wird im Material für DNS verwendet?",
+    "answers": [
+      "Telefonbuch des Internets",
+      "Briefkasten",
+      "Pizzabote",
+      "Netzwerkkabel"
+    ],
+    "correctAnswer": 0,
+    "explanation": "DNS wird als Telefonbuch bzw. Dolmetscher des Internets beschrieben.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-157",
+    "category": "Netzwerk",
+    "topic": "DNS",
+    "difficulty": "medium",
+    "question": "Welcher Standard-Port wird im Material für DNS genannt?",
+    "answers": [
+      "21",
+      "25",
+      "53",
+      "443"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Im Material wird DNS mit Port 53 genannt.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-158",
+    "category": "Netzwerk",
+    "topic": "DNS",
+    "difficulty": "medium",
+    "question": "Welcher Befehl wird im Material zur DNS-Analyse verwendet?",
+    "answers": [
+      "nslookup",
+      "format",
+      "mkdir",
+      "taskkill"
+    ],
+    "correctAnswer": 0,
+    "explanation": "nslookup wird zur Namensauflösung bzw. DNS-Analyse verwendet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-159",
+    "category": "Netzwerk",
+    "topic": "DNS",
+    "difficulty": "hard",
+    "question": "Welche Aussage über DNS ist korrekt?",
+    "answers": [
+      "DNS sagt einem Webserver, welche Webseite er ausliefern soll",
+      "DNS hilft dem Computer, die IP-Adresse zu einem Namen zu finden",
+      "DNS verschlüsselt HTTP automatisch",
+      "DNS ersetzt Routing"
+    ],
+    "correctAnswer": 1,
+    "explanation": "DNS dient der Namensauflösung und nicht der Steuerung der Anwendung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-160",
+    "category": "Netzwerk",
+    "topic": "DNS",
+    "difficulty": "medium",
+    "question": "Welcher Befehl zeigt im Material die Route bzw. die Hops zu einem Ziel?",
+    "answers": [
+      "tracert",
+      "nslookup",
+      "echo",
+      "cls"
+    ],
+    "correctAnswer": 0,
+    "explanation": "tracert zeigt die Stationen/Hops auf dem Weg zum Ziel.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-161",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 6",
+    "difficulty": "medium",
+    "question": "Was ist die Hauptaufgabe der Darstellungsschicht (Schicht 6)?",
+    "answers": [
+      "Daten passend, lesbar und sicher darstellen",
+      "IP-Routen auswählen",
+      "MAC-Adressen vergeben",
+      "Kabelsignale erzeugen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Schicht 6 kümmert sich um Darstellung, Formatumwandlung, Verschlüsselung und Kompression.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-162",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 6",
+    "difficulty": "medium",
+    "question": "Welche drei Hauptaufgaben nennt das Material für Schicht 6?",
+    "answers": [
+      "Übersetzen, Verschlüsseln, Komprimieren",
+      "Routing, Switching, NAT",
+      "Senden, Empfangen, Löschen",
+      "Adressieren, Drucken, Speichern"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die Darstellungsschicht übersetzt Formate, verschlüsselt und komprimiert.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-163",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 6",
+    "difficulty": "medium",
+    "question": "Welches Beispiel gehört zur Zeichencodierung und damit zur Darstellungsschicht?",
+    "answers": [
+      "UTF-8",
+      "IP",
+      "MAC",
+      "TCP"
+    ],
+    "correctAnswer": 0,
+    "explanation": "UTF-8 ist eine Zeichencodierung und wird der Darstellungsebene zugeordnet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-164",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 6",
+    "difficulty": "medium",
+    "question": "Welche Gruppe besteht laut Material aus Datenformaten bzw. Standards und nicht aus Netzwerkprotokollen?",
+    "answers": [
+      "JPEG, PNG, UTF-8, JSON, gzip",
+      "HTTP, SMTP, DNS, FTP",
+      "TCP, UDP, IP, ARP",
+      "SIP, RPC, NetBIOS, PPTP"
+    ],
+    "correctAnswer": 0,
+    "explanation": "JPEG/PNG/UTF-8/JSON/gzip werden als Formate bzw. Standards genannt.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-165",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 6",
+    "difficulty": "medium",
+    "question": "Wofür steht ASCII im Kontext des Materials?",
+    "answers": [
+      "Eine Zeichencodierung für Buchstaben, Zahlen und Zeichen",
+      "Ein Routingprotokoll",
+      "Ein Dateitransferprotokoll",
+      "Eine Netzwerktopologie"
+    ],
+    "correctAnswer": 0,
+    "explanation": "ASCII codiert Zeichen als Zahlenwerte.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-166",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 6",
+    "difficulty": "medium",
+    "question": "Wie viele Zeichenplätze hat das ursprüngliche ASCII-System laut Material?",
+    "answers": [
+      "64",
+      "128",
+      "256",
+      "1024"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Das Material nennt 128 Plätze für das ursprüngliche ASCII.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-167",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 6",
+    "difficulty": "medium",
+    "question": "Warum reicht ASCII für moderne internationale Texte nicht aus?",
+    "answers": [
+      "Es unterstützt nur englische Grundzeichen und zu wenige Zeichen",
+      "Es ist verschlüsselt",
+      "Es funktioniert nur im WLAN",
+      "Es ist ein Bildformat"
+    ],
+    "correctAnswer": 0,
+    "explanation": "ASCII hat zu wenige Zeichenplätze für Umlaute, viele Schriftsysteme und Emojis.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-168",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 6",
+    "difficulty": "medium",
+    "question": "Welche Codierung wird im Material als moderne Lösung für internationale Zeichen genannt?",
+    "answers": [
+      "UTF-8",
+      "ASCII-7",
+      "POP3",
+      "FTP"
+    ],
+    "correctAnswer": 0,
+    "explanation": "UTF-8 unterstützt eine sehr große Zahl internationaler Zeichen.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-169",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 6",
+    "difficulty": "hard",
+    "question": "Eine Webseite zeigt 'Ã¤' statt 'ä'. Welche OSI-Schicht ist laut Material am ehesten betroffen?",
+    "answers": [
+      "Schicht 2",
+      "Schicht 3",
+      "Schicht 6",
+      "Schicht 7"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Ein fehlerhaft dargestelltes Zeichen deutet auf ein Encoding-/Darstellungsproblem in Schicht 6.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-170",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 6",
+    "difficulty": "hard",
+    "question": "ERR_ENCODING_UNSUPPORTED passt laut Material zu welcher Schicht?",
+    "answers": [
+      "Schicht 4",
+      "Schicht 5",
+      "Schicht 6",
+      "Schicht 7"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Der Fehler betrifft Zeichencodierung oder Kompression und wird Schicht 6 zugeordnet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-171",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 6",
+    "difficulty": "hard",
+    "question": "ERR_SSL_PROTOCOL_ERROR wird im Material welcher Schicht zugeordnet?",
+    "answers": [
+      "Schicht 1",
+      "Schicht 3",
+      "Schicht 6",
+      "Schicht 7"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Im Material wird ein SSL/TLS-Handshake- bzw. Protokollfehler der Darstellungsschicht zugeordnet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-172",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 6",
+    "difficulty": "medium",
+    "question": "Welche Frage hilft laut Material beim Unterschied zwischen Schicht 7 und 6?",
+    "answers": [
+      "Schicht 7: WAS wird gesendet? Schicht 6: WIE sieht es aus?",
+      "Schicht 7: Welche MAC? Schicht 6: Welche IP?",
+      "Schicht 7: Welche Route? Schicht 6: Welche Leitung?",
+      "Schicht 7: Welches Kabel? Schicht 6: Welcher Switch?"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Das Material nutzt die Merkhilfe: Schicht 7 behandelt WAS, Schicht 6 WIE die Daten dargestellt werden.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-173",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 5",
+    "difficulty": "medium",
+    "question": "Was ist die Hauptaufgabe der Sitzungsschicht (Schicht 5)?",
+    "answers": [
+      "Sitzungen zwischen Geräten aufbauen, aufrechterhalten und beenden",
+      "IP-Adressen vergeben",
+      "Kabelsignale übertragen",
+      "Dateiformate konvertieren"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Schicht 5 steuert Sitzungen bzw. logische Verbindungen zwischen Geräten.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-174",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 5",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe gehört zur Sitzungsschicht?",
+    "answers": [
+      "Dialogsteuerung",
+      "Routing",
+      "MAC-Adressierung",
+      "Bitübertragung"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die Sitzungsschicht regelt unter anderem, wer wann kommuniziert.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-175",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 5",
+    "difficulty": "medium",
+    "question": "Wozu dienen Checkpoints in der Sitzungsschicht?",
+    "answers": [
+      "Nach einer Unterbrechung an einem definierten Punkt fortsetzen zu können",
+      "IP-Adressen zu speichern",
+      "Ports zu verschlüsseln",
+      "MAC-Adressen zu ersetzen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Checkpoints erleichtern die Wiederaufnahme nach Verbindungsabbrüchen.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-176",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 5",
+    "difficulty": "medium",
+    "question": "Welcher Merksatz passt im Material zu Schicht 5?",
+    "answers": [
+      "Wir treffen uns, bleiben verbunden und verabschieden uns",
+      "Wir routen, bis wir das Ziel finden",
+      "Wir übersetzen jedes Zeichen",
+      "Wir senden nur Broadcasts"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Der Merksatz beschreibt Aufbau, Aufrechterhaltung und Ende einer Sitzung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-177",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 5",
+    "difficulty": "medium",
+    "question": "Welche Technologie hilft laut Material Geräten im lokalen Netz, sich über Namen zu finden und Sitzungen aufzubauen?",
+    "answers": [
+      "NetBIOS",
+      "FTP",
+      "SMTP",
+      "HTTPS"
+    ],
+    "correctAnswer": 0,
+    "explanation": "NetBIOS übernimmt unter anderem Namensauflösung und Sitzungsverwaltung im lokalen Netz.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-178",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 5",
+    "difficulty": "medium",
+    "question": "Wofür steht RPC?",
+    "answers": [
+      "Remote Procedure Call",
+      "Routing Process Channel",
+      "Reliable Packet Control",
+      "Remote Port Connection"
+    ],
+    "correctAnswer": 0,
+    "explanation": "RPC steht für Remote Procedure Call.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-179",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 5",
+    "difficulty": "medium",
+    "question": "Was ermöglicht RPC vereinfacht?",
+    "answers": [
+      "Eine Funktion auf einem entfernten Rechner auszuführen",
+      "Eine Domain in eine IP umzuwandeln",
+      "E-Mails zu synchronisieren",
+      "Eine Datei als JPEG zu komprimieren"
+    ],
+    "correctAnswer": 0,
+    "explanation": "RPC erlaubt den Aufruf von Funktionen auf entfernten Systemen.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-180",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 5",
+    "difficulty": "medium",
+    "question": "Wofür steht SIP?",
+    "answers": [
+      "Session Initiation Protocol",
+      "Secure Internet Packet",
+      "System IP Protocol",
+      "Simple Interface Port"
+    ],
+    "correctAnswer": 0,
+    "explanation": "SIP steht für Session Initiation Protocol.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-181",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 5",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe hat SIP bei VoIP hauptsächlich?",
+    "answers": [
+      "Verbindungsaufbau, Steuerung und Beenden eines Gesprächs",
+      "Übertragung der eigentlichen Sprachdaten",
+      "DNS-Auflösung",
+      "Dateikompression"
+    ],
+    "correctAnswer": 0,
+    "explanation": "SIP signalisiert und steuert Sitzungen; die eigentlichen Sprachdaten sind nicht seine Hauptaufgabe.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-182",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 5",
+    "difficulty": "medium",
+    "question": "Was bedeutet SIP-Status 180 Ringing?",
+    "answers": [
+      "Gespräch beendet",
+      "Verbindung wird aufgebaut, es klingelt",
+      "Nummer existiert nicht",
+      "Gegenstelle ist besetzt"
+    ],
+    "correctAnswer": 1,
+    "explanation": "180 Ringing bedeutet, dass die Gegenstelle klingelt.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-183",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 5",
+    "difficulty": "medium",
+    "question": "Was bedeutet SIP-Status 486 Busy Here?",
+    "answers": [
+      "Gespräch angenommen",
+      "Nummer unbekannt",
+      "Gegenstelle ist besetzt",
+      "TLS-Fehler"
+    ],
+    "correctAnswer": 2,
+    "explanation": "486 Busy Here signalisiert eine besetzte Gegenstelle.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-184",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 5",
+    "difficulty": "hard",
+    "question": "Welche Aussage zu SIP-Statuscodes ist laut Material wichtig?",
+    "answers": [
+      "Sie gehören trotz Sitzungssteuerung zur Anwendungsebene",
+      "Sie gehören immer zu Schicht 1",
+      "Sie sind keine Statuscodes",
+      "Sie ersetzen HTTP vollständig"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Das Material weist darauf hin, dass SIP-Codes Anwendungsebene sind, auch wenn SIP Sitzungen steuert.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-185",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 5",
+    "difficulty": "medium",
+    "question": "Wofür wurde PPTP verwendet?",
+    "answers": [
+      "Für VPN-Tunneling",
+      "Für E-Mail-Synchronisation",
+      "Für DNS",
+      "Für Bildkompression"
+    ],
+    "correctAnswer": 0,
+    "explanation": "PPTP ist ein älteres VPN-Tunneling-Protokoll.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-186",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 5",
+    "difficulty": "medium",
+    "question": "Wie bewertet das Material PPTP heute?",
+    "answers": [
+      "Modern und empfohlen",
+      "Veraltet und mit Sicherheitslücken",
+      "Nur für WLAN geeignet",
+      "Standard für Webseiten"
+    ],
+    "correctAnswer": 1,
+    "explanation": "PPTP wird als veraltet und sicherheitsproblematisch beschrieben.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-187",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 5",
+    "difficulty": "hard",
+    "question": "ECONNRESET (Connection Reset by Peer) wird im Material welcher Schicht zugeordnet?",
+    "answers": [
+      "Schicht 2",
+      "Schicht 3",
+      "Schicht 5",
+      "Schicht 7"
+    ],
+    "correctAnswer": 2,
+    "explanation": "ECONNRESET wird als abrupter Sitzungsabbruch und damit als Schicht-5-Problem eingeordnet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-188",
+    "category": "Netzwerk",
+    "topic": "OSI Schicht 5",
+    "difficulty": "hard",
+    "question": "HTTP 408 Request Timeout wird im Unterrichtsmaterial welcher Schicht zugeordnet?",
+    "answers": [
+      "Schicht 1",
+      "Schicht 4",
+      "Schicht 5",
+      "Schicht 7"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Im Material wird 408 als abgelaufene Sitzung in Schicht 5 eingeordnet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-189",
+    "category": "Netzwerk",
+    "topic": "OSI Szenarien",
+    "difficulty": "hard",
+    "question": "Ein Browser fordert per GET eine Webseite an. Welche Schicht steht dabei im Vordergrund?",
+    "answers": [
+      "Schicht 3 Vermittlung",
+      "Schicht 5 Sitzung",
+      "Schicht 6 Darstellung",
+      "Schicht 7 Anwendung"
+    ],
+    "correctAnswer": 3,
+    "explanation": "GET ist eine HTTP-Anfrage und wird der Anwendungsschicht zugeordnet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-190",
+    "category": "Netzwerk",
+    "topic": "OSI Szenarien",
+    "difficulty": "hard",
+    "question": "Ein WLAN-Signal ist so schwach, dass Bits fehlerhaft ankommen. Welche Schicht ist am ehesten betroffen?",
+    "answers": [
+      "Schicht 1 Bitübertragung",
+      "Schicht 4 Transport",
+      "Schicht 6 Darstellung",
+      "Schicht 7 Anwendung"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Schwaches Funk- oder Kabelsignal ist ein physisches Problem der Bitübertragungsschicht.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-191",
+    "category": "Netzwerk",
+    "topic": "OSI Szenarien",
+    "difficulty": "hard",
+    "question": "Ein Router sucht den besten Weg zu einem Zielnetz. Welche Schicht ist gemeint?",
+    "answers": [
+      "Schicht 2",
+      "Schicht 3",
+      "Schicht 5",
+      "Schicht 7"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Routing gehört zur Vermittlungsschicht 3.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-192",
+    "category": "Netzwerk",
+    "topic": "OSI Szenarien",
+    "difficulty": "hard",
+    "question": "Eine Datei wird vor dem Versand gezippt und verschlüsselt. Welche Schicht passt am besten?",
+    "answers": [
+      "Schicht 1",
+      "Schicht 4",
+      "Schicht 6",
+      "Schicht 7"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Kompression und Verschlüsselung werden im Material Schicht 6 zugeordnet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-193",
+    "category": "Netzwerk",
+    "topic": "OSI Szenarien",
+    "difficulty": "hard",
+    "question": "TCP bestätigt die vollständige Ankunft von Paketen. Welche Schicht ist gemeint?",
+    "answers": [
+      "Schicht 2",
+      "Schicht 4",
+      "Schicht 5",
+      "Schicht 7"
+    ],
+    "correctAnswer": 1,
+    "explanation": "TCP gehört zur Transportschicht 4.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-194",
+    "category": "Netzwerk",
+    "topic": "OSI Szenarien",
+    "difficulty": "hard",
+    "question": "Ein Webserver ist erreichbar, antwortet aber mit 404 Not Found. Welche Schicht ist laut Material betroffen?",
+    "answers": [
+      "Schicht 3",
+      "Schicht 5",
+      "Schicht 6",
+      "Schicht 7"
+    ],
+    "correctAnswer": 3,
+    "explanation": "404 ist ein Anwendungsfehler: Die Verbindung funktioniert, aber die Ressource existiert nicht.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-195",
+    "category": "Netzwerk",
+    "topic": "OSI Szenarien",
+    "difficulty": "hard",
+    "question": "Ein Webserver-Skript stürzt ab und liefert 500 Internal Server Error. Welche Schicht ist betroffen?",
+    "answers": [
+      "Schicht 1",
+      "Schicht 4",
+      "Schicht 6",
+      "Schicht 7"
+    ],
+    "correctAnswer": 3,
+    "explanation": "500 Internal Server Error wird als Fehler der Anwendungsschicht eingeordnet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-196",
+    "category": "Netzwerk",
+    "topic": "OSI Szenarien",
+    "difficulty": "hard",
+    "question": "Eine Kundin möchte E-Mails auf Handy, Tablet und Laptop synchron halten. Was empfiehlst du?",
+    "answers": [
+      "POP3",
+      "IMAP",
+      "FTP",
+      "PPTP"
+    ],
+    "correctAnswer": 1,
+    "explanation": "IMAP ist für synchronisierte Mailboxen auf mehreren Geräten geeignet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-197",
+    "category": "Netzwerk",
+    "topic": "OSI Szenarien",
+    "difficulty": "hard",
+    "question": "Du möchtest ein Firmenlogo verschlüsselt auf einen Webserver übertragen. Welches Protokoll passt?",
+    "answers": [
+      "FTP",
+      "SFTP",
+      "POP3",
+      "DNS"
+    ],
+    "correctAnswer": 1,
+    "explanation": "SFTP ermöglicht verschlüsselte Dateiübertragung über SSH.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-198",
+    "category": "Netzwerk",
+    "topic": "OSI Szenarien",
+    "difficulty": "hard",
+    "question": "Ein PC soll herausfinden, welche IP-Adresse hinter daa.de steckt. Welcher Dienst ist zuständig?",
+    "answers": [
+      "SMTP",
+      "DNS",
+      "FTP",
+      "SIP"
+    ],
+    "correctAnswer": 1,
+    "explanation": "DNS löst Domainnamen in IP-Adressen auf.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-199",
+    "category": "Netzwerk",
+    "topic": "OSI Szenarien",
+    "difficulty": "hard",
+    "question": "Welche Abfolge beschreibt das Versenden einer E-Mail im OSI-Beispiel korrekt?",
+    "answers": [
+      "SMTP → UTF-8/TLS → Sitzung → TCP → IP → MAC/Frames → Signale",
+      "DNS → FTP → POP3 → SIP → JPEG → MAC → Strom",
+      "TCP → SMTP → IP → HTTPS → WLAN → ASCII → DNS",
+      "MAC → IP → TCP → Sitzung → TLS → SMTP → Signale"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Das Material beschreibt oben beginnend Anwendung/SMTP, Darstellung/UTF-8-TLS, Sitzung, Transport/TCP, Vermittlung/IP, Sicherung/MAC und Bitübertragung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-200",
+    "category": "Netzwerk",
+    "topic": "OSI Szenarien",
+    "difficulty": "hard",
+    "question": "Was passiert laut OSI-Modell beim Empfangen einer Nachricht?",
+    "answers": [
+      "Die Daten durchlaufen die Schichten von 1 nach 7",
+      "Die Daten durchlaufen die Schichten von 7 nach 1",
+      "Nur Schicht 4 und 7 werden verwendet",
+      "Die Reihenfolge ist beliebig"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Beim Empfangen werden die Daten von unten nach oben verarbeitet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-201",
+    "category": "Netzwerk",
+    "topic": "Protokolle",
+    "difficulty": "hard",
+    "question": "Welche Zuordnung ist vollständig korrekt?",
+    "answers": [
+      "SMTP=Senden, IMAP=Synchronisieren/Abrufen, DNS=Namensauflösung, SFTP=verschlüsselte Dateiübertragung",
+      "SMTP=DNS, IMAP=Routing, DNS=Dateiübertragung, SFTP=E-Mail",
+      "SMTP=Kompression, IMAP=Verschlüsselung, DNS=VoIP, SFTP=Broadcast",
+      "SMTP=MAC, IMAP=TCP, DNS=JPEG, SFTP=ASCII"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die vier Protokolle/Dienste erfüllen genau diese Aufgaben.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-202",
+    "category": "Netzwerk",
+    "topic": "Protokolle",
+    "difficulty": "hard",
+    "question": "Welche Aussage ist falsch?",
+    "answers": [
+      "SMTP dient dem Senden von E-Mails",
+      "IMAP eignet sich für mehrere synchronisierte Geräte",
+      "DNS löst Namen in IP-Adressen auf",
+      "POP3 ist für Live-Synchronisation mehrerer Geräte optimiert"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Im Material wird IMAP als Synchronisationslösung beschrieben; POP3 ist dafür ungeeignet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-203",
+    "category": "Netzwerk",
+    "topic": "Protokolle",
+    "difficulty": "hard",
+    "question": "Welche Aussage über HTTP und HTTPS passt zum Unterrichtsmaterial?",
+    "answers": [
+      "HTTP ist Klartext; HTTPS schützt die Übertragung durch TLS",
+      "HTTPS ist unverschlüsselt, HTTP verschlüsselt",
+      "HTTP dient nur E-Mail",
+      "HTTPS ersetzt DNS"
+    ],
+    "correctAnswer": 0,
+    "explanation": "HTTP wird als unverschlüsselt beschrieben, HTTPS nutzt Verschlüsselung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-204",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "hard",
+    "question": "Ein Unternehmen möchte einfache Fehlersuche und lokale Ausfälle einzelner PCs, akzeptiert aber einen zentralen kritischen Switch. Welche Topologie passt am besten?",
+    "answers": [
+      "Stern",
+      "Bus",
+      "Ring",
+      "Punkt-zu-Punkt"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Diese Eigenschaften entsprechen der Sterntopologie.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-205",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "hard",
+    "question": "Ein Netz soll trotz Ausfall einzelner Verbindungen alternative Wege bieten. Welche Topologie passt am besten?",
+    "answers": [
+      "Bus",
+      "Ring",
+      "Mesh",
+      "Punkt-zu-Punkt"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Mesh bietet mehrere mögliche Wege und hohe Ausfallsicherheit.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-206",
+    "category": "Netzwerk",
+    "topic": "Topologien",
+    "difficulty": "hard",
+    "question": "Ein günstiges Alt-Netz verwendet ein gemeinsames Hauptkabel und Terminatoren an beiden Enden. Welche Topologie ist das?",
+    "answers": [
+      "Stern",
+      "Bus",
+      "Baum",
+      "Mesh"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Gemeinsames Hauptkabel mit Terminatoren ist typisch für Bus.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-207",
+    "category": "Netzwerk",
+    "topic": "Netzwerkarchitektur",
+    "difficulty": "hard",
+    "question": "Welche Architektur passt zu einer kleinen Gruppe gleichberechtigter PCs, die direkt Ressourcen miteinander teilen, ohne zentralen Server?",
+    "answers": [
+      "Client-Server",
+      "Peer-to-Peer",
+      "WAN",
+      "Full Mesh zwingend"
+    ],
+    "correctAnswer": 1,
+    "explanation": "P2P verzichtet auf eine zentrale Serverrolle und ermöglicht direkte Ressourcenteilung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-208",
+    "category": "Netzwerk",
+    "topic": "Netzwerkarchitektur",
+    "difficulty": "hard",
+    "question": "Ein zentraler Server stellt Dateien und Dienste bereit, mehrere Arbeitsplätze greifen darauf zu. Welche Architektur liegt vor?",
+    "answers": [
+      "Peer-to-Peer",
+      "Client-Server",
+      "Bus",
+      "PAN"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Das ist das klassische Client-Server-Prinzip.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-209",
+    "category": "Netzwerk",
+    "topic": "Anwendungsschicht",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe hat die Anwendungsschicht im OSI-Modell?",
+    "answers": [
+      "Sie stellt Netzwerkdienste für Anwendungen bereit",
+      "Sie überträgt elektrische Signale",
+      "Sie berechnet Routingtabellen",
+      "Sie verwaltet MAC-Adressen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Schicht 7 bildet die Schnittstelle zwischen Anwendungen und Netzwerkdiensten.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-210",
+    "category": "Netzwerk",
+    "topic": "Anwendungsschicht",
+    "difficulty": "medium",
+    "question": "Welche Aussage zur Anwendungsschicht ist laut Unterricht richtig?",
+    "answers": [
+      "Chrome selbst ist die Anwendungsschicht",
+      "Die Schicht stellt Regeln und Netzwerkdienste für Programme bereit",
+      "Sie ist ausschließlich für Kabel zuständig",
+      "Sie vergibt IP-Adressen"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Nicht die App selbst ist die Schicht, sondern die Netzwerkfunktionen und Regeln, die sie nutzt.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-211",
+    "category": "Netzwerk",
+    "topic": "Anwendungsschicht",
+    "difficulty": "medium",
+    "question": "Welches Protokoll gehört typischerweise zur Anwendungsschicht?",
+    "answers": [
+      "HTTP",
+      "Ethernet",
+      "IP",
+      "ARP"
+    ],
+    "correctAnswer": 0,
+    "explanation": "HTTP ist ein Anwendungsprotokoll.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-212",
+    "category": "Netzwerk",
+    "topic": "Anwendungsschicht",
+    "difficulty": "medium",
+    "question": "Ein Browser fordert eine Webseite mit GET an. Welche Schicht steht dabei im Vordergrund?",
+    "answers": [
+      "Schicht 2",
+      "Schicht 4",
+      "Schicht 6",
+      "Schicht 7"
+    ],
+    "correctAnswer": 3,
+    "explanation": "HTTP-GET gehört zur Anwendungsschicht.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-213",
+    "category": "Netzwerk",
+    "topic": "Anwendungsschicht",
+    "difficulty": "medium",
+    "question": "Was beschreibt Schicht 7 am besten?",
+    "answers": [
+      "WAS eine Anwendung über das Netzwerk anfordert oder sendet",
+      "WIE Bits elektrisch übertragen werden",
+      "WELCHE MAC-Adresse ein Switch lernt",
+      "WIE ein Kabel verlegt ist"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die Merkhilfe im Material lautet: Schicht 7 beschreibt, WAS gesendet wird.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-214",
+    "category": "Netzwerk",
+    "topic": "Anwendungsschicht",
+    "difficulty": "hard",
+    "question": "Ein Webserver liefert '404 Not Found', obwohl Netzwerk und Verschlüsselung funktionieren. Welche Schicht ist betroffen?",
+    "answers": [
+      "Schicht 3",
+      "Schicht 5",
+      "Schicht 6",
+      "Schicht 7"
+    ],
+    "correctAnswer": 3,
+    "explanation": "404 ist ein Fehler auf Anwendungsebene.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-215",
+    "category": "Netzwerk",
+    "topic": "Anwendungsschicht",
+    "difficulty": "hard",
+    "question": "Ein PHP-Skript stürzt ab und der Server antwortet mit 500 Internal Server Error. Welche Schicht passt?",
+    "answers": [
+      "Schicht 1",
+      "Schicht 4",
+      "Schicht 6",
+      "Schicht 7"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Der Fehler liegt in der Anwendung bzw. im Webserver-Programm.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-216",
+    "category": "Netzwerk",
+    "topic": "Anwendungsschicht",
+    "difficulty": "medium",
+    "question": "Welche Kombination besteht nur aus typischen Protokollen/Diensten der Anwendungsschicht?",
+    "answers": [
+      "HTTP, SMTP, DNS",
+      "IP, ARP, Ethernet",
+      "TCP, UDP, IP",
+      "MAC, VLAN, CSMA/CD"
+    ],
+    "correctAnswer": 0,
+    "explanation": "HTTP, SMTP und DNS sind typische Dienste/Protokolle auf Anwendungsebene.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-217",
+    "category": "Netzwerk",
+    "topic": "Anwendungsschicht",
+    "difficulty": "medium",
+    "question": "Was passiert bei HTTP nach einer Client-Anfrage normalerweise?",
+    "answers": [
+      "Der Server sendet eine Response",
+      "Der Router vergibt eine neue MAC-Adresse",
+      "Der Client sendet automatisch SMTP",
+      "Der Switch führt DNS aus"
+    ],
+    "correctAnswer": 0,
+    "explanation": "HTTP folgt dem Request-Response-Prinzip.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-218",
+    "category": "Netzwerk",
+    "topic": "Anwendungsschicht",
+    "difficulty": "hard",
+    "question": "Welche Aussage ist FALSCH?",
+    "answers": [
+      "Schicht 7 stellt Netzwerkdienste für Software bereit",
+      "HTTP gehört zur Anwendungsschicht",
+      "404 kann auf Schicht 7 auftreten",
+      "Schicht 7 überträgt Bits als Funkwellen"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Bits als Funkwellen gehören zur Bitübertragungsschicht 1.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-219",
+    "category": "Netzwerk",
+    "topic": "Anwendungsschicht",
+    "difficulty": "medium",
+    "question": "Welche Frage hilft laut Material beim Erkennen von Schicht 7?",
+    "answers": [
+      "Was wird gesendet?",
+      "Wie sieht das Datenformat aus?",
+      "Welches Kabel wird verwendet?",
+      "Welche MAC-Adresse ist lokal?"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Für Schicht 7 hilft die Frage: WAS wird gesendet?",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-220",
+    "category": "Netzwerk",
+    "topic": "Protokolle",
+    "difficulty": "medium",
+    "question": "Was ist ein Netzwerkprotokoll?",
+    "answers": [
+      "Eine vereinbarte Regel für Kommunikation zwischen Geräten",
+      "Ein physisches Netzwerkkabel",
+      "Eine Subnetzmaske",
+      "Ein Dateisystem"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Protokolle definieren Regeln wie Reihenfolge, Format und Antworten.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-221",
+    "category": "Netzwerk",
+    "topic": "Protokolle",
+    "difficulty": "medium",
+    "question": "Welches Protokoll ist für das Senden von E-Mails zuständig?",
+    "answers": [
+      "SMTP",
+      "IMAP",
+      "DNS",
+      "SIP"
+    ],
+    "correctAnswer": 0,
+    "explanation": "SMTP dient dem Senden und Weiterleiten von E-Mails.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-222",
+    "category": "Netzwerk",
+    "topic": "Protokolle",
+    "difficulty": "medium",
+    "question": "Welches Protokoll ist für synchronisierten E-Mail-Abruf auf mehreren Geräten geeignet?",
+    "answers": [
+      "POP3",
+      "IMAP",
+      "FTP",
+      "HTTP"
+    ],
+    "correctAnswer": 1,
+    "explanation": "IMAP hält die Mailbox auf dem Server synchron.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-223",
+    "category": "Netzwerk",
+    "topic": "Protokolle",
+    "difficulty": "medium",
+    "question": "Welches Protokoll löst Domainnamen in IP-Adressen auf?",
+    "answers": [
+      "SFTP",
+      "SMTP",
+      "DNS",
+      "RPC"
+    ],
+    "correctAnswer": 2,
+    "explanation": "DNS führt die Namensauflösung durch.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-224",
+    "category": "Netzwerk",
+    "topic": "Protokolle",
+    "difficulty": "medium",
+    "question": "Welches Protokoll eignet sich für verschlüsselte Dateiübertragung?",
+    "answers": [
+      "FTP",
+      "SFTP",
+      "POP3",
+      "SIP"
+    ],
+    "correctAnswer": 1,
+    "explanation": "SFTP überträgt Dateien verschlüsselt über SSH.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-225",
+    "category": "Netzwerk",
+    "topic": "Protokolle",
+    "difficulty": "medium",
+    "question": "Welches Protokoll wird für den Aufbau und die Steuerung von VoIP-Sitzungen verwendet?",
+    "answers": [
+      "SIP",
+      "DNS",
+      "FTP",
+      "IMAP"
+    ],
+    "correctAnswer": 0,
+    "explanation": "SIP steuert Aufbau, Verwaltung und Ende von VoIP-Sitzungen.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-226",
+    "category": "Netzwerk",
+    "topic": "Protokolle",
+    "difficulty": "hard",
+    "question": "Welche Zuordnung ist korrekt?",
+    "answers": [
+      "SMTP = Senden, IMAP = Synchronisieren, DNS = Namensauflösung, SFTP = sichere Dateiübertragung",
+      "SMTP = Routing, IMAP = Verschlüsselung, DNS = E-Mail, SFTP = VoIP",
+      "SMTP = Namensauflösung, IMAP = Routing, DNS = Dateiübertragung, SFTP = Mailversand",
+      "SMTP = MAC, IMAP = IP, DNS = TCP, SFTP = UDP"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Diese Zuordnung entspricht den Aufgaben der Protokolle im Material.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-227",
+    "category": "Netzwerk",
+    "topic": "Protokolle",
+    "difficulty": "hard",
+    "question": "Welche Aussage ist FALSCH?",
+    "answers": [
+      "FTP kann Dateien übertragen",
+      "SFTP verschlüsselt die Dateiübertragung",
+      "DNS dient der Namensauflösung",
+      "SMTP ist für den synchronen E-Mail-Abruf gedacht"
+    ],
+    "correctAnswer": 3,
+    "explanation": "SMTP dient dem Versand, nicht dem synchronen Abruf.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-228",
+    "category": "Netzwerk",
+    "topic": "Protokolle",
+    "difficulty": "hard",
+    "question": "Ein Nutzer öffnet Online-Banking mit Schloss-Symbol im Browser. Welche Kombination passt am besten?",
+    "answers": [
+      "HTTP ohne Verschlüsselung",
+      "HTTPS mit TLS",
+      "POP3 mit DNS",
+      "FTP mit SIP"
+    ],
+    "correctAnswer": 1,
+    "explanation": "HTTPS nutzt TLS zur verschlüsselten Übertragung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-229",
+    "category": "Netzwerk",
+    "topic": "Subnetting",
+    "difficulty": "medium",
+    "question": "Was bedeutet Subnetting?",
+    "answers": [
+      "Ein großes Netz in kleinere Teilnetze aufteilen",
+      "Mehrere Domains zusammenführen",
+      "Eine IP-Adresse verschlüsseln",
+      "Alle Broadcasts zusammenlegen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Subnetting segmentiert ein größeres Netzwerk in kleinere Unternetze.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-230",
+    "category": "Netzwerk",
+    "topic": "Subnetting",
+    "difficulty": "medium",
+    "question": "Welcher Vorteil kann durch Subnetting entstehen?",
+    "answers": [
+      "Weniger Broadcast- und Datenverkehr pro Teilnetz",
+      "Mehr Kollisionen",
+      "Keine IP-Adressen mehr nötig",
+      "Alle Geräte sehen mehr fremden Verkehr"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Kleinere Segmente können Verkehr und Datenstau reduzieren.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-231",
+    "category": "Netzwerk",
+    "topic": "Subnetting",
+    "difficulty": "medium",
+    "question": "Welcher Sicherheitsvorteil wird im Material genannt?",
+    "answers": [
+      "Netzbereiche lassen sich voneinander trennen",
+      "Jeder Host kann automatisch alles mitlesen",
+      "Passwörter werden automatisch verschlüsselt",
+      "Firewalls werden überflüssig"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Segmentierung kann verhindern, dass Geräte fremden Datenverkehr einfach mitverfolgen.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-232",
+    "category": "Netzwerk",
+    "topic": "Subnetting",
+    "difficulty": "medium",
+    "question": "Welche Angabe beschreibt die Länge des Netzanteils einer IPv4-Adresse?",
+    "answers": [
+      "Prefix wie /24",
+      "MAC-Adresse",
+      "Portnummer",
+      "DNS-Name"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die Präfixlänge gibt die Zahl der Netzbits an.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-233",
+    "category": "Netzwerk",
+    "topic": "Subnetting",
+    "difficulty": "medium",
+    "question": "Welche Subnetzmaske gehört zu /24?",
+    "answers": [
+      "255.0.0.0",
+      "255.255.0.0",
+      "255.255.255.0",
+      "255.255.255.254"
+    ],
+    "correctAnswer": 2,
+    "explanation": "/24 entspricht 24 gesetzten Netzbits und damit 255.255.255.0.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-234",
+    "category": "Netzwerk",
+    "topic": "Subnetting",
+    "difficulty": "hard",
+    "question": "Im Netz 192.168.10.0/24: Welche Adresse ist die Broadcastadresse?",
+    "answers": [
+      "192.168.10.0",
+      "192.168.10.1",
+      "192.168.10.254",
+      "192.168.10.255"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Bei diesem /24-Netz ist .255 die Broadcastadresse.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-235",
+    "category": "Netzwerk",
+    "topic": "Subnetting",
+    "difficulty": "hard",
+    "question": "Im Netz 192.168.10.0/24: Welche Adresse ist die Netzadresse?",
+    "answers": [
+      "192.168.10.0",
+      "192.168.10.1",
+      "192.168.10.128",
+      "192.168.10.255"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die Adresse mit allen Hostbits 0 ist die Netzadresse.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-236",
+    "category": "Netzwerk",
+    "topic": "Subnetting",
+    "difficulty": "hard",
+    "question": "Welche Aussage zu /24 ist richtig?",
+    "answers": [
+      "24 Bit gehören zum Netzanteil",
+      "24 Hosts sind maximal erlaubt",
+      "24 Bit gehören ausschließlich zum Hostanteil",
+      "Port 24 wird reserviert"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die Präfixlänge /24 bezeichnet 24 Netzbits.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-237",
+    "category": "Netzwerk",
+    "topic": "Subnetting",
+    "difficulty": "hard",
+    "question": "Warum teilt man große Netze häufig in kleinere Subnetze?",
+    "answers": [
+      "Um Struktur, Performance und Trennung zu verbessern",
+      "Um DNS abzuschaffen",
+      "Um MAC-Adressen zu ersetzen",
+      "Damit alle Hosts dieselbe Broadcastadresse weltweit verwenden"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Subnetting verbessert Strukturierung, reduziert unnötigen Verkehr und ermöglicht Trennung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-238",
+    "category": "Netzwerk",
+    "topic": "CSMA",
+    "difficulty": "medium",
+    "question": "Wofür steht CA in CSMA/CA?",
+    "answers": [
+      "Collision Avoidance",
+      "Connection Address",
+      "Cable Access",
+      "Client Assignment"
+    ],
+    "correctAnswer": 0,
+    "explanation": "CA steht für Collision Avoidance.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-239",
+    "category": "Netzwerk",
+    "topic": "CSMA",
+    "difficulty": "medium",
+    "question": "Wofür steht CD in CSMA/CD?",
+    "answers": [
+      "Collision Detection",
+      "Client Discovery",
+      "Cable Distribution",
+      "Connection Delay"
+    ],
+    "correctAnswer": 0,
+    "explanation": "CD steht für Collision Detection.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-240",
+    "category": "Netzwerk",
+    "topic": "CSMA",
+    "difficulty": "medium",
+    "question": "Was macht CSMA/CA vor dem Senden?",
+    "answers": [
+      "Es prüft, ob das Medium frei ist",
+      "Es ändert die IP-Adresse",
+      "Es verschlüsselt das Paket",
+      "Es setzt den DNS-Cache zurück"
+    ],
+    "correctAnswer": 0,
+    "explanation": "CSMA/CA versucht eine Kollision vorab zu vermeiden.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-241",
+    "category": "Netzwerk",
+    "topic": "CSMA",
+    "difficulty": "medium",
+    "question": "Was macht CSMA/CD bei einer erkannten Kollision?",
+    "answers": [
+      "Es stoppt die Übertragung",
+      "Es vergibt eine neue MAC-Adresse",
+      "Es wechselt zu DNS",
+      "Es aktiviert IMAP"
+    ],
+    "correctAnswer": 0,
+    "explanation": "CSMA/CD erkennt eine Kollision während des Sendens und bricht ab.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-242",
+    "category": "Netzwerk",
+    "topic": "CSMA",
+    "difficulty": "medium",
+    "question": "Welches Verfahren wird im Unterricht WLAN zugeordnet?",
+    "answers": [
+      "CSMA/CA",
+      "CSMA/CD",
+      "POP3",
+      "ARP"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Im Material wird WLAN mit Collision Avoidance verbunden.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-243",
+    "category": "Netzwerk",
+    "topic": "CSMA",
+    "difficulty": "medium",
+    "question": "Welches Verfahren wird im Unterricht kabelgebundenem Ethernet zugeordnet?",
+    "answers": [
+      "CSMA/CA",
+      "CSMA/CD",
+      "SIP",
+      "DNS"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Im Material wird kabelgebundene Kommunikation mit Collision Detection verbunden.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-244",
+    "category": "Netzwerk",
+    "topic": "CSMA",
+    "difficulty": "hard",
+    "question": "Warum ist 'erst lauschen, dann senden' typisch für CSMA/CA?",
+    "answers": [
+      "Weil Kollisionen möglichst vor dem Senden vermieden werden sollen",
+      "Weil IP-Adressen überprüft werden",
+      "Weil DNS langsamer ist",
+      "Weil jedes Paket verschlüsselt werden muss"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Collision Avoidance versucht Konflikte vorab zu vermeiden.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-245",
+    "category": "Netzwerk",
+    "topic": "CSMA",
+    "difficulty": "hard",
+    "question": "Welche Aussage beschreibt den Unterschied am besten?",
+    "answers": [
+      "CA versucht Kollisionen zu vermeiden, CD erkennt sie während der Übertragung",
+      "CA arbeitet nur mit E-Mail, CD nur mit Webseiten",
+      "CA vergibt IPs, CD vergibt MACs",
+      "Beide sind identisch"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Das ist der zentrale Unterschied zwischen Avoidance und Detection.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-246",
+    "category": "Netzwerk",
+    "topic": "FTP-SFTP",
+    "difficulty": "medium",
+    "question": "Wofür steht FTP?",
+    "answers": [
+      "File Transfer Protocol",
+      "Fast Transport Port",
+      "File Tunnel Protection",
+      "Frame Transfer Process"
+    ],
+    "correctAnswer": 0,
+    "explanation": "FTP steht für File Transfer Protocol.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-247",
+    "category": "Netzwerk",
+    "topic": "FTP-SFTP",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe erfüllt FTP?",
+    "answers": [
+      "Dateien zwischen Client und Server übertragen",
+      "Domains auflösen",
+      "E-Mails synchronisieren",
+      "VoIP-Sitzungen starten"
+    ],
+    "correctAnswer": 0,
+    "explanation": "FTP dient dem Upload und Download von Dateien.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-248",
+    "category": "Netzwerk",
+    "topic": "FTP-SFTP",
+    "difficulty": "medium",
+    "question": "Was ist das zentrale Sicherheitsproblem von normalem FTP?",
+    "answers": [
+      "Daten und Passwörter können unverschlüsselt übertragen werden",
+      "Es kann keine Ordner übertragen",
+      "Es funktioniert nur auf einem PC",
+      "Es hat keine Serverunterstützung"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Normales FTP überträgt Informationen typischerweise unverschlüsselt.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-249",
+    "category": "Netzwerk",
+    "topic": "FTP-SFTP",
+    "difficulty": "medium",
+    "question": "Wofür steht SFTP?",
+    "answers": [
+      "SSH File Transfer Protocol",
+      "Secure File Text Process",
+      "Simple FTP Tunnel Protocol",
+      "System File Transfer Port"
+    ],
+    "correctAnswer": 0,
+    "explanation": "SFTP steht für SSH File Transfer Protocol.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-250",
+    "category": "Netzwerk",
+    "topic": "FTP-SFTP",
+    "difficulty": "medium",
+    "question": "Was macht SFTP sicherer als klassisches FTP?",
+    "answers": [
+      "Es nutzt einen verschlüsselten SSH-Tunnel",
+      "Es verwendet ausschließlich Broadcasts",
+      "Es ersetzt IP-Adressen",
+      "Es nutzt POP3"
+    ],
+    "correctAnswer": 0,
+    "explanation": "SFTP schützt die Übertragung durch SSH-Verschlüsselung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-251",
+    "category": "Netzwerk",
+    "topic": "FTP-SFTP",
+    "difficulty": "hard",
+    "question": "Du lädst Firmen-Dokumente über ein öffentliches WLAN auf einen Server. Welche Variante ist sinnvoller?",
+    "answers": [
+      "FTP",
+      "SFTP",
+      "POP3",
+      "HTTP ohne TLS"
+    ],
+    "correctAnswer": 1,
+    "explanation": "SFTP ist für verschlüsselte Dateiübertragung geeignet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-252",
+    "category": "Netzwerk",
+    "topic": "FTP-SFTP",
+    "difficulty": "hard",
+    "question": "Welche Aussage ist korrekt?",
+    "answers": [
+      "FTP und SFTP sind identisch verschlüsselt",
+      "FTP ist typischerweise Klartext, SFTP verschlüsselt",
+      "SFTP ist ein Mailprotokoll",
+      "FTP ist ein DNS-Dienst"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Der Sicherheitsunterschied ist ein Kernthema im Material.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-253",
+    "category": "Netzwerk",
+    "topic": "FTP-SFTP",
+    "difficulty": "hard",
+    "question": "Welcher Vergleich passt laut Material am ehesten?",
+    "answers": [
+      "FTP = offener Brief, SFTP = Tresor",
+      "FTP = Tresor, SFTP = offene Postkarte",
+      "FTP = Telefonbuch, SFTP = Router",
+      "FTP = Klingeln, SFTP = Busy"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Das Material vergleicht unverschlüsseltes FTP mit offenem Transport und SFTP mit geschütztem Tunnel.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-254",
+    "category": "Netzwerk",
+    "topic": "Netzwerkarten",
+    "difficulty": "medium",
+    "question": "Ein Smartphone verbindet sich per Bluetooth mit einer Smartwatch. Welche Netzwerkkategorie passt am besten?",
+    "answers": [
+      "PAN",
+      "LAN",
+      "MAN",
+      "WAN"
+    ],
+    "correctAnswer": 0,
+    "explanation": "PAN umfasst Geräte in unmittelbarer persönlicher Umgebung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-255",
+    "category": "Netzwerk",
+    "topic": "Netzwerkarten",
+    "difficulty": "medium",
+    "question": "Ein Bürogebäude mit PCs und Druckern bildet typischerweise welches Netz?",
+    "answers": [
+      "PAN",
+      "LAN",
+      "MAN",
+      "GAN"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Ein Gebäude gehört typischerweise zu einem LAN.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-256",
+    "category": "Netzwerk",
+    "topic": "Netzwerkarten",
+    "difficulty": "medium",
+    "question": "Ein Netz verbindet mehrere Standorte innerhalb einer Stadt. Welche Kategorie passt?",
+    "answers": [
+      "PAN",
+      "LAN",
+      "MAN",
+      "GAN"
+    ],
+    "correctAnswer": 2,
+    "explanation": "MAN deckt eine Stadt oder Region ab.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-257",
+    "category": "Netzwerk",
+    "topic": "Netzwerkarten",
+    "difficulty": "medium",
+    "question": "Mehrere Firmenstandorte in unterschiedlichen Bundesländern werden verbunden. Welche Kategorie passt am besten?",
+    "answers": [
+      "PAN",
+      "LAN",
+      "WAN",
+      "Bluetooth"
+    ],
+    "correctAnswer": 2,
+    "explanation": "WAN verbindet große geografische Entfernungen.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-258",
+    "category": "Netzwerk",
+    "topic": "Netzwerkarten",
+    "difficulty": "medium",
+    "question": "Welche Reihenfolge geht grob von kleiner zu größer?",
+    "answers": [
+      "PAN → LAN → MAN → WAN → GAN",
+      "GAN → WAN → MAN → LAN → PAN",
+      "LAN → PAN → GAN → MAN → WAN",
+      "PAN → WAN → LAN → GAN → MAN"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Diese Reihenfolge folgt der typischen geografischen Reichweite.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-259",
+    "category": "Netzwerk",
+    "topic": "Netzwerkarten",
+    "difficulty": "hard",
+    "question": "Welcher Unterschied zwischen LAN und MAN ist am treffendsten?",
+    "answers": [
+      "LAN ist lokal begrenzt, MAN erstreckt sich über Stadt/Region",
+      "LAN ist immer drahtlos, MAN immer kabelgebunden",
+      "LAN hat keine IP-Adressen",
+      "MAN benötigt keine Router"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Der wesentliche Unterschied ist die räumliche Ausdehnung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-260",
+    "category": "Netzwerk",
+    "topic": "Netzwerkarten",
+    "difficulty": "hard",
+    "question": "Welche Aussage ist FALSCH?",
+    "answers": [
+      "PAN umfasst die direkte persönliche Umgebung",
+      "LAN kann ein Firmengelände abdecken",
+      "MAN kann eine Stadt verbinden",
+      "WAN ist kleiner als PAN"
+    ],
+    "correctAnswer": 3,
+    "explanation": "WAN deckt wesentlich größere Entfernungen als PAN ab.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-261",
+    "category": "Netzwerk",
+    "topic": "DNS",
+    "difficulty": "medium",
+    "question": "Wofür steht DNS?",
+    "answers": [
+      "Domain Name System",
+      "Data Network Session",
+      "Digital Naming Service Protocol",
+      "Domain Node Switch"
+    ],
+    "correctAnswer": 0,
+    "explanation": "DNS steht für Domain Name System.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-262",
+    "category": "Netzwerk",
+    "topic": "DNS",
+    "difficulty": "medium",
+    "question": "Was liefert DNS typischerweise zu 'www.beispiel.de'?",
+    "answers": [
+      "Eine passende IP-Adresse",
+      "Eine MAC-Adresse des lokalen Switches",
+      "Ein Dateiformat",
+      "Eine Portfreigabe"
+    ],
+    "correctAnswer": 0,
+    "explanation": "DNS übersetzt Namen in IP-Adressen.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-263",
+    "category": "Netzwerk",
+    "topic": "DNS",
+    "difficulty": "medium",
+    "question": "Warum ist DNS für Nutzer praktisch?",
+    "answers": [
+      "Menschen können sich Namen leichter merken als IP-Adressen",
+      "Es verschlüsselt jedes Passwort",
+      "Es ersetzt Router",
+      "Es verhindert jede Kollision"
+    ],
+    "correctAnswer": 0,
+    "explanation": "DNS erlaubt die Nutzung lesbarer Namen statt schwer merkbarer Zahlen.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-264",
+    "category": "Netzwerk",
+    "topic": "DNS",
+    "difficulty": "hard",
+    "question": "Was macht 'nslookup www.google.de'?",
+    "answers": [
+      "Fragt DNS-Informationen bzw. die IP zum Namen ab",
+      "Löscht die Netzwerkkarte",
+      "Startet einen FTP-Upload",
+      "Zeigt nur MAC-Adressen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "nslookup wird zur DNS-/Namensauflösungsanalyse verwendet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-265",
+    "category": "Netzwerk",
+    "topic": "DNS",
+    "difficulty": "hard",
+    "question": "Was zeigt 'tracert' primär?",
+    "answers": [
+      "Die Zwischenstationen/Hops zum Ziel",
+      "Die IMAP-Mailbox",
+      "Die CPU-Auslastung",
+      "Die Subnetzmaske eines fremden Servers automatisch"
+    ],
+    "correctAnswer": 0,
+    "explanation": "tracert zeigt den Weg über mehrere Stationen zum Ziel.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-266",
+    "category": "Netzwerk",
+    "topic": "DNS",
+    "difficulty": "hard",
+    "question": "Welche Aussage ist FALSCH?",
+    "answers": [
+      "DNS hilft bei der Namensauflösung",
+      "DNS wird im Material mit Port 53 verbunden",
+      "DNS sagt dem Webserver direkt, welche Datei er ausliefern soll",
+      "nslookup kann DNS-Antworten prüfen"
+    ],
+    "correctAnswer": 2,
+    "explanation": "DNS findet Adressen; es steuert nicht die Webanwendung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-267",
+    "category": "Netzwerk",
+    "topic": "E-Mail-Protokolle",
+    "difficulty": "medium",
+    "question": "Welches Protokoll würdest du zum Versenden einer E-Mail verwenden?",
+    "answers": [
+      "SMTP",
+      "IMAP",
+      "POP3",
+      "DNS"
+    ],
+    "correctAnswer": 0,
+    "explanation": "SMTP dient dem Versand.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-268",
+    "category": "Netzwerk",
+    "topic": "E-Mail-Protokolle",
+    "difficulty": "medium",
+    "question": "Welches Protokoll lässt E-Mails auf dem Server und synchronisiert mehrere Geräte?",
+    "answers": [
+      "SMTP",
+      "IMAP",
+      "POP3",
+      "FTP"
+    ],
+    "correctAnswer": 1,
+    "explanation": "IMAP hält den Zustand der Mailbox serverseitig synchron.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-269",
+    "category": "Netzwerk",
+    "topic": "E-Mail-Protokolle",
+    "difficulty": "medium",
+    "question": "Welches Protokoll wird im Material mit lokalem Abruf und möglichem Löschen vom Server verbunden?",
+    "answers": [
+      "SMTP",
+      "IMAP",
+      "POP3",
+      "HTTPS"
+    ],
+    "correctAnswer": 2,
+    "explanation": "POP3 lädt E-Mails typischerweise auf das Gerät.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-270",
+    "category": "Netzwerk",
+    "topic": "E-Mail-Protokolle",
+    "difficulty": "hard",
+    "question": "Du liest eine Mail auf dem Handy; am Laptop ist sie sofort ebenfalls als gelesen markiert. Warum?",
+    "answers": [
+      "Weil IMAP synchronisiert",
+      "Weil SMTP synchronisiert",
+      "Weil POP3 broadcastet",
+      "Weil DNS den Status speichert"
+    ],
+    "correctAnswer": 0,
+    "explanation": "IMAP synchronisiert Änderungen über mehrere Geräte.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-271",
+    "category": "Netzwerk",
+    "topic": "E-Mail-Protokolle",
+    "difficulty": "hard",
+    "question": "Welche Aussage ist korrekt?",
+    "answers": [
+      "SMTP sendet, IMAP und POP3 dienen dem Abruf",
+      "IMAP sendet, SMTP löst Namen auf",
+      "POP3 verschlüsselt Webseiten",
+      "DNS synchronisiert E-Mails"
+    ],
+    "correctAnswer": 0,
+    "explanation": "SMTP ist für Versand, IMAP/POP3 für Abruf.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-272",
+    "category": "Netzwerk",
+    "topic": "E-Mail-Protokolle",
+    "difficulty": "hard",
+    "question": "Für eine Nutzerin mit Handy, Tablet und Laptop: Welche Empfehlung passt am besten?",
+    "answers": [
+      "IMAP, weil die Mailbox synchron bleibt",
+      "POP3, weil jede Mail nur auf einem Gerät liegen soll",
+      "FTP, weil es E-Mails sortiert",
+      "DNS, weil es gelesen/ungelesen synchronisiert"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Für mehrere Geräte ist IMAP die passende Wahl.",
     "source": "netzwerk.csv"
   },
   {

@@ -80,6 +80,7 @@ retornar, reaparece. E altera o estado compartilhado da porta pelo Convex.
 - `src/scenes/MapScene.js`: associa a cena ativa à room, sem mudar os dados do Tiled.
 
 `characterId` (também usado como `playerId`) é fixo: michael, jassine, sarina ou felipe.
+O identificador legado `jassine` é exibido ao jogador com o nome correto **Yassin**.
 A escolha fica em `localStorage['daa-character-id']` como preferência destacada no menu.
 Cada carregamento cria um `sessionId` em memória para reservar o personagem;
 nem duplicar uma aba permite usar a mesma vaga simultaneamente.
@@ -97,7 +98,7 @@ Referência da integração: [cliente JavaScript do Convex](https://docs.convex.
 `src/characters.js` define ordem, id, nome, chave de textura e caminho dos sprites.
 Os SVGs em `public/assets/characters/` usam 32×56 px e preservam a hitbox dos pés.
 `scripts/character-art.mjs` gera apenas esses placeholders; troque os SVGs depois
-para melhorar a arte. Michael tem silhueta mais alta/magra e cigarro; Jassine,
+para melhorar a arte. Michael tem silhueta mais alta/magra e cigarro; Yassin,
 cabelo curto e azul claro; Sarina, cachos, roxo e tiramisu; Felipe, cabelo comprido,
 preto com detalhes brancos e lata preta/verde provisória.
 
@@ -135,6 +136,7 @@ velocidade e hitbox não mudaram; ficam em `src/game/settings.js` e `Player.js`.
 | Layer | Tipo | Função |
 | --- | --- | --- |
 | Floor | Tile | Chão; sem colisão automática. |
+| FloorDetails | Object | Piso visual detalhado sobre a base; sem colisão automática. |
 | Walls | Tile | Paredes visuais; sem colisão automática. |
 | Decoration | Tile | Decoração visual; sem colisão automática. |
 | Entities | Object | Móveis/vegetação e outros objetos visuais. |
@@ -304,7 +306,7 @@ O painel exibe texto simples, sem interpretar HTML. Teste real: npm run test:cha
 As quatro cadeiras da mesa com monitores duplos são objetos `quizSeat` na layer
 `Entities` de `classroom.tmj`. Cada uma possui `characterId`, `seatX`, `seatY` e
 `direction`. A disposição é Sarina/Felipe à esquerda (cima/baixo) e
-Michael/Jassine à direita (cima/baixo). `src/maps/quizSeats.js` lê esses dados;
+Michael/Yassin à direita (cima/baixo). `src/maps/quizSeats.js` lê esses dados;
 o Phaser não contém coordenadas das cadeiras.
 
 Perto da própria cadeira, o prompt local `[E] Sentar` usa apenas a posição e a
