@@ -23,6 +23,9 @@ import { EmoteRenderer } from '../emotes/EmoteRenderer.js';
 import { EmoteSync } from '../emotes/EmoteSync.js';
 import { EmoteBar } from '../emotes/EmoteBar.js';
 import { readChallengeLeaderboards,nearbyChallengeLeaderboard } from '../maps/challengeLeaderboards.js';
+import { readTerminalComputers, nearbyTerminalComputer } from '../maps/terminalComputers.js';
+import { TerminalOverlayController } from '../terminal/TerminalOverlayController.js';
+import '../terminal/terminal.css';
 
 function readTileset(xml, firstgid) {
   const root = xml.documentElement;
@@ -137,6 +140,7 @@ export class MapScene extends Phaser.Scene {
     this.quizSeats = readQuizSeats(this.source);
     this.soloStudySeats=readSoloStudySeats(this.source);
     this.challengeLeaderboards=readChallengeLeaderboards(this.source);
+    this.terminalComputers=readTerminalComputers(this.source);
     for (const door of this.doors) this.physics.add.collider(this.player, door.blocker);
     this.interactKey = this.input.keyboard.addKey('E');
     this.escapeKey = this.input.keyboard.addKey('ESC');
@@ -148,6 +152,7 @@ export class MapScene extends Phaser.Scene {
     const stop = () => { this.input.keyboard.resetKeys(); this.player.setVelocity(0, 0); };
     const wake = (_systems, arrival) => this.enter(arrival);
     const leave = () => {
+      this.terminal?.destroy();this.terminal=null;
       this.emoteBar?.close();this.emoteBar=null;
       this.emoteSync?.close();this.emoteSync=null;
       this.emoteRenderer?.close();this.emoteRenderer=null;
@@ -171,6 +176,8 @@ export class MapScene extends Phaser.Scene {
 
   enter(destination = {}) {
     try {
+      this.terminal?.destroy();
+      this.terminal=new TerminalOverlayController(this);
       const spawn = resolveSpawn(this.source, destination);
       this.player.body.reset(spawn.x, spawn.y);
       this.presence = getPresence();
@@ -223,16 +230,18 @@ export class MapScene extends Phaser.Scene {
   }
 
   update(_time, delta) {
-    if(this.chat?.focused||this.quiz?.seated||this.soloStudy?.active)this.player.setVelocity(0,0);
+    if(this.terminal?.active||this.chat?.focused||this.quiz?.seated||this.soloStudy?.active)this.player.setVelocity(0,0);
     else this.player.update();
     this.remotes.update(delta);
     this.emoteRenderer?.update();
     if(this.doorSync)for(const door of this.doors)door.updateBlocker(this.player.body);
+    if(this.terminal?.active){this.hint.textContent='Terminal · Esc: back to classroom';return;}
     if(this.chat?.focused){this.quiz?.updateSeatPrompt(false);this.soloStudy?.updateSeatPrompt(false);return;}
     const interact = Phaser.Input.Keyboard.JustDown(this.interactKey);
     const escape = Phaser.Input.Keyboard.JustDown(this.escapeKey);
     const quizSeat=this.quiz?.nearbySeat();
     const studySeat=this.soloStudy?.nearbySeat();
+    const computer=nearbyTerminalComputer(this.terminalComputers,this.player.body);
     const challengeLeaderboard=nearbyChallengeLeaderboard(this.challengeLeaderboards,this.player.body);
     this.quiz?.updateSeatPrompt(!this.soloStudy?.active&&quizSeat);
     this.soloStudy?.updateSeatPrompt(!this.quiz?.seated&&studySeat);
@@ -265,6 +274,10 @@ export class MapScene extends Phaser.Scene {
       this.hint.textContent='Opening IT Challenge leaderboard…';
       return;
     }
+    if(interact&&computer){
+      void this.terminal.open(computer);
+      return;
+    }
     const nearby = this.doors.filter((door) => door.isNear(this.player.body))
       .sort((a, b) => a.distanceTo(this.player.body) - b.distanceTo(this.player.body))[0];
     if (nearby !== this.nearbyDoor) this.doorMessage = '';
@@ -286,6 +299,8 @@ export class MapScene extends Phaser.Scene {
       ? 'Study Mode · E: sit'
       : challengeLeaderboard
       ? '[E] View leaderboard'
+      : computer
+      ? '[E] Open Terminal'
       : nearby
       ? [nearby.locked ? 'Door locked' : destination ? 'Press E to exit' : action,this.doorMessage]
         .filter(Boolean).join(' · ')

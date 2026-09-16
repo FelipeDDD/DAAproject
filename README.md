@@ -124,6 +124,42 @@ conforme a anotação: aproxime-se e use E. A entrada externa permite voltar pel
 sistema de Doors. As cenas adormecem entre visitas e retomam a assinatura dos
 estados compartilhados ao voltar. Sem Convex configurado, usam os valores do Tiled.
 
+## Terminal ligado ao computador
+
+No jogo, aproxime-se da tela do computador na mesa ao lado da cadeira vermelha
+(parte superior da mesa) e use **[E] Open Terminal**. Back to Classroom ou Esc
+executam o retorno ao monitor. Os cards continuam sendo o protótipo visual;
+Study, Challenge e multiplayer mantêm seus acessos e comportamento atuais.
+
+A entidade existente `Table_office-193` (257), em `Entities`, usa a propriedade
+string `interaction: terminalComputer`. Também é aceito Class/Type
+`terminalComputer`. Não há coordenadas desse computador no código.
+`monitorOffsetX`, `monitorOffsetY`, `monitorWidth`, `monitorHeight` são floats
+em pixels do mundo, relativos ao canto superior esquerdo da entidade; o loader
+converte a âncora inferior dos objetos de tile. `interactionDistance` define
+a proximidade dos pés à tela. Ajuste essas propriedades no Tiled quando trocar
+o sprite. A cadeira vermelha conserva prioridade dentro de sua área de interação.
+
+`src/terminal/config.js` concentra os tempos (250 ms de câmera, 440 ms de expansão,
+140 ms de conteúdo e 120 ms de brilho), zoom adicional e defaults do monitor.
+`TerminalOverlayController.js` guarda scroll/zoom e configuração de follow,
+suspende follow, projeta a tela pela matriz real do Phaser e pelas dimensões CSS
+do canvas. Ao fechar, reverte a expansão e restaura câmera, follow, foco e controles.
+Resize recalcula a origem durante a transição; fullscreen usa a viewport atual.
+Reduced motion elimina os movimentos. Sono/destruição da cena e perda da sessão
+também liberam o bloqueio local.
+
+A página existente `prototype-ui/computer-ui-preview.html` é reutilizada em um
+iframe transparente e carregada uma vez por cena, preservando os temas sem
+misturar o CSS do protótipo ao jogo. No modo incorporado, o fundo é o mundo real
+do Phaser; o fechamento usa mensagens locais entre iframe e controlador.
+O build inclui essa página. Não são feitas chamadas adicionais ao Convex para abrir
+ou fechar o terminal. O preview isolado continua acessível pelo endereço anterior;
+a animação ligada ao computador é testada entrando pelo mapa do jogo.
+
+Testes locais de geometria, controles, animação, retorno da câmera, repetição,
+Esc durante abertura e reduced motion: `node --test tests/terminal.test.js`.
+
 ## Onde editar
 
 - Interior: `public/assets/maps/classroom.tmj` (cena `school`).

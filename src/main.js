@@ -33,6 +33,10 @@ async function changeCharacter(event){
   if(menu.pending||pausedScene)return;
   const activeScene=game?.scene.getScenes(true)[0];
   const sessionLost=event?.type==='character-session-lost';
+  if(activeScene?.terminal?.active){
+    if(!sessionLost)return;
+    activeScene.terminal.destroy();activeScene.terminal=null;
+  }
   if(!sessionLost&&activeScene?.quiz?.seated&&!(await activeScene.quiz.leave()))return;
   activeScene?.soloStudy?.closePanel();
   if(activeScene){

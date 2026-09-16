@@ -16,6 +16,7 @@ export class RoomChat {
     };
     this.blur=()=>{this.focused=false;scene.input.keyboard.resetKeys();scene.input.keyboard.enabled=true;};
     this.key=event=>{
+      if(this.scene.terminal?.active)return;
       if(this.closed)return;
       if(this.focused){
         // Capture before Phaser's global keyboard handler, including arrows and E/F.

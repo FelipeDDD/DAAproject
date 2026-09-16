@@ -8,6 +8,7 @@ const classroomPreview = document.querySelector('#classroom-preview');
 const openTerminalButton = document.querySelector('#open-terminal-button');
 const THEME_STORAGE_KEY = 'terminalTheme';
 const THEMES = new Set(['futuristic', 'subtle']);
+const embedded = window.parent !== window && new URLSearchParams(location.search).has('embedded');
 let toastTimer;
 
 function cssTimeToMilliseconds(value) {
@@ -53,6 +54,10 @@ class TerminalPreviewController {
   }
 
   closeTerminal() {
+    if (embedded) {
+      window.parent.postMessage({ type: 'daa-terminal-close' }, location.origin);
+      return;
+    }
     if (!this.isTerminalOpen || this.isTransitioning) return;
     this.isTerminalOpen = false;
     this.beginTransition();
@@ -81,6 +86,12 @@ class TerminalPreviewController {
   }
 
   handleKeydown(event) {
+    if (embedded) {
+      if (event.key === 'Escape' && !event.repeat) {
+        event.preventDefault();this.closeTerminal();
+      }
+      return;
+    }
     if (event.repeat || this.isTransitioning) return;
     if (event.key === 'Escape' && this.isTerminalOpen) {
       event.preventDefault();
@@ -164,5 +175,13 @@ const terminalPreviewController = new TerminalPreviewController({
   closeButton: returnButton,
 });
 window.terminalPreviewController = terminalPreviewController;
+if (embedded) {
+  document.documentElement.classList.add('terminal-embedded');
+  document.body.classList.add('is-terminal-open');
+  terminalPreviewController.isTerminalOpen = true;
+  terminal.inert = false;
+  terminal.setAttribute('aria-hidden', 'false');
+  classroomPreview.hidden = true;
+}
 updateClock();
 setInterval(updateClock, 30_000);

@@ -105,3 +105,13 @@
   [data-theme="futuristic"] .menu-grid { gap: 16px; }
   [data-theme="futuristic"] .mode-card.featured { outline-offset: 4px; transform: none; }
 }
+
+/* Embedded in the real Phaser world: keep cards/themes, remove the fake room. */
+html.terminal-embedded, .terminal-embedded body { background: transparent; }
+.terminal-embedded body::before,
+.terminal-embedded .classroom-backdrop,
+.terminal-embedded .background-shade,
+.terminal-embedded .classroom-preview,
+.terminal-embedded .room-motto,
+.terminal-embedded .book-labels { display: none; }
+.terminal-embedded .terminal-shell { opacity: 1; visibility: visible; transform: none; transition: none; }
