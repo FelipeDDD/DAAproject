@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en" data-theme="futuristic">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <title>DAA Project Terminal — UI Preview</title>
+    <link rel="stylesheet" href="./computer-ui-preview.css">
+    <link rel="stylesheet" href="./computer-ui-futuristic.css">
+    <script src="./computer-ui-preview.js" defer></script>
+  </head>
+  <body>
+    <div class="classroom-backdrop" aria-hidden="true"></div>
+    <div class="background-shade" aria-hidden="true"></div>
+    <div class="scanlines" aria-hidden="true"></div>
+
+    <section id="classroom-preview" class="classroom-preview" aria-hidden="false" aria-labelledby="classroom-preview-title">
+      <div class="classroom-preview-panel">
+        <p class="classroom-preview-kicker">DAA PROJECT · LOCAL SCENE</p>
+        <h1 id="classroom-preview-title">Classroom Preview</h1>
+        <p>Approach the classroom computer to enter the learning terminal.</p>
+        <button id="open-terminal-button" class="open-terminal-button" type="button">
+          <kbd>E</kbd><span><strong>Open Terminal</strong><small>Enter the classroom computer</small></span>
+        </button>
+      </div>
+    </section>
+
+    <main id="terminal-preview" class="terminal-shell" aria-hidden="true" inert>
+      <header class="topbar">
+        <div class="brand-cluster">
+          <a class="brand" href="#" aria-label="DAA Project Terminal home">
+            <span class="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 32 32"><path d="M4 8.5 16 3l12 5.5L16 14 4 8.5Zm4 4.2 8 3.7 8-3.7v8.1L16 25l-8-4.2v-8.1Zm18.4-.3H29v9h-2.6v-9Z"/></svg>
+            </span>
+            <span><strong>DAA PROJECT</strong><small>LEARNING TERMINAL / 01</small></span>
+          </a>
+          <label class="theme-control" for="theme-select">
+            <span>Theme</span>
+            <select id="theme-select" aria-label="Interface theme">
+              <option value="futuristic">Futuristic</option>
+              <option value="subtle">Subtle</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="system-banner" aria-hidden="true">
+          <span>CLASSROOM SYSTEM</span><i>//</i><span>VERSION 1.0.0</span>
+        </div>
+
+        <div class="system-status" aria-label="System status">
+          <span class="online-dot" aria-hidden="true"></span>
+          <span><strong>Terminal ready</strong><small>Local preview</small></span>
+          <span class="divider" aria-hidden="true"></span>
+          <time id="terminal-clock" datetime="10:24">10:24</time>
+        </div>
+      </header>
+
+      <aside class="phrase-panel phrase-left" aria-label="Custom phrase area">
+        <span class="phrase-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5c3.5 0 6.2.8 8 2.4v13c-2.8-1.6-5.5-2.4-8-2.4v-13Zm16 0c-3.5 0-6.2.8-8 2.4v13c2.8-1.6 5.5-2.4 8-2.4v-13Z"/></svg>DAILY NOTE</span>
+        <!-- Replace only the text inside this paragraph to test another short phrase. -->
+        <p>“Learn something useful today.”</p>
+      </aside>
+
+      <aside class="phrase-panel phrase-right" aria-label="Custom phrase area">
+        <span class="phrase-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V11h3v8H4Zm6 0V5h3v14h-3Zm6 0V8h3v11h-3Z"/></svg>CLASSROOM SIGNAL</span>
+        <!-- Replace only the text inside this paragraph to test another short phrase. -->
+        <p>“Small steps build real skills.”</p>
+      </aside>
+
+      <section class="hero" aria-labelledby="preview-title">
+        <p class="eyebrow">CLASSROOM SYSTEM · SELECT A MODULE</p>
+        <h1 id="preview-title"><small>DAA PROJECT</small><span>TERMINAL</span></h1>
+        <p class="hero-copy">Choose a learning path and continue your IT journey.</p>
+        <div class="hero-tags" aria-hidden="true"><span>LEARN</span><i></i><span>PRACTICE</span><i></i><span>COMPETE</span><i></i><span>IMPROVE</span><i></i><span>TOGETHER</span></div>
+      </section>
+
+      <section class="menu-stage" aria-label="Computer menu">
+        <div class="menu-grid">
+          <article class="mode-card card-study" tabindex="0" data-mode="Study Mode">
+            <div class="card-glow" aria-hidden="true"></div>
+            <p class="card-index">MODULE 01</p>
+            <div class="mode-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><path d="M7 10.5c7.1 0 12.7 1.6 17 4.8v26C18.3 38.1 12.6 36.5 7 36.5v-26Zm34 0c-7.1 0-12.7 1.6-17 4.8v26c5.7-3.2 11.4-4.8 17-4.8v-26Z"/><path d="M24 15.3v26"/></svg>
+            </div>
+            <h2>Study Mode</h2>
+            <p>Practice selected topics at your own pace and review every answer.</p>
+            <div class="card-tags"><span>FOCUSED</span><i></i><span>SELF-PACED</span></div>
+            <button class="mode-action" type="button" aria-label="Open Study Mode">Open <span>→</span></button>
+          </article>
+
+          <article class="mode-card card-multiplayer" tabindex="0" data-mode="Multiplayer Quiz">
+            <div class="card-glow" aria-hidden="true"></div>
+            <p class="card-index">MODULE 02</p>
+            <div class="mode-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><circle cx="18" cy="17" r="7"/><circle cx="34" cy="19" r="5"/><path d="M5 39c0-8 5.2-12 13-12s13 4 13 12H5Zm23-10c6.6-.8 12 2.6 12 9H31"/></svg>
+            </div>
+            <h2>Multiplayer Quiz</h2>
+            <p>Join classmates, compare answers and learn as a connected team.</p>
+            <div class="card-tags"><span>2–4 PLAYERS</span><i></i><span>LIVE</span></div>
+            <button class="mode-action" type="button" aria-label="Open Multiplayer Quiz">Open <span>→</span></button>
+          </article>
+
+          <article class="mode-card card-challenge featured" tabindex="0" data-mode="5 Min IT Challenge">
+            <div class="card-glow" aria-hidden="true"></div>
+            <span class="featured-label">QUICK RUN</span>
+            <p class="card-index">MODULE 03</p>
+            <div class="mode-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><circle cx="24" cy="27" r="15"/><path d="M19 5h10M24 12V7m11 8 3-3M24 27V17m0 10 8 4"/></svg>
+            </div>
+            <h2>5 Min IT Challenge</h2>
+            <p>Think fast, make smart decisions and improve your personal record.</p>
+            <div class="card-tags"><span>TIMED</span><i></i><span>HIGH SCORE</span></div>
+            <button class="mode-action" type="button" aria-label="Start 5 Min IT Challenge">Start <span>→</span></button>
+          </article>
+
+          <article class="mode-card card-database" tabindex="0" data-mode="Question Database">
+            <div class="card-glow" aria-hidden="true"></div>
+            <p class="card-index">MODULE 04</p>
+            <div class="mode-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><ellipse cx="24" cy="11" rx="15" ry="7"/><path d="M9 11v12c0 3.9 6.7 7 15 7s15-3.1 15-7V11M9 23v12c0 3.9 6.7 7 15 7s15-3.1 15-7V23"/><path d="M33 19h1m-1 12h1"/></svg>
+            </div>
+            <h2>Question Database</h2>
+            <p>Browse categories, inspect questions and choose what to practice.</p>
+            <div class="card-tags"><span>EXPLORE</span><i></i><span>FILTER</span></div>
+            <button class="mode-action" type="button" aria-label="Open Question Database">Browse <span>→</span></button>
+          </article>
+
+          <article class="mode-card card-leaderboard" tabindex="0" data-mode="Leaderboards">
+            <div class="card-glow" aria-hidden="true"></div>
+            <p class="card-index">MODULE 05</p>
+            <div class="mode-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><path d="M15 7h18v7c0 9-4 15-9 15s-9-6-9-15V7Zm0 5H8v3c0 5 3 8 8 8m17-11h7v3c0 5-3 8-8 8M24 29v7m-8 6h16m-12-6h8"/></svg>
+            </div>
+            <h2>Leaderboards</h2>
+            <p>View top scores, personal records and recent classroom progress.</p>
+            <div class="card-tags"><span>RANKINGS</span><i></i><span>RECORDS</span></div>
+            <button class="mode-action" type="button" aria-label="Open Leaderboards">View <span>→</span></button>
+          </article>
+        </div>
+      </section>
+
+      <footer class="terminal-footer">
+        <button id="return-button" class="return-button" type="button">
+          <span aria-hidden="true">←</span>
+          <span><strong>Back to Classroom</strong><small>Close this terminal and return to the room</small></span>
+        </button>
+        <p><kbd>E</kbd> Open or close classroom computer</p>
+      </footer>
+    </main>
+
+    <div class="room-motto" aria-hidden="true"><span>LEARN</span><span>SOLVE</span><span>GROW</span><span>TOGETHER</span></div>
+    <ul class="book-labels" aria-hidden="true">
+      <li>Data Structures</li><li>Algorithms</li><li>Computer Networks</li>
+      <li>Database Systems</li><li>Operating Systems</li><li>Web Development</li>
+    </ul>
+
+    <div id="preview-toast" class="preview-toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

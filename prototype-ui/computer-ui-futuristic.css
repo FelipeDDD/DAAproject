@@ -1,0 +1,107 @@
+/* Scene composition overrides only. Subtle keeps its original stylesheet.
+   Desktop: UI ends above the foreground desk (bottom 13% of the scene). */
+@font-face { font-family: TerminalDisplay; src: url("./assets/Orbitron.ttf") format("truetype"); font-weight: 800; font-display: swap; }
+@font-face { font-family: TerminalUI; src: url("./assets/Rajdhani.ttf") format("truetype"); font-weight: 700; font-display: swap; }
+@font-face { font-family: TerminalNote; src: url("./assets/Caveat.ttf") format("truetype"); font-weight: 600; font-display: swap; }
+
+[data-theme="futuristic"] {
+  --title-font: TerminalDisplay, "Arial Black", sans-serif;
+  --scene-filter: none;
+  --panel-bg: rgba(2, 8, 27, .22);
+  --panel-border-color: #76eaff;
+  --panel-shadow: 0 0 4px #fff, 0 0 13px #009dff, inset 0 0 14px #009dff, 0 16px 40px #0008;
+  --card-shadow: 0 0 3px #fff, 0 0 12px rgba(var(--accent-rgb), .85), inset 0 0 20px rgba(var(--accent-rgb), .35), 0 16px 22px #0009;
+}
+[data-theme="futuristic"] body {
+  background-image: none;
+}
+[data-theme="futuristic"] .classroom-backdrop { background-image: url("./assets/futuristic-classroom-v2.png"); }
+[data-theme="futuristic"] body::before {
+  /* Preserve light sources and foreground objects; shading is behind text only. */
+  background: radial-gradient(ellipse at 50% 24%, #01071c55, transparent 47%);
+}
+[data-theme="futuristic"] .background-shade { backdrop-filter: none; }
+[data-theme="futuristic"] .terminal-shell {
+  width: min(1500px, calc(100% - 54px));
+  min-height: 0;
+  padding: 16px 0 0;
+  grid-template-rows: 62px 240px auto auto;
+}
+[data-theme="futuristic"] .topbar { width: 84%; margin: auto; }
+[data-theme="futuristic"] .brand { padding: 7px 12px; background: #020b24d9; border: 1px solid #48d6ff; border-radius: 4px 14px; box-shadow: 0 0 10px #006aff, inset 0 0 15px #006aff55; }
+[data-theme="futuristic"] .brand-mark { border: 0; background: none; box-shadow: none; }
+[data-theme="futuristic"] .brand strong { font-family: TerminalDisplay, sans-serif; }
+[data-theme="futuristic"] .brand small { color: #56eaff; }
+[data-theme="futuristic"] .system-banner { min-width: 320px; font-size: 7px; top: 0; }
+[data-theme="futuristic"] .system-status { min-width: 225px; background: #02091fe8; border-color: #79adff; border-radius: 4px 14px; }
+[data-theme="futuristic"] .hero { height: 240px; padding: 5px 0 12px; }
+[data-theme="futuristic"] .eyebrow { font-size: 0; height: 31px; margin-bottom: 9px; }
+[data-theme="futuristic"] .eyebrow::after { content: ""; display: block; width: 48px; height: 30px; margin: auto; background: #00caff; clip-path: polygon(0 28%, 50% 0, 100% 28%, 50% 59%, 0 28%, 15% 46%, 15% 75%, 50% 100%, 85% 75%, 85% 46%, 50% 68%, 15% 46%); filter: drop-shadow(0 0 10px #008cff); }
+[data-theme="futuristic"] .hero h1 { font-size: clamp(40px, 4.6vw, 76px); letter-spacing: -.04em; line-height: 1.06; }
+[data-theme="futuristic"] .hero h1 small { font-family: TerminalDisplay, sans-serif; font-size: .36em; letter-spacing: .12em; margin-bottom: 1px; }
+[data-theme="futuristic"] .hero h1 span {
+  background-image: linear-gradient(115deg, #00eaff 12%, #188aff 38%, #a044ff 65%, #ff34e8 88%, #ffe4ff);
+  -webkit-text-stroke: 1px #b4caff;
+  text-shadow: none;
+  filter: drop-shadow(0 0 5px #128dff) drop-shadow(0 7px 0 #26035f) drop-shadow(0 0 13px #aa00cc);
+}
+[data-theme="futuristic"] .hero-copy { color: #a9edff; font: 700 13px/1.4 TerminalUI, sans-serif; text-transform: uppercase; letter-spacing: .15em; margin-top: 12px; }
+[data-theme="futuristic"] .hero-tags { color: #a5e6ff; margin-top: 20px; font-size: 9px; }
+[data-theme="futuristic"] .menu-stage { width: 84%; padding: 16px; backdrop-filter: none; border-radius: 22px; }
+[data-theme="futuristic"] .menu-grid { gap: 18px; }
+[data-theme="futuristic"] .mode-card {
+  --card-shadow: 0 0 3px #fff, 0 0 12px rgba(var(--accent-rgb), .85), inset 0 0 20px rgba(var(--accent-rgb), .35), 0 16px 22px #0009;
+  min-height: 340px;
+  padding: 18px 16px 14px;
+  border-color: rgb(var(--accent-rgb));
+  background:
+    linear-gradient(100deg, transparent 20%, rgba(255,255,255,.06) 20.5%, transparent 52%),
+    linear-gradient(170deg, rgba(var(--accent-rgb), .24), rgba(2, 8, 25, .83) 47%, rgba(1, 5, 18, .9));
+}
+[data-theme="futuristic"] .mode-card::after { content: "•••"; position: absolute; right: 16px; top: 13px; color: var(--accent); letter-spacing: 2px; text-shadow: 0 0 8px var(--accent); }
+[data-theme="futuristic"] .card-challenge { --accent: #ec58ff; --accent-rgb: 236, 88, 255; }
+[data-theme="futuristic"] .card-leaderboard { --accent: #ffb944; --accent-rgb: 255, 185, 68; }
+[data-theme="futuristic"] .mode-card.featured { min-height: 360px; transform: translateY(-5px); outline: 1px solid #aaa2ff; outline-offset: 9px; box-shadow: var(--card-shadow), 0 0 22px #d000ff; }
+[data-theme="futuristic"] .mode-card.featured::after { display: none; }
+[data-theme="futuristic"] .mode-card.featured:hover { transform: translateY(-9px); }
+[data-theme="futuristic"] .card-index { font: 700 12px TerminalUI, sans-serif; letter-spacing: .1em; }
+[data-theme="futuristic"] .mode-icon { width: 78px; height: 78px; margin: 17px 0; border-radius: 24px; border-color: var(--accent); background: radial-gradient(ellipse at top, rgba(var(--accent-rgb), .2), #030718); box-shadow: 0 0 4px #fff, 0 0 20px rgba(var(--accent-rgb), .6), inset 0 0 20px rgba(var(--accent-rgb), .6); }
+[data-theme="futuristic"] .mode-icon svg { width: 44px; height: 44px; }
+[data-theme="futuristic"] .mode-card h2 { min-height: 30px; font: 700 clamp(20px, 1.6vw, 26px)/1.08 TerminalUI, sans-serif; letter-spacing: -.02em; }
+[data-theme="futuristic"] .mode-card > p:not(.card-index) { color: #e1e6ff; font-size: 13px; line-height: 1.45; }
+[data-theme="futuristic"] .card-tags { font-size: 8px; color: var(--accent); padding: 14px 0 12px; }
+[data-theme="futuristic"] .mode-action { min-height: 43px; border: 2px solid #e9e6ff; border-radius: 15px; color: white; font: 700 18px TerminalUI, sans-serif; letter-spacing: .03em; background: linear-gradient(rgba(var(--accent-rgb), .35), #010415 60%); box-shadow: 0 0 5px var(--accent), 0 0 13px var(--accent), inset 0 0 12px var(--accent); }
+[data-theme="futuristic"] .phrase-panel { top: 14%; width: 16%; min-height: 178px; padding: 18px; border-radius: 4px 18px; background: #020820b8; backdrop-filter: none; box-shadow: 0 0 4px #63d9ff, 0 0 14px #008dff, inset 0 0 25px #0040ae66; }
+[data-theme="futuristic"] .phrase-left { left: 17.5%; }
+[data-theme="futuristic"] .phrase-right { right: 16.5%; border-color: #eb81ff; box-shadow: 0 0 4px #ef96ff, 0 0 14px #ba00ff, inset 0 0 25px #9e00cc55; }
+[data-theme="futuristic"] .phrase-panel p { margin-top: 15px; font: 600 30px/1.02 TerminalNote, cursive; text-align: center; color: #c3eaff; }
+[data-theme="futuristic"] .phrase-right p { color: #efa6ff; }
+[data-theme="futuristic"] .terminal-footer { padding-top: 22px; }
+[data-theme="futuristic"] .terminal-footer > p { color: #bbdfff; text-shadow: 0 1px 3px #000; }
+[data-theme="futuristic"] .return-button { width: 350px; min-height: 57px; border-color: #bbb8ff; border-radius: 13px; background: linear-gradient(120deg, #003287e0, #050035e8); box-shadow: 0 0 4px white, 0 0 16px #0077ff, inset 0 0 16px #3439ff; }
+[data-theme="futuristic"] .return-button strong { font: 700 22px TerminalUI, sans-serif; }
+[data-theme="futuristic"] .room-motto { left: 11%; top: 17%; font: 600 31px/1.08 TerminalNote, cursive; }
+[data-theme="futuristic"] .book-labels { left: .8%; bottom: 1.5%; width: 16%; transform: rotate(-5deg); }
+[data-theme="futuristic"] .book-labels li { height: 4.6vh; border: 0; background: none; font: 700 clamp(10px, 1vw, 16px)/1.1 TerminalUI, sans-serif; }
+
+@media (min-width: 1351px) and (min-height: 850px) {
+  [data-theme="futuristic"] .terminal-shell { grid-template-rows: 62px 27vh auto auto; }
+}
+@media (max-width: 1350px) {
+  [data-theme="futuristic"] .topbar, [data-theme="futuristic"] .menu-stage { width: 96%; }
+  [data-theme="futuristic"] .system-banner { display: none; }
+  [data-theme="futuristic"] .terminal-shell { padding-bottom: 130px; }
+}
+@media (max-width: 760px) {
+  [data-theme="futuristic"] .terminal-shell { width: calc(100% - 26px); grid-template-rows: auto auto auto auto; }
+  [data-theme="futuristic"] .hero { height: auto; min-height: 230px; padding: 24px 0; }
+  [data-theme="futuristic"] .hero h1 { font-size: clamp(30px, 7vw, 50px); }
+  [data-theme="futuristic"] .hero-copy { max-width: 330px; font-size: 11px; }
+  [data-theme="futuristic"] .hero-tags { font-size: 6px; gap: 7px; }
+  [data-theme="futuristic"] .system-status { min-width: 0; }
+  [data-theme="futuristic"] .brand { padding: 5px; gap: 5px; }
+  [data-theme="futuristic"] .brand strong { font-size: 9px; }
+  [data-theme="futuristic"] .brand-mark { width: 28px; }
+  [data-theme="futuristic"] .menu-grid { gap: 16px; }
+  [data-theme="futuristic"] .mode-card.featured { outline-offset: 4px; transform: none; }
+}
