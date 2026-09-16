@@ -26,7 +26,7 @@ export class Door {
     this.visual.setFlipX?.(visual.flipX ?? false);
     this.visual.setFlipY?.(visual.flipY ?? false);
     this.visual.setPosition(this.x + (visual.offsetX ?? 0), this.y + (visual.offsetY ?? 0));
-    this.blocker.body.enable = !this.open;
+    this.blocker.body.enable = this.blocksPassage();
   }
 
   distanceTo(body) {
@@ -44,7 +44,11 @@ export class Door {
 
   updateBlocker(body) {
     // A late network close must never trap feet already inside the doorway.
-    this.blocker.body.enable = !this.open && !this.overlaps(body);
+    this.blocker.body.enable = this.blocksPassage() && !this.overlaps(body);
+  }
+
+  blocksPassage() {
+    return !this.open || Boolean(this.getDestination());
   }
 
   isNear(body) {

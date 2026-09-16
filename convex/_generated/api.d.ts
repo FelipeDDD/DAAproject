@@ -21,6 +21,9 @@ import type * as quizLobbies from "../quizLobbies.js";
 import type * as quizQuestions from "../quizQuestions.js";
 import type * as quizSeatDefinitions from "../quizSeatDefinitions.js";
 import type * as quizSelection from "../quizSelection.js";
+import type * as quizStatistics from "../quizStatistics.js";
+import type * as quizStatisticsModel from "../quizStatisticsModel.js";
+import type * as quizStatisticsStore from "../quizStatisticsStore.js";
 import type * as soloStudy from "../soloStudy.js";
 
 import type {
@@ -43,6 +46,9 @@ declare const fullApi: ApiFromModules<{
   quizQuestions: typeof quizQuestions;
   quizSeatDefinitions: typeof quizSeatDefinitions;
   quizSelection: typeof quizSelection;
+  quizStatistics: typeof quizStatistics;
+  quizStatisticsModel: typeof quizStatisticsModel;
+  quizStatisticsStore: typeof quizStatisticsStore;
   soloStudy: typeof soloStudy;
 }>;
 

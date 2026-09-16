@@ -11,6 +11,7 @@ import {
   QUIZ_QUESTION_DURATION_MS,quizQuestionComplete,quizQuestionExpired,shouldEndQuizForParticipants,
 } from '../src/quizTimer.js';
 import { isPresenceActive } from '../src/multiplayer/presencePolicy.js';
+import { recordQuizAttempt } from './quizStatisticsStore.js';
 
 const DEFAULT_SETTINGS=Object.freeze({category:null,topic:null,difficulty:null,count:QUESTIONS_PER_QUIZ});
 
@@ -231,11 +232,24 @@ export const answer = mutation({
       q.eq('lobbyId',lobby._id).eq('questionId',question.id).eq('characterId',args.characterId)).unique();
     if(existing){
       if(existing.answerIndex!==args.answerIndex)throw new Error('This player has already answered.');
+      await recordQuizAttempt(ctx,{
+        attemptKey:`multiplayer:${lobby._id}:${question.id}:${args.characterId}`,
+        characterId:args.characterId,questionId:question.id,category:question.category,
+        topic:question.topic??null,difficulty:question.difficulty,mode:'multiplayer',
+        correct:existing.answerIndex===question.correctAnswer,answeredAt:existing.createdAt,
+      });
       return {answerIndex:existing.answerIndex};
     }
+    const answeredAt=Date.now();
     await ctx.db.insert('quizAnswers',{
       lobbyId:lobby._id,room:args.room,questionId:question.id,
-      characterId:args.characterId,answerIndex:args.answerIndex,createdAt:Date.now(),
+      characterId:args.characterId,answerIndex:args.answerIndex,createdAt:answeredAt,
+    });
+    await recordQuizAttempt(ctx,{
+      attemptKey:`multiplayer:${lobby._id}:${question.id}:${args.characterId}`,
+      characterId:args.characterId,questionId:question.id,category:question.category,
+      topic:question.topic??null,difficulty:question.difficulty,mode:'multiplayer',
+      correct:args.answerIndex===question.correctAnswer,answeredAt,
     });
     const participants=await activeParticipants(ctx,lobby);
     await scoreIfComplete(ctx,lobby,participants);
@@ -266,6 +280,13 @@ export const finishTimedQuestion = mutation({
       });
       existing=await ctx.db.get(answerId);
     }
+    await recordQuizAttempt(ctx,{
+      attemptKey:`multiplayer:${lobby._id}:${question.id}:${args.characterId}`,
+      characterId:args.characterId,questionId:question.id,category:question.category,
+      topic:question.topic??null,difficulty:question.difficulty,mode:'multiplayer',
+      correct:Boolean(existing&&existing.answerIndex===question.correctAnswer),
+      answeredAt:existing?.createdAt??Date.now(),
+    });
     const timedOutCharacterIds=Array.from(new Set([...(lobby.timedOutCharacterIds??[]),args.characterId]));
     await ctx.db.patch(lobby._id,{timedOutCharacterIds});
     const updatedLobby={...lobby,timedOutCharacterIds};

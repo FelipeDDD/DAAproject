@@ -12,6 +12,7 @@
     "test:chat": "node --env-file=.env.local scripts/check-chat.mjs",
     "test:emotes": "node --env-file=.env.local scripts/check-emotes.mjs",
     "test:quiz-lobby": "node --env-file=.env.local scripts/check-quiz-lobby.mjs",
+    "test:statistics": "node --env-file=.env.local scripts/check-quiz-statistics.mjs",
     "validate:quiz": "node scripts/sync-quiz-data.mjs --validate-only",
     "sync:quiz": "node scripts/sync-quiz-data.mjs",
     "predev": "node scripts/sync-quiz-data.mjs",

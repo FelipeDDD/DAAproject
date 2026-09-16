@@ -17,6 +17,7 @@ import { readQuizSeats } from '../maps/quizSeats.js';
 import { QuizLobby } from '../QuizLobby.js';
 import { readSoloStudySeats } from '../maps/soloStudySeats.js';
 import { drawTiledTextObjects } from '../maps/tiledText.js';
+import { tileObjectFrame } from '../maps/tiledTileObjects.js';
 import { SoloStudyController } from '../SoloStudyController.js';
 import { EmoteRenderer } from '../emotes/EmoteRenderer.js';
 import { EmoteSync } from '../emotes/EmoteSync.js';
@@ -92,14 +93,25 @@ export class MapScene extends Phaser.Scene {
     createDoorTextures(this);
     drawMapPlaceholders(this, this.source);
     drawTiledTextObjects(this,this.source);
-    const entitiesLayer = this.source.layers.find((layer) => layer.name === 'Entities');
-    for (const object of objectsIn(this.source, 'Entities').filter((object) => object.gid)) {
-      const [sprite] = map.createFromObjects('Entities', { id: object.id });
-      const props = propertiesOf(object);
-      sprite.setDepth(props.depth ?? object.y);
-      sprite.setVisible(entitiesLayer.visible !== false && object.visible !== false);
-      sprite.setAlpha(entitiesLayer.opacity ?? 1);
-      if (typeof props.flipX === 'boolean') sprite.setFlipX(props.flipX);
+    for (const layerName of ['Entities', 'objectDecoration']) {
+      const objectLayer = this.source.layers.find((layer) => layer.name === layerName);
+      if (!objectLayer) continue;
+      for (const object of objectsIn(this.source, layerName).filter((item) => item.gid)) {
+        const tileFrame = tileObjectFrame(object.gid, data.tilesets);
+        if (!tileFrame) throw new Error(`Unknown tile GID ${object.gid} on object ${object.id}`);
+        // Resolve the texture BEFORE Phaser applies Tiled width/height. Replacing
+        // it afterwards preserves a scale calculated from the missing texture.
+        const [sprite] = map.createFromObjects(layerName, {
+          id: object.id,
+          key: `${this.mapKey}-tileset-${tileFrame.tilesetIndex}`,
+          frame: tileFrame.frame,
+        });
+        const props = propertiesOf(object);
+        sprite.setDepth(props.depth ?? object.y);
+        sprite.setVisible(objectLayer.visible !== false && object.visible !== false);
+        sprite.setAlpha(objectLayer.opacity ?? 1);
+        if (typeof props.flipX === 'boolean') sprite.setFlipX(props.flipX);
+      }
     }
     this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     this.player = new Player(this, 0, 0);
@@ -110,7 +122,6 @@ export class MapScene extends Phaser.Scene {
     this.soloStudySeats=readSoloStudySeats(this.source);
     for (const door of this.doors) this.physics.add.collider(this.player, door.blocker);
     this.interactKey = this.input.keyboard.addKey('E');
-    this.travelKey = this.input.keyboard.addKey('F');
     this.escapeKey = this.input.keyboard.addKey('ESC');
     this.hint = document.getElementById('interaction-hint');
     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels).setZoom(CAMERA_ZOOM);
@@ -235,25 +246,26 @@ export class MapScene extends Phaser.Scene {
       .sort((a, b) => a.distanceTo(this.player.body) - b.distanceTo(this.player.body))[0];
     if (nearby !== this.nearbyDoor) this.doorMessage = '';
     this.nearbyDoor = nearby;
-    const travel = Phaser.Input.Keyboard.JustDown(this.travelKey);
+    const destination = nearby?.getDestination();
     if (nearby && interact) {
-      if(this.doorSync){
+      if(destination){
+        this.travelTo(destination);
+        return;
+      }else if(this.doorSync){
         const sync=this.doorSync;
         sync.toggle(nearby).then(message=>{if(this.doorSync===sync)this.doorMessage=message;});
       }else this.doorMessage = nearby.toggle(this.player.body);
     }
-    const destination = nearby?.getDestination();
     const action = nearby?.interactive === false ? 'Open passage' : `E to ${nearby?.open ? 'close' : 'open'} door`;
     const hint = quizSeat
       ? 'Your quiz chair · E: sit'
       : studySeat
       ? 'Study Mode · E: sit'
       : nearby
-      ? [nearby.locked ? 'Door locked' : action,destination ? 'F to pass through' : '',this.doorMessage]
+      ? [nearby.locked ? 'Door locked' : destination ? 'Press E to exit' : action,this.doorMessage]
         .filter(Boolean).join(' · ')
       : `Press E to interact. ${this.doorMessage}`;
     if (this.hint.textContent !== hint) this.hint.textContent = hint;
-    if (travel && destination) this.travelTo(destination);
-    else if (escape && propertiesOf(this.source).escapeReturn && this.returnDestination) this.travelTo(this.returnDestination);
+    if (escape && propertiesOf(this.source).escapeReturn && this.returnDestination) this.travelTo(this.returnDestination);
   }
 }

@@ -20,9 +20,13 @@ const updateAtSeat=async index=>{
 };
 const args=index=>({room:'school',characterId:identities[index].characterId,sessionId:identities[index].sessionId});
 const answer=(clientIndex,answerIndex)=>clients[clientIndex].mutation(api.quizLobbies.answer,{...args(clientIndex),answerIndex});
+const statistics=index=>clients[index].query(api.quizStatistics.summary,{
+  characterId:identities[index].characterId,sessionId:identities[index].sessionId,mode:'multiplayer',
+});
 
 try{
   identities.push(await claimTestCharacter(clients[0]),await claimTestCharacter(clients[1]));
+  const statisticsBefore=await Promise.all([statistics(0),statistics(1)]);
   unsubscribeA=clients[0].onUpdate(api.quizLobbies.current,{room:'school',characterId:identities[0].characterId},value=>lobbyA=value);
   unsubscribeB=clients[1].onUpdate(api.quizLobbies.current,{room:'school',characterId:identities[1].characterId},value=>lobbyB=value);
   await Promise.all([updateAtSeat(0),updateAtSeat(1)]);
@@ -104,6 +108,11 @@ try{
   assert.equal(scoreA[identities[0].characterId],expectedScores[0]);
   assert.equal(scoreA[identities[1].characterId],expectedScores[1]);
   assert.equal(lobbyA.question,null);
+  const statisticsAfter=await Promise.all([statistics(0),statistics(1)]);
+  for(let index=0;index<2;index++){
+    assert.equal(statisticsAfter[index].overall.answered-statisticsBefore[index].overall.answered,expectedCount);
+    assert.equal(statisticsAfter[index].overall.correct-statisticsBefore[index].overall.correct,expectedScores[index]);
+  }
 
   await clients[0].mutation(api.quizLobbies.leave,args(0));
   await wait(()=>lobbyA?.hostCharacterId===identities[1].characterId,'host transfer after quiz');
@@ -126,7 +135,7 @@ try{
   assert.equal(lobbyA.question,null);
   await clients[0].mutation(api.quizLobbies.leave,args(0));
   await wait(()=>lobbyA===null,'ended lobby removal');
-  console.log('PASS: shared sequence, scores, host controls, final result and insufficient-participant ending.');
+  console.log('PASS: shared sequence, scores, individual statistics, host controls, final result and insufficient-participant ending.');
 } finally {
   await Promise.all(identities.map((identity,index)=>releaseTestCharacter(clients[index],identity)));
   unsubscribeA?.();unsubscribeB?.();

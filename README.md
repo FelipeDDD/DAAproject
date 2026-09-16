@@ -116,10 +116,10 @@ Testes reais: `npm run test:characters`, `npm run test:multiplayer` e
 `npm run test:doors-online`. Eles precisam de vagas livres e do Convex rodando.
 O primeiro testa disputa simultânea, atualização/liberação pelo dono e troca de dono.
 
-WASD/setas: andar. **E**: abrir/fechar a porta próxima. **F**: atravessar uma porta
-aberta com destino. **Esc** no exterior: voltar à posição anterior no interior.
+WASD/setas: andar. **E**: abrir/fechar uma porta local ou atravessar uma porta
+com destino. **Esc** no exterior: voltar à posição anterior no interior.
 A entrada principal interna é uma passagem fixa, entreaberta (`interactive: false`),
-conforme a anotação: use F perto dela. A entrada externa permite voltar pelo mesmo
+conforme a anotação: aproxime-se e use E. A entrada externa permite voltar pelo mesmo
 sistema de Doors. As cenas adormecem entre visitas e retomam a assinatura dos
 estados compartilhados ao voltar. Sem Convex configurado, usam os valores do Tiled.
 
@@ -138,6 +138,7 @@ velocidade e hitbox não mudaram; ficam em `src/game/settings.js` e `Player.js`.
 | Walls | Tile | Paredes visuais; sem colisão automática. |
 | Decoration | Tile | Decoração visual; sem colisão automática. |
 | Entities | Object | Móveis/vegetação e outros objetos visuais. |
+| objectDecoration | Object | Objetos decorativos posicionados no Tiled; sem colisão automática. |
 | Collision | Object | Retângulos sólidos, sempre invisíveis no jogo. |
 | Doors | Object | Retângulos que controlam portas e transições. |
 | Spawns | Object | Pontos nomeados de entrada. |
@@ -226,7 +227,7 @@ Recarregue o arquivo do disco no Tiled antes de continuar numa janela antiga.
 `SchoolScene.js` e `OutsideScene.js` apenas escolhem os arquivos de mapa.
 `maps/doors.js` lê propriedades; `entities/Door.js` controla visual e bloqueador.
 
-35 testes passaram: chat, presença, interpolação, estados e trava,
+A suíte automatizada cobre chat, presença, interpolação, estados e trava,
 conversão das notas, dimensões fracionárias,
 spawns livres/recíprocos, portas sem bloqueio permanente e acesso às escadas,
 gazebo, canteiros e calçada com a hitbox escalada. Compilação passou (aviso de
@@ -250,8 +251,9 @@ estado visual pode usar `Width`, `Height`, `OffsetX`, `OffsetY`, `OriginX`,
 `OriginY`, `Angle`, `FlipX` e `FlipY`, precedidos por `closed`, `open` ou
 `halfOpen`, por exemplo `openOffsetX` e `halfOpenAngle`. Assim a folha aberta
 pode ocupar espaço perpendicular à parede sem mudar a colisão. Para uma porta de
-transição entreaberta e atravessável, use `visualState: halfOpen`, `open: true` e
-`interactive: false`.
+transição entreaberta acionada por E, use `visualState: halfOpen`, `open: true` e
+`interactive: false`. Portas com destino mantêm o vão bloqueado para impedir a
+troca de mapa ao caminhar; a folha visual aberta não cria uma segunda colisão.
 As paredes e as colisões devem terminar nas duas bordas do vão.
 
 ## Portas compartilhadas
@@ -482,6 +484,29 @@ Challenge concede 60 segundos por pergunta, configurados por
 é atualizada apenas no cliente. Ao chegar a zero, a pergunta conta como incorreta,
 revela resposta e explicação e aguarda o botão **Next question**. Study continua
 sem limite de tempo.
+
+### Estatísticas do quiz
+
+Abra a cadeira de Solo Mode e use **Statistics** na tela de configuração. O painel
+mostra totais, acurácia por categoria, topics expansíveis, difficulty e mode. O
+filtro de modo permite consultar Study, Challenge ou Multiplayer separadamente.
+
+Cada resposta resolvida cria uma tentativa mínima em `quizAttempts`, identificada
+por uma chave idempotente. `quizPerformance` mantém acumuladores por personagem,
+categoria, topic, difficulty e mode, evitando reler todo o histórico para montar o
+painel. Ambas ficam em `convex/schema.js`; mutations e query ficam em
+`convex/quizStatistics.js`, e a agregação reutilizável em
+`convex/quizStatisticsModel.js`. IDs concretos de perguntas generated são reduzidos
+ao ID do template, da mesma forma que no anti-repetition.
+
+Study e Challenge mantêm respostas e score locais, mas o backend conserva um
+snapshot mínimo da sequência ativa em `soloQuizRuns` para validar cada tentativa.
+No multiplayer, a tentativa é registrada na mesma mutation que já grava a resposta.
+Categorias e topics só são classificados como pontos fracos após pelo menos 5
+respostas, configuradas por `WEAK_STATISTICS_MINIMUM_ANSWERS`.
+Com o Convex local rodando, `npm.cmd run test:statistics` valida o registro solo
+idempotente; `npm.cmd run test:quiz-lobby` também confere os registros individuais
+dos dois participantes.
 
 ## Conteúdo auxiliar por pergunta
 

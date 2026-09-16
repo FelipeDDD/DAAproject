@@ -3,6 +3,7 @@ import { renderQuizSettingsControls,readQuizSettingsControls,DEFAULT_QUIZ_OPTION
 import { createSoloSession,SOLO_MODES } from './quiz/soloModes.js';
 import { nearbySoloStudySeat } from './maps/soloStudySeats.js';
 import { CalculatorWidget } from './calculator/CalculatorWidget.js';
+import { QuizStatisticsPanel } from './quiz/QuizStatisticsPanel.js';
 
 export const SOLO_STUDY_PROMPT=Object.freeze({text:'[E] Study',offsetX:0,offsetY:-70});
 
@@ -11,6 +12,7 @@ export class SoloStudyController {
     Object.assign(this,{
       scene,presence,seats,active:false,pending:false,session:null,options:DEFAULT_QUIZ_OPTIONS,
       settings:{category:null,topic:null,difficulty:null,count:5},mode:'study',completionResult:null,
+      runId:null,statisticsPending:Promise.resolve(),
     });
     this.root=document.getElementById('solo-study');this.title=document.getElementById('solo-study-title');
     this.configRoot=document.getElementById('solo-config');this.configTitle=document.getElementById('solo-config-title');
@@ -26,18 +28,21 @@ export class SoloStudyController {
     this.resultsTitle=document.getElementById('solo-results-title');this.resultScore=document.getElementById('solo-result-score');
     this.resultText=document.getElementById('solo-result-text');this.assessment=document.getElementById('solo-assessment');
     this.status=document.getElementById('solo-status');this.startButton=document.getElementById('start-solo-study');
+    this.statisticsButton=document.getElementById('open-quiz-statistics');
     this.confirmButton=document.getElementById('confirm-solo-answer');this.nextButton=document.getElementById('next-solo-question');
     this.timerRoot=document.getElementById('solo-challenge-timer');this.timerTrack=document.getElementById('solo-timer-track');
     this.timerBar=document.getElementById('solo-timer-bar');this.timerLabel=document.getElementById('solo-timer-label');
     this.againButton=document.getElementById('study-again');this.closeButton=document.getElementById('close-solo-study');
     this.calculator=new CalculatorWidget({mount:this.questionRoot,scene});
+    this.statistics=new QuizStatisticsPanel({presence,onClose:()=>this.render()});
     this.seatPrompt=scene.add.text(0,0,SOLO_STUDY_PROMPT.text,{
       fontFamily:'system-ui, sans-serif',fontSize:'12px',fontStyle:'bold',color:'#ffffff',
       backgroundColor:'#315b9c',padding:{x:6,y:3},
     }).setOrigin(0.5,1).setDepth(100000).setVisible(false);
 
-    this.onStart=()=>this.start();this.onConfirm=()=>this.confirm();this.onNext=()=>this.next();
+    this.onStart=()=>this.start();this.onConfirm=()=>this.confirm();this.onNext=()=>void this.next();
     this.onAgain=()=>this.playAgain();this.onClose=()=>this.closePanel();
+    this.onStatistics=()=>void this.statistics.open();
     this.onSettingsChange=()=>{this.settings=readQuizSettingsControls(this,this.options);this.render();};
     this.onModeChange=()=>{this.mode=this.modeSelect.value;this.completionResult=null;this.renderMode();};
     this.onAlternative=event=>{
@@ -45,6 +50,7 @@ export class SoloStudyController {
       if(button&&this.alternatives.contains(button)&&this.session?.select(Number(button.dataset.answerIndex)))this.renderQuestion();
     };
     this.startButton.addEventListener('click',this.onStart);this.modeSelect.addEventListener('change',this.onModeChange);
+    this.statisticsButton.addEventListener('click',this.onStatistics);
     for(const select of [this.categorySelect,this.topicSelect,this.difficultySelect,this.quantitySelect])
       select.addEventListener('change',this.onSettingsChange);
     this.confirmButton.addEventListener('click',this.onConfirm);this.nextButton.addEventListener('click',this.onNext);
@@ -67,6 +73,7 @@ export class SoloStudyController {
     this.active=true;this.seat=seat;this.returnPosition={x:this.scene.player.x,y:this.scene.player.y};
     this.scene.player.body.reset(seat.seatX,seat.seatY);this.scene.player.facing=seat.direction;
     this.scene.player.setFlipX(seat.direction==='left');this.scene.player.setVelocity(0,0);
+    this.statistics.close();this.runId=null;this.statisticsPending=Promise.resolve();
     this.root.hidden=false;this.session=null;this.completionResult=null;this.status.textContent='Loading solo settings…';this.render();
     try{
       this.options=await this.presence.client.query(this.presence.api.soloStudy.options,{});
@@ -81,8 +88,9 @@ export class SoloStudyController {
     this.pending=true;this.status.textContent='Preparing questions…';this.render();
     try{
       const {characterId,sessionId}=this.presence.identity;
-      const result=await this.presence.client.mutation(this.presence.api.soloStudy.start,{characterId,sessionId,...settings});
-      this.session=createSoloSession(this.mode,result.questions);this.completionResult=null;this.status.textContent='';this.render();
+      const result=await this.presence.client.mutation(this.presence.api.soloStudy.start,{characterId,sessionId,mode:this.mode,...settings});
+      this.session=createSoloSession(this.mode,result.questions);this.runId=result.runId;
+      this.completionResult=null;this.status.textContent='';this.render();
     }catch(error){
       this.status.textContent=String(error).includes('No questions match')?'No questions match these settings.':'Could not start Solo Mode.';
     }finally{this.pending=false;this.render();}
@@ -92,9 +100,11 @@ export class SoloStudyController {
     const result=this.session?.confirm();
     if(!result){this.status.textContent='Select an answer first.';return;}
     this.status.textContent=result.timedOut?'Time is up.':result.correct?'Correct.':'Incorrect.';this.renderQuestion();
+    this.recordCurrentAnswer(result);
   }
 
   async next() {
+    await this.statisticsPending;
     if(!this.session?.next())return;
     if(!this.session.complete){
       const {characterId,sessionId}=this.presence.identity;
@@ -105,12 +115,24 @@ export class SoloStudyController {
     this.status.textContent='';this.render();
   }
 
-  playAgain(){this.session=null;this.completionResult=null;this.status.textContent='Choose a mode and what you want to practice.';this.render();}
+  recordCurrentAnswer(result){
+    if(!this.runId||!this.session)return;
+    const {characterId,sessionId}=this.presence.identity;
+    this.statisticsPending=this.presence.client.mutation(this.presence.api.quizStatistics.recordSoloAnswer,{
+      characterId,sessionId,runId:this.runId,questionIndex:this.session.index,
+      ...(result.answerIndex===null?{}:{answerIndex:result.answerIndex}),
+    }).catch(()=>{
+      this.status.textContent='Answer saved locally, but statistics could not be updated.';this.render();
+    });
+  }
+
+  playAgain(){this.session=null;this.runId=null;this.completionResult=null;this.status.textContent='Choose a mode and what you want to practice.';this.render();}
 
   closePanel() {
     if(!this.active)return;
     this.calculator.close({reset:true});
-    this.active=false;this.session=null;this.completionResult=null;this.root.hidden=true;this.seatPrompt.setVisible(false);
+    this.statistics.close();this.active=false;this.session=null;this.runId=null;
+    this.completionResult=null;this.root.hidden=true;this.seatPrompt.setVisible(false);
     if(this.returnPosition)this.scene.player.body.reset(this.returnPosition.x,this.returnPosition.y);
     this.scene.input.keyboard.resetKeys();document.getElementById('game').focus({preventScroll:true});
   }
@@ -149,6 +171,7 @@ export class SoloStudyController {
     this.timerTrack.setAttribute('aria-valuenow',String(seconds));
     if(remaining===0&&this.session.expire(now)){
       this.status.textContent='Time is up.';this.renderQuestion();
+      this.recordCurrentAnswer({correct:false,answerIndex:null,timedOut:true});
     }
   }
 
@@ -176,7 +199,8 @@ export class SoloStudyController {
 
   render() {
     if(!this.active){this.root.hidden=true;return;}
-    this.root.hidden=false;const configuring=!this.session;this.configRoot.hidden=!configuring;this.renderMode();
+    this.root.hidden=false;const configuring=!this.session;
+    this.configRoot.hidden=!configuring||this.statistics.openState;this.renderMode();
     if(configuring)renderQuizSettingsControls(this,this.options,this.settings,!this.pending);
     this.startButton.disabled=this.pending;
     if(this.session?.complete){this.questionRoot.hidden=true;renderQuizMedia(this.media,null);this.renderResults();}
@@ -184,7 +208,8 @@ export class SoloStudyController {
   }
 
   close() {
-    this.closePanel();this.calculator.destroy();clearInterval(this.timerInterval);this.startButton.removeEventListener('click',this.onStart);
+    this.closePanel();this.calculator.destroy();this.statistics.destroy();clearInterval(this.timerInterval);
+    this.startButton.removeEventListener('click',this.onStart);this.statisticsButton.removeEventListener('click',this.onStatistics);
     this.modeSelect.removeEventListener('change',this.onModeChange);this.confirmButton.removeEventListener('click',this.onConfirm);
     for(const select of [this.categorySelect,this.topicSelect,this.difficultySelect,this.quantitySelect])
       select.removeEventListener('change',this.onSettingsChange);

@@ -16,6 +16,7 @@ export const options = query({
 export const start = mutation({
   args: {
     characterId: v.string(), sessionId: v.string(),
+    mode: v.union(v.literal('study'),v.literal('challenge')),
     category: v.union(v.string(), v.null()),
     topic: v.optional(v.union(v.string(),v.null())),
     difficulty: v.union(v.literal('medium'), v.literal('hard'), v.null()),
@@ -32,7 +33,17 @@ export const start = mutation({
     if (!questionIds.length) throw new Error('No questions match these settings.');
     const questions = materializeQuizQuestions(questionIds);
     await rememberQuestions(ctx, [args.characterId], questions.slice(0, 1).map(question => question.id));
-    return { questions, settings };
+    for(const previous of await ctx.db.query('soloQuizRuns')
+      .withIndex('by_character',q=>q.eq('characterId',args.characterId)).collect())await ctx.db.delete(previous._id);
+    const runId=await ctx.db.insert('soloQuizRuns',{
+      characterId:args.characterId,sessionId:args.sessionId,mode:args.mode,settings,
+      questions:questions.map(question=>({
+        id:question.id,category:question.category,topic:question.topic??null,difficulty:question.difficulty,
+        correctAnswer:question.correctAnswer,answerCount:question.answers.length,
+      })),
+      createdAt:Date.now(),
+    });
+    return { questions, settings, runId };
   },
 });
 

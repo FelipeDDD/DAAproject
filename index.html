@@ -90,6 +90,7 @@
             <label>Questions<select id="solo-quantity"></select></label>
           </div>
           <button id="start-solo-study" type="button">Start studying</button>
+          <button id="open-quiz-statistics" type="button">Statistics</button>
         </section>
         <section id="solo-question" hidden aria-labelledby="solo-question-text">
           <div id="solo-hud">
@@ -116,6 +117,22 @@
           <p id="solo-result-text"></p>
           <p id="solo-assessment" hidden></p>
           <button id="study-again" type="button">Study again</button>
+        </section>
+        <section id="quiz-statistics" hidden aria-labelledby="quiz-statistics-title">
+          <div class="quiz-statistics-heading">
+            <h3 id="quiz-statistics-title">Statistics</h3>
+            <label>Mode
+              <select id="quiz-statistics-mode">
+                <option value="">All</option>
+                <option value="study">Study</option>
+                <option value="challenge">Challenge</option>
+                <option value="multiplayer">Multiplayer</option>
+              </select>
+            </label>
+          </div>
+          <div id="quiz-statistics-content"></div>
+          <small id="quiz-statistics-status" role="status"></small>
+          <button id="close-quiz-statistics" type="button">Back</button>
         </section>
         <button id="close-solo-study" type="button">Close</button>
         <small id="solo-status" role="status"></small>
