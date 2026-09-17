@@ -1,0 +1,106 @@
+/* Subtle-only color experiment.
+   Futuristic receives no overrides and remains identical to the current terminal. */
+
+.terminal-test-variant[data-theme="subtle"] {
+  --terminal-background-dim: .30;
+  --terminal-background-blur: 3px;
+  --scene-filter: brightness(.62) saturate(.96) contrast(1.04);
+  --study-page-bg: linear-gradient(135deg, rgba(4, 25, 48, .72), rgba(32, 14, 48, .68));
+  --study-panel-bg: linear-gradient(135deg, rgba(12, 38, 65, .64), rgba(31, 19, 49, .62));
+  --study-panel-border: rgba(119, 181, 235, .3);
+}
+
+.terminal-test-variant[data-theme="subtle"] .study-page-frame {
+  border-color: rgba(107, 187, 241, .42);
+  background: var(--study-page-bg);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .42), 0 0 28px rgba(47, 143, 224, .14), inset 0 0 38px rgba(90, 69, 190, .07);
+  backdrop-filter: blur(4px) saturate(1.12);
+}
+
+.terminal-test-variant[data-theme="subtle"] .study-header {
+  background: linear-gradient(100deg, rgba(26, 179, 229, .07), transparent 37%, transparent 65%, rgba(204, 67, 218, .07));
+}
+
+.terminal-test-variant[data-theme="subtle"] .study-heading h1 {
+  background-image: linear-gradient(105deg, #69dff6, #9297e9 50%, #df75d4);
+  filter: drop-shadow(0 0 10px rgba(102, 126, 210, .18));
+}
+
+.terminal-test-variant[data-theme="subtle"] .study-section {
+  --section-accent: 66, 207, 237;
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(var(--section-accent), .34);
+  border-left: 3px solid rgba(var(--section-accent), .72);
+  background: linear-gradient(110deg, rgba(var(--section-accent), .1), transparent 40%), var(--study-panel-bg);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .14), inset 3px 0 17px rgba(var(--section-accent), .07);
+  backdrop-filter: blur(3px) saturate(1.08);
+}
+
+.terminal-test-variant[data-theme="subtle"] .study-section::after {
+  content: "";
+  position: absolute;
+  inset: 0 62% auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(var(--section-accent), .9), transparent);
+  box-shadow: 0 0 9px rgba(var(--section-accent), .35);
+}
+
+.terminal-test-variant[data-theme="subtle"] .study-topic {
+  --section-accent: 151, 105, 232;
+}
+
+.terminal-test-variant[data-theme="subtle"] .study-difficulty {
+  --section-accent: 226, 87, 190;
+}
+
+.terminal-test-variant[data-theme="subtle"] .study-step {
+  border-color: rgba(var(--section-accent), .54);
+  color: rgb(var(--section-accent));
+  background: rgba(var(--section-accent), .12);
+  box-shadow: inset 0 0 12px rgba(var(--section-accent), .09);
+}
+
+.terminal-test-variant[data-theme="subtle"] .study-section-heading p,
+.terminal-test-variant[data-theme="subtle"] .study-option-count {
+  color: rgba(var(--section-accent), .88);
+}
+
+.terminal-test-variant[data-theme="subtle"] .study-choice {
+  border-color: rgba(var(--section-accent), .22);
+  color: #b7c5da;
+  background: rgba(7, 16, 35, .68);
+}
+
+.terminal-test-variant[data-theme="subtle"] .study-choice:hover,
+.terminal-test-variant[data-theme="subtle"] .study-choice:focus-visible {
+  border-color: rgba(var(--section-accent), .62);
+  color: #f4f8ff;
+  box-shadow: 0 0 13px rgba(var(--section-accent), .13);
+}
+
+.terminal-test-variant[data-theme="subtle"] .study-choice.is-selected {
+  border-color: rgb(var(--section-accent));
+  color: white;
+  background: linear-gradient(120deg, rgba(var(--section-accent), .46), rgba(77, 60, 151, .45));
+  box-shadow: 0 0 3px rgba(255,255,255,.34), 0 0 17px rgba(var(--section-accent), .3), inset 0 0 17px rgba(var(--section-accent), .18);
+}
+
+.terminal-test-variant[data-theme="subtle"] .study-choice.is-selected::before {
+  color: rgb(var(--section-accent));
+}
+
+.terminal-test-variant[data-theme="subtle"] .study-footer {
+  background: linear-gradient(90deg, rgba(14, 83, 129, .1), rgba(85, 49, 128, .11), rgba(160, 43, 125, .09));
+}
+
+.terminal-test-variant[data-theme="subtle"] .start-study-button {
+  border-color: rgba(171, 209, 242, .75);
+  background: linear-gradient(105deg, rgba(20, 125, 183, .88), rgba(73, 73, 178, .88), rgba(171, 55, 151, .84));
+  box-shadow: 0 10px 28px rgba(0,0,0,.26), 0 0 18px rgba(61, 151, 224, .23), 0 0 22px rgba(190, 70, 202, .12);
+}
+
+.terminal-test-variant[data-theme="subtle"] .start-study-button:hover,
+.terminal-test-variant[data-theme="subtle"] .start-study-button:focus-visible {
+  box-shadow: 0 13px 32px rgba(0,0,0,.29), 0 0 24px rgba(61, 151, 224, .33), 0 0 28px rgba(190, 70, 202, .2);
+}

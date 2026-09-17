@@ -6,10 +6,45 @@ const themeSelect = document.querySelector('#theme-select');
 const terminal = document.querySelector('#terminal-preview');
 const classroomPreview = document.querySelector('#classroom-preview');
 const openTerminalButton = document.querySelector('#open-terminal-button');
+const brandHomeLink = document.querySelector('.brand');
+const studyPage = document.querySelector('#study-page');
+const studyBackButton = document.querySelector('#study-back-button');
+const startStudyButton = document.querySelector('#start-study-button');
+const categoryOptions = document.querySelector('#study-category-options');
+const topicOptions = document.querySelector('#study-topic-options');
+const difficultyOptions = document.querySelector('#study-difficulty-options');
+const topicCount = document.querySelector('#study-topic-count');
+const studySummary = document.querySelector('#study-summary');
 const THEME_STORAGE_KEY = 'terminalTheme';
 const THEMES = new Set(['futuristic', 'subtle']);
 const embedded = window.parent !== window && new URLSearchParams(location.search).has('embedded');
 let toastTimer;
+
+const STUDY_CATEGORIES = [
+  'Hardware',
+  'Betriebssysteme',
+  'Netzwerk',
+  'Programmierung',
+  'Zahlensysteme',
+  'WiSo',
+  'Rechnungen',
+  'Prüfungssprache',
+];
+const STUDY_TOPICS = {
+  Hardware: ['All Topics', 'Komponenten', 'Speicher', 'Schnittstellen'],
+  Betriebssysteme: ['All Topics', 'Prozesse', 'Dateisysteme', 'Berechtigungen'],
+  Netzwerk: [
+    'All Topics', 'Topologien', 'IPv4', 'Subnetting', 'CSMA', 'OSI',
+    'Anwendungsschicht', 'HTTP-HTTPS', 'E-Mail-Protokolle', 'DNS',
+    'FTP-SFTP', 'OSI Schicht 5', 'OSI Schicht 6',
+  ],
+  Programmierung: ['All Topics', 'Variablen', 'Kontrollstrukturen', 'Algorithmen'],
+  Zahlensysteme: ['All Topics', 'Binär', 'Hexadezimal', 'Umrechnungen'],
+  WiSo: ['All Topics', 'Arbeitsrecht', 'Verträge', 'Wirtschaft'],
+  Rechnungen: ['All Topics', 'Prozentrechnung', 'Dreisatz', 'Kostenrechnung'],
+  Prüfungssprache: ['All Topics', 'Operatoren', 'Formulierungen', 'Fachbegriffe'],
+};
+const STUDY_DIFFICULTIES = ['Mixed', 'Medium', 'Hard'];
 
 function cssTimeToMilliseconds(value) {
   const time = Number.parseFloat(value);
@@ -17,12 +52,123 @@ function cssTimeToMilliseconds(value) {
   return value.trim().endsWith('ms') ? time : time * 1000;
 }
 
+class TerminalPageController {
+  constructor() {
+    this.page = 'home';
+    this.selection = {
+      category: 'Netzwerk',
+      topic: 'All Topics',
+      difficulty: 'Mixed',
+    };
+    this.transitionTimer = null;
+
+    studyBackButton.addEventListener('click', () => this.showHome());
+    startStudyButton.addEventListener('click', () => this.previewStart());
+    brandHomeLink.addEventListener('click', event => {
+      event.preventDefault();
+      if (this.page !== 'home') this.showHome();
+    });
+    this.render();
+  }
+
+  createChoice(value, selected, onSelect) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'study-choice';
+    button.textContent = value;
+    button.dataset.value = value;
+    button.classList.toggle('is-selected', selected);
+    button.setAttribute('aria-pressed', String(selected));
+    button.addEventListener('click', () => onSelect(value));
+    return button;
+  }
+
+  renderChoices(container, values, selected, onSelect) {
+    const fragment = document.createDocumentFragment();
+    values.forEach(value => fragment.append(this.createChoice(value, value === selected, onSelect)));
+    container.replaceChildren(fragment);
+  }
+
+  render() {
+    const topics = STUDY_TOPICS[this.selection.category] ?? ['All Topics'];
+    if (!topics.includes(this.selection.topic)) this.selection.topic = 'All Topics';
+
+    this.renderChoices(categoryOptions, STUDY_CATEGORIES, this.selection.category, category => {
+      this.selection.category = category;
+      this.selection.topic = 'All Topics';
+      this.render();
+    });
+    this.renderChoices(topicOptions, topics, this.selection.topic, topic => {
+      this.selection.topic = topic;
+      this.render();
+    });
+    this.renderChoices(difficultyOptions, STUDY_DIFFICULTIES, this.selection.difficulty, difficulty => {
+      this.selection.difficulty = difficulty;
+      this.render();
+    });
+
+    topicCount.textContent = `${topics.length} options`;
+    studySummary.textContent = `${this.selection.category} · ${this.selection.topic} · ${this.selection.difficulty}`;
+  }
+
+  showStudy(card) {
+    if (this.page === 'study') return;
+    card?.classList.add('is-launching');
+    clearTimeout(this.transitionTimer);
+    this.transitionTimer = setTimeout(() => {
+      card?.classList.remove('is-launching');
+      this.page = 'study';
+      terminal.dataset.page = 'study';
+      terminal.classList.add('is-showing-study');
+      studyPage.inert = false;
+      studyPage.setAttribute('aria-hidden', 'false');
+      document.querySelectorAll('.terminal-home-page').forEach(element => {
+        element.inert = true;
+        element.setAttribute('aria-hidden', 'true');
+      });
+      studyBackButton.focus({ preventScroll: true });
+    }, 110);
+  }
+
+  showHome({ immediate = false } = {}) {
+    if (this.page === 'home' && !terminal.classList.contains('is-showing-study')) return;
+    clearTimeout(this.transitionTimer);
+    const finish = () => {
+      this.page = 'home';
+      terminal.dataset.page = 'home';
+      terminal.classList.remove('is-showing-study');
+      studyPage.inert = true;
+      studyPage.setAttribute('aria-hidden', 'true');
+      document.querySelectorAll('.terminal-home-page').forEach(element => {
+        element.inert = false;
+        element.setAttribute('aria-hidden', 'false');
+      });
+      if (!immediate) document.querySelector('.card-study')?.focus({ preventScroll: true });
+    };
+    finish();
+  }
+
+  previewStart() {
+    const configuration = { ...this.selection };
+    console.info('Study Mode preview configuration:', configuration);
+    startStudyButton.classList.add('is-confirmed');
+    startStudyButton.querySelector('span').textContent = 'CONFIGURATION READY';
+    showPreviewMessage(`${configuration.category} · ${configuration.topic} · ${configuration.difficulty}`);
+    clearTimeout(this.startFeedbackTimer);
+    this.startFeedbackTimer = setTimeout(() => {
+      startStudyButton.classList.remove('is-confirmed');
+      startStudyButton.querySelector('span').textContent = 'START STUDY';
+    }, 1500);
+  }
+}
+
 class TerminalPreviewController {
-  constructor({ terminalElement, classroomElement, openButton, closeButton }) {
+  constructor({ terminalElement, classroomElement, openButton, closeButton, pageController }) {
     this.terminalElement = terminalElement;
     this.classroomElement = classroomElement;
     this.openButton = openButton;
     this.closeButton = closeButton;
+    this.pageController = pageController;
     this.isTerminalOpen = false;
     this.isTransitioning = false;
     this.finishTimer = null;
@@ -59,6 +205,7 @@ class TerminalPreviewController {
       return;
     }
     if (!this.isTerminalOpen || this.isTransitioning) return;
+    this.pageController.showHome({ immediate: true });
     this.isTerminalOpen = false;
     this.beginTransition();
     document.body.classList.remove('is-terminal-open');
@@ -86,6 +233,11 @@ class TerminalPreviewController {
   }
 
   handleKeydown(event) {
+    if (event.key === 'Escape' && !event.repeat && this.isTerminalOpen && this.pageController.page !== 'home') {
+      event.preventDefault();
+      this.pageController.showHome();
+      return;
+    }
     if (embedded) {
       if (event.key === 'Escape' && !event.repeat) {
         event.preventDefault();this.closeTerminal();
@@ -149,6 +301,10 @@ function showPreviewMessage(message) {
 
 function selectCard(card) {
   cards.forEach(item => item.classList.toggle('is-selected', item === card));
+  if (card.dataset.mode === 'Study Mode') {
+    terminalPageController.showStudy(card);
+    return;
+  }
   showPreviewMessage(`${card.dataset.mode} selected · visual preview only`);
 }
 
@@ -168,11 +324,13 @@ themeSelect.addEventListener('change', () => {
 });
 
 applyTheme(loadTheme(), false);
+const terminalPageController = new TerminalPageController();
 const terminalPreviewController = new TerminalPreviewController({
   terminalElement: terminal,
   classroomElement: classroomPreview,
   openButton: openTerminalButton,
   closeButton: returnButton,
+  pageController: terminalPageController,
 });
 window.terminalPreviewController = terminalPreviewController;
 if (embedded) {

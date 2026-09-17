@@ -55,26 +55,26 @@
         </div>
       </header>
 
-      <aside class="phrase-panel phrase-left" aria-label="Custom phrase area">
+      <aside class="phrase-panel phrase-left terminal-home-page" aria-label="Custom phrase area">
         <span class="phrase-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5c3.5 0 6.2.8 8 2.4v13c-2.8-1.6-5.5-2.4-8-2.4v-13Zm16 0c-3.5 0-6.2.8-8 2.4v13c2.8-1.6 5.5-2.4 8-2.4v-13Z"/></svg>DAILY NOTE</span>
         <!-- Replace only the text inside this paragraph to test another short phrase. -->
         <p>“Learn something useful today.”</p>
       </aside>
 
-      <aside class="phrase-panel phrase-right" aria-label="Custom phrase area">
+      <aside class="phrase-panel phrase-right terminal-home-page" aria-label="Custom phrase area">
         <span class="phrase-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V11h3v8H4Zm6 0V5h3v14h-3Zm6 0V8h3v11h-3Z"/></svg>CLASSROOM SIGNAL</span>
         <!-- Replace only the text inside this paragraph to test another short phrase. -->
         <p>“Small steps build real skills.”</p>
       </aside>
 
-      <section class="hero" aria-labelledby="preview-title">
+      <section class="hero terminal-home-page" aria-labelledby="preview-title">
         <p class="eyebrow">CLASSROOM SYSTEM · SELECT A MODULE</p>
         <h1 id="preview-title"><small>DAA PROJECT</small><span>TERMINAL</span></h1>
         <p class="hero-copy">Choose a learning path and continue your IT journey.</p>
         <div class="hero-tags" aria-hidden="true"><span>LEARN</span><i></i><span>PRACTICE</span><i></i><span>COMPETE</span><i></i><span>IMPROVE</span><i></i><span>TOGETHER</span></div>
       </section>
 
-      <section class="menu-stage" aria-label="Computer menu">
+      <section class="menu-stage terminal-home-page" aria-label="Computer menu">
         <div class="menu-grid">
           <article class="mode-card card-study" tabindex="0" data-mode="Study Mode">
             <div class="card-glow" aria-hidden="true"></div>
@@ -139,13 +139,72 @@
         </div>
       </section>
 
-      <footer class="terminal-footer">
+      <footer class="terminal-footer terminal-home-page">
         <button id="return-button" class="return-button" type="button">
           <span aria-hidden="true">←</span>
           <span><strong>Back to Classroom</strong><small>Close this terminal and return to the room</small></span>
         </button>
         <p><kbd>Esc</kbd> Back to Classroom</p>
       </footer>
+
+      <section id="study-page" class="study-page" aria-labelledby="study-page-title" aria-hidden="true" inert>
+        <div class="study-page-frame">
+          <header class="study-header">
+            <button id="study-back-button" class="study-back-button" type="button">
+              <span aria-hidden="true">←</span> Back to Terminal
+            </button>
+            <div class="study-heading">
+              <p>DAA PROJECT</p>
+              <h1 id="study-page-title">STUDY MODE</h1>
+              <span>Practice questions at your own pace.</span>
+            </div>
+            <div class="study-status" aria-hidden="true">
+              <span></span>
+              LOCAL SETUP
+            </div>
+          </header>
+
+          <div class="study-config" aria-label="Study Mode configuration">
+            <section class="study-section study-category" aria-labelledby="study-category-title">
+              <div class="study-section-heading">
+                <span class="study-step">01</span>
+                <div><p>LEARNING AREA</p><h2 id="study-category-title">Category</h2></div>
+              </div>
+              <div id="study-category-options" class="study-options category-options" role="group" aria-labelledby="study-category-title"></div>
+            </section>
+
+            <section class="study-section study-topic" aria-labelledby="study-topic-title">
+              <div class="study-section-heading">
+                <span class="study-step">02</span>
+                <div><p>FOCUS YOUR SESSION</p><h2 id="study-topic-title">Topic</h2></div>
+                <span id="study-topic-count" class="study-option-count"></span>
+              </div>
+              <div class="topic-scroll">
+                <div id="study-topic-options" class="study-options topic-options" role="group" aria-labelledby="study-topic-title"></div>
+              </div>
+            </section>
+
+            <section class="study-section study-difficulty" aria-labelledby="study-difficulty-title">
+              <div class="study-section-heading">
+                <span class="study-step">03</span>
+                <div><p>CHOOSE A LEVEL</p><h2 id="study-difficulty-title">Difficulty</h2></div>
+              </div>
+              <div id="study-difficulty-options" class="study-options difficulty-options" role="group" aria-labelledby="study-difficulty-title"></div>
+            </section>
+          </div>
+
+          <footer class="study-footer">
+            <div class="study-summary" aria-live="polite">
+              <span>CURRENT SESSION</span>
+              <strong id="study-summary">Netzwerk · All Topics · Mixed</strong>
+            </div>
+            <button id="start-study-button" class="start-study-button" type="button">
+              <span>START STUDY</span><i aria-hidden="true">→</i>
+            </button>
+            <p><kbd>Esc</kbd> Back to Terminal</p>
+          </footer>
+        </div>
+      </section>
     </main>
 
     <div class="room-motto" aria-hidden="true"><span>LEARN</span><span>SOLVE</span><span>GROW</span><span>TOGETHER</span></div>
