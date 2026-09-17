@@ -40,6 +40,12 @@ test('quiz database filters ID, question and explanation and sorts by category',
   assert.deepEqual(filterQuizReviewRecords(records,{sort:'category'}).map(item=>item.template.category),['Hardware','Netzwerk','WiSo']);
 });
 
+test('quiz database search also matches category and topic metadata',()=>{
+  const records=createQuizReviewRecords(staticQuestions,generated,materialize,()=>0.42);
+  assert.deepEqual(filterQuizReviewRecords(records,{search:'hardware'}).map(item=>item.template.id),['hardware-001']);
+  assert.deepEqual(filterQuizReviewRecords(records,{search:'cpu'}).map(item=>item.template.id),['hardware-001']);
+});
+
 test('generated preview can be regenerated without Convex and visual validation reports problems',()=>{
   const [record]=createQuizReviewRecords([],generated,materialize,()=>0.1);
   regenerateQuizRecord(record,materialize,()=>0.9);

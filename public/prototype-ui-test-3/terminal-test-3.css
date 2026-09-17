@@ -359,3 +359,70 @@
   .terminal-test-variant-3 .study-config { grid-template-rows: auto minmax(var(--test-3-topic-min-height), auto) auto; }
   .terminal-test-variant-3 .start-study-button { min-width: 0; }
 }
+
+/* Leaderboards Test 3 — aurora violet, cyan and amber. */
+.terminal-test-variant-3[data-theme="subtle"] .leaderboards-page-frame {
+  border-color: rgba(142,153,190,.28);
+  background:
+    radial-gradient(circle at 12% 16%,rgba(45,139,165,.095),transparent 36%),
+    radial-gradient(circle at 89% 12%,rgba(194,139,57,.085),transparent 31%),
+    linear-gradient(137deg,rgba(8,29,47,.94),rgba(29,24,52,.93) 54%,rgba(48,34,35,.9));
+  box-shadow: 0 24px 72px rgba(0,0,0,.43),0 0 19px rgba(88,125,188,.085),inset 0 0 40px rgba(115,86,167,.05);
+  backdrop-filter: blur(5px) saturate(.92);
+}
+.terminal-test-variant-3[data-theme="subtle"] .leaderboards-header {
+  border-bottom-color: rgba(143,145,187,.2);
+  background: linear-gradient(100deg,rgba(46,142,169,.065),transparent 39%,rgba(115,82,166,.055) 70%,rgba(190,133,51,.06));
+}
+.terminal-test-variant-3[data-theme="subtle"] .leaderboards-heading h1 {
+  color: #dedff0;
+  background: linear-gradient(105deg,#79bac8,#a59bc6 52%,#cfaa69);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 0 9px rgba(115,105,169,.13));
+}
+.terminal-test-variant-3[data-theme="subtle"] .leaderboard-mode-hero {
+  border-color: rgba(155,143,177,.25);
+  background: linear-gradient(110deg,rgba(32,111,132,.15),rgba(66,45,98,.16) 55%,rgba(151,103,39,.12));
+  box-shadow: inset 0 0 25px rgba(111,91,158,.04);
+}
+.terminal-test-variant-3[data-theme="subtle"] .leaderboard-row {
+  filter: saturate(.76);
+  background: linear-gradient(90deg,color-mix(in srgb,var(--rank-accent) 7%,transparent),rgba(14,31,48,.66) 31%,rgba(36,27,48,.61) 70%,rgba(44,32,28,.6));
+}
+.terminal-test-variant-3[data-theme="subtle"] .leaderboard-detail-hero {
+  border-color: rgba(161,145,179,.24);
+  background: radial-gradient(circle at 84% 50%,rgba(190,135,52,.1),transparent 34%),linear-gradient(120deg,rgba(15,55,68,.6),rgba(48,32,65,.61));
+}
+
+.terminal-test-variant-3[data-theme="futuristic"] .leaderboards-page-frame {
+  border-color: rgba(126,234,255,.97);
+  background:
+    radial-gradient(circle at 8% 9%,rgba(18,194,255,.15),transparent 34%),
+    radial-gradient(circle at 92% 11%,rgba(255,179,54,.17),transparent 33%),
+    linear-gradient(138deg,rgba(3,21,52,.99),rgba(34,15,67,.98) 56%,rgba(64,28,26,.97));
+  box-shadow: 0 0 4px #fff,0 0 18px rgba(30,199,255,.9),0 0 38px rgba(113,65,255,.58),0 0 58px rgba(255,176,53,.35),inset 0 0 20px rgba(47,211,255,.3),inset 0 0 47px rgba(162,65,255,.15),0 25px 80px rgba(0,0,0,.58);
+}
+.terminal-test-variant-3[data-theme="futuristic"] .leaderboards-header {
+  border-bottom-color: rgba(111,227,255,.64);
+  box-shadow: 0 1px 0 rgba(255,255,255,.17),0 8px 28px rgba(72,114,255,.18);
+}
+.terminal-test-variant-3[data-theme="futuristic"] .leaderboards-heading h1 {
+  text-shadow: 0 0 6px rgba(255,255,255,.55),0 0 19px rgba(75,199,255,.55),0 0 31px rgba(255,174,55,.25);
+}
+.terminal-test-variant-3[data-theme="futuristic"] .leaderboard-mode-hero,
+.terminal-test-variant-3[data-theme="futuristic"] .leaderboard-detail-hero {
+  border-color: rgba(255,198,86,.78);
+  box-shadow: 0 0 4px rgba(255,255,255,.3),0 0 18px rgba(255,177,64,.4),inset 0 0 29px rgba(78,178,255,.13);
+}
+.terminal-test-variant-3[data-theme="futuristic"] .leaderboard-row {
+  border-color: color-mix(in srgb,var(--rank-accent) 72%,transparent);
+  box-shadow: 0 0 4px rgba(255,255,255,.16),0 0 15px color-mix(in srgb,var(--rank-accent) 36%,transparent),inset 0 0 21px color-mix(in srgb,var(--rank-accent) 9%,transparent);
+}
+.terminal-test-variant-3[data-theme="futuristic"] .leaderboard-details-button,
+.terminal-test-variant-3[data-theme="futuristic"] .leaderboard-detail-back {
+  border-color: rgba(125,229,255,.86);
+  box-shadow: 0 0 4px rgba(255,255,255,.32),0 0 14px rgba(45,196,255,.48),0 0 22px rgba(255,177,64,.18),inset 0 0 13px rgba(72,189,255,.13);
+}

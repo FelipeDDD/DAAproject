@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="./computer-ui-preview.css">
     <link rel="stylesheet" href="./computer-ui-futuristic.css">
     <link rel="stylesheet" href="./computer-ui-study-v3.css">
+    <link rel="stylesheet" href="./leaderboard-futuristic.css">
     <script type="module" src="./computer-ui-preview.js"></script>
   </head>
   <body>
@@ -151,7 +152,9 @@
       <section id="study-page" class="study-page" aria-labelledby="study-page-title" aria-hidden="true" inert>
         <div class="study-page-frame">
           <header class="study-header">
-            <p class="study-escape-hint"><kbd>Esc</kbd> <span id="study-escape-label">Back to Terminal</span></p>
+            <button id="study-back-button" class="study-back-button" type="button">
+              <span aria-hidden="true">←</span> Back to Terminal
+            </button>
             <div class="study-heading">
               <p>DAA PROJECT</p>
               <h1 id="study-page-title">STUDY MODE</h1>
@@ -236,9 +239,140 @@
             <button id="start-study-button" class="start-study-button" type="button">
               <span>START STUDY</span><i aria-hidden="true">→</i>
             </button>
-            <button id="study-back-button" class="study-back-button" type="button">
-              <span aria-hidden="true">←</span> Back to Terminal
-            </button>
+            <p class="study-escape-hint"><kbd>Esc</kbd> <span id="study-escape-label">Back to Terminal</span></p>
+          </footer>
+        </div>
+      </section>
+
+      <section id="question-database-page" class="database-page" aria-labelledby="database-page-title" aria-hidden="true" inert>
+        <div class="database-page-frame">
+          <header class="database-header">
+            <button id="database-back-button" class="study-back-button" type="button"><span aria-hidden="true">←</span> Back to Terminal</button>
+            <div class="database-heading">
+              <p>DAA PROJECT</p>
+              <h1 id="database-page-title">QUESTION DATABASE</h1>
+              <span>Browse the real educational question bank.</span>
+            </div>
+            <div class="database-status" aria-hidden="true"><span></span>READ ONLY</div>
+          </header>
+
+          <div id="database-browser" class="database-browser">
+            <section class="database-toolbar" aria-label="Question filters">
+              <label class="database-search">Search
+                <input id="database-search" type="search" maxlength="200" placeholder="ID, question, explanation, topic or category…" autocomplete="off">
+              </label>
+              <label>Category<select id="database-category"><option value="">All Categories</option></select></label>
+              <label id="database-topic-field">Topic<select id="database-topic"><option value="">All Topics</option></select></label>
+              <label>Difficulty<select id="database-difficulty"><option value="">All</option></select></label>
+              <button id="database-clear-filters" class="database-tool-button" type="button">Clear filters</button>
+            </section>
+
+            <div class="database-results-heading">
+              <div><p>AVAILABLE CONTENT</p><h2>Questions</h2></div>
+              <strong id="database-result-count">Loading…</strong>
+            </div>
+            <div id="database-list-scroll" class="database-list-scroll">
+              <ol id="database-question-list" class="database-question-list"></ol>
+              <p id="database-empty" class="database-empty" hidden>No matching questions.</p>
+              <button id="database-load-more" class="database-load-more" type="button" hidden>Load more</button>
+            </div>
+          </div>
+
+          <article id="database-detail" class="database-detail" aria-labelledby="database-detail-question" hidden>
+            <div class="database-detail-topbar">
+              <button id="database-detail-back" class="study-secondary-button" type="button">← Back to results</button>
+              <div id="database-detail-tags" class="study-question-tags"></div>
+            </div>
+            <dl id="database-detail-metadata" class="database-detail-metadata"></dl>
+            <h2 id="database-detail-question"></h2>
+            <div id="database-detail-media" class="quiz-media study-question-media database-detail-media" role="region" aria-label="Additional question content" tabindex="0" hidden></div>
+            <section class="database-detail-section" aria-labelledby="database-answers-title">
+              <h3 id="database-answers-title">Answers</h3>
+              <ol id="database-detail-answers" class="database-detail-answers"></ol>
+            </section>
+            <section class="database-detail-section database-detail-explanation" aria-labelledby="database-explanation-title">
+              <h3 id="database-explanation-title">Explanation</h3>
+              <p id="database-detail-explanation"></p>
+            </section>
+            <section id="database-detail-warnings" class="database-detail-warnings" hidden>
+              <h3>Validation warnings</h3><ul id="database-warning-list"></ul>
+            </section>
+            <button id="database-regenerate" class="database-tool-button" type="button" hidden>Generate again</button>
+          </article>
+
+          <p id="database-page-message" class="study-page-status" role="status" aria-live="polite"></p>
+          <footer class="database-footer">
+            <span id="database-bank-total">REAL QUESTION BANK</span>
+            <p class="database-escape-hint"><kbd>Esc</kbd> <span id="database-escape-label">Back to Terminal</span></p>
+          </footer>
+        </div>
+      </section>
+
+      <section id="leaderboards-page" class="leaderboards-page" aria-labelledby="leaderboards-page-title" aria-hidden="true" inert>
+        <div class="leaderboards-page-frame">
+          <header class="leaderboards-header">
+            <button id="leaderboard-back-button" class="study-back-button" type="button"><span aria-hidden="true">←</span> Back to Terminal</button>
+            <div class="leaderboards-heading">
+              <p>DAA PROJECT</p>
+              <h1 id="leaderboards-page-title">LEADERBOARDS</h1>
+              <span>Classroom records from the current challenge.</span>
+            </div>
+            <div class="leaderboards-live" aria-hidden="true"><span></span>LIVE RECORDS</div>
+          </header>
+
+          <section id="leaderboard-top-view" class="leaderboard-top-view" aria-label="IT Challenge top players" hidden>
+            <div class="leaderboard-mode-hero">
+              <div><p>COMPETITIVE MODE</p><h2>IT CHALLENGE</h2></div>
+              <strong>5 MIN</strong>
+              <span>TOP PERSONAL RECORDS</span>
+            </div>
+            <div class="leaderboard-view-heading">
+              <div><p>HALL OF FAME</p><h2>Top Players</h2></div>
+              <button id="leaderboard-view-list" class="leaderboard-view-button" type="button">Full Ranking <span aria-hidden="true">→</span></button>
+            </div>
+            <ol id="leaderboard-top-cards" class="leaderboard-top-cards"></ol>
+            <div id="leaderboard-top-empty" class="leaderboard-empty" hidden>
+              <strong>NO RECORDS YET</strong><span>Complete the IT Challenge to claim the first place.</span>
+            </div>
+          </section>
+
+          <section id="leaderboard-list-view" class="leaderboard-list-view" aria-label="IT Challenge full ranking">
+            <div class="leaderboard-mode-hero">
+              <div><p>COMPETITIVE MODE</p><h2 id="leaderboard-mode">IT CHALLENGE</h2></div>
+              <strong id="leaderboard-variant">5 MIN</strong>
+              <span id="leaderboard-rules">CURRENT RULESET</span>
+            </div>
+            <div class="leaderboard-view-heading leaderboard-list-heading">
+              <div><p>ALL RECORDS</p><h2>Full Ranking</h2></div>
+              <button id="leaderboard-view-top" class="leaderboard-view-button" type="button" hidden><span aria-hidden="true">←</span> Top Cards</button>
+            </div>
+            <div class="leaderboard-table-labels" aria-hidden="true"><span>#</span><span>PLAYER</span><span>SCORE</span><span>BEST RUN</span><span>ACTIONS</span></div>
+            <ol id="leaderboard-list" class="leaderboard-list"></ol>
+            <div id="leaderboard-empty" class="leaderboard-empty" hidden>
+              <strong>NO RECORDS YET</strong><span>Complete the IT Challenge to claim the first place.</span>
+            </div>
+          </section>
+
+          <article id="leaderboard-detail" class="leaderboard-detail" aria-labelledby="leaderboard-detail-name" hidden>
+            <button id="leaderboard-detail-close" class="leaderboard-detail-close" type="button" aria-label="Close details">×</button>
+            <button id="leaderboard-detail-back" class="leaderboard-detail-back" type="button">← Close details</button>
+            <div class="leaderboard-detail-hero">
+              <p id="leaderboard-detail-rank">RANK</p>
+              <h2 id="leaderboard-detail-name">PLAYER</h2>
+              <div><strong id="leaderboard-detail-score">0</strong><span>POINTS</span></div>
+            </div>
+            <section aria-labelledby="leaderboard-performance-title">
+              <p class="leaderboard-detail-kicker">PERFORMANCE RECORD</p>
+              <h3 id="leaderboard-performance-title">Run details</h3>
+              <dl id="leaderboard-detail-metrics" class="leaderboard-detail-metrics"></dl>
+            </section>
+            <dl id="leaderboard-detail-meta" class="leaderboard-detail-meta"></dl>
+          </article>
+
+          <p id="leaderboard-message" class="study-page-status" role="status" aria-live="polite"></p>
+          <footer class="leaderboard-footer">
+            <span>IT CHALLENGE · PERSONAL BESTS</span>
+            <p class="database-escape-hint"><kbd>Esc</kbd> <span id="leaderboard-escape-label">Back to Terminal</span></p>
           </footer>
         </div>
       </section>

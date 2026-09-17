@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 150" role="img" aria-label="">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="150" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e0b45b"/>
+      <stop offset=".52" stop-color="#a56f2c"/>
+      <stop offset="1" stop-color="#3a2619"/>
+    </linearGradient>
+  </defs>
+  <path d="M53 143C18 116 9 66 43 8" fill="none" stroke="url(#gold)" stroke-width="2" stroke-linecap="round" opacity=".72"/>
+  <g fill="url(#gold)">
+    <ellipse cx="40" cy="18" rx="5" ry="13" transform="rotate(27 40 18)"/>
+    <ellipse cx="48" cy="34" rx="5" ry="13" transform="rotate(42 48 34)"/>
+    <ellipse cx="31" cy="38" rx="5" ry="13" transform="rotate(-34 31 38)"/>
+    <ellipse cx="39" cy="57" rx="5" ry="13" transform="rotate(47 39 57)"/>
+    <ellipse cx="22" cy="61" rx="5" ry="13" transform="rotate(-31 22 61)"/>
+    <ellipse cx="32" cy="80" rx="5" ry="13" transform="rotate(53 32 80)"/>
+    <ellipse cx="17" cy="85" rx="5" ry="13" transform="rotate(-27 17 85)"/>
+    <ellipse cx="28" cy="105" rx="5" ry="13" transform="rotate(57 28 105)"/>
+    <ellipse cx="18" cy="111" rx="5" ry="13" transform="rotate(-18 18 111)"/>
+    <ellipse cx="39" cy="129" rx="5" ry="13" transform="rotate(63 39 129)"/>
+  </g>
+</svg>

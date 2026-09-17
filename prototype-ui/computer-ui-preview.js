@@ -1,6 +1,8 @@
 import { renderQuizMedia } from '../src/QuizMedia.js';
 import { CalculatorWidget } from '../src/calculator/CalculatorWidget.js';
 import '../src/calculator/CalculatorWidget.css';
+import { TerminalQuestionDatabasePage } from './TerminalQuestionDatabasePage.js';
+import { TerminalLeaderboardPage } from './TerminalLeaderboardPage.js';
 
 const byId=id=>document.getElementById(id);
 const clock=byId('terminal-clock');
@@ -66,6 +68,14 @@ class TerminalPageController {
     this.selection={category:null,topic:null,difficulty:null};
     this.calculator=new CalculatorWidget({
       mount:byId('study-question-tools'),scene:null,documentRef:document,windowRef:window,
+    });
+    this.database=new TerminalQuestionDatabasePage({
+      embedded,onBack:()=>this.showHome(),
+      onViewChange:view=>{this.page=view==='detail'?'databaseDetail':'database';},
+    });
+    this.leaderboard=new TerminalLeaderboardPage({
+      embedded,onBack:()=>this.showHome(),
+      onViewChange:view=>{this.page=view==='detail'?'leaderboardDetail':view==='list'?'leaderboardList':'leaderboards';},
     });
     studyBackButton.addEventListener('click',()=>this.showHome());
     startStudyButton.addEventListener('click',()=>this.startStudy());
@@ -202,13 +212,41 @@ class TerminalPageController {
     },110);
   }
 
+  showDatabase(card){
+    if(this.page!=='home')return;
+    card?.classList.add('is-launching');clearTimeout(this.transitionTimer);
+    this.transitionTimer=setTimeout(()=>{
+      card?.classList.remove('is-launching');this.page='database';terminal.dataset.page='database';
+      terminal.classList.add('is-showing-database');
+      document.querySelectorAll('.terminal-home-page').forEach(element=>{element.inert=true;element.setAttribute('aria-hidden','true');});
+      this.database.open();byId('database-search').focus({preventScroll:true});
+    },110);
+  }
+
+  showLeaderboards(card){
+    if(this.page!=='home')return;
+    card?.classList.add('is-launching');clearTimeout(this.transitionTimer);
+    this.transitionTimer=setTimeout(()=>{
+      card?.classList.remove('is-launching');this.page='leaderboards';terminal.dataset.page='leaderboards';
+      terminal.classList.add('is-showing-leaderboards');
+      document.querySelectorAll('.terminal-home-page').forEach(element=>{element.inert=true;element.setAttribute('aria-hidden','true');});
+      this.leaderboard.open();byId('leaderboard-back-button').focus({preventScroll:true});
+    },110);
+  }
+
   showHome({immediate=false}={}){
-    if(this.page==='home'&&!terminal.classList.contains('is-showing-study'))return;
+    if(this.page==='home'&&!terminal.classList.contains('is-showing-study')
+      &&!terminal.classList.contains('is-showing-database')
+      &&!terminal.classList.contains('is-showing-leaderboards'))return;
+    const previousPage=this.page;
     if(this.state?.pending)this.request('end');
     clearTimeout(this.transitionTimer);this.calculator.close({reset:true});this.page='home';terminal.dataset.page='home';
-    terminal.classList.remove('is-showing-study');studyPage.inert=true;studyPage.setAttribute('aria-hidden','true');
+    terminal.classList.remove('is-showing-study','is-showing-database','is-showing-leaderboards');studyPage.inert=true;studyPage.setAttribute('aria-hidden','true');
+    this.database.hide();this.leaderboard.hide();
     document.querySelectorAll('.terminal-home-page').forEach(element=>{element.inert=false;element.setAttribute('aria-hidden','false');});
-    if(!immediate)document.querySelector('.card-study')?.focus({preventScroll:true});
+    if(!immediate)document.querySelector(previousPage.startsWith('database')?'.card-database'
+      :previousPage.startsWith('leaderboard')?'.card-leaderboard':'.card-study')
+      ?.focus({preventScroll:true});
   }
 
   startStudy(){
@@ -250,9 +288,13 @@ class TerminalPreviewController {
     this.finishTimer=setTimeout(()=>{this.isTransitioning=false;document.body.classList.remove('is-transitioning');afterTransition?.();},this.transitionDuration()+30);
   }
   handleKeydown(event){
-    if(event.key==='Escape'&&!event.repeat&&this.isTerminalOpen&&this.pageController.page!=='home'){
+    if(event.key==='Escape'&&!event.repeat&&this.pageController.page!=='home'){
       event.preventDefault();
-      if(['studyQuestion','studyResult'].includes(this.pageController.page))this.pageController.backToSetup();
+      if(this.pageController.page==='databaseDetail')this.pageController.database.escape();
+      else if(this.pageController.page.startsWith('leaderboard')){
+        if(!this.pageController.leaderboard.escape())this.pageController.showHome();
+      }
+      else if(['studyQuestion','studyResult'].includes(this.pageController.page))this.pageController.backToSetup();
       else this.pageController.showHome();
       return;
     }
@@ -284,13 +326,18 @@ function showPreviewMessage(message){
 function selectCard(card){
   cards.forEach(item=>item.classList.toggle('is-selected',item===card));
   if(card.dataset.mode==='Study Mode'){terminalPageController.showStudy(card);return;}
+  if(card.dataset.mode==='Question Database'){terminalPageController.showDatabase(card);return;}
+  if(card.dataset.mode==='Leaderboards'){terminalPageController.showLeaderboards(card);return;}
   showPreviewMessage(`${card.dataset.mode} selected · visual preview only`);
 }
 cards.forEach(card=>{
   card.addEventListener('click',()=>selectCard(card));
   card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();selectCard(card);}});
 });
-themeSelect.addEventListener('change',()=>{applyTheme(themeSelect.value);showPreviewMessage(`${themeSelect.selectedOptions[0].textContent} interface enabled`);});
+themeSelect.addEventListener('change',()=>{
+  applyTheme(themeSelect.value);terminalPageController.leaderboard.handleThemeChange();
+  showPreviewMessage(`${themeSelect.selectedOptions[0].textContent} interface enabled`);
+});
 applyTheme(loadTheme(),false);
 const terminalPageController=new TerminalPageController();
 const terminalPreviewController=new TerminalPreviewController({

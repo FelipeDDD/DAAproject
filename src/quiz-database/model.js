@@ -32,7 +32,7 @@ export function filterQuizReviewRecords(records,{category='',topic='',difficulty
   const needle=search.trim().toLocaleLowerCase('de');
   const filtered=records.filter(record=>{
     const question=record.preview;
-    const haystack=[record.template.id,record.template.topic,question.question,question.explanation]
+    const haystack=[record.template.id,record.template.category,record.template.topic,question.question,question.explanation]
       .filter(value=>typeof value==='string').join('\n').toLocaleLowerCase('de');
     return (!category||record.template.category===category)
       &&(!topic||record.template.topic===topic)

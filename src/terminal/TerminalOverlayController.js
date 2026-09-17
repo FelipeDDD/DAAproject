@@ -24,6 +24,14 @@ export class TerminalOverlayController {
     this.frame.src = `${import.meta.env?.BASE_URL ?? '/'}prototype-ui/computer-ui-preview.html?embedded=1`;
     document.body.append(this.root);
     this.onMessage = event => {
+      if (event.origin === location.origin && event.source === this.frame.contentWindow &&
+        event.data?.type === 'daa-terminal-database-request') {
+        void this.databaseBridge().then(bridge=>bridge.handle(event));return;
+      }
+      if (event.origin === location.origin && event.source === this.frame.contentWindow &&
+        event.data?.type === 'daa-terminal-leaderboard-request') {
+        void this.leaderboardBridge().then(bridge=>bridge.handle(event));return;
+      }
       if (!this.studyBridge && this.scene.soloStudy) {
         this.studyBridge=new TerminalStudyBridge({frame:this.frame,controller:this.scene.soloStudy});
       }
@@ -33,6 +41,8 @@ export class TerminalOverlayController {
     };
     this.onKey = event => {
       if (!this.active) return;
+      // The iframe owns internal Escape navigation. Its home page explicitly asks us to close.
+      if (document.activeElement === this.frame) return;
       if (event.key === 'Escape') {
         event.preventDefault();
         if (event.type === 'keydown' && !event.repeat) void this.close();
@@ -54,6 +64,33 @@ export class TerminalOverlayController {
 
   get active() { return this.isOpen || this.isTransitioning; }
   duration(ms) { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : ms; }
+
+  focusContent() {
+    if (!this.active || this.disposed) return false;
+    this.frame.focus?.({ preventScroll: true });
+    this.frame.contentWindow?.focus();
+    return true;
+  }
+
+  databaseBridge() {
+    if(!this.databaseBridgePromise)this.databaseBridgePromise=import('./TerminalQuestionDatabaseBridge.js')
+      .then(({TerminalQuestionDatabaseBridge})=>{
+        const bridge=new TerminalQuestionDatabaseBridge({frame:this.frame});
+        if(this.disposed)bridge.destroy();
+        return bridge;
+      });
+    return this.databaseBridgePromise;
+  }
+
+  leaderboardBridge() {
+    if(!this.leaderboardBridgePromise)this.leaderboardBridgePromise=import('./TerminalLeaderboardBridge.js')
+      .then(({TerminalLeaderboardBridge})=>{
+        const bridge=new TerminalLeaderboardBridge({frame:this.frame,presence:this.scene.presence});
+        if(this.disposed)bridge.destroy();
+        return bridge;
+      });
+    return this.leaderboardBridgePromise;
+  }
 
   animate(element, frames, ms, delay = 0) {
     const animation = element.animate(frames, {
@@ -143,7 +180,7 @@ export class TerminalOverlayController {
     this.isOpen = true;
     this.isTransitioning = false;
     this.frame.inert = false;
-    this.frame.contentWindow?.focus();
+    this.focusContent();
     if (this.closeRequested) { this.closeRequested = false; void this.close(); }
   }
 
@@ -198,6 +235,8 @@ export class TerminalOverlayController {
     this.finishCamera?.();
     this.animations.forEach(animation => animation.cancel());
     this.studyBridge?.destroy();
+    void this.databaseBridgePromise?.then(bridge=>bridge.destroy());
+    void this.leaderboardBridgePromise?.then(bridge=>bridge.destroy());
     this.restore();
     window.removeEventListener('message', this.onMessage);
     window.removeEventListener('keydown', this.onKey, true);

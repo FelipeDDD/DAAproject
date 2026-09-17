@@ -4177,22 +4177,6 @@ export default [
     "source": "netzwerk.csv"
   },
   {
-    "id": "netzwerk-088",
-    "category": "Netzwerk",
-    "topic": "Topologien",
-    "difficulty": "medium",
-    "question": "Welcher Nachteil passt zur Ringtopologie laut Unterrichtsmaterial?",
-    "answers": [
-      "Ein einzelner Unterbruch kann alles stoppen",
-      "Sie benötigt immer einen zentralen Switch",
-      "Sie ist besonders leicht erweiterbar",
-      "Sie hat keine Verzögerung bei der Weiterleitung"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Eine Unterbrechung im Ring kann die Kommunikation des gesamten Rings stoppen.",
-    "source": "netzwerk.csv"
-  },
-  {
     "id": "netzwerk-089",
     "category": "Netzwerk",
     "topic": "Topologien",
@@ -4270,22 +4254,6 @@ export default [
     ],
     "correctAnswer": 1,
     "explanation": "Full Mesh bedeutet direkte Verbindung jedes Teilnehmers mit jedem anderen.",
-    "source": "netzwerk.csv"
-  },
-  {
-    "id": "netzwerk-094",
-    "category": "Netzwerk",
-    "topic": "Topologien",
-    "difficulty": "hard",
-    "question": "Wie viele direkte Verbindungen benötigt ein Full-Mesh-Netz mit 10 Teilnehmern laut Beispiel im Material?",
-    "answers": [
-      "10",
-      "20",
-      "45",
-      "90"
-    ],
-    "correctAnswer": 2,
-    "explanation": "Für 10 Teilnehmer nennt das Material 45 Verbindungen.",
     "source": "netzwerk.csv"
   },
   {
@@ -4606,38 +4574,6 @@ export default [
     ],
     "correctAnswer": 0,
     "explanation": "Subnetting teilt ein größeres Netzwerk in kleinere eigenständige Teilnetze.",
-    "source": "netzwerk.csv"
-  },
-  {
-    "id": "netzwerk-115",
-    "category": "Netzwerk",
-    "topic": "Subnetting",
-    "difficulty": "medium",
-    "question": "Welcher Vorteil von Subnetting wird im Material genannt?",
-    "answers": [
-      "Mehr Datenstau",
-      "Weniger Datenstau",
-      "Keine IP-Adressen nötig",
-      "Keine Router mehr nötig"
-    ],
-    "correctAnswer": 1,
-    "explanation": "Kleinere Netze können Datenstau reduzieren.",
-    "source": "netzwerk.csv"
-  },
-  {
-    "id": "netzwerk-116",
-    "category": "Netzwerk",
-    "topic": "Subnetting",
-    "difficulty": "medium",
-    "question": "Welcher Sicherheitsaspekt wird beim Subnetting im Material genannt?",
-    "answers": [
-      "Jedes Gerät kann fremden Datenverkehr besser mitlesen",
-      "Geräte können voneinander stärker getrennt werden",
-      "Alle Daten werden automatisch verschlüsselt",
-      "Es ersetzt Firewalls vollständig"
-    ],
-    "correctAnswer": 1,
-    "explanation": "Segmentierung kann verhindern, dass Geräte fremden Datenverkehr einfach mitverfolgen.",
     "source": "netzwerk.csv"
   },
   {
@@ -6814,22 +6750,6 @@ export default [
     ],
     "correctAnswer": 1,
     "explanation": "Der Sicherheitsunterschied ist ein Kernthema im Material.",
-    "source": "netzwerk.csv"
-  },
-  {
-    "id": "netzwerk-253",
-    "category": "Netzwerk",
-    "topic": "FTP-SFTP",
-    "difficulty": "hard",
-    "question": "Welcher Vergleich passt laut Material am ehesten?",
-    "answers": [
-      "FTP = offener Brief, SFTP = Tresor",
-      "FTP = Tresor, SFTP = offene Postkarte",
-      "FTP = Telefonbuch, SFTP = Router",
-      "FTP = Klingeln, SFTP = Busy"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Das Material vergleicht unverschlüsseltes FTP mit offenem Transport und SFTP mit geschütztem Tunnel.",
     "source": "netzwerk.csv"
   },
   {

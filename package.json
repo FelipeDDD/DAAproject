@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "pretest": "node scripts/sync-quiz-data.mjs",
-    "test": "node --test",
+    "test": "node --test \"tests/*.test.js\"",
     "test:multiplayer": "node --env-file=.env.local scripts/check-multiplayer.mjs",
     "test:doors-online": "node --env-file=.env.local scripts/check-shared-doors.mjs",
     "test:characters": "node --env-file=.env.local scripts/check-characters.mjs",

@@ -29,6 +29,27 @@ function releaseCurrentCharacter(){
 function releaseOnPageHide(){void releaseCurrentCharacter().catch(()=>{});}
 window.addEventListener('pagehide',releaseOnPageHide);
 
+function isTextEntry(element){
+  return element instanceof HTMLInputElement||element instanceof HTMLTextAreaElement
+    ||element instanceof HTMLSelectElement||element?.isContentEditable;
+}
+
+function restoreProjectFocus(){
+  if(document.visibilityState==='hidden'||gameArea.hidden||menu.pending)return;
+  requestAnimationFrame(()=>{
+    if(document.visibilityState==='hidden'||gameArea.hidden)return;
+    const activeScene=game?.scene.getScenes(true)[0];
+    if(activeScene?.terminal?.focusContent())return;
+    if(isTextEntry(document.activeElement))return;
+    activeScene?.input.keyboard.resetKeys();
+    document.getElementById('game')?.focus({preventScroll:true});
+  });
+}
+
+function restoreFocusWhenVisible(){if(document.visibilityState==='visible')restoreProjectFocus();}
+window.addEventListener('focus',restoreProjectFocus);
+document.addEventListener('visibilitychange',restoreFocusWhenVisible);
+
 async function changeCharacter(event){
   if(menu.pending||pausedScene)return;
   const activeScene=game?.scene.getScenes(true)[0];
@@ -66,6 +87,8 @@ if (import.meta.hot) {
     changeButton.removeEventListener('click',changeCharacter);
     window.removeEventListener('character-session-lost',changeCharacter);
     window.removeEventListener('pagehide',releaseOnPageHide);
+    window.removeEventListener('focus',restoreProjectFocus);
+    document.removeEventListener('visibilitychange',restoreFocusWhenVisible);
     document.getElementById('character-list').replaceChildren();
   });
 }

@@ -132,3 +132,36 @@ test('Escape during opening queues the same reverse close; reduced motion and de
   assert.equal(h.scene.input.keyboard.enabled, true);
   assert.equal(h.game.inert, false);
 });
+
+test('parent overlay leaves Escape navigation to the focused terminal iframe', async t => {
+  const h = harness(t, true), controller = new TerminalOverlayController(h.scene);
+  await controller.open(h.computer);
+  document.activeElement = controller.frame;
+  let prevented = false;
+  h.listeners.get('keydown')({
+    key: 'Escape', type: 'keydown', target: controller.frame,
+    preventDefault() { prevented = true; }, stopImmediatePropagation() {},
+  });
+  await Promise.resolve();
+  assert.equal(controller.isOpen, true);
+  assert.equal(prevented, false);
+  document.activeElement = h.game;
+  await controller.close();
+  controller.destroy();
+});
+
+test('an open terminal can restore iframe focus after returning to the browser tab', async t => {
+  const h = harness(t, true), controller = new TerminalOverlayController(h.scene);
+  let frameFocuses = 0, windowFocuses = 0;
+  controller.frame.focus = () => { frameFocuses++; };
+  controller.frame.contentWindow.focus = () => { windowFocuses++; };
+  assert.equal(controller.focusContent(), false);
+  await controller.open(h.computer);
+  const openingFrameFocuses=frameFocuses,openingWindowFocuses=windowFocuses;
+  assert.equal(controller.focusContent(), true);
+  assert.equal(frameFocuses,openingFrameFocuses+1);
+  assert.equal(windowFocuses,openingWindowFocuses+1);
+  await controller.close();
+  assert.equal(controller.focusContent(), false);
+  controller.destroy();
+});

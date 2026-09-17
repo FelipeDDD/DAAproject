@@ -157,6 +157,13 @@ O build inclui essa página. Não são feitas chamadas adicionais ao Convex para
 ou fechar o terminal. O preview isolado continua acessível pelo endereço anterior;
 a animação ligada ao computador é testada entrando pelo mapa do jogo.
 
+O leaderboard do terminal é renderizado por `prototype-ui/TerminalLeaderboardPage.js`.
+Os ajustes exclusivos do tema Futuristic ficam em
+`prototype-ui/leaderboard-futuristic.css`; o tema Subtle permanece no estilo-base.
+No Futuristic, cores de cards e retratos são determinadas pela posição: dourado no
+primeiro lugar, magenta no segundo, cyan no terceiro e índigo do quarto em diante.
+Essa classificação também é aplicada automaticamente ao retrato aberto em Details.
+
 Testes locais de geometria, controles, animação, retorno da câmera, repetição,
 Esc durante abertura e reduced motion: `node --test tests/terminal.test.js`.
 
