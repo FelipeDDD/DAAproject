@@ -1,0 +1,361 @@
+/*
+ * Approved Study screen, promoted from prototype-ui-test-3.
+ * The full rules are synchronized from the retained Test 3 stylesheet.
+ */
+html.terminal-approved-v3 {
+  --test-3-kicker-font-size: 14px;
+  --test-3-label-font-size: 9px;
+  --test-3-heading-font-size: 20px;
+  --test-3-copy-font-size: 14px;
+  --test-3-choice-font-size: 13px;
+  --test-3-start-font-size: 20px;
+  --test-3-category-min-height: 132px;
+  --test-3-topic-min-height: 154px;
+  --test-3-section-gap: 15px;
+  --test-3-footer-padding-y: 22px;
+  --test-3-start-height: 62px;
+  --test-3-blue: 66, 207, 237;
+  --test-3-violet: 151, 105, 232;
+  --test-3-magenta: 226, 87, 190;
+  --study-page-bg: linear-gradient(135deg, rgba(4, 31, 61, .88) 0%, rgba(18, 20, 58, .83) 49%, rgba(65, 12, 58, .82) 100%);
+  --study-panel-bg: linear-gradient(135deg, rgba(10, 40, 70, .7), rgba(38, 17, 55, .68));
+}
+
+/* Both Futuristic and Subtle use the same blue-to-magenta direction. */
+html.terminal-approved-v3 .study-page-frame {
+  border-width: 1px;
+  border-color: rgba(105, 191, 241, .46);
+  background: var(--study-page-bg);
+  box-shadow: 0 24px 74px rgba(0, 0, 0, .46), 0 0 30px rgba(47, 143, 224, .15), inset 0 0 42px rgba(203, 71, 205, .08);
+  backdrop-filter: blur(6px) saturate(1.1);
+}
+
+html.terminal-approved-v3 .study-header {
+  padding: 26px 31px 22px;
+  background: linear-gradient(110deg, rgba(var(--test-3-blue), .1), transparent 42%, rgba(var(--test-3-magenta), .1));
+}
+
+html.terminal-approved-v3 .study-heading p {
+  font-size: var(--test-3-kicker-font-size);
+}
+
+html.terminal-approved-v3 .study-heading h1 {
+  background-image: linear-gradient(105deg, rgb(var(--test-3-blue)), rgb(var(--test-3-violet)) 50%, rgb(var(--test-3-magenta)));
+  font-size: clamp(34px, 4vw, 57px);
+}
+
+html.terminal-approved-v3 .study-heading > span {
+  font-size: var(--test-3-copy-font-size);
+}
+
+html.terminal-approved-v3 .study-config {
+  grid-template-rows: minmax(var(--test-3-category-min-height), auto) minmax(var(--test-3-topic-min-height), .72fr) auto;
+  gap: var(--test-3-section-gap);
+  padding: 18px 25px;
+}
+
+html.terminal-approved-v3 .study-section {
+  --section-accent: var(--test-3-blue);
+  position: relative;
+  overflow: hidden;
+  padding: 17px 19px;
+  border-color: rgba(var(--section-accent), .36);
+  border-width: 1px;
+  border-left: 3px solid rgba(var(--section-accent), .76);
+  background: linear-gradient(110deg, rgba(var(--section-accent), .1), transparent 43%), var(--study-panel-bg);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .15), inset 3px 0 18px rgba(var(--section-accent), .075);
+}
+
+html.terminal-approved-v3 .study-section::after {
+  content: "";
+  position: absolute;
+  inset: 0 60% auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(var(--section-accent), .92), transparent);
+  box-shadow: 0 0 9px rgba(var(--section-accent), .38);
+}
+
+html.terminal-approved-v3 .study-topic { --section-accent: var(--test-3-violet); }
+html.terminal-approved-v3 .study-difficulty { --section-accent: var(--test-3-magenta); }
+
+html.terminal-approved-v3 .study-section-heading {
+  gap: 14px;
+  margin-bottom: 13px;
+}
+
+html.terminal-approved-v3 .study-section-heading p,
+html.terminal-approved-v3 .study-option-count {
+  color: rgba(var(--section-accent), .9);
+  font-size: var(--test-3-label-font-size);
+}
+
+html.terminal-approved-v3 .study-section-heading h2 {
+  font-size: var(--test-3-heading-font-size);
+}
+
+html.terminal-approved-v3 .study-step {
+  width: 36px;
+  height: 36px;
+  border-color: rgba(var(--section-accent), .56);
+  color: rgb(var(--section-accent));
+  background: rgba(var(--section-accent), .12);
+  font-size: 12px;
+  box-shadow: inset 0 0 13px rgba(var(--section-accent), .11);
+}
+
+html.terminal-approved-v3 .study-choice {
+  min-height: 43px;
+  padding: 9px 12px;
+  border-color: rgba(var(--section-accent), .25);
+  color: #bdcbe0;
+  background: rgba(7, 16, 35, .7);
+  font-size: var(--test-3-choice-font-size);
+}
+
+html.terminal-approved-v3 .study-choice:hover,
+html.terminal-approved-v3 .study-choice:focus-visible {
+  border-color: rgba(var(--section-accent), .66);
+  color: #f5f9ff;
+  box-shadow: 0 0 14px rgba(var(--section-accent), .16);
+}
+
+html.terminal-approved-v3 .study-choice.is-selected {
+  border-color: rgb(var(--section-accent));
+  color: white;
+  background: linear-gradient(120deg, rgba(var(--section-accent), .48), rgba(66, 49, 140, .46));
+  box-shadow: 0 0 3px rgba(255,255,255,.36), 0 0 18px rgba(var(--section-accent), .34), inset 0 0 18px rgba(var(--section-accent), .2);
+}
+
+html.terminal-approved-v3 .study-choice.is-selected::before {
+  color: rgb(var(--section-accent));
+  font-size: 9px;
+}
+
+/* Difficulty deliberately uses one color per button in both themes. */
+html.terminal-approved-v3 .difficulty-options .study-choice:nth-child(1) { --section-accent: var(--test-3-blue); }
+html.terminal-approved-v3 .difficulty-options .study-choice:nth-child(2) { --section-accent: var(--test-3-violet); }
+html.terminal-approved-v3 .difficulty-options .study-choice:nth-child(3) { --section-accent: var(--test-3-magenta); }
+
+html.terminal-approved-v3 .study-footer {
+  min-height: 96px;
+  padding: var(--test-3-footer-padding-y) 31px;
+  background: linear-gradient(90deg, rgba(var(--test-3-blue), .11), rgba(var(--test-3-violet), .11), rgba(var(--test-3-magenta), .1));
+}
+
+html.terminal-approved-v3 .study-summary span,
+html.terminal-approved-v3 .study-escape-hint {
+  font-size: var(--test-3-label-font-size);
+}
+
+html.terminal-approved-v3 .study-summary strong {
+  font-size: var(--test-3-choice-font-size);
+}
+
+html.terminal-approved-v3 .start-study-button {
+  min-width: 310px;
+  min-height: var(--test-3-start-height);
+  padding: 14px 29px;
+  border-width: 1px;
+  border-color: rgba(224, 244, 255, .85);
+  background: linear-gradient(105deg, rgba(20, 125, 183, .9), rgba(73, 73, 178, .9), rgba(183, 53, 157, .87));
+  box-shadow: 0 11px 29px rgba(0,0,0,.27), 0 0 20px rgba(61, 151, 224, .27), 0 0 24px rgba(190, 70, 202, .17);
+  font-size: var(--test-3-start-font-size);
+}
+
+/* Keep Subtle's dimensions, but restore the bright terminal lighting in Futuristic. */
+html.terminal-approved-v3[data-theme="futuristic"] .terminal-shell.is-showing-study {
+  width: min(1540px, calc(100% - 54px));
+  height: 100vh;
+  min-height: 100vh;
+  padding: 22px 0 25px;
+  grid-template-rows: auto auto 1fr auto;
+}
+
+html.terminal-approved-v3[data-theme="futuristic"] .study-page {
+  inset: 76px 4% 18px;
+}
+
+html.terminal-approved-v3[data-theme="futuristic"] .study-page-frame {
+  border-color: rgba(111, 232, 255, .92);
+  box-shadow:
+    0 0 4px rgba(255, 255, 255, .9),
+    0 0 18px rgba(0, 157, 255, .82),
+    0 0 38px rgba(36, 93, 255, .45),
+    0 0 54px rgba(221, 67, 230, .2),
+    inset 0 0 18px rgba(0, 157, 255, .28),
+    inset 0 0 42px rgba(211, 65, 224, .12),
+    0 24px 74px rgba(0, 0, 0, .52);
+}
+
+html.terminal-approved-v3[data-theme="futuristic"] .study-header {
+  border-bottom-color: rgba(99, 218, 255, .52);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .12), 0 8px 24px rgba(37, 111, 230, .13);
+}
+
+html.terminal-approved-v3[data-theme="futuristic"] .study-section {
+  border-color: rgba(var(--section-accent), .72);
+  border-left-color: rgb(var(--section-accent));
+  box-shadow:
+    0 0 3px rgba(255, 255, 255, .38),
+    0 0 14px rgba(var(--section-accent), .5),
+    0 12px 28px rgba(0, 0, 0, .2),
+    inset 3px 0 20px rgba(var(--section-accent), .18),
+    inset 0 0 26px rgba(var(--section-accent), .09);
+}
+
+html.terminal-approved-v3[data-theme="futuristic"] .study-section::after {
+  height: 2px;
+  box-shadow: 0 0 5px rgba(255, 255, 255, .72), 0 0 14px rgba(var(--section-accent), .9);
+}
+
+html.terminal-approved-v3[data-theme="futuristic"] .study-step {
+  border-color: rgba(var(--section-accent), .9);
+  box-shadow: 0 0 10px rgba(var(--section-accent), .48), inset 0 0 14px rgba(var(--section-accent), .23);
+}
+
+html.terminal-approved-v3[data-theme="futuristic"] .study-choice {
+  border-color: rgba(var(--section-accent), .4);
+  box-shadow: inset 0 0 12px rgba(var(--section-accent), .06);
+}
+
+html.terminal-approved-v3[data-theme="futuristic"] .study-choice:hover,
+html.terminal-approved-v3[data-theme="futuristic"] .study-choice:focus-visible {
+  border-color: rgb(var(--section-accent));
+  box-shadow: 0 0 4px rgba(255, 255, 255, .35), 0 0 16px rgba(var(--section-accent), .66), inset 0 0 15px rgba(var(--section-accent), .14);
+}
+
+html.terminal-approved-v3[data-theme="futuristic"] .study-choice.is-selected {
+  box-shadow:
+    0 0 4px rgba(255, 255, 255, .7),
+    0 0 13px rgba(var(--section-accent), .95),
+    0 0 25px rgba(var(--section-accent), .48),
+    inset 0 0 20px rgba(var(--section-accent), .32);
+}
+
+html.terminal-approved-v3[data-theme="futuristic"] .study-footer {
+  border-top-color: rgba(111, 216, 255, .54);
+  box-shadow: 0 -8px 25px rgba(70, 101, 235, .11), inset 0 1px rgba(255, 255, 255, .12);
+}
+
+html.terminal-approved-v3[data-theme="futuristic"] .start-study-button {
+  border-color: #eefcff;
+  box-shadow:
+    0 0 5px #fff,
+    0 0 15px rgba(58, 213, 255, .95),
+    0 0 27px rgba(79, 89, 255, .72),
+    0 0 38px rgba(225, 67, 214, .42),
+    inset 0 0 20px rgba(126, 228, 255, .3),
+    0 12px 30px rgba(0, 0, 0, .34);
+}
+
+html.terminal-approved-v3[data-theme="futuristic"] .start-study-button:hover,
+html.terminal-approved-v3[data-theme="futuristic"] .start-study-button:focus-visible {
+  box-shadow:
+    0 0 6px #fff,
+    0 0 21px rgba(58, 213, 255, 1),
+    0 0 34px rgba(79, 89, 255, .86),
+    0 0 48px rgba(225, 67, 214, .58),
+    inset 0 0 24px rgba(126, 228, 255, .38),
+    0 15px 34px rgba(0, 0, 0, .38);
+}
+
+/* Subtle deliberately reduces color and glow while keeping the same geometry. */
+html.terminal-approved-v3[data-theme="subtle"] {
+  --study-page-bg: linear-gradient(135deg, rgba(7, 27, 49, .68) 0%, rgba(21, 22, 49, .64) 49%, rgba(48, 20, 47, .62) 100%);
+  --study-panel-bg: linear-gradient(135deg, rgba(14, 35, 57, .54), rgba(34, 23, 45, .52));
+}
+
+html.terminal-approved-v3[data-theme="subtle"] .study-page-frame {
+  border-color: rgba(119, 174, 211, .3);
+  box-shadow:
+    0 24px 68px rgba(0, 0, 0, .4),
+    0 0 18px rgba(47, 125, 184, .08),
+    inset 0 0 34px rgba(111, 78, 157, .045);
+  backdrop-filter: blur(5px) saturate(.92);
+}
+
+html.terminal-approved-v3[data-theme="subtle"] .study-header {
+  background: linear-gradient(110deg, rgba(var(--test-3-blue), .055), transparent 44%, rgba(var(--test-3-magenta), .05));
+}
+
+html.terminal-approved-v3[data-theme="subtle"] .study-heading h1 {
+  background-image: linear-gradient(105deg, #83bfce, #999cc1 50%, #c38ab7);
+}
+
+html.terminal-approved-v3[data-theme="subtle"] .study-section {
+  border-color: rgba(var(--section-accent), .23);
+  border-left-color: rgba(var(--section-accent), .48);
+  background: linear-gradient(110deg, rgba(var(--section-accent), .05), transparent 45%), var(--study-panel-bg);
+  box-shadow: 0 9px 24px rgba(0, 0, 0, .12), inset 3px 0 15px rgba(var(--section-accent), .035);
+  backdrop-filter: blur(3px) saturate(.9);
+}
+
+html.terminal-approved-v3[data-theme="subtle"] .study-section::after {
+  opacity: .58;
+  box-shadow: 0 0 6px rgba(var(--section-accent), .18);
+}
+
+html.terminal-approved-v3[data-theme="subtle"] .study-step {
+  border-color: rgba(var(--section-accent), .34);
+  color: rgba(var(--section-accent), .78);
+  background: rgba(var(--section-accent), .055);
+  box-shadow: none;
+}
+
+html.terminal-approved-v3[data-theme="subtle"] .study-section-heading p,
+html.terminal-approved-v3[data-theme="subtle"] .study-option-count {
+  color: rgba(var(--section-accent), .68);
+}
+
+html.terminal-approved-v3[data-theme="subtle"] .study-choice {
+  border-color: rgba(var(--section-accent), .16);
+  color: #aeb9ca;
+  background: rgba(10, 18, 33, .62);
+}
+
+html.terminal-approved-v3[data-theme="subtle"] .study-choice:hover,
+html.terminal-approved-v3[data-theme="subtle"] .study-choice:focus-visible {
+  border-color: rgba(var(--section-accent), .4);
+  box-shadow: 0 0 9px rgba(var(--section-accent), .08);
+}
+
+html.terminal-approved-v3[data-theme="subtle"] .study-choice.is-selected {
+  border-color: rgba(var(--section-accent), .72);
+  background: linear-gradient(120deg, rgba(var(--section-accent), .27), rgba(69, 58, 117, .27));
+  box-shadow: 0 0 11px rgba(var(--section-accent), .13), inset 0 0 13px rgba(var(--section-accent), .09);
+}
+
+html.terminal-approved-v3[data-theme="subtle"] .study-choice.is-selected::before {
+  color: rgba(var(--section-accent), .72);
+}
+
+html.terminal-approved-v3[data-theme="subtle"] .study-footer {
+  border-top-color: rgba(117, 158, 194, .22);
+  background: linear-gradient(90deg, rgba(var(--test-3-blue), .05), rgba(var(--test-3-violet), .05), rgba(var(--test-3-magenta), .045));
+}
+
+html.terminal-approved-v3[data-theme="subtle"] .start-study-button {
+  border-color: rgba(169, 194, 216, .52);
+  background: linear-gradient(105deg, rgba(30, 91, 126, .7), rgba(67, 66, 134, .68), rgba(126, 56, 112, .66));
+  box-shadow: 0 10px 25px rgba(0,0,0,.24), 0 0 12px rgba(61, 131, 180, .11), 0 0 14px rgba(151, 72, 153, .07);
+}
+
+html.terminal-approved-v3[data-theme="subtle"] .start-study-button:hover,
+html.terminal-approved-v3[data-theme="subtle"] .start-study-button:focus-visible {
+  box-shadow: 0 12px 28px rgba(0,0,0,.27), 0 0 16px rgba(61, 131, 180, .17), 0 0 18px rgba(151, 72, 153, .11);
+}
+
+@media (max-width: 760px) {
+  html.terminal-approved-v3 {
+    --test-3-kicker-font-size: 13px;
+    --test-3-label-font-size: 8px;
+    --test-3-heading-font-size: 18px;
+    --test-3-copy-font-size: 13px;
+    --test-3-choice-font-size: 12px;
+    --test-3-start-font-size: 18px;
+    --test-3-category-min-height: auto;
+    --test-3-topic-min-height: 180px;
+  }
+  html.terminal-approved-v3 .study-config { grid-template-rows: auto minmax(var(--test-3-topic-min-height), auto) auto; }
+  html.terminal-approved-v3 .start-study-button { min-width: 0; }
+}

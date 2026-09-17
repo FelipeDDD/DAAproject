@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="futuristic">
+<html lang="en" class="terminal-approved-v3" data-theme="futuristic">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,7 @@
     <title>DAA Project Terminal — UI Preview</title>
     <link rel="stylesheet" href="./computer-ui-preview.css">
     <link rel="stylesheet" href="./computer-ui-futuristic.css">
+    <link rel="stylesheet" href="./computer-ui-study-v3.css">
     <script type="module" src="./computer-ui-preview.js"></script>
   </head>
   <body>
@@ -150,9 +151,7 @@
       <section id="study-page" class="study-page" aria-labelledby="study-page-title" aria-hidden="true" inert>
         <div class="study-page-frame">
           <header class="study-header">
-            <button id="study-back-button" class="study-back-button" type="button">
-              <span aria-hidden="true">←</span> Back to Terminal
-            </button>
+            <p class="study-escape-hint"><kbd>Esc</kbd> Back to Terminal</p>
             <div class="study-heading">
               <p>DAA PROJECT</p>
               <h1 id="study-page-title">STUDY MODE</h1>
@@ -201,7 +200,9 @@
             <button id="start-study-button" class="start-study-button" type="button">
               <span>START STUDY</span><i aria-hidden="true">→</i>
             </button>
-            <p><kbd>Esc</kbd> Back to Terminal</p>
+            <button id="study-back-button" class="study-back-button" type="button">
+              <span aria-hidden="true">←</span> Back to Terminal
+            </button>
           </footer>
         </div>
       </section>

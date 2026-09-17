@@ -466,6 +466,7 @@ kbd { display: inline-grid; min-width: 21px; height: 21px; margin-right: 6px; pl
 }
 .study-back-button span { font-size: 17px; }
 .study-back-button:hover, .study-back-button:focus-visible { transform: translateX(-3px); border-color: var(--cyan); color: white; outline: none; }
+.study-escape-hint { justify-self: start; align-self: top; margin: 0; color: #6d88ad; font: 8px/1 ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; }
 .study-heading { text-align: center; }
 .study-heading p { margin: 0 0 3px; color: #dcecff; font: 800 12px/1 var(--title-font); letter-spacing: .22em; }
 .study-heading h1 {
@@ -562,7 +563,7 @@ kbd { display: inline-grid; min-width: 21px; height: 21px; margin-right: 6px; pl
 .start-study-button:hover, .start-study-button:focus-visible { transform: translateY(-2px); filter: brightness(1.15); outline: none; }
 .start-study-button:hover i { transform: translateX(4px); }
 .start-study-button.is-confirmed { border-color: #87ffd2; background: linear-gradient(105deg, rgba(10, 168, 150, .7), rgba(35, 112, 178, .7)); box-shadow: 0 0 24px rgba(51, 241, 178, .55); }
-.study-footer > p { justify-self: end; margin: 0; color: #6d88ad; font: 8px/1 ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; }
+.study-footer .study-back-button { justify-self: end; }
 
 [data-theme="futuristic"] .study-heading,
 [data-theme="futuristic"] .study-section-heading h2,
@@ -695,8 +696,9 @@ body.is-terminal-open .room-motto, body.is-terminal-open .book-labels { opacity:
   .category-options, .topic-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .study-choice { min-height: 36px; font-size: 10px; }
   .study-footer { grid-template-columns: 1fr; gap: 10px; padding: 13px 16px; }
-  .study-summary, .study-footer > p { display: none; }
+  .study-summary { display: none; }
   .start-study-button { width: min(100%, 360px); min-width: 0; justify-self: center; }
+  .study-footer .study-back-button { justify-self: center; }
 }
 
 @media (max-width: 500px) {
@@ -710,7 +712,7 @@ body.is-terminal-open .room-motto, body.is-terminal-open .book-labels { opacity:
   .mode-icon { margin-top: 22px; }
   .study-header { grid-template-columns: 1fr; gap: 12px; }
   .study-heading { grid-row: 1; text-align: center; }
-  .study-back-button { grid-row: 2; justify-self: center; }
+  .study-escape-hint { grid-row: 2; justify-self: center; }
   .difficulty-options { grid-template-columns: 1fr; }
   .study-choice { white-space: normal; }
 }

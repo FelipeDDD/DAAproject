@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <title>DAA Project Terminal — Layout Test 3</title>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { width: 100%; min-width: 320px; height: 100%; margin: 0; overflow: hidden; background: #020611; }
+      iframe { width: 100%; height: 100%; border: 0; opacity: 0; transition: opacity 180ms ease; }
+      body.is-ready iframe { opacity: 1; }
+      .loading { position: fixed; inset: 0; display: grid; place-items: center; padding: 24px; color: #8fdfff; font: 700 12px/1.6 ui-monospace, monospace; letter-spacing: .18em; text-align: center; }
+      body.is-ready .loading { display: none; }
+      body.has-error .loading { max-width: 520px; margin: auto; color: #ffb3cc; }
+    </style>
+    <script type="module" src="/prototype-ui-test-3/computer-ui-test-3.js"></script>
+  </head>
+  <body>
+    <div id="loading-message" class="loading" role="status">LOADING LAYOUT TEST 3</div>
+    <iframe
+      id="terminal-test-frame"
+      src="/prototype-ui/computer-ui-preview.html"
+      title="DAA Project Terminal layout test 3"
+    ></iframe>
+  </body>
+</html>
