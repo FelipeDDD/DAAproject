@@ -151,7 +151,7 @@
       <section id="study-page" class="study-page" aria-labelledby="study-page-title" aria-hidden="true" inert>
         <div class="study-page-frame">
           <header class="study-header">
-            <p class="study-escape-hint"><kbd>Esc</kbd> Back to Terminal</p>
+            <p class="study-escape-hint"><kbd>Esc</kbd> <span id="study-escape-label">Back to Terminal</span></p>
             <div class="study-heading">
               <p>DAA PROJECT</p>
               <h1 id="study-page-title">STUDY MODE</h1>
@@ -163,7 +163,7 @@
             </div>
           </header>
 
-          <div class="study-config" aria-label="Study Mode configuration">
+          <div id="study-config" class="study-config" aria-label="Study Mode configuration">
             <section class="study-section study-category" aria-labelledby="study-category-title">
               <div class="study-section-heading">
                 <span class="study-step">01</span>
@@ -192,7 +192,43 @@
             </section>
           </div>
 
-          <footer class="study-footer">
+          <section id="study-question-view" class="study-question-view" aria-labelledby="study-question-text" hidden>
+            <div class="study-question-meta">
+              <div id="study-question-tags" class="study-question-tags"></div>
+              <strong id="study-question-progress"></strong>
+            </div>
+            <div class="study-question-layout">
+              <div id="study-question-media" class="quiz-media study-question-media" role="region" aria-label="Additional question content" tabindex="0" hidden></div>
+              <div class="study-question-body">
+                <p class="study-question-kicker">CURRENT QUESTION</p>
+                <h2 id="study-question-text"></h2>
+                <div id="study-answer-options" class="study-answer-options" role="group" aria-label="Question answers"></div>
+                <div id="study-answer-feedback" class="study-answer-feedback" role="status" hidden></div>
+                <p id="study-question-explanation" class="study-question-explanation" hidden></p>
+              </div>
+            </div>
+            <div class="study-question-actions">
+              <div id="study-question-tools" class="study-question-tools"></div>
+              <button id="study-end-button" class="study-secondary-button" type="button">Back to Study Setup</button>
+              <button id="study-confirm-button" class="start-study-button study-primary-action" type="button">Confirm Answer</button>
+              <button id="study-next-button" class="start-study-button study-primary-action" type="button" hidden>Next Question <i aria-hidden="true">→</i></button>
+            </div>
+          </section>
+
+          <section id="study-result-view" class="study-result-view" aria-labelledby="study-result-title" hidden>
+            <p class="study-question-kicker">SESSION COMPLETE</p>
+            <h2 id="study-result-title">Study complete</h2>
+            <div class="study-result-score"><strong id="study-result-correct">0 / 0</strong><span>Correct answers</span></div>
+            <p id="study-result-accuracy">Accuracy: 0%</p>
+            <div class="study-result-actions">
+              <button id="study-again-button" class="start-study-button" type="button"><span>STUDY AGAIN</span><i aria-hidden="true">→</i></button>
+              <button id="study-result-back-button" class="study-secondary-button" type="button">Back to Study Setup</button>
+            </div>
+          </section>
+
+          <p id="study-page-status" class="study-page-status" role="status" aria-live="polite"></p>
+
+          <footer id="study-footer" class="study-footer">
             <div class="study-summary" aria-live="polite">
               <span>CURRENT SESSION</span>
               <strong id="study-summary">Netzwerk · All Topics · Mixed</strong>

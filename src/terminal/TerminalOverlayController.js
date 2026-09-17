@@ -1,5 +1,6 @@
 import { TERMINAL_ANIMATION as timing } from './config.js';
 import { getMonitorScreenBounds } from '../maps/terminalComputers.js';
+import { TerminalStudyBridge } from './TerminalStudyBridge.js';
 
 export class TerminalOverlayController {
   constructor(scene) {
@@ -23,6 +24,10 @@ export class TerminalOverlayController {
     this.frame.src = `${import.meta.env?.BASE_URL ?? '/'}prototype-ui/computer-ui-preview.html?embedded=1`;
     document.body.append(this.root);
     this.onMessage = event => {
+      if (!this.studyBridge && this.scene.soloStudy) {
+        this.studyBridge=new TerminalStudyBridge({frame:this.frame,controller:this.scene.soloStudy});
+      }
+      if (this.studyBridge?.accepts(event)) { void this.studyBridge.handle(event); return; }
       if (event.origin === location.origin && event.source === this.frame.contentWindow &&
         event.data?.type === 'daa-terminal-close') void this.close();
     };
@@ -149,6 +154,7 @@ export class TerminalOverlayController {
       return;
     }
     this.isTransitioning = true;
+    void this.studyBridge?.reset();
     this.phase = 'hide-content';
     this.frame.inert = true;
     this.root.focus({ preventScroll: true });
@@ -191,6 +197,7 @@ export class TerminalOverlayController {
     this.cameraTween?.stop();
     this.finishCamera?.();
     this.animations.forEach(animation => animation.cancel());
+    this.studyBridge?.destroy();
     this.restore();
     window.removeEventListener('message', this.onMessage);
     window.removeEventListener('keydown', this.onKey, true);

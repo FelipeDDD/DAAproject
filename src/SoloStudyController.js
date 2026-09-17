@@ -112,7 +112,7 @@ export class SoloStudyController {
     this.statistics.close();this.resetRun();this.root.hidden=false;
     this.status.textContent='Loading solo settings…';this.render();
     try{
-      this.options=await this.presence.client.query(this.presence.api.soloStudy.options,{});
+      await this.loadStudyOptions();
       this.status.textContent='Choose a solo mode.';
     }catch{this.status.textContent='Could not load solo settings.';}
     this.render();
@@ -122,6 +122,76 @@ export class SoloStudyController {
     this.session=null;this.runId=null;this.completionResult=null;this.newPersonalBest=false;
     this.finishingChallenge=false;this.statisticsPending=Promise.resolve();this.leaderboardOpen=false;
     this.leaderboardFromMap=false;
+  }
+
+  async loadStudyOptions() {
+    this.options=await this.presence.client.query(this.presence.api.soloStudy.options,{});
+    return this.options;
+  }
+
+  async startStudyFromTerminal(settings) {
+    if(this.pending)return this.terminalStudyState();
+    await this.statisticsPending;
+    this.resetRun();this.mode='study';this.pending=true;
+    this.status.textContent='Preparing questions…';this.render();
+    try{
+      const {characterId,sessionId}=this.presence.identity;
+      const result=await this.presence.client.mutation(this.presence.api.soloStudy.start,{
+        characterId,sessionId,mode:'study',...settings,
+      });
+      this.settings=result.settings;this.session=createSoloSession('study',result.questions);this.runId=result.runId;
+      this.status.textContent='';
+    }catch(error){
+      this.status.textContent=String(error).includes('No questions')
+        ?'No questions are available for these settings.'
+        :'Could not start Study Mode.';
+    }finally{this.pending=false;this.render();}
+    return this.terminalStudyState();
+  }
+
+  selectStudyAnswerFromTerminal(answerIndex) {
+    if(this.session?.mode==='study'&&this.session.select(answerIndex))this.renderQuestion();
+    return this.terminalStudyState();
+  }
+
+  confirmStudyAnswerFromTerminal() {
+    if(this.session?.mode==='study')this.confirm();
+    return this.terminalStudyState();
+  }
+
+  async nextStudyQuestionFromTerminal() {
+    if(this.session?.mode==='study')await this.next();
+    return this.terminalStudyState();
+  }
+
+  async endStudyFromTerminal() {
+    await this.statisticsPending;
+    this.resetRun();this.mode='study';this.status.textContent='';this.render();
+    return this.terminalStudyState();
+  }
+
+  terminalStudyState() {
+    const question=this.session?.mode==='study'?this.session.question:null;
+    const confirmed=this.session?.confirmedAnswer!==null&&this.session?.confirmedAnswer!==undefined;
+    return {
+      phase:this.session?.complete?'result':question?'question':'setup',
+      pending:this.pending,
+      status:this.status?.textContent??'',
+      options:this.options,
+      settings:this.settings,
+      ...(question?{
+        progress:this.session.progress,
+        question:{
+          id:question.id,category:question.category,topic:question.topic??null,
+          difficulty:question.difficulty,question:question.question,answers:question.answers,
+          media:question.media??null,correctAnswer:confirmed?question.correctAnswer:null,
+          explanation:confirmed&&this.session.explanationVisible?question.explanation??'':'',
+        },
+        selectedAnswer:this.session.selectedAnswer,
+        confirmedAnswer:confirmed?this.session.confirmedAnswer:null,
+      }:{}),
+      ...(this.session?.complete?{result:this.session.result()}:{}),
+    };
   }
 
   async start() {
@@ -147,14 +217,15 @@ export class SoloStudyController {
 
   confirm() {
     const result=this.session?.confirm();
-    if(!result){this.status.textContent='Select an answer first.';return;}
-    if(result.type==='complete'){this.finishChallenge();return;}
+    if(!result){this.status.textContent='Select an answer first.';return null;}
+    if(result.type==='complete'){this.finishChallenge();return result;}
     if(result.type==='timeoutSkip'){
       this.status.textContent='Question timed out. Skipped (-3).';this.markChallengeQuestionViewed();
-      if(this.session.complete)this.finishChallenge();this.render();return;
+      if(this.session.complete)this.finishChallenge();this.render();return result;
     }
     this.status.textContent=result.correct?'Correct.':'Incorrect.';this.renderQuestion();
     if(this.session.mode==='study')this.recordCurrentAnswer(result);
+    return result;
   }
 
   skipChallenge(){
