@@ -126,19 +126,22 @@ estados compartilhados ao voltar. Sem Convex configurado, usam os valores do Til
 
 ## Terminal ligado ao computador
 
-No jogo, aproxime-se da tela do computador na mesa ao lado da cadeira vermelha
-(parte superior da mesa) e use **[E] Open Terminal**. Back to Classroom ou Esc
+No jogo, aproxime-se da cadeira vermelha diante do computador e use
+**[E] Open Terminal**. Back to Classroom ou Esc
 executam o retorno ao monitor. Os cards continuam sendo o protótipo visual;
 Study, Challenge e multiplayer mantêm seus acessos e comportamento atuais.
 
-A entidade existente `Table_office-193` (257), em `Entities`, usa a propriedade
-string `interaction: terminalComputer`. Também é aceito Class/Type
-`terminalComputer`. Não há coordenadas desse computador no código.
+A entidade existente `chairLuxury-241` (287), em `Entities`, usa o Class/Type
+`terminalComputer`. A interação antiga de Solo Mode nessa cadeira está desativada,
+mas o respectivo controlador permanece disponível no projeto. Não há coordenadas
+desse terminal no código.
 `monitorOffsetX`, `monitorOffsetY`, `monitorWidth`, `monitorHeight` são floats
 em pixels do mundo, relativos ao canto superior esquerdo da entidade; o loader
-converte a âncora inferior dos objetos de tile. `interactionDistance` define
-a proximidade dos pés à tela. Ajuste essas propriedades no Tiled quando trocar
-o sprite. A cadeira vermelha conserva prioridade dentro de sua área de interação.
+converte a âncora inferior dos objetos de tile. `interactionOffsetX`,
+`interactionOffsetY`, `interactionWidth` e `interactionHeight` mantêm a área de
+interação sobre a cadeira enquanto a animação nasce da tela. `interactionDistance`
+define a proximidade dos pés à cadeira. Ajuste essas propriedades no Tiled ao
+trocar ou mover os sprites.
 
 `src/terminal/config.js` concentra os tempos (250 ms de câmera, 440 ms de expansão,
 140 ms de conteúdo e 120 ms de brilho), zoom adicional e defaults do monitor.
@@ -504,10 +507,10 @@ Teste realtime com o backend local rodando: `npm.cmd run test:emotes`.
 
 ### Solo Study Mode
 
-No mapa interno, aproxime-se da entidade `chairLuxury-241` e pressione **E**. Ela
-está marcada como `soloStudySeat` na layer `Entities`; posição, direção e ponto de
-assento ficam no TMJ. A placa `studyModeSign`, também em `Entities`, orienta o
-jogador pelo corredor e pode ser movida ou editada diretamente no Tiled.
+O acesso antigo de Solo Mode pela entidade `chairLuxury-241` está temporariamente
+desativado: essa cadeira agora abre o DAA Project Terminal. O código do painel
+anterior continua no projeto para possível reutilização. A placa `studyModeSign`,
+em `Entities`, ainda pode ser movida ou editada diretamente no Tiled.
 
 `convex/soloStudy.js` prepara a sequência usando o mesmo banco, filtros,
 anti-repetição, geração e shuffle do multiplayer. Ele grava as perguntas vistas

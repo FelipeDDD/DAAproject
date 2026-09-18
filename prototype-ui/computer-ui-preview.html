@@ -3,12 +3,13 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="dark">
+    <meta name="color-scheme" content="only light">
     <title>DAA Project Terminal — UI Preview</title>
     <link rel="stylesheet" href="./computer-ui-preview.css">
     <link rel="stylesheet" href="./computer-ui-futuristic.css">
     <link rel="stylesheet" href="./computer-ui-study-v3.css">
     <link rel="stylesheet" href="./leaderboard-futuristic.css">
+    <link rel="stylesheet" href="./challenge-futuristic.css">
     <script type="module" src="./computer-ui-preview.js"></script>
   </head>
   <body>
@@ -242,6 +243,85 @@
             <p class="study-escape-hint"><kbd>Esc</kbd> <span id="study-escape-label">Back to Terminal</span></p>
           </footer>
         </div>
+      </section>
+
+      <section id="challenge-page" class="challenge-page" aria-labelledby="challenge-page-title" aria-hidden="true" inert>
+        <div class="challenge-page-frame">
+          <header class="challenge-header">
+            <button id="challenge-back-button" class="study-back-button" type="button"><span aria-hidden="true">←</span> Back to Terminal</button>
+            <div class="challenge-heading">
+              <p>DAA PROJECT · QUICK RUN</p>
+              <h1 id="challenge-page-title">5 MIN IT CHALLENGE</h1>
+              <span>Think fast. Build your highest score.</span>
+            </div>
+            <div class="challenge-live"><span></span>SOLO · LIVE</div>
+          </header>
+
+          <section id="challenge-intro" class="challenge-intro" aria-labelledby="challenge-intro-title">
+            <div class="challenge-intro-copy">
+              <p class="challenge-kicker">COMPETITIVE SOLO MODE</p>
+              <h2 id="challenge-intro-title">Five minutes. Every decision counts.</h2>
+              <p>You have <strong id="challenge-duration-copy">5 minutes</strong>. Each question has a <strong id="challenge-question-limit-copy">30-second</strong> limit. Get the highest score possible.</p>
+              <label class="challenge-confirm-option"><input id="challenge-confirm-toggle" type="checkbox" checked><span><strong>Confirm answer before submitting</strong><small>Turn this off to submit as soon as you select an answer.</small></span></label>
+              <button id="challenge-start-button" class="challenge-primary-button" type="button"><span>START CHALLENGE</span><i aria-hidden="true">→</i></button>
+            </div>
+            <div class="challenge-rules-panel">
+              <p>SCORING SYSTEM</p>
+              <dl>
+                <div class="rule-hard"><dt>Hard correct</dt><dd id="challenge-hard-points">+17</dd></div>
+                <div class="rule-medium"><dt>Medium correct</dt><dd id="challenge-medium-points">+10</dd></div>
+                <div class="rule-skip"><dt>Skip</dt><dd id="challenge-skip-points">−3</dd></div>
+                <div class="rule-wrong"><dt>Wrong answer</dt><dd id="challenge-wrong-points">−6</dd></div>
+              </dl>
+              <small id="challenge-rules-version">CURRENT RULESET</small>
+            </div>
+          </section>
+
+          <section id="challenge-question-view" class="challenge-question-view" aria-labelledby="challenge-question-text" hidden>
+            <div class="challenge-dashboard">
+              <div class="challenge-clock challenge-global-clock"><span>CHALLENGE TIME</span><strong id="challenge-global-time">5:00</strong><div><i id="challenge-global-progress"></i></div></div>
+              <div class="challenge-clock challenge-question-clock"><span>QUESTION TIME</span><strong id="challenge-question-time">30s</strong><div><i id="challenge-question-progress-bar"></i></div></div>
+              <div class="challenge-score"><span>SCORE</span><strong id="challenge-score">0</strong><em id="challenge-score-delta" hidden></em></div>
+            </div>
+            <div class="challenge-question-meta"><div id="challenge-question-tags" class="study-question-tags"></div><strong id="challenge-question-progress">QUESTION 1</strong></div>
+            <div class="challenge-question-layout">
+              <div id="challenge-question-media" class="quiz-media study-question-media challenge-question-media" role="region" aria-label="Additional question content" tabindex="0" hidden></div>
+              <div class="challenge-question-body">
+                <p class="challenge-kicker">CURRENT QUESTION</p>
+                <h2 id="challenge-question-text"></h2>
+                <div id="challenge-answer-options" class="challenge-answer-options" role="group" aria-label="Question answers"></div>
+                <div id="challenge-answer-feedback" class="challenge-answer-feedback" role="status" hidden></div>
+              </div>
+            </div>
+            <div class="challenge-question-actions">
+              <div id="challenge-question-tools"></div>
+              <button id="challenge-leave-button" class="challenge-secondary-button" type="button">Leave Challenge</button>
+              <button id="challenge-skip-button" class="challenge-skip-button" type="button">SKIP <span>−3</span><kbd>S</kbd></button>
+              <button id="challenge-confirm-button" class="challenge-primary-button" type="button">CONFIRM ANSWER <kbd>SPACE</kbd><i aria-hidden="true">→</i></button>
+            </div>
+          </section>
+
+          <section id="challenge-result-view" class="challenge-result-view" aria-labelledby="challenge-result-title" hidden>
+            <p class="challenge-kicker">RUN COMPLETE</p>
+            <h2 id="challenge-result-title">FINAL SCORE</h2>
+            <strong id="challenge-final-score" class="challenge-final-score">0</strong>
+            <p id="challenge-new-best" class="challenge-new-best" hidden>★ NEW PERSONAL BEST ★</p>
+            <dl id="challenge-result-metrics" class="challenge-result-metrics"></dl>
+            <p id="challenge-personal-best" class="challenge-personal-best"></p>
+            <div class="challenge-result-actions">
+              <button id="challenge-play-again" class="challenge-primary-button" type="button">PLAY AGAIN <span>→</span></button>
+              <button id="challenge-view-leaderboard" class="challenge-secondary-button" type="button">VIEW LEADERBOARD</button>
+              <button id="challenge-result-back" class="challenge-secondary-button" type="button">BACK TO TERMINAL</button>
+            </div>
+          </section>
+
+          <p id="challenge-page-status" class="study-page-status challenge-page-status" role="status" aria-live="polite"></p>
+          <footer class="challenge-footer"><span>5 MIN · SOLO · CURRENT RULESET</span><p><kbd>Esc</kbd> <span id="challenge-escape-label">Back to Terminal</span></p></footer>
+        </div>
+
+        <dialog id="challenge-leave-dialog" class="challenge-leave-dialog">
+          <form method="dialog"><p>ACTIVE RUN</p><h2>Leave Challenge?</h2><span>Current run will be lost and no partial score will be saved.</span><div><button value="cancel" class="challenge-secondary-button">CANCEL</button><button id="challenge-confirm-leave" value="leave" class="challenge-danger-button">LEAVE</button></div></form>
+        </dialog>
       </section>
 
       <section id="question-database-page" class="database-page" aria-labelledby="database-page-title" aria-hidden="true" inert>

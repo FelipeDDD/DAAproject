@@ -1,20 +1,33 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { readTerminalComputers, nearbyTerminalComputer, getMonitorScreenBounds } from '../src/maps/terminalComputers.js';
+import {
+  readTerminalComputers,nearbyTerminalComputer,getMonitorScreenBounds,terminalPromptPosition,
+} from '../src/maps/terminalComputers.js';
 import { TerminalOverlayController } from '../src/terminal/TerminalOverlayController.js';
 
-test('terminal uses the existing Tiled computer and moves with its entity/layer', () => {
+test('terminal interaction comes from the red chair while projection stays on the monitor', () => {
   const source = JSON.parse(fs.readFileSync(new URL('../public/assets/maps/classroom.tmj', import.meta.url)));
   const [computer] = readTerminalComputers(source);
-  assert.equal(computer.id, '257');
+  assert.equal(computer.id, '287');
   assert.ok(computer.width > 0 && computer.height > 0);
+  assert.ok(computer.interaction.width > computer.width);
+  assert.ok(computer.interaction.x > computer.x);
   const layer = source.layers.find(l => l.name === 'Entities');
   layer.offsetx = 100; layer.offsety = 20;
   const [moved] = readTerminalComputers(source);
   assert.equal(moved.x, computer.x + 100);
   assert.equal(moved.y, computer.y + 20);
-  assert.equal(nearbyTerminalComputer([computer], { x: computer.x, right: computer.x + 5, y: computer.y, bottom: computer.y + 5 }), computer);
+  assert.equal(moved.interaction.x,computer.interaction.x+100);
+  assert.equal(moved.interaction.y,computer.interaction.y+20);
+  assert.equal(nearbyTerminalComputer([computer], {
+    x:computer.interaction.x,right:computer.interaction.x+5,
+    y:computer.interaction.y,bottom:computer.interaction.y+5,
+  }), computer);
+  assert.deepEqual(terminalPromptPosition(computer),{
+    x:Math.round(computer.interaction.x+computer.interaction.width/2),
+    y:Math.round(computer.interaction.y+computer.interaction.height-70),
+  });
   assert.equal(nearbyTerminalComputer([computer], { x: 0, y: 0, right: 1, bottom: 1 }), null);
 });
 

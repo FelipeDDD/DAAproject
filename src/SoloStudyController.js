@@ -6,7 +6,8 @@ import { CalculatorWidget } from './calculator/CalculatorWidget.js';
 import { QuizStatisticsPanel } from './quiz/QuizStatisticsPanel.js';
 import { CHARACTERS } from './characters.js';
 import {
-  IT_CHALLENGE_DURATION_MS,IT_CHALLENGE_POINTS,IT_CHALLENGE_QUESTION_TIMEOUT_MS,IT_CHALLENGE_VARIANT,
+  IT_CHALLENGE_DURATION_MS,IT_CHALLENGE_FEEDBACK_DELAY_MS,IT_CHALLENGE_POINTS,
+  IT_CHALLENGE_QUESTION_TIMEOUT_MS,IT_CHALLENGE_RULES_VERSION,IT_CHALLENGE_VARIANT,
 } from './quiz/itChallengeRules.js';
 
 export const SOLO_STUDY_PROMPT=Object.freeze({text:'[E] Study',offsetX:0,offsetY:-70});
@@ -22,7 +23,7 @@ export class SoloStudyController {
       scene,presence,seats,active:false,pending:false,session:null,options:DEFAULT_QUIZ_OPTIONS,
       settings:{category:null,topic:null,difficulty:null,count:5},mode:'study',completionResult:null,
       runId:null,statisticsPending:Promise.resolve(),finishingChallenge:false,newPersonalBest:false,
-      leaderboardOpen:false,leaderboardFromMap:false,
+      personalBestScore:null,leaderboardOpen:false,leaderboardFromMap:false,terminalChallengeListeners:new Set(),
     });
     this.root=document.getElementById('solo-study');this.title=document.getElementById('solo-study-title');
     this.configRoot=document.getElementById('solo-config');this.configTitle=document.getElementById('solo-config-title');
@@ -120,7 +121,7 @@ export class SoloStudyController {
 
   resetRun(){
     this.session=null;this.runId=null;this.completionResult=null;this.newPersonalBest=false;
-    this.finishingChallenge=false;this.statisticsPending=Promise.resolve();this.leaderboardOpen=false;
+    this.personalBestScore=null;this.finishingChallenge=false;this.statisticsPending=Promise.resolve();this.leaderboardOpen=false;
     this.leaderboardFromMap=false;
   }
 
@@ -192,6 +193,95 @@ export class SoloStudyController {
       }:{}),
       ...(this.session?.complete?{result:this.session.result()}:{}),
     };
+  }
+
+  async startChallengeFromTerminal() {
+    if(this.pending)return this.terminalChallengeState();
+    await this.statisticsPending;
+    this.resetRun();this.mode='challenge';this.pending=true;
+    this.status.textContent='Preparing challenge…';this.render();
+    try{
+      const {characterId,sessionId}=this.presence.identity;
+      const result=await this.presence.client.mutation(this.presence.api.itChallenge.start,{characterId,sessionId});
+      this.session=createSoloSession('challenge',result.questions);this.runId=result.runId;
+      this.status.textContent='';
+    }catch(error){
+      this.status.textContent=String(error).includes('No IT Challenge questions')
+        ?'No IT Challenge questions are available.'
+        :'Could not start IT Challenge.';
+    }finally{this.pending=false;this.render();}
+    return this.terminalChallengeState();
+  }
+
+  selectChallengeAnswerFromTerminal(answerIndex,{submitImmediately=false}={}) {
+    if(this.session?.mode!=='challenge'||!this.session.select(answerIndex))return this.terminalChallengeState();
+    if(submitImmediately)this.confirm();
+    else this.renderQuestion();
+    return this.terminalChallengeState();
+  }
+
+  confirmChallengeAnswerFromTerminal() {
+    if(this.session?.mode==='challenge')this.confirm();
+    return this.terminalChallengeState();
+  }
+
+  skipChallengeFromTerminal() {
+    if(this.session?.mode==='challenge')this.skipChallenge();
+    return this.terminalChallengeState();
+  }
+
+  async endChallengeFromTerminal() {
+    this.resetRun();this.mode='study';this.status.textContent='';this.render();
+    return this.terminalChallengeState();
+  }
+
+  terminalChallengeState(now=Date.now()) {
+    const challenge=this.session?.mode==='challenge'?this.session:null;
+    const question=challenge&&!challenge.complete?challenge.question:null;
+    const confirmed=challenge?.confirmedAnswer!==null&&challenge?.confirmedAnswer!==undefined;
+    const lastOutcome=challenge?.outcomes.at(-1);
+    const feedback=challenge?.resolving&&lastOutcome?.type==='answer'?{
+      type:'answer',correct:lastOutcome.correct,points:lastOutcome.points,
+    }:null;
+    return {
+      phase:challenge?.complete?'result':question?'question':'intro',
+      pending:this.pending,saving:this.finishingChallenge,status:this.status?.textContent??'',
+      rules:{
+        durationMs:IT_CHALLENGE_DURATION_MS,questionTimeoutMs:IT_CHALLENGE_QUESTION_TIMEOUT_MS,
+        feedbackDelayMs:IT_CHALLENGE_FEEDBACK_DELAY_MS,points:IT_CHALLENGE_POINTS,
+        rulesVersion:IT_CHALLENGE_RULES_VERSION,variant:IT_CHALLENGE_VARIANT,
+      },
+      ...(question?{
+        progress:challenge.progress,score:challenge.score,
+        timers:{
+          remainingMs:challenge.remainingMs(now),questionRemainingMs:challenge.questionRemainingMs(now),
+          totalRatio:challenge.totalTimeRatio(now),questionRatio:challenge.questionTimeRatio(now),
+        },
+        resolving:challenge.resolving,feedback,
+        question:{
+          id:question.id,category:question.category,topic:question.topic??null,
+          difficulty:question.difficulty,question:question.question,answers:question.answers,
+          media:question.media??null,correctAnswer:confirmed?question.correctAnswer:null,
+        },
+        selectedAnswer:challenge.selectedAnswer,
+        confirmedAnswer:confirmed?challenge.confirmedAnswer:null,
+      }:{}),
+      ...(challenge?.complete?{
+        result:this.completionResult??challenge.result(),newPersonalBest:this.newPersonalBest,
+        personalBest:this.personalBestScore,
+      }:{}),
+    };
+  }
+
+  subscribeTerminalChallenge(listener){
+    this.terminalChallengeListeners.add(listener);
+    return ()=>this.terminalChallengeListeners.delete(listener);
+  }
+
+  notifyTerminalChallenge(now=Date.now()){
+    if(!this.terminalChallengeListeners.size)return;
+    const state=this.terminalChallengeState(now);
+    for(const listener of this.terminalChallengeListeners){try{listener(state);}catch{}}
   }
 
   async start() {
@@ -270,15 +360,17 @@ export class SoloStudyController {
   }
 
   updateChallengeClock(now=Date.now()){
-    if(this.session?.mode!=='challenge'||this.session.complete)return;
+    if(this.session?.mode!=='challenge')return;
+    if(this.session.complete){this.notifyTerminalChallenge(now);return;}
     const previous=this.session.index,event=this.session.tick(now);
     this.paintChallengeTimers(now);
-    if(!event)return;
+    if(!event){this.notifyTerminalChallenge(now);return;}
     if(this.session.index!==previous)this.markChallengeQuestionViewed();
     if(event.type==='timeoutSkip')this.status.textContent='Question timed out. Skipped (-3).';
     else if(event.type==='advanced')this.status.textContent='';
     if(this.session.complete)this.finishChallenge();
     this.render();
+    this.notifyTerminalChallenge(now);
   }
 
   paintChallengeTimers(now=Date.now()){
@@ -307,10 +399,11 @@ export class SoloStudyController {
         lastViewedQuestionIndex:this.session.index,
       });
       this.completionResult=response.result;this.newPersonalBest=response.newPersonalBest;
+      this.personalBestScore=response.personalBest?.score??null;
       this.status.textContent='Result saved.';
     }catch{
       this.status.textContent='Challenge finished, but the result could not be saved.';
-    }finally{this.finishingChallenge=false;this.render();}
+    }finally{this.finishingChallenge=false;this.render();this.notifyTerminalChallenge();}
   }
 
   playAgain(){this.resetRun();this.status.textContent='Choose a solo mode.';this.render();}

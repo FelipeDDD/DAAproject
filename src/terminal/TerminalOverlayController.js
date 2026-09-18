@@ -1,6 +1,7 @@
 import { TERMINAL_ANIMATION as timing } from './config.js';
 import { getMonitorScreenBounds } from '../maps/terminalComputers.js';
 import { TerminalStudyBridge } from './TerminalStudyBridge.js';
+import { TerminalChallengeBridge } from './TerminalChallengeBridge.js';
 
 export class TerminalOverlayController {
   constructor(scene) {
@@ -36,6 +37,10 @@ export class TerminalOverlayController {
         this.studyBridge=new TerminalStudyBridge({frame:this.frame,controller:this.scene.soloStudy});
       }
       if (this.studyBridge?.accepts(event)) { void this.studyBridge.handle(event); return; }
+      if (!this.challengeBridge && this.scene.soloStudy) {
+        this.challengeBridge=new TerminalChallengeBridge({frame:this.frame,controller:this.scene.soloStudy});
+      }
+      if (this.challengeBridge?.accepts(event)) { void this.challengeBridge.handle(event); return; }
       if (event.origin === location.origin && event.source === this.frame.contentWindow &&
         event.data?.type === 'daa-terminal-close') void this.close();
     };
@@ -192,6 +197,7 @@ export class TerminalOverlayController {
     }
     this.isTransitioning = true;
     void this.studyBridge?.reset();
+    void this.challengeBridge?.reset();
     this.phase = 'hide-content';
     this.frame.inert = true;
     this.root.focus({ preventScroll: true });
@@ -235,6 +241,7 @@ export class TerminalOverlayController {
     this.finishCamera?.();
     this.animations.forEach(animation => animation.cancel());
     this.studyBridge?.destroy();
+    this.challengeBridge?.destroy();
     void this.databaseBridgePromise?.then(bridge=>bridge.destroy());
     void this.leaderboardBridgePromise?.then(bridge=>bridge.destroy());
     this.restore();

@@ -1,6 +1,6 @@
 :root,
 [data-theme="futuristic"] {
-  color-scheme: dark;
+  color-scheme: only light;
   --terminal-transition-duration: 420ms;
   --terminal-preview-fade-duration: 300ms;
   --terminal-transition-easing: cubic-bezier(.22, .8, .24, 1);

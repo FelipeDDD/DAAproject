@@ -4373,7 +4373,7 @@ export default [
     "category": "Netzwerk",
     "topic": "Netzwerkarchitektur",
     "difficulty": "medium",
-    "question": "Welcher Vorteil wird im Material für P2P genannt?",
+    "question": "Welcher Vorteil kann ein Peer-to-Peer-Netzwerk bieten?",
     "answers": [
       "Kein Single Point of Failure",
       "Zentrale und einfache Verwaltung",
@@ -4581,7 +4581,7 @@ export default [
     "category": "Netzwerk",
     "topic": "CSMA",
     "difficulty": "medium",
-    "question": "Welches Verfahren wird im Material mit WLAN verbunden?",
+    "question": "Welches Zugriffsverfahren wird typischerweise bei WLAN verwendet?",
     "answers": [
       "CSMA/CD",
       "CSMA/CA",
@@ -4613,7 +4613,7 @@ export default [
     "category": "Netzwerk",
     "topic": "CSMA",
     "difficulty": "medium",
-    "question": "Welches Verfahren wird im Material mit kabelgebundenen Netzen verbunden?",
+    "question": "Welches Zugriffsverfahren wird klassisch mit kabelgebundenem Ethernet verbunden?",
     "answers": [
       "CSMA/CA",
       "CSMA/CD",
@@ -4645,7 +4645,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI",
     "difficulty": "medium",
-    "question": "Wozu dient das OSI-Modell laut Material hauptsächlich?",
+    "question": "Wozu dient das OSI-Modell hauptsächlich?",
     "answers": [
       "Als Referenzmodell für Kommunikation zwischen technischen Systemen",
       "Zur Vergabe von IP-Adressen",
@@ -4693,7 +4693,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI",
     "difficulty": "medium",
-    "question": "Welche Schichten gelten im Material als anwendungsorientiert?",
+    "question": "Welche OSI-Schichten gelten als anwendungsorientiert?",
     "answers": [
       "1 bis 3",
       "1 bis 4",
@@ -4709,7 +4709,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI",
     "difficulty": "medium",
-    "question": "Welche Schichten gelten im Material als transportorientiert?",
+    "question": "Welche OSI-Schichten gelten als transportorientiert?",
     "answers": [
       "1 bis 4",
       "4 bis 7",
@@ -4773,7 +4773,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI",
     "difficulty": "medium",
-    "question": "Welche OSI-Schicht wird im Material mit MAC-Adressen und lokalem Netz verbunden?",
+    "question": "Welche OSI-Schicht arbeitet mit MAC-Adressen im lokalen Netz?",
     "answers": [
       "Schicht 1",
       "Schicht 2",
@@ -4869,7 +4869,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI",
     "difficulty": "hard",
-    "question": "Welche Vorgehensweise zur Fehlersuche empfiehlt das Material?",
+    "question": "Welche systematische Vorgehensweise eignet sich zur Fehlersuche anhand des OSI-Modells?",
     "answers": [
       "Von oben nach unten, beginnend mit der Anwendung",
       "Von unten nach oben, beginnend mit Kabel/WLAN",
@@ -4877,7 +4877,7 @@ export default [
       "Zuerst immer DNS löschen"
     ],
     "correctAnswer": 1,
-    "explanation": "Das Material empfiehlt die Fehlersuche von unten nach oben: zuerst physische Verbindung, dann Netz, Verbindung und zuletzt Anwendung.",
+    "explanation": "Die Fehlersuche erfolgt von unten nach oben: zuerst physische Verbindung, dann Netz, Verbindung und zuletzt Anwendung.",
     "source": "netzwerk.csv"
   },
   {
@@ -4965,7 +4965,7 @@ export default [
     "category": "Netzwerk",
     "topic": "HTTP-HTTPS",
     "difficulty": "medium",
-    "question": "Was ist der zentrale Sicherheitsnachteil von normalem HTTP laut Material?",
+    "question": "Was ist der zentrale Sicherheitsnachteil von normalem HTTP?",
     "answers": [
       "Es funktioniert nur offline",
       "Daten werden unverschlüsselt als Klartext übertragen",
@@ -5013,7 +5013,7 @@ export default [
     "category": "Netzwerk",
     "topic": "HTTP-HTTPS",
     "difficulty": "hard",
-    "question": "Welche Aussage zu SSL/TLS passt zum Material?",
+    "question": "Welche Aussage zu SSL/TLS ist korrekt?",
     "answers": [
       "SSL ist moderner als TLS",
       "TLS dient der sicheren Verschlüsselung im Internet",
@@ -5045,7 +5045,7 @@ export default [
     "category": "Netzwerk",
     "topic": "E-Mail-Protokolle",
     "difficulty": "medium",
-    "question": "Was kann SMTP laut Material NICHT?",
+    "question": "Welche Aufgabe übernimmt SMTP NICHT?",
     "answers": [
       "E-Mails versenden",
       "E-Mails zwischen Mailservern weiterleiten",
@@ -5093,7 +5093,7 @@ export default [
     "category": "Netzwerk",
     "topic": "E-Mail-Protokolle",
     "difficulty": "medium",
-    "question": "Was beschreibt POP3 im Material?",
+    "question": "Welche Aussage beschreibt POP3 am besten?",
     "answers": [
       "Mails werden typischerweise heruntergeladen und danach vom Server entfernt",
       "Mails bleiben immer synchron auf mehreren Geräten",
@@ -5141,7 +5141,7 @@ export default [
     "category": "Netzwerk",
     "topic": "FTP-SFTP",
     "difficulty": "medium",
-    "question": "Was ist der wesentliche Nachteil von normalem FTP laut Material?",
+    "question": "Was ist der wesentliche Sicherheitsnachteil von normalem FTP?",
     "answers": [
       "Es kann keine Dateien übertragen",
       "Daten und Passwörter können unverschlüsselt übertragen werden",
@@ -5181,7 +5181,7 @@ export default [
       "Beide sind ausschließlich E-Mail-Protokolle"
     ],
     "correctAnswer": 1,
-    "explanation": "FTP wird im Material als unverschlüsselt, SFTP als verschlüsselt dargestellt.",
+    "explanation": "FTP überträgt Daten typischerweise unverschlüsselt, während SFTP eine verschlüsselte Verbindung nutzt.",
     "source": "netzwerk.csv"
   },
   {
@@ -5205,7 +5205,7 @@ export default [
     "category": "Netzwerk",
     "topic": "DNS",
     "difficulty": "medium",
-    "question": "Welcher Vergleich wird im Material für DNS verwendet?",
+    "question": "Welcher anschauliche Vergleich beschreibt die Aufgabe von DNS?",
     "answers": [
       "Telefonbuch des Internets",
       "Briefkasten",
@@ -5221,7 +5221,7 @@ export default [
     "category": "Netzwerk",
     "topic": "DNS",
     "difficulty": "medium",
-    "question": "Welcher Standard-Port wird im Material für DNS genannt?",
+    "question": "Welcher Standard-Port wird für DNS verwendet?",
     "answers": [
       "21",
       "25",
@@ -5229,7 +5229,7 @@ export default [
       "443"
     ],
     "correctAnswer": 2,
-    "explanation": "Im Material wird DNS mit Port 53 genannt.",
+    "explanation": "DNS verwendet standardmäßig Port 53.",
     "source": "netzwerk.csv"
   },
   {
@@ -5237,7 +5237,7 @@ export default [
     "category": "Netzwerk",
     "topic": "DNS",
     "difficulty": "medium",
-    "question": "Welcher Befehl wird im Material zur DNS-Analyse verwendet?",
+    "question": "Welcher Befehl kann zur DNS-Analyse verwendet werden?",
     "answers": [
       "nslookup",
       "format",
@@ -5269,7 +5269,7 @@ export default [
     "category": "Netzwerk",
     "topic": "DNS",
     "difficulty": "medium",
-    "question": "Welcher Befehl zeigt im Material die Route bzw. die Hops zu einem Ziel?",
+    "question": "Welcher Windows-Befehl zeigt die Route beziehungsweise die Hops zu einem Ziel?",
     "answers": [
       "tracert",
       "nslookup",
@@ -5301,7 +5301,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 6",
     "difficulty": "medium",
-    "question": "Welche drei Hauptaufgaben nennt das Material für Schicht 6?",
+    "question": "Welche drei Aufgaben werden der OSI-Schicht 6 zugeordnet?",
     "answers": [
       "Übersetzen, Verschlüsseln, Komprimieren",
       "Routing, Switching, NAT",
@@ -5333,7 +5333,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 6",
     "difficulty": "medium",
-    "question": "Welche Gruppe besteht laut Material aus Datenformaten bzw. Standards und nicht aus Netzwerkprotokollen?",
+    "question": "Welche Gruppe besteht aus Datenformaten beziehungsweise Standards und nicht aus Netzwerkprotokollen?",
     "answers": [
       "JPEG, PNG, UTF-8, JSON, gzip",
       "HTTP, SMTP, DNS, FTP",
@@ -5349,7 +5349,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 6",
     "difficulty": "medium",
-    "question": "Wofür steht ASCII im Kontext des Materials?",
+    "question": "Was ist ASCII?",
     "answers": [
       "Eine Zeichencodierung für Buchstaben, Zahlen und Zeichen",
       "Ein Routingprotokoll",
@@ -5365,7 +5365,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 6",
     "difficulty": "medium",
-    "question": "Wie viele Zeichenplätze hat das ursprüngliche ASCII-System laut Material?",
+    "question": "Wie viele Zeichenplätze hat das ursprüngliche ASCII-System?",
     "answers": [
       "64",
       "128",
@@ -5373,7 +5373,7 @@ export default [
       "1024"
     ],
     "correctAnswer": 1,
-    "explanation": "Das Material nennt 128 Plätze für das ursprüngliche ASCII.",
+    "explanation": "Das ursprüngliche ASCII umfasst 128 Zeichenplätze.",
     "source": "netzwerk.csv"
   },
   {
@@ -5397,7 +5397,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 6",
     "difficulty": "medium",
-    "question": "Welche Codierung wird im Material als moderne Lösung für internationale Zeichen genannt?",
+    "question": "Welche Codierung unterstützt internationale Zeichen umfassend?",
     "answers": [
       "UTF-8",
       "ASCII-7",
@@ -5413,7 +5413,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 6",
     "difficulty": "hard",
-    "question": "Eine Webseite zeigt 'Ã¤' statt 'ä'. Welche OSI-Schicht ist laut Material am ehesten betroffen?",
+    "question": "Eine Webseite zeigt 'Ã¤' statt 'ä'. Welche OSI-Schicht ist bei einem Darstellungs- oder Codierungsproblem am ehesten betroffen?",
     "answers": [
       "Schicht 2",
       "Schicht 3",
@@ -5429,7 +5429,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 6",
     "difficulty": "hard",
-    "question": "ERR_ENCODING_UNSUPPORTED passt laut Material zu welcher Schicht?",
+    "question": "Welcher OSI-Schicht lässt sich ERR_ENCODING_UNSUPPORTED am ehesten zuordnen?",
     "answers": [
       "Schicht 4",
       "Schicht 5",
@@ -5445,7 +5445,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 6",
     "difficulty": "hard",
-    "question": "ERR_SSL_PROTOCOL_ERROR wird im Material welcher Schicht zugeordnet?",
+    "question": "Welcher OSI-Schicht lässt sich ERR_SSL_PROTOCOL_ERROR in diesem Schichtenmodell am ehesten zuordnen?",
     "answers": [
       "Schicht 1",
       "Schicht 3",
@@ -5453,7 +5453,7 @@ export default [
       "Schicht 7"
     ],
     "correctAnswer": 2,
-    "explanation": "Im Material wird ein SSL/TLS-Handshake- bzw. Protokollfehler der Darstellungsschicht zugeordnet.",
+    "explanation": "Ein SSL/TLS-Handshake- beziehungsweise Protokollfehler wird hier der Darstellungsschicht zugeordnet.",
     "source": "netzwerk.csv"
   },
   {
@@ -5461,7 +5461,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 6",
     "difficulty": "medium",
-    "question": "Welche Frage hilft laut Material beim Unterschied zwischen Schicht 7 und 6?",
+    "question": "Welche Merkhilfe unterscheidet Schicht 7 von Schicht 6?",
     "answers": [
       "Schicht 7: WAS wird gesendet? Schicht 6: WIE sieht es aus?",
       "Schicht 7: Welche MAC? Schicht 6: Welche IP?",
@@ -5469,7 +5469,7 @@ export default [
       "Schicht 7: Welches Kabel? Schicht 6: Welcher Switch?"
     ],
     "correctAnswer": 0,
-    "explanation": "Das Material nutzt die Merkhilfe: Schicht 7 behandelt WAS, Schicht 6 WIE die Daten dargestellt werden.",
+    "explanation": "Schicht 7 behandelt, WAS gesendet wird, während Schicht 6 beschreibt, WIE die Daten dargestellt werden.",
     "source": "netzwerk.csv"
   },
   {
@@ -5525,7 +5525,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 5",
     "difficulty": "medium",
-    "question": "Welcher Merksatz passt im Material zu Schicht 5?",
+    "question": "Welcher Merksatz beschreibt die Aufgabe von OSI-Schicht 5?",
     "answers": [
       "Wir treffen uns, bleiben verbunden und verabschieden uns",
       "Wir routen, bis wir das Ziel finden",
@@ -5541,7 +5541,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 5",
     "difficulty": "medium",
-    "question": "Welche Technologie hilft laut Material Geräten im lokalen Netz, sich über Namen zu finden und Sitzungen aufzubauen?",
+    "question": "Welche Technologie hilft Geräten im lokalen Netz, sich über Namen zu finden und Sitzungen aufzubauen?",
     "answers": [
       "NetBIOS",
       "FTP",
@@ -5653,7 +5653,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 5",
     "difficulty": "hard",
-    "question": "Welche Aussage zu SIP-Statuscodes ist laut Material wichtig?",
+    "question": "Welche Aussage zu SIP-Statuscodes ist korrekt?",
     "answers": [
       "Sie gehören trotz Sitzungssteuerung zur Anwendungsebene",
       "Sie gehören immer zu Schicht 1",
@@ -5661,7 +5661,7 @@ export default [
       "Sie ersetzen HTTP vollständig"
     ],
     "correctAnswer": 0,
-    "explanation": "Das Material weist darauf hin, dass SIP-Codes Anwendungsebene sind, auch wenn SIP Sitzungen steuert.",
+    "explanation": "SIP-Statuscodes gehören zur Anwendungsebene, auch wenn SIP Sitzungen steuert.",
     "source": "netzwerk.csv"
   },
   {
@@ -5685,7 +5685,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 5",
     "difficulty": "medium",
-    "question": "Wie bewertet das Material PPTP heute?",
+    "question": "Wie wird PPTP aus heutiger Sicherheitssicht bewertet?",
     "answers": [
       "Modern und empfohlen",
       "Veraltet und mit Sicherheitslücken",
@@ -5701,7 +5701,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 5",
     "difficulty": "hard",
-    "question": "ECONNRESET (Connection Reset by Peer) wird im Material welcher Schicht zugeordnet?",
+    "question": "Welcher OSI-Schicht wird ECONNRESET (Connection Reset by Peer) in diesem Schichtenmodell zugeordnet?",
     "answers": [
       "Schicht 2",
       "Schicht 3",
@@ -5717,7 +5717,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 5",
     "difficulty": "hard",
-    "question": "HTTP 408 Request Timeout wird im Unterrichtsmaterial welcher Schicht zugeordnet?",
+    "question": "Welcher OSI-Schicht wird HTTP 408 Request Timeout in diesem Schichtenmodell zugeordnet?",
     "answers": [
       "Schicht 1",
       "Schicht 4",
@@ -5725,7 +5725,7 @@ export default [
       "Schicht 7"
     ],
     "correctAnswer": 2,
-    "explanation": "Im Material wird 408 als abgelaufene Sitzung in Schicht 5 eingeordnet.",
+    "explanation": "HTTP 408 wird hier als abgelaufene Sitzung in Schicht 5 eingeordnet.",
     "source": "netzwerk.csv"
   },
   {
@@ -5789,7 +5789,7 @@ export default [
       "Schicht 7"
     ],
     "correctAnswer": 2,
-    "explanation": "Kompression und Verschlüsselung werden im Material Schicht 6 zugeordnet.",
+    "explanation": "Kompression und Verschlüsselung werden der Darstellungsschicht 6 zugeordnet.",
     "source": "netzwerk.csv"
   },
   {
@@ -5813,7 +5813,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Szenarien",
     "difficulty": "hard",
-    "question": "Ein Webserver ist erreichbar, antwortet aber mit 404 Not Found. Welche Schicht ist laut Material betroffen?",
+    "question": "Ein Webserver ist erreichbar, antwortet aber mit 404 Not Found. Welche OSI-Schicht ist betroffen?",
     "answers": [
       "Schicht 3",
       "Schicht 5",
@@ -5893,7 +5893,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Szenarien",
     "difficulty": "hard",
-    "question": "Welche Abfolge beschreibt das Versenden einer E-Mail im OSI-Beispiel korrekt?",
+    "question": "Welche Abfolge beschreibt das Versenden einer E-Mail durch die OSI-Schichten korrekt?",
     "answers": [
       "SMTP → UTF-8/TLS → Sitzung → TCP → IP → MAC/Frames → Signale",
       "DNS → FTP → POP3 → SIP → JPEG → MAC → Strom",
@@ -5901,7 +5901,7 @@ export default [
       "MAC → IP → TCP → Sitzung → TLS → SMTP → Signale"
     ],
     "correctAnswer": 0,
-    "explanation": "Das Material beschreibt oben beginnend Anwendung/SMTP, Darstellung/UTF-8-TLS, Sitzung, Transport/TCP, Vermittlung/IP, Sicherung/MAC und Bitübertragung.",
+    "explanation": "Von oben nach unten folgen Anwendung/SMTP, Darstellung/UTF-8-TLS, Sitzung, Transport/TCP, Vermittlung/IP, Sicherung/MAC und Bitübertragung.",
     "source": "netzwerk.csv"
   },
   {
@@ -5949,7 +5949,7 @@ export default [
       "POP3 ist für Live-Synchronisation mehrerer Geräte optimiert"
     ],
     "correctAnswer": 3,
-    "explanation": "Im Material wird IMAP als Synchronisationslösung beschrieben; POP3 ist dafür ungeeignet.",
+    "explanation": "IMAP unterstützt die Synchronisation über mehrere Geräte; POP3 ist dafür ungeeignet.",
     "source": "netzwerk.csv"
   },
   {
@@ -5957,7 +5957,7 @@ export default [
     "category": "Netzwerk",
     "topic": "Protokolle",
     "difficulty": "hard",
-    "question": "Welche Aussage über HTTP und HTTPS passt zum Unterrichtsmaterial?",
+    "question": "Welche Aussage über HTTP und HTTPS ist korrekt?",
     "answers": [
       "HTTP ist Klartext; HTTPS schützt die Übertragung durch TLS",
       "HTTPS ist unverschlüsselt, HTTP verschlüsselt",
@@ -6069,7 +6069,7 @@ export default [
     "category": "Netzwerk",
     "topic": "Anwendungsschicht",
     "difficulty": "medium",
-    "question": "Welche Aussage zur Anwendungsschicht ist laut Unterricht richtig?",
+    "question": "Welche Aussage zur Anwendungsschicht ist richtig?",
     "answers": [
       "Chrome selbst ist die Anwendungsschicht",
       "Die Schicht stellt Regeln und Netzwerkdienste für Programme bereit",
@@ -6125,7 +6125,7 @@ export default [
       "WIE ein Kabel verlegt ist"
     ],
     "correctAnswer": 0,
-    "explanation": "Die Merkhilfe im Material lautet: Schicht 7 beschreibt, WAS gesendet wird.",
+    "explanation": "Als Merkhilfe beschreibt Schicht 7, WAS gesendet wird.",
     "source": "netzwerk.csv"
   },
   {
@@ -6213,7 +6213,7 @@ export default [
     "category": "Netzwerk",
     "topic": "Anwendungsschicht",
     "difficulty": "medium",
-    "question": "Welche Frage hilft laut Material beim Erkennen von Schicht 7?",
+    "question": "Welche Frage hilft beim Erkennen von Schicht 7?",
     "answers": [
       "Was wird gesendet?",
       "Wie sieht das Datenformat aus?",
@@ -6333,7 +6333,7 @@ export default [
       "SMTP = MAC, IMAP = IP, DNS = TCP, SFTP = UDP"
     ],
     "correctAnswer": 0,
-    "explanation": "Diese Zuordnung entspricht den Aufgaben der Protokolle im Material.",
+    "explanation": "Diese Zuordnung entspricht den üblichen Aufgaben der genannten Protokolle.",
     "source": "netzwerk.csv"
   },
   {
@@ -6405,7 +6405,7 @@ export default [
     "category": "Netzwerk",
     "topic": "Subnetting",
     "difficulty": "medium",
-    "question": "Welcher Sicherheitsvorteil wird im Material genannt?",
+    "question": "Welchen Sicherheitsvorteil kann die Segmentierung eines Netzwerks bieten?",
     "answers": [
       "Netzbereiche lassen sich voneinander trennen",
       "Jeder Host kann automatisch alles mitlesen",
@@ -6581,7 +6581,7 @@ export default [
     "category": "Netzwerk",
     "topic": "CSMA",
     "difficulty": "medium",
-    "question": "Welches Verfahren wird im Unterricht WLAN zugeordnet?",
+    "question": "Welches Zugriffsverfahren wird WLAN zugeordnet?",
     "answers": [
       "CSMA/CA",
       "CSMA/CD",
@@ -6589,7 +6589,7 @@ export default [
       "ARP"
     ],
     "correctAnswer": 0,
-    "explanation": "Im Material wird WLAN mit Collision Avoidance verbunden.",
+    "explanation": "WLAN verwendet Collision Avoidance, also CSMA/CA.",
     "source": "netzwerk.csv"
   },
   {
@@ -6597,7 +6597,7 @@ export default [
     "category": "Netzwerk",
     "topic": "CSMA",
     "difficulty": "medium",
-    "question": "Welches Verfahren wird im Unterricht kabelgebundenem Ethernet zugeordnet?",
+    "question": "Welches Zugriffsverfahren wird klassisch kabelgebundenem Ethernet zugeordnet?",
     "answers": [
       "CSMA/CA",
       "CSMA/CD",
@@ -6605,7 +6605,7 @@ export default [
       "DNS"
     ],
     "correctAnswer": 1,
-    "explanation": "Im Material wird kabelgebundene Kommunikation mit Collision Detection verbunden.",
+    "explanation": "Klassisches kabelgebundenes Ethernet verwendet Collision Detection, also CSMA/CD.",
     "source": "netzwerk.csv"
   },
   {
@@ -6749,7 +6749,7 @@ export default [
       "FTP ist ein DNS-Dienst"
     ],
     "correctAnswer": 1,
-    "explanation": "Der Sicherheitsunterschied ist ein Kernthema im Material.",
+    "explanation": "Der wesentliche Sicherheitsunterschied liegt in der verschlüsselten Übertragung durch SFTP.",
     "source": "netzwerk.csv"
   },
   {
@@ -6952,7 +6952,7 @@ export default [
     "question": "Welche Aussage ist FALSCH?",
     "answers": [
       "DNS hilft bei der Namensauflösung",
-      "DNS wird im Material mit Port 53 verbunden",
+      "DNS verwendet standardmäßig Port 53",
       "DNS sagt dem Webserver direkt, welche Datei er ausliefern soll",
       "nslookup kann DNS-Antworten prüfen"
     ],
@@ -6997,7 +6997,7 @@ export default [
     "category": "Netzwerk",
     "topic": "E-Mail-Protokolle",
     "difficulty": "medium",
-    "question": "Welches Protokoll wird im Material mit lokalem Abruf und möglichem Löschen vom Server verbunden?",
+    "question": "Welches Protokoll ist mit lokalem E-Mail-Abruf und möglichem Löschen vom Server verbunden?",
     "answers": [
       "SMTP",
       "IMAP",
@@ -8581,7 +8581,7 @@ export default [
     "category": "Rechnungen",
     "topic": "Break-Even",
     "difficulty": "medium",
-    "question": "Welcher deutsche Begriff wird im Material für „Break-Even-Point“ verwendet?",
+    "question": "Welcher deutsche Begriff wird für „Break-Even-Point“ verwendet?",
     "answers": [
       "Preisuntergrenze",
       "Gewinnschwelle",
@@ -8693,7 +8693,7 @@ export default [
     "category": "Rechnungen",
     "topic": "Wirtschaftlichkeit",
     "difficulty": "medium",
-    "question": "Eine Wirtschaftlichkeit von 1,25 bedeutet laut Material:",
+    "question": "Was bedeutet eine Wirtschaftlichkeit von 1,25?",
     "answers": [
       "Der Aufwand ist höher als der Ertrag",
       "Das Unternehmen arbeitet wirtschaftlich",
@@ -8845,7 +8845,7 @@ export default [
       "Nur Mehrwertsteuer"
     ],
     "correctAnswer": 0,
-    "explanation": "Wartungskosten umfassen laut Material unter anderem Support, Reparaturen und Updates.",
+    "explanation": "Wartungskosten umfassen unter anderem Support, Reparaturen und Updates.",
     "source": "rechnungen.csv"
   },
   {

@@ -4698,16 +4698,6 @@
                          "value":false
                         }, 
                         {
-                         "name":"interaction",
-                         "type":"string",
-                         "value":"terminalComputer"
-                        }, 
-                        {
-                         "name":"interactionDistance",
-                         "type":"float",
-                         "value":32
-                        }, 
-                        {
                          "name":"monitorHeight",
                          "type":"float",
                          "value":19.4861111111
@@ -5575,6 +5565,26 @@
                          "name":"interactionDistance",
                          "type":"float",
                          "value":24
+                        },
+                        {
+                         "name":"interactionHeight",
+                         "type":"float",
+                         "value":33
+                        },
+                        {
+                         "name":"interactionOffsetX",
+                         "type":"float",
+                         "value":0
+                        },
+                        {
+                         "name":"interactionOffsetY",
+                         "type":"float",
+                         "value":0
+                        },
+                        {
+                         "name":"interactionWidth",
+                         "type":"float",
+                         "value":31
                         }, 
                         {
                          "name":"mode",
@@ -5590,6 +5600,26 @@
                          "name":"seatY",
                          "type":"float",
                          "value":883.5
+                        },
+                        {
+                         "name":"monitorHeight",
+                         "type":"float",
+                         "value":19.4861111111
+                        },
+                        {
+                         "name":"monitorOffsetX",
+                         "type":"float",
+                         "value":-38.875
+                        },
+                        {
+                         "name":"monitorOffsetY",
+                         "type":"float",
+                         "value":-9.1805555556
+                        },
+                        {
+                         "name":"monitorWidth",
+                         "type":"float",
+                         "value":17.0833333333
                         }, 
                         {
                          "name":"sourceNote",
@@ -5597,7 +5627,7 @@
                          "value":241
                         }],
                  "rotation":0,
-                 "type":"soloStudySeat",
+                 "type":"terminalComputer",
                  "visible":true,
                  "width":31,
                  "x":580.5,

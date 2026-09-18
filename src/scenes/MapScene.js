@@ -23,7 +23,9 @@ import { EmoteRenderer } from '../emotes/EmoteRenderer.js';
 import { EmoteSync } from '../emotes/EmoteSync.js';
 import { EmoteBar } from '../emotes/EmoteBar.js';
 import { readChallengeLeaderboards,nearbyChallengeLeaderboard } from '../maps/challengeLeaderboards.js';
-import { readTerminalComputers, nearbyTerminalComputer } from '../maps/terminalComputers.js';
+import {
+  readTerminalComputers,nearbyTerminalComputer,terminalPromptPosition,TERMINAL_PROMPT,
+} from '../maps/terminalComputers.js';
 import { TerminalOverlayController } from '../terminal/TerminalOverlayController.js';
 import '../terminal/terminal.css';
 
@@ -145,6 +147,10 @@ export class MapScene extends Phaser.Scene {
     this.interactKey = this.input.keyboard.addKey('E');
     this.escapeKey = this.input.keyboard.addKey('ESC');
     this.hint = document.getElementById('interaction-hint');
+    this.terminalPrompt=this.add.text(0,0,TERMINAL_PROMPT.text,{
+      fontFamily:'system-ui, sans-serif',fontSize:'12px',fontStyle:'bold',color:'#ffffff',
+      backgroundColor:'#53358a',padding:{x:6,y:3},
+    }).setOrigin(.5,1).setDepth(100000).setVisible(false);
     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels).setZoom(CAMERA_ZOOM);
     this.cameras.main.startFollow(this.player, true, 1, 1);
     this.enter(destination);
@@ -235,8 +241,8 @@ export class MapScene extends Phaser.Scene {
     this.remotes.update(delta);
     this.emoteRenderer?.update();
     if(this.doorSync)for(const door of this.doors)door.updateBlocker(this.player.body);
-    if(this.terminal?.active){this.hint.textContent='Terminal · Esc: back to classroom';return;}
-    if(this.chat?.focused){this.quiz?.updateSeatPrompt(false);this.soloStudy?.updateSeatPrompt(false);return;}
+    if(this.terminal?.active){this.terminalPrompt.setVisible(false);this.hint.textContent='Terminal · Esc: back to classroom';return;}
+    if(this.chat?.focused){this.terminalPrompt.setVisible(false);this.quiz?.updateSeatPrompt(false);this.soloStudy?.updateSeatPrompt(false);return;}
     const interact = Phaser.Input.Keyboard.JustDown(this.interactKey);
     const escape = Phaser.Input.Keyboard.JustDown(this.escapeKey);
     const quizSeat=this.quiz?.nearbySeat();
@@ -245,13 +251,18 @@ export class MapScene extends Phaser.Scene {
     const challengeLeaderboard=nearbyChallengeLeaderboard(this.challengeLeaderboards,this.player.body);
     this.quiz?.updateSeatPrompt(!this.soloStudy?.active&&quizSeat);
     this.soloStudy?.updateSeatPrompt(!this.quiz?.seated&&studySeat);
+    const showTerminalPrompt=Boolean(computer&&!this.quiz?.seated&&!this.soloStudy?.active);
+    this.terminalPrompt.setVisible(showTerminalPrompt);
+    if(showTerminalPrompt){const position=terminalPromptPosition(computer);this.terminalPrompt.setPosition(position.x,position.y);}
     if(this.soloStudy?.active){
+      this.terminalPrompt.setVisible(false);
       if(escape)this.soloStudy.closePanel();
       const hint=this.soloStudy.leaderboardOpen?'IT Challenge leaderboard · Esc: close':'Solo Mode · Esc: close';
       if(this.hint.textContent!==hint)this.hint.textContent=hint;
       return;
     }
     if(this.quiz?.seated){
+      this.terminalPrompt.setVisible(false);
       if(interact||escape)this.quiz.leave();
       const status=this.quiz.lobby?.status;
       const hint=this.quiz.confirmingLeave?'Confirm or cancel leaving in the panel':
@@ -275,6 +286,7 @@ export class MapScene extends Phaser.Scene {
       return;
     }
     if(interact&&computer){
+      this.terminalPrompt.setVisible(false);
       void this.terminal.open(computer);
       return;
     }

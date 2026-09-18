@@ -65,7 +65,7 @@
   border-radius:12px;background:linear-gradient(140deg,#132a50,#060a20);
   box-shadow:0 0 14px rgba(var(--card-accent,100,193,255),.28);color:#e4f4ff;
 }
-[data-theme="futuristic"] .leaderboard-portrait img { display:block;width:100%;height:auto;image-rendering:pixelated; }
+[data-theme="futuristic"] .leaderboard-portrait img { display:block;width:100%;height:auto;color-scheme:only light;image-rendering:pixelated; }
 [data-theme="futuristic"] .leaderboard-portrait.portrait-rank-1 {
   width:76px;height:80px;border:2px solid #d59a3e;
   background:radial-gradient(circle at 50% 35%,#d7aa6066 0,#8a5b313d 48%,#21172b 100%);

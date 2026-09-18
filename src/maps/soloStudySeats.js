@@ -5,8 +5,10 @@ import { objectsIn, propertiesOf } from './tiledObjects.js';
 export const SOLO_STUDY_DISTANCE=24;
 
 export function readSoloStudySeats(source) {
-  return objectsIn(source,'Entities').filter(object=>
-    (object.class||object.type)==='soloStudySeat'||/^chairLuxury(?:-|$)/i.test(object.name??''))
+  return objectsIn(source,'Entities').filter(object=>{
+    const declaredType=object.class||object.type;
+    return declaredType==='soloStudySeat'||(!declaredType&&/^chairLuxury(?:-|$)/i.test(object.name??''));
+  })
     .map(object=>{
       const props=propertiesOf(object);
       return {

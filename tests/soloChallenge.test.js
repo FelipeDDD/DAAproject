@@ -56,6 +56,15 @@ test('global timer never resets and does not penalize the open question at zero'
   assert.equal(session.result().skipped,1);assert.equal(session.submission().length,1);
 });
 
+test('global timer can finish during feedback without adding an outcome or finishing twice',()=>{
+  const session=new SoloChallengeSession(questions(),{durationMs:1_500,feedbackDelayMs:1_000,now:0});
+  session.select(0);assert.equal(session.confirm(1_000).type,'answer');
+  assert.equal(session.tick(1_500).type,'complete');
+  assert.equal(session.tick(1_600),null);
+  assert.equal(session.submission().length,1);
+  assert.equal(session.finishReason,'time');
+});
+
 test('backend scoring validates answers and both skip origins',()=>{
   const bank=questions().map(question=>({...question,answerCount:4}));
   const {result}=scoreItChallengeOutcomes(bank,[
