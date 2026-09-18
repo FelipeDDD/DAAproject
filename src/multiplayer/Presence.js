@@ -21,6 +21,8 @@ export class Presence {
     this.unsubscribe = this.client.onUpdate(this.api.players.inRoom, { room }, rows => {
       if (this.active !== active) return;
       active.rows = rows;
+      const newestServerHeartbeat=Math.max(...rows.map(row=>row.lastSeen).filter(Number.isFinite));
+      if(Number.isFinite(newestServerHeartbeat))active.serverClockOffset=Date.now()-newestServerHeartbeat;
       this.deliver(active);
     }, error => this.fail(error));
     this.timer = setInterval(() => { this.deliver(active); this.send(); }, PRESENCE_SYNC_INTERVAL_MS);
@@ -29,8 +31,11 @@ export class Presence {
 
   deliver(active) {
     if (this.active !== active) return;
+    const serverNow=Number.isFinite(active.serverClockOffset)
+      ? Date.now()-active.serverClockOffset
+      : Date.now();
     active.receive(active.rows.filter(p => p.playerId !== this.identity.playerId
-      && p.room === active.room && isPresenceActive(p.lastSeen)));
+      && p.room === active.room && isPresenceActive(p.lastSeen,serverNow)));
   }
 
   async send(now = Date.now()) {

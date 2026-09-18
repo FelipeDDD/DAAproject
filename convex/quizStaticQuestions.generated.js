@@ -2785,6 +2785,2022 @@ export default [
     "source": "hardware.csv"
   },
   {
+    "id": "hardware-075",
+    "category": "Hardware",
+    "topic": "CPU",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe übernimmt die CPU in einem Arbeitsplatzrechner hauptsächlich?",
+    "answers": [
+      "Sie führt Befehle aus und verarbeitet Daten",
+      "Sie speichert Dateien dauerhaft auf Flash-Speicher",
+      "Sie versorgt alle Komponenten direkt mit Netzspannung",
+      "Sie stellt die Bildausgabe ohne weitere Hardware bereit"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die CPU verarbeitet Programmbefehle und führt Rechen- und Steueroperationen aus.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-076",
+    "category": "Hardware",
+    "topic": "CPU",
+    "difficulty": "medium",
+    "question": "Was beschreibt die Taktfrequenz eines Prozessors am ehesten?",
+    "answers": [
+      "Die maximale Größe des Arbeitsspeichers",
+      "Die Anzahl der Taktzyklen pro Sekunde",
+      "Die Breite des PCIe-Steckplatzes",
+      "Die dauerhafte Schreibrate einer SSD"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Die Taktfrequenz wird in Hertz angegeben und beschreibt Taktzyklen pro Sekunde.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-077",
+    "category": "Hardware",
+    "topic": "CPU",
+    "difficulty": "medium",
+    "question": "Welchen Vorteil können mehrere CPU-Kerne bieten?",
+    "answers": [
+      "Alle Programme benötigen dadurch nur einen Thread",
+      "Der Arbeitsspeicher wird dadurch nicht mehr benötigt",
+      "Mehrere Aufgaben lassen sich parallel bearbeiten",
+      "Die Leistungsaufnahme sinkt grundsätzlich auf null"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Mehrere Kerne können verschiedene Threads oder Prozesse gleichzeitig bearbeiten.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-078",
+    "category": "Hardware",
+    "topic": "CPU",
+    "difficulty": "hard",
+    "question": "Warum lässt sich die Leistung zweier CPUs nicht allein anhand ihrer GHz-Zahl vergleichen?",
+    "answers": [
+      "Die GHz-Zahl gilt nur für Festplatten und nicht für Prozessoren",
+      "Jede CPU führt pro Takt immer exakt gleich viele Befehle aus",
+      "Die Taktfrequenz wird ausschließlich durch den Arbeitsspeicher bestimmt",
+      "Architektur, IPC und Kernzahl beeinflussen die Leistung ebenfalls"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Neben der Frequenz wirken unter anderem Architektur, IPC, Cache und Kernzahl auf die reale Leistung.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-079",
+    "category": "Hardware",
+    "topic": "CPU",
+    "difficulty": "medium",
+    "question": "Wozu dient der Cache eines Prozessors?",
+    "answers": [
+      "Häufig benötigte Daten besonders schnell bereitzuhalten",
+      "Große Benutzerdateien dauerhaft zu archivieren",
+      "Netzwerkadressen für andere Rechner zu vergeben",
+      "Die Ausgangsspannung des Netzteils zu stabilisieren"
+    ],
+    "correctAnswer": 0,
+    "explanation": "CPU-Cache ist kleiner, aber sehr schneller Speicher nahe an den Recheneinheiten.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-080",
+    "category": "Hardware",
+    "topic": "CPU",
+    "difficulty": "medium",
+    "question": "Was bedeutet SMT bzw. Hyper-Threading vereinfacht?",
+    "answers": [
+      "Mehrere Mainboards teilen sich denselben Prozessor",
+      "Ein physischer Kern kann mehrere Threads verwalten",
+      "Der Prozessor arbeitet nur noch mit halbem Takt",
+      "Jeder Thread erhält automatisch einen eigenen CPU-Kern"
+    ],
+    "correctAnswer": 1,
+    "explanation": "SMT erlaubt einem physischen Kern, mehrere Ausführungsthreads zu verwalten.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-081",
+    "category": "Hardware",
+    "topic": "Mainboard",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe hat das Mainboard?",
+    "answers": [
+      "Es ersetzt den Massenspeicher für Benutzerdaten",
+      "Es erzeugt die Netzspannung für externe Geräte",
+      "Es verbindet und koordiniert die zentralen Hardwarekomponenten",
+      "Es übernimmt ausschließlich die Audioausgabe"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Das Mainboard stellt Sockel, Steckplätze, Anschlüsse und Datenverbindungen zwischen Komponenten bereit.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-082",
+    "category": "Hardware",
+    "topic": "Mainboard",
+    "difficulty": "medium",
+    "question": "Warum muss der CPU-Sockel zum Prozessor passen?",
+    "answers": [
+      "Nur dadurch erhält die SSD genügend Speicherplatz",
+      "Nur dadurch kann der Monitor die Auflösung erkennen",
+      "Der Sockel bestimmt ausschließlich die Gehäusefarbe",
+      "Mechanische und elektrische Schnittstelle müssen kompatibel sein"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Eine CPU benötigt einen passenden Sockel und Chipsatz beziehungsweise Firmware-Unterstützung.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-083",
+    "category": "Hardware",
+    "topic": "Mainboard",
+    "difficulty": "medium",
+    "question": "Wofür wird ein PCIe-x16-Steckplatz typischerweise verwendet?",
+    "answers": [
+      "Für leistungsfähige Erweiterungskarten wie Grafikkarten",
+      "Für SATA-Festplatten mit 3,5-Zoll-Bauform",
+      "Für DDR-Arbeitsspeichermodule des Systems",
+      "Für den direkten Anschluss eines Netzwerkkabels"
+    ],
+    "correctAnswer": 0,
+    "explanation": "PCIe x16 wird häufig für Grafikkarten und andere Karten mit hohem Bandbreitenbedarf genutzt.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-084",
+    "category": "Hardware",
+    "topic": "Mainboard",
+    "difficulty": "medium",
+    "question": "Was bedeutet bei PCI Express die Angabe x4 oder x16?",
+    "answers": [
+      "Sie beschreibt die Zahl der CPU-Kerne",
+      "Sie beschreibt die Anzahl der nutzbaren Daten-Lanes",
+      "Sie beschreibt die Ausgangsspannung des Netzteils",
+      "Sie beschreibt die Größe eines RAM-Moduls in Gigabyte"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Die Lane-Anzahl beeinflusst die maximal verfügbare PCIe-Bandbreite.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-085",
+    "category": "Hardware",
+    "topic": "Mainboard",
+    "difficulty": "hard",
+    "question": "Eine PCIe-x16-Karte steckt mechanisch in einem x16-Slot, der elektrisch nur mit x4 angebunden ist. Was ist die wahrscheinlichste Folge?",
+    "answers": [
+      "Die Karte erhält automatisch viermal mehr elektrische Leistung",
+      "Der Steckplatz wird dadurch in einen SATA-Anschluss umgewandelt",
+      "Die Karte kann funktionieren, besitzt aber weniger maximale Bandbreite",
+      "Die Karte arbeitet zwingend mit vierfacher Taktfrequenz"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Mechanische Größe und elektrische Lane-Anbindung können sich unterscheiden; weniger Lanes begrenzen die Bandbreite.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-086",
+    "category": "Hardware",
+    "topic": "Arbeitsspeicher",
+    "difficulty": "medium",
+    "question": "Welche Eigenschaft unterscheidet RAM grundlegend von einer SSD?",
+    "answers": [
+      "RAM speichert Daten dauerhaft über viele Jahre",
+      "RAM verwendet ausschließlich SATA als Schnittstelle",
+      "RAM ist grundsätzlich langsamer als eine Festplatte",
+      "RAM verliert seinen Inhalt normalerweise ohne Strom"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Arbeitsspeicher ist flüchtig und dient der schnellen temporären Datenhaltung.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-087",
+    "category": "Hardware",
+    "topic": "Arbeitsspeicher",
+    "difficulty": "medium",
+    "question": "Was kann passieren, wenn für laufende Programme zu wenig RAM verfügbar ist?",
+    "answers": [
+      "Das System lagert häufiger Daten auf Massenspeicher aus",
+      "Die CPU erhält automatisch zusätzliche physische Kerne",
+      "Der Monitor reduziert dauerhaft seine native Auflösung",
+      "Das Mainboard deaktiviert sämtliche USB-Anschlüsse"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Bei RAM-Mangel kann das Betriebssystem Auslagerungsspeicher verwenden, was meist langsamer ist.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-088",
+    "category": "Hardware",
+    "topic": "Arbeitsspeicher",
+    "difficulty": "medium",
+    "question": "Was bedeutet Dual-Channel bei Arbeitsspeicher?",
+    "answers": [
+      "Zwei Betriebssysteme teilen sich ein RAM-Modul",
+      "Zwei Speicherkanäle können parallel genutzt werden",
+      "Jedes Modul besitzt automatisch doppelte Kapazität",
+      "Der RAM arbeitet nur mit zwei verschiedenen Spannungen"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Dual-Channel erhöht die mögliche Speicherbandbreite durch parallele Kanäle.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-089",
+    "category": "Hardware",
+    "topic": "Arbeitsspeicher",
+    "difficulty": "medium",
+    "question": "Welche Konfiguration begünstigt typischerweise Dual-Channel-Betrieb?",
+    "answers": [
+      "Ein einzelnes Modul in einem beliebigen Steckplatz",
+      "Vier unterschiedliche Module mit beliebigen Taktraten",
+      "Zwei passende Module in den vorgesehenen Speicherkanälen",
+      "Ein RAM-Modul zusammen mit einer NVMe-SSD"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Für Dual-Channel werden üblicherweise passende Module in den vom Mainboard vorgesehenen Slots verwendet.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-090",
+    "category": "Hardware",
+    "topic": "Arbeitsspeicher",
+    "difficulty": "medium",
+    "question": "Was beschreibt die RAM-Kapazität in GB?",
+    "answers": [
+      "Wie schnell die CPU ihren Basistakt verändert",
+      "Wie viele Netzwerkgeräte angeschlossen werden dürfen",
+      "Wie hoch die Ausgangsleistung des Netzteils ist",
+      "Wie viele Daten gleichzeitig im Arbeitsspeicher gehalten werden können"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Die Kapazität gibt die verfügbare Menge an Arbeitsspeicher an.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-091",
+    "category": "Hardware",
+    "topic": "Massenspeicher",
+    "difficulty": "medium",
+    "question": "Welcher Vorteil einer SSD gegenüber einer HDD ist typisch?",
+    "answers": [
+      "Deutlich geringere Zugriffszeiten",
+      "Mechanische Schreibköpfe mit höherer Präzision",
+      "Unbegrenzte Anzahl möglicher Schreibvorgänge",
+      "Immer niedrigere Kosten pro Terabyte"
+    ],
+    "correctAnswer": 0,
+    "explanation": "SSDs haben keine mechanischen Suchbewegungen und bieten daher sehr kurze Zugriffszeiten.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-092",
+    "category": "Hardware",
+    "topic": "Massenspeicher",
+    "difficulty": "medium",
+    "question": "Welche Komponente besitzt eine klassische HDD?",
+    "answers": [
+      "NAND-Flash ohne bewegliche Mechanik",
+      "Magnetische Scheiben und bewegliche Schreib-Lese-Köpfe",
+      "Ausschließlich flüchtigen DRAM-Speicher",
+      "Nur optische Speicherflächen mit Laserzugriff"
+    ],
+    "correctAnswer": 1,
+    "explanation": "HDDs speichern Daten magnetisch auf rotierenden Scheiben.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-093",
+    "category": "Hardware",
+    "topic": "Massenspeicher",
+    "difficulty": "medium",
+    "question": "Welche Schnittstelle wird häufig von 2,5-Zoll-SATA-SSDs verwendet?",
+    "answers": [
+      "DIMM",
+      "HDMI",
+      "SATA",
+      "RJ45"
+    ],
+    "correctAnswer": 2,
+    "explanation": "2,5-Zoll-SSDs verwenden häufig SATA für Daten und einen passenden Stromanschluss.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-094",
+    "category": "Hardware",
+    "topic": "Massenspeicher",
+    "difficulty": "medium",
+    "question": "Was ist ein typischer Vorteil einer NVMe-SSD gegenüber einer SATA-SSD?",
+    "answers": [
+      "Sie benötigt zwingend rotierende Magnetscheiben",
+      "Sie arbeitet ausschließlich über einen USB-2.0-Bus",
+      "Sie besitzt grundsätzlich mehr Speicherzellen pro Gigabyte",
+      "Sie kann über PCIe deutlich höhere Datenraten erreichen"
+    ],
+    "correctAnswer": 3,
+    "explanation": "NVMe-SSDs nutzen PCIe und umgehen die Bandbreitengrenzen klassischer SATA-Verbindungen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-095",
+    "category": "Hardware",
+    "topic": "Massenspeicher",
+    "difficulty": "hard",
+    "question": "Warum bedeutet M.2 nicht automatisch NVMe?",
+    "answers": [
+      "M.2 beschreibt die Bauform, während verschiedene Schnittstellen möglich sind",
+      "M.2 bezeichnet ausschließlich ein Dateisystem für SSDs",
+      "M.2 legt nur die Kapazität und nicht die Bauform fest",
+      "M.2 ist ein Protokoll, das ausschließlich HDDs verwenden"
+    ],
+    "correctAnswer": 0,
+    "explanation": "M.2 ist ein Formfaktor; M.2-Laufwerke können je nach Gerät beispielsweise SATA oder PCIe/NVMe nutzen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-096",
+    "category": "Hardware",
+    "topic": "RAID",
+    "difficulty": "medium",
+    "question": "Welches Ziel hat RAID 1 hauptsächlich?",
+    "answers": [
+      "Kapazität ohne Redundanz maximal zu bündeln",
+      "Daten durch Spiegelung redundant vorzuhalten",
+      "Arbeitsspeicher auf zwei Kanäle aufzuteilen",
+      "Netzwerkpakete auf mehrere Ports zu verteilen"
+    ],
+    "correctAnswer": 1,
+    "explanation": "RAID 1 speichert identische Daten auf mindestens zwei Laufwerken.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-097",
+    "category": "Hardware",
+    "topic": "RAID",
+    "difficulty": "medium",
+    "question": "Welche Eigenschaft trifft auf RAID 0 zu?",
+    "answers": [
+      "Spiegelung aller Daten auf jedem Laufwerk",
+      "Toleranz gegen den Ausfall eines beliebigen Laufwerks",
+      "Hohe nutzbare Kapazität ohne Redundanz",
+      "Automatische externe Datensicherung"
+    ],
+    "correctAnswer": 2,
+    "explanation": "RAID 0 verteilt Daten auf mehrere Laufwerke, bietet aber keine Redundanz.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-098",
+    "category": "Hardware",
+    "topic": "RAID",
+    "difficulty": "hard",
+    "question": "Warum ersetzt ein RAID keine Datensicherung?",
+    "answers": [
+      "Es kann grundsätzlich keine defekten Laufwerke überbrücken",
+      "Es speichert Daten ausschließlich im flüchtigen Arbeitsspeicher",
+      "Es verhindert jede Wiederherstellung nach einem Hardwaredefekt",
+      "Es schützt nicht zuverlässig vor Löschen, Schadsoftware oder Standortverlust"
+    ],
+    "correctAnswer": 3,
+    "explanation": "RAID erhöht Verfügbarkeit, schützt aber nicht gegen alle Ursachen von Datenverlust.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-099",
+    "category": "Hardware",
+    "topic": "RAID",
+    "difficulty": "medium",
+    "question": "Wie viel nutzbare Kapazität bietet RAID 1 mit zwei gleich großen 2-TB-Laufwerken ungefähr?",
+    "answers": [
+      "2 TB",
+      "1 TB",
+      "3 TB",
+      "4 TB"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Durch Spiegelung entspricht die nutzbare Kapazität ungefähr der Kapazität eines Laufwerks.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-100",
+    "category": "Hardware",
+    "topic": "RAID",
+    "difficulty": "medium",
+    "question": "Welche Mindestanzahl an Laufwerken benötigt RAID 1 üblicherweise?",
+    "answers": [
+      "Ein Laufwerk",
+      "Zwei Laufwerke",
+      "Drei Laufwerke",
+      "Vier Laufwerke"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Für eine Spiegelung werden mindestens zwei Laufwerke benötigt.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-101",
+    "category": "Hardware",
+    "topic": "Grafik und Display",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe übernimmt eine GPU hauptsächlich?",
+    "answers": [
+      "Benutzerdateien dauerhaft auf Magnetplatten zu speichern",
+      "Die Netzspannung in Gleichspannung umzuwandeln",
+      "Grafik- und stark parallelisierbare Berechnungen auszuführen",
+      "IP-Adressen an andere Geräte zu vergeben"
+    ],
+    "correctAnswer": 2,
+    "explanation": "GPUs sind auf Grafikberechnung und viele parallele Rechenoperationen spezialisiert.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-102",
+    "category": "Hardware",
+    "topic": "Grafik und Display",
+    "difficulty": "medium",
+    "question": "Was ist VRAM?",
+    "answers": [
+      "Nichtflüchtiger Speicher für UEFI-Einstellungen",
+      "Virtueller Speicher auf der System-SSD",
+      "Arbeitsspeicher ausschließlich für Netzwerkpakete",
+      "Speicher, den die Grafikeinheit für Grafikdaten nutzt"
+    ],
+    "correctAnswer": 3,
+    "explanation": "VRAM hält unter anderem Texturen, Framebuffer und weitere Grafikdaten.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-103",
+    "category": "Hardware",
+    "topic": "Grafik und Display",
+    "difficulty": "medium",
+    "question": "Welche Schnittstelle kann typischerweise digitales Bild und Ton übertragen?",
+    "answers": [
+      "HDMI",
+      "PS/2",
+      "SATA",
+      "RJ11"
+    ],
+    "correctAnswer": 0,
+    "explanation": "HDMI überträgt digitale Video- und Audiosignale.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-104",
+    "category": "Hardware",
+    "topic": "Grafik und Display",
+    "difficulty": "medium",
+    "question": "Welche Schnittstelle ist bei PC-Monitoren besonders für hohe Auflösungen und Bildraten verbreitet?",
+    "answers": [
+      "Parallelport-Anschluss",
+      "DisplayPort-Anschluss",
+      "PS/2-Anschluss",
+      "SATA-Anschluss"
+    ],
+    "correctAnswer": 1,
+    "explanation": "DisplayPort ist für moderne Monitore mit hohen Auflösungen und Bildraten weit verbreitet.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-105",
+    "category": "Hardware",
+    "topic": "Grafik und Display",
+    "difficulty": "medium",
+    "question": "Ein Monitor unterstützt 144 Hz, läuft aber nur mit 60 Hz. Was sollte zuerst geprüft werden?",
+    "answers": [
+      "Ob die System-SSD im richtigen Dateisystem formatiert wurde",
+      "Ob der Arbeitsspeicher eine gerade Kapazität in GB besitzt",
+      "Einstellung, Kabel und Anschluss auf Unterstützung der gewünschten Bildrate",
+      "Ob der Druckertreiber auf dem neuesten Stand ist"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Bildrate hängt unter anderem von Anzeigeeinstellung, Grafikausgang, Kabel und Monitorfähigkeiten ab.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-106",
+    "category": "Hardware",
+    "topic": "Netzteil und Energie",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe hat ein PC-Netzteil?",
+    "answers": [
+      "Alle Programmdaten dauerhaft zu speichern",
+      "Die Netzwerkkonfiguration des Betriebssystems zu verwalten",
+      "Die Bildschirmauflösung automatisch festzulegen",
+      "Netzspannung in geeignete Gleichspannungen für Komponenten umzuwandeln"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Das Netzteil versorgt interne Komponenten mit den benötigten Gleichspannungen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-107",
+    "category": "Hardware",
+    "topic": "Netzteil und Energie",
+    "difficulty": "medium",
+    "question": "Warum sollte ein Netzteil nicht nur exakt nach der typischen Leistungsaufnahme dimensioniert werden?",
+    "answers": [
+      "Lastspitzen und zukünftige Erweiterungen benötigen Reserve",
+      "Ein Netzteil liefert grundsätzlich immer exakt seine Nennleistung",
+      "Reserve reduziert automatisch die Speicherkapazität des Systems",
+      "Ohne Reserve kann das Betriebssystem keine Updates installieren"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Eine sinnvolle Leistungsreserve berücksichtigt Lastspitzen und Erweiterungen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-108",
+    "category": "Hardware",
+    "topic": "Netzteil und Energie",
+    "difficulty": "medium",
+    "question": "Ein System benötigt unter Volllast etwa 400 W. Welche Netzteilwahl ist unter sonst gleichen Bedingungen plausibler?",
+    "answers": [
+      "Ein 250-W-Netzteil mit möglichst vielen Adaptern",
+      "Ein hochwertiges 550-W-Netzteil mit ausreichenden Anschlüssen",
+      "Ein 400-W-Netzteil ohne Leistungsreserve und ohne Zertifizierung",
+      "Ein 2000-W-Netzteil unabhängig von Effizienz und Lastbereich"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Ein moderater Sicherheits- und Erweiterungsspielraum ist sinnvoll; extreme Überdimensionierung ist nicht automatisch besser.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-109",
+    "category": "Hardware",
+    "topic": "Netzteil und Energie",
+    "difficulty": "medium",
+    "question": "Was beschreibt der Wirkungsgrad eines Netzteils?",
+    "answers": [
+      "Das Verhältnis von RAM-Kapazität zu SSD-Kapazität",
+      "Die Zahl der Lüfter pro installiertem Prozessor",
+      "Das Verhältnis von abgegebener Nutzleistung zu aufgenommener Leistung",
+      "Die Geschwindigkeit der Datenübertragung über PCIe"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Ein höherer Wirkungsgrad bedeutet geringere Verluste bei gleicher abgegebener Leistung.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-110",
+    "category": "Hardware",
+    "topic": "Netzteil und Energie",
+    "difficulty": "medium",
+    "question": "Welche Folge hat ein niedrigerer Netzteilwirkungsgrad bei gleicher PC-Last?",
+    "answers": [
+      "Die SSD erhält automatisch eine höhere Datenrate",
+      "Die CPU bekommt zusätzliche Prozessorkerne",
+      "Der Monitor erhöht selbstständig die Auflösung",
+      "Mehr elektrische Energie wird als Verlustwärme umgesetzt"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Verlustleistung wird überwiegend als Wärme abgegeben.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-111",
+    "category": "Hardware",
+    "topic": "Kühlung",
+    "difficulty": "medium",
+    "question": "Warum benötigt eine leistungsfähige CPU einen geeigneten Kühler?",
+    "answers": [
+      "Damit entstehende Wärme zuverlässig abgeführt wird",
+      "Damit die CPU permanent Daten speichern kann",
+      "Damit der Arbeitsspeicher als SSD verwendet wird",
+      "Damit Netzwerkpakete schneller geroutet werden"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ohne ausreichende Kühlung können Temperaturen steigen und Leistung oder Stabilität leiden.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-112",
+    "category": "Hardware",
+    "topic": "Kühlung",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe hat Wärmeleitpaste zwischen CPU und Kühler?",
+    "answers": [
+      "Den Prozessor elektrisch mit Netzspannung zu versorgen",
+      "Kleine Unebenheiten zu füllen und den Wärmeübergang zu verbessern",
+      "Die CPU dauerhaft mit dem Sockel zu verkleben",
+      "Die Luftfeuchtigkeit im Gehäuse zu regulieren"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Wärmeleitpaste verbessert den thermischen Kontakt zwischen den Oberflächen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-113",
+    "category": "Hardware",
+    "topic": "Kühlung",
+    "difficulty": "medium",
+    "question": "Was ist ein typisches Ziel eines sinnvollen Airflows im PC-Gehäuse?",
+    "answers": [
+      "Alle Lüfter gegeneinander in die Mitte blasen lassen",
+      "Warme Luft ausschließlich im Gehäuse zirkulieren lassen",
+      "Kühle Luft zuführen und erwärmte Luft abführen",
+      "Jede Öffnung des Gehäuses vollständig verschließen"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Ein gerichteter Luftstrom unterstützt die Wärmeabfuhr.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-114",
+    "category": "Hardware",
+    "topic": "Kühlung",
+    "difficulty": "hard",
+    "question": "Ein PC wird unter Last laut und die CPU taktet deutlich herunter. Welche Ursache ist besonders plausibel?",
+    "answers": [
+      "Der Monitor verwendet eine zu niedrige Bildwiederholrate",
+      "Die SSD besitzt zu viel freien Speicherplatz",
+      "Das Netzwerkkabel unterstützt eine zu hohe Datenrate",
+      "Die CPU erreicht eine Temperaturgrenze und drosselt"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Thermal Throttling reduziert Takt und Leistung zum Schutz vor Überhitzung.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-115",
+    "category": "Hardware",
+    "topic": "Kühlung",
+    "difficulty": "medium",
+    "question": "Warum sollte ein Kühlkörper regelmäßig von starkem Staub befreit werden?",
+    "answers": [
+      "Staub kann Luftstrom und Wärmeabgabe verschlechtern",
+      "Staub erhöht grundsätzlich die Kapazität des Arbeitsspeichers",
+      "Staub verbessert automatisch den Wirkungsgrad des Netzteils",
+      "Staub vergrößert die maximale PCIe-Bandbreite"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Staubschichten können Lüfter und Kühlrippen beeinträchtigen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-116",
+    "category": "Hardware",
+    "topic": "Schnittstellen",
+    "difficulty": "medium",
+    "question": "Welche Aussage zu USB-C ist korrekt?",
+    "answers": [
+      "Jeder USB-C-Port unterstützt automatisch Thunderbolt und Video",
+      "Die Steckerform allein sagt nicht alle unterstützten Funktionen aus",
+      "USB-C bezeichnet ausschließlich eine bestimmte Datenrate",
+      "USB-C kann grundsätzlich keine Stromversorgung übertragen"
+    ],
+    "correctAnswer": 1,
+    "explanation": "USB-C beschreibt zunächst den Steckertyp; Datenrate, Video und Power Delivery hängen von der Implementierung ab.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-117",
+    "category": "Hardware",
+    "topic": "Schnittstellen",
+    "difficulty": "hard",
+    "question": "Warum kann ein USB-C-Kabel trotz passender Stecker ungeeignet für einen bestimmten Einsatz sein?",
+    "answers": [
+      "Jedes USB-C-Kabel besitzt immer exakt dieselben elektrischen Eigenschaften",
+      "USB-C-Kabel können ausschließlich zum Laden und nie für Daten genutzt werden",
+      "Kabel unterscheiden sich bei Datenrate, Stromleistung und unterstützten Modi",
+      "Die Eignung hängt nur von der Länge des Dateinamens ab"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Nicht jedes USB-C-Kabel unterstützt dieselben Geschwindigkeiten, Leistungen oder Alt-Modes.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-118",
+    "category": "Hardware",
+    "topic": "Schnittstellen",
+    "difficulty": "medium",
+    "question": "Was ermöglicht USB Power Delivery?",
+    "answers": [
+      "Automatische Spiegelung zweier Festplatten",
+      "Direkte Vergabe von IPv4-Adressen an USB-Geräte",
+      "Verdopplung der Taktfrequenz angeschlossener CPUs",
+      "Aushandlung höherer Lade- und Versorgungsleistungen über USB"
+    ],
+    "correctAnswer": 3,
+    "explanation": "USB PD erlaubt Geräten, geeignete Spannungs- und Leistungsprofile auszuhandeln.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-119",
+    "category": "Hardware",
+    "topic": "Schnittstellen",
+    "difficulty": "medium",
+    "question": "Welche Schnittstelle wird typischerweise für kabelgebundenes Ethernet verwendet?",
+    "answers": [
+      "RJ45",
+      "HDMI",
+      "SATA",
+      "DisplayPort"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Kupferbasierte Ethernet-Verbindungen verwenden typischerweise RJ45-Steckverbindungen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-120",
+    "category": "Hardware",
+    "topic": "Schnittstellen",
+    "difficulty": "medium",
+    "question": "Welche ältere Schnittstelle wurde häufig für Tastatur und Maus verwendet?",
+    "answers": [
+      "SATA",
+      "PS/2",
+      "HDMI",
+      "M.2"
+    ],
+    "correctAnswer": 1,
+    "explanation": "PS/2 wurde lange für Tastaturen und Mäuse eingesetzt.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-121",
+    "category": "Hardware",
+    "topic": "Firmware und Boot",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe übernimmt UEFI beim Start eines PCs?",
+    "answers": [
+      "Benutzerdateien aus der Cloud synchronisieren",
+      "Anwendungsprogramme dauerhaft im RAM speichern",
+      "Hardware initialisieren und den Start des Betriebssystems vorbereiten",
+      "Netzwerkdrucker automatisch mit Papier versorgen"
+    ],
+    "correctAnswer": 2,
+    "explanation": "UEFI initialisiert Komponenten und startet anschließend den Bootprozess.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-122",
+    "category": "Hardware",
+    "topic": "Firmware und Boot",
+    "difficulty": "medium",
+    "question": "Wozu dient die Bootreihenfolge im UEFI?",
+    "answers": [
+      "Sie bestimmt die Reihenfolge geöffneter Programme im Desktop",
+      "Sie legt die Sortierung der Dateien auf der SSD fest",
+      "Sie steuert die Reihenfolge der Netzwerkpakete im Switch",
+      "Sie legt fest, welche Startmedien zuerst geprüft werden"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Die Bootreihenfolge bestimmt, von welchem Gerät zuerst gestartet werden soll.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-123",
+    "category": "Hardware",
+    "topic": "Firmware und Boot",
+    "difficulty": "medium",
+    "question": "Was ist Secure Boot?",
+    "answers": [
+      "Eine UEFI-Funktion zur Prüfung vertrauenswürdiger Boot-Komponenten",
+      "Ein RAID-Modus zur Spiegelung der Systemfestplatte",
+      "Ein Verfahren zur Kühlung des Prozessors beim Einschalten",
+      "Ein USB-Modus zum schnelleren Laden externer Geräte"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Secure Boot prüft signierte und vertrauenswürdige Komponenten des Startvorgangs.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-124",
+    "category": "Hardware",
+    "topic": "Firmware und Boot",
+    "difficulty": "medium",
+    "question": "Wofür wird ein TPM häufig eingesetzt?",
+    "answers": [
+      "Zur Erweiterung der Anzahl verfügbarer CPU-Kerne",
+      "Zur sicheren Speicherung kryptografischer Schlüssel und Messwerte",
+      "Zur Erhöhung der maximalen SATA-Datenrate",
+      "Zur Kühlung von Spannungswandlern auf dem Mainboard"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Ein TPM unterstützt hardwaregestützte Sicherheitsfunktionen wie Schlüsselverwaltung und Plattformmessungen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-125",
+    "category": "Hardware",
+    "topic": "Firmware und Boot",
+    "difficulty": "medium",
+    "question": "Ein PC startet nach einer Änderung der Bootreihenfolge vom falschen Datenträger. Welche Maßnahme ist naheliegend?",
+    "answers": [
+      "Die Bildschirmauflösung im Betriebssystem reduzieren",
+      "Den Arbeitsspeicher auf Single-Channel umstellen",
+      "Die Priorität der Bootgeräte im UEFI korrigieren",
+      "Die Maus an einen anderen USB-Port anschließen"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Die Startreihenfolge wird in der Firmwarekonfiguration angepasst.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-126",
+    "category": "Hardware",
+    "topic": "Peripherie",
+    "difficulty": "medium",
+    "question": "Was ist ein Eingabegerät?",
+    "answers": [
+      "Ein Gerät zur dauerhaften Spannungsversorgung des Mainboards",
+      "Ein Gerät zur Speicherung von Firmware auf dem Prozessor",
+      "Ein Gerät zur Verteilung von Netzwerkadressen",
+      "Ein Gerät zur Übermittlung von Benutzereingaben an den Rechner"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Tastaturen, Mäuse, Scanner und ähnliche Geräte liefern Eingaben an ein Computersystem.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-127",
+    "category": "Hardware",
+    "topic": "Peripherie",
+    "difficulty": "medium",
+    "question": "Welches Gerät ist primär ein Ausgabegerät?",
+    "answers": [
+      "Monitor",
+      "Tastatur",
+      "Scanner",
+      "Maus"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ein Monitor stellt Informationen visuell dar.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-128",
+    "category": "Hardware",
+    "topic": "Peripherie",
+    "difficulty": "medium",
+    "question": "Welche Drucktechnologie verwendet Toner statt flüssiger Tinte?",
+    "answers": [
+      "Tintenstrahldruck",
+      "Laserdruck",
+      "Thermodirektdruck",
+      "Nadeldruck"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Laserdrucker arbeiten typischerweise mit Tonerpulver.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-129",
+    "category": "Hardware",
+    "topic": "Peripherie",
+    "difficulty": "medium",
+    "question": "Für ein Büro mit hohem monatlichem Textdruckvolumen ist welche Eigenschaft besonders wichtig?",
+    "answers": [
+      "Maximale Anzahl farbiger Gehäuse-LEDs",
+      "Möglichst kleine Bildschirmdiagonale am Drucker",
+      "Geeignete Druckleistung und wirtschaftliche Seitenkosten",
+      "Eine besonders hohe Maus-Abtastrate"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Bei hohem Druckvolumen sind Durchsatz, Verbrauchsmaterial und Seitenkosten entscheidend.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-130",
+    "category": "Hardware",
+    "topic": "Peripherie",
+    "difficulty": "medium",
+    "question": "Warum ist bei Headsets im Büro ein gerichtetes Mikrofon hilfreich?",
+    "answers": [
+      "Es erhöht automatisch die Bildschirmauflösung",
+      "Es ersetzt die Netzwerkkarte des Rechners",
+      "Es verdoppelt die verfügbare SSD-Kapazität",
+      "Es kann Umgebungsgeräusche bei Sprachaufnahme reduzieren"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Eine gerichtete Aufnahme kann Sprache gegenüber seitlichen Umgebungsgeräuschen hervorheben.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-131",
+    "category": "Hardware",
+    "topic": "Netzwerkhardware",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe hat ein Switch in einem lokalen Ethernet-Netz?",
+    "answers": [
+      "Frames anhand von MAC-Adressen gezielt weiterzuleiten",
+      "Domains automatisch in IP-Adressen umzuwandeln",
+      "Dateien dauerhaft redundant zu speichern",
+      "Netzspannung für alle PCs zu erzeugen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ein Switch lernt MAC-Adressen und leitet Ethernet-Frames zwischen Ports weiter.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-132",
+    "category": "Hardware",
+    "topic": "Netzwerkhardware",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe übernimmt ein Router typischerweise?",
+    "answers": [
+      "RAM-Module zwischen zwei Mainboards zu synchronisieren",
+      "Pakete zwischen verschiedenen IP-Netzen weiterzuleiten",
+      "Monitorsignale auf mehrere Bildschirme zu duplizieren",
+      "Druckaufträge dauerhaft auf Toner zu speichern"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Router verbinden unterschiedliche IP-Netze und treffen Weiterleitungsentscheidungen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-133",
+    "category": "Hardware",
+    "topic": "Netzwerkhardware",
+    "difficulty": "medium",
+    "question": "Wozu dient ein Access Point?",
+    "answers": [
+      "Er ersetzt die CPU in einem Arbeitsplatzrechner",
+      "Er speichert Benutzerdaten wie eine externe SSD",
+      "Er ermöglicht WLAN-Geräten den Zugang zu einem Netzwerk",
+      "Er wandelt SATA-Laufwerke in Arbeitsspeicher um"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Access Points stellen drahtlose Netzwerkanbindung bereit.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-134",
+    "category": "Hardware",
+    "topic": "Netzwerkhardware",
+    "difficulty": "medium",
+    "question": "Welche Komponente verbindet einen kabelgebundenen PC direkt mit einem Ethernet-Netz?",
+    "answers": [
+      "Grafikkarte bzw. Display-Adapter",
+      "Soundkarte bzw. Audio-Interface",
+      "TPM bzw. Sicherheitsmodul",
+      "Netzwerkkarte bzw. Ethernet-Adapter"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Ein Ethernet-Adapter stellt die physische und logische Netzwerkschnittstelle des Rechners bereit.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-135",
+    "category": "Hardware",
+    "topic": "Netzwerkhardware",
+    "difficulty": "hard",
+    "question": "Ein Arbeitsplatz erreicht nur 100 Mbit/s statt 1 Gbit/s. Welche Hardwareprüfung ist sinnvoll?",
+    "answers": [
+      "Kabelkategorie, Adapter, Switch-Port und Aushandlung prüfen",
+      "Monitorhelligkeit und Farbtiefe gemeinsam reduzieren",
+      "SSD-Partition verkleinern und Papierkorb leeren",
+      "CPU-Kühler drehen und Gehäuselüfter deaktivieren"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die Link-Geschwindigkeit hängt unter anderem von Adapter, Gegenstelle und Verkabelung ab.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-136",
+    "category": "Hardware",
+    "topic": "Arbeitsplatzplanung",
+    "difficulty": "medium",
+    "question": "Welche Information sollte vor der Auswahl eines Arbeitsplatz-PCs zuerst geklärt werden?",
+    "answers": [
+      "Welche Gehäusefarbe im Lager am häufigsten vorhanden ist",
+      "Welche Anwendungen und Anforderungen der Benutzer hat",
+      "Wie viele Dateien sich bereits auf anderen PCs befinden",
+      "Welche Tastatur zufällig am günstigsten angeboten wird"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Die Hardwareauswahl sollte vom tatsächlichen Bedarf und Nutzungsszenario ausgehen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-137",
+    "category": "Hardware",
+    "topic": "Arbeitsplatzplanung",
+    "difficulty": "medium",
+    "question": "Ein Mitarbeiter arbeitet hauptsächlich mit Office, Browser und Videokonferenzen. Welche Priorität ist plausibel?",
+    "answers": [
+      "Mehrere High-End-GPUs unabhängig vom tatsächlichen Bedarf",
+      "Maximale CPU-Kernzahl ohne Rücksicht auf Kosten und Verbrauch",
+      "Ausgewogene Ausstattung statt einer extrem leistungsfähigen High-End-GPU",
+      "Ein RAID-0-Verbund aus vielen Laufwerken nur für Textdokumente"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Die Ausstattung sollte zum Anwendungsszenario passen und wirtschaftlich dimensioniert sein.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-138",
+    "category": "Hardware",
+    "topic": "Arbeitsplatzplanung",
+    "difficulty": "hard",
+    "question": "Für einen CAD-Arbeitsplatz sind mehrere Komponentenangebote verfügbar. Welche Vorgehensweise ist am sinnvollsten?",
+    "answers": [
+      "Die teuersten Einzelteile unabhängig voneinander auswählen und anschließend kombinieren",
+      "Nur nach dem höchsten Watt-Wert des Netzteils entscheiden",
+      "Ausschließlich das optisch auffälligste Gehäuse als Auswahlkriterium verwenden",
+      "Anforderungen definieren und kompatible Komponenten nach Leistung, Kosten und Support vergleichen"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Beschaffung sollte Anforderungen, Kompatibilität, Wirtschaftlichkeit und Support berücksichtigen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-139",
+    "category": "Hardware",
+    "topic": "Arbeitsplatzplanung",
+    "difficulty": "medium",
+    "question": "Warum sollte bei der Beschaffung auch die Garantie- und Supportdauer berücksichtigt werden?",
+    "answers": [
+      "Sie beeinflusst Ausfallrisiko, Serviceaufwand und Folgekosten",
+      "Sie verändert automatisch die CPU-Architektur des Geräts",
+      "Sie bestimmt die maximale Auflösung jedes Monitors",
+      "Sie ersetzt sämtliche Maßnahmen zur Datensicherung"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Servicebedingungen sind Teil der Gesamtbetriebskosten und Verfügbarkeit.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-140",
+    "category": "Hardware",
+    "topic": "Arbeitsplatzplanung",
+    "difficulty": "medium",
+    "question": "Was bedeutet TCO bei der Bewertung eines Arbeitsplatzsystems?",
+    "answers": [
+      "Taktzyklen einer CPU pro Betriebssystem",
+      "Gesamtkosten über Anschaffung und Nutzung hinweg",
+      "Technische Kabellänge eines optischen Anschlusses",
+      "Temperaturgrenze eines Computergehäuses"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Total Cost of Ownership berücksichtigt neben Anschaffung auch laufende und indirekte Kosten.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-141",
+    "category": "Hardware",
+    "topic": "Ergonomie",
+    "difficulty": "medium",
+    "question": "Wie sollte die Oberkante eines typischen Büro-Monitors ungefähr positioniert sein?",
+    "answers": [
+      "Deutlich oberhalb des Kopfes",
+      "Auf Höhe der Tischkante",
+      "Etwa auf Augenhöhe oder leicht darunter",
+      "Direkt unterhalb der Tastatur"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Eine eher gerade bis leicht nach unten gerichtete Blicklinie unterstützt ergonomisches Arbeiten.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-142",
+    "category": "Hardware",
+    "topic": "Ergonomie",
+    "difficulty": "medium",
+    "question": "Warum ist ein höhenverstellbarer Monitorständer sinnvoll?",
+    "answers": [
+      "Die CPU erhält dadurch eine höhere Taktfrequenz",
+      "Der Monitor benötigt dadurch kein Videosignal mehr",
+      "Die SSD wird dadurch automatisch vor Datenverlust geschützt",
+      "Bildschirmhöhe lässt sich an Benutzer und Sitzposition anpassen"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Verstellbarkeit erleichtert eine ergonomische Anpassung des Arbeitsplatzes.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-143",
+    "category": "Hardware",
+    "topic": "Ergonomie",
+    "difficulty": "medium",
+    "question": "Welche Maßnahme kann Blendungen auf einem Monitor reduzieren?",
+    "answers": [
+      "Monitor sinnvoll zur Fenster- und Lichtquelle ausrichten",
+      "Bildschirm direkt gegenüber einer starken Lichtquelle platzieren",
+      "Helligkeit grundsätzlich immer auf den Maximalwert setzen",
+      "Den Monitor dauerhaft in einem steilen Winkel nach oben kippen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Günstige Positionierung reduziert Reflexionen und Blendung.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-144",
+    "category": "Hardware",
+    "topic": "Ergonomie",
+    "difficulty": "medium",
+    "question": "Warum ist die passende Größe von Tastatur und Maus relevant?",
+    "answers": [
+      "Sie bestimmt die maximale Geschwindigkeit des Internetanschlusses",
+      "Sie kann eine natürlichere Hand- und Armhaltung unterstützen",
+      "Sie legt die Kapazität des Arbeitsspeichers fest",
+      "Sie verändert die native Auflösung des Monitors"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Geeignete Eingabegeräte können Belastungen durch ungünstige Haltung reduzieren.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-145",
+    "category": "Hardware",
+    "topic": "Ergonomie",
+    "difficulty": "medium",
+    "question": "Ein Nutzer arbeitet viele Stunden täglich an zwei Monitoren. Welche Anordnung ist sinnvoll, wenn beide gleich häufig genutzt werden?",
+    "answers": [
+      "Beide Monitore weit seitlich außerhalb des direkten Sichtfelds platzieren",
+      "Einen Monitor direkt hinter dem anderen aufstellen",
+      "Beide Monitore möglichst symmetrisch im zentralen Sichtbereich anordnen",
+      "Die Monitore so hoch montieren, dass der Kopf dauerhaft angehoben wird"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Eine symmetrische Anordnung kann unnötige Kopf- und Rumpfdrehungen reduzieren.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-146",
+    "category": "Hardware",
+    "topic": "Hardware-Sicherheit",
+    "difficulty": "medium",
+    "question": "Warum ist ESD-Schutz beim Arbeiten an PC-Komponenten wichtig?",
+    "answers": [
+      "Elektrostatische Entladung erhöht die Kapazität von RAM-Modulen",
+      "Elektrostatische Entladung verbessert den Kontakt von PCIe-Karten",
+      "Elektrostatische Entladung kalibriert automatisch Temperatursensoren",
+      "Elektrostatische Entladung kann empfindliche Bauteile beschädigen"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Schon kleine elektrostatische Entladungen können Halbleiterbauteile schädigen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-147",
+    "category": "Hardware",
+    "topic": "Hardware-Sicherheit",
+    "difficulty": "medium",
+    "question": "Welche Maßnahme reduziert das ESD-Risiko bei Hardwarearbeiten?",
+    "answers": [
+      "Potentialausgleich durch geeignete ESD-Ausrüstung verwenden",
+      "Komponenten auf stark statisch aufladendem Teppich ablegen",
+      "Kontakte von RAM-Modulen möglichst häufig direkt berühren",
+      "Das Netzteil während des Einbaus unter Last betreiben"
+    ],
+    "correctAnswer": 0,
+    "explanation": "ESD-Armband, geeignete Arbeitsfläche und korrekter Potentialausgleich reduzieren elektrostatische Risiken.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-148",
+    "category": "Hardware",
+    "topic": "Hardware-Sicherheit",
+    "difficulty": "medium",
+    "question": "Wo sollte ein ausgebautes RAM-Modul möglichst angefasst werden?",
+    "answers": [
+      "Direkt an den goldfarbenen Kontakten für besseren Halt",
+      "An den Kanten, ohne Kontakte und Bauteile unnötig zu berühren",
+      "Nur an den Speicherchips mit beiden Händen",
+      "An beliebigen Stellen, solange der PC eingeschaltet bleibt"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Das Anfassen an den Kanten schützt Kontakte und Bauteile vor Verschmutzung und ESD-Risiken.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-149",
+    "category": "Hardware",
+    "topic": "Hardware-Sicherheit",
+    "difficulty": "medium",
+    "question": "Welche Vorgehensweise ist vor dem Öffnen eines Desktop-PCs sinnvoll?",
+    "answers": [
+      "PC unter Volllast weiterlaufen lassen und Lüfter blockieren",
+      "Netzkabel angeschlossen lassen und Komponenten sofort herausziehen",
+      "Gerät herunterfahren, Spannungsversorgung trennen und ESD-Schutz beachten",
+      "Zuerst alle Datenkabel abziehen, während Dateien geschrieben werden"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Vor Hardwarearbeiten sollten Stromversorgung und elektrostatische Risiken kontrolliert werden.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-150",
+    "category": "Hardware",
+    "topic": "Fehlersuche",
+    "difficulty": "medium",
+    "question": "Ein PC zeigt nach dem Einschalten kein Bild. Welche Prüfung ist als erster Schritt sinnvoll?",
+    "answers": [
+      "Sofort das Betriebssystem vollständig neu installieren",
+      "Alle Benutzerkonten des Rechners löschen",
+      "Die interne SSD ohne weitere Diagnose formatieren",
+      "Stromversorgung, Monitoranschluss und Eingangssignal prüfen"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Bei 'kein Bild' sollten zunächst einfache physische Ursachen ausgeschlossen werden.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-151",
+    "category": "Hardware",
+    "topic": "Fehlersuche",
+    "difficulty": "medium",
+    "question": "Ein neu eingebautes RAM-Modul wird nicht erkannt. Was sollte geprüft werden?",
+    "answers": [
+      "Sitz des Moduls, Slotbelegung und unterstützte Speicherspezifikation prüfen",
+      "Monitoranschluss, Bildmodus und unterstützte Bildschirmauflösung prüfen",
+      "Druckerwarteschlange, Treiberstatus und verfügbaren Tonervorrat prüfen",
+      "Browsercache, gespeicherte Webseiten und aktive Erweiterungen prüfen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Nicht erkannter RAM kann durch falschen Sitz, Slotwahl oder Inkompatibilität verursacht werden.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-152",
+    "category": "Hardware",
+    "topic": "Fehlersuche",
+    "difficulty": "hard",
+    "question": "Nach Einbau einer neuen Grafikkarte startet der PC unter Last plötzlich neu. Welche Ursache sollte geprüft werden?",
+    "answers": [
+      "Ob die Tastatur eine ausreichend hohe Polling-Rate besitzt",
+      "Ob Netzteil, Stromstecker und Leistungsreserve zur Grafikkarte passen",
+      "Ob der Drucker über genügend Papier im Fach verfügt",
+      "Ob die Systemuhr auf die richtige Zeitzone eingestellt ist"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Lastabhängige Neustarts können unter anderem auf Probleme mit Stromversorgung oder Stabilität hinweisen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-153",
+    "category": "Hardware",
+    "topic": "Fehlersuche",
+    "difficulty": "medium",
+    "question": "Eine SATA-SSD wird im Betriebssystem nicht angezeigt. Welche Prüfung ist sinnvoll?",
+    "answers": [
+      "Monitoranschluss, Bildwiederholrate und gewählten Eingang überprüfen",
+      "Mauseinstellungen, USB-Abfragerate und Zeigerbeschleunigung überprüfen",
+      "Daten- und Stromanschluss, Firmware-Erkennung und Datenträgerverwaltung prüfen",
+      "CPU-Kühler, Lüfterkurve und Wärmeleitpaste des Prozessors überprüfen"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Fehlende Laufwerke sollten von der physischen Verbindung über Firmware bis zur Datenträgerverwaltung geprüft werden.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-154",
+    "category": "Hardware",
+    "topic": "Fehlersuche",
+    "difficulty": "medium",
+    "question": "Ein USB-Gerät funktioniert an einem Port, aber nicht an einem anderen. Was liegt nahe?",
+    "answers": [
+      "Das gesamte Betriebssystem muss zwingend neu installiert werden",
+      "Die CPU besitzt grundsätzlich zu wenige Kerne",
+      "Die SSD ist automatisch vollständig verschlüsselt",
+      "Der betroffene Port oder dessen Konfiguration könnte fehlerhaft sein"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Wenn dasselbe Gerät an einem anderen Port funktioniert, sollte der problematische Port gezielt untersucht werden.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-155",
+    "category": "Hardware",
+    "topic": "Notebooks",
+    "difficulty": "medium",
+    "question": "Welcher Vorteil ist für ein Notebook gegenüber einem Desktop-PC typisch?",
+    "answers": [
+      "Hohe Mobilität durch integrierten Akku und kompakte Bauform",
+      "Grundsätzlich höhere Aufrüstbarkeit bei allen Komponenten",
+      "Immer deutlich höhere Grafikleistung bei gleichem Preis",
+      "Unbegrenzte Laufzeit ohne externe Energieversorgung"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Notebooks integrieren Display, Eingabe, Akku und Rechner in einem mobilen Gerät.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-156",
+    "category": "Hardware",
+    "topic": "Notebooks",
+    "difficulty": "medium",
+    "question": "Warum sollte bei einem mobilen Arbeitsplatz die Akkulaufzeit berücksichtigt werden?",
+    "answers": [
+      "Sie bestimmt direkt die maximale SSD-Kapazität",
+      "Sie beeinflusst die nutzbare Arbeitszeit ohne Netzanschluss",
+      "Sie legt die Geschwindigkeit des Ethernet-Switches fest",
+      "Sie ersetzt die Angabe zur Bildschirmhelligkeit vollständig"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Akkulaufzeit ist ein relevantes Auswahlkriterium für mobiles Arbeiten.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-157",
+    "category": "Hardware",
+    "topic": "Notebooks",
+    "difficulty": "medium",
+    "question": "Welche Komponente ist bei vielen modernen Notebooks nur eingeschränkt austauschbar?",
+    "answers": [
+      "Internes Display und fest eingebaute Lautsprecher des Geräts",
+      "Externe Maus und externe Tastatur am Arbeitsplatz",
+      "Fest verlöteter Arbeitsspeicher oder andere integrierte Bauteile",
+      "Externer Netzwerk-Switch und angeschlossenes Ethernet-Kabel"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Bei kompakten Geräten sind RAM, CPU oder Massenspeicher teilweise verlötet oder schwer zugänglich.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-158",
+    "category": "Hardware",
+    "topic": "Notebooks",
+    "difficulty": "hard",
+    "question": "Warum kann ein sehr dünnes Notebook trotz schneller CPU unter Dauerlast langsamer werden?",
+    "answers": [
+      "Dünne Geräte unterstützen grundsätzlich keinen Arbeitsspeicher",
+      "Der Akku deaktiviert nach wenigen Minuten alle CPU-Kerne",
+      "Das Display reduziert automatisch die PCIe-Bandbreite",
+      "Begrenzte Kühlung kann zu thermischer Drosselung führen"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Kompakte Kühlung kann langfristige Leistungsaufnahme und Takt unter hoher Last begrenzen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-159",
+    "category": "Hardware",
+    "topic": "Nachhaltigkeit",
+    "difficulty": "medium",
+    "question": "Welche Maßnahme kann die Nutzungsdauer eines Arbeitsplatz-PCs verlängern?",
+    "answers": [
+      "Aufrüstbare und reparierbare Komponenten berücksichtigen",
+      "Geräte bei jedem kleinen Leistungsproblem vollständig ersetzen",
+      "Ersatzteile grundsätzlich unabhängig von Kompatibilität auswählen",
+      "Wartung und Reinigung dauerhaft vermeiden"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Aufrüstbarkeit, Ersatzteilversorgung und Wartung können die Lebensdauer verlängern.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-160",
+    "category": "Hardware",
+    "topic": "Nachhaltigkeit",
+    "difficulty": "medium",
+    "question": "Warum ist Energieeffizienz bei vielen Arbeitsplatzrechnern wirtschaftlich relevant?",
+    "answers": [
+      "Effizienz erhöht automatisch die Anzahl der CPU-Kerne",
+      "Stromkosten summieren sich über Gerätezahl und Nutzungsdauer",
+      "Effizienz verdoppelt grundsätzlich die Lebensdauer jeder SSD",
+      "Effizienz ersetzt sämtliche Kosten für Wartung und Support"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Bei vielen Geräten können auch kleine Verbrauchsunterschiede über Jahre relevante Kosten verursachen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-161",
+    "category": "Hardware",
+    "topic": "Nachhaltigkeit",
+    "difficulty": "medium",
+    "question": "Was ist bei der Entsorgung alter IT-Hardware zu beachten?",
+    "answers": [
+      "Datenträger müssen grundsätzlich funktionsfähig weitergegeben werden",
+      "Akkus dürfen immer gemeinsam mit Hausmüll entsorgt werden",
+      "Datenschutz und fachgerechte Entsorgung beziehungsweise Wiederverwertung",
+      "Benutzerdaten müssen vor Weitergabe nicht berücksichtigt werden"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Vor Wiederverwendung oder Entsorgung müssen Daten sicher behandelt und gesetzliche Entsorgungswege beachtet werden.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-162",
+    "category": "Hardware",
+    "topic": "Nachhaltigkeit",
+    "difficulty": "hard",
+    "question": "Ein alter PC wird ausgemustert, die SSD enthält vertrauliche Daten. Welche Maßnahme ist geeignet?",
+    "answers": [
+      "Nur die Dateinamen ändern und den Datenträger anschließend weitergeben",
+      "Den Desktop-Hintergrund entfernen und das Benutzerkonto umbenennen",
+      "Die SSD lediglich vom SATA-Kabel trennen und unverändert verkaufen",
+      "Daten nach festgelegtem Verfahren sicher löschen oder Datenträger fachgerecht vernichten"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Vertrauliche Daten müssen vor Weitergabe oder Entsorgung zuverlässig unzugänglich gemacht werden.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-163",
+    "category": "Hardware",
+    "topic": "Kompatibilität",
+    "difficulty": "medium",
+    "question": "Welche Komponenten müssen bei einem PC-Neubau besonders aufeinander abgestimmt sein?",
+    "answers": [
+      "CPU, Mainboard, RAM, Netzteil und Gehäuse",
+      "Mauspad, Hintergrundbild, Lautstärke und Browserstartseite",
+      "Druckerpapier, Tonerfarbe, Mauszeiger und Benutzername",
+      "E-Mail-Adresse, Dateiname, Zeitzone und Desktop-Icon"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Zentrale Komponenten müssen mechanisch, elektrisch und funktional kompatibel sein.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-164",
+    "category": "Hardware",
+    "topic": "Kompatibilität",
+    "difficulty": "medium",
+    "question": "Warum muss die Länge einer Grafikkarte mit dem Gehäuse abgeglichen werden?",
+    "answers": [
+      "Die Länge bestimmt automatisch die Größe des Arbeitsspeichers",
+      "Die Karte muss mechanisch in den verfügbaren Innenraum passen",
+      "Die Länge verändert die Anzahl der CPU-Kerne",
+      "Die Länge bestimmt die unterstützte Bildschirmauflösung"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Große Karten können mit Laufwerkskäfigen, Radiatoren oder Gehäusewänden kollidieren.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-165",
+    "category": "Hardware",
+    "topic": "Kompatibilität",
+    "difficulty": "hard",
+    "question": "Ein Mainboard besitzt einen M.2-Slot, aber die gewünschte SSD wird nicht erkannt. Welche Ursache ist möglich?",
+    "answers": [
+      "Die SSD ist zu schnell für jedes moderne Betriebssystem",
+      "M.2-Laufwerke benötigen grundsätzlich einen HDMI-Anschluss",
+      "Der Slot unterstützt nicht den benötigten SATA- oder PCIe-Modus",
+      "Der CPU-Kühler verhindert automatisch jede M.2-Erkennung"
+    ],
+    "correctAnswer": 2,
+    "explanation": "M.2-Slots können sich in unterstützten Protokollen und Lane-Anbindungen unterscheiden.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-166",
+    "category": "Hardware",
+    "topic": "Kompatibilität",
+    "difficulty": "medium",
+    "question": "Warum sollte die maximale Kühlerhöhe des Gehäuses geprüft werden?",
+    "answers": [
+      "Ein hoher Kühler reduziert automatisch die SSD-Kapazität",
+      "Die Kühlerhöhe bestimmt die Anzahl der Netzwerkports",
+      "Die Kühlerhöhe legt die DDR-Generation des RAM fest",
+      "Ein zu hoher CPU-Kühler kann mechanisch nicht ins Gehäuse passen"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Gehäuse geben einen maximal verfügbaren Raum für CPU-Kühler vor.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-167",
+    "category": "Hardware",
+    "topic": "Kompatibilität",
+    "difficulty": "medium",
+    "question": "Warum ist die Anzahl der benötigten Monitoranschlüsse vor dem Kauf wichtig?",
+    "answers": [
+      "Grafiklösung oder Dock müssen genügend passende Ausgänge besitzen",
+      "Jeder Monitor benötigt einen eigenen CPU-Kern",
+      "Die Zahl der Monitore bestimmt die SATA-Version der SSD",
+      "Jeder Bildschirm benötigt einen separaten Arbeitsspeicherriegel"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die gewünschte Monitoranzahl und Auflösung müssen von den vorhandenen Ausgängen unterstützt werden.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-168",
+    "category": "Hardware",
+    "topic": "Qualitätssicherung",
+    "difficulty": "medium",
+    "question": "Was sollte nach dem Aufbau eines neuen Arbeitsplatz-PCs erfolgen?",
+    "answers": [
+      "Alle Diagnoseinformationen dauerhaft deaktivieren",
+      "Funktion und vereinbarte Anforderungen systematisch testen",
+      "Die Hardware ohne Test direkt an den Benutzer übergeben",
+      "Die Firmwareeinstellungen grundsätzlich auf Zufallswerte setzen"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Ein Abnahmetest prüft, ob das System erwartungsgemäß und entsprechend den Anforderungen funktioniert.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-169",
+    "category": "Hardware",
+    "topic": "Qualitätssicherung",
+    "difficulty": "medium",
+    "question": "Warum ist eine Hardwareinventarisierung sinnvoll?",
+    "answers": [
+      "Inventarisierung erhöht automatisch die Rechenleistung des Systems",
+      "Inventarisierung ersetzt jede Form von Datensicherung",
+      "Geräte und relevante Komponenten lassen sich nachvollziehbar dokumentieren",
+      "Inventarisierung legt die Bildschirmauflösung der Benutzer fest"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Inventardaten unterstützen Verwaltung, Support, Austausch und Lizenz- beziehungsweise Lebenszyklusplanung.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-170",
+    "category": "Hardware",
+    "topic": "Qualitätssicherung",
+    "difficulty": "medium",
+    "question": "Welche Information gehört sinnvoll in eine Arbeitsplatzdokumentation?",
+    "answers": [
+      "Nur die Farbe des Mauszeigers und die Position des Papierkorbs",
+      "Nur persönliche Passwörter des Benutzers im Klartext",
+      "Nur die zuletzt besuchte Webseite und Browserchronik",
+      "Gerät, Konfiguration, Serien- oder Inventardaten und durchgeführte Tests"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Technische Dokumentation sollte relevante Konfigurationen und Prüfergebnisse nachvollziehbar festhalten.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-171",
+    "category": "Hardware",
+    "topic": "Qualitätssicherung",
+    "difficulty": "medium",
+    "question": "Warum ist eine Checkliste bei der Einrichtung vieler ähnlicher Arbeitsplätze hilfreich?",
+    "answers": [
+      "Sie verbessert Wiederholbarkeit und reduziert vergessene Prüfschritte",
+      "Sie macht technische Kenntnisse und Funktionsprüfungen vollständig überflüssig",
+      "Sie sorgt unabhängig vom Inhalt automatisch für höhere Hardwareleistung",
+      "Sie ersetzt sämtliche Benutzeranforderungen durch einen festen Standard"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Checklisten unterstützen konsistente Abläufe und dokumentierbare Qualität.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-172",
+    "category": "Hardware",
+    "topic": "Qualitätssicherung",
+    "difficulty": "medium",
+    "question": "Was ist ein sinnvoller Bestandteil einer Übergabe an einen Benutzer?",
+    "answers": [
+      "Ausschließlich die Verpackung der Hardware ohne weitere Erklärung",
+      "Kurze Einweisung in relevante Funktionen und Besonderheiten",
+      "Weitergabe aller Administratorpasswörter ohne Schutzmaßnahmen",
+      "Verzicht auf jede Dokumentation und Rückfragemöglichkeit"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Eine zielgruppengerechte Einweisung gehört zu einer vollständigen Arbeitsplatzübergabe.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-173",
+    "category": "Hardware",
+    "topic": "IT-Sicherheit",
+    "difficulty": "medium",
+    "question": "Warum sollte ein Arbeitsplatzrechner bei Abwesenheit gesperrt werden?",
+    "answers": [
+      "Die CPU erhält dadurch zusätzliche Rechenkerne",
+      "Die SSD wird dadurch automatisch physisch verschlüsselt",
+      "Unbefugter Zugriff auf Daten und Anwendungen wird erschwert",
+      "Der Monitor kann dadurch höhere Bildraten anzeigen"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Eine gesperrte Sitzung schützt vor direktem Zugriff durch andere Personen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-174",
+    "category": "Hardware",
+    "topic": "IT-Sicherheit",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe kann ein Kensington-Schloss erfüllen?",
+    "answers": [
+      "Es verschlüsselt automatisch sämtliche Festplattendaten",
+      "Es schützt Netzwerkverkehr durch TLS-Verschlüsselung",
+      "Es ersetzt Benutzerkennwörter im Betriebssystem",
+      "Es erschwert den physischen Diebstahl eines Geräts"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Ein Kensington-Schloss ist eine mechanische Sicherung für Geräte.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-175",
+    "category": "Hardware",
+    "topic": "IT-Sicherheit",
+    "difficulty": "medium",
+    "question": "Warum ist ein Sichtschutzfilter in bestimmten Arbeitsumgebungen sinnvoll?",
+    "answers": [
+      "Seitliche Einsicht auf vertrauliche Bildschirminhalte wird erschwert",
+      "Der Prozessor wird damit vor thermischer Überlastung geschützt",
+      "Die Netzwerkkarte erhält damit eine höhere Datenrate",
+      "Die SSD wird dadurch vor elektrischen Spannungsspitzen geschützt"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Privacy-Filter reduzieren die Lesbarkeit des Bildschirms aus seitlichen Blickwinkeln.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-176",
+    "category": "Hardware",
+    "topic": "IT-Sicherheit",
+    "difficulty": "hard",
+    "question": "Ein Notebook mit vertraulichen Daten wird regelmäßig mobil genutzt. Welche Kombination verbessert den Schutz sinnvoll?",
+    "answers": [
+      "Nur eine hohe Displayhelligkeit und ein großes Netzteil",
+      "Geräteverschlüsselung, starke Anmeldung und physische Zugriffskontrolle",
+      "Nur ein schneller Prozessor und möglichst viel Arbeitsspeicher",
+      "Nur ein größeres Gehäuse und zusätzliche Lüfter"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Schutz mobiler Geräte umfasst technische Authentisierung, Verschlüsselung und physischen Schutz.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-177",
+    "category": "Hardware",
+    "topic": "Leistungsberechnung",
+    "difficulty": "medium",
+    "question": "Ein PC benötigt 250 W und zwei Monitore jeweils 30 W. Wie hoch ist die Gesamtleistung?",
+    "answers": [
+      "280 W",
+      "340 W",
+      "310 W",
+      "500 W"
+    ],
+    "correctAnswer": 2,
+    "explanation": "250 W + 30 W + 30 W = 310 W.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-178",
+    "category": "Hardware",
+    "topic": "Leistungsberechnung",
+    "difficulty": "medium",
+    "question": "Ein Gerät mit 100 W läuft 10 Stunden. Wie viel Energie verbraucht es?",
+    "answers": [
+      "0,1 kWh",
+      "10 kWh",
+      "100 kWh",
+      "1 kWh"
+    ],
+    "correctAnswer": 3,
+    "explanation": "100 W × 10 h = 1000 Wh = 1 kWh.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-179",
+    "category": "Hardware",
+    "topic": "Leistungsberechnung",
+    "difficulty": "hard",
+    "question": "Ein Arbeitsplatz benötigt durchschnittlich 200 W und läuft an 220 Arbeitstagen jeweils 8 Stunden. Wie hoch ist der Jahresverbrauch ungefähr?",
+    "answers": [
+      "352 kWh",
+      "35,2 kWh",
+      "176 kWh",
+      "880 kWh"
+    ],
+    "correctAnswer": 0,
+    "explanation": "0,2 kW × 8 h × 220 = 352 kWh.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-180",
+    "category": "Hardware",
+    "topic": "Leistungsberechnung",
+    "difficulty": "medium",
+    "question": "Ein Netzteil nimmt 500 W aus dem Stromnetz auf und liefert 450 W an den PC. Wie hoch ist der Wirkungsgrad?",
+    "answers": [
+      "80 %",
+      "90 %",
+      "95 %",
+      "110 %"
+    ],
+    "correctAnswer": 1,
+    "explanation": "450 W / 500 W × 100 = 90 %.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-181",
+    "category": "Hardware",
+    "topic": "Leistungsberechnung",
+    "difficulty": "hard",
+    "question": "Ein PC verbraucht 0,3 kW und läuft 6 Stunden. Der Strompreis beträgt 0,35 €/kWh. Welche Kosten entstehen ungefähr?",
+    "answers": [
+      "0,35 €",
+      "1,80 €",
+      "0,63 €",
+      "6,30 €"
+    ],
+    "correctAnswer": 2,
+    "explanation": "0,3 kW × 6 h = 1,8 kWh; 1,8 × 0,35 € = 0,63 €.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-182",
+    "category": "Hardware",
+    "topic": "Virtualisierung",
+    "difficulty": "medium",
+    "question": "Welche Hardware-Ressource wird einer virtuellen Maschine typischerweise zugewiesen?",
+    "answers": [
+      "Nur eine feste Monitorauflösung ohne weitere Ressourcen",
+      "Ausschließlich physische Tastaturkontakte des Hosts",
+      "Nur die Seriennummer des Host-Gehäuses",
+      "Virtuelle CPUs, Arbeitsspeicher und virtueller Massenspeicher"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Virtuelle Maschinen erhalten definierte Anteile beziehungsweise virtuelle Abbildungen von Host-Ressourcen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-183",
+    "category": "Hardware",
+    "topic": "Virtualisierung",
+    "difficulty": "medium",
+    "question": "Warum sollte einer VM nicht unnötig viel RAM zugewiesen werden?",
+    "answers": [
+      "Der Host und andere VMs benötigen ebenfalls Arbeitsspeicher",
+      "Mehr RAM verhindert grundsätzlich den Start jeder VM",
+      "RAM-Zuweisung verändert die physische CPU-Sockelgröße",
+      "Zusätzlicher RAM deaktiviert automatisch virtuelle Netzwerkkarten"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Zu großzügige Zuweisung kann Ressourcen des Hosts und anderer VMs einschränken.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-184",
+    "category": "Hardware",
+    "topic": "Virtualisierung",
+    "difficulty": "hard",
+    "question": "Welche CPU-Funktion kann für Hardwarevirtualisierung erforderlich sein?",
+    "answers": [
+      "Ein integrierter SATA-Controller mit RAID 0",
+      "Unterstützung wie Intel VT-x oder AMD-V",
+      "Ein DisplayPort-Ausgang mit hoher Bildrate",
+      "Ein spezieller USB-A-Port mit Ladefunktion"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Moderne Hypervisoren nutzen häufig Hardwarevirtualisierungsfunktionen der CPU.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-185",
+    "category": "Hardware",
+    "topic": "Virtualisierung",
+    "difficulty": "medium",
+    "question": "Was ist ein Vorteil eines Snapshots einer VM?",
+    "answers": [
+      "Die physische SSD erhält dadurch automatisch mehr Kapazität",
+      "Der Host benötigt danach keinen Arbeitsspeicher mehr",
+      "Ein definierter Zustand kann für Tests schnell wiederhergestellt werden",
+      "Der Snapshot ersetzt dauerhaft jede externe Datensicherung"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Snapshots sind nützlich für kurzfristige Zustandswiederherstellung, ersetzen aber kein vollständiges Backup.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-186",
+    "category": "Hardware",
+    "topic": "Hardware-Grundlagen",
+    "difficulty": "medium",
+    "question": "Was beschreibt ein Bit?",
+    "answers": [
+      "Eine Gruppe aus genau zehn Dezimalziffern",
+      "Eine feste Einheit von 1024 Megabyte",
+      "Eine physische Leitung mit acht Kupferadern",
+      "Die kleinste binäre Informationseinheit mit 0 oder 1"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Ein Bit kann einen von zwei binären Zuständen darstellen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-187",
+    "category": "Hardware",
+    "topic": "Hardware-Grundlagen",
+    "difficulty": "medium",
+    "question": "Wie viele Bit enthält ein Byte?",
+    "answers": [
+      "8 Bit",
+      "2 Bit",
+      "16 Bit",
+      "32 Bit"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ein Byte besteht aus acht Bit.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-188",
+    "category": "Hardware",
+    "topic": "Hardware-Grundlagen",
+    "difficulty": "medium",
+    "question": "Welche Einheit wird häufig für Datenübertragungsraten verwendet?",
+    "answers": [
+      "Watt pro Stunde",
+      "Bit pro Sekunde",
+      "Volt pro Meter",
+      "Hertz pro Byte"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Netzwerk- und Schnittstellendatenraten werden häufig in bit/s und Vielfachen davon angegeben.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-189",
+    "category": "Hardware",
+    "topic": "Hardware-Grundlagen",
+    "difficulty": "medium",
+    "question": "Was ist Firmware?",
+    "answers": [
+      "Mechanische Bauteile, die ohne gespeicherten Programmcode arbeiten",
+      "Temporäre Benutzerprozesse, die nur im Arbeitsspeicher laufen",
+      "Gerätenahe Software, die grundlegende Hardwarefunktionen steuert",
+      "Dokumentdateien, die ausschließlich von Office-Programmen genutzt werden"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Firmware steuert grundlegende Funktionen von Hardware und liegt meist in nichtflüchtigem Speicher.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-190",
+    "category": "Hardware",
+    "topic": "Hardware-Grundlagen",
+    "difficulty": "hard",
+    "question": "Warum sollte ein Firmware-Update nicht ohne Anlass unterbrochen werden?",
+    "answers": [
+      "Eine Unterbrechung erhöht automatisch die Speicherkapazität",
+      "Das Gerät wechselt danach immer auf eine schnellere Schnittstelle",
+      "Das Update wird ausschließlich im flüchtigen CPU-Cache gespeichert",
+      "Ein unvollständiger Schreibvorgang kann das Gerät unstartbar machen"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Wird kritische Firmware unvollständig geschrieben, kann das Gerät nicht mehr korrekt starten.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-191",
+    "category": "Hardware",
+    "topic": "Beschaffung",
+    "difficulty": "medium",
+    "question": "Was ist bei zwei technisch geeigneten Hardwareangeboten zusätzlich zum Kaufpreis sinnvoll zu vergleichen?",
+    "answers": [
+      "Garantie, Lieferzeit, Betriebskosten und Support",
+      "Nur die Reihenfolge der Buchstaben im Produktnamen",
+      "Nur die Farbe der Verpackung und Anzahl der Logos",
+      "Nur die Größe des Herstellerfotos im Onlineshop"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Eine Beschaffungsentscheidung sollte relevante technische und wirtschaftliche Kriterien berücksichtigen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-192",
+    "category": "Hardware",
+    "topic": "Beschaffung",
+    "difficulty": "medium",
+    "question": "Warum ist die Lieferzeit bei Hardwarebeschaffung relevant?",
+    "answers": [
+      "Sie bestimmt automatisch die Lebensdauer des Prozessors",
+      "Sie kann den geplanten Bereitstellungstermin beeinflussen",
+      "Sie verändert die Kapazität installierter SSDs",
+      "Sie legt die Anzahl der PCIe-Lanes des Mainboards fest"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Nicht verfügbare Hardware kann Projekt- und Übergabetermine verzögern.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-193",
+    "category": "Hardware",
+    "topic": "Beschaffung",
+    "difficulty": "medium",
+    "question": "Was beschreibt eine Mindestanforderung?",
+    "answers": [
+      "Ein optionales Merkmal ohne Einfluss auf die Auswahl",
+      "Ein Kriterium, das grundsätzlich nicht geprüft werden darf",
+      "Eine Eigenschaft, die ein Angebot zwingend erfüllen muss",
+      "Eine Eigenschaft, die nur nach dem Kauf definiert wird"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Mindestanforderungen sind Ausschlusskriterien, wenn sie nicht erfüllt werden.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-194",
+    "category": "Hardware",
+    "topic": "Beschaffung",
+    "difficulty": "hard",
+    "question": "Zwei Geräte erfüllen alle Muss-Kriterien. Gerät A kostet 900 € mit 3 Jahren Vor-Ort-Service, Gerät B 850 € mit 1 Jahr Bring-in-Service. Was ist die beste nächste Vorgehensweise?",
+    "answers": [
+      "Gerät B allein wegen des niedrigeren Kaufpreises automatisch wählen",
+      "Gerät A allein wegen des höheren Kaufpreises automatisch wählen",
+      "Beide Geräte verwerfen, weil ihre Preise unterschiedlich sind",
+      "Die relevanten Kosten- und Servicekriterien gewichtet vergleichen"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Wenn Muss-Kriterien erfüllt sind, sollten weitere gewichtete Kriterien die Entscheidung unterstützen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-195",
+    "category": "Hardware",
+    "topic": "Beschaffung",
+    "difficulty": "medium",
+    "question": "Was ist ein Vorteil standardisierter Arbeitsplatz-Hardware im Unternehmen?",
+    "answers": [
+      "Support, Ersatzteilhaltung und Rollout können einfacher werden",
+      "Jeder Arbeitsplatz benötigt dadurch automatisch andere Treiber",
+      "Die Geräte dürfen danach nicht mehr inventarisiert werden",
+      "Standardisierung verhindert grundsätzlich jede spätere Aufrüstung"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Einheitliche Plattformen können Betrieb, Support und Ersatzteilmanagement vereinfachen.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-196",
+    "category": "Hardware",
+    "topic": "Praxisfälle",
+    "difficulty": "medium",
+    "question": "Ein Mitarbeiter benötigt drei Monitore für Analyseaufgaben. Was muss vor der Beschaffung geprüft werden?",
+    "answers": [
+      "Ob das Gehäuse mindestens drei interne SATA-Schächte besitzt",
+      "Ob Grafiklösung, Dock und Anschlüsse drei Displays unterstützen",
+      "Ob der Prozessor exakt drei physische Kerne besitzt",
+      "Ob die Tastatur über drei verschiedene Layouts verfügt"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Anzahl, Auflösung und Bildrate der Monitore müssen von der Anzeigehardware unterstützt werden.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-197",
+    "category": "Hardware",
+    "topic": "Praxisfälle",
+    "difficulty": "medium",
+    "question": "Ein Arbeitsplatz soll besonders leise sein. Welche Maßnahme ist sinnvoll?",
+    "answers": [
+      "Alle Lüfter entfernen und sämtliche Öffnungen verschließen",
+      "Nur Lüfter mit maximaler Drehzahl unabhängig von Temperatur nutzen",
+      "Effiziente Kühlung mit großen, langsam drehenden Lüftern planen",
+      "Die CPU ohne Kühlkörper betreiben und das Gehäuse offen lassen"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Große effiziente Kühler können bei gleicher Kühlleistung mit niedrigeren Drehzahlen arbeiten.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-198",
+    "category": "Hardware",
+    "topic": "Praxisfälle",
+    "difficulty": "hard",
+    "question": "Ein Büro-PC soll fünf Jahre eingesetzt werden. Welche Auswahlstrategie ist sinnvoll?",
+    "answers": [
+      "Nur die aktuell billigste Minimalhardware ohne Erweiterungsmöglichkeit wählen",
+      "Ausschließlich die maximale RGB-Beleuchtung als Zukunftssicherheit bewerten",
+      "Kompatibilität mit zukünftigen Peripheriegeräten grundsätzlich ignorieren",
+      "Ausreichende Leistungsreserve, gute Wartbarkeit und verfügbare Schnittstellen berücksichtigen"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Eine länger geplante Nutzung profitiert von Reserve, Wartbarkeit und passenden Erweiterungsmöglichkeiten.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-199",
+    "category": "Hardware",
+    "topic": "Praxisfälle",
+    "difficulty": "medium",
+    "question": "Ein Benutzer kopiert regelmäßig sehr große Videodateien. Welche Aufrüstung bringt häufig den größten Vorteil?",
+    "answers": [
+      "Schneller Massenspeicher und passende schnelle Schnittstellen",
+      "Eine Maus mit höherer Abfragerate",
+      "Ein stärkeres Netzteil ohne Änderung anderer Komponenten",
+      "Eine Tastatur mit zusätzlichen Funktionstasten"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Große Dateiübertragungen profitieren von hoher Speicher- und Schnittstellenbandbreite.",
+    "source": "hardware.csv"
+  },
+  {
+    "id": "hardware-200",
+    "category": "Hardware",
+    "topic": "Praxisfälle",
+    "difficulty": "medium",
+    "question": "Ein PC wird hauptsächlich für Videokonferenzen eingesetzt. Welche Hardware ist besonders relevant?",
+    "answers": [
+      "Mehrere High-End-GPUs und ein RAID-0-Verbund aus vier SSDs",
+      "Webcam, Mikrofon, Lautsprecher oder Headset und stabile Netzwerkanbindung",
+      "Eine sehr große HDD ohne Audio- oder Videoeingabegeräte",
+      "Ein besonders leistungsstarkes Netzteil ohne angeschlossene Peripherie"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Für Videokonferenzen sind geeignete Audio-/Video-Geräte und Netzwerkqualität entscheidend.",
+    "source": "hardware.csv"
+  },
+  {
     "id": "netzwerk-001",
     "category": "Netzwerk",
     "topic": null,

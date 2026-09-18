@@ -29,6 +29,24 @@ test('room subscription filters self and stale players; old callbacks cannot rep
   } finally { presence.leave(); }
 });
 
+test('remote visibility uses server heartbeat time when the local computer clock is ahead',()=>{
+  const callbacks=[];
+  const client={onUpdate:(_fn,_args,callback)=>{callbacks.push(callback);return()=>{};},mutation:async()=>{}};
+  const presence=new Presence(client,{players:{}},{playerId:'me',name:'Me'});
+  const realNow=Date.now,serverNow=1_800_000_000_000;
+  let rows;
+  try{
+    Date.now=()=>serverNow+5*60_000;
+    presence.enter('school',()=>({x:0,y:0,direction:'down'}),value=>rows=value);
+    callbacks[0]([
+      {playerId:'me',room:'school',lastSeen:serverNow},
+      {playerId:'other',room:'school',lastSeen:serverNow-2_000},
+      {playerId:'expired',room:'school',lastSeen:serverNow-PRESENCE_TIMEOUT_MS-1},
+    ]);
+    assert.deepEqual(rows.map(player=>player.playerId),['other']);
+  }finally{Date.now=realNow;presence.leave();}
+});
+
 test('network latency never queues a position per frame, and stationary heartbeats are reduced', async () => {
   let finish, count=0;
   const client={onUpdate:()=>()=>{},mutation:()=>{count++;return new Promise(r=>finish=r);}};
