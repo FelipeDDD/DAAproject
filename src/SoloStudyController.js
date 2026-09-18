@@ -108,8 +108,10 @@ export class SoloStudyController {
   async open(seat=this.nearbySeat()) {
     if(!seat||this.active||this.pending)return;
     this.active=true;this.seat=seat;this.returnPosition={x:this.scene.player.x,y:this.scene.player.y};
-    this.scene.player.body.reset(seat.seatX,seat.seatY);this.scene.player.facing=seat.direction;
-    this.scene.player.setFlipX(seat.direction==='left');this.scene.player.setVelocity(0,0);
+    this.scene.player.body.reset(seat.seatX,seat.seatY);
+    if(this.scene.player.setFacing)this.scene.player.setFacing(seat.direction,false);
+    else{this.scene.player.facing=seat.direction;this.scene.player.setFlipX(seat.direction==='left');}
+    this.scene.player.setVelocity(0,0);
     this.statistics.close();this.resetRun();this.root.hidden=false;
     this.status.textContent='Loading solo settings…';this.render();
     try{

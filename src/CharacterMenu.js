@@ -1,4 +1,5 @@
 import { CHARACTERS, CHARACTER_STORAGE_KEY } from './characters.js';
+import { characterVisual,loadCharacterStyle,saveCharacterStyle } from './characterVisuals.js';
 import { isPresenceActive } from './multiplayer/presencePolicy.js';
 
 export function createCharacterSessionId(cryptoApi=globalThis.crypto) {
@@ -20,6 +21,8 @@ export class CharacterMenu {
     this.sessionId=createCharacterSessionId();
     this.root=document.getElementById('character-menu');
     this.message=document.getElementById('character-message');
+    this.styleSelect=document.getElementById('character-style');this.style=loadCharacterStyle();
+    this.styleSelect.value=this.style;
     this.rows=[];this.ready=false;this.connectionFailed=false;this.closed=false;
     let saved;try{saved=localStorage.getItem(CHARACTER_STORAGE_KEY);}catch{}
     this.cards=CHARACTERS.map(c=>{
@@ -30,8 +33,13 @@ export class CharacterMenu {
       button.append(image,name,state);button.addEventListener('click',()=>this.choose(c));
       if(saved===c.id)button.classList.add('preferred');
       document.getElementById('character-list').append(button);
-      return {c,button,state};
+      return {c,button,image,state};
     });
+    this.handleStyleChange=()=>{
+      this.style=saveCharacterStyle(this.styleSelect.value);this.renderPreviews();
+    };
+    this.styleSelect.addEventListener('change',this.handleStyleChange);
+    this.renderPreviews();
     this.message.textContent=presence?'Checking availability…':'Configure Convex to choose a character.';
     if(presence){
       const receiveRows=rows=>{
@@ -63,6 +71,13 @@ export class CharacterMenu {
       state.textContent=busy?'In use':this.ready?'Available':this.connectionFailed?'Offline':'Loading…';
     }
   }
+  renderPreviews(){
+    for(const {c,image}of this.cards){
+      const visual=characterVisual(c,this.style);
+      image.src=`${import.meta.env.BASE_URL}${visual.previewAsset}`;
+      image.dataset.style=visual.style;
+    }
+  }
   async choose(c){
     if(this.pending)return;
     this.pending=true;this.render();this.message.textContent='Claiming character…';
@@ -79,5 +94,8 @@ export class CharacterMenu {
     finally{this.pending=false;this.render();}
   }
   show(){this.root.hidden=false;this.render();}
-  close(){this.closed=true;clearInterval(this.timer);clearTimeout(this.connectionTimer);this.unsubscribe?.();}
+  close(){
+    this.closed=true;clearInterval(this.timer);clearTimeout(this.connectionTimer);this.unsubscribe?.();
+    this.styleSelect.removeEventListener('change',this.handleStyleChange);
+  }
 }

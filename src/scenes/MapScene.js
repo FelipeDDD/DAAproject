@@ -12,6 +12,7 @@ import { getPresence } from '../multiplayer/client.js';
 import { RemotePlayers } from '../multiplayer/RemotePlayers.js';
 import { DoorSync } from '../multiplayer/DoorSync.js';
 import { CHARACTERS, characterById } from '../characters.js';
+import { createCharacterAnimations,loadCharacterStyle,preloadCharacterTextures } from '../characterVisuals.js';
 import { RoomChat } from '../RoomChat.js';
 import { readQuizSeats } from '../maps/quizSeats.js';
 import { QuizLobby } from '../QuizLobby.js';
@@ -51,7 +52,7 @@ export class MapScene extends Phaser.Scene {
   }
 
   preload() {
-    for(const c of CHARACTERS)if(!this.textures.exists(c.sprite))this.load.svg(c.sprite,`${import.meta.env.BASE_URL}${c.asset}`);
+    preloadCharacterTextures(this,CHARACTERS,import.meta.env.BASE_URL);
     const mapUrl = new URL(`${import.meta.env.BASE_URL}assets/maps/${this.filename}`, window.location.href);
     this.load.once(`filecomplete-json-${this.sourceKey}`, (_key, _type, data) => {
       data.tilesets.forEach((reference, index) => {
@@ -97,6 +98,7 @@ export class MapScene extends Phaser.Scene {
     }
     createPlaceholderTextures(this);
     createDoorTextures(this);
+    createCharacterAnimations(this,CHARACTERS);
     drawMapPlaceholders(this, this.source);
     drawTiledTextObjects(this,this.source);
     const floorDetails = this.source.layers.find((layer) => layer.name === 'FloorDetails');
@@ -188,7 +190,7 @@ export class MapScene extends Phaser.Scene {
       this.player.body.reset(spawn.x, spawn.y);
       this.presence = getPresence();
       const character=characterById(this.presence?.identity?.characterId);
-      if(character)this.player.setTexture(character.sprite);
+      if(character)this.player.setCharacter(character,loadCharacterStyle());
       this.presence?.enter(this.mapKey, () => ({
         x: this.player.x, y: this.player.y, direction: this.player.facing,
       }), rows => this.remotes.receive(rows));

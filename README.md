@@ -63,6 +63,11 @@ A Vercel executa o build configurado em `vercel.json`; o Convex escolhe o deploy
 associado a `CONVEX_DEPLOY_KEY`, injeta sua URL no Vite e publica as funções. Depois,
 a Vercel publica o `dist` produzido pelo mesmo processo.
 
+O arquivo `.vercelignore` impede que dados locais de desenvolvimento, especialmente
+o banco SQLite de `.convex/`, assets de teste e builds locais, sejam enviados pela
+CLI. Esses arquivos não são necessários para o build remoto e podem ultrapassar o
+limite de upload da Vercel.
+
 ## Multiplayer mínimo
 
 Abra `http://127.0.0.1:5173` em duas abas, escolha personagens diferentes e aguarde
@@ -101,6 +106,27 @@ Os SVGs em `public/assets/characters/` usam 32×56 px e preservam a hitbox dos p
 para melhorar a arte. Michael tem silhueta mais alta/magra e cigarro; Yassin,
 cabelo curto e azul claro; Sarina, cachos, roxo e tiramisu; Felipe, cabelo comprido,
 preto com detalhes brancos e lata preta/verde provisória.
+
+O seletor **Character sprites** permite comparar `Original` e `New test sprites`;
+a preferência fica em `localStorage['daa-character-style']`. Os quatro personagens
+têm folhas novas normalizadas em 24 frames de 64×72 px: seis poses por linha, nas
+direções down, left, right e up. O idle usa o primeiro frame e o walk usa quatro
+poses consistentes da mesma linha.
+
+As fontes `Michael-sprite.png`, `Sarina-sprite.png`, `Yassin-sprite.png` e
+`Felipe-sprite.png` são recortadas novamente por `scripts/build-character-sprites.ps1`.
+O script detecta as poses pelo canal alpha das folhas transparentes, preserva a
+proporção, alinha os pés e gera as folhas normalizadas e seus previews.
+Execute:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-character-sprites.ps1
+```
+
+`NEW_PLAYER_SCALE` em `src/game/settings.js` controla somente a escala visual nova.
+`footBodyForVisual()` em `src/characterVisuals.js` mantém a hitbox mundial dos pés
+igual à antiga, independentemente do canvas. `Player.setFacing()` e o mesmo helper
+de animação são reutilizados pelos jogadores locais, sentados e remotos.
 
 `src/CharacterMenu.js` mostra previews e disponibilidade. `players:claim` no Convex
 reserva a vaga em uma transação: duas escolhas simultâneas têm apenas um vencedor.

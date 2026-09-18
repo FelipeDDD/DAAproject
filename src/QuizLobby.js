@@ -100,7 +100,8 @@ export class QuizLobby {
       const {characterId,sessionId}=this.presence.identity;
       const seat=await this.presence.client.mutation(this.presence.api.quizLobbies.join,{room:this.room,characterId,sessionId});
       this.seated=true;this.scene.player.body.reset(seat.seatX,seat.seatY);
-      this.scene.player.facing=seat.direction;this.scene.player.setFlipX(seat.direction==='left');
+      if(this.scene.player.setFacing)this.scene.player.setFacing(seat.direction,false);
+      else{this.scene.player.facing=seat.direction;this.scene.player.setFlipX(seat.direction==='left');}
       this.scene.player.setVelocity(0,0);this.root.hidden=false;this.render();
     }catch(error){
       this.status.textContent=error.message.includes('already started')?'The lobby has already started.':'Could not sit down. Move closer to your chair.';
