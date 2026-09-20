@@ -6,10 +6,13 @@ export const CHARACTERS = [
       // Include feet-together poses between the source sheet's extended steps.
       walkColumns:{left:[0,2,3,1,4,5],right:[0,2,3,1,4,5]},
     },
+    // The cigarette extends far beyond Michael's body in the side views.
+    // This wider canvas is visual only; Player keeps the same foot hitbox.
+    lungCrusherVisual:{sprite:'character-michael-lung-crusher',asset:'assets/characters/michael-bigzig-normalized.png?v=2',frameWidth:96,frameHeight:72},
   },
   {
     id: 'jassine', name: 'Yassin', sprite: 'character-jassine', asset: 'assets/characters/jassine.svg',
-    newVisual:{sprite:'character-yassin-new',asset:'assets/characters/yassin-new.png',previewAsset:'assets/characters/yassin-new-preview.png'},
+    newVisual:{sprite:'character-yassin-new',asset:'assets/characters/yassin-new.png?v=2',previewAsset:'assets/characters/yassin-new-preview.png?v=2'},
   },
   {
     id: 'sarina', name: 'Sarina', sprite: 'character-sarina', asset: 'assets/characters/sarina.svg',

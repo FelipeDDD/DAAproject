@@ -12,6 +12,17 @@ alemão. Novos CSVs e templates gerados devem seguir essa convenção.
 
 ## Executar
 
+### Michael: transformação Lung Crusher
+
+`public/assets/items/michael-bigcig.png` contém seis personagens e um pickup separado,
+sem grade uniforme. Para reconstruir somente essa animação:
+`powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-character-sprites.ps1 -TransformationOnly`.
+O resultado usa sete frames de 160×160: animação 0–5, pickup 6, escala uniforme e
+alinhamento pelos pés. Os limites de recorte são específicos dessa folha; o script
+recusa dimensões diferentes ou cortes que atravessem pixels visíveis.
+`CharacterItemController` mantém os itens coletados durante ativação/desativação;
+`normalizeCharacterItem` deve preservar `characterId` mesmo após normalizações repetidas.
+
 ```powershell
 npm.cmd install
 npm.cmd run convex

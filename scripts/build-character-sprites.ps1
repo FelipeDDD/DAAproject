@@ -1,5 +1,6 @@
 param(
-  [string]$ProjectRoot = (Split-Path -Parent $PSScriptRoot)
+  [string]$ProjectRoot = (Split-Path -Parent $PSScriptRoot),
+  [switch]$TransformationOnly
 )
 
 Add-Type -AssemblyName System.Drawing
@@ -478,7 +479,75 @@ function Export-GridSheet {
   }
 }
 
+function Export-TransformationSheet {
+  param([string]$Source,[string]$Output)
+  $sourcePath=Join-Path $ProjectRoot $Source
+  $outputPath=Join-Path $ProjectRoot $Output
+  $sourceBitmap=[System.Drawing.Bitmap]::FromFile($sourcePath)
+  $targetWidth=160;$targetHeight=160;$columns=7
+  try {
+    $bounds=@()
+    # Six bodies followed by a separate pickup: source is not an equal grid.
+    $edges=@(0,310,595,875,1175,1485,1820,$sourceBitmap.Width)
+    if($sourceBitmap.Width -ne 2172 -or $sourceBitmap.Height -ne 724){throw 'Transformation source changed; review the seven crop boundaries.'}
+    foreach($edge in $edges[1..6]){for($y=0;$y -lt $sourceBitmap.Height;$y++){
+      if($sourceBitmap.GetPixel($edge,$y).A -ge $AlphaThreshold){throw "Crop boundary $edge crosses artwork."}
+    }}
+    for($column=0;$column -lt $columns;$column++){
+      $left=$edges[$column];$right=$edges[$column+1]-1
+      $minX=$right;$maxX=$left;$minY=$sourceBitmap.Height-1;$maxY=0
+      for($y=0;$y -lt $sourceBitmap.Height;$y++){for($x=$left;$x -le $right;$x++){
+        if($sourceBitmap.GetPixel($x,$y).A -ge $AlphaThreshold){$minX=[math]::Min($minX,$x);$maxX=[math]::Max($maxX,$x);$minY=[math]::Min($minY,$y);$maxY=[math]::Max($maxY,$y)}
+      }}
+      if($maxX -lt $minX){throw "Empty transformation frame $column."}
+      $bounds+=,[System.Drawing.Rectangle]::FromLTRB($minX,$minY,$maxX+1,$maxY+1)
+    }
+    $sheet=[System.Drawing.Bitmap]::new(($targetWidth*$columns),$targetHeight,[System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+    try {
+      $graphics=[System.Drawing.Graphics]::FromImage($sheet)
+      try {
+        $graphics.Clear([System.Drawing.Color]::Transparent);$graphics.CompositingMode=[System.Drawing.Drawing2D.CompositingMode]::SourceCopy
+        $graphics.InterpolationMode=[System.Drawing.Drawing2D.InterpolationMode]::NearestNeighbor;$graphics.PixelOffsetMode=[System.Drawing.Drawing2D.PixelOffsetMode]::Half;$graphics.SmoothingMode=[System.Drawing.Drawing2D.SmoothingMode]::None
+        # A single scale is essential here: scaling each frame independently
+        # makes Michael appear to jump a pixel or two during transformation.
+        $largestWidth=($bounds | ForEach-Object Width | Measure-Object -Maximum).Maximum
+        $largestHeight=($bounds | ForEach-Object Height | Measure-Object -Maximum).Maximum
+        $scale=[math]::Min(($targetWidth-8)/$largestWidth,($targetHeight-8)/$largestHeight)
+        for($column=0;$column -lt $columns;$column++){
+          $frame=$bounds[$column]
+          $width=[math]::Max(1,[math]::Round($frame.Width*$scale));$height=[math]::Max(1,[math]::Round($frame.Height*$scale))
+          $footLeft=$frame.Right;$footRight=$frame.Left
+          for($fy=$frame.Bottom-35;$fy -lt $frame.Bottom;$fy++){for($fx=$frame.Left;$fx -lt $frame.Right;$fx++){
+            if($sourceBitmap.GetPixel($fx,$fy).A -ge $AlphaThreshold){$footLeft=[math]::Min($footLeft,$fx);$footRight=[math]::Max($footRight,$fx)}
+          }}
+          $anchor=if($column -lt 6){(($footLeft+$footRight+1)/2-$frame.Left)*$scale}else{$width/2}
+          $dx=[int][math]::Round($targetWidth/2-$anchor)
+          if($dx -lt 0 -or $dx+$width -gt $targetWidth){throw "Frame $column would be clipped."}
+          $destination=[System.Drawing.Rectangle]::new(($column*$targetWidth+$dx),($targetHeight-$height),$width,$height)
+          $graphics.DrawImage($sourceBitmap,$destination,$frame,[System.Drawing.GraphicsUnit]::Pixel)
+        }
+      } finally {$graphics.Dispose()}
+      [SpriteSheetTools]::AlignFramesToBottom($sheet,$targetWidth,$targetHeight,$columns,1)
+      $sheet.Save($outputPath,[System.Drawing.Imaging.ImageFormat]::Png)
+      Write-Output "${Output}: 6 transformation frames + pickup, ${targetWidth}x${targetHeight}"
+    } finally {$sheet.Dispose()}
+  } finally {$sourceBitmap.Dispose()}
+}
+
+if($TransformationOnly){
+  Export-TransformationSheet 'public/assets/items/michael-bigcig.png' 'public/assets/items/michael-bigcig-normalized.png'
+  exit
+}
 Export-NormalizedSheet 'public/assets/characters/Michael-sprite.png' 'public/assets/characters/michael-new.png' 'public/assets/characters/michael-new-preview.png'
 Export-NormalizedSheet 'public/assets/characters/Sarina-sprite.png' 'public/assets/characters/sarina-new.png' 'public/assets/characters/sarina-new-preview.png'
-Export-NormalizedSheet 'public/assets/characters/Yassin-sprite.png' 'public/assets/characters/yassin-new.png' 'public/assets/characters/yassin-new-preview.png'
 Export-NormalizedSheet 'public/assets/characters/Felipe-sprite.png' 'public/assets/characters/felipe-new.png' 'public/assets/characters/felipe-new-preview.png'
+# These generated sheets have intentional visual overhangs (hair and the large
+# cigarette). Detect each complete sprite rather than cutting rigid source cells,
+# then align all feet to the bottom of the standard Phaser frame.
+Export-NormalizedSheet 'public/assets/characters/yassin-replace.png' 'public/assets/characters/yassin-new.png' 'public/assets/characters/yassin-new-preview.png'
+$FrameWidth=96
+$MaxContentWidth=92
+Export-NormalizedSheet 'public/assets/characters/michael-bigzig.png' 'public/assets/characters/michael-bigzig-normalized.png' 'public/assets/characters/michael-bigzig-preview.png'
+$FrameWidth=64
+$MaxContentWidth=58
+Export-TransformationSheet 'public/assets/items/michael-bigcig.png' 'public/assets/items/michael-bigcig-normalized.png'

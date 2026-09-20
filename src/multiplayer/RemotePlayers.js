@@ -1,5 +1,5 @@
 import { characterById } from '../characters.js';
-import { applyCharacterVisual,updateCharacterVisual,visualStyleForEquippedSkin } from '../characterVisuals.js';
+import { applyCharacterVisual,updateCharacterVisual,visualStyleForActiveItem } from '../characterVisuals.js';
 
 export function interpolate(current, target, delta) {
   return current + (target - current) * (1 - Math.exp(-Math.max(0, delta) / 100));
@@ -18,13 +18,13 @@ export class RemotePlayers {
       if (!remote) {
         const character=characterById(row.characterId);
         const sprite = this.scene.add.sprite(row.x,row.y,'student').setOrigin(0.5,1);
-        const style=visualStyleForEquippedSkin(row.equippedSkin);
+        const style=visualStyleForActiveItem(row.activeCharacterItem,row.equippedSkin);
         const visual=applyCharacterVisual(sprite,character,style);
         const label = this.scene.add.text(row.x, row.y, row.name, { fontSize: '10px', color: '#152c42', backgroundColor: '#ffffffcc' }).setOrigin(0.5, 1);
         remote = { sprite,label,visual,character,style };
         this.players.set(row.playerId, remote);
       }
-      const style=visualStyleForEquippedSkin(row.equippedSkin);
+      const style=visualStyleForActiveItem(row.activeCharacterItem,row.equippedSkin);
       if(remote.style!==style){remote.visual=applyCharacterVisual(remote.sprite,remote.character,style);remote.style=style;}
       remote.target = row;
       remote.label.setText(row.name);

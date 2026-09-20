@@ -150,6 +150,11 @@
 #emote-picker small { display: block; margin-top: 9px; color: #7fa0b0; font-size: 11px; }
 .inventory-hotbar .school-hotbar-header { padding: 2px 3px 5px; }
 .inventory-slot { display: grid; place-items: center; }
+.inventory-slot { color: inherit; border: 0; background: transparent; font: inherit; }
+.inventory-slot:not(.empty) { cursor: default; }
+button.inventory-slot { cursor: pointer; }
+button.inventory-slot.active { border-color: #e1b45c; box-shadow: inset 0 0 12px #e7b44d55,0 0 10px #e7b44d44; }
+button.inventory-slot:disabled { cursor: wait; opacity: .62; }
 .inventory-slot.empty { opacity: .55; }
 .inventory-slot img { width: 38px; height: 38px; object-fit: contain; filter: drop-shadow(0 2px 3px #0009); }
 .inventory-quantity { position: absolute; right: 3px; bottom: 2px; color: #fff; font-size: 10px; font-weight: 800; text-shadow: 0 1px 3px #000; }

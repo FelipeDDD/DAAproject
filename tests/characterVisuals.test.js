@@ -4,7 +4,7 @@ import test from 'node:test';
 import { CHARACTERS } from '../src/characters.js';
 import {
   NEW_CHARACTER_FRAME,characterVisual,footBodyForVisual,idleFrame,normalizeCharacterStyle,
-  saveCharacterStyle,updateCharacterVisual,visualStyleForEquippedSkin,walkFrames,
+  saveCharacterStyle,updateCharacterVisual,visualStyleForActiveItem,visualStyleForEquippedSkin,walkFrames,
 } from '../src/characterVisuals.js';
 
 const michael=CHARACTERS.find(character=>character.id==='michael');
@@ -41,6 +41,24 @@ test('persistent equipped skin defaults to Classic and only Remastered selects n
   assert.equal(visualStyleForEquippedSkin(undefined),'old');
   assert.equal(visualStyleForEquippedSkin('classic'),'old');
   assert.equal(visualStyleForEquippedSkin('remastered'),'new');
+  assert.equal(visualStyleForActiveItem('lung_crusher_3000','classic'),'lungCrusher');
+  assert.equal(visualStyleForActiveItem(null,'remastered'),'new');
+});
+
+test('Michael has a separate normalized Lung Crusher walking sheet',()=>{
+  const visual=characterVisual(michael,'lungCrusher');
+  assert.equal(visual.sprite,'character-michael-lung-crusher');assert.equal(visual.animated,true);
+  const png=readFileSync(new URL('../public/assets/characters/michael-bigzig-normalized.png',import.meta.url));
+  assert.equal(png.readUInt32BE(16),96*6);
+  assert.equal(png.readUInt32BE(20),NEW_CHARACTER_FRAME.height*4);
+});
+
+test('wide Lung Crusher art keeps the same small foot-only collision body',()=>{
+  const normal=characterVisual(michael,'new'),lungCrusher=characterVisual(michael,'lungCrusher');
+  const normalBody=footBodyForVisual(normal),lungBody=footBodyForVisual(lungCrusher);
+  assert.equal(normalBody.width*normal.scale,lungBody.width*lungCrusher.scale);
+  assert.equal(normalBody.height*normal.scale,lungBody.height*lungCrusher.scale);
+  assert.equal(lungBody.offsetY+lungBody.height,lungCrusher.frameHeight);
 });
 
 test('old and new art retain the same world-space foot hitbox',()=>{

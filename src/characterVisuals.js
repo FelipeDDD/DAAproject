@@ -1,13 +1,16 @@
 import { CHARACTER_STYLE_STORAGE_KEY } from './characters.js';
 import { NEW_PLAYER_SCALE, PLAYER_SCALE } from './game/settings.js';
 
-export const CHARACTER_STYLES=Object.freeze(['old','new']);
+export const CHARACTER_STYLES=Object.freeze(['old','new','lungCrusher']);
 export const NEW_CHARACTER_FRAME=Object.freeze({width:64,height:72,columns:6,rows:4});
 export const WALK_COLUMNS=Object.freeze([2,3,4,5]);
 const DIRECTIONS=Object.freeze(['down','left','right','up']);
 
 export function normalizeCharacterStyle(value){return value==='new'?'new':'old';}
 export function visualStyleForEquippedSkin(skin){return skin==='remastered'?'new':'old';}
+export function visualStyleForActiveItem(activeItem,skin){
+  return activeItem==='lung_crusher_3000'?'lungCrusher':visualStyleForEquippedSkin(skin);
+}
 export function loadCharacterStyle(storage=globalThis.localStorage){
   try{return normalizeCharacterStyle(storage?.getItem(CHARACTER_STYLE_STORAGE_KEY));}catch{return 'old';}
 }
@@ -18,6 +21,11 @@ export function saveCharacterStyle(style,storage=globalThis.localStorage){
 }
 
 export function characterVisual(character,style=loadCharacterStyle()){
+  if(style==='lungCrusher'&&character?.lungCrusherVisual)return {
+    ...character.lungCrusherVisual,style:'lungCrusher',animated:true,scale:NEW_PLAYER_SCALE,
+    frameWidth:character.lungCrusherVisual.frameWidth??NEW_CHARACTER_FRAME.width,
+    frameHeight:character.lungCrusherVisual.frameHeight??NEW_CHARACTER_FRAME.height,labelOffset:68,
+  };
   if(style==='new'&&character?.newVisual)return {
     ...character.newVisual,style:'new',animated:true,scale:NEW_PLAYER_SCALE,
     frameWidth:NEW_CHARACTER_FRAME.width,frameHeight:NEW_CHARACTER_FRAME.height,labelOffset:68,
@@ -46,14 +54,20 @@ export function preloadCharacterTextures(scene,characters,baseUrl){
       character.newVisual.sprite,`${baseUrl}${character.newVisual.asset}`,
       {frameWidth:NEW_CHARACTER_FRAME.width,frameHeight:NEW_CHARACTER_FRAME.height},
     );
+    if(character.lungCrusherVisual&&!scene.textures.exists(character.lungCrusherVisual.sprite))scene.load.spritesheet(
+      character.lungCrusherVisual.sprite,`${baseUrl}${character.lungCrusherVisual.asset}`,
+      {frameWidth:character.lungCrusherVisual.frameWidth??NEW_CHARACTER_FRAME.width,
+        frameHeight:character.lungCrusherVisual.frameHeight??NEW_CHARACTER_FRAME.height},
+    );
   }
 }
 
 export function createCharacterAnimations(scene,characters){
   for(const character of characters){
-    const visual=characterVisual(character,'new');
-    if(!visual.animated)continue;
-    for(const direction of DIRECTIONS){
+    for(const style of ['new','lungCrusher']){
+      const visual=characterVisual(character,style);
+      if(!visual.animated)continue;
+      for(const direction of DIRECTIONS){
       const idleKey=animationKey(visual,'idle',direction);
       if(!scene.anims.exists(idleKey))scene.anims.create({
         key:idleKey,frames:[{key:visual.sprite,frame:idleFrame(direction)}],frameRate:1,repeat:-1,
@@ -62,6 +76,7 @@ export function createCharacterAnimations(scene,characters){
       if(!scene.anims.exists(walkKey))scene.anims.create({
         key:walkKey,frames:walkFrames(direction,visual).map(frame=>({key:visual.sprite,frame})),frameRate:8,repeat:-1,
       });
+      }
     }
   }
 }

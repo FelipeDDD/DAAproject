@@ -12,7 +12,7 @@ import { getPresence } from '../multiplayer/client.js';
 import { RemotePlayers } from '../multiplayer/RemotePlayers.js';
 import { DoorSync } from '../multiplayer/DoorSync.js';
 import { CHARACTERS, characterById } from '../characters.js';
-import { createCharacterAnimations,preloadCharacterTextures,visualStyleForEquippedSkin } from '../characterVisuals.js';
+import { createCharacterAnimations,preloadCharacterTextures,visualStyleForActiveItem } from '../characterVisuals.js';
 import { RoomChat } from '../RoomChat.js';
 import { readQuizSeats } from '../maps/quizSeats.js';
 import { QuizLobby } from '../QuizLobby.js';
@@ -35,6 +35,7 @@ import { BossProgressClient } from '../boss/BossProgressClient.js';
 import { normalizeBossProgress } from '../boss/BossRewards.js';
 import { BossDevTools,shouldShowBossDevTools } from '../boss/BossDevTools.js';
 import { InventoryHotbar } from '../inventory/InventoryHotbar.js';
+import { CharacterItemController } from '../inventory/CharacterItemController.js';
 import { WorldPrompt } from '../ui/WorldPrompt.js';
 import '../terminal/terminal.css';
 
@@ -61,6 +62,8 @@ export class MapScene extends Phaser.Scene {
 
   preload() {
     preloadCharacterTextures(this,CHARACTERS,import.meta.env.BASE_URL);
+    if(!this.textures.exists('michael-lung-transform'))this.load.spritesheet('michael-lung-transform',
+      `${import.meta.env.BASE_URL}assets/items/michael-bigcig-normalized.png?v=3`,{frameWidth:160,frameHeight:160});
     if(!this.textures.exists('school-hanger'))this.load.image('school-hanger',`${import.meta.env.BASE_URL}assets/hanger.png`);
     const mapUrl = new URL(`${import.meta.env.BASE_URL}assets/maps/${this.filename}`, window.location.href);
     this.load.once(`filecomplete-json-${this.sourceKey}`, (_key, _type, data) => {
@@ -184,6 +187,7 @@ export class MapScene extends Phaser.Scene {
       this.terminalPrompt?.setVisible(false);
       this.devTools?.destroy();this.devTools=null;
       this.inventoryHotbar?.destroy();this.inventoryHotbar=null;
+      this.characterItems?.destroy();this.characterItems=null;
       this.terminal?.destroy();this.terminal=null;
       this.wardrobe?.closePanel();
       this.emoteBar?.close();this.emoteBar=null;
@@ -219,9 +223,11 @@ export class MapScene extends Phaser.Scene {
       this.appearanceRestoreToken=Symbol('appearance');
       const character=characterById(this.presence?.identity?.characterId);
       this.equippedSkin='classic';
+      this.activeCharacterItem=null;
       if(character)this.player.setCharacter(character,'old');
       this.presence?.enter(this.mapKey, () => ({
         x: this.player.x, y: this.player.y, direction: this.player.facing,equippedSkin:this.equippedSkin,
+        activeCharacterItem:this.activeCharacterItem,
       }), rows => this.remotes.receive(rows));
       this.devTools?.destroy();
       this.devTools=shouldShowBossDevTools(import.meta.env)&&this.presence?new BossDevTools(this,this.presence):null;
@@ -229,8 +235,18 @@ export class MapScene extends Phaser.Scene {
       this.doorSync = this.presence ? new DoorSync(this.presence,this.mapKey,this.doors,()=>this.player.body) : null;
       this.chat?.close();
       this.chat=this.presence ? new RoomChat(this,this.presence) : null;
-      this.inventoryHotbar?.destroy();this.inventoryHotbar=this.presence?new InventoryHotbar(this.presence):null;
+      this.inventoryHotbar?.destroy();
+      this.characterItems?.destroy();
+      this.characterItems=this.presence?new CharacterItemController(this,this.presence,{
+        onVisualChange:(itemId,options)=>this.setActiveCharacterItem(itemId,options),
+        onItemsChange:items=>this.inventoryHotbar?.setCharacterItems(items),
+      }):null;
+      this.inventoryHotbar=this.presence?new InventoryHotbar(this.presence,{
+        onToggleItem:item=>this.characterItems?.toggle(item),
+      }):null;
       void this.inventoryHotbar?.refresh();
+      void this.characterItems?.restore();
+      this.characterItems?.createPickup(this.mapTransitions.find(transition=>transition.targetMap==='arena'));
       this.quiz?.close();
       this.quiz=this.presence ? new QuizLobby(this,this.presence,this.quizSeats) : null;
       this.soloStudy?.close();
@@ -255,8 +271,17 @@ export class MapScene extends Phaser.Scene {
   applyCharacterSkin(skin='classic'){
     const character=characterById(this.presence?.identity?.characterId);
     this.equippedSkin=skin==='remastered'?'remastered':'classic';
-    if(character)this.player.setCharacter(character,visualStyleForEquippedSkin(this.equippedSkin));
+    if(character)this.player.setCharacter(character,visualStyleForActiveItem(this.activeCharacterItem,this.equippedSkin));
     void this.presence?.send();
+  }
+
+  setActiveCharacterItem(itemId,{instant=true,restoreSkin}={}){
+    if(restoreSkin)this.equippedSkin=restoreSkin==='remastered'?'remastered':'classic';
+    this.activeCharacterItem=itemId??null;
+    const character=characterById(this.presence?.identity?.characterId);
+    if(character)this.player.setCharacter(character,visualStyleForActiveItem(this.activeCharacterItem,this.equippedSkin));
+    void this.presence?.send();
+    return instant;
   }
 
   async restoreEquippedSkin(token=this.appearanceRestoreToken){
@@ -299,7 +324,7 @@ export class MapScene extends Phaser.Scene {
   }
 
   update(_time, delta) {
-    if(this.terminal?.active||this.chat?.focused||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active)this.player.setVelocity(0,0);
+    if(this.terminal?.active||this.chat?.focused||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active||this.characterItems?.transforming)this.player.setVelocity(0,0);
     else this.player.update();
     this.remotes.update(delta);
     this.emoteRenderer?.update();
@@ -314,6 +339,7 @@ export class MapScene extends Phaser.Scene {
     const challengeLeaderboard=nearbyChallengeLeaderboard(this.challengeLeaderboards,this.player.body);
     const mapTransition=nearbyMapTransition(this.mapTransitions,this.player.body);
     const wardrobe=this.wardrobe?.nearby();
+    const characterItemPickup=this.characterItems?.updatePrompt();
     this.quiz?.updateSeatPrompt(!this.soloStudy?.active&&quizSeat);
     this.soloStudy?.updateSeatPrompt(!this.quiz?.seated&&studySeat);
     this.wardrobe?.updatePrompt(wardrobe&&!this.quiz?.seated&&!this.soloStudy?.active?wardrobe:null);
@@ -359,6 +385,9 @@ export class MapScene extends Phaser.Scene {
     if(interact&&wardrobe){
       void this.wardrobe.open();this.hint.textContent='Opening appearance selector…';return;
     }
+    if(interact&&characterItemPickup){
+      void this.characterItems.collect();this.hint.textContent='Collecting Lung Crusher 3000…';return;
+    }
     if(interact&&computer){
       this.terminalPrompt.setVisible(false);
       void this.terminal.open(computer);
@@ -391,6 +420,8 @@ export class MapScene extends Phaser.Scene {
       ? '[E] View leaderboard'
       : computer
       ? '[E] Open Terminal'
+      : characterItemPickup
+      ? '[E] Collect Lung Crusher 3000'
       : mapTransition
       ? `[E] Enter ${mapTransition.label}`
       : nearby

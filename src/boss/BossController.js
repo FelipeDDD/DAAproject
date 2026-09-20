@@ -138,8 +138,13 @@ export class BossController {
     this.colliders.push(scene.physics.add.overlap(this.playerProjectiles,this.sprite,(first,second)=>{
       this.hitBoss(projectileFromCollision(first,second,'player'));
     }));
-    this.attackKey=scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-    scene.input.keyboard.addCapture(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    this.attackKeys=scene.input.keyboard.addKeys({
+      space:Phaser.Input.Keyboard.KeyCodes.SPACE,
+      numpadZero:Phaser.Input.Keyboard.KeyCodes.NUMPAD_ZERO,
+    });
+    scene.input.keyboard.addCapture([
+      Phaser.Input.Keyboard.KeyCodes.SPACE,Phaser.Input.Keyboard.KeyCodes.NUMPAD_ZERO,
+    ]);
     this.createHud();
     this.createSpeechBubble();
     this.scheduleAttackTutorial();
@@ -153,10 +158,10 @@ export class BossController {
     this.hud=this.scene.add.container(camera.width/2,camera.height/2)
       .setScrollFactor(0).setScale(1/camera.zoom).setDepth(200000);
     this.hpGraphics=this.scene.add.graphics();
-    this.titleLabel=this.scene.add.text(0,-camera.height/2+14,'DIRECTOR · PHASE 1',{fontFamily:'system-ui, sans-serif',fontSize:'14px',fontStyle:'bold',color:'#ffffff',stroke:'#000000',strokeThickness:3}).setOrigin(.5,0);
-    this.hpLabel=this.scene.add.text(0,-camera.height/2+49,'100 / 100',{fontFamily:'system-ui, sans-serif',fontSize:'13px',fontStyle:'bold',color:'#ffffff',stroke:'#000000',strokeThickness:3}).setOrigin(.5,0);
-    this.playerHpLabel=this.scene.add.text(-camera.width/2+14,-camera.height/2+14,'Player HP: 3',{fontFamily:'system-ui, sans-serif',fontSize:'13px',color:'#ffffff',stroke:'#000000',strokeThickness:3});
-    this.controlLabel=this.scene.add.text(camera.width/2-14,-camera.height/2+14,'SPACE: Attack',{fontFamily:'system-ui, sans-serif',fontSize:'13px',fontStyle:'bold',color:'#8cecff',stroke:'#000000',strokeThickness:3}).setOrigin(1,0);
+    this.titleLabel=this.scene.add.text(0,-camera.height/2+7,'DIRECTOR · PHASE 1',{fontFamily:'system-ui, sans-serif',fontSize:'14px',fontStyle:'bold',color:'#ffffff',stroke:'#000000',strokeThickness:3}).setOrigin(.5,0);
+    this.hpLabel=this.scene.add.text(0,-camera.height/2+42,'100 / 100',{fontFamily:'system-ui, sans-serif',fontSize:'13px',fontStyle:'bold',color:'#ffffff',stroke:'#000000',strokeThickness:3}).setOrigin(.5,0);
+    this.playerHpLabel=this.scene.add.text(-camera.width/2+14,-camera.height/2+7,'Player HP: 3',{fontFamily:'system-ui, sans-serif',fontSize:'14px',color:'#ffffff',stroke:'#000000',strokeThickness:3});
+    this.controlLabel=this.scene.add.text(camera.width/2-14,-camera.height/2+6,'SPACE: Attack',{fontFamily:'system-ui, sans-serif',fontSize:'17px',fontStyle:'bold',color:'#8cecff',stroke:'#000000',strokeThickness:3}).setOrigin(1,0);
     this.defeatLabel=this.scene.add.text(0,0,'BOSS DEFEATED',{fontFamily:'system-ui, sans-serif',fontSize:'32px',fontStyle:'bold',color:'#ffe38b',stroke:'#4a160e',strokeThickness:6}).setOrigin(.5).setVisible(false);
     this.playerDefeatLabel=this.scene.add.text(0,0,'PLAYER DEFEATED',{fontFamily:'system-ui, sans-serif',fontSize:'32px',fontStyle:'bold',color:'#ff8585',stroke:'#4a0e0e',strokeThickness:6}).setOrigin(.5).setVisible(false);
     this.phaseLabel=this.scene.add.text(0,-30,'PHASE 2',{fontFamily:'system-ui, sans-serif',fontSize:'34px',fontStyle:'bold',color:'#ffd36b',stroke:'#641c28',strokeThickness:7}).setOrigin(.5).setVisible(false);
@@ -169,7 +174,7 @@ export class BossController {
   }
 
   drawHp(){
-    const camera=this.scene.cameras.main,width=360,height=14,x=-width/2,y=-camera.height/2+34;
+    const camera=this.scene.cameras.main,width=360,height=14,x=-width/2,y=-camera.height/2+27;
     this.hpGraphics.clear().fillStyle(0x160d12,.88).fillRoundedRect(x-3,y-3,width+6,height+6,5)
       .fillStyle(0x4a1720,1).fillRect(x,y,width,height)
       .fillStyle(0xd94152,1).fillRect(x,y,width*this.model.hp/this.model.maxHp,height);
@@ -733,7 +738,9 @@ export class BossController {
       &&this.startScriptedHoming(time);
     if(!phaseTransitionStarted&&!scriptedAttackStarted&&this.model.state!==BOSS_STATES.PHASE_TRANSITION)this.startMovement(time);
     if(!this.gameplayBlocked()){
-      if(Phaser.Input.Keyboard.JustDown(this.attackKey)){this.hideAttackTutorial();this.firePlayerProjectile(time);}
+      if(Object.values(this.attackKeys).some(key=>Phaser.Input.Keyboard.JustDown(key))){
+        this.hideAttackTutorial();this.firePlayerProjectile(time);
+      }
       if(!this.moveDueAt&&this.model.state!==BOSS_STATES.MOVING&&this.model.state!==BOSS_STATES.PHASE_TRANSITION){
         this.startBossAttack(time);
         this.executeBossAttack(time);
