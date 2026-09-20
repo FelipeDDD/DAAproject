@@ -1,7 +1,7 @@
 @import './calculator/CalculatorWidget.css';
 
 :root {
-  font-family: system-ui, sans-serif;
+  font-family: "Segoe UI Variable","Segoe UI",Inter,system-ui,sans-serif;
   color: #334550;
   background: #f8fafb;
   color-scheme: only light;
@@ -14,6 +14,7 @@
   /* Set to minmax(0, 1fr) minmax(0, 1fr) for a wider, two-column panel. */
   --quiz-content-columns: minmax(0, 1fr);
   --game-content-width: 1280px;
+  --game-viewport-width: 1152px;
 }
 
 * { box-sizing: border-box; }
@@ -127,27 +128,107 @@
 .quiz-statistic-weak { padding: 10px; border-radius: 5px; color: #684c19; background: #fff1c9; }
 #quiz-statistics-status { display: block; margin: 10px 0; color: #526b7a; }
 #close-quiz-statistics { width: 100%; }
-#emote-bar { position: fixed; left: 50%; bottom: 14px; z-index: 3; display: flex; align-items: center; gap: 5px; padding: 6px; transform: translateX(-50%); border: 1px solid #9babb5; border-radius: 8px; background: #ffffffea; box-shadow: 0 3px 12px #3345502b; }
-#emote-slots { display: flex; gap: 4px; }
-#emote-slots button { position: relative; width: 42px; height: 42px; padding: 2px; border: 1px solid #b8c6ce; border-radius: 6px; background: #f8fafb; cursor: pointer; font-size: 22px; }
-#emote-slots button:hover, #emote-slots button:focus-visible { border-color: #246e83; background: #eef8fa; }
-#emote-slots kbd { position: absolute; right: 2px; bottom: 1px; padding: 0 2px; border: 0; color: #627b89; background: transparent; font-size: 9px; }
-#emote-settings { width: 36px; height: 42px; padding: 0; border: 0; border-left: 1px solid #cbd5dc; background: transparent; cursor: pointer; font-size: 17px; }
-#emote-picker { position: absolute; left: 50%; bottom: calc(100% + 8px); width: 280px; padding: 12px; transform: translateX(-50%); border: 1px solid #9babb5; border-radius: 8px; background: #fff; box-shadow: 0 5px 18px #33455033; }
+.school-hotbar { position: fixed; z-index: 3; padding: 5px; color: #d9eef7; border: 1px solid #527082aa; border-radius: 11px; background: linear-gradient(145deg,#0b1721ed,#142735e8); box-shadow: 0 8px 25px #02070ca8, inset 0 1px #b9e9ff14; backdrop-filter: blur(7px); }
+.school-hotbar-header { display: flex; align-items: center; justify-content: space-between; min-height: 17px; padding: 0 3px 4px; color: #7fa6ba; font-size: 9px; font-weight: 800; letter-spacing: .16em; user-select: none; cursor: grab; touch-action: none; }
+.school-hotbar-header:active { cursor: grabbing; }
+.school-hotbar-slots { display: flex; gap: 4px; }
+.school-hotbar-slot,#emote-slots button { position: relative; width: 44px; height: 44px; box-sizing: border-box; padding: 2px; color: #f3fbff; border: 1px solid #567184; border-radius: 8px; background: linear-gradient(155deg,#172c3bd9,#0a151fe8); box-shadow: inset 0 1px #dff7ff13; }
+#emote-slots button { cursor: pointer; font-size: 24px; line-height: 1; font-family: "Segoe UI Emoji","Apple Color Emoji",sans-serif; }
+.school-hotbar-slot:hover,#emote-slots button:hover,#emote-slots button:focus-visible { border-color: #75cee7; box-shadow: 0 0 12px #45badb59,inset 0 1px #e7faff2b; outline: none; }
+.school-hotbar-slot kbd,#emote-slots kbd { position: absolute; top: 2px; left: 4px; padding: 0; color: #8fabb9; border: 0; background: transparent; font: 8px/1 system-ui,sans-serif; }
+#emote-bar { left: 50%; bottom: 14px; transform: translateX(-50%); }
+#emote-reset-position,.hotbar-reset-position { width: 21px; height: 17px; padding: 0; color: #87aabb; border: 0; border-radius: 4px; background: transparent; cursor: pointer; font: 13px/1 system-ui,sans-serif; }
+#emote-reset-position:hover,#emote-reset-position:focus-visible,.hotbar-reset-position:hover,.hotbar-reset-position:focus-visible { color: #d7f6ff; background: #50788b3d; outline: none; }
+.hotbar-body { display: flex; align-items: center; gap: 5px; }
+#emote-settings { width: 34px; height: 44px; padding: 0; color: #a9c4d1; border: 0; border-left: 1px solid #52708299; background: transparent; cursor: pointer; font-size: 17px; }
+#emote-settings:hover,#emote-settings:focus-visible { color: #e9fbff; text-shadow: 0 0 8px #61dafa; outline: none; }
+#emote-picker { position: absolute; left: 50%; bottom: calc(100% + 8px); width: 280px; padding: 12px; transform: translateX(-50%); color: #d9eef7; border: 1px solid #527082; border-radius: 9px; background: #0b1721f5; box-shadow: 0 8px 28px #02070ccc; }
 #emote-picker-title { display: block; margin-bottom: 9px; font-size: 13px; }
-#emote-choices { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
-#emote-choices button { min-height: 36px; padding: 2px; border: 1px solid #cbd5dc; border-radius: 5px; background: #f8fafb; cursor: pointer; font-size: 20px; }
-#emote-picker small { display: block; margin-top: 9px; color: #627b89; font-size: 11px; }
+#emote-choices { display: grid; grid-template-columns: repeat(6,1fr); gap: 5px; }
+#emote-choices button { min-height: 36px; padding: 2px; border: 1px solid #4c6878; border-radius: 6px; background: #142735; cursor: pointer; font: 20px/1 "Segoe UI Emoji","Apple Color Emoji",sans-serif; }
+#emote-choices button:hover,#emote-choices button:focus-visible { border-color: #75cee7; box-shadow: 0 0 10px #45badb55; outline: none; }
+#emote-picker small { display: block; margin-top: 9px; color: #7fa0b0; font-size: 11px; }
+.inventory-hotbar .school-hotbar-header { padding: 2px 3px 5px; }
+.inventory-slot { display: grid; place-items: center; }
+.inventory-slot.empty { opacity: .55; }
+.inventory-slot img { width: 38px; height: 38px; object-fit: contain; filter: drop-shadow(0 2px 3px #0009); }
+.inventory-quantity { position: absolute; right: 3px; bottom: 2px; color: #fff; font-size: 10px; font-weight: 800; text-shadow: 0 1px 3px #000; }
+[data-tooltip] { position: relative; }
+[data-tooltip]::after { position: absolute; left: 50%; bottom: calc(100% + 8px); z-index: 20; width: max-content; max-width: 230px; padding: 7px 9px; transform: translate(-50%,4px); color: #eaf7fc; border: 1px solid #527082; border-radius: 6px; background: #08131df5; box-shadow: 0 5px 16px #000a; content: attr(data-tooltip); font: 11px/1.35 system-ui,sans-serif; text-align: left; white-space: pre-line; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .12s,transform .12s; }
+[data-tooltip]:hover::after,[data-tooltip]:focus-visible::after { opacity: 1; visibility: visible; transform: translate(-50%,0); }
 @media(max-width:600px) { #character-list { grid-template-columns: repeat(2,1fr); } }
 @media(max-width:760px) { #play-footer { grid-template-columns: minmax(0, 1fr); } #game-guidance { padding-top: 0; } }
 body { margin: 0; color: #334550; background: #f8fafb; }
-main { width: 100%; max-width: var(--game-content-width); padding: 24px; margin: auto; }
+.boss-reward-overlay { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; padding: 24px; color: #fff; background: #07101dcc; backdrop-filter: blur(5px); }
+.boss-reward-overlay[hidden],.wardrobe-overlay[hidden] { display: none; }
+.boss-reward-panel { width: min(760px, 100%); padding: 30px; border: 1px solid #e6b94c; border-radius: 16px; background: linear-gradient(145deg,#172436,#281d25); box-shadow: 0 0 35px #e7ad4b66; text-align: center; }
+.boss-reward-panel h2 { margin: 0 0 24px; color: #ffe09a; letter-spacing: .08em; }
+.boss-reward-cards { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 20px; }
+.boss-reward-card { display: grid; justify-items: center; gap: 12px; min-height: 330px; padding: 22px; color: #f7f2e7; border: 1px solid #b99349; border-radius: 12px; background: #101c2bee; cursor: pointer; font: inherit; }
+.boss-reward-card:hover,.boss-reward-card:focus-visible { border-color: #ffe09a; box-shadow: 0 0 24px #ffc75b55; transform: translateY(-2px); }
+.boss-reward-card img { width: 180px; height: 190px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(0 0 13px #f5bd55aa); }
+.boss-reward-image { display: block; opacity: 1; visibility: visible; }
+.boss-reward-card strong { color: #ffe09a; font-size: 18px; }
+.boss-reward-card span { line-height: 1.5; }
+.boss-reward-presentation .boss-reward-panel { width: min(900px,94vw); max-height: 94vh; overflow: hidden; animation: boss-reward-enter .45s ease-out both; }
+.boss-reward-presentation img { display: block; width: min(70vw,620px); height: min(65vh,650px); margin: 0 auto 12px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(0 0 25px #ffd56d); animation: boss-reward-pulse 1.4s ease-in-out infinite alternate; }
+.boss-reward-presentation.skin img { width: min(45vw,360px); }
+.boss-reward-presentation small { color: #ffd36b; font-weight: 900; letter-spacing: .28em; }
+.boss-reward-panel>button { min-width: 150px; padding: 10px 18px; color: #18202a; border: 0; border-radius: 7px; background: #ffe09a; cursor: pointer; font: inherit; font-weight: 800; }
+.boss-reward-panel>button:disabled { opacity: .55; cursor: wait; }
+.wardrobe-overlay { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; padding: 24px; background: #0a111dcc; backdrop-filter: blur(4px); }
+.wardrobe-panel { width: min(620px,100%); padding: 28px; color: #f7f2e7; border: 1px solid #bd8b4c; border-radius: 14px; background: #17202b; box-shadow: 0 15px 45px #0008; text-align: center; }
+.wardrobe-panel h2 { margin: 0 0 20px; color: #f2ca8c; letter-spacing: .08em; }
+.wardrobe-skins { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
+.wardrobe-skin { display: grid; justify-items: center; gap: 8px; min-height: 250px; padding: 18px; color: #eef3f7; border: 1px solid #526475; border-radius: 10px; background: #101823; cursor: pointer; font: inherit; }
+.wardrobe-skin.equipped { border-color: #efc16e; box-shadow: 0 0 18px #efc16e55; }
+.wardrobe-skin:disabled { opacity: .42; cursor: not-allowed; }
+.wardrobe-skin img { width: 120px; height: 170px; object-fit: contain; image-rendering: pixelated; }
+.wardrobe-skin.locked img { opacity: .78; filter: brightness(0) drop-shadow(0 0 7px #88a3bbaa); }
+.wardrobe-skin strong { font-size: 18px; }.wardrobe-status { min-height: 22px; color: #ffc8c8; }
+.wardrobe-panel>button { min-width: 140px; padding: 10px 18px; cursor: pointer; }
+@keyframes boss-reward-enter { from { opacity: 0; transform: scale(.78); } to { opacity: 1; transform: scale(1); } }
+@keyframes boss-reward-pulse { from { transform: scale(.96); filter: drop-shadow(0 0 15px #ffd56d99); } to { transform: scale(1.03); filter: drop-shadow(0 0 32px #ffd56ddd); } }
+@media(max-width:650px){.boss-reward-cards{grid-template-columns:1fr}.boss-reward-card{min-height:260px}}
+.arena-retry-overlay { position: fixed; inset: 0; z-index: 10020; display: grid; place-items: center; padding: 24px; color: #fff; background: #07101ddd; backdrop-filter: blur(5px); }
+.arena-retry-overlay[hidden] { display: none; }
+.arena-retry-panel { width: min(480px,100%); padding: 30px; border: 1px solid #db765f; border-radius: 14px; background: linear-gradient(145deg,#172436,#301a22); box-shadow: 0 18px 55px #000a,0 0 28px #d54f4560; text-align: center; }
+.arena-retry-panel h2 { margin: 0 0 10px; color: #ffb19f; letter-spacing: .08em; }
+.arena-retry-actions { display: flex; justify-content: center; gap: 12px; margin-top: 22px; }
+.arena-retry-actions button { min-width: 150px; padding: 11px 16px; border: 1px solid #b7cada; border-radius: 7px; color: #f6fbff; background: #172b40; cursor: pointer; font: inherit; font-weight: 800; }
+.arena-retry-actions button:first-child { border-color: #6fd6ff; background: #164561; }
+.arena-retry-actions button:disabled { opacity: .42; cursor: wait; }
+.boss-dev-tools { position: fixed; right: 12px; bottom: 12px; z-index: 9000; width: 220px; padding: 10px; color: #dff7ff; border: 1px solid #4bb8d6; border-radius: 8px; background: #071827ed; box-shadow: 0 5px 20px #0008; font: 12px system-ui,sans-serif; }
+.boss-dev-tools>strong { display: block; margin-bottom: 7px; color: #70dcff; letter-spacing: .12em; }
+.boss-dev-tools-presets { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 5px; }
+.boss-dev-tools button { padding: 6px 4px; color: #eafaff; border: 1px solid #3d7086; border-radius: 4px; background: #102d40; cursor: pointer; font: inherit; }
+.boss-dev-tools button:disabled { opacity: .45; cursor: wait; }
+.boss-dev-tools small { display: block; min-height: 16px; margin-top: 7px; color: #9edbad; }
+main { width: 100%; max-width: calc(var(--game-viewport-width) + 48px); padding: 24px; margin: auto; transition: max-width .2s ease; }
 header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.header-controls { display: flex; align-items: center; gap: 10px; }
+.viewport-size-control { display: flex; align-items: center; gap: 7px; color: #526b7a; font-size: 12px; font-weight: 700; }
+.viewport-size-control select { min-height: 31px; padding: 4px 26px 4px 8px; color: #d9eef7; border: 1px solid #527082; border-radius: 5px; background: #102431; font: inherit; cursor: pointer; }
 h1 { margin: 0; font-size: 22px; font-weight: 600; }
 .eyebrow { margin: 0 0 6px; font-size: 11px; letter-spacing: 2px; color: #627b89; }
 .version { padding: 6px 10px; border: 1px solid #cbd5dc; border-radius: 4px; font-size: 12px; white-space: nowrap; }
-#game { width: 100%; aspect-ratio: 3 / 2; overflow: hidden; background: #f0f2f3; outline: 1px solid #cbd5dc; }
-canvas { display: block; image-rendering: pixelated; }
+#game { width: min(100%,var(--game-viewport-width),max(320px,calc((100dvh - 225px) * 16 / 9))); aspect-ratio: 16 / 9; overflow: hidden; margin-inline: auto; background: #f0f2f3; outline: 1px solid #8398a5; box-shadow: 0 10px 30px #25394722; transition: width .2s ease; }
+#game canvas { display: block; width: 100% !important; height: 100% !important; image-rendering: pixelated; }
+#play-footer { width: min(100%,var(--game-viewport-width),max(320px,calc((100dvh - 225px) * 16 / 9))); margin-inline: auto; transition: width .2s ease; }
 .controls { margin: 16px 0 0; color: #526b7a; font-size: 14px; line-height: 1.8; }
+#interaction-hint { display: inline-block; min-height: 30px; padding: 4px 10px; color: #d9edf6; border: 1px solid #4d6c7c; border-radius: 6px; background: #102431ed; box-shadow: 0 3px 12px #0a18224a; font-weight: 650; letter-spacing: .01em; }
+.world-prompt { position: fixed; z-index: 8000; max-width: min(280px,80vw); padding: 6px 10px; transform: translate(-50%,-100%); color: #f3fbff; border: 1px solid #668697; border-radius: 6px; background: #102431ed; box-shadow: 0 4px 14px #02090daa; font-size: 13px; font-weight: 700; line-height: 1.25; text-align: center; pointer-events: none; }
+.world-prompt[hidden] { display: none; }
+.terminal-world-prompt { border-color: #9c78d4; background: #39275bea; }
+.study-world-prompt { border-color: #618fd3; background: #173c71ed; }
+.wardrobe-world-prompt { border-color: #b08055; background: #4b2e1deb; }
+.boss-speech-prompt { min-width: 150px; max-width: 260px; padding: 10px 14px; color: #26191b; border: 2px solid #7d3440; border-radius: 9px; background: #faf5e9f5; box-shadow: 0 6px 18px #0008; font-size: 14px; }
+.boss-speech-prompt::after { position: absolute; left: 50%; top: 100%; width: 12px; height: 12px; transform: translate(-50%,-6px) rotate(45deg); border-right: 2px solid #7d3440; border-bottom: 2px solid #7d3440; background: #faf5e9; content: ""; }
+.arena-crosshair { position: fixed; z-index: 9500; width: 26px; height: 26px; transform: translate(-50%,-50%); border: 1px solid #ff8f86cc; border-radius: 50%; box-shadow: 0 0 7px #ff524d66; pointer-events: none; }
+.arena-crosshair::before,.arena-crosshair::after { position: absolute; left: 50%; top: 50%; background: #ffe5e1e6; box-shadow: 0 0 4px #ff413b; content: ""; transform: translate(-50%,-50%); }
+.arena-crosshair::before { width: 2px; height: 8px; }
+.arena-crosshair::after { width: 8px; height: 2px; }
+.arena-crosshair[hidden] { display: none; }
+canvas.arena-crosshair-active { cursor: none; }
 kbd { padding: 2px 6px; border: 1px solid #cbd5dc; border-radius: 3px; font: inherit; color: #334550; }
-@media (max-width: 600px) { main { padding: 16px; } h1 { font-size: 18px; } }
+@media (max-width: 600px) { main { padding: 12px; } header { align-items: flex-start; } .header-controls { align-items: flex-end; flex-direction: column-reverse; gap: 5px; } h1 { font-size: 18px; } #game,#play-footer { width: 100%; } }

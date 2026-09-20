@@ -49,11 +49,12 @@ export function collisionAreas(objects){
 }
 
 // Only a layer named Collision creates map collision. Visual layers are ignored.
-export function addMapCollision(scene, map, player) {
+export function addMapCollision(scene, map, player,{excludeNames=[]}={}) {
   const objects = map.getObjectLayer('Collision');
   if (!objects) return null;
   const rectangles = scene.physics.add.staticGroup();
-  for (const area of collisionAreas(objects.objects)) {
+  const excluded=new Set(excludeNames);
+  for (const area of collisionAreas(objects.objects.filter(object=>!excluded.has(object.name)))) {
     const zone = scene.add.zone(area.x, area.y, area.width, area.height).setOrigin(0);
     rectangles.add(zone);
     if(area.shape==='circle')zone.body.setCircle(area.radius);

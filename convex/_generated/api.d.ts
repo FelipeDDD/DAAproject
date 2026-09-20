@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as bossProgress from "../bossProgress.js";
 import type * as crons from "../crons.js";
 import type * as doorDefinitions from "../doorDefinitions.js";
 import type * as doors from "../doors.js";
@@ -35,6 +36,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  bossProgress: typeof bossProgress;
   crons: typeof crons;
   doorDefinitions: typeof doorDefinitions;
   doors: typeof doors;

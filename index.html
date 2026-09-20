@@ -14,7 +14,16 @@
           <p class="eyebrow">DAAPROJECT</p>
           <h1>IT Classroom</h1>
         </div>
-        <span class="version">v0.1 · Local</span>
+        <div class="header-controls">
+          <label class="viewport-size-control" for="viewport-size">View
+            <select id="viewport-size" aria-label="Game viewport size">
+              <option value="compact">Compact</option>
+              <option value="normal">Normal</option>
+              <option value="large">Large</option>
+            </select>
+          </label>
+          <span class="version">v0.1 · Local</span>
+        </div>
       </header>
       <section id="character-menu" aria-labelledby="character-title">
         <h2 id="character-title">Choose your character</h2>
@@ -177,9 +186,15 @@
         <button id="close-solo-study" type="button">Close</button>
         <small id="solo-status" role="status"></small>
       </section>
-      <section id="emote-bar" hidden aria-label="Emote shortcuts">
-        <div id="emote-slots"></div>
-        <button id="emote-settings" type="button" aria-label="Customize emotes" title="Customize emotes">⚙</button>
+      <section id="emote-bar" class="school-hotbar" hidden aria-label="Emote shortcuts">
+        <div id="emote-drag-handle" class="school-hotbar-header">
+          <span>EMOTES</span>
+          <button id="emote-reset-position" type="button" title="Reset bar position" aria-label="Reset emote bar position">↺</button>
+        </div>
+        <div class="hotbar-body">
+          <div id="emote-slots" class="school-hotbar-slots"></div>
+          <button id="emote-settings" type="button" aria-label="Customize emotes" title="Customize emotes">⚙</button>
+        </div>
         <section id="emote-picker" hidden aria-labelledby="emote-picker-title">
           <strong id="emote-picker-title"></strong>
           <div id="emote-choices"></div>

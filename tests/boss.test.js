@@ -5,23 +5,41 @@ import {
   aimedVelocity,BossCombatState,BossPhaseState,BOSS_STATES,PlayerCombatState,ProjectileHitRegistry,
   projectileFromCollision,projectileVelocityToward,
 } from '../src/boss/BossCombatState.js';
+import { BOSS_FIXED_SPEECH } from '../src/boss/BossDialogue.js';
+import { BossEncounterState,BossTutorialState,isWithinActivationRange } from '../src/boss/BossEncounterState.js';
+import { ArenaGateState,readArenaGate } from '../src/boss/ArenaGateController.js';
+import { ArenaRetryState } from '../src/boss/ArenaRetryOverlay.js';
+import { shouldShowBossDevTools } from '../src/boss/BossDevTools.js';
+import { isRewardDismissKey,remasteredPreviewAsset,RewardPresentationState } from '../src/boss/BossRewardOverlay.js';
 import {
   AreaAttackTarget,BossAttackSequence,BossMovementPlan,BOSS_ATTACK_TYPES,BOSS_PROJECTILE_VISUALS,
   fanProjectileVelocities,homingVelocity,projectileVisualForAttack,
 } from '../src/boss/BossAttackPattern.js';
 import { readBossPositions } from '../src/maps/bossPositions.js';
+import { resolveSpawn } from '../src/maps/tiledObjects.js';
 import {
-  BOSS_FAN_PROJECTILE_BODY_HEIGHT,BOSS_FAN_PROJECTILE_BODY_WIDTH,BOSS_PHASES,BOSS_PHASE_THRESHOLDS,
-  BOSS_SINGLE_PROJECTILE_FRAME_SIZE,PLAYER_PROJECTILE_SPEED,
+  BOSS_ACTIVATION_RANGE,BOSS_FAN_PROJECTILE_BODY_HEIGHT,BOSS_FAN_PROJECTILE_BODY_WIDTH,
+  BOSS_INTRO_COMBAT_DELAY_MS,BOSS_INTRO_FOLLOWUP_DELAY_MS,BOSS_PHASES,BOSS_PHASE_THRESHOLDS,
+  BOSS_RETRY_DELAY_MS,BOSS_SINGLE_PROJECTILE_FRAME_SIZE,
+  BOSS_SPRITE_FRAME_HEIGHT,BOSS_SPRITE_FRAME_WIDTH,PLAYER_PROJECTILE_SPEED,
 } from '../src/boss/config.js';
+import { BOSS_VISUAL_ASSETS,phaseVisual } from '../src/boss/BossVisualState.js';
+import {
+  applyBossDevPreset,applyDirectorRewardChoice,applyDirectorVictory,BOSS_REWARDS,CHARACTER_SKINS,equipCharacterSkin,
+  hasBossReward,hasPendingDirectorReward,missingDirectorRewards,normalizeBossProgress,rewardOutcomeForVictory,
+  shouldClearDirectorLoot,
+} from '../src/boss/BossRewards.js';
+import { wardrobeSkinOptions } from '../src/WardrobeController.js';
 
-test('boss damage clamps HP at zero and enters defeated state',()=>{
+test('boss damage clamps HP at zero, enters dying, then finishes defeated',()=>{
   const boss=new BossCombatState({maxHp:100});
   assert.equal(boss.takeDamage(35),35);
   assert.equal(boss.hp,65);assert.equal(boss.state,BOSS_STATES.HURT);
   boss.finishAction();
   assert.equal(boss.takeDamage(500),65);
-  assert.equal(boss.hp,0);assert.equal(boss.state,BOSS_STATES.DEFEATED);
+  assert.equal(boss.hp,0);assert.equal(boss.state,BOSS_STATES.DYING);
+  assert.equal(boss.startAttack(1000),false);assert.equal(boss.takeDamage(5),0);
+  assert.equal(boss.finishDying(),true);assert.equal(boss.state,BOSS_STATES.DEFEATED);
 });
 
 test('defeated boss neither attacks nor receives duplicate damage',()=>{
@@ -62,16 +80,16 @@ test('player mouse aim rejects a zero or near-zero direction',()=>{
   assert.equal(projectileVelocityToward({x:10,y:10},{x:10.00001,y:10},420),null);
 });
 
-test('boss crosses 65 and 30 percent once and reset restores phase 1',()=>{
+test('boss crosses 67 and 34 percent once and reset restores phase 1',()=>{
   const phases=new BossPhaseState({maxHp:100,thresholds:BOSS_PHASE_THRESHOLDS});
   assert.equal(phases.phase,1);
-  assert.equal(phases.update(66),false);assert.equal(phases.phase,1);
-  assert.equal(phases.update(65),true);assert.equal(phases.phase,2);
-  assert.equal(phases.update(64),false);
+  assert.equal(phases.update(67),false);assert.equal(phases.phase,1);
+  assert.equal(phases.update(66),true);assert.equal(phases.phase,2);
+  assert.equal(phases.update(65),false);
   assert.equal(phases.consumeTransition(),true);
   assert.equal(phases.consumeTransition(),false);
-  assert.equal(phases.update(31),false);assert.equal(phases.phase,2);
-  assert.equal(phases.update(30),true);assert.equal(phases.phase,3);
+  assert.equal(phases.update(34),false);assert.equal(phases.phase,2);
+  assert.equal(phases.update(33),true);assert.equal(phases.phase,3);
   assert.equal(phases.update(20),false);
   assert.equal(phases.consumeTransition(),true);
   assert.equal(phases.consumeTransition(),false);
@@ -84,17 +102,91 @@ test('phase transition state blocks attacks until it finishes',()=>{
   assert.equal(boss.startPhaseTransition(),true);
   assert.equal(boss.state,BOSS_STATES.PHASE_TRANSITION);
   assert.equal(boss.startAttack(0),false);
-  boss.takeDamage(10);
+  assert.equal(boss.takeDamage(10),0);
+  assert.equal(boss.hp,100);
   assert.equal(boss.state,BOSS_STATES.PHASE_TRANSITION);
   assert.equal(boss.finishPhaseTransition(),true);
   assert.equal(boss.state,BOSS_STATES.IDLE);
   assert.equal(boss.startAttack(0),true);
 });
 
+test('encounter remains dormant outside range and activates once inside range',()=>{
+  const encounter=new BossEncounterState({followupDelayMs:BOSS_INTRO_FOLLOWUP_DELAY_MS});
+  const boss={x:500,y:500};
+  assert.equal(isWithinActivationRange({x:500-BOSS_ACTIVATION_RANGE-1,y:500},boss,BOSS_ACTIVATION_RANGE),false);
+  assert.equal(encounter.active,false);
+  assert.equal(isWithinActivationRange({x:500-BOSS_ACTIVATION_RANGE,y:500},boss,BOSS_ACTIVATION_RANGE),true);
+  assert.equal(encounter.activate(1000),true);
+  assert.equal(encounter.active,true);
+  assert.equal(encounter.activate(1001),false);
+  assert.equal(BOSS_FIXED_SPEECH.activation,'Es ist bereits 08:01 Uhr, du bist zu spät!');
+});
+
+test('encounter emits the fixed followup once after three seconds and resets cleanly',()=>{
+  const encounter=new BossEncounterState({followupDelayMs:3000});
+  encounter.activate(1000);
+  assert.equal(encounter.consumeFollowup(3999),false);
+  assert.equal(encounter.consumeFollowup(4000),true);
+  assert.equal(encounter.consumeFollowup(5000),false);
+  assert.equal(BOSS_FIXED_SPEECH.followup,'Unterschreib sofort die Anwesenheitsliste!');
+  encounter.reset();
+  assert.equal(encounter.active,false);assert.equal(encounter.followupPending,false);
+});
+
+test('Director remains protected until the second speech plus the combat delay',()=>{
+  const encounter=new BossEncounterState({
+    followupDelayMs:BOSS_INTRO_FOLLOWUP_DELAY_MS,combatStartDelayMs:BOSS_INTRO_COMBAT_DELAY_MS,
+  });
+  encounter.activate(1000);
+  assert.equal(encounter.canFight(1000+BOSS_INTRO_FOLLOWUP_DELAY_MS),false);
+  assert.equal(encounter.consumeFollowup(1000+BOSS_INTRO_FOLLOWUP_DELAY_MS),true);
+  assert.equal(encounter.canFight(1000+BOSS_INTRO_FOLLOWUP_DELAY_MS+BOSS_INTRO_COMBAT_DELAY_MS-1),false);
+  assert.equal(encounter.canFight(1000+BOSS_INTRO_FOLLOWUP_DELAY_MS+BOSS_INTRO_COMBAT_DELAY_MS),true);
+});
+
+test('attack tutorial appears once per encounter and reset enables it again',()=>{
+  const tutorial=new BossTutorialState();
+  assert.equal(tutorial.show(),true);assert.equal(tutorial.visible,true);
+  assert.equal(tutorial.show(),false);
+  assert.equal(tutorial.dismiss(),true);assert.equal(tutorial.visible,false);
+  assert.equal(tutorial.dismiss(),false);
+  tutorial.reset();
+  assert.equal(tutorial.show(),true);
+});
+
+test('scripted homing can bypass cooldown without bypassing combat state safety',()=>{
+  const boss=new BossCombatState({attackCooldownMs:10000,now:0});
+  assert.equal(boss.startAttack(3000,{type:'homing',force:true}),true);
+  assert.equal(boss.activeAttack.type,'homing');
+  assert.equal(boss.startAttack(3000,{type:'homing',force:true}),false);
+});
+
+test('phase visual mappings use intro poses and the final laser-eye combat loop',()=>{
+  assert.equal(phaseVisual(1).texture,'director-phase1');
+  assert.equal(phaseVisual(2,{intro:true}).animation,'director-phase2-intro-play');
+  assert.equal(phaseVisual(2).frame,0);
+  assert.equal(phaseVisual(3,{intro:true}).animation,'director-phase3-intro-play');
+  assert.equal(phaseVisual(3).animation,'director-phase3-combat-loop');
+});
+
+test('normalized boss visual sheets have their own complete fixed-size frames',()=>{
+  for(const asset of BOSS_VISUAL_ASSETS){
+    const png=fs.readFileSync(new URL(`../public/assets/boss/${asset.file}`,import.meta.url));
+    assert.equal(png.toString('ascii',1,4),'PNG');
+    assert.equal(png.readUInt32BE(16),asset.frameWidth*asset.frames);
+    assert.equal(png.readUInt32BE(20),asset.frameHeight);
+  }
+});
+
+test('Director defeat sheet is the dedicated four-frame death sequence',()=>{
+  const defeat=BOSS_VISUAL_ASSETS.find(asset=>asset.key==='director-defeat');
+  assert.deepEqual(defeat,{key:'director-defeat',file:'director-defeat.png',frames:4,frameWidth:543,frameHeight:724});
+});
+
 test('defeated boss cannot begin a phase transition',()=>{
   const boss=new BossCombatState({maxHp:10,attackCooldownMs:0,now:0});
   boss.takeDamage(10);
-  assert.equal(boss.state,BOSS_STATES.DEFEATED);
+  assert.equal(boss.state,BOSS_STATES.DYING);
   assert.equal(boss.startPhaseTransition(),false);
 });
 
@@ -137,7 +229,7 @@ test('boss starts at 100 HP and needs exactly ten 10-damage hits',()=>{
   for(let hit=2;hit<=9;hit++){boss.takeDamage(10);boss.finishAction();}
   assert.equal(boss.hp,10);assert.equal(boss.state,BOSS_STATES.IDLE);
   boss.takeDamage(10);
-  assert.equal(boss.hp,0);assert.equal(boss.state,BOSS_STATES.DEFEATED);
+  assert.equal(boss.hp,0);assert.equal(boss.state,BOSS_STATES.DYING);
 });
 
 test('the same projectile can resolve only one hit',()=>{
@@ -328,8 +420,131 @@ test('defeat and cleanup cancel movement while reset restarts from the first mar
 
   const boss=new BossCombatState({maxHp:10,attackCooldownMs:0,now:0});
   boss.startMoving();boss.takeDamage(10);
-  assert.equal(boss.state,BOSS_STATES.DEFEATED);
+  assert.equal(boss.state,BOSS_STATES.DYING);
   assert.equal(boss.startMoving(),false);
+});
+
+test('first Director victory offers exactly two unique rewards',()=>{
+  const {progress,outcome}=applyDirectorVictory(null,'felipe');
+  assert.equal(progress.wins,1);assert.equal(progress.defeated,true);
+  assert.deepEqual(outcome,{type:'choice',options:['remastered_skin','director_access_badge']});
+  assert.equal(progress.rewards.length,0);
+});
+
+test('choosing each Director reward persists only that unique reward',()=>{
+  const first=applyDirectorVictory(null,'sarina').progress;
+  const skin=applyDirectorRewardChoice(first,BOSS_REWARDS.REMASTERED_SKIN);
+  assert.equal(skin.granted,true);assert.equal(hasBossReward(skin.progress,BOSS_REWARDS.REMASTERED_SKIN),true);
+  assert.equal(hasBossReward(skin.progress,BOSS_REWARDS.DIRECTOR_ACCESS_BADGE),false);
+  const duplicate=applyDirectorRewardChoice(skin.progress,BOSS_REWARDS.REMASTERED_SKIN);
+  assert.equal(duplicate.granted,false);assert.deepEqual(duplicate.progress.rewards,['remastered_skin']);
+  const badge=applyDirectorRewardChoice(applyDirectorVictory(null,'felipe').progress,
+    BOSS_REWARDS.DIRECTOR_ACCESS_BADGE);
+  assert.equal(badge.granted,true);
+  assert.equal(hasBossReward(badge.progress,BOSS_REWARDS.DIRECTOR_ACCESS_BADGE),true);
+});
+
+test('death dialogue is fixed in German for the dying sequence',()=>{
+  assert.equal(BOSS_FIXED_SPEECH.death,'„Ich kann nicht mehr... ich kündige!“');
+});
+
+test('second victory grants the missing reward and third victory never duplicates it',()=>{
+  const first=applyDirectorRewardChoice(applyDirectorVictory(null,'michael').progress,
+    BOSS_REWARDS.DIRECTOR_ACCESS_BADGE).progress;
+  const second=applyDirectorVictory(first,'michael');
+  assert.equal(second.progress.wins,2);assert.deepEqual(second.outcome,{type:'automatic',rewardId:'remastered_skin'});
+  assert.deepEqual(missingDirectorRewards(second.progress),[]);
+  const third=applyDirectorVictory(second.progress,'michael');
+  assert.equal(third.progress.wins,3);assert.deepEqual(third.outcome,{type:'none'});
+  assert.equal(new Set(third.progress.rewards).size,2);
+});
+
+test('reward decision logic does not reopen a choice after one or both unlocks',()=>{
+  assert.deepEqual(rewardOutcomeForVictory({wins:2,rewards:['remastered_skin']}),
+    {type:'automatic',rewardId:'director_access_badge'});
+  assert.deepEqual(rewardOutcomeForVictory({wins:3,rewards:['remastered_skin','director_access_badge']}),{type:'none'});
+});
+
+test('unfinished first victory remains a recoverable pending reward',()=>{
+  const first=applyDirectorVictory(null,'felipe').progress;
+  assert.equal(hasPendingDirectorReward(first),true);
+  const chosen=applyDirectorRewardChoice(first,BOSS_REWARDS.DIRECTOR_ACCESS_BADGE).progress;
+  assert.equal(hasPendingDirectorReward(chosen),false);
+});
+
+test('Classic is always available and Remastered requires its persistent unlock',()=>{
+  const empty=wardrobeSkinOptions(null);
+  assert.deepEqual(empty.map(option=>[option.id,option.unlocked]),[['classic',true],['remastered',false]]);
+  assert.throws(()=>equipCharacterSkin(null,CHARACTER_SKINS.REMASTERED,'felipe'),/not been unlocked/);
+  assert.equal(equipCharacterSkin(null,CHARACTER_SKINS.CLASSIC,'felipe').equippedSkin,'classic');
+  const unlocked=applyDirectorRewardChoice(applyDirectorVictory(null,'felipe').progress,
+    BOSS_REWARDS.REMASTERED_SKIN).progress;
+  assert.equal(wardrobeSkinOptions(unlocked)[1].unlocked,true);
+  assert.equal(equipCharacterSkin(unlocked,CHARACTER_SKINS.REMASTERED).equippedSkin,'remastered');
+  assert.equal(normalizeBossProgress({...unlocked,equippedSkin:'remastered'}).equippedSkin,'remastered');
+});
+
+test('arena gate is authored separately and resets from open to closed',()=>{
+  const arena=JSON.parse(fs.readFileSync(new URL('../public/assets/maps/arena.tmj',import.meta.url)));
+  const definition=readArenaGate(arena),gate=new ArenaGateState();
+  assert.equal(definition.name,'gate');assert.equal(definition.asset,'assets/woodgate');
+  assert.equal(gate.collisionActive,true);assert.equal(gate.exitAvailable,false);
+  assert.equal(gate.open(),true);assert.equal(gate.collisionActive,false);assert.equal(gate.exitAvailable,true);
+  assert.equal(gate.open(),false);
+  gate.reset();assert.equal(gate.collisionActive,true);assert.equal(gate.exitAvailable,false);
+});
+
+test('arena retry choices remain locked for at least five seconds',()=>{
+  const retry=new ArenaRetryState(BOSS_RETRY_DELAY_MS);retry.show(1000);
+  assert.equal(retry.canChoose(5999),false);assert.equal(retry.canChoose(6000),true);
+  retry.reset();assert.equal(retry.canChoose(9000),false);
+});
+
+test('DEV boss presets affect only the supplied character progress',()=>{
+  const michael=applyBossDevPreset(null,'skin_only','michael');
+  assert.equal(michael.characterId,'michael');assert.equal(michael.wins,1);
+  assert.deepEqual(michael.rewards,['remastered_skin']);assert.equal(michael.equippedSkin,'classic');
+  const fresh=applyBossDevPreset(michael,'fresh','michael');
+  assert.deepEqual({characterId:fresh.characterId,wins:fresh.wins,rewards:fresh.rewards,equippedSkin:fresh.equippedSkin},
+    {characterId:'michael',wins:0,rewards:[],equippedSkin:'classic'});
+  const sarina=applyBossDevPreset(null,'badge_only','sarina');
+  assert.equal(sarina.characterId,'sarina');assert.deepEqual(sarina.rewards,['director_access_badge']);
+  assert.equal(michael.characterId,'michael');
+});
+
+test('DEV tools render only for a Vite development build',()=>{
+  assert.equal(shouldShowBossDevTools({DEV:true}),true);
+  assert.equal(shouldShowBossDevTools({DEV:false}),false);
+  assert.equal(shouldShowBossDevTools({}),false);
+});
+
+test('reward preview resolves the selected character instead of a shared skin',()=>{
+  assert.equal(remasteredPreviewAsset('michael'),'assets/characters/michael-new-preview.png');
+  assert.equal(remasteredPreviewAsset('sarina'),'assets/characters/sarina-new-preview.png');
+  assert.notEqual(remasteredPreviewAsset('michael'),remasteredPreviewAsset('sarina'));
+});
+
+test('reward presentation stays open until its lock ends and the player explicitly dismisses it',()=>{
+  const presentation=new RewardPresentationState();presentation.begin();
+  assert.equal(presentation.canDismiss(false),false);
+  assert.equal(presentation.canDismiss(true),false);
+  presentation.unlock();
+  assert.equal(presentation.canDismiss(false),false);
+  assert.equal(presentation.canDismiss(true),true);
+  presentation.end();assert.equal(presentation.canDismiss(true),false);
+});
+
+test('saving a selected reward does not clean up its active presentation',()=>{
+  const progress=applyDirectorRewardChoice(applyDirectorVictory(null,'felipe').progress,
+    BOSS_REWARDS.DIRECTOR_ACCESS_BADGE).progress;
+  assert.equal(shouldClearDirectorLoot(progress,{rewardOpened:true}),false);
+  assert.equal(shouldClearDirectorLoot(progress,{rewardOpened:false}),true);
+});
+
+test('reward presentation accepts only click handling or E, SPACE and ENTER keyboard input',()=>{
+  for(const key of ['e','E',' ','Enter'])assert.equal(isRewardDismissKey({key,repeat:false}),true);
+  for(const key of ['Escape','f','Shift'])assert.equal(isRewardDismissKey({key,repeat:false}),false);
+  assert.equal(isRewardDismissKey({key:'Enter',repeat:true}),false);
 });
 
 test('arena BossPositions are named points in deterministic order',()=>{
@@ -337,4 +552,5 @@ test('arena BossPositions are named points in deterministic order',()=>{
   const positions=readBossPositions(arena);
   assert.deepEqual(positions.map(item=>item.name),['boss-pos-1','boss-pos-2','boss-pos-3','boss-pos-4']);
   assert.ok(positions.every(item=>Number.isFinite(item.x)&&Number.isFinite(item.y)));
+  assert.deepEqual(resolveSpawn(arena,{targetSpawn:'boss-spawn'}),{x:1300,y:525});
 });

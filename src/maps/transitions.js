@@ -12,6 +12,7 @@ export function readMapTransitions(source){
     return [{
       id:String(props.id??object.name??object.id),x:object.x,y:object.y,radius,
       label:props.label??object.name??'area',targetMap:props.targetMap,targetSpawn:props.targetSpawn,
+      auto:props.autoTransition===true,
     }];
   });
 }

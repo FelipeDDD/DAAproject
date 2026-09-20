@@ -4,7 +4,7 @@ import test from 'node:test';
 import { CHARACTERS } from '../src/characters.js';
 import {
   NEW_CHARACTER_FRAME,characterVisual,footBodyForVisual,idleFrame,normalizeCharacterStyle,
-  saveCharacterStyle,updateCharacterVisual,walkFrames,
+  saveCharacterStyle,updateCharacterVisual,visualStyleForEquippedSkin,walkFrames,
 } from '../src/characterVisuals.js';
 
 const michael=CHARACTERS.find(character=>character.id==='michael');
@@ -26,11 +26,21 @@ test('new style applies to all four character test spritesheets',()=>{
   assert.equal(normalizeCharacterStyle('unknown'),'old');
 });
 
+test('each fixed character owns a distinct Remastered preview asset',()=>{
+  assert.equal(new Set(CHARACTERS.map(character=>character.newVisual.previewAsset)).size,CHARACTERS.length);
+});
+
 test('style preference persists with a safe old-style fallback',()=>{
   const values=new Map();const storage={getItem:key=>values.get(key),setItem:(key,value)=>values.set(key,value)};
   assert.equal(saveCharacterStyle('new',storage),'new');
   assert.equal([...values.values()][0],'new');
   assert.equal(saveCharacterStyle('invalid',storage),'old');
+});
+
+test('persistent equipped skin defaults to Classic and only Remastered selects new art',()=>{
+  assert.equal(visualStyleForEquippedSkin(undefined),'old');
+  assert.equal(visualStyleForEquippedSkin('classic'),'old');
+  assert.equal(visualStyleForEquippedSkin('remastered'),'new');
 });
 
 test('old and new art retain the same world-space foot hitbox',()=>{

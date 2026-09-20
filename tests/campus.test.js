@@ -78,6 +78,15 @@ test('classroom arena marker links to the authored arena spawn',()=>{
   assert.equal(propertiesOf(maps.arena).escapeReturn,true);
 });
 
+test('arena exit returns automatically to the authored classroom spawn behind the gate',()=>{
+  const exit=readMapTransitions(maps.arena).find(item=>item.id==='school-exit');
+  assert.ok(exit);assert.equal(exit.auto,true);assert.equal(exit.targetMap,'school');
+  assert.equal(exit.targetSpawn,'arena-return');
+  assert.deepEqual(resolveSpawn(maps.school,exit),{x:880,y:725.333333333333});
+  const gate=objectsIn(maps.arena,'Collision').find(item=>item.name==='gate');
+  assert.ok(gate);assert.ok(gate.x<exit.x);assert.ok(gate.x+gate.width<exit.x);
+});
+
 test('arena image and authored collision are usable by the shared map scene',()=>{
   const image=maps.arena.layers.find(layer=>layer.type==='imagelayer');
   assert.equal(image.image,'arena-background.webp');

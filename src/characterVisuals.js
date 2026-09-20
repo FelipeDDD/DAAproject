@@ -7,6 +7,7 @@ export const WALK_COLUMNS=Object.freeze([2,3,4,5]);
 const DIRECTIONS=Object.freeze(['down','left','right','up']);
 
 export function normalizeCharacterStyle(value){return value==='new'?'new':'old';}
+export function visualStyleForEquippedSkin(skin){return skin==='remastered'?'new':'old';}
 export function loadCharacterStyle(storage=globalThis.localStorage){
   try{return normalizeCharacterStyle(storage?.getItem(CHARACTER_STYLE_STORAGE_KEY));}catch{return 'old';}
 }

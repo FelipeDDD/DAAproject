@@ -3,17 +3,20 @@ import { gameConfig } from './game/config.js';
 import './style.css';
 import { closePresence, getPresence } from './multiplayer/client.js';
 import { CharacterMenu } from './CharacterMenu.js';
+import { DisplaySettingsController } from './ui/displaySettings.js';
 
 let game, pausedScene;
 const presence=getPresence();
 const gameArea=document.getElementById('play-area');
 const changeButton=document.getElementById('change-character');
+const displaySettings=new DisplaySettingsController(document.getElementById('viewport-size'),()=>game?.scale.refresh());
 const menu=new CharacterMenu(presence,()=>{
   gameArea.hidden=false;changeButton.hidden=false;
   if(!game)game=new Phaser.Game(gameConfig);
   else if(pausedScene){
     const scene=pausedScene;pausedScene=null;
     scene.enter({targetX:scene.player.x,targetY:scene.player.y});
+    scene.crosshair?.resume();
     scene.scene.resume();
   }
 });
@@ -61,6 +64,8 @@ async function changeCharacter(event){
   if(!sessionLost&&activeScene?.quiz?.seated&&!(await activeScene.quiz.leave()))return;
   activeScene?.soloStudy?.closePanel();
   if(activeScene){
+    activeScene.crosshair?.suspend();
+    activeScene.inventoryHotbar?.destroy();activeScene.inventoryHotbar=null;
     activeScene.emoteBar?.close();activeScene.emoteBar=null;
     activeScene.emoteSync?.close();activeScene.emoteSync=null;
     activeScene.emoteRenderer?.close();activeScene.emoteRenderer=null;
@@ -89,6 +94,7 @@ if (import.meta.hot) {
     window.removeEventListener('pagehide',releaseOnPageHide);
     window.removeEventListener('focus',restoreProjectFocus);
     document.removeEventListener('visibilitychange',restoreFocusWhenVisible);
+    displaySettings.destroy();
     document.getElementById('character-list').replaceChildren();
   });
 }

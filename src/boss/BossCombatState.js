@@ -1,6 +1,6 @@
 export const BOSS_STATES=Object.freeze({
   IDLE:'idle',ATTACKING:'attacking',HURT:'hurt',MOVING:'moving',
-  PHASE_TRANSITION:'phaseTransition',DEFEATED:'defeated',
+  PHASE_TRANSITION:'phaseTransition',DYING:'dying',DEFEATED:'defeated',REWARD:'reward',
 });
 
 export class BossCombatState {
@@ -17,8 +17,8 @@ export class BossCombatState {
     return this.state===BOSS_STATES.IDLE&&now>=this.nextAttackAt;
   }
 
-  startAttack(now,{type='single',cooldownMs=this.attackCooldownMs,telegraphMs=0}={}){
-    if(!this.canAttack(now))return false;
+  startAttack(now,{type='single',cooldownMs=this.attackCooldownMs,telegraphMs=0,force=false}={}){
+    if(this.state!==BOSS_STATES.IDLE||(!force&&now<this.nextAttackAt))return false;
     this.state=BOSS_STATES.ATTACKING;
     this.nextAttackAt=now+cooldownMs;
     this.activeAttack={type,executeAt:now+telegraphMs,executed:false};
@@ -71,14 +71,33 @@ export class BossCombatState {
   }
 
   takeDamage(amount){
-    if(this.state===BOSS_STATES.DEFEATED||!Number.isFinite(amount)||amount<=0)return 0;
+    if([BOSS_STATES.DYING,BOSS_STATES.DEFEATED,BOSS_STATES.REWARD,BOSS_STATES.PHASE_TRANSITION].includes(this.state)
+      ||!Number.isFinite(amount)||amount<=0)return 0;
     const previous=this.hp;
     this.hp=Math.max(0,this.hp-amount);
     const uninterrupted=this.state===BOSS_STATES.MOVING||this.state===BOSS_STATES.PHASE_TRANSITION;
     const currentState=this.state;
-    this.state=this.hp===0?BOSS_STATES.DEFEATED:uninterrupted?currentState:BOSS_STATES.HURT;
+    this.state=this.hp===0?BOSS_STATES.DYING:uninterrupted?currentState:BOSS_STATES.HURT;
     this.activeAttack=null;
     return previous-this.hp;
+  }
+
+  finishDying(){
+    if(this.state!==BOSS_STATES.DYING)return false;
+    this.state=BOSS_STATES.DEFEATED;
+    return true;
+  }
+
+  beginReward(){
+    if(this.state!==BOSS_STATES.DEFEATED)return false;
+    this.state=BOSS_STATES.REWARD;
+    return true;
+  }
+
+  finishReward(){
+    if(this.state!==BOSS_STATES.REWARD)return false;
+    this.state=BOSS_STATES.DEFEATED;
+    return true;
   }
 
   reset(now=0){
@@ -99,7 +118,7 @@ export class BossPhaseState {
   update(hp){
     if(!Number.isFinite(hp))return false;
     const ratio=hp/this.maxHp;
-    const nextPhase=ratio<=this.thresholds[3]?3:ratio<=this.thresholds[2]?2:1;
+    const nextPhase=ratio<this.thresholds[3]?3:ratio<this.thresholds[2]?2:1;
     if(nextPhase<=this.phase)return false;
     this.phase=nextPhase;
     this.transitionPending=true;

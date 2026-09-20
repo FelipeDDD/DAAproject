@@ -1,5 +1,5 @@
 import { CHARACTERS, CHARACTER_STORAGE_KEY } from './characters.js';
-import { characterVisual,loadCharacterStyle,saveCharacterStyle } from './characterVisuals.js';
+import { characterVisual } from './characterVisuals.js';
 import { isPresenceActive } from './multiplayer/presencePolicy.js';
 
 export function createCharacterSessionId(cryptoApi=globalThis.crypto) {
@@ -21,8 +21,8 @@ export class CharacterMenu {
     this.sessionId=createCharacterSessionId();
     this.root=document.getElementById('character-menu');
     this.message=document.getElementById('character-message');
-    this.styleSelect=document.getElementById('character-style');this.style=loadCharacterStyle();
-    this.styleSelect.value=this.style;
+    this.styleSelect=document.getElementById('character-style');this.style='old';
+    this.styleSelect.value='old';this.styleSelect.closest('.character-style-control').hidden=true;
     this.rows=[];this.ready=false;this.connectionFailed=false;this.closed=false;
     let saved;try{saved=localStorage.getItem(CHARACTER_STORAGE_KEY);}catch{}
     this.cards=CHARACTERS.map(c=>{
@@ -35,10 +35,6 @@ export class CharacterMenu {
       document.getElementById('character-list').append(button);
       return {c,button,image,state};
     });
-    this.handleStyleChange=()=>{
-      this.style=saveCharacterStyle(this.styleSelect.value);this.renderPreviews();
-    };
-    this.styleSelect.addEventListener('change',this.handleStyleChange);
     this.renderPreviews();
     this.message.textContent=presence?'Checking availability…':'Configure Convex to choose a character.';
     if(presence){
@@ -96,6 +92,5 @@ export class CharacterMenu {
   show(){this.root.hidden=false;this.render();}
   close(){
     this.closed=true;clearInterval(this.timer);clearTimeout(this.connectionTimer);this.unsubscribe?.();
-    this.styleSelect.removeEventListener('change',this.handleStyleChange);
   }
 }
