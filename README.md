@@ -262,6 +262,37 @@ Uma porta não fecha sobre os pés do jogador.
 
 A entrada externa usa `targetMap: school`, `targetSpawn: mainEntrance`.
 A saída interna usa `targetMap: outside`, `targetSpawn: schoolEntrance`.
+O ponto `arena` em `Spawns` funciona como interação de mapa com `transition: true`,
+`targetMap: arena` e `targetSpawn: arena-spawn`; aproximar-se e pressionar **E** abre
+o mapa `arena.tmj`. Image Layers do Tiled são carregadas pelo `MapScene`, e a layer
+`Collision` aceita retângulos e polígonos invisíveis.
+Enquanto ainda não existe uma saída própria na arena, **Esc** retorna ao ponto anterior.
+Elipses em `Collision` usam corpos circulares; desenhe-as com largura e altura maiores
+que zero no Tiled. Os marcadores circulares atuais da arena usam 16×16 px.
+O mapa atual possui colisões desenhadas diretamente nos dois lados; elas não dependem
+de espelhamento feito pelo Phaser.
+
+O protótipo solo do boss existe somente na `ArenaScene`. Sua posição vem do ponto
+`boss-spawn` em `Spawns`. Ele possui 100 HP, dispara um projétil reto periodicamente
+e aceita o ataque temporário do jogador com **Space**. As constantes de HP, cooldown,
+dano, velocidade e duração ficam em `src/boss/config.js`; `BossController` contém os
+objetos Phaser e `BossCombatState` mantém a lógica determinística de combate.
+Os ataques alternam deterministicamente entre um disparo simples e um leque de sete
+projéteis. O leque captura a posição do jogador ao começar, avisa por 700 ms e abre
+80 graus; quantidade, abertura e cooldowns também ficam em `src/boss/config.js`.
+O disparo simples usa os seis frames 48×48 de `director-paper-projectile.png`; a folha
+normalizada pode ser recriada com `scripts/build-boss-projectile-sprites.ps1` sem
+alterar a imagem-fonte mantida em `public/assets/boss`.
+O terceiro ataque marca por 900 ms um círculo fixo de raio 64 px sob os pés do
+jogador e causa 1 de dano somente se ele ainda estiver dentro no impacto. Ele aparece
+depois do leque na sequência determinística e não é bloqueado pelos obstáculos.
+O quarto ataque lança o papel amarelo `director-paper-homing.png`, que persegue o
+jogador a 145 px/s com giro limitado a 110°/s. Ele usa o mesmo pool e colisões dos
+outros projéteis e completa a ordem `single → fan → area → homing`.
+Após cada ataque, o boss espera 200 ms e faz um deslocamento de 420 ms até o próximo
+ponto da Object Layer `BossPositions`. Os markers devem ser Point objects nomeados
+`boss-pos-1`, `boss-pos-2`, `boss-pos-3` e `boss-pos-4`; a ausência da layer apenas
+mantém o boss parado. O reset sempre retorna ao `boss-spawn`.
 A saída de teste anterior também leva ao pátio. Portas sem destino só abrem/fecham.
 
 Para criar um spawn, use **Inserir ponto** em Spawns e defina seu Nome. A posição

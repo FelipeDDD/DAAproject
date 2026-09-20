@@ -5565,22 +5565,22 @@
                          "name":"interactionDistance",
                          "type":"float",
                          "value":24
-                        },
+                        }, 
                         {
                          "name":"interactionHeight",
                          "type":"float",
                          "value":33
-                        },
+                        }, 
                         {
                          "name":"interactionOffsetX",
                          "type":"float",
                          "value":0
-                        },
+                        }, 
                         {
                          "name":"interactionOffsetY",
                          "type":"float",
                          "value":0
-                        },
+                        }, 
                         {
                          "name":"interactionWidth",
                          "type":"float",
@@ -5592,6 +5592,26 @@
                          "value":"study"
                         }, 
                         {
+                         "name":"monitorHeight",
+                         "type":"float",
+                         "value":19.4861111111
+                        }, 
+                        {
+                         "name":"monitorOffsetX",
+                         "type":"float",
+                         "value":-38.875
+                        }, 
+                        {
+                         "name":"monitorOffsetY",
+                         "type":"float",
+                         "value":-9.1805555556
+                        }, 
+                        {
+                         "name":"monitorWidth",
+                         "type":"float",
+                         "value":17.0833333333
+                        }, 
+                        {
                          "name":"seatX",
                          "type":"float",
                          "value":596
@@ -5600,26 +5620,6 @@
                          "name":"seatY",
                          "type":"float",
                          "value":883.5
-                        },
-                        {
-                         "name":"monitorHeight",
-                         "type":"float",
-                         "value":19.4861111111
-                        },
-                        {
-                         "name":"monitorOffsetX",
-                         "type":"float",
-                         "value":-38.875
-                        },
-                        {
-                         "name":"monitorOffsetY",
-                         "type":"float",
-                         "value":-9.1805555556
-                        },
-                        {
-                         "name":"monitorWidth",
-                         "type":"float",
-                         "value":17.0833333333
                         }, 
                         {
                          "name":"sourceNote",
@@ -7248,6 +7248,45 @@
                  "width":0,
                  "x":384,
                  "y":336
+                }, 
+                {
+                 "height":0,
+                 "id":493,
+                 "name":"arena",
+                 "opacity":1,
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"interactionRadius",
+                         "type":"float",
+                         "value":40
+                        },
+                        {
+                         "name":"label",
+                         "type":"string",
+                         "value":"Arena"
+                        },
+                        {
+                         "name":"targetMap",
+                         "type":"string",
+                         "value":"arena"
+                        },
+                        {
+                         "name":"targetSpawn",
+                         "type":"string",
+                         "value":"arena-spawn"
+                        },
+                        {
+                         "name":"transition",
+                         "type":"bool",
+                         "value":true
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":912,
+                 "y":725.333333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -8474,7 +8513,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":493,
+ "nextobjectid":494,
  "orientation":"orthogonal",
  "properties":[
         {

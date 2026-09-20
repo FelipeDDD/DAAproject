@@ -4,9 +4,11 @@ import { readFileSync } from 'node:fs';
 import { objectsIn, propertiesOf, resolveSpawn } from '../src/maps/tiledObjects.js';
 import { readDoors } from '../src/maps/doors.js';
 import { PLAYER_SCALE } from '../src/game/settings.js';
+import { collisionAreas } from '../src/maps/collision.js';
+import { readMapTransitions } from '../src/maps/transitions.js';
 
 const load = (name) => JSON.parse(readFileSync(new URL(`../public/assets/maps/${name}.tmj`, import.meta.url)));
-const maps = { school: load('classroom'), outside: load('outside') };
+const maps = { school: load('classroom'), outside: load('outside'), arena: load('arena') };
 const overlaps = (a,b) => a.x < b.x+b.width && a.x+a.width > b.x && a.y < b.y+b.height && a.y+a.height > b.y;
 const feet = (x,y) => ({x:x-10*PLAYER_SCALE,y:y-12*PLAYER_SCALE,width:20*PLAYER_SCALE,height:12*PLAYER_SCALE});
 
@@ -63,6 +65,37 @@ test('all transition targets resolve to free spawns in registered maps', () => {
   assert.equal(exit.targetMap,'outside');
   assert.equal(entry.targetMap,'school');
   assert.equal(entry.targetSpawn,'mainEntrance');
+});
+
+test('classroom arena marker links to the authored arena spawn',()=>{
+  const transition=readMapTransitions(maps.school).find(item=>item.id==='arena');
+  assert.ok(transition);
+  assert.equal(transition.targetMap,'arena');
+  assert.equal(transition.targetSpawn,'arena-spawn');
+  const spawn=resolveSpawn(maps.arena,transition);
+  assert.deepEqual(spawn,{x:18,y:525});
+  assert.ok(!collisionAreas(objectsIn(maps.arena,'Collision')).some(area=>overlaps(feet(spawn.x,spawn.y),area)));
+  assert.equal(propertiesOf(maps.arena).escapeReturn,true);
+});
+
+test('arena image and authored collision are usable by the shared map scene',()=>{
+  const image=maps.arena.layers.find(layer=>layer.type==='imagelayer');
+  assert.equal(image.image,'arena-background.webp');
+  const authored=objectsIn(maps.arena,'Collision');
+  const areas=collisionAreas(authored);
+  assert.ok(areas.length>0);
+  assert.ok(areas.every(area=>area.width>0&&area.height>0));
+  assert.ok(authored.some(area=>area.width>0&&area.height>0&&!area.ellipse));
+  assert.ok(authored.some(area=>area.ellipse));
+  assert.equal(areas.filter(area=>area.shape==='circle').length,authored.filter(area=>area.ellipse).length);
+  assert.ok(authored.every(area=>area.point||area.width>0&&area.height>0),'Arena collision contains a zero-area object');
+});
+
+test('arena authors a configurable boss spawn outside its cover collision',()=>{
+  const spawn=resolveSpawn(maps.arena,{targetSpawn:'boss-spawn'});
+  assert.deepEqual(spawn,{x:1300,y:525});
+  const bossBody={x:spawn.x-18,y:spawn.y-56,width:36,height:56};
+  assert.ok(!collisionAreas(objectsIn(maps.arena,'Collision')).some(area=>overlaps(bossBody,area)));
 });
 
 test('door footprints never overlap permanent collision, including fractional positions', () => {

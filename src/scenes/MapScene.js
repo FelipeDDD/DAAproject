@@ -28,6 +28,7 @@ import {
   readTerminalComputers,nearbyTerminalComputer,terminalPromptPosition,TERMINAL_PROMPT,
 } from '../maps/terminalComputers.js';
 import { TerminalOverlayController } from '../terminal/TerminalOverlayController.js';
+import { nearbyMapTransition,readMapTransitions } from '../maps/transitions.js';
 import '../terminal/terminal.css';
 
 function readTileset(xml, firstgid) {
@@ -68,6 +69,9 @@ export class MapScene extends Phaser.Scene {
           this.load.xml(key, tilesetUrl.href);
         } else loadImage(reference);
       });
+      data.layers.filter(layer=>layer.type==='imagelayer'&&layer.image).forEach(layer=>{
+        this.load.image(`${this.mapKey}-image-layer-${layer.id}`,new URL(layer.image,mapUrl).href);
+      });
     });
     this.load.json(this.sourceKey, mapUrl.href);
   }
@@ -82,6 +86,11 @@ export class MapScene extends Phaser.Scene {
     };
     this.cache.tilemap.add(this.mapKey, { format: Phaser.Tilemaps.Formats.TILED_JSON, data });
     const map = this.make.tilemap({ key: this.mapKey });
+    for(const layer of data.layers.filter(item=>item.type==='imagelayer'&&item.image)){
+      this.add.image((layer.offsetx??0)+(layer.x??0),(layer.offsety??0)+(layer.y??0),`${this.mapKey}-image-layer-${layer.id}`)
+        .setOrigin(0).setDepth(propertiesOf(layer).depth??-3)
+        .setVisible(layer.visible!==false).setAlpha(layer.opacity??1);
+    }
     const tilesets = data.tilesets.map((definition, index) => {
       const key = `${this.mapKey}-tileset-${index}`;
       // Object tile sprites need explicit atlas frames, unlike tile layers.
@@ -145,6 +154,7 @@ export class MapScene extends Phaser.Scene {
     this.soloStudySeats=readSoloStudySeats(this.source);
     this.challengeLeaderboards=readChallengeLeaderboards(this.source);
     this.terminalComputers=readTerminalComputers(this.source);
+    this.mapTransitions=readMapTransitions(this.source);
     for (const door of this.doors) this.physics.add.collider(this.player, door.blocker);
     this.interactKey = this.input.keyboard.addKey('E');
     this.escapeKey = this.input.keyboard.addKey('ESC');
@@ -251,6 +261,7 @@ export class MapScene extends Phaser.Scene {
     const studySeat=this.soloStudy?.nearbySeat();
     const computer=nearbyTerminalComputer(this.terminalComputers,this.player.body);
     const challengeLeaderboard=nearbyChallengeLeaderboard(this.challengeLeaderboards,this.player.body);
+    const mapTransition=nearbyMapTransition(this.mapTransitions,this.player.body);
     this.quiz?.updateSeatPrompt(!this.soloStudy?.active&&quizSeat);
     this.soloStudy?.updateSeatPrompt(!this.quiz?.seated&&studySeat);
     const showTerminalPrompt=Boolean(computer&&!this.quiz?.seated&&!this.soloStudy?.active);
@@ -292,6 +303,10 @@ export class MapScene extends Phaser.Scene {
       void this.terminal.open(computer);
       return;
     }
+    if(interact&&mapTransition){
+      this.travelTo(mapTransition);
+      return;
+    }
     const nearby = this.doors.filter((door) => door.isNear(this.player.body))
       .sort((a, b) => a.distanceTo(this.player.body) - b.distanceTo(this.player.body))[0];
     if (nearby !== this.nearbyDoor) this.doorMessage = '';
@@ -315,6 +330,8 @@ export class MapScene extends Phaser.Scene {
       ? '[E] View leaderboard'
       : computer
       ? '[E] Open Terminal'
+      : mapTransition
+      ? `[E] Enter ${mapTransition.label}`
       : nearby
       ? [nearby.locked ? 'Door locked' : destination ? 'Press E to exit' : action,this.doorMessage]
         .filter(Boolean).join(' · ')

@@ -13,7 +13,7 @@
   --quiz-media-gap: 16px;
   /* Set to minmax(0, 1fr) minmax(0, 1fr) for a wider, two-column panel. */
   --quiz-content-columns: minmax(0, 1fr);
-  --game-content-width: 1008px;
+  --game-content-width: 1280px;
 }
 
 * { box-sizing: border-box; }
@@ -141,7 +141,7 @@
 @media(max-width:600px) { #character-list { grid-template-columns: repeat(2,1fr); } }
 @media(max-width:760px) { #play-footer { grid-template-columns: minmax(0, 1fr); } #game-guidance { padding-top: 0; } }
 body { margin: 0; color: #334550; background: #f8fafb; }
-main { max-width: 1008px; padding: 24px; margin: auto; }
+main { width: 100%; max-width: var(--game-content-width); padding: 24px; margin: auto; }
 header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
 h1 { margin: 0; font-size: 22px; font-weight: 600; }
 .eyebrow { margin: 0 0 6px; font-size: 11px; letter-spacing: 2px; color: #627b89; }
