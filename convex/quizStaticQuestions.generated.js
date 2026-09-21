@@ -12445,7 +12445,7 @@ export default [
       "Der Einkaufspreis"
     ],
     "correctAnswer": 0,
-    "explanation": "Im Übungsblatt wird das Betriebsergebnis unter anderem als Gesamtdeckungsbeitrag minus Fixkosten berechnet.",
+    "explanation": "Das Betriebsergebnis ergibt sich aus dem Gesamtdeckungsbeitrag abzüglich der Fixkosten.",
     "source": "rechnungen.csv"
   },
   {
@@ -12661,7 +12661,7 @@ export default [
     "category": "Rechnungen",
     "topic": "Break-Even",
     "difficulty": "medium",
-    "question": "Was beschreibt die „Sicherheitsspanne“ im Übungsblatt?",
+    "question": "Ein Betrieb verkauft mehr als die Break-Even-Menge. Was beschreibt die „Sicherheitsspanne“?",
     "answers": [
       "Wie weit der tatsächliche Absatz über der Break-Even-Menge liegt",
       "Den Unterschied zwischen zwei Verkaufspreisen",
@@ -12669,7 +12669,7 @@ export default [
       "Die maximale Produktionskapazität"
     ],
     "correctAnswer": 0,
-    "explanation": "Die Sicherheitsspanne vergleicht Ist-Absatz und Break-Even-Menge. :contentReference[oaicite:3]{index=3}",
+    "explanation": "Die Sicherheitsspanne ist die Differenz zwischen Ist-Absatz und Break-Even-Menge.",
     "source": "rechnungen.csv"
   },
   {
@@ -13013,7 +13013,7 @@ export default [
     "category": "Rechnungen",
     "topic": "Textverständnis",
     "difficulty": "medium",
-    "question": "Was bedeutet „Upselling“ im Beispiel mit Standard- und Premium-Service?",
+    "question": "Was bedeutet „Upselling“ bei einem Angebot mit Standard- und Premium-Service?",
     "answers": [
       "Kunden werden zu einer höherwertigen beziehungsweise teureren Variante bewegt",
       "Der Preis wird für alle Kunden gesenkt",
@@ -13021,7 +13021,7 @@ export default [
       "Fixkosten werden abgeschafft"
     ],
     "correctAnswer": 0,
-    "explanation": "Im Übungsblatt wird damit die Umwandlung von Standard-Arbeitsplätzen in Premium bezeichnet. :contentReference[oaicite:4]{index=4}",
+    "explanation": "Beim Upselling wird einem Kunden eine höherwertige Premiumvariante anstelle der Standardvariante angeboten.",
     "source": "rechnungen.csv"
   },
   {
@@ -13069,7 +13069,7 @@ export default [
       "Die Absatzmenge"
     ],
     "correctAnswer": 0,
-    "explanation": "Im Übungsblatt entspricht das eingesetzte Kapital der Investitionssumme.",
+    "explanation": "Bei einer Investition ist das eingesetzte Kapital der dafür aufgewendete Geldbetrag, also die Investitionssumme.",
     "source": "rechnungen.csv"
   },
   {
@@ -13293,7 +13293,7 @@ export default [
       "Kosten im Verhältnis zum Umsatz"
     ],
     "correctAnswer": 0,
-    "explanation": "Im Übungsblatt wird die Umsatzrentabilität als Gewinn / Umsatz × 100 berechnet.",
+    "explanation": "Die Umsatzrentabilität in Prozent berechnet sich als Gewinn / Umsatz × 100.",
     "source": "rechnungen.csv"
   },
   {
@@ -13511,13 +13511,13 @@ export default [
     "difficulty": "medium",
     "question": "Was bedeutet „Marge“?",
     "answers": [
-      "Der Anteil beziehungsweise Unterschied zwischen Erlös und Kosten, der wirtschaftlich verbleibt",
+      "Der Betrag oder Anteil des Erlöses, der nach Abzug der berücksichtigten Kosten verbleibt",
       "Die Gesamtzahl der Kunden",
       "Die Investitionsdauer",
       "Die Höhe der Fixkosten"
     ],
     "correctAnswer": 0,
-    "explanation": "Im Übungsblatt wird eine durchschnittliche Marge genutzt, um aus Umsatz einen wirtschaftlichen Gewinnanteil abzuleiten.",
+    "explanation": "Die absolute Marge ist Erlös minus berücksichtigte Kosten. Die prozentuale Marge setzt diese Differenz ins Verhältnis zum Erlös.",
     "source": "rechnungen.csv"
   },
   {
@@ -13693,7 +13693,7 @@ export default [
       "Die Investitionssumme"
     ],
     "correctAnswer": 0,
-    "explanation": "Im Übungsblatt wird der Nettonutzen aus Erlösen plus Einsparungen minus laufenden Kosten gebildet.",
+    "explanation": "Erlöse und Einsparungen erhöhen den Nettonutzen. Laufende Kosten vermindern ihn. Die Investitionssumme wird in dieser Formel nicht abgezogen.",
     "source": "rechnungen.csv"
   },
   {
