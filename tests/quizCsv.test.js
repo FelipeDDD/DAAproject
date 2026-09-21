@@ -13,7 +13,8 @@ const topicHeader = 'id;category;topic;difficulty;question;answer1;answer2;answe
 test('all CSV questions load with unique IDs, source files and quoted code intact', () => {
   const result = loadStaticQuizQuestions(path.join(root, 'quiz-data'));
   assert.deepEqual(result.errors, []);
-  assert.ok(result.questions.length >= 23);
+  assert.equal(result.files.length, 6);
+  assert.equal(result.questions.length, 920);
   assert.equal(new Set(result.questions.map(({ id }) => id)).size, result.questions.length);
 
   const code = result.questions.find(({ id }) => id === 'Programmierung-011');
@@ -26,7 +27,6 @@ test('all CSV questions load with unique IDs, source files and quoted code intac
     .filter(({category})=>category==='Rechnungen').map(({topic})=>topic))];
   for(const topic of ['Dreisatz','Netto-Brutto','Prozentrechnung','Rabatt','Textverständnis'])
     assert.ok(rechnungenTopics.includes(topic));
-  assert.equal(result.questions.filter(({category})=>category==='Prüfungssprache').length,50);
 });
 
 test('new CSV header reads optional topics while the old header remains compatible',()=>{

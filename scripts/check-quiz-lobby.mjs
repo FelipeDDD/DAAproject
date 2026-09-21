@@ -44,8 +44,6 @@ try{
   const rechnungenTopics=topicGroups.find(group=>group.category==='Rechnungen')?.topics??[];
   for(const topic of ['Dreisatz','Netto-Brutto','Prozentrechnung','Rabatt','Textverständnis'])
     assert.ok(rechnungenTopics.includes(topic));
-  assert.deepEqual(topicGroups.find(group=>group.category==='Prüfungssprache')?.topics,
-    ['Aufgabenverben','Prüfungsformulierungen','Textverständnis']);
   assert.deepEqual(lobbyA.configurationOptions.difficulties,['medium','hard']);
   await assert.rejects(clients[1].mutation(api.quizLobbies.start,args(1)),/host/);
   await clients[0].mutation(api.quizLobbies.start,args(0));
