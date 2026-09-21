@@ -9347,17 +9347,17 @@ export default [
   {
     "id": "netzwerk-189",
     "category": "Netzwerk",
-    "topic": "OSI Szenarien",
+    "topic": "HTTP-Diagnose",
     "difficulty": "hard",
-    "question": "Ein Browser fordert per GET eine Webseite an. Welche Schicht steht dabei im Vordergrund?",
+    "question": "Die DNS-Auflösung und der TCP-Verbindungsaufbau zu einem Webserver funktionieren. Der Server antwortet auf die Anfrage mit HTTP 404. Welche Schlussfolgerung ist korrekt?",
     "answers": [
-      "Schicht 3 Vermittlung",
-      "Schicht 5 Sitzung",
-      "Schicht 6 Darstellung",
-      "Schicht 7 Anwendung"
+      "Die angeforderte Ressource wurde auf Anwendungsebene nicht gefunden.",
+      "Die DNS-Auflösung des Servernamens ist fehlgeschlagen.",
+      "Der TCP-Verbindungsaufbau zum Webserver wurde blockiert.",
+      "Die physische Netzwerkverbindung zum Client ist unterbrochen."
     ],
-    "correctAnswer": 3,
-    "explanation": "GET ist eine HTTP-Anfrage und wird der Anwendungsschicht zugeordnet.",
+    "correctAnswer": 0,
+    "explanation": "Eine HTTP-404-Antwort zeigt, dass die Anfrage den Webserver erreicht hat, die angeforderte Ressource dort jedoch nicht gefunden wurde.",
     "source": "netzwerk.csv"
   },
   {
@@ -10181,15 +10181,15 @@ export default [
     "category": "Netzwerk",
     "topic": "CSMA",
     "difficulty": "medium",
-    "question": "Was macht CSMA/CD bei einer erkannten Kollision?",
+    "question": "Nach einer erkannten Kollision sendet eine Ethernet-Station ein Jam-Signal und bricht die Übertragung ab. Was bestimmt, wann sie erneut sendet?",
     "answers": [
-      "Es stoppt die Übertragung",
-      "Es vergibt eine neue MAC-Adresse",
-      "Es wechselt zu DNS",
-      "Es aktiviert IMAP"
+      "Eine zufällige Backoff-Zeit",
+      "Eine neue IP-Adresse",
+      "Eine Bestätigung des DNS-Servers",
+      "Ein Wechsel der MAC-Adresse"
     ],
     "correctAnswer": 0,
-    "explanation": "CSMA/CD erkennt eine Kollision während des Sendens und bricht ab.",
+    "explanation": "CSMA/CD verwendet vor dem erneuten Sendeversuch eine zufällige Wartezeit. Der binäre exponentielle Backoff vergrößert nach weiteren Kollisionen den möglichen Wartebereich.",
     "source": "netzwerk.csv"
   },
   {
