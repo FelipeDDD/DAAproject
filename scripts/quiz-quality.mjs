@@ -16,10 +16,31 @@ function phraseMatches(text, pattern) {
 
 const external = 'im\\s+(?:Übungsblatt|Arbeitsblatt|Material|Skript)|laut\\s+(?:Material|Folien?)|wie\\s+(?:oben|zuvor)\\s+beschrieben';
 const absolutes = 'immer|nie|niemals|ausschließlich|unter\\s+keinen\\s+Umständen';
+const citationArtifact = /(?<![\p{L}\p{N}_])(?:contentReference|oaicite)(?![\p{L}\p{N}_])|cite[^]+|【[^】]*†[^】]*】/giu;
 const tokens = (text) => new Set(normalizeQuizText(text).match(/[\p{L}\p{N}]+/gu) ?? []);
 const operators = (text) => normalizeQuizText(text).match(/[-+<>=!/*%&|]/gu)?.join('') ?? '';
 const MIN_NEAR_DUPLICATE_TOKENS = 6;
 const NEAR_DUPLICATE_THRESHOLD = 0.85;
+const genericCompleteQuestion = (text) => /^welche (?:aussage ist (?:falsch|korrekt|richtig)|zuordnung ist korrekt)\?$/u.test(text);
+
+function stronglySimilarAnswers(first, second) {
+  if (normalizeQuizText(first.answers[first.correctAnswer]) !== normalizeQuizText(second.answers[second.correctAnswer])) return false;
+  const remaining = new Map();
+  for (const answer of second.answers) {
+    const normalized = normalizeQuizText(answer);
+    remaining.set(normalized, (remaining.get(normalized) ?? 0) + 1);
+  }
+  let matches = 0;
+  for (const answer of first.answers) {
+    const normalized = normalizeQuizText(answer);
+    const count = remaining.get(normalized) ?? 0;
+    if (count) {
+      matches += 1;
+      remaining.set(normalized, count - 1);
+    }
+  }
+  return matches >= 3;
+}
 
 function localIssues(question) {
   const issues = [];
@@ -33,6 +54,8 @@ function localIssues(question) {
   for (const [field, text] of fields) {
     const matches = phraseMatches(text, external);
     if (matches.length) add('external_context_reference', 'warning', `Referência externa em ${field}.`, { field, matches });
+    const artifacts = text.match(citationArtifact) ?? [];
+    if (artifacts.length) add('citation_artifact', 'warning', `Resíduo de citação em ${field}.`, { field, matches: artifacts });
   }
   if (correctLength > Math.max(...distractorLengths) && correctLength >= distractorMean * 1.25 && correctLength - distractorMean >= 8) {
     add('correct_answer_length_outlier', 'warning', 'Resposta correta é a única mais longa e supera os limites de comprimento.', {
@@ -97,6 +120,8 @@ export function auditQuizQuality(input, { generatedAt = new Date().toISOString()
   for (let i = 0; i < originals.length; i += 1) {
     for (let j = i + 1; j < originals.length; j += 1) {
       const exact = normalized[i] === normalized[j];
+      if (genericCompleteQuestion(normalized[i]) && genericCompleteQuestion(normalized[j])
+        && !stronglySimilarAnswers(originals[i], originals[j])) continue;
       if (!exact && (originals[i].id === originals[j].id || operatorSequences[i] !== operatorSequences[j] || tokenSets[i].size < MIN_NEAR_DUPLICATE_TOKENS || tokenSets[j].size < MIN_NEAR_DUPLICATE_TOKENS)) continue;
       const intersection = [...tokenSets[i]].filter((token) => tokenSets[j].has(token)).length;
       const union = tokenSets[i].size + tokenSets[j].size - intersection;

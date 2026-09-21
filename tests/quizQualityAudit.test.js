@@ -30,6 +30,21 @@ test('external references use specific phrases and record all fields, without la
   }
 });
 
+test('citation artifacts are detected in questions, answers and explanations without matching ordinary text', () => {
+  const result = issues({
+    question: 'Was bedeutet das? :contentReference[oaicite:3]{index=3}',
+    answers: ['Richtig', 'Siehe citeturn0search0', 'Quelle 【1†source】', 'Falsch'],
+    explanation: 'Beleg: OAICITE:4',
+  }, 'citation_artifact');
+  assert.deepEqual(result.map((issue) => issue.metrics.field).sort(),
+    ['answers[1]', 'answers[2]', 'explanation', 'question']);
+  assert.deepEqual(result.find((issue) => issue.metrics.field === 'question').metrics.matches,
+    ['contentReference', 'oaicite']);
+  for (const text of ['contentReferences', 'preoaicite', 'citation', 'Quelle [source]', 'Eine contentReferenceGuide-Klasse']) {
+    assert.equal(issues({ question: text }, 'citation_artifact').length, 0);
+  }
+});
+
 test('correct length outlier requires unique maximum and both inclusive thresholds', () => {
   const check = (lengths) => issues({ answers: lengths.map((n, i) => String(i).repeat(n)) }, 'correct_answer_length_outlier');
   assert.equal(check([40, 32, 32, 32]).length, 1); // ratio 1.25 and difference 8
@@ -68,6 +83,35 @@ test('all exact duplicate group members are marked across files, but not as near
     assert.equal(item.issues.filter((issue) => issue.rule === 'exact_duplicate_question').length, 2);
     assert.equal(item.issues.filter((issue) => issue.rule === 'near_duplicate_question').length, 0);
   }
+});
+
+test('generic complete questions require similar alternatives and the same correct answer', () => {
+  for (const wording of ['Welche Aussage ist FALSCH?', 'Welche Aussage ist korrekt?',
+    'Welche Aussage ist richtig?', 'Welche Zuordnung ist korrekt?']) {
+    const first = question({ id: 'test-001', question: wording,
+      answers: ['Alpha', 'Beta', 'Gamma', 'Delta'], correctAnswer: 0 });
+    const different = question({ id: 'test-002', question: wording,
+      answers: ['Eins', 'Zwei', 'Drei', 'Vier'], correctAnswer: 0 });
+    assert.ok(auditQuizQuality([first, different]).questions.every((q) =>
+      !q.issues.some((issue) => ['exact_duplicate_question', 'near_duplicate_question'].includes(issue.rule))));
+
+    const sameThreeWrongAnswers = question({ id: 'test-003', question: wording,
+      answers: ['Anders', 'Beta', 'Gamma', 'Delta'], correctAnswer: 0 });
+    assert.ok(auditQuizQuality([first, sameThreeWrongAnswers]).questions.every((q) =>
+      !q.issues.some((issue) => issue.rule === 'exact_duplicate_question')));
+
+    const similar = question({ id: 'test-004', question: wording.toLowerCase(),
+      answers: ['Delta', 'GAMMA', 'Alpha', 'Anders'], correctAnswer: 2 });
+    const report = auditQuizQuality([first, similar]);
+    for (const item of report.questions) {
+      assert.equal(item.issues.filter((issue) => issue.rule === 'exact_duplicate_question').length, 1);
+    }
+  }
+  const specific = [question({ id: 'test-001', question: 'Was ist ein Prozess?' }),
+    question({ id: 'test-002', question: 'Was ist ein Prozess?',
+      answers: ['Ein Ablauf', 'Ein Programm', 'Ein Thread', 'Ein Speicher'] })];
+  assert.ok(auditQuizQuality(specific).questions.every((q) =>
+    q.issues.some((issue) => issue.rule === 'exact_duplicate_question')));
 });
 
 test('near duplicates require six distinct tokens, exclude same IDs and short generic questions', () => {
