@@ -67,17 +67,17 @@ export default [
   {
     "id": "betriebssysteme-005",
     "category": "Betriebssysteme",
-    "topic": null,
+    "topic": "Umgebungsvariablen",
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat ein Gerätetreiber?",
+    "question": "Ein ausführbares Linux-Programm lässt sich über seinen vollständigen Pfad starten, über seinen Namen jedoch nicht. Welche Umgebungsvariable bestimmt die durchsuchten Programmverzeichnisse?",
     "answers": [
-      "Er ermöglicht dem Betriebssystem die Kommunikation mit bestimmter Hardware",
-      "Er verwaltet ausschließlich Benutzerkennwörter",
-      "Er ersetzt das Dateisystem",
-      "Er erstellt automatisch Sicherungskopien aller Dateien"
+      "HOME",
+      "PATH",
+      "LANG",
+      "SHELL"
     ],
-    "correctAnswer": 0,
-    "explanation": "Ein Gerätetreiber stellt die notwendige Schnittstelle zwischen Betriebssystem und einer bestimmten Hardwarekomponente bereit.",
+    "correctAnswer": 1,
+    "explanation": "PATH enthält die Verzeichnisse, in denen die Shell nach externen Befehlen ohne Pfadangabe sucht. Fehlt das Programmverzeichnis dort, kann der vollständige Pfad weiterhin funktionieren.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -259,17 +259,17 @@ export default [
   {
     "id": "betriebssysteme-017",
     "category": "Betriebssysteme",
-    "topic": null,
+    "topic": "Linux-Prozesssignale",
     "difficulty": "medium",
-    "question": "Was ist ein Prozess?",
+    "question": "Ein Linux-Prozess soll zum Beenden aufgefordert werden und dabei Gelegenheit erhalten, eigene Aufräumroutinen auszuführen. Welches Signal ist dafür vorgesehen?",
     "answers": [
-      "Eine laufende Instanz eines Programms.",
-      "Eine Partition auf einer Festplatte.",
-      "Ein Eintrag in der MAC-Adresstabelle.",
-      "Eine BIOS-Einstellung."
+      "SIGSTOP",
+      "SIGKILL",
+      "SIGTERM",
+      "SIGCONT"
     ],
-    "correctAnswer": 0,
-    "explanation": "Ein Programm auf Datenträger ist nicht dasselbe wie ein laufender Prozess im Arbeitsspeicher.",
+    "correctAnswer": 2,
+    "explanation": "SIGTERM fordert die Beendigung an und kann vom Prozess behandelt werden, etwa zum Schließen von Dateien. SIGKILL lässt sich nicht abfangen und ermöglicht solche Aufräumroutinen nicht.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -499,33 +499,33 @@ export default [
   {
     "id": "betriebssysteme-032",
     "category": "Betriebssysteme",
-    "topic": null,
+    "topic": "Linux-Dateisystemdiagnose",
     "difficulty": "medium",
-    "question": "Wozu dient nslookup?",
+    "question": "Auf einem ext4-Dateisystem lassen sich keine neuen Dateien anlegen. df -h zeigt freien Speicherplatz, df -i jedoch 100 % belegte Inodes. Welche Ressource ist erschöpft?",
     "answers": [
-      "DNS-Abfragen und Namensauflösung untersuchen.",
-      "Dateisystemfehler reparieren.",
-      "Windows-Dienste starten.",
-      "RAM testen."
+      "Die verfügbaren Datenblöcke des Dateisystems",
+      "Die verfügbaren Inodes des Dateisystems",
+      "Die verfügbaren Dateideskriptoren des Prozesses",
+      "Die verfügbaren Arbeitsspeicherseiten des Systems"
     ],
-    "correctAnswer": 0,
-    "explanation": "nslookup ist ein Werkzeug für DNS-Abfragen.",
+    "correctAnswer": 1,
+    "explanation": "Eine neue Datei benötigt einen freien Inode für ihre Metadaten. Sind alle Inodes belegt, können trotz freier Datenblöcke keine weiteren Dateien angelegt werden.",
     "source": "betriebssysteme.csv"
   },
   {
     "id": "betriebssysteme-033",
     "category": "Betriebssysteme",
-    "topic": null,
+    "topic": "Energieverwaltung",
     "difficulty": "medium",
-    "question": "Was ist ein Windows-Dienst?",
+    "question": "Wie bewahrt ein Notebook im Ruhezustand (Hibernate) seinen Arbeitszustand auch bei vollständig unterbrochener Stromversorgung?",
     "answers": [
-      "Ein Hintergrundprozess bzw. eine Systemkomponente, die meist ohne direkte Benutzeroberfläche arbeitet.",
-      "Ein physischer USB-Port.",
-      "Eine Partition mit Bootloader.",
-      "Ein Eintrag in der DNS-Zone."
+      "Es hält den Arbeitsspeicher über die Mainboard-Batterie unter Spannung.",
+      "Es überträgt den Arbeitsspeicherinhalt in den Flash-Speicher der UEFI-Firmware.",
+      "Es hält den Arbeitsspeicherinhalt ohne Versorgung in den RAM-Modulen.",
+      "Es sichert den Arbeitsspeicherinhalt vor dem Abschalten auf einem Massenspeicher."
     ],
-    "correctAnswer": 0,
-    "explanation": "Dienste stellen Hintergrundfunktionen wie Netzwerk- oder Systemservices bereit.",
+    "correctAnswer": 3,
+    "explanation": "Beim Ruhezustand wird der Arbeitszustand auf nichtflüchtigem Speicher gesichert. Beim Fortsetzen wird er wiederhergestellt; eine dauerhafte Stromversorgung des RAM ist dafür nicht erforderlich.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -979,17 +979,17 @@ export default [
   {
     "id": "betriebssysteme-062",
     "category": "Betriebssysteme",
-    "topic": "Windows",
+    "topic": "Windows-Automatisierung",
     "difficulty": "medium",
-    "question": "Was ist ein Windows-Dienst?",
+    "question": "Ein vorhandenes Wartungsskript soll unter Windows jeden Werktag um 19 Uhr automatisch ausgeführt werden. Welches Verwaltungswerkzeug ist dafür vorgesehen?",
     "answers": [
-      "Ein Hintergrundprozess, der Systemfunktionen bereitstellt",
-      "Ein Benutzerkonto",
-      "Ein Dateiformat",
-      "Eine Partition"
+      "Aufgabenplanung",
+      "Diensteverwaltung",
+      "Ereignisanzeige",
+      "Leistungsüberwachung"
     ],
     "correctAnswer": 0,
-    "explanation": "Windows-Dienste laufen häufig im Hintergrund und stellen bestimmte Funktionen bereit.",
+    "explanation": "Die Aufgabenplanung startet Programme oder Skripte anhand definierter Auslöser. Ein wöchentlicher Zeittrigger kann auf Montag bis Freitag um 19 Uhr eingestellt werden.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1155,17 +1155,17 @@ export default [
   {
     "id": "betriebssysteme-073",
     "category": "Betriebssysteme",
-    "topic": "Dateisysteme",
+    "topic": "NTFS-Speicherkontingente",
     "difficulty": "medium",
-    "question": "Was ist eine Partition?",
+    "question": "Auf einem gemeinsam genutzten NTFS-Volume soll der belegbare Speicherplatz pro Benutzer begrenzt werden. Welche Funktion ist dafür vorgesehen?",
     "answers": [
-      "Ein logisch abgegrenzter Bereich eines Datenträgers",
-      "Ein Benutzerkonto",
-      "Ein Prozess",
-      "Ein Netzwerkprotokoll"
+      "NTFS-Dateikomprimierung",
+      "NTFS-Zugriffsberechtigungen",
+      "NTFS-Datenträgerkontingente",
+      "NTFS-Dateiverschlüsselung"
     ],
-    "correctAnswer": 0,
-    "explanation": "Partitionen teilen einen Datenträger in logisch getrennte Bereiche.",
+    "correctAnswer": 2,
+    "explanation": "NTFS-Datenträgerkontingente erfassen die Speicherbelegung anhand des Dateibesitzers. Mit einem erzwungenen Kontingentlimit lässt sich weiterer Speicherverbrauch oberhalb der Grenze verhindern.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1187,33 +1187,33 @@ export default [
   {
     "id": "betriebssysteme-075",
     "category": "Betriebssysteme",
-    "topic": "Prozesse",
+    "topic": "Linux-Prozesszustände",
     "difficulty": "medium",
-    "question": "Was ist ein Prozess?",
+    "question": "Ein Linux-Prozess wird in der Prozessliste mit dem Zustand Z angezeigt. Was bedeutet dieser Zustand?",
     "answers": [
-      "Eine laufende Instanz eines Programms",
-      "Ein Dateisystem",
-      "Ein Benutzerkonto",
-      "Ein Treiber"
+      "Er ist beendet, sein Elternprozess hat den Exit-Status noch nicht abgeholt.",
+      "Er ist angehalten und wartet auf ein Signal zum Fortsetzen.",
+      "Er ist ausführungsbereit und wartet auf die Zuteilung von CPU-Zeit.",
+      "Er ist blockiert und wartet auf den Abschluss einer Ein-/Ausgabeoperation."
     ],
     "correctAnswer": 0,
-    "explanation": "Ein Prozess ist ein aktuell ausgeführtes Programm mit eigenen Ressourcen.",
+    "explanation": "Z bezeichnet einen Zombie-Prozess. Seine Ausführung ist beendet, aber ein Prozesseintrag bleibt erhalten, bis der Elternprozess den Beendigungsstatus mit einer wait-Funktion abholt.",
     "source": "betriebssysteme.csv"
   },
   {
     "id": "betriebssysteme-076",
     "category": "Betriebssysteme",
-    "topic": "Prozesse",
+    "topic": "Dateisysteme",
     "difficulty": "medium",
-    "question": "Was ist ein Thread?",
+    "question": "Auf einem Linux-Dateisystem sind bericht.txt und archiv.txt Hardlinks auf dieselbe reguläre Datei. Was geschieht, wenn nur bericht.txt gelöscht wird?",
     "answers": [
-      "Ein Ausführungsstrang innerhalb eines Prozesses",
-      "Eine Partition",
-      "Ein Gerätetreiber",
-      "Ein Dateityp"
+      "archiv.txt bleibt als Name bestehen, verweist aber auf ein fehlendes Ziel.",
+      "archiv.txt wird ebenfalls gelöscht, weil beide Namen dieselbe Datei bezeichnen.",
+      "archiv.txt bleibt nutzbar und ermöglicht weiterhin Zugriff auf denselben Inhalt.",
+      "archiv.txt bleibt bestehen, enthält danach aber eine neu angelegte leere Datei."
     ],
-    "correctAnswer": 0,
-    "explanation": "Threads sind Ausführungsstränge innerhalb eines Prozesses.",
+    "correctAnswer": 2,
+    "explanation": "Hardlinks sind gleichwertige Namen für dieselbe Datei. Das Entfernen eines Namens löscht den Inhalt nicht, solange ein weiterer Hardlink darauf verweist.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1411,17 +1411,17 @@ export default [
   {
     "id": "betriebssysteme-089",
     "category": "Betriebssysteme",
-    "topic": "Treiber",
+    "topic": "Linux-Shell",
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat ein Gerätetreiber?",
+    "question": "Welche Umleitung hängt in Bash nur die Standardfehlerausgabe eines Befehls an eine vorhandene Datei fehler.log an?",
     "answers": [
-      "Er ermöglicht die Kommunikation zwischen Betriebssystem und Hardware",
-      "Er ersetzt das Betriebssystem",
-      "Er speichert Benutzerpasswörter",
-      "Er vergibt IP-Adressen"
+      "> fehler.log",
+      "2> fehler.log",
+      ">> fehler.log",
+      "2>> fehler.log"
     ],
-    "correctAnswer": 0,
-    "explanation": "Treiber stellen die Verbindung zwischen Hardware und Betriebssystem her.",
+    "correctAnswer": 3,
+    "explanation": "Dateideskriptor 2 bezeichnet die Standardfehlerausgabe. Der Operator >> hängt Ausgaben an, ohne den bisherigen Dateiinhalt zu überschreiben.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1491,17 +1491,17 @@ export default [
   {
     "id": "betriebssysteme-094",
     "category": "Betriebssysteme",
-    "topic": "Virtualisierung",
+    "topic": "Linux-Dateisystemverwaltung",
     "difficulty": "medium",
-    "question": "Was ist eine virtuelle Maschine?",
+    "question": "In welcher Konfigurationsdatei werden unter Linux üblicherweise dauerhafte Zuordnungen zwischen Dateisystemen, Einhängepunkten und Mount-Optionen hinterlegt?",
     "answers": [
-      "Ein softwarebasierter, isolierter Computer",
-      "Ein physischer Switch",
-      "Ein Dateisystem",
-      "Ein Benutzerkonto"
+      "/etc/hosts",
+      "/etc/fstab",
+      "/etc/passwd",
+      "/etc/resolv.conf"
     ],
-    "correctAnswer": 0,
-    "explanation": "Eine VM bildet einen Computer softwareseitig nach.",
+    "correctAnswer": 1,
+    "explanation": "/etc/fstab beschreibt Dateisysteme, ihre Einhängepunkte und Mount-Optionen. Die Einträge können unter anderem zum automatischen Einhängen beim Systemstart verwendet werden.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -4979,17 +4979,17 @@ export default [
   {
     "id": "hardware-112",
     "category": "Hardware",
-    "topic": "Kühlung",
+    "topic": "SSD-Schreibausdauer",
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat Wärmeleitpaste zwischen CPU und Kühler?",
+    "question": "Im Datenblatt einer SSD ist eine Schreibausdauer von 600 TBW angegeben. Was beschreibt dieser Wert?",
     "answers": [
-      "Den Prozessor elektrisch mit Netzspannung zu versorgen",
-      "Kleine Unebenheiten zu füllen und den Wärmeübergang zu verbessern",
-      "Die CPU dauerhaft mit dem Sockel zu verkleben",
-      "Die Luftfeuchtigkeit im Gehäuse zu regulieren"
+      "Die maximal gleichzeitig speicherbare Datenmenge",
+      "Die maximal pro Sekunde übertragbare Datenmenge",
+      "Die insgesamt aus dem Laufwerk gelesene Datenmenge",
+      "Die spezifizierte insgesamt schreibbare Datenmenge"
     ],
-    "correctAnswer": 1,
-    "explanation": "Wärmeleitpaste verbessert den thermischen Kontakt zwischen den Oberflächen.",
+    "correctAnswer": 3,
+    "explanation": "TBW beschreibt die spezifizierte Schreibausdauer als kumulierte Datenmenge in Terabyte. Der Wert bezeichnet weder die Speicherkapazität noch einen festen Zeitpunkt, an dem die SSD ausfällt.",
     "source": "hardware.csv"
   },
   {
@@ -5155,17 +5155,17 @@ export default [
   {
     "id": "hardware-123",
     "category": "Hardware",
-    "topic": "Firmware und Boot",
+    "topic": "Servermanagement",
     "difficulty": "medium",
-    "question": "Was ist Secure Boot?",
+    "question": "Ein Serverbetriebssystem reagiert nicht mehr. Stromversorgung und Managementnetz sind verfügbar. Welche Lösung ermöglicht weiterhin Fernzugriff auf Hardwarestatus und Einschaltsteuerung?",
     "answers": [
-      "Eine UEFI-Funktion zur Prüfung vertrauenswürdiger Boot-Komponenten",
-      "Ein RAID-Modus zur Spiegelung der Systemfestplatte",
-      "Ein Verfahren zur Kühlung des Prozessors beim Einschalten",
-      "Ein USB-Modus zum schnelleren Laden externer Geräte"
+      "Ein BMC mit eigener Management-Firmware",
+      "Ein RDP-Dienst im Serverbetriebssystem",
+      "Ein SSH-Dienst im Serverbetriebssystem",
+      "Ein Monitoring-Agent im Serverbetriebssystem"
     ],
     "correctAnswer": 0,
-    "explanation": "Secure Boot prüft signierte und vertrauenswürdige Komponenten des Startvorgangs.",
+    "explanation": "Ein Baseboard Management Controller (BMC) arbeitet unabhängig vom Serverbetriebssystem. Bei vorhandener Stromversorgung und Netzverbindung ermöglicht er Hardwareüberwachung und Fernsteuerung.",
     "source": "hardware.csv"
   },
   {
