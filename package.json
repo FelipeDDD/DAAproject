@@ -14,6 +14,7 @@
     "test:quiz-lobby": "node --env-file=.env.local scripts/check-quiz-lobby.mjs",
     "test:statistics": "node --env-file=.env.local scripts/check-quiz-statistics.mjs",
     "validate:quiz": "node scripts/sync-quiz-data.mjs --validate-only",
+    "audit:quiz": "node scripts/audit-quiz-quality.mjs",
     "sync:quiz": "node scripts/sync-quiz-data.mjs",
     "predev": "node scripts/sync-quiz-data.mjs",
     "dev": "vite",
