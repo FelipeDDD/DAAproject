@@ -2,9 +2,10 @@ import {
   AVAILABLE_EMOTES,emoteDefinition,loadEmoteSlots,saveEmoteSlots,shortcutSlot,
 } from './config.js';
 import { FloatingHotbar } from '../ui/FloatingHotbar.js';
+import { fixedHudEnabled,HUD_LAYOUT } from '../hud/config.js';
 
 export class EmoteBar {
-  constructor(characterId,trigger) {
+  constructor(characterId,trigger,{layout=HUD_LAYOUT}={}) {
     Object.assign(this,{characterId,trigger,slots:loadEmoteSlots(characterId),editingSlot:0});
     this.root=document.getElementById('emote-bar');this.slotsRoot=document.getElementById('emote-slots');
     this.settingsButton=document.getElementById('emote-settings');this.picker=document.getElementById('emote-picker');
@@ -22,7 +23,7 @@ export class EmoteBar {
     this.settingsButton.addEventListener('click',this.onSettings);this.choices.addEventListener('click',this.onChoice);
     window.addEventListener('keydown',this.onKey,true);
     this.root.hidden=false;this.render();
-    this.floating=new FloatingHotbar({root:this.root,handle:this.dragHandle,resetButton:this.resetPositionButton,
+    this.floating=fixedHudEnabled(layout)?null:new FloatingHotbar({root:this.root,handle:this.dragHandle,resetButton:this.resetPositionButton,
       storageKey:'daa-emote-bar-position',kind:'emotes',getSnapTargets:()=>[
         document.querySelector('.inventory-hotbar'),document.getElementById('game'),document.querySelector('.boss-dev-tools'),
       ]});

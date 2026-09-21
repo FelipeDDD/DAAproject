@@ -4,14 +4,16 @@ import './style.css';
 import { closePresence, getPresence } from './multiplayer/client.js';
 import { CharacterMenu } from './CharacterMenu.js';
 import { DisplaySettingsController } from './ui/displaySettings.js';
+import { GameHudController,setGameHud } from './hud/GameHudController.js';
 
 let game, pausedScene;
 const presence=getPresence();
 const gameArea=document.getElementById('play-area');
 const changeButton=document.getElementById('change-character');
+const gameHud=setGameHud(new GameHudController());
 const displaySettings=new DisplaySettingsController(document.getElementById('viewport-size'),()=>game?.scale.refresh());
 const menu=new CharacterMenu(presence,()=>{
-  gameArea.hidden=false;changeButton.hidden=false;
+  gameArea.hidden=false;changeButton.hidden=false;gameHud.setVisible(true);
   if(!game)game=new Phaser.Game(gameConfig);
   else if(pausedScene){
     const scene=pausedScene;pausedScene=null;
@@ -77,7 +79,7 @@ async function changeCharacter(event){
     pausedScene.doorSync?.close();pausedScene.doorSync=null;
     pausedScene.scene.pause();
   }
-  presence?.leave();gameArea.hidden=true;changeButton.hidden=true;menu.pending=true;menu.show();
+  presence?.leave();gameArea.hidden=true;changeButton.hidden=true;gameHud.setVisible(false);menu.pending=true;menu.show();
   try{await releaseCurrentCharacter();}
   catch{menu.message.textContent='The previous session will be released after its timeout.';}
   menu.pending=false;menu.render();
@@ -95,6 +97,7 @@ if (import.meta.hot) {
     window.removeEventListener('focus',restoreProjectFocus);
     document.removeEventListener('visibilitychange',restoreFocusWhenVisible);
     displaySettings.destroy();
+    gameHud.destroy();
     document.getElementById('character-list').replaceChildren();
   });
 }

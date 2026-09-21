@@ -37,6 +37,7 @@ import { BossDevTools,shouldShowBossDevTools } from '../boss/BossDevTools.js';
 import { InventoryHotbar } from '../inventory/InventoryHotbar.js';
 import { CharacterItemController } from '../inventory/CharacterItemController.js';
 import { WorldPrompt } from '../ui/WorldPrompt.js';
+import { getGameHud } from '../hud/GameHudController.js';
 import '../terminal/terminal.css';
 
 function readTileset(xml, firstgid) {
@@ -88,6 +89,7 @@ export class MapScene extends Phaser.Scene {
   }
 
   create(destination = {}) {
+    this.gameHud=getGameHud();
     this.source = this.cache.json.get(this.sourceKey);
     const data = {
       ...this.source,

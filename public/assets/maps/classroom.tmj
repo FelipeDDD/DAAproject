@@ -7309,6 +7309,16 @@
                  "point":true,
                  "properties":[
                         {
+                         "name":"interactionRadius",
+                         "type":"float",
+                         "value":40
+                        },
+                        {
+                         "name":"label",
+                         "type":"string",
+                         "value":"Office"
+                        },
+                        {
                          "name":"targetMap",
                          "type":"string",
                          "value":"office2"
@@ -7317,6 +7327,11 @@
                          "name":"targetSpawn",
                          "type":"string",
                          "value":"office2-spawn"
+                        },
+                        {
+                         "name":"transition",
+                         "type":"bool",
+                         "value":true
                         }],
                  "rotation":0,
                  "type":"",

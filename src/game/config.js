@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { SchoolScene } from '../scenes/SchoolScene.js';
 import { OutsideScene } from '../scenes/OutsideScene.js';
 import { ArenaScene } from '../scenes/ArenaScene.js';
+import { Office2Scene } from '../scenes/Office2Scene.js';
 import { GAME_LOGICAL_SIZE } from '../ui/displaySettings.js';
 
 export const gameConfig = {
@@ -21,5 +22,5 @@ export const gameConfig = {
     default: 'arcade',
     arcade: { gravity: { x: 0, y: 0 }, debug: false },
   },
-  scene: [SchoolScene, OutsideScene, ArenaScene],
+  scene: [SchoolScene, OutsideScene, ArenaScene, Office2Scene],
 };

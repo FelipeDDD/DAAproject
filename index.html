@@ -40,7 +40,26 @@
       </section>
       <button id="change-character" hidden>Change character</button>
       <section id="play-area" hidden>
-      <div id="game" tabindex="0" role="region" aria-label="2D room. Use WASD or the arrow keys to move your character."></div>
+      <div id="game-shell" data-hud-visible="true">
+        <div id="game-frame" aria-hidden="true">
+          <span class="frame-edge frame-edge--top"></span><span class="frame-edge frame-edge--bottom"></span>
+          <span class="frame-edge frame-edge--left"></span><span class="frame-edge frame-edge--right"></span>
+          <span class="frame-corner frame-corner--top-left"></span><span class="frame-corner frame-corner--top-right"></span>
+          <span class="frame-corner frame-corner--bottom-left"></span><span class="frame-corner frame-corner--bottom-right"></span>
+        </div>
+        <div id="game" tabindex="0" role="region" aria-label="2D room. Use WASD or the arrow keys to move your character."></div>
+        <section id="bottom-hud" aria-label="Player controls and status">
+          <div id="hud-hp-orb" role="meter" aria-valuemin="0">
+            <div class="hp-orb__mask"><div class="hp-orb__liquid"></div></div>
+            <strong id="hud-hp-text" class="hp-orb__text">3 / 3</strong>
+            <img class="hp-orb__frame" alt="" aria-hidden="true" />
+          </div>
+          <div id="hud-info-panel"><p id="hud-info-text"></p></div>
+          <div id="hud-inventory-mount" aria-label="Inventory hotbar"></div>
+          <div id="hud-emote-mount"></div>
+          <aside id="hud-status-panel" aria-label="Current status"><p id="hud-status-text"></p></aside>
+        </section>
+      </div>
       <div id="play-footer">
         <section id="room-chat" hidden aria-label="Room chat">
           <ol id="chat-messages" aria-label="Messages"></ol>

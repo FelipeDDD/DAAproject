@@ -1,0 +1,190 @@
+#game-shell {
+  /* The horizontal frame starts about 44% down the asset, below the dragon.
+     Lift the whole HUD by that amount so the visible rail meets the canvas. */
+  --hud-attach-ratio: .44;
+  position: relative;
+  container-type: inline-size;
+  width: min(100%,var(--game-viewport-width),max(320px,calc((100dvh - 225px) * 16 / 9)));
+  margin-inline: auto;
+  margin-bottom: calc(min(var(--hud-bottom-height,200px),18.51cqw) * (1 - var(--hud-attach-ratio)) + 12px);
+  overflow: visible;
+  transition: width .2s ease,margin-bottom .2s ease;
+}
+
+#game-frame {
+  --frame-corner-size: 42px;
+  --frame-edge-size: 12px;
+  position: absolute;
+  inset: calc(-1 * var(--hud-frame-overflow,18px));
+  z-index: 35;
+  pointer-events: none;
+  filter: drop-shadow(0 5px 6px #0009);
+}
+.frame-edge,.frame-corner { position:absolute; display:block; }
+.frame-edge--top,.frame-edge--bottom { left:16px; right:16px; height:var(--frame-edge-size); background:var(--frame-edge-horizontal) repeat-x center / auto 100%; }
+.frame-edge--top { top:10px; }
+.frame-edge--bottom { bottom:10px; }
+.frame-edge--left,.frame-edge--right { top:16px; bottom:16px; width:var(--frame-edge-size); background:var(--frame-edge-vertical) repeat-y center / 100% auto; }
+.frame-edge--left { left:10px; }
+.frame-edge--right { right:10px; }
+.frame-corner { z-index:1; width:var(--frame-corner-size); aspect-ratio:78 / 60; background:center / contain no-repeat; }
+.frame-corner--top-left { left:-5px; top:0; background-image:var(--frame-top-left); }
+.frame-corner--top-right { right:-5px; top:0; background-image:var(--frame-top-right); }
+.frame-corner--bottom-left { left:-5px; bottom:0; background-image:var(--frame-bottom-left); }
+.frame-corner--bottom-right { right:-5px; bottom:0; background-image:var(--frame-bottom-right); }
+
+#bottom-hud {
+  position: absolute;
+  left: 50%;
+  top: calc(100% - 4px);
+  z-index: 50;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2161 / 400;
+  transform: translate(-50%,calc(-100% * var(--hud-attach-ratio)));
+  background: var(--hud-bar-asset) center/100% 100% no-repeat;
+  color: #e8edf0;
+  font-family: "Segoe UI Variable","Segoe UI",system-ui,sans-serif;
+  pointer-events: none;
+  filter: drop-shadow(0 7px 7px #000b);
+}
+
+#hud-hp-orb {
+  /* Same 380x400 cut and origin as the bar: its metal junction cannot drift.
+     Inner coordinates are measured in the source PNG, not the entire frame. */
+  --orb-size: 17.5845%;
+  --orb-inner-size: 61.58%;
+  --orb-inner-height: 56%;
+  --orb-inner-x: 24.21%;
+  --orb-inner-y: 26.25%;
+  position:absolute;
+  left:0;
+  top:0;
+  width:var(--orb-size);
+  aspect-ratio:380 / 400;
+  isolation:isolate;
+}
+.hp-orb__mask {
+  position:absolute;
+  left:var(--orb-inner-x);
+  top:var(--orb-inner-y);
+  width:var(--orb-inner-size);
+  height:var(--orb-inner-height);
+  border-radius:50%;
+  overflow:hidden;
+  background:radial-gradient(ellipse at 40% 30%,#291820,#09060a 75%);
+  z-index:0;
+}
+.hp-orb__liquid {
+  position:absolute;
+  bottom:0;
+  width:100%;
+  height:var(--hud-hp-percent,100%);
+  background:radial-gradient(ellipse at 40% 15%,#f04c51,#af1021 45%,#4c040c);
+  box-shadow:inset 0 2px 5px #ff9a9a80;
+  transition:height .18s ease-out;
+}
+.hp-orb__mask::after { content:""; position:absolute; inset:0; border-radius:inherit; box-shadow:inset 0 0 12px 4px #0008; }
+#hud-hp-text {
+  position:absolute;
+  left:var(--orb-inner-x);
+  top:var(--orb-inner-y);
+  width:var(--orb-inner-size);
+  height:var(--orb-inner-height);
+  display:grid;
+  place-items:center;
+  z-index:1;
+  color:#fff3ef;
+  font-size:clamp(8px,1.05cqw,13px);
+  text-shadow:0 2px 4px #000;
+  white-space:nowrap;
+}
+.hp-orb__frame { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; z-index:2; pointer-events:none; }
+
+#hud-info-panel {
+  position: absolute;
+  left: 17.6%;
+  top: 56%;
+  display: grid;
+  place-items: center;
+  width: 10.8%;
+  height: 27%;
+  padding: 4px clamp(4px,.5cqw,8px);
+  color: #21160d;
+  text-align: center;
+  text-shadow: 0 1px 1px #fff0c9;
+}
+#hud-info-text { margin: 0; max-width: 100%; font: 800 clamp(7px,.85cqw,11px)/1.25 Georgia,serif; white-space: pre-line; overflow-wrap: anywhere; }
+
+#hud-inventory-mount {
+  position: absolute;
+  left: 30%;
+  top: 49%;
+  display: grid;
+  place-items: center;
+  width: 34.5%;
+  height: 34%;
+  pointer-events: auto;
+}
+#hud-emote-mount {
+  position: absolute;
+  left: 67.5%;
+  top: 49%;
+  display: grid;
+  place-items: center;
+  width: 20%;
+  height: 32%;
+  pointer-events: auto;
+}
+#hud-status-panel {
+  position: absolute;
+  right: -9%;
+  bottom: -8%;
+  display: grid;
+  place-items: center;
+  width: min(var(--hud-right-panel-width,160px),14%);
+  aspect-ratio: .93;
+  padding: 3.8% 2.2% 2.2%;
+  background: var(--hud-right-panel-asset) center/contain no-repeat;
+  color: #d9f7ff;
+  text-align: center;
+  text-shadow: 0 1px 2px #000,0 0 6px #41c9ff;
+}
+#hud-status-text { margin: 0; font: 900 clamp(7px,.8cqw,11px)/1.25 Georgia,serif; letter-spacing: .08em; white-space: pre-line; }
+
+.hud-fixed-hotbars #bottom-hud .school-hotbar {
+  position: static;
+  z-index: auto;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  transform: none;
+}
+.hud-fixed-hotbars #bottom-hud .school-hotbar-header { display: none; }
+.hud-fixed-hotbars #bottom-hud .school-hotbar-slots { justify-content: center; width: 100%; gap: clamp(2px,.42cqw,5px); }
+.hud-fixed-hotbars #bottom-hud .school-hotbar-slot,
+.hud-fixed-hotbars #bottom-hud #emote-slots button {
+  width: clamp(27px,4.05cqw,45px);
+  height: clamp(27px,4.05cqw,45px);
+  border-color: #786851;
+  border-radius: 5px;
+  background: linear-gradient(145deg,#1a2026f2,#080b0ff5);
+  box-shadow: inset 0 0 8px #000,inset 0 1px #d9c49b24;
+}
+.hud-fixed-hotbars #bottom-hud .school-hotbar-slot:hover,
+.hud-fixed-hotbars #bottom-hud #emote-slots button:hover,
+.hud-fixed-hotbars #bottom-hud #emote-slots button:focus-visible { border-color: #b23438; box-shadow: 0 0 9px #e52a3355,inset 0 0 8px #000; }
+.hud-fixed-hotbars #bottom-hud .hotbar-body { justify-content: center; width: 100%; gap: clamp(2px,.35cqw,4px); }
+.hud-fixed-hotbars #bottom-hud #emote-slots { gap: clamp(1px,.25cqw,3px); }
+.hud-fixed-hotbars #bottom-hud #emote-slots button { width: clamp(23px,3.15cqw,35px); height: clamp(23px,3.15cqw,35px); font-size: clamp(13px,1.8cqw,20px); }
+.hud-fixed-hotbars #bottom-hud #emote-settings { width: clamp(24px,3.15cqw,35px); height: clamp(24px,3.15cqw,35px); border: 1px solid #786851; border-radius: 5px; background: #0b1015ed; }
+.hud-fixed-hotbars #bottom-hud #emote-picker { left: 50%; bottom: calc(100% + 18px); z-index: 80; }
+
+html[data-viewport-size="compact"] #game-shell { --hud-frame-overflow:14px !important; }
+html[data-viewport-size="compact"] #bottom-hud { width: 98%; }
+html[data-viewport-size="compact"] #hud-status-panel { right: -5%; }
+@media(max-width:760px){#hud-status-panel{right:0}#hud-info-panel{display:none}#hud-inventory-mount{left:24%;width:42%}#hud-emote-mount{left:66%;width:28%}}

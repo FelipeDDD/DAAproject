@@ -8,7 +8,7 @@ import { collisionAreas } from '../src/maps/collision.js';
 import { readMapTransitions } from '../src/maps/transitions.js';
 
 const load = (name) => JSON.parse(readFileSync(new URL(`../public/assets/maps/${name}.tmj`, import.meta.url)));
-const maps = { school: load('classroom'), outside: load('outside'), arena: load('arena') };
+const maps = { school: load('classroom'), outside: load('outside'), arena: load('arena'), office2: load('office2') };
 const overlaps = (a,b) => a.x < b.x+b.width && a.x+a.width > b.x && a.y < b.y+b.height && a.y+a.height > b.y;
 const feet = (x,y) => ({x:x-10*PLAYER_SCALE,y:y-12*PLAYER_SCALE,width:20*PLAYER_SCALE,height:12*PLAYER_SCALE});
 
@@ -76,6 +76,20 @@ test('classroom arena marker links to the authored arena spawn',()=>{
   assert.deepEqual(spawn,{x:18,y:525});
   assert.ok(!collisionAreas(objectsIn(maps.arena,'Collision')).some(area=>overlaps(feet(spawn.x,spawn.y),area)));
   assert.equal(propertiesOf(maps.arena).escapeReturn,true);
+});
+
+test('corridor and office2 transitions point to each other through registered scene keys',()=>{
+  const enter=readMapTransitions(maps.school).find(item=>item.id==='school-corridor-spawn');
+  assert.ok(enter);assert.equal(enter.targetMap,'office2');assert.equal(enter.targetSpawn,'office2-spawn');
+  const officeSpawn=resolveSpawn(maps.office2,enter);
+  assert.deepEqual(officeSpawn,{x:492.333333333333,y:158});
+  assert.ok(!collisionAreas(objectsIn(maps.office2,'Collision')).some(area=>overlaps(feet(officeSpawn.x,officeSpawn.y),area)));
+  const leave=readMapTransitions(maps.office2).find(item=>item.id==='office2-spawn');
+  assert.ok(leave);assert.equal(leave.targetMap,'school');assert.equal(leave.targetSpawn,'school-corridor-spawn');
+  const corridorSpawn=resolveSpawn(maps.school,leave);
+  assert.deepEqual(corridorSpawn,{x:142.363636363636,y:370});
+  assert.ok(!collisionAreas(objectsIn(maps.school,'Collision')).some(area=>overlaps(feet(corridorSpawn.x,corridorSpawn.y),area)));
+  assert.equal(propertiesOf(maps.office2).defaultSpawn,'office2-spawn');
 });
 
 test('arena exit returns automatically to the authored classroom spawn behind the gate',()=>{

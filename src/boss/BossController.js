@@ -38,6 +38,7 @@ import { WorldPrompt } from '../ui/WorldPrompt.js';
 import {
   BOSS_REWARDS,DIRECTOR_BOSS_ID,hasPendingDirectorReward,shouldClearDirectorLoot,
 } from './BossRewards.js';
+import { ArenaHudOverlay } from './ArenaHudOverlay.js';
 
 const BOSS_PROJECTILE_TEXTURE='arena-boss-projectile';
 export const BOSS_SINGLE_PROJECTILE_TEXTURE='director-paper-projectile';
@@ -145,40 +146,18 @@ export class BossController {
     scene.input.keyboard.addCapture([
       Phaser.Input.Keyboard.KeyCodes.SPACE,Phaser.Input.Keyboard.KeyCodes.NUMPAD_ZERO,
     ]);
-    this.createHud();
+    this.hud=new ArenaHudOverlay(scene);
+    this.hud.setBossHealth(this.model.hp,this.model.maxHp);
+    this.hud.setPhase(this.phaseState.phase);
+    scene.gameHud?.setHealth(this.playerCombat.hp,this.playerCombat.maxHp);
+    scene.player.setCombatHealth(this.playerCombat.hp,this.playerCombat.maxHp).setCombatHudVisible(true);
     this.createSpeechBubble();
     this.scheduleAttackTutorial();
     void this.loadPendingReward();
   }
 
-  createHud(){
-    const camera=this.scene.cameras.main;
-    // A fixed container at camera center plus inverse zoom keeps HUD coordinates
-    // in screen pixels. Plain setScrollFactor(0) still inherits camera zoom.
-    this.hud=this.scene.add.container(camera.width/2,camera.height/2)
-      .setScrollFactor(0).setScale(1/camera.zoom).setDepth(200000);
-    this.hpGraphics=this.scene.add.graphics();
-    this.titleLabel=this.scene.add.text(0,-camera.height/2+7,'DIRECTOR · PHASE 1',{fontFamily:'system-ui, sans-serif',fontSize:'14px',fontStyle:'bold',color:'#ffffff',stroke:'#000000',strokeThickness:3}).setOrigin(.5,0);
-    this.hpLabel=this.scene.add.text(0,-camera.height/2+42,'100 / 100',{fontFamily:'system-ui, sans-serif',fontSize:'13px',fontStyle:'bold',color:'#ffffff',stroke:'#000000',strokeThickness:3}).setOrigin(.5,0);
-    this.playerHpLabel=this.scene.add.text(-camera.width/2+14,-camera.height/2+7,'Player HP: 3',{fontFamily:'system-ui, sans-serif',fontSize:'14px',color:'#ffffff',stroke:'#000000',strokeThickness:3});
-    this.controlLabel=this.scene.add.text(camera.width/2-14,-camera.height/2+6,'SPACE: Attack',{fontFamily:'system-ui, sans-serif',fontSize:'17px',fontStyle:'bold',color:'#8cecff',stroke:'#000000',strokeThickness:3}).setOrigin(1,0);
-    this.defeatLabel=this.scene.add.text(0,0,'BOSS DEFEATED',{fontFamily:'system-ui, sans-serif',fontSize:'32px',fontStyle:'bold',color:'#ffe38b',stroke:'#4a160e',strokeThickness:6}).setOrigin(.5).setVisible(false);
-    this.playerDefeatLabel=this.scene.add.text(0,0,'PLAYER DEFEATED',{fontFamily:'system-ui, sans-serif',fontSize:'32px',fontStyle:'bold',color:'#ff8585',stroke:'#4a0e0e',strokeThickness:6}).setOrigin(.5).setVisible(false);
-    this.phaseLabel=this.scene.add.text(0,-30,'PHASE 2',{fontFamily:'system-ui, sans-serif',fontSize:'34px',fontStyle:'bold',color:'#ffd36b',stroke:'#641c28',strokeThickness:7}).setOrigin(.5).setVisible(false);
-    this.tutorialLabel=this.scene.add.text(0,72,'Aim with the mouse · SPACE to attack',{
-      fontFamily:'system-ui, sans-serif',fontSize:'18px',fontStyle:'bold',color:'#ffffff',
-      backgroundColor:'#07101ddd',padding:{x:14,y:9},stroke:'#000000',strokeThickness:3,
-    }).setOrigin(.5).setVisible(false);
-    this.hud.add([this.hpGraphics,this.titleLabel,this.hpLabel,this.playerHpLabel,this.controlLabel,this.defeatLabel,this.playerDefeatLabel,this.phaseLabel,this.tutorialLabel]);
-    this.drawHp();
-  }
-
   drawHp(){
-    const camera=this.scene.cameras.main,width=360,height=14,x=-width/2,y=-camera.height/2+27;
-    this.hpGraphics.clear().fillStyle(0x160d12,.88).fillRoundedRect(x-3,y-3,width+6,height+6,5)
-      .fillStyle(0x4a1720,1).fillRect(x,y,width,height)
-      .fillStyle(0xd94152,1).fillRect(x,y,width*this.model.hp/this.model.maxHp,height);
-    this.hpLabel.setText(`${this.model.hp} / ${this.model.maxHp}`);
+    this.hud.setBossHealth(this.model.hp,this.model.maxHp);
   }
 
   createSpeechBubble(){
@@ -227,7 +206,7 @@ export class BossController {
 
   showAttackTutorial(){
     if(!this.tutorialState.show())return false;
-    this.tutorialLabel.setVisible(true).setAlpha(1);
+    this.hud.showTutorial();
     this.tutorialTimer?.remove(false);
     this.tutorialTimer=this.scene.time.delayedCall(BOSS_ATTACK_TUTORIAL_MS,()=>this.hideAttackTutorial());
     return true;
@@ -235,7 +214,7 @@ export class BossController {
 
   hideAttackTutorial(){
     if(!this.tutorialState.dismiss())return false;
-    this.tutorialTimer?.remove(false);this.tutorialTimer=null;this.tutorialLabel?.setVisible(false);
+    this.tutorialTimer?.remove(false);this.tutorialTimer=null;this.hud?.hideTutorial();
     return true;
   }
 
@@ -450,10 +429,9 @@ export class BossController {
     this.phaseState.consumeTransition();
     this.cancelMovement();this.endBossTelegraph();this.clearAreaVisual();
     this.phaseTransitionEndsAt=time+BOSS_PHASE_TRANSITION_MS;
-    this.titleLabel.setText(`DIRECTOR · PHASE ${this.phaseState.phase}`);
     const phaseThree=this.phaseState.phase===3;
-    this.phaseLabel.setText(`PHASE ${this.phaseState.phase}`).setColor(phaseThree?'#ff7777':'#ffd36b')
-      .setVisible(true).setAlpha(1).setScale(1);
+    this.hud.setPhase(this.phaseState.phase);
+    this.hud.showNotice(`PHASE ${this.phaseState.phase}`,phaseThree?'danger':'phase');
     this.bossTintTimer?.remove(false);this.bossTintTimer=null;
     this.scene.tweens.killTweensOf(this.sprite);
     this.applyBossVisual(this.phaseState.phase,{intro:true});
@@ -473,7 +451,7 @@ export class BossController {
     if(this.model.state!==BOSS_STATES.PHASE_TRANSITION)return false;
     this.phaseTween?.stop();this.phaseTween=null;
     this.phaseTransitionEndsAt=0;
-    this.phaseLabel.setVisible(false);
+    this.hud.hideNotice();
     this.applyBossVisual(this.phaseState.phase);
     this.sprite.clearTint();
     return this.model.finishPhaseTransition();
@@ -481,7 +459,7 @@ export class BossController {
 
   clearPhaseTransition(){
     this.phaseTween?.stop();this.phaseTween=null;this.phaseTransitionEndsAt=0;
-    this.phaseLabel?.setVisible(false);
+    this.hud?.hideNotice();
     this.sprite?.setScale(BOSS_SPRITE_SCALE).clearTint();
   }
 
@@ -510,7 +488,8 @@ export class BossController {
 
   applyPlayerDamage(time,damage){
     if(!this.playerCombat.takeHit(time,damage))return false;
-    this.playerHpLabel.setText(`Player HP: ${this.playerCombat.hp}`);
+    this.scene.gameHud?.setHealth(this.playerCombat.hp,this.playerCombat.maxHp);
+    this.scene.player.setCombatHealth(this.playerCombat.hp,this.playerCombat.maxHp);
     this.scene.player.setTint(0xff7777);
     this.playerTintTimer?.remove(false);
     this.playerTintTimer=this.scene.time.delayedCall(130,()=>{if(this.scene.player?.active)this.scene.player.clearTint();});
@@ -571,8 +550,8 @@ export class BossController {
   finishBossDeath(){
     if(this.destroyed||this.suspended||!this.model.finishDying())return false;
     const drop={x:this.sprite.x,y:this.sprite.y};
-    this.sprite.setVisible(false);this.defeatLabel.setVisible(true);
-    this.defeatTimer=this.scene.time.delayedCall(2200,()=>this.defeatLabel?.setVisible(false));
+    this.sprite.setVisible(false);this.hud.showNotice('BOSS DEFEATED','victory');
+    this.defeatTimer=this.scene.time.delayedCall(2200,()=>this.hud?.hideNotice());
     this.scene.unlockBossExit?.();
     this.spawnLoot(drop);this.recordVictory();
     return true;
@@ -674,7 +653,7 @@ export class BossController {
     this.clearProjectiles();
     this.speechTimer?.remove(false);this.speechTimer=null;this.speechBubble.setVisible(false);
     this.scene.player.setVelocity(0,0);
-    this.playerDefeatLabel.setVisible(true);
+    this.hud.showNotice('PLAYER DEFEATED','danger');
     this.scene.showBossRetry?.();
   }
 
@@ -722,6 +701,7 @@ export class BossController {
 
   update(time,delta=0){
     if(this.destroyed||this.suspended)return;
+    this.scene.player?.updateCombatHudPosition();
     const requested=this.interactRequested;this.interactRequested=false;
     this.interactRequested=requested;
     this.updateSpeechPosition();
@@ -760,6 +740,9 @@ export class BossController {
     this.speechBubble?.setVisible(false);
     this.clearLoot();
     this.scene.player?.clearTint();
+    this.scene.player?.setCombatHudVisible(false);
+    this.hud?.setVisible(false);
+    this.scene.gameHud?.resetHealth();
   }
 
   reset(){
@@ -775,11 +758,13 @@ export class BossController {
       .setPosition(this.home.x,this.home.y).setDepth(this.home.y).clearTint();
     this.applyBossVisual(1);
     this.sprite.body.enable=true;this.sprite.body.reset(this.home.x,this.home.y);
-    this.playerHpLabel.setText(`Player HP: ${this.playerCombat.hp}`);
-    this.titleLabel.setText('DIRECTOR · PHASE 1');this.clearPhaseTransition();
+    this.hud.setVisible(true);this.scene.gameHud?.setHealth(this.playerCombat.hp,this.playerCombat.maxHp);
+    this.hud.setBossHealth(this.model.hp,this.model.maxHp);this.hud.setPhase(1);
+    this.scene.player.setCombatHealth(this.playerCombat.hp,this.playerCombat.maxHp).setCombatHudVisible(true);
+    this.clearPhaseTransition();
     this.speechTimer?.remove(false);this.speechTimer=null;this.speechBubble.setVisible(false);
-    this.defeatLabel.setVisible(false);this.playerDefeatLabel.setVisible(false);this.drawHp();
-    this.tutorialLabel.setVisible(false);this.scheduleAttackTutorial();void this.loadPendingReward();
+    this.hud.hideNotice();this.drawHp();
+    this.hud.hideTutorial({immediate:true});this.scheduleAttackTutorial();void this.loadPendingReward();
   }
 
   cancelPendingAttack(){
@@ -794,6 +779,8 @@ export class BossController {
     this.scene.input.keyboard.off('keydown-E',this.handleInteract);
     for(const collider of this.colliders)collider?.destroy();
     this.bossProjectiles?.clear(true,true);this.playerProjectiles?.clear(true,true);
-    this.sprite?.destroy();this.hud?.destroy(true);this.speechBubble?.destroy();this.rewardOverlay?.destroy();
+    this.scene.player?.setCombatHudVisible(false);
+    this.scene.gameHud?.resetHealth();
+    this.sprite?.destroy();this.hud?.destroy();this.speechBubble?.destroy();this.rewardOverlay?.destroy();
   }
 }

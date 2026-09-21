@@ -2,11 +2,12 @@ import { BossProgressClient } from '../boss/BossProgressClient.js';
 import { itemCooldownRemaining } from './characterItems.js';
 import { INVENTORY_POSITION_STORAGE_KEY,inventoryItemsFromSources,inventoryShortcutSlot,inventorySlots } from './config.js';
 import { FloatingHotbar } from '../ui/FloatingHotbar.js';
+import { fixedHudEnabled,HUD_LAYOUT } from '../hud/config.js';
 
 const publicAsset=path=>new URL(`${import.meta.env.BASE_URL}${path}`,document.baseURI).href;
 
 export class InventoryHotbar {
-  constructor(presence,{onToggleItem=()=>{}}={}){
+  constructor(presence,{onToggleItem=()=>{},layout=HUD_LAYOUT}={}){
     this.client=new BossProgressClient(presence);
     this.presence=presence;this.onToggleItem=onToggleItem;this.items=[];this.progress=null;this.characterItems=[];
     this.root=document.createElement('section');this.root.className='school-hotbar inventory-hotbar';this.root.setAttribute('aria-label','Inventory');
@@ -15,9 +16,10 @@ export class InventoryHotbar {
     const reset=document.createElement('button');reset.type='button';reset.className='hotbar-reset-position';reset.textContent='↺';
     reset.title='Reset bar position';reset.setAttribute('aria-label','Reset inventory bar position');header.append(title,reset);
     this.slotsRoot=document.createElement('div');this.slotsRoot.className='school-hotbar-slots';
-    this.root.append(header,this.slotsRoot);document.body.append(this.root);this.render();
+    this.root.append(header,this.slotsRoot);
+    (document.getElementById('hud-inventory-mount')??document.body).append(this.root);this.render();
     this.onKeyDown=event=>this.handleHotkey(event);window.addEventListener('keydown',this.onKeyDown);
-    this.floating=new FloatingHotbar({root:this.root,handle:header,resetButton:reset,
+    this.floating=fixedHudEnabled(layout)?null:new FloatingHotbar({root:this.root,handle:header,resetButton:reset,
       storageKey:INVENTORY_POSITION_STORAGE_KEY,kind:'inventory',getSnapTargets:()=>[
         document.getElementById('emote-bar'),document.getElementById('game'),document.querySelector('.boss-dev-tools'),
       ]});

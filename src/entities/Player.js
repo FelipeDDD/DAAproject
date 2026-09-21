@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { PLAYER_SCALE, PLAYER_SPEED } from '../game/settings.js';
 import { applyCharacterVisual,footBodyForVisual,updateCharacterVisual } from '../characterVisuals.js';
+import { PlayerHealthBar } from '../ui/PlayerHealthBar.js';
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
@@ -20,6 +21,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.direction = new Phaser.Math.Vector2();
     this.cursors = scene.input.keyboard.createCursorKeys();
     this.wasd = scene.input.keyboard.addKeys('W,A,S,D');
+    this.combatHealthBar=null;
   }
 
   setCharacter(character,style){
@@ -33,6 +35,20 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.facing=direction;
     updateCharacterVisual(this,this.visual,direction,moving);
   }
+
+  setCombatHudVisible(visible){
+    if(visible&&!this.combatHealthBar)this.combatHealthBar=new PlayerHealthBar(this);
+    this.combatHealthBar?.setVisible(visible);
+    return this;
+  }
+
+  setCombatHealth(current,max){
+    if(!this.combatHealthBar)this.combatHealthBar=new PlayerHealthBar(this);
+    this.combatHealthBar.setHealth(current,max).updatePosition();
+    return this;
+  }
+
+  updateCombatHudPosition(){this.combatHealthBar?.updatePosition();}
 
   update() {
     const left = this.cursors.left.isDown || this.wasd.A.isDown;
@@ -48,5 +64,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.setVelocity(this.direction.x, this.direction.y);
     this.setFacing(this.facing,this.direction.lengthSq()>0);
     this.setDepth(this.y);
+    this.updateCombatHudPosition();
   }
 }
