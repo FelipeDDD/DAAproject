@@ -50,11 +50,11 @@ test('spread requires both thresholds, with Unicode character counts', () => {
   assert.equal(check([10, 4, 5, 6]).length, 0);
 });
 
-test('normalization handles Unicode, case and spaces while preserving semantic operators', () => {
-  assert.equal(normalizeQuizText(' „U\u0308BUNG   eins?“ '), 'übung eins');
-  for (const operator of ['-', '+', '<', '>', '=', '!', '/', '*', '%', '&', '|']) {
-    assert.equal(normalizeQuizText(` „${operator}1?“ `), `${operator}1`);
-    assert.equal(normalizeQuizText(` „1${operator}“ `), `1${operator}`);
+test('normalization handles Unicode, case and spaces while preserving punctuation and symbols', () => {
+  assert.equal(normalizeQuizText(' U\u0308BUNG   eins? '), 'übung eins?');
+  for (const symbol of ['-', '+', '<', '>', '=', '!', '/', '*', '%', '&', '|', '#', '.', '_', '@', '^', '~', ':', '?']) {
+    assert.equal(normalizeQuizText(` ${symbol}Name `), `${symbol}name`);
+    assert.equal(normalizeQuizText(` Name${symbol} `), `name${symbol}`);
   }
   for (const [left, right] of [['5 > 3', '5 < 3'], ['==', '==='], ['1', '-1']]) {
     assert.notEqual(normalizeQuizText(left), normalizeQuizText(right));
@@ -62,7 +62,7 @@ test('normalization handles Unicode, case and spaces while preserving semantic o
 });
 
 test('all exact duplicate group members are marked across files, but not as near duplicates', () => {
-  const input = [' „Übung eins?“ ', 'ÜBUNG   EINS.', 'U\u0308bung eins'].map((text, i) => question({ id: `test-00${i}`, source: `${i}.csv`, question: text }));
+  const input = [' Übung eins? ', 'ÜBUNG   EINS?', 'U\u0308bung eins?'].map((text, i) => question({ id: `test-00${i}`, source: `${i}.csv`, question: text }));
   const report = auditQuizQuality(input);
   for (const item of report.questions) {
     assert.equal(item.issues.filter((issue) => issue.rule === 'exact_duplicate_question').length, 2);
@@ -84,9 +84,34 @@ test('near duplicates require six distinct tokens, exclude same IDs and short ge
   }
 });
 
+test('questions differing only in terminal punctuation can be near duplicates, but not exact duplicates', () => {
+  const input = ['?', '.'].map((mark, index) => question({
+    id: `test-00${index + 1}`,
+    question: `Welche Funktion erfüllt diese Variable bei der Auswertung eines Arrays${mark}`,
+  }));
+  for (const item of auditQuizQuality(input).questions) {
+    assert.equal(item.issues.filter((issue) => issue.rule === 'exact_duplicate_question').length, 0);
+    assert.equal(item.issues.filter((issue) => issue.rule === 'near_duplicate_question').length, 1);
+  }
+});
+
 test('normalized duplicate answers report all matching indices', () => {
-  const result = issues({ answers: [' „Richtig?“ ', 'richtig', 'Falsch', 'Anders'] }, 'duplicate_answer_normalized');
+  const result = issues({ answers: [' RICHTIG ', 'richtig', 'Falsch', 'Anders'] }, 'duplicate_answer_normalized');
   assert.deepEqual(result[0].metrics.answerIndices, [0, 1]);
+});
+
+test('technical symbols distinguish answers and exact question duplicates', () => {
+  for (const [left, right] of [['C#', 'C'], ['.length', 'length'], ['_name', 'name'], ['#include', 'include']]) {
+    assert.notEqual(normalizeQuizText(left), normalizeQuizText(right));
+    assert.equal(issues({ answers: [left, right, 'andere', 'keine'] }, 'duplicate_answer_normalized').length, 0);
+    const input = [left, right].map((expression, index) => question({
+      id: `test-00${index + 1}`,
+      question: `Welche Aussage über ${expression} gilt bei der Auswertung dieses Algorithmus?`,
+    }));
+    for (const item of auditQuizQuality(input).questions) {
+      assert.equal(item.issues.filter((issue) => issue.rule === 'exact_duplicate_question').length, 0);
+    }
+  }
 });
 
 test('distinct operators and negative numbers are not duplicate answers or questions', () => {
@@ -104,7 +129,7 @@ test('distinct operators and negative numbers are not duplicate answers or quest
 });
 
 test('repetitive explanation is detected conservatively without flagging detailed explanations', () => {
-  assert.equal(issues({ explanation: ' „SUCHEN?“ ' }, 'explanation_repeats_answer').length, 1);
+  assert.equal(issues({ explanation: ' SUCHEN ' }, 'explanation_repeats_answer').length, 1);
   assert.equal(issues({ explanation: 'Suchen bedeutet hier, das passende Element in der Liste zu finden.' }, 'explanation_repeats_answer').length, 0);
 });
 

@@ -4,9 +4,7 @@ const length = (text) => Array.from(text.trim()).length;
 const mean = (values) => values.length ? values.reduce((a, b) => a + b, 0) / values.length : 0;
 
 export function normalizeQuizText(text = '') {
-  return text.normalize('NFKC').toLowerCase().replace(/\s+/gu, ' ').trim()
-    .replace(/^[\p{P}\s]+|[\p{P}\s]+$/gu, (edge) =>
-      [...edge].filter((character) => /[-+<>=!/*%&|]/u.test(character)).join(''));
+  return text.normalize('NFKC').toLowerCase().replace(/\s+/gu, ' ').trim();
 }
 
 function phraseMatches(text, pattern) {
