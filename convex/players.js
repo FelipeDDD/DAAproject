@@ -6,6 +6,7 @@ import {
   ownsCharacterSession,
   PRESENCE_TIMEOUT_MS,
 } from '../src/multiplayer/presencePolicy.js';
+import { canCharacterOwnItem } from '../src/inventory/characterItems.js';
 
 export const availability = query({
   args: {},
@@ -24,7 +25,7 @@ export const claim = mutation({
     if(old&&old.sessionId!==sessionId&&isPresenceActive(old.lastSeen))return {ok:false};
     // One character per session, including simultaneous claims from this client.
     for(const row of await ctx.db.query('players').collect())if(row.sessionId===sessionId&&row._id!==old?._id)await ctx.db.delete(row._id);
-    const state={playerId:c.id,characterId:c.id,name:c.name,sessionId,room:'selection',x:0,y:0,direction:'down',lastSeen:Date.now()};
+    const state={playerId:c.id,characterId:c.id,name:c.name,sessionId,room:'selection',x:0,y:0,direction:'down',equippedSkin:'classic',activeCharacterItem:null,lastSeen:Date.now()};
     if(old)await ctx.db.patch(old._id,state);else await ctx.db.insert('players',state);
     return {ok:true};
   },
@@ -49,12 +50,16 @@ export const update = mutation({
     playerId: v.string(), name: v.string(), room: v.string(),
     characterId: v.string(), sessionId: v.string(),
     x: v.number(), y: v.number(), direction: v.string(),
+    equippedSkin:v.optional(v.union(v.literal('classic'),v.literal('remastered'))),
+    activeCharacterItem:v.union(v.literal('lung_crusher_3000'),v.null()),
   },
   handler: async (ctx, args) => {
     if (!Number.isFinite(args.x) || !Number.isFinite(args.y) ||
         args.playerId.length > 100 || args.name.length > 40 ||
-        !['school', 'outside', 'selection'].includes(args.room) ||
+        !['school', 'outside', 'arena', 'selection'].includes(args.room) ||
         !['up', 'down', 'left', 'right'].includes(args.direction)) throw new Error('Invalid player state');
+    if(args.activeCharacterItem&&!canCharacterOwnItem(args.characterId,args.activeCharacterItem))
+      throw new Error('Invalid active character item');
     const existing = await ctx.db.query('players').withIndex('by_player', q => q.eq('playerId', args.playerId)).unique();
     if(!ownsCharacterSession(existing,args.characterId,args.sessionId)||args.characterId!==args.playerId)throw new Error('CHARACTER_SESSION_LOST');
     const state = { ...args, name:characterById(args.characterId).name, lastSeen: Date.now() };

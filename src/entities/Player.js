@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { PLAYER_SCALE, PLAYER_SPEED } from '../game/settings.js';
+import { applyCharacterVisual,footBodyForVisual,updateCharacterVisual } from '../characterVisuals.js';
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
@@ -21,6 +22,18 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.wasd = scene.input.keyboard.addKeys('W,A,S,D');
   }
 
+  setCharacter(character,style){
+    this.visual=applyCharacterVisual(this,character,style);
+    const body=footBodyForVisual(this.visual);
+    this.body.setSize(body.width,body.height);this.body.setOffset(body.offsetX,body.offsetY);
+    this.setFacing(this.facing,false);
+  }
+
+  setFacing(direction,moving=false){
+    this.facing=direction;
+    updateCharacterVisual(this,this.visual,direction,moving);
+  }
+
   update() {
     const left = this.cursors.left.isDown || this.wasd.A.isDown;
     const right = this.cursors.right.isDown || this.wasd.D.isDown;
@@ -33,7 +46,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     // Diagonals have the same speed as movement on a single axis.
     this.direction.normalize().scale(this.speed);
     this.setVelocity(this.direction.x, this.direction.y);
-    if (this.direction.x !== 0) this.setFlipX(this.direction.x < 0);
+    this.setFacing(this.facing,this.direction.lengthSq()>0);
     this.setDepth(this.y);
   }
 }

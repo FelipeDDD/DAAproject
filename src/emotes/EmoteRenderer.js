@@ -17,7 +17,7 @@ export class EmoteRenderer {
       let label=this.labels.get(event.characterId);
       if(!label){
         label=this.scene.add.text(0,0,event.emote,{fontFamily:'"Segoe UI Emoji", "Apple Color Emoji", sans-serif',fontSize:'25px',
-          backgroundColor:'#ffffffdd',padding:{x:5,y:3}}).setOrigin(0.5,1).setDepth(100001);
+          padding:{x:5,y:3}}).setOrigin(0.5,1).setDepth(100001);
         this.labels.set(event.characterId,label);
       }
       label.setText(event.emote);

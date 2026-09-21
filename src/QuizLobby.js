@@ -4,6 +4,7 @@ import { renderQuizMedia } from './QuizMedia.js';
 import { remainingQuizSeconds } from './quizTimer.js';
 import { readQuizSettingsControls,renderQuizSettingsControls } from './quiz/QuizSettingsControls.js';
 import { CalculatorWidget } from './calculator/CalculatorWidget.js';
+import { WorldPrompt } from './ui/WorldPrompt.js';
 
 // World-space tuning for the prompt, anchored to the fixed Tiled seat position.
 export const QUIZ_SEAT_PROMPT = Object.freeze({text:'[E] Sit',offsetX:0,offsetY:-70});
@@ -45,10 +46,7 @@ export class QuizLobby {
     this.resultsRoot=document.getElementById('quiz-results');
     this.scoresList=document.getElementById('quiz-scores');
     this.calculator=new CalculatorWidget({mount:this.questionRoot,scene});
-    this.seatPrompt=scene.add.text(0,0,QUIZ_SEAT_PROMPT.text,{
-      fontFamily:'system-ui, sans-serif',fontSize:'12px',fontStyle:'bold',color:'#ffffff',
-      backgroundColor:'#334550',padding:{x:6,y:3},
-    }).setOrigin(0.5,1).setDepth(100000).setVisible(false);
+    this.seatPrompt=new WorldPrompt(scene,QUIZ_SEAT_PROMPT.text,{className:'quiz-world-prompt'});
 
     this.onStart=()=>this.start();
     this.onNext=()=>this.nextQuestion();
@@ -100,7 +98,8 @@ export class QuizLobby {
       const {characterId,sessionId}=this.presence.identity;
       const seat=await this.presence.client.mutation(this.presence.api.quizLobbies.join,{room:this.room,characterId,sessionId});
       this.seated=true;this.scene.player.body.reset(seat.seatX,seat.seatY);
-      this.scene.player.facing=seat.direction;this.scene.player.setFlipX(seat.direction==='left');
+      if(this.scene.player.setFacing)this.scene.player.setFacing(seat.direction,false);
+      else{this.scene.player.facing=seat.direction;this.scene.player.setFlipX(seat.direction==='left');}
       this.scene.player.setVelocity(0,0);this.root.hidden=false;this.render();
     }catch(error){
       this.status.textContent=error.message.includes('already started')?'The lobby has already started.':'Could not sit down. Move closer to your chair.';

@@ -12,6 +12,17 @@ alemão. Novos CSVs e templates gerados devem seguir essa convenção.
 
 ## Executar
 
+### Michael: transformação Lung Crusher
+
+`public/assets/items/michael-bigcig.png` contém seis personagens e um pickup separado,
+sem grade uniforme. Para reconstruir somente essa animação:
+`powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-character-sprites.ps1 -TransformationOnly`.
+O resultado usa sete frames de 160×160: animação 0–5, pickup 6, escala uniforme e
+alinhamento pelos pés. Os limites de recorte são específicos dessa folha; o script
+recusa dimensões diferentes ou cortes que atravessem pixels visíveis.
+`CharacterItemController` mantém os itens coletados durante ativação/desativação;
+`normalizeCharacterItem` deve preservar `characterId` mesmo após normalizações repetidas.
+
 ```powershell
 npm.cmd install
 npm.cmd run convex
@@ -63,6 +74,11 @@ A Vercel executa o build configurado em `vercel.json`; o Convex escolhe o deploy
 associado a `CONVEX_DEPLOY_KEY`, injeta sua URL no Vite e publica as funções. Depois,
 a Vercel publica o `dist` produzido pelo mesmo processo.
 
+O arquivo `.vercelignore` impede que dados locais de desenvolvimento, especialmente
+o banco SQLite de `.convex/`, assets de teste e builds locais, sejam enviados pela
+CLI. Esses arquivos não são necessários para o build remoto e podem ultrapassar o
+limite de upload da Vercel.
+
 ## Multiplayer mínimo
 
 Abra `http://127.0.0.1:5173` em duas abas, escolha personagens diferentes e aguarde
@@ -101,6 +117,27 @@ Os SVGs em `public/assets/characters/` usam 32×56 px e preservam a hitbox dos p
 para melhorar a arte. Michael tem silhueta mais alta/magra e cigarro; Yassin,
 cabelo curto e azul claro; Sarina, cachos, roxo e tiramisu; Felipe, cabelo comprido,
 preto com detalhes brancos e lata preta/verde provisória.
+
+O seletor **Character sprites** permite comparar `Original` e `New test sprites`;
+a preferência fica em `localStorage['daa-character-style']`. Os quatro personagens
+têm folhas novas normalizadas em 24 frames de 64×72 px: seis poses por linha, nas
+direções down, left, right e up. O idle usa o primeiro frame e o walk usa quatro
+poses consistentes da mesma linha.
+
+As fontes `Michael-sprite.png`, `Sarina-sprite.png`, `Yassin-sprite.png` e
+`Felipe-sprite.png` são recortadas novamente por `scripts/build-character-sprites.ps1`.
+O script detecta as poses pelo canal alpha das folhas transparentes, preserva a
+proporção, alinha os pés e gera as folhas normalizadas e seus previews.
+Execute:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-character-sprites.ps1
+```
+
+`NEW_PLAYER_SCALE` em `src/game/settings.js` controla somente a escala visual nova.
+`footBodyForVisual()` em `src/characterVisuals.js` mantém a hitbox mundial dos pés
+igual à antiga, independentemente do canvas. `Player.setFacing()` e o mesmo helper
+de animação são reutilizados pelos jogadores locais, sentados e remotos.
 
 `src/CharacterMenu.js` mostra previews e disponibilidade. `players:claim` no Convex
 reserva a vaga em uma transação: duas escolhas simultâneas têm apenas um vencedor.
@@ -236,6 +273,37 @@ Uma porta não fecha sobre os pés do jogador.
 
 A entrada externa usa `targetMap: school`, `targetSpawn: mainEntrance`.
 A saída interna usa `targetMap: outside`, `targetSpawn: schoolEntrance`.
+O ponto `arena` em `Spawns` funciona como interação de mapa com `transition: true`,
+`targetMap: arena` e `targetSpawn: arena-spawn`; aproximar-se e pressionar **E** abre
+o mapa `arena.tmj`. Image Layers do Tiled são carregadas pelo `MapScene`, e a layer
+`Collision` aceita retângulos e polígonos invisíveis.
+Enquanto ainda não existe uma saída própria na arena, **Esc** retorna ao ponto anterior.
+Elipses em `Collision` usam corpos circulares; desenhe-as com largura e altura maiores
+que zero no Tiled. Os marcadores circulares atuais da arena usam 16×16 px.
+O mapa atual possui colisões desenhadas diretamente nos dois lados; elas não dependem
+de espelhamento feito pelo Phaser.
+
+O protótipo solo do boss existe somente na `ArenaScene`. Sua posição vem do ponto
+`boss-spawn` em `Spawns`. Ele possui 100 HP, dispara um projétil reto periodicamente
+e aceita o ataque temporário do jogador com **Space**. As constantes de HP, cooldown,
+dano, velocidade e duração ficam em `src/boss/config.js`; `BossController` contém os
+objetos Phaser e `BossCombatState` mantém a lógica determinística de combate.
+Os ataques alternam deterministicamente entre um disparo simples e um leque de sete
+projéteis. O leque captura a posição do jogador ao começar, avisa por 700 ms e abre
+80 graus; quantidade, abertura e cooldowns também ficam em `src/boss/config.js`.
+O disparo simples usa os seis frames 48×48 de `director-paper-projectile.png`; a folha
+normalizada pode ser recriada com `scripts/build-boss-projectile-sprites.ps1` sem
+alterar a imagem-fonte mantida em `public/assets/boss`.
+O terceiro ataque marca por 900 ms um círculo fixo de raio 64 px sob os pés do
+jogador e causa 1 de dano somente se ele ainda estiver dentro no impacto. Ele aparece
+depois do leque na sequência determinística e não é bloqueado pelos obstáculos.
+O quarto ataque lança o papel amarelo `director-paper-homing.png`, que persegue o
+jogador a 145 px/s com giro limitado a 110°/s. Ele usa o mesmo pool e colisões dos
+outros projéteis e completa a ordem `single → fan → area → homing`.
+Após cada ataque, o boss espera 200 ms e faz um deslocamento de 420 ms até o próximo
+ponto da Object Layer `BossPositions`. Os markers devem ser Point objects nomeados
+`boss-pos-1`, `boss-pos-2`, `boss-pos-3` e `boss-pos-4`; a ausência da layer apenas
+mantém o boss parado. O reset sempre retorna ao `boss-spawn`.
 A saída de teste anterior também leva ao pátio. Portas sem destino só abrem/fecham.
 
 Para criar um spawn, use **Inserir ponto** em Spawns e defina seu Nome. A posição

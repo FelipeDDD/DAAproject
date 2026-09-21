@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { CAMERA_ZOOM } from '../game/settings.js';
+import { CAMERA_ZOOM,CAMERA_ZOOM_TRANSITION_MS,cameraZoomForMap } from '../game/settings.js';
 import { Player } from '../entities/Player.js';
 import { Door } from '../entities/Door.js';
 import { createPlaceholderTextures } from '../art/placeholders.js';
@@ -12,6 +12,7 @@ import { getPresence } from '../multiplayer/client.js';
 import { RemotePlayers } from '../multiplayer/RemotePlayers.js';
 import { DoorSync } from '../multiplayer/DoorSync.js';
 import { CHARACTERS, characterById } from '../characters.js';
+import { createCharacterAnimations,preloadCharacterTextures,visualStyleForActiveItem } from '../characterVisuals.js';
 import { RoomChat } from '../RoomChat.js';
 import { readQuizSeats } from '../maps/quizSeats.js';
 import { QuizLobby } from '../QuizLobby.js';
@@ -27,6 +28,15 @@ import {
   readTerminalComputers,nearbyTerminalComputer,terminalPromptPosition,TERMINAL_PROMPT,
 } from '../maps/terminalComputers.js';
 import { TerminalOverlayController } from '../terminal/TerminalOverlayController.js';
+import { nearbyMapTransition,readMapTransitions } from '../maps/transitions.js';
+import { readWardrobes } from '../maps/wardrobes.js';
+import { WardrobeController } from '../WardrobeController.js';
+import { BossProgressClient } from '../boss/BossProgressClient.js';
+import { normalizeBossProgress } from '../boss/BossRewards.js';
+import { BossDevTools,shouldShowBossDevTools } from '../boss/BossDevTools.js';
+import { InventoryHotbar } from '../inventory/InventoryHotbar.js';
+import { CharacterItemController } from '../inventory/CharacterItemController.js';
+import { WorldPrompt } from '../ui/WorldPrompt.js';
 import '../terminal/terminal.css';
 
 function readTileset(xml, firstgid) {
@@ -51,7 +61,10 @@ export class MapScene extends Phaser.Scene {
   }
 
   preload() {
-    for(const c of CHARACTERS)if(!this.textures.exists(c.sprite))this.load.svg(c.sprite,`${import.meta.env.BASE_URL}${c.asset}`);
+    preloadCharacterTextures(this,CHARACTERS,import.meta.env.BASE_URL);
+    if(!this.textures.exists('michael-lung-transform'))this.load.spritesheet('michael-lung-transform',
+      `${import.meta.env.BASE_URL}assets/items/michael-bigcig-normalized.png?v=3`,{frameWidth:160,frameHeight:160});
+    if(!this.textures.exists('school-hanger'))this.load.image('school-hanger',`${import.meta.env.BASE_URL}assets/hanger.png`);
     const mapUrl = new URL(`${import.meta.env.BASE_URL}assets/maps/${this.filename}`, window.location.href);
     this.load.once(`filecomplete-json-${this.sourceKey}`, (_key, _type, data) => {
       data.tilesets.forEach((reference, index) => {
@@ -67,6 +80,9 @@ export class MapScene extends Phaser.Scene {
           this.load.xml(key, tilesetUrl.href);
         } else loadImage(reference);
       });
+      data.layers.filter(layer=>layer.type==='imagelayer'&&layer.image).forEach(layer=>{
+        this.load.image(`${this.mapKey}-image-layer-${layer.id}`,new URL(layer.image,mapUrl).href);
+      });
     });
     this.load.json(this.sourceKey, mapUrl.href);
   }
@@ -81,6 +97,11 @@ export class MapScene extends Phaser.Scene {
     };
     this.cache.tilemap.add(this.mapKey, { format: Phaser.Tilemaps.Formats.TILED_JSON, data });
     const map = this.make.tilemap({ key: this.mapKey });
+    for(const layer of data.layers.filter(item=>item.type==='imagelayer'&&item.image)){
+      this.add.image((layer.offsetx??0)+(layer.x??0),(layer.offsety??0)+(layer.y??0),`${this.mapKey}-image-layer-${layer.id}`)
+        .setOrigin(0).setDepth(propertiesOf(layer).depth??-3)
+        .setVisible(layer.visible!==false).setAlpha(layer.opacity??1);
+    }
     const tilesets = data.tilesets.map((definition, index) => {
       const key = `${this.mapKey}-tileset-${index}`;
       // Object tile sprites need explicit atlas frames, unlike tile layers.
@@ -97,6 +118,7 @@ export class MapScene extends Phaser.Scene {
     }
     createPlaceholderTextures(this);
     createDoorTextures(this);
+    createCharacterAnimations(this,CHARACTERS);
     drawMapPlaceholders(this, this.source);
     drawTiledTextObjects(this,this.source);
     const floorDetails = this.source.layers.find((layer) => layer.name === 'FloorDetails');
@@ -137,28 +159,37 @@ export class MapScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     this.player = new Player(this, 0, 0);
     this.remotes = new RemotePlayers(this);
-    this.collisionLayer = addMapCollision(this, map, this.player);
+    this.collisionLayer = addMapCollision(this, map, this.player,this.collisionOptions?.()??{});
     this.doors = readDoors(this.source).map((definition) => new Door(this, definition));
     this.quizSeats = readQuizSeats(this.source);
     this.soloStudySeats=readSoloStudySeats(this.source);
     this.challengeLeaderboards=readChallengeLeaderboards(this.source);
     this.terminalComputers=readTerminalComputers(this.source);
+    this.mapTransitions=readMapTransitions(this.source);
+    this.wardrobeDefinitions=readWardrobes(this.source);
     for (const door of this.doors) this.physics.add.collider(this.player, door.blocker);
     this.interactKey = this.input.keyboard.addKey('E');
     this.escapeKey = this.input.keyboard.addKey('ESC');
     this.hint = document.getElementById('interaction-hint');
-    this.terminalPrompt=this.add.text(0,0,TERMINAL_PROMPT.text,{
-      fontFamily:'system-ui, sans-serif',fontSize:'12px',fontStyle:'bold',color:'#ffffff',
-      backgroundColor:'#53358a',padding:{x:6,y:3},
-    }).setOrigin(.5,1).setDepth(100000).setVisible(false);
-    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels).setZoom(CAMERA_ZOOM);
+    this.terminalPrompt=new WorldPrompt(this,TERMINAL_PROMPT.text,{className:'terminal-world-prompt'});
+    const targetZoom=cameraZoomForMap(this.mapKey);
+    this.cameras.main.setBounds(0,0,map.widthInPixels,map.heightInPixels).setZoom(CAMERA_ZOOM.default);
     this.cameras.main.startFollow(this.player, true, 1, 1);
+    if(targetZoom!==CAMERA_ZOOM.default)this.cameras.main.zoomTo(targetZoom,CAMERA_ZOOM_TRANSITION_MS,'Sine.easeOut');
     this.enter(destination);
+    this.wardrobe=this.presence&&this.wardrobeDefinitions.length
+      ?new WardrobeController(this,this.presence,this.wardrobeDefinitions):null;
+    void this.wardrobe?.restore();
 
     const stop = () => { this.input.keyboard.resetKeys(); this.player.setVelocity(0, 0); };
     const wake = (_systems, arrival) => this.enter(arrival);
     const leave = () => {
+      this.terminalPrompt?.setVisible(false);
+      this.devTools?.destroy();this.devTools=null;
+      this.inventoryHotbar?.destroy();this.inventoryHotbar=null;
+      this.characterItems?.destroy();this.characterItems=null;
       this.terminal?.destroy();this.terminal=null;
+      this.wardrobe?.closePanel();
       this.emoteBar?.close();this.emoteBar=null;
       this.emoteSync?.close();this.emoteSync=null;
       this.emoteRenderer?.close();this.emoteRenderer=null;
@@ -174,6 +205,8 @@ export class MapScene extends Phaser.Scene {
     this.game.events.on(Phaser.Core.Events.BLUR, stop);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       leave();
+      this.wardrobe?.destroy();this.wardrobe=null;
+      this.terminalPrompt?.destroy();this.terminalPrompt=null;
       this.events.off(Phaser.Scenes.Events.SLEEP, leave);
       this.game.events.off(Phaser.Core.Events.BLUR, stop);
       this.events.off(Phaser.Scenes.Events.WAKE, wake);
@@ -187,15 +220,33 @@ export class MapScene extends Phaser.Scene {
       const spawn = resolveSpawn(this.source, destination);
       this.player.body.reset(spawn.x, spawn.y);
       this.presence = getPresence();
+      this.appearanceRestoreToken=Symbol('appearance');
       const character=characterById(this.presence?.identity?.characterId);
-      if(character)this.player.setTexture(character.sprite);
+      this.equippedSkin='classic';
+      this.activeCharacterItem=null;
+      if(character)this.player.setCharacter(character,'old');
       this.presence?.enter(this.mapKey, () => ({
-        x: this.player.x, y: this.player.y, direction: this.player.facing,
+        x: this.player.x, y: this.player.y, direction: this.player.facing,equippedSkin:this.equippedSkin,
+        activeCharacterItem:this.activeCharacterItem,
       }), rows => this.remotes.receive(rows));
+      this.devTools?.destroy();
+      this.devTools=shouldShowBossDevTools(import.meta.env)&&this.presence?new BossDevTools(this,this.presence):null;
       this.doorSync?.close();
       this.doorSync = this.presence ? new DoorSync(this.presence,this.mapKey,this.doors,()=>this.player.body) : null;
       this.chat?.close();
       this.chat=this.presence ? new RoomChat(this,this.presence) : null;
+      this.inventoryHotbar?.destroy();
+      this.characterItems?.destroy();
+      this.characterItems=this.presence?new CharacterItemController(this,this.presence,{
+        onVisualChange:(itemId,options)=>this.setActiveCharacterItem(itemId,options),
+        onItemsChange:items=>this.inventoryHotbar?.setCharacterItems(items),
+      }):null;
+      this.inventoryHotbar=this.presence?new InventoryHotbar(this.presence,{
+        onToggleItem:item=>this.characterItems?.toggle(item),
+      }):null;
+      void this.inventoryHotbar?.refresh();
+      void this.characterItems?.restore();
+      this.characterItems?.createPickup(this.mapTransitions.find(transition=>transition.targetMap==='arena'));
       this.quiz?.close();
       this.quiz=this.presence ? new QuizLobby(this,this.presence,this.quizSeats) : null;
       this.soloStudy?.close();
@@ -209,10 +260,47 @@ export class MapScene extends Phaser.Scene {
       this.doorMessage = '';
       this.nearbyDoor = null;
       document.querySelector('h1').textContent = propertiesOf(this.source).label ?? this.mapKey;
+      void this.restoreEquippedSkin(this.appearanceRestoreToken);
+      void this.wardrobe?.restore();
     } catch (error) {
       this.doorMessage = error.message;
       if (destination.returnDestination) this.travelTo(destination.returnDestination);
     }
+  }
+
+  applyCharacterSkin(skin='classic'){
+    const character=characterById(this.presence?.identity?.characterId);
+    this.equippedSkin=skin==='remastered'?'remastered':'classic';
+    if(character)this.player.setCharacter(character,visualStyleForActiveItem(this.activeCharacterItem,this.equippedSkin));
+    void this.presence?.send();
+  }
+
+  setActiveCharacterItem(itemId,{instant=true,restoreSkin}={}){
+    if(restoreSkin)this.equippedSkin=restoreSkin==='remastered'?'remastered':'classic';
+    this.activeCharacterItem=itemId??null;
+    const character=characterById(this.presence?.identity?.characterId);
+    if(character)this.player.setCharacter(character,visualStyleForActiveItem(this.activeCharacterItem,this.equippedSkin));
+    void this.presence?.send();
+    return instant;
+  }
+
+  async restoreEquippedSkin(token=this.appearanceRestoreToken){
+    if(!this.presence)return this.equippedSkin;
+    try{
+      const progress=normalizeBossProgress(await new BossProgressClient(this.presence).getProgress(),
+        this.presence.identity.characterId);
+      if(token!==this.appearanceRestoreToken)return this.equippedSkin;
+      this.applyCharacterSkin(progress.equippedSkin);
+    }catch(error){console.warn('Appearance restore:',error);}
+    return this.equippedSkin;
+  }
+
+  applyBossProgress(progress){
+    const normalized=normalizeBossProgress(progress,this.presence?.identity?.characterId);
+    this.applyCharacterSkin(normalized.equippedSkin);
+    this.wardrobe?.setProgress(normalized);
+    this.inventoryHotbar?.setProgress(normalized);
+    this.boss?.applyProgressSnapshot?.(normalized);
   }
 
   travelTo(destination) {
@@ -236,7 +324,7 @@ export class MapScene extends Phaser.Scene {
   }
 
   update(_time, delta) {
-    if(this.terminal?.active||this.chat?.focused||this.quiz?.seated||this.soloStudy?.active)this.player.setVelocity(0,0);
+    if(this.terminal?.active||this.chat?.focused||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active||this.characterItems?.transforming)this.player.setVelocity(0,0);
     else this.player.update();
     this.remotes.update(delta);
     this.emoteRenderer?.update();
@@ -249,8 +337,12 @@ export class MapScene extends Phaser.Scene {
     const studySeat=this.soloStudy?.nearbySeat();
     const computer=nearbyTerminalComputer(this.terminalComputers,this.player.body);
     const challengeLeaderboard=nearbyChallengeLeaderboard(this.challengeLeaderboards,this.player.body);
+    const mapTransition=nearbyMapTransition(this.mapTransitions,this.player.body);
+    const wardrobe=this.wardrobe?.nearby();
+    const characterItemPickup=this.characterItems?.updatePrompt();
     this.quiz?.updateSeatPrompt(!this.soloStudy?.active&&quizSeat);
     this.soloStudy?.updateSeatPrompt(!this.quiz?.seated&&studySeat);
+    this.wardrobe?.updatePrompt(wardrobe&&!this.quiz?.seated&&!this.soloStudy?.active?wardrobe:null);
     const showTerminalPrompt=Boolean(computer&&!this.quiz?.seated&&!this.soloStudy?.active);
     this.terminalPrompt.setVisible(showTerminalPrompt);
     if(showTerminalPrompt){const position=terminalPromptPosition(computer);this.terminalPrompt.setPosition(position.x,position.y);}
@@ -260,6 +352,11 @@ export class MapScene extends Phaser.Scene {
       const hint=this.soloStudy.leaderboardOpen?'IT Challenge leaderboard · Esc: close':'Solo Mode · Esc: close';
       if(this.hint.textContent!==hint)this.hint.textContent=hint;
       return;
+    }
+    if(this.wardrobe?.active){
+      this.terminalPrompt.setVisible(false);this.quiz?.updateSeatPrompt(false);this.soloStudy?.updateSeatPrompt(false);
+      if(escape)this.wardrobe.closePanel();
+      this.hint.textContent='Appearance · Esc: close';return;
     }
     if(this.quiz?.seated){
       this.terminalPrompt.setVisible(false);
@@ -285,9 +382,19 @@ export class MapScene extends Phaser.Scene {
       this.hint.textContent='Opening IT Challenge leaderboard…';
       return;
     }
+    if(interact&&wardrobe){
+      void this.wardrobe.open();this.hint.textContent='Opening appearance selector…';return;
+    }
+    if(interact&&characterItemPickup){
+      void this.characterItems.collect();this.hint.textContent='Collecting Lung Crusher 3000…';return;
+    }
     if(interact&&computer){
       this.terminalPrompt.setVisible(false);
       void this.terminal.open(computer);
+      return;
+    }
+    if(mapTransition?.auto||(interact&&mapTransition)){
+      this.travelTo(mapTransition);
       return;
     }
     const nearby = this.doors.filter((door) => door.isNear(this.player.body))
@@ -313,6 +420,10 @@ export class MapScene extends Phaser.Scene {
       ? '[E] View leaderboard'
       : computer
       ? '[E] Open Terminal'
+      : characterItemPickup
+      ? '[E] Collect Lung Crusher 3000'
+      : mapTransition
+      ? `[E] Enter ${mapTransition.label}`
       : nearby
       ? [nearby.locked ? 'Door locked' : destination ? 'Press E to exit' : action,this.doorMessage]
         .filter(Boolean).join(' · ')

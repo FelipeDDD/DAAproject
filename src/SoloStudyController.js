@@ -3,6 +3,7 @@ import { renderQuizSettingsControls,readQuizSettingsControls,DEFAULT_QUIZ_OPTION
 import { createSoloSession,SOLO_MODES } from './quiz/soloModes.js';
 import { nearbySoloStudySeat } from './maps/soloStudySeats.js';
 import { CalculatorWidget } from './calculator/CalculatorWidget.js';
+import { WorldPrompt } from './ui/WorldPrompt.js';
 import { QuizStatisticsPanel } from './quiz/QuizStatisticsPanel.js';
 import { CHARACTERS } from './characters.js';
 import {
@@ -66,10 +67,7 @@ export class SoloStudyController {
     this.closeLeaderboardButton=document.getElementById('close-it-challenge-leaderboard');
     this.calculator=new CalculatorWidget({mount:this.questionRoot,scene});
     this.statistics=new QuizStatisticsPanel({presence,onClose:()=>this.render()});
-    this.seatPrompt=scene.add.text(0,0,SOLO_STUDY_PROMPT.text,{
-      fontFamily:'system-ui, sans-serif',fontSize:'12px',fontStyle:'bold',color:'#ffffff',
-      backgroundColor:'#315b9c',padding:{x:6,y:3},
-    }).setOrigin(0.5,1).setDepth(100000).setVisible(false);
+    this.seatPrompt=new WorldPrompt(scene,SOLO_STUDY_PROMPT.text,{className:'study-world-prompt'});
 
     this.onStart=()=>void this.start();this.onConfirm=()=>this.confirm();this.onSkip=()=>this.skipChallenge();
     this.onNext=()=>void this.next();this.onAgain=()=>this.playAgain();this.onClose=()=>this.closePanel();
@@ -108,8 +106,10 @@ export class SoloStudyController {
   async open(seat=this.nearbySeat()) {
     if(!seat||this.active||this.pending)return;
     this.active=true;this.seat=seat;this.returnPosition={x:this.scene.player.x,y:this.scene.player.y};
-    this.scene.player.body.reset(seat.seatX,seat.seatY);this.scene.player.facing=seat.direction;
-    this.scene.player.setFlipX(seat.direction==='left');this.scene.player.setVelocity(0,0);
+    this.scene.player.body.reset(seat.seatX,seat.seatY);
+    if(this.scene.player.setFacing)this.scene.player.setFacing(seat.direction,false);
+    else{this.scene.player.facing=seat.direction;this.scene.player.setFlipX(seat.direction==='left');}
+    this.scene.player.setVelocity(0,0);
     this.statistics.close();this.resetRun();this.root.hidden=false;
     this.status.textContent='Loading solo settings…';this.render();
     try{

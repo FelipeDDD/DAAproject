@@ -1,0 +1,14 @@
+.git/
+.vercel/
+.convex/
+.map-recovery/
+node_modules/
+dist/
+.env*
+*.local
+*.tiled-session
+public/assets/sprites-test/
+public/assets/characters/Michael-sprite.png
+public/assets/characters/Sarina-sprite.png
+public/assets/characters/Yassin-sprite.png
+public/assets/characters/Felipe-sprite.png

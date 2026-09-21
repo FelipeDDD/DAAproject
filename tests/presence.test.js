@@ -111,6 +111,15 @@ test('an old session cannot update or heartbeat after another session owns the c
   await assert.rejects(heartbeat._handler(ctx,{characterId:'michael',sessionId:state.sessionId}),/CHARACTER_SESSION_LOST/);
 });
 
+test('presence rejects an exclusive visual item for any character other than its owner',async()=>{
+  const current={_id:'player',playerId:'sarina',characterId:'sarina',sessionId:'session-123456789',lastSeen:Date.now()};
+  const ctx={db:{query:()=>({withIndex:()=>({unique:async()=>current})}),patch:async()=>assert.fail('must not patch')}};
+  await assert.rejects(update._handler(ctx,{
+    playerId:'sarina',characterId:'sarina',sessionId:current.sessionId,name:'Sarina',room:'school',x:1,y:2,direction:'down',
+    activeCharacterItem:'lung_crusher_3000',
+  }),/Invalid active character item/);
+});
+
 test('remote smoothing converges without overshoot and is independent of frame rate', () => {
   const once=interpolate(0,100,100);
   const twice=interpolate(interpolate(0,100,50),100,50);

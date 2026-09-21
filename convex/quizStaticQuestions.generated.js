@@ -1601,6 +1601,1606 @@ export default [
     "source": "betriebssysteme.csv"
   },
   {
+    "id": "betriebssysteme-101",
+    "category": "Betriebssysteme",
+    "topic": "Windows Grundlagen",
+    "difficulty": "medium",
+    "question": "Welche Hauptaufgabe übernimmt ein Betriebssystem?",
+    "answers": [
+      "Es verwaltet Hardware, Ressourcen und Anwendungen",
+      "Es ersetzt dauerhaft alle Gerätetreiber",
+      "Es speichert ausschließlich Benutzerdokumente",
+      "Es stellt nur die grafische Oberfläche bereit"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ein Betriebssystem koordiniert Hardware, Prozesse, Speicher, Dateien, Benutzer und Anwendungen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-102",
+    "category": "Betriebssysteme",
+    "topic": "Windows Grundlagen",
+    "difficulty": "medium",
+    "question": "Was ist der Windows-Kernel?",
+    "answers": [
+      "Der zentrale Systemkern für grundlegende Betriebssystemfunktionen",
+      "Eine Benutzeranwendung zur Dateiverwaltung",
+      "Ein optionales Grafikthema für den Desktop",
+      "Ein ausschließliches Werkzeug zur Datensicherung"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Der Kernel steuert zentrale Funktionen wie Prozess-, Speicher- und Hardwarezugriffe.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-103",
+    "category": "Betriebssysteme",
+    "topic": "Windows Grundlagen",
+    "difficulty": "medium",
+    "question": "Was bedeutet ein 64-Bit-Betriebssystem?",
+    "answers": [
+      "Es kann 64-Bit-Prozessorfunktionen und größere Adressräume nutzen",
+      "Es kann gleichzeitig höchstens 64 Anwendungen im Benutzerprofil verwalten",
+      "Es unterstützt ausschließlich Dateien mit einer Größe unter 64 Megabyte",
+      "Es benötigt für den Betrieb zwingend einen Prozessor mit genau 64 Kernen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "64-Bit-Systeme können größere Adressräume und entsprechende CPU-Funktionen nutzen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-104",
+    "category": "Betriebssysteme",
+    "topic": "Windows Grundlagen",
+    "difficulty": "medium",
+    "question": "Welcher Vorteil ist mit einem 64-Bit-Windows gegenüber 32 Bit typischerweise verbunden?",
+    "answers": [
+      "Es kann deutlich mehr Arbeitsspeicher adressieren",
+      "Es benötigt grundsätzlich keinen virtuellen Speicher",
+      "Es kann nur 64-Bit-Dateisysteme verwenden",
+      "Es startet immer doppelt so schnell"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ein wesentlicher Vorteil ist der deutlich größere adressierbare Speicherbereich.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-105",
+    "category": "Betriebssysteme",
+    "topic": "Windows Grundlagen",
+    "difficulty": "medium",
+    "question": "Welche Windows-Edition ist typischerweise für professionelle Unternehmensfunktionen ausgelegt?",
+    "answers": [
+      "Windows Pro",
+      "Windows Home Basic",
+      "Windows Media Edition",
+      "Windows Starter Plus"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Pro-Editionen enthalten typischerweise zusätzliche Verwaltungs- und Unternehmensfunktionen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-106",
+    "category": "Betriebssysteme",
+    "topic": "Benutzer und Rechte",
+    "difficulty": "medium",
+    "question": "Warum sollten Benutzer im Alltag möglichst ohne Administratorrechte arbeiten?",
+    "answers": [
+      "Das reduziert das Risiko unerwünschter Systemänderungen",
+      "Das erhöht automatisch die CPU-Leistung",
+      "Das vergrößert den verfügbaren Arbeitsspeicher",
+      "Das beschleunigt grundsätzlich jede Netzwerkverbindung"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Das Prinzip der geringsten Rechte begrenzt Schäden durch Fehlbedienung oder Schadsoftware.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-107",
+    "category": "Betriebssysteme",
+    "topic": "Benutzer und Rechte",
+    "difficulty": "medium",
+    "question": "Was ist die Aufgabe der Benutzerkontensteuerung UAC?",
+    "answers": [
+      "Sie fordert bei privilegierten Änderungen eine Bestätigung an",
+      "Sie verwaltet ausschließlich WLAN-Verbindungen",
+      "Sie ersetzt Benutzerkennwörter vollständig",
+      "Sie verschlüsselt automatisch alle Dateien"
+    ],
+    "correctAnswer": 0,
+    "explanation": "UAC trennt normale Nutzung von administrativen Aktionen und fordert bei Bedarf Zustimmung.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-108",
+    "category": "Betriebssysteme",
+    "topic": "Benutzer und Rechte",
+    "difficulty": "medium",
+    "question": "Was unterscheidet ein Standardkonto von einem Administratorkonto?",
+    "answers": [
+      "Ein Standardkonto besitzt weniger Rechte für Systemänderungen",
+      "Ein Standardkonto kann keine eigenen Dateien speichern",
+      "Ein Administratorkonto besitzt keinen Passwortschutz",
+      "Ein Administratorkonto darf keine Programme starten"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Standardkonten sind bei systemweiten Änderungen stärker eingeschränkt.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-109",
+    "category": "Betriebssysteme",
+    "topic": "Benutzer und Rechte",
+    "difficulty": "medium",
+    "question": "Was ist eine lokale Benutzergruppe in Windows?",
+    "answers": [
+      "Eine Zusammenfassung von Konten mit gemeinsamen Berechtigungen",
+      "Ein Ordner mit ausschließlich lokalen Dateien",
+      "Eine Liste aller installierten Programme",
+      "Ein Cache für Netzwerkverbindungen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Gruppen vereinfachen die gemeinsame Zuweisung von Rechten und Berechtigungen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-110",
+    "category": "Betriebssysteme",
+    "topic": "Benutzer und Rechte",
+    "difficulty": "medium",
+    "question": "Welcher Vorteil entsteht durch Gruppen statt Einzelberechtigungen?",
+    "answers": [
+      "Berechtigungen lassen sich zentraler und konsistenter verwalten",
+      "Benutzer benötigen dadurch keine Anmeldung mehr",
+      "Dateien werden automatisch doppelt gespeichert",
+      "Alle Benutzer erhalten automatisch Administratorrechte"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Gruppen reduzieren Verwaltungsaufwand und Inkonsistenzen bei vielen Benutzern.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-111",
+    "category": "Betriebssysteme",
+    "topic": "Benutzer und Rechte",
+    "difficulty": "hard",
+    "question": "Was beschreibt das Prinzip 'Least Privilege'?",
+    "answers": [
+      "Benutzer erhalten nur die Rechte, die sie für ihre Aufgaben benötigen",
+      "Benutzer erhalten immer vollständige Administratorrechte",
+      "Jeder Prozess erhält Zugriff auf sämtliche Systemressourcen",
+      "Alle Freigaben werden grundsätzlich ohne Einschränkungen eingerichtet"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Least Privilege reduziert unnötige Rechte und damit potenzielle Angriffsflächen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-112",
+    "category": "Betriebssysteme",
+    "topic": "Dateisysteme",
+    "difficulty": "medium",
+    "question": "Welches Dateisystem wird häufig für Windows-Systemlaufwerke verwendet?",
+    "answers": [
+      "NTFS",
+      "ext4",
+      "APFS",
+      "HFS+"
+    ],
+    "correctAnswer": 0,
+    "explanation": "NTFS ist das übliche Dateisystem für moderne Windows-Systempartitionen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-113",
+    "category": "Betriebssysteme",
+    "topic": "Dateisysteme",
+    "difficulty": "medium",
+    "question": "Welchen Vorteil bietet NTFS gegenüber FAT32?",
+    "answers": [
+      "Es unterstützt unter anderem Berechtigungen und große Dateien",
+      "Es funktioniert ausschließlich auf USB-Sticks",
+      "Es erlaubt keine Ordnerhierarchien",
+      "Es unterstützt nur Dateien bis etwa 4 GB"
+    ],
+    "correctAnswer": 0,
+    "explanation": "NTFS bietet Funktionen wie ACL-Berechtigungen, Journaling und Unterstützung großer Dateien.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-114",
+    "category": "Betriebssysteme",
+    "topic": "Dateisysteme",
+    "difficulty": "medium",
+    "question": "Was bedeutet eine NTFS-Berechtigung?",
+    "answers": [
+      "Sie steuert den Zugriff auf Dateien und Ordner",
+      "Sie legt die CPU-Taktfrequenz fest",
+      "Sie bestimmt die Bildschirmauflösung",
+      "Sie steuert die Lüfterdrehzahl"
+    ],
+    "correctAnswer": 0,
+    "explanation": "NTFS-Berechtigungen regeln, welche Benutzer oder Gruppen auf Objekte zugreifen dürfen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-115",
+    "category": "Betriebssysteme",
+    "topic": "Dateisysteme",
+    "difficulty": "medium",
+    "question": "Was bedeutet 'Lesen' bei einer Dateiberechtigung?",
+    "answers": [
+      "Der Inhalt darf angezeigt beziehungsweise geöffnet werden",
+      "Der Inhalt darf automatisch gelöscht werden",
+      "Der Besitzer wird automatisch geändert",
+      "Die Datei wird permanent verschlüsselt"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Leserechte ermöglichen den Zugriff auf den Inhalt ohne notwendigerweise Änderungen zu erlauben.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-116",
+    "category": "Betriebssysteme",
+    "topic": "Dateisysteme",
+    "difficulty": "medium",
+    "question": "Was erlaubt die Berechtigung 'Ändern' typischerweise?",
+    "answers": [
+      "Dateien lesen, verändern und löschen",
+      "Nur Dateinamen anzeigen",
+      "Nur Dateien ausführen, aber nicht lesen",
+      "Ausschließlich den Besitzer ändern"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ändern umfasst typischerweise Lesen, Schreiben und Löschen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-117",
+    "category": "Betriebssysteme",
+    "topic": "Dateisysteme",
+    "difficulty": "hard",
+    "question": "Welche Berechtigungen wirken typischerweise stärker: explizites Verweigern oder Erlauben?",
+    "answers": [
+      "Explizites Verweigern hat in der Regel Vorrang",
+      "Explizites Erlauben hat immer Vorrang",
+      "Beide werden grundsätzlich ignoriert",
+      "Die Reihenfolge hängt nur vom Dateinamen ab"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Explizite Verweigerungen haben bei NTFS-Berechtigungen üblicherweise hohe Priorität.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-118",
+    "category": "Betriebssysteme",
+    "topic": "Dateisysteme",
+    "difficulty": "medium",
+    "question": "Wofür dient das NTFS-Journaling?",
+    "answers": [
+      "Dateisystemänderungen können konsistenter protokolliert und wiederhergestellt werden",
+      "Benutzerkennwörter werden vollständig im Dateisystemprotokoll gespeichert",
+      "Sicherungen werden automatisch durch eine zweite lokale Kopie ersetzt",
+      "Die physische Speicherkapazität eines Laufwerks wird dynamisch erweitert"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Journaling hilft bei der Konsistenz des Dateisystems nach unerwarteten Unterbrechungen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-119",
+    "category": "Betriebssysteme",
+    "topic": "Datenträgerverwaltung",
+    "difficulty": "medium",
+    "question": "Wozu dient die Windows-Datenträgerverwaltung?",
+    "answers": [
+      "Partitionen und Volumes können verwaltet werden",
+      "CPU-Kerne können aktiviert werden",
+      "Benutzerkennwörter können zurückgesetzt werden",
+      "Netzwerkports können gesperrt werden"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die Datenträgerverwaltung dient unter anderem zum Erstellen, Formatieren und Verwalten von Volumes.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-120",
+    "category": "Betriebssysteme",
+    "topic": "Datenträgerverwaltung",
+    "difficulty": "medium",
+    "question": "Was ist ein Laufwerksbuchstabe unter Windows?",
+    "answers": [
+      "Eine logische Bezeichnung für ein Volume oder Laufwerk",
+      "Die Seriennummer eines Prozessors",
+      "Die Kennung eines Benutzerkontos",
+      "Die Verschlüsselungsstufe einer Datei"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Windows verwendet Laufwerksbuchstaben wie C: oder D: zur Adressierung von Volumes.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-121",
+    "category": "Betriebssysteme",
+    "topic": "Datenträgerverwaltung",
+    "difficulty": "medium",
+    "question": "Was passiert beim Formatieren eines Volumes?",
+    "answers": [
+      "Ein Dateisystem wird auf dem Volume eingerichtet",
+      "Die CPU-Firmware wird aktualisiert",
+      "Das Benutzerkonto wird gelöscht",
+      "Die Netzwerkadresse wird geändert"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Formatieren richtet die logische Dateisystemstruktur auf einem Volume ein.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-122",
+    "category": "Betriebssysteme",
+    "topic": "Datenträgerverwaltung",
+    "difficulty": "medium",
+    "question": "Was ist eine Partition?",
+    "answers": [
+      "Ein logisch abgegrenzter Bereich eines Datenträgers",
+      "Ein laufender Hintergrunddienst",
+      "Eine virtuelle Benutzergruppe",
+      "Ein installierter Gerätetreiber"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Partitionen unterteilen einen physischen oder virtuellen Datenträger in logische Bereiche.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-123",
+    "category": "Betriebssysteme",
+    "topic": "Datenträgerverwaltung",
+    "difficulty": "medium",
+    "question": "Warum kann ein neues Laufwerk im Explorer fehlen, obwohl es erkannt wurde?",
+    "answers": [
+      "Es besitzt möglicherweise noch kein nutzbares Volume oder keinen Laufwerksbuchstaben",
+      "Der verwendete Grafiktreiber unterstützt möglicherweise die aktuelle Bildschirmauflösung nicht",
+      "Das Benutzerkonto besitzt möglicherweise zu wenige CPU-Ressourcen für den Explorer",
+      "Die angeschlossene Tastatur wurde möglicherweise beim Systemstart nicht korrekt erkannt"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ein Datenträger muss oft initialisiert, partitioniert und mit einem Laufwerksbuchstaben versehen werden.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-124",
+    "category": "Betriebssysteme",
+    "topic": "Prozesse",
+    "difficulty": "medium",
+    "question": "Was ist ein Prozess?",
+    "answers": [
+      "Eine laufende Instanz eines Programms",
+      "Ein dauerhaft gespeicherter Treiber",
+      "Ein physischer Teil des Mainboards",
+      "Ein Benutzerprofil auf dem Server"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ein Prozess repräsentiert ein aktuell ausgeführtes Programm mit zugewiesenen Ressourcen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-125",
+    "category": "Betriebssysteme",
+    "topic": "Prozesse",
+    "difficulty": "medium",
+    "question": "Welche Information zeigt der Task-Manager?",
+    "answers": [
+      "Auslastung und laufende Prozesse",
+      "Nur die Dateiberechtigungen eines Ordners",
+      "Nur die Netzwerkkonfiguration des Routers",
+      "Nur die installierten Druckermodelle"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Der Task-Manager zeigt unter anderem Prozesse, Leistung und Autostartprogramme.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-126",
+    "category": "Betriebssysteme",
+    "topic": "Prozesse",
+    "difficulty": "medium",
+    "question": "Was bedeutet eine hohe CPU-Auslastung im Task-Manager?",
+    "answers": [
+      "Die CPU ist stark mit Verarbeitung beschäftigt",
+      "Die SSD ist vollständig verschlüsselt",
+      "Der Arbeitsspeicher ist zwingend defekt",
+      "Das Netzwerk verwendet zu viele IP-Adressen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Hohe CPU-Auslastung zeigt starke Rechenaktivität an.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-127",
+    "category": "Betriebssysteme",
+    "topic": "Prozesse",
+    "difficulty": "medium",
+    "question": "Was zeigt die Speicherauslastung im Task-Manager?",
+    "answers": [
+      "Wie viel Arbeitsspeicher aktuell verwendet wird",
+      "Wie viel Speicherplatz auf der SSD frei ist",
+      "Wie viele Benutzer angemeldet sind",
+      "Wie viele Programme installiert sind"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die RAM-Auslastung zeigt die aktuelle Nutzung des physischen Arbeitsspeichers.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-128",
+    "category": "Betriebssysteme",
+    "topic": "Prozesse",
+    "difficulty": "medium",
+    "question": "Wann ist das Beenden eines Prozesses sinnvoll?",
+    "answers": [
+      "Wenn eine Anwendung nicht mehr reagiert und kontrolliert beendet werden muss",
+      "Wenn die Festplatte mehr freien Speicher benötigt",
+      "Wenn ein Benutzer sein Kennwort ändern möchte",
+      "Wenn ein Monitor eine andere Auflösung benötigt"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Nicht reagierende Prozesse können über den Task-Manager beendet werden.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-129",
+    "category": "Betriebssysteme",
+    "topic": "Prozesse",
+    "difficulty": "hard",
+    "question": "Welche Gefahr besteht beim Beenden eines unbekannten Systemprozesses?",
+    "answers": [
+      "Wichtige Systemfunktionen können beeinträchtigt werden",
+      "Die SSD wird automatisch größer",
+      "Der Monitor verliert dauerhaft seine Auflösung",
+      "Das Netzwerkkabel kann elektrisch beschädigt werden"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Systemprozesse erfüllen wichtige Aufgaben; unüberlegtes Beenden kann Instabilität verursachen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-130",
+    "category": "Betriebssysteme",
+    "topic": "Dienste",
+    "difficulty": "medium",
+    "question": "Was ist ein Windows-Dienst?",
+    "answers": [
+      "Ein Hintergrundprozess für System- oder Anwendungsfunktionen",
+      "Ein lokales Benutzerkonto für automatisierte Anmeldungen",
+      "Ein Dateisystem speziell für externe und wechselbare Laufwerke",
+      "Ein physischer Prozessorbereich für Hintergrundberechnungen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Dienste laufen häufig ohne direkte Benutzeroberfläche im Hintergrund.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-131",
+    "category": "Betriebssysteme",
+    "topic": "Dienste",
+    "difficulty": "medium",
+    "question": "Welche Startart kann ein Windows-Dienst besitzen?",
+    "answers": [
+      "Automatisch",
+      "Verschlüsselt",
+      "Komprimiert",
+      "Partitioniert"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Dienste können beispielsweise automatisch, manuell oder deaktiviert gestartet werden.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-132",
+    "category": "Betriebssysteme",
+    "topic": "Dienste",
+    "difficulty": "medium",
+    "question": "Was bedeutet die Startart 'Manuell' bei einem Dienst?",
+    "answers": [
+      "Der Dienst startet nur bei Bedarf oder durch einen Auslöser",
+      "Der Dienst startet bei jedem Systemstart zwingend",
+      "Der Dienst darf nie gestartet werden",
+      "Der Dienst startet nur im abgesicherten Modus"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Manuell bedeutet, dass der Dienst nicht grundsätzlich bei jedem Start geladen wird.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-133",
+    "category": "Betriebssysteme",
+    "topic": "Dienste",
+    "difficulty": "medium",
+    "question": "Warum sollte man unbekannte Windows-Dienste nicht wahllos deaktivieren?",
+    "answers": [
+      "Abhängige Funktionen oder Anwendungen können ausfallen",
+      "Die CPU-Taktfrequenz kann permanent verdoppelt werden",
+      "Das Dateisystem wird automatisch gelöscht",
+      "Der Benutzer verliert dauerhaft sein Kennwort"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Viele Dienste haben Abhängigkeiten und erfüllen zentrale Systemaufgaben.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-134",
+    "category": "Betriebssysteme",
+    "topic": "Dienste",
+    "difficulty": "hard",
+    "question": "Was beschreibt eine Dienstabhängigkeit?",
+    "answers": [
+      "Ein Dienst benötigt einen anderen Dienst für seine Funktion",
+      "Ein Dienst benötigt zwingend einen zweiten Monitor",
+      "Ein Dienst kann nur auf einer zweiten Partition laufen",
+      "Ein Dienst funktioniert nur mit einem lokalen Benutzerkonto"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Windows-Dienste können voneinander abhängig sein und in bestimmter Reihenfolge benötigt werden.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-135",
+    "category": "Betriebssysteme",
+    "topic": "Autostart",
+    "difficulty": "medium",
+    "question": "Was ist ein Autostartprogramm?",
+    "answers": [
+      "Eine Anwendung, die beim Anmelden oder Systemstart automatisch gestartet wird",
+      "Ein Programm, das nur nach einem Absturz startet",
+      "Ein Prozess, der ausschließlich im BIOS ausgeführt wird",
+      "Ein Treiber, der niemals beendet werden kann"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Autostartprogramme werden automatisch beim Systemstart oder der Benutzeranmeldung geladen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-136",
+    "category": "Betriebssysteme",
+    "topic": "Autostart",
+    "difficulty": "medium",
+    "question": "Wo können Autostartprogramme unter Windows einfach geprüft werden?",
+    "answers": [
+      "Im Task-Manager im Bereich Autostart",
+      "Nur in der Datenträgerverwaltung",
+      "Nur im Geräte-Manager",
+      "Nur in der Ereignisanzeige"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Der Task-Manager bietet eine Übersicht über viele Autostarteinträge.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-137",
+    "category": "Betriebssysteme",
+    "topic": "Autostart",
+    "difficulty": "medium",
+    "question": "Warum kann das Deaktivieren unnötiger Autostartprogramme sinnvoll sein?",
+    "answers": [
+      "Startzeit und Ressourcenverbrauch können reduziert werden",
+      "Die SSD-Kapazität wird dadurch automatisch erhöht",
+      "Windows erhält dadurch zusätzliche Benutzerkonten",
+      "Die Netzwerkadresse wird dadurch dauerhaft geändert"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Weniger unnötige Hintergrundprogramme können Start und Ressourcennutzung verbessern.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-138",
+    "category": "Betriebssysteme",
+    "topic": "Treiber",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe hat ein Gerätetreiber?",
+    "answers": [
+      "Er ermöglicht die Kommunikation zwischen Betriebssystem und Hardware",
+      "Er ersetzt die eigentliche Hardware durch eine vollständig virtuelle Komponente",
+      "Er speichert Benutzerdateien dauerhaft außerhalb des normalen Dateisystems",
+      "Er verwaltet ausschließlich Kennwörter und Zugangsdaten von Netzwerkverbindungen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Treiber stellen die Softwareschnittstelle zwischen Betriebssystem und Gerät bereit.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-139",
+    "category": "Betriebssysteme",
+    "topic": "Treiber",
+    "difficulty": "medium",
+    "question": "Wofür wird der Geräte-Manager verwendet?",
+    "answers": [
+      "Hardwaregeräte und zugehörige Treiber können geprüft und verwaltet werden",
+      "Benutzerprofile und persönliche Dateien können vollständig archiviert werden",
+      "Partitionen und Dateisysteme können erstellt und anschließend formatiert werden",
+      "Domänenkonten und zentrale Gruppenrichtlinien können eingerichtet werden"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Der Geräte-Manager zeigt erkannte Hardware und deren Treiberstatus.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-140",
+    "category": "Betriebssysteme",
+    "topic": "Treiber",
+    "difficulty": "medium",
+    "question": "Was kann ein gelbes Warnsymbol im Geräte-Manager bedeuten?",
+    "answers": [
+      "Es besteht ein Problem mit Gerät oder Treiber",
+      "Das Gerät arbeitet immer mit maximaler Leistung",
+      "Das Gerät ist erfolgreich verschlüsselt",
+      "Das Gerät befindet sich zwingend im Energiesparmodus"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Warnsymbole weisen auf Geräte- oder Treiberprobleme hin.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-141",
+    "category": "Betriebssysteme",
+    "topic": "Treiber",
+    "difficulty": "medium",
+    "question": "Warum kann ein Treiberupdate sinnvoll sein?",
+    "answers": [
+      "Fehler, Kompatibilität oder Sicherheit können verbessert werden",
+      "Der physische Arbeitsspeicher wird ohne Hardwareänderung dauerhaft erweitert",
+      "Das Systemlaufwerk wird beim Update automatisch neu formatiert",
+      "Der Prozessor erhält durch den Treiber zusätzliche physische Rechenkerne"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Treiberupdates können Fehler beheben und Unterstützung für Hardware oder Software verbessern.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-142",
+    "category": "Betriebssysteme",
+    "topic": "Treiber",
+    "difficulty": "hard",
+    "question": "Was ist ein möglicher Grund, einen neuen Treiber wieder zurückzusetzen?",
+    "answers": [
+      "Der neue Treiber verursacht Instabilität oder Funktionsprobleme",
+      "Der neue Treiber verwendet denselben Gerätenamen",
+      "Der neue Treiber wurde digital signiert",
+      "Der neue Treiber besitzt eine neuere Versionsnummer"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Bei Problemen kann ein zuvor funktionierender Treiber eine sinnvolle Rückfalloption sein.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-143",
+    "category": "Betriebssysteme",
+    "topic": "Windows Update",
+    "difficulty": "medium",
+    "question": "Welches Ziel haben Sicherheitsupdates?",
+    "answers": [
+      "Bekannte Sicherheitslücken zu schließen",
+      "Die SSD-Kapazität zu erhöhen",
+      "Den Prozessor physisch auszutauschen",
+      "Alle Benutzerprofile zurückzusetzen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Sicherheitsupdates beheben bekannte Schwachstellen in Software.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-144",
+    "category": "Betriebssysteme",
+    "topic": "Windows Update",
+    "difficulty": "medium",
+    "question": "Warum sollten Updates in Unternehmen geplant ausgerollt werden?",
+    "answers": [
+      "Kompatibilität und Betriebsunterbrechungen können kontrolliert werden",
+      "Updates funktionieren nur während der Arbeitszeit",
+      "Updates benötigen grundsätzlich Administratoren vor jedem Monitor",
+      "Updates dürfen nur auf neuen Geräten installiert werden"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Geplante Rollouts reduzieren Risiken und erlauben Tests vor breiter Verteilung.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-145",
+    "category": "Betriebssysteme",
+    "topic": "Windows Update",
+    "difficulty": "medium",
+    "question": "Was ist ein Funktionsupdate?",
+    "answers": [
+      "Ein größeres Update mit neuen oder geänderten Systemfunktionen",
+      "Eine tägliche Aktualisierung der Systemuhr",
+      "Ein Treiber ausschließlich für Drucker",
+      "Eine Sicherung des Benutzerprofils"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Funktionsupdates verändern typischerweise größere Teile des Betriebssystems.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-146",
+    "category": "Betriebssysteme",
+    "topic": "Windows Update",
+    "difficulty": "medium",
+    "question": "Warum kann ein Neustart nach einem Windows-Update erforderlich sein?",
+    "answers": [
+      "Bestimmte Systemdateien können erst beim Neustart ersetzt werden",
+      "Der Monitor muss danach neu kalibriert werden",
+      "Die SSD muss dadurch neu partitioniert werden",
+      "Alle Benutzerkonten müssen neu angelegt werden"
+    ],
+    "correctAnswer": 0,
+    "explanation": "In Benutzung befindliche Systemkomponenten können oft erst während eines Neustarts aktualisiert werden.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-147",
+    "category": "Betriebssysteme",
+    "topic": "Ereignisanzeige",
+    "difficulty": "medium",
+    "question": "Wozu dient die Windows-Ereignisanzeige?",
+    "answers": [
+      "System-, Anwendungs- und Sicherheitsereignisse können analysiert werden",
+      "Festplatten können physisch repariert werden",
+      "Arbeitsspeicher kann erweitert werden",
+      "Benutzer können direkt im BIOS angelegt werden"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die Ereignisanzeige protokolliert viele wichtige System- und Anwendungsereignisse.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-148",
+    "category": "Betriebssysteme",
+    "topic": "Ereignisanzeige",
+    "difficulty": "medium",
+    "question": "Warum ist ein Zeitstempel in einem Ereignisprotokoll hilfreich?",
+    "answers": [
+      "Fehler können zeitlich mit anderen Vorgängen abgeglichen werden",
+      "Die CPU erhält dadurch eine höhere Taktfrequenz",
+      "Das Ereignis wird dadurch automatisch behoben",
+      "Der Benutzer erhält dadurch Administratorrechte"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Zeitliche Zusammenhänge helfen bei der Ursachenanalyse.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-149",
+    "category": "Betriebssysteme",
+    "topic": "Ereignisanzeige",
+    "difficulty": "medium",
+    "question": "Was ist bei der Fehlersuche mit der Ereignisanzeige sinnvoll?",
+    "answers": [
+      "Relevante Fehler und Warnungen zum Problemzeitpunkt prüfen",
+      "Alle Protokolle ohne Prüfung sofort löschen",
+      "Nur erfolgreiche Ereignisse auswerten",
+      "Jede Warnung automatisch als Hardwaredefekt behandeln"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Kontext, Zeitpunkt und Quelle eines Ereignisses sind wichtig für die Diagnose.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-150",
+    "category": "Betriebssysteme",
+    "topic": "Windows Netzwerk",
+    "difficulty": "medium",
+    "question": "Welcher Befehl zeigt unter Windows die IP-Konfiguration?",
+    "answers": [
+      "ipconfig",
+      "format",
+      "taskkill",
+      "mkdir"
+    ],
+    "correctAnswer": 0,
+    "explanation": "ipconfig zeigt IP-Adresse, Subnetzmaske und weitere Netzwerkinformationen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-151",
+    "category": "Betriebssysteme",
+    "topic": "Windows Netzwerk",
+    "difficulty": "medium",
+    "question": "Was zeigt 'ipconfig /all' zusätzlich an?",
+    "answers": [
+      "Detaillierte Adapter-, DHCP-, DNS- und Adressinformationen",
+      "Detaillierte Angaben zur aktuellen Prozessor- und Speicherauslastung",
+      "Detaillierte NTFS-Berechtigungen aller lokalen Benutzerverzeichnisse",
+      "Detaillierte Versionsinformationen zu Windows und installierten Updates"
+    ],
+    "correctAnswer": 0,
+    "explanation": "ipconfig /all zeigt unter anderem MAC-Adresse, DHCP- und DNS-Informationen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-152",
+    "category": "Betriebssysteme",
+    "topic": "Windows Netzwerk",
+    "difficulty": "medium",
+    "question": "Wozu dient der Befehl ping?",
+    "answers": [
+      "Er testet die Erreichbarkeit eines Netzwerkziels",
+      "Er formatiert ein Netzlaufwerk",
+      "Er erstellt ein Benutzerkonto",
+      "Er beendet einen Hintergrunddienst"
+    ],
+    "correctAnswer": 0,
+    "explanation": "ping prüft mit ICMP-Echo-Anfragen, ob ein Ziel erreichbar ist.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-153",
+    "category": "Betriebssysteme",
+    "topic": "Windows Netzwerk",
+    "difficulty": "medium",
+    "question": "Was prüft 'ping 127.0.0.1' hauptsächlich?",
+    "answers": [
+      "Den lokalen TCP/IP-Stack",
+      "Die physische Verbindung zum Internetprovider",
+      "Die Funktion eines entfernten DNS-Servers",
+      "Die Geschwindigkeit des WLAN-Routers"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die Loopback-Adresse testet die lokale IP-Verarbeitung des Rechners.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-154",
+    "category": "Betriebssysteme",
+    "topic": "Windows Netzwerk",
+    "difficulty": "medium",
+    "question": "Welcher Befehl zeigt den Weg über mehrere Router zu einem Ziel?",
+    "answers": [
+      "tracert",
+      "hostname",
+      "whoami",
+      "chkdsk"
+    ],
+    "correctAnswer": 0,
+    "explanation": "tracert zeigt die Zwischenstationen beziehungsweise Hops zu einem Ziel.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-155",
+    "category": "Betriebssysteme",
+    "topic": "Windows Netzwerk",
+    "difficulty": "medium",
+    "question": "Wozu dient nslookup?",
+    "answers": [
+      "DNS-Namensauflösung kann geprüft werden",
+      "NTFS-Berechtigungen können geändert werden",
+      "Treiber können aktualisiert werden",
+      "Prozesse können beendet werden"
+    ],
+    "correctAnswer": 0,
+    "explanation": "nslookup fragt DNS-Informationen ab und hilft bei der Analyse der Namensauflösung.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-156",
+    "category": "Betriebssysteme",
+    "topic": "Windows Netzwerk",
+    "difficulty": "medium",
+    "question": "Was zeigt der Befehl hostname?",
+    "answers": [
+      "Den Namen des lokalen Rechners",
+      "Die MAC-Adresse des Routers",
+      "Die Seriennummer der SSD",
+      "Die Windows-Produkt-ID"
+    ],
+    "correctAnswer": 0,
+    "explanation": "hostname gibt den Computernamen des lokalen Systems aus.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-157",
+    "category": "Betriebssysteme",
+    "topic": "Windows Netzwerk",
+    "difficulty": "medium",
+    "question": "Was kann 'ipconfig /release' bei DHCP bewirken?",
+    "answers": [
+      "Die aktuell bezogene DHCP-Adresse wird freigegeben",
+      "Die Netzwerkkarte wird dauerhaft deaktiviert",
+      "Das DNS-Protokoll wird deinstalliert",
+      "Die lokale Firewall wird ausgeschaltet"
+    ],
+    "correctAnswer": 0,
+    "explanation": "release gibt eine per DHCP erhaltene Konfiguration frei.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-158",
+    "category": "Betriebssysteme",
+    "topic": "Windows Netzwerk",
+    "difficulty": "medium",
+    "question": "Was bewirkt 'ipconfig /renew' typischerweise?",
+    "answers": [
+      "Eine DHCP-Konfiguration wird neu angefordert",
+      "Alle Netzwerkprofile werden gelöscht",
+      "Der DNS-Server wird neu installiert",
+      "Das Benutzerkonto wird erneuert"
+    ],
+    "correctAnswer": 0,
+    "explanation": "renew fordert vom DHCP-Server eine neue oder erneuerte Lease an.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-159",
+    "category": "Betriebssysteme",
+    "topic": "Windows Netzwerk",
+    "difficulty": "hard",
+    "question": "Ein Rechner kann eine IP-Adresse anpingen, aber keinen Hostnamen. Welche Ursache ist besonders plausibel?",
+    "answers": [
+      "Die DNS-Namensauflösung funktioniert nicht korrekt",
+      "Der Arbeitsspeicher ist vollständig ausgelastet",
+      "Der Monitor verwendet die falsche Auflösung",
+      "Die SSD besitzt kein Laufwerkslabel"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Wenn IP-Konnektivität funktioniert, aber Namen nicht, sollte DNS geprüft werden.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-160",
+    "category": "Betriebssysteme",
+    "topic": "Freigaben",
+    "difficulty": "medium",
+    "question": "Was ist eine Netzwerkfreigabe?",
+    "answers": [
+      "Ein Ordner oder eine Ressource, die über das Netzwerk bereitgestellt wird",
+      "Ein ausschließlich lokaler Systemordner, auf den nur Windows selbst zugreifen kann",
+      "Eine Partition ohne Dateisystem, die erst später einem Benutzer zugewiesen wird",
+      "Ein Hintergrundprozess, der ausschließlich Kernel-Funktionen lokal ausführt"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Freigaben ermöglichen autorisierten Benutzern den Netzwerkzugriff auf Ressourcen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-161",
+    "category": "Betriebssysteme",
+    "topic": "Freigaben",
+    "difficulty": "medium",
+    "question": "Welche zwei Berechtigungsebenen können bei einer Windows-Dateifreigabe relevant sein?",
+    "answers": [
+      "Freigabeberechtigungen und NTFS-Berechtigungen",
+      "BIOS-Berechtigungen und CPU-Berechtigungen",
+      "Monitorrechte und Druckerrechte",
+      "UEFI-Rechte und SATA-Rechte"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Bei Netzwerkzugriff können sowohl Freigabe- als auch Dateisystemberechtigungen wirken.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-162",
+    "category": "Betriebssysteme",
+    "topic": "Freigaben",
+    "difficulty": "hard",
+    "question": "Welche Berechtigung ist bei Netzwerkzugriff auf eine NTFS-Freigabe praktisch entscheidend?",
+    "answers": [
+      "Die wirksamste Einschränkung aus Freigabe- und NTFS-Rechten",
+      "Immer ausschließlich die Freigabeberechtigung",
+      "Immer ausschließlich die NTFS-Berechtigung",
+      "Immer die Einstellung mit den meisten Rechten"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die effektiven Rechte ergeben sich aus beiden Ebenen; restriktivere Rechte begrenzen den Zugriff.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-163",
+    "category": "Betriebssysteme",
+    "topic": "Freigaben",
+    "difficulty": "medium",
+    "question": "Wofür wird ein UNC-Pfad verwendet?",
+    "answers": [
+      "Für den Zugriff auf Netzwerkressourcen wie \\\\Server\\Freigabe",
+      "Für die Angabe eines lokalen CPU-Sockels",
+      "Für die Benennung einer Partitionstabelle",
+      "Für die Beschreibung einer Bildschirmauflösung"
+    ],
+    "correctAnswer": 0,
+    "explanation": "UNC-Pfade adressieren Netzwerkressourcen unabhängig von Laufwerksbuchstaben.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-164",
+    "category": "Betriebssysteme",
+    "topic": "Freigaben",
+    "difficulty": "medium",
+    "question": "Was ist ein Netzlaufwerk?",
+    "answers": [
+      "Eine Netzwerkfreigabe, die einem Laufwerksbuchstaben zugeordnet ist",
+      "Eine Festplatte mit eingebautem WLAN-Modul",
+      "Ein virtuelles DVD-Laufwerk ohne Netzwerkzugriff",
+      "Eine SSD mit eigener IP-Adresse im PC"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Netzlaufwerke binden Freigaben bequem als Laufwerksbuchstaben ein.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-165",
+    "category": "Betriebssysteme",
+    "topic": "Windows Sicherheit",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe hat die Windows-Firewall?",
+    "answers": [
+      "Netzwerkverkehr anhand von Regeln zu erlauben oder zu blockieren",
+      "Arbeitsspeicher auf Fehler zu prüfen",
+      "Festplatten automatisch zu defragmentieren",
+      "Benutzerdateien dauerhaft zu archivieren"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Eine Firewall kontrolliert ein- und ausgehenden Netzwerkverkehr.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-166",
+    "category": "Betriebssysteme",
+    "topic": "Windows Sicherheit",
+    "difficulty": "medium",
+    "question": "Warum unterscheiden sich Firewallprofile wie Privat und Öffentlich?",
+    "answers": [
+      "Je nach Netzwerkumgebung können unterschiedliche Regeln gelten",
+      "Jedes Profil verwendet ein anderes Dateisystem",
+      "Jedes Profil benötigt eine eigene CPU",
+      "Die Profile bestimmen ausschließlich das Desktopdesign"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Öffentliche Netze erfordern typischerweise restriktivere Regeln als vertrauenswürdige private Netze.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-167",
+    "category": "Betriebssysteme",
+    "topic": "Windows Sicherheit",
+    "difficulty": "medium",
+    "question": "Welche Aufgabe erfüllt Microsoft Defender Antivirus?",
+    "answers": [
+      "Schadsoftware erkennen und blockieren",
+      "IP-Adressen automatisch vergeben",
+      "Partitionen erstellen und formatieren",
+      "Druckertreiber installieren"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Defender Antivirus schützt vor verschiedenen Arten von Schadsoftware.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-168",
+    "category": "Betriebssysteme",
+    "topic": "Windows Sicherheit",
+    "difficulty": "medium",
+    "question": "Warum sollten Virensignaturen beziehungsweise Schutzinformationen aktuell sein?",
+    "answers": [
+      "Neue bekannte Bedrohungen können besser erkannt werden",
+      "Der Arbeitsspeicher wird dadurch schneller",
+      "Die Netzwerkkarte erhält eine neue MAC-Adresse",
+      "Die SSD wird dadurch größer"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Aktuelle Erkennungsdaten verbessern den Schutz gegen neu bekannte Schadsoftware.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-169",
+    "category": "Betriebssysteme",
+    "topic": "Windows Sicherheit",
+    "difficulty": "hard",
+    "question": "Warum ist ein deaktivierter Echtzeitschutz auf einem Arbeitsplatz riskant?",
+    "answers": [
+      "Schädliche Dateien können weniger unmittelbar erkannt werden",
+      "Windows verliert dadurch automatisch seine Lizenz",
+      "Die CPU arbeitet danach nur noch mit einem Kern",
+      "Alle Netzwerkfreigaben werden automatisch gelöscht"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Echtzeitschutz prüft Dateien und Aktivitäten während der Nutzung.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-170",
+    "category": "Betriebssysteme",
+    "topic": "BitLocker",
+    "difficulty": "medium",
+    "question": "Wozu dient BitLocker?",
+    "answers": [
+      "Laufwerke können verschlüsselt werden",
+      "CPU-Kerne können virtualisiert werden",
+      "Netzwerkpakete können priorisiert werden",
+      "Druckaufträge können komprimiert werden"
+    ],
+    "correctAnswer": 0,
+    "explanation": "BitLocker schützt Daten auf Laufwerken durch Verschlüsselung.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-171",
+    "category": "Betriebssysteme",
+    "topic": "BitLocker",
+    "difficulty": "medium",
+    "question": "Warum ist ein BitLocker-Wiederherstellungsschlüssel wichtig?",
+    "answers": [
+      "Er kann bei bestimmten Sicherheits- oder Hardwareänderungen den Zugriff wieder ermöglichen",
+      "Er ersetzt das normale Windows-Kennwort dauerhaft bei jeder Benutzeranmeldung",
+      "Er vergrößert den verfügbaren Speicherplatz eines verschlüsselten Laufwerks automatisch",
+      "Er startet Windows bei jedem Fehler automatisch im abgesicherten Modus"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Bei Sicherheitsprüfungen oder Änderungen kann Windows den Recovery Key verlangen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-172",
+    "category": "Betriebssysteme",
+    "topic": "BitLocker",
+    "difficulty": "medium",
+    "question": "Welches Hardwaremodul kann BitLocker unterstützen?",
+    "answers": [
+      "TPM",
+      "GPU",
+      "Soundkarte",
+      "USB-Hub"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ein TPM kann Schlüsselmaterial sicher an die Plattformkonfiguration binden.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-173",
+    "category": "Betriebssysteme",
+    "topic": "BitLocker",
+    "difficulty": "hard",
+    "question": "Warum kann eine größere Firmware- oder Hardwareänderung eine BitLocker-Abfrage auslösen?",
+    "answers": [
+      "Die gemessene Systemkonfiguration kann von der erwarteten Konfiguration abweichen",
+      "Die SSD verliert dadurch automatisch ihr Dateisystem",
+      "Der Benutzername wird dadurch verändert",
+      "Windows erkennt danach grundsätzlich keine USB-Geräte mehr"
+    ],
+    "correctAnswer": 0,
+    "explanation": "BitLocker kann Plattformmessungen verwenden, um unerwartete Startänderungen zu erkennen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-174",
+    "category": "Betriebssysteme",
+    "topic": "Backup und Wiederherstellung",
+    "difficulty": "medium",
+    "question": "Warum ist ein Backup wichtig?",
+    "answers": [
+      "Daten können nach Verlust oder Beschädigung wiederhergestellt werden",
+      "Die Rechenleistung des Systems kann ohne Hardwareänderung deutlich erhöht werden",
+      "Benutzeranmeldungen und Zugriffsrechte werden durch das Backup vollständig ersetzt",
+      "Hardwaredefekte können durch eine vorhandene Sicherung vollständig verhindert werden"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Backups reduzieren die Folgen von Datenverlust.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-175",
+    "category": "Betriebssysteme",
+    "topic": "Backup und Wiederherstellung",
+    "difficulty": "medium",
+    "question": "Warum sollte ein Backup nicht ausschließlich auf demselben Datenträger liegen?",
+    "answers": [
+      "Ein Defekt des Datenträgers könnte Original und Sicherung gleichzeitig betreffen",
+      "Das Betriebssystem könnte sonst grundsätzlich nicht mehr vom Systemlaufwerk starten",
+      "Windows erlaubt auf einem Datenträger grundsätzlich keine zweite Kopie derselben Datei",
+      "Der angemeldete Benutzer könnte dadurch automatisch zu viele Dateiberechtigungen erhalten"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Getrennte Speicherorte reduzieren gemeinsame Ausfallrisiken.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-176",
+    "category": "Betriebssysteme",
+    "topic": "Backup und Wiederherstellung",
+    "difficulty": "medium",
+    "question": "Was ist ein Wiederherstellungspunkt in Windows?",
+    "answers": [
+      "Ein gespeicherter Systemzustand für bestimmte Konfigurationsänderungen",
+      "Eine vollständige Kopie aller persönlichen Dateien",
+      "Ein Ersatz für jedes externe Backup",
+      "Eine dauerhafte Kopie des gesamten Arbeitsspeichers"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Systemwiederherstellung kann bestimmte Systemdateien und Einstellungen auf einen früheren Zustand setzen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-177",
+    "category": "Betriebssysteme",
+    "topic": "Backup und Wiederherstellung",
+    "difficulty": "medium",
+    "question": "Was sollte nach Erstellung einer Datensicherung regelmäßig geprüft werden?",
+    "answers": [
+      "Ob die Sicherung tatsächlich wiederherstellbar ist",
+      "Ob die Datei möglichst groß geworden ist",
+      "Ob der Monitor ausgeschaltet bleibt",
+      "Ob keine Protokolle erzeugt wurden"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ein Backup ist nur wertvoll, wenn die Wiederherstellung funktioniert.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-178",
+    "category": "Betriebssysteme",
+    "topic": "Backup und Wiederherstellung",
+    "difficulty": "hard",
+    "question": "Warum schützt eine reine Dateisynchronisation nicht zwingend wie ein Backup?",
+    "answers": [
+      "Gelöschte oder beschädigte Daten können synchron auf das Ziel übernommen werden",
+      "Synchronisation speichert grundsätzlich keine Dateien",
+      "Synchronisation funktioniert ausschließlich mit DVDs",
+      "Synchronisation deaktiviert automatisch Dateiberechtigungen"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Synchronisation kann Änderungen inklusive Fehlern oder Löschungen spiegeln.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-179",
+    "category": "Betriebssysteme",
+    "topic": "Wiederherstellung",
+    "difficulty": "medium",
+    "question": "Wozu dient der abgesicherte Modus?",
+    "answers": [
+      "Windows startet mit einer reduzierten Auswahl an Treibern und Diensten",
+      "Windows startet mit maximaler Grafikleistung",
+      "Alle Benutzer erhalten Administratorrechte",
+      "Alle Laufwerke werden automatisch formatiert"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Der abgesicherte Modus erleichtert Diagnose bei Treiber- oder Startproblemen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-180",
+    "category": "Betriebssysteme",
+    "topic": "Wiederherstellung",
+    "difficulty": "medium",
+    "question": "Wann ist der abgesicherte Modus besonders nützlich?",
+    "answers": [
+      "Wenn ein Treiber oder Autostartprogramm den normalen Start stört",
+      "Wenn die SSD mehr Speicherplatz benötigt",
+      "Wenn ein Drucker neues Papier benötigt",
+      "Wenn ein Benutzer ein neues Kennwort wünscht"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Mit reduziertem Startumfang können störende Komponenten leichter identifiziert werden.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-181",
+    "category": "Betriebssysteme",
+    "topic": "Wiederherstellung",
+    "difficulty": "medium",
+    "question": "Was ist die Windows-Wiederherstellungsumgebung WinRE?",
+    "answers": [
+      "Eine Umgebung mit Werkzeugen zur Reparatur und Wiederherstellung",
+      "Eine alternative Desktopumgebung für Spiele und Multimediaanwendungen",
+      "Ein Dateisystem speziell für externe Sicherungs- und Installationslaufwerke",
+      "Ein eigenständiges Programm ausschließlich zur Bearbeitung von Videos"
+    ],
+    "correctAnswer": 0,
+    "explanation": "WinRE bietet Werkzeuge für Startreparatur, Wiederherstellung und weitere Fehlerbehebung.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-182",
+    "category": "Betriebssysteme",
+    "topic": "Wiederherstellung",
+    "difficulty": "medium",
+    "question": "Welche Funktion kann bei Startproblemen helfen?",
+    "answers": [
+      "Starthilfe beziehungsweise Startup Repair",
+      "Datenträgerbereinigung für temporäre Systemdateien",
+      "Bildschirmlupe für die barrierefreie Darstellung",
+      "Zwischenablageverlauf für kopierte Texte und Dateien"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die Starthilfe analysiert bestimmte Probleme, die den Windows-Start verhindern.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-183",
+    "category": "Betriebssysteme",
+    "topic": "Kommandozeile",
+    "difficulty": "medium",
+    "question": "Welcher Befehl zeigt den aktuellen Benutzer in Windows an?",
+    "answers": [
+      "whoami",
+      "ipconfig",
+      "dir",
+      "format"
+    ],
+    "correctAnswer": 0,
+    "explanation": "whoami zeigt die Identität des aktuell verwendeten Sicherheitskontexts.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-184",
+    "category": "Betriebssysteme",
+    "topic": "Kommandozeile",
+    "difficulty": "medium",
+    "question": "Welcher CMD-Befehl listet Dateien und Ordner auf?",
+    "answers": [
+      "dir",
+      "cd",
+      "cls",
+      "ping"
+    ],
+    "correctAnswer": 0,
+    "explanation": "dir zeigt den Inhalt eines Verzeichnisses.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-185",
+    "category": "Betriebssysteme",
+    "topic": "Kommandozeile",
+    "difficulty": "medium",
+    "question": "Welcher Befehl wechselt in ein anderes Verzeichnis?",
+    "answers": [
+      "cd",
+      "dir",
+      "type",
+      "hostname"
+    ],
+    "correctAnswer": 0,
+    "explanation": "cd steht für change directory.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-186",
+    "category": "Betriebssysteme",
+    "topic": "Kommandozeile",
+    "difficulty": "medium",
+    "question": "Was macht der Befehl cls in der Eingabeaufforderung?",
+    "answers": [
+      "Er leert die sichtbare Konsolenausgabe",
+      "Er löscht den aktuellen Ordner",
+      "Er beendet Windows",
+      "Er prüft das Dateisystem"
+    ],
+    "correctAnswer": 0,
+    "explanation": "cls räumt lediglich die sichtbare Anzeige der Konsole auf.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-187",
+    "category": "Betriebssysteme",
+    "topic": "Kommandozeile",
+    "difficulty": "medium",
+    "question": "Welcher Befehl kann Prozesse in der CMD anzeigen?",
+    "answers": [
+      "tasklist",
+      "netstat",
+      "mkdir",
+      "copy"
+    ],
+    "correctAnswer": 0,
+    "explanation": "tasklist zeigt laufende Prozesse und zugehörige Informationen.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-188",
+    "category": "Betriebssysteme",
+    "topic": "Kommandozeile",
+    "difficulty": "medium",
+    "question": "Welcher Befehl kann einen Prozess gezielt beenden?",
+    "answers": [
+      "taskkill",
+      "tracert",
+      "hostname",
+      "chkdsk"
+    ],
+    "correctAnswer": 0,
+    "explanation": "taskkill kann Prozesse anhand verschiedener Kriterien beenden.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-189",
+    "category": "Betriebssysteme",
+    "topic": "PowerShell",
+    "difficulty": "medium",
+    "question": "Was ist PowerShell?",
+    "answers": [
+      "Eine Shell und Skriptumgebung zur Administration",
+      "Ein Dateisystem ausschließlich für Windows",
+      "Eine Hardwarekomponente auf dem Mainboard",
+      "Ein Antivirenprogramm ohne Skriptfunktion"
+    ],
+    "correctAnswer": 0,
+    "explanation": "PowerShell kombiniert Kommandozeile, Objekte und Skripting für Administration und Automatisierung.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-190",
+    "category": "Betriebssysteme",
+    "topic": "PowerShell",
+    "difficulty": "medium",
+    "question": "Welcher Vorteil von PowerShell gegenüber rein textbasierter Ausgabe ist typisch?",
+    "answers": [
+      "Viele Befehle geben strukturierte Objekte zurück",
+      "PowerShell benötigt grundsätzlich keine Berechtigungen",
+      "PowerShell kann ausschließlich Netzwerkbefehle ausführen",
+      "PowerShell funktioniert nur ohne grafische Oberfläche"
+    ],
+    "correctAnswer": 0,
+    "explanation": "PowerShell-Pipelines verarbeiten häufig Objekte mit Eigenschaften statt nur Text.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-191",
+    "category": "Betriebssysteme",
+    "topic": "Systeminformationen",
+    "difficulty": "medium",
+    "question": "Welches Windows-Werkzeug zeigt umfangreiche Systeminformationen?",
+    "answers": [
+      "msinfo32",
+      "calc",
+      "mspaint",
+      "notepad"
+    ],
+    "correctAnswer": 0,
+    "explanation": "msinfo32 zeigt Hardware-, System- und Ressourcendetails.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-192",
+    "category": "Betriebssysteme",
+    "topic": "Systeminformationen",
+    "difficulty": "medium",
+    "question": "Wozu dient der Befehl winver?",
+    "answers": [
+      "Er zeigt Windows-Version, Edition und Build-Informationen",
+      "Er prüft Dateisystem und Laufwerk auf logische Fehler",
+      "Er verwaltet lokale Benutzerkonten und Gruppenmitgliedschaften",
+      "Er testet Erreichbarkeit und Qualität einer Netzwerkverbindung"
+    ],
+    "correctAnswer": 0,
+    "explanation": "winver zeigt Informationen zur installierten Windows-Version.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-193",
+    "category": "Betriebssysteme",
+    "topic": "Systeminformationen",
+    "difficulty": "medium",
+    "question": "Warum ist die genaue Windows-Buildnummer bei Supportfällen hilfreich?",
+    "answers": [
+      "Fehler und Updates können versionsabhängig sein",
+      "Sie bestimmt die Größe des Arbeitsspeichers",
+      "Sie legt die MAC-Adresse des Rechners fest",
+      "Sie ersetzt die Seriennummer der Hardware"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Bestimmte Fehler, Funktionen und Patches hängen von der genauen Version ab.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-194",
+    "category": "Betriebssysteme",
+    "topic": "Windows Installation",
+    "difficulty": "medium",
+    "question": "Was ist eine Neuinstallation von Windows?",
+    "answers": [
+      "Das Betriebssystem wird neu auf einem Zielsystem eingerichtet",
+      "Nur ein Benutzerkonto wird neu angelegt",
+      "Nur der Browser wird aktualisiert",
+      "Nur die Netzwerkkarte wird zurückgesetzt"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Bei einer Neuinstallation wird Windows auf einer Partition neu eingerichtet.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-195",
+    "category": "Betriebssysteme",
+    "topic": "Windows Installation",
+    "difficulty": "medium",
+    "question": "Warum sollte vor einer Neuinstallation ein Backup geprüft werden?",
+    "answers": [
+      "Persönliche Daten könnten beim Installationsprozess verloren gehen",
+      "Windows könnte ohne vorhandene Sicherung grundsätzlich nicht mehr gestartet werden",
+      "Die Firmwareeinstellungen könnten ohne Backup nicht mehr geöffnet oder geändert werden",
+      "Der Prozessor könnte während der Neuinstallation dauerhaft zu wenig Spannung erhalten"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Neuinstallation oder Partitionierung kann bestehende Daten überschreiben.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-196",
+    "category": "Betriebssysteme",
+    "topic": "Windows Installation",
+    "difficulty": "medium",
+    "question": "Von welchem Medium kann Windows typischerweise installiert werden?",
+    "answers": [
+      "Von einem bootfähigen USB-Stick",
+      "Nur von einer internen HDD",
+      "Nur über einen Druckeranschluss",
+      "Nur aus dem Arbeitsspeicher"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Windows-Installationsmedien werden häufig als bootfähige USB-Sticks verwendet.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-197",
+    "category": "Betriebssysteme",
+    "topic": "Windows Installation",
+    "difficulty": "medium",
+    "question": "Warum muss die Bootreihenfolge für eine Installation eventuell geändert werden?",
+    "answers": [
+      "Der Rechner soll zunächst vom Installationsmedium starten",
+      "Die SSD soll dadurch mehr Speicher erhalten",
+      "Die CPU soll dadurch höher takten",
+      "Der Benutzer soll dadurch Administrator werden"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Das Installationsmedium muss vor dem vorhandenen Betriebssystem ausgewählt werden können.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-198",
+    "category": "Betriebssysteme",
+    "topic": "Windows Installation",
+    "difficulty": "medium",
+    "question": "Was ist nach einer frischen Windows-Installation typischerweise zu prüfen?",
+    "answers": [
+      "Treiber, Updates, Aktivierung und benötigte Anwendungen",
+      "Desktopdesign, Hintergrundbild, Farbschema und Mauszeiger",
+      "Systemtöne, Lautstärkeeinstellung, Screensaver und Uhrformat",
+      "Taskleistenposition, Symbolgröße, Fensterfarbe und Wallpaper"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ein einsatzbereites System benötigt passende Treiber, aktuelle Updates und die erforderliche Software.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-199",
+    "category": "Betriebssysteme",
+    "topic": "Lizenzierung",
+    "difficulty": "medium",
+    "question": "Was ist die Windows-Aktivierung?",
+    "answers": [
+      "Eine Prüfung, ob die Windows-Lizenz ordnungsgemäß verwendet wird",
+      "Eine Verschlüsselung sämtlicher Benutzerdateien",
+      "Eine automatische Aktualisierung aller Treiber",
+      "Eine Formatierung des Systemlaufwerks"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Aktivierung verbindet die Installation mit einer gültigen Lizenzberechtigung.",
+    "source": "betriebssysteme.csv"
+  },
+  {
+    "id": "betriebssysteme-200",
+    "category": "Betriebssysteme",
+    "topic": "Lizenzierung",
+    "difficulty": "medium",
+    "question": "Warum ist Lizenzmanagement in Unternehmen wichtig?",
+    "answers": [
+      "Nutzungsrechte und Lizenzbedarf müssen nachvollziehbar bleiben",
+      "Lizenzen erhöhen automatisch die CPU-Leistung",
+      "Lizenzen ersetzen jede Benutzerverwaltung",
+      "Lizenzen machen Updates unnötig"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Unternehmen müssen eingesetzte Software und Nutzungsrechte kontrollieren.",
+    "source": "betriebssysteme.csv"
+  },
+  {
     "id": "hardware-001",
     "category": "Hardware",
     "topic": null,

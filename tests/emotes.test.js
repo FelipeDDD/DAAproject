@@ -4,7 +4,9 @@ import { inRoom,send } from '../convex/emotes.js';
 import { cooldownReady } from '../src/emotes/EmoteSync.js';
 import { EmoteState } from '../src/emotes/EmoteState.js';
 import {
-  DEFAULT_EMOTE_SLOTS,EMOTE_COOLDOWN_MS,emoteStorageKey,loadEmoteSlots,saveEmoteSlots,shortcutSlot,
+  ACTIVE_EMOTE_PACK_ID,activeEmotePack,AVAILABLE_EMOTES,clampHotbarPosition,DEFAULT_EMOTE_SLOTS,
+  EMOTE_COOLDOWN_MS,EMOTE_PACKS,emoteDefinition,emoteStorageKey,loadEmoteBarPosition,loadEmoteSlots,
+  resetEmoteBarPosition,saveEmoteBarPosition,saveEmoteSlots,shortcutSlot,
 } from '../src/emotes/config.js';
 
 function editable(selector){return {closest:query=>query.includes(selector)?{}:null};}
@@ -23,6 +25,23 @@ test('six customizable slots are stored independently for each character',()=>{
   assert.deepEqual(loadEmoteSlots('michael',storage),changed);
   assert.deepEqual(loadEmoteSlots('felipe',storage),DEFAULT_EMOTE_SLOTS);
   assert.notEqual(emoteStorageKey('michael'),emoteStorageKey('felipe'));
+});
+
+test('default emote pack supplies named icons for all six default slots',()=>{
+  assert.equal(ACTIVE_EMOTE_PACK_ID,'default');assert.equal(activeEmotePack(),EMOTE_PACKS.default);
+  assert.ok(DEFAULT_EMOTE_SLOTS.every(icon=>AVAILABLE_EMOTES.includes(icon)));
+  assert.ok(DEFAULT_EMOTE_SLOTS.every(icon=>emoteDefinition(icon)?.name));
+});
+
+test('emote bar position is clamped, persisted and reset independently from slot choices',()=>{
+  assert.deepEqual(clampHotbarPosition({x:-20,y:900},{width:300,height:70},{width:800,height:600}),{x:0,y:530});
+  const values=new Map(),storage={
+    getItem:key=>values.get(key)??null,setItem:(key,value)=>values.set(key,value),removeItem:key=>values.delete(key),
+  };
+  assert.equal(loadEmoteBarPosition(storage),null);
+  assert.deepEqual(saveEmoteBarPosition({x:123.6,y:44.2},storage),{x:124,y:44});
+  assert.deepEqual(loadEmoteBarPosition(storage),{x:124,y:44});
+  resetEmoteBarPosition(storage);assert.equal(loadEmoteBarPosition(storage),null);
 });
 
 test('client cooldown allows one emote per configured interval',()=>{
