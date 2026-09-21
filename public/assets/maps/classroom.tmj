@@ -8576,6 +8576,32 @@
                  "width":0,
                  "x":718.545454545455,
                  "y":655.636363636364
+                },
+                {
+                 "height":0,
+                 "id":499,
+                 "name":"door-office2",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":143.5,
+                 "y":398.25
+                },
+                {
+                 "height":0,
+                 "id":500,
+                 "name":"",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":163,
+                 "y":325.75
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -8584,7 +8610,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":499,
+ "nextobjectid":501,
  "orientation":"orthogonal",
  "properties":[
         {

@@ -83,7 +83,7 @@ export class CharacterMenu {
       this.presence.identity={playerId:c.id,characterId:c.id,name:c.name,sessionId:this.sessionId};
       try{localStorage.setItem(CHARACTER_STORAGE_KEY,c.id);}catch{}
       // Keep the claim alive while Phaser loads its maps and sprites.
-      this.presence.enter('selection',()=>({x:0,y:0,direction:'down'}),()=>{});
+      this.presence.enter('selection',()=>({x:0,y:0,direction:'down',activeCharacterItem:null}),()=>{});
       this.root.hidden=true;
       this.onChoose(c);
     }catch(error){this.message.textContent='Could not join. Check the connection and try again.';console.warn(error);}

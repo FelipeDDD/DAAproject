@@ -41,7 +41,8 @@ export function saveFloatingPosition(storageKey,position,storage=globalThis.loca
 export function resetFloatingPosition(storageKey,storage=globalThis.localStorage){storage?.removeItem(storageKey);}
 
 export function defaultHotbarPosition(kind,element,{doc=globalThis.document,viewport=globalThis.window}={}){
-  const size=element.getBoundingClientRect(),chat=doc?.getElementById('room-chat')?.getBoundingClientRect();
+  const size=element.getBoundingClientRect(),chatElement=doc?.getElementById('room-chat');
+  const chat=chatElement?.dataset?.state==='active'?chatElement.getBoundingClientRect():null;
   const inventory=doc?.querySelector('.inventory-hotbar')?.getBoundingClientRect();
   let x=12,y=(viewport?.innerHeight??size.height+12)-size.height-12;
   if(kind==='inventory'&&chat?.width){x=chat.right+12;y=chat.top;}

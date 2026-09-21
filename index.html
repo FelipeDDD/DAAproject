@@ -15,14 +15,20 @@
           <h1>IT Classroom</h1>
         </div>
         <div class="header-controls">
-          <label class="viewport-size-control" for="viewport-size">View
-            <select id="viewport-size" aria-label="Game viewport size">
-              <option value="compact">Compact</option>
-              <option value="normal">Normal</option>
-              <option value="large">Large</option>
-            </select>
-          </label>
-          <span class="version">v0.1 · Local</span>
+          <div class="header-primary-controls">
+            <label class="viewport-size-control" for="viewport-size">View
+              <select id="viewport-size" aria-label="Game viewport size">
+                <option value="compact">Compact</option>
+                <option value="normal">Normal</option>
+                <option value="large">Large</option>
+              </select>
+            </label>
+            <span class="version">v0.1 · Local</span>
+          </div>
+          <div class="background-picker">
+            <button id="background-toggle" type="button" aria-expanded="false" aria-controls="background-options">Background <span aria-hidden="true">▾</span></button>
+            <div id="background-options" class="background-options" role="group" aria-label="Page background" hidden></div>
+          </div>
         </div>
       </header>
       <section id="character-menu" aria-labelledby="character-title">
@@ -38,8 +44,11 @@
         <div id="character-list"></div>
         <p id="character-message" role="status"></p>
       </section>
-      <button id="change-character" hidden>Change character</button>
       <section id="play-area" hidden>
+      <div id="play-toolbar">
+        <button id="change-character" hidden>Change character</button>
+        <p id="movement-guide">Explore with <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> or the <kbd>arrow keys</kbd>.</p>
+      </div>
       <div id="game-shell" data-hud-visible="true">
         <div id="game-frame" aria-hidden="true">
           <span class="frame-edge frame-edge--top"></span><span class="frame-edge frame-edge--bottom"></span>
@@ -48,28 +57,33 @@
           <span class="frame-corner frame-corner--bottom-left"></span><span class="frame-corner frame-corner--bottom-right"></span>
         </div>
         <div id="game" tabindex="0" role="region" aria-label="2D room. Use WASD or the arrow keys to move your character."></div>
+        <p id="interaction-hint" role="status" hidden></p>
+        <section id="room-chat" hidden aria-label="Room chat" data-state="hidden">
+          <header class="chat-overlay-header">
+            <span>ROOM CHAT</span>
+            <button id="chat-pin" type="button" aria-label="Pin chat" aria-pressed="false" title="Pin chat">📌</button>
+          </header>
+          <ol id="chat-messages" aria-label="Messages"></ol>
+          <input id="chat-input" aria-label="Message for this room" maxlength="200" placeholder="Message · Enter to send" autocomplete="off" />
+          <small id="chat-status" role="status"></small>
+        </section>
         <section id="bottom-hud" aria-label="Player controls and status">
+          <div class="hud-left">
           <div id="hud-hp-orb" role="meter" aria-valuemin="0">
             <div class="hp-orb__mask"><div class="hp-orb__liquid"></div></div>
-            <strong id="hud-hp-text" class="hp-orb__text">3 / 3</strong>
+            <strong id="hud-hp-text" class="hp-orb__text"></strong>
             <img class="hp-orb__frame" alt="" aria-hidden="true" />
           </div>
           <div id="hud-info-panel"><p id="hud-info-text"></p></div>
+          </div>
+          <div class="hud-center">
           <div id="hud-inventory-mount" aria-label="Inventory hotbar"></div>
+          </div>
+          <div class="hud-right">
           <div id="hud-emote-mount"></div>
-          <aside id="hud-status-panel" aria-label="Current status"><p id="hud-status-text"></p></aside>
+          <aside id="hud-status-panel" aria-label="Current status"><div class="hud-status-content"><p id="hud-status-text"></p></div></aside>
+          </div>
         </section>
-      </div>
-      <div id="play-footer">
-        <section id="room-chat" hidden aria-label="Room chat">
-          <ol id="chat-messages" aria-label="Messages"></ol>
-          <input id="chat-input" aria-label="Message for this room" maxlength="200" placeholder="Press Enter to chat…" autocomplete="off" />
-          <small id="chat-status" role="status"></small>
-        </section>
-        <div id="game-guidance">
-          <p class="controls">Explore with <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> or the <kbd>arrow keys</kbd>.</p>
-          <p class="controls" id="interaction-hint" role="status">Walk up to a door and press E.</p>
-        </div>
       </div>
       <section id="quiz-lobby" hidden aria-labelledby="quiz-lobby-title">
         <h2 id="quiz-lobby-title">QUIZ LOBBY</h2>

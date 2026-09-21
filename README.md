@@ -12,6 +12,25 @@ alemão. Novos CSVs e templates gerados devem seguir essa convenção.
 
 ## Executar
 
+### HUD do jogo
+
+Os três tamanhos usam `#bottom-hud` com `.hud-left`, `.hud-center` e `.hud-right`.
+Os controles existentes são montados nesses grupos. Os ajustes ficam no bloco
+`html[data-viewport-size]` de `src/hud/hud.css`; o deslocamento específico de
+Large permanece em `html[data-viewport-size="large"]`:
+`--hud-large-columns`, `--hud-large-height`, `--hud-large-bottom`,
+`--hud-large-side-overlap`, `--hud-large-left-offset`, `--hud-large-z`,
+`--hud-large-rail-bottom`, `--hud-large-stone-width`, `--hud-large-stone-offset`,
+`--hud-large-slot-size`, `--hud-large-emote-size` e `--hud-large-slot-gap`.
+A pedra fica dentro do conjunto, com conteúdo separado em `.hud-status-content`.
+O HUD se ancora na borda inferior da moldura e sobrepõe a área do jogo;
+uma base contínua cobre as junções entre os recortes. Orbe e pedra ligam as laterais
+à base, em vez de formar uma barra separada abaixo do canvas.
+As peças decorativas preservam proporção; as bordas repetem trechos de 60×11 px,
+sem esticar a moldura inteira. `scripts/build-hud-pieces.ps1` reconstrói os recortes.
+O HP inicial/reset vem de `PLAYER_MAX_HP` em `src/boss/config.js`; durante a luta,
+o HUD recebe `hp/maxHp` do estado de combate. Dev Tools tem Hide/Show sem alterar progresso.
+
 ### Michael: transformação Lung Crusher
 
 `public/assets/items/michael-bigcig.png` contém seis personagens e um pickup separado,
@@ -412,6 +431,13 @@ limpa o hist?rico anterior; trocar de personagem tamb?m encerra o chat anterior.
 - Interface e foco: src/RoomChat.js; integra??o em MapScene.js e main.js.
 
 As mensagens ficam armazenadas no Convex, sem sistema adicional de hist?rico.
+O chat agora é um overlay dentro de `#game-shell`. Ao chegar ou enviar mensagem,
+mostra as cinco mais recentes por 7 segundos (`peek`); Enter abre o histórico e
+o campo (`active`), e Esc fecha. O botão 📌 mantém o painel visível e salva a
+preferência em `localStorage`. A duração, quantidade e chave de armazenamento
+ficam em `src/chat/ChatVisibility.js`; cores e posição ficam em `src/style.css`
+(`--chat-accent` e `--chat-background`). A classe do tema no `#game-shell`
+permite alterar a aparência sem mudar a lógica ou o backend.
 O painel exibe texto simples, sem interpretar HTML. Teste real: npm run test:chat
 (usa uma vaga livre e deixa duas mensagens identificadas como teste no backend local).
 

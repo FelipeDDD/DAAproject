@@ -39,6 +39,7 @@ import {
   BOSS_REWARDS,DIRECTOR_BOSS_ID,hasPendingDirectorReward,shouldClearDirectorLoot,
 } from './BossRewards.js';
 import { ArenaHudOverlay } from './ArenaHudOverlay.js';
+import { PLAYER_ATTACK_VISUALS,playerAttackSpawn,playerAttackVisual } from './PlayerAttackVisuals.js';
 
 const BOSS_PROJECTILE_TEXTURE='arena-boss-projectile';
 export const BOSS_SINGLE_PROJECTILE_TEXTURE='director-paper-projectile';
@@ -67,6 +68,20 @@ function createTextures(scene){
       key:BOSS_HOMING_PROJECTILE_ANIMATION,
       frames:scene.anims.generateFrameNumbers(BOSS_HOMING_PROJECTILE_TEXTURE,{start:0,end:5}),
       frameRate:BOSS_SINGLE_PROJECTILE_FRAME_RATE,repeat:-1,
+    });
+  }
+  for(const visual of Object.values(PLAYER_ATTACK_VISUALS)){
+    if(!scene.textures.exists(visual.texture))continue;
+    const texture=scene.textures.get(visual.texture);
+    for(let index=0;index<visual.frames;index++){
+      const frame=`attack-${index}`;
+      if(!texture.has(frame))texture.add(frame,0,index*visual.frameWidth,visual.frameTop,
+        visual.frameWidth,visual.frameHeight);
+    }
+    if(!scene.anims.exists(visual.animation))scene.anims.create({
+      key:visual.animation,
+      frames:Array.from({length:visual.frames},(_,index)=>({key:visual.texture,frame:`attack-${index}`})),
+      frameRate:visual.frameRate,repeat:visual.repeat,
     });
   }
   createBossVisualAnimations(scene);
@@ -227,6 +242,7 @@ export class BossController {
       return;
     }
     if(this.encounter.consumeFollowup(time)){
+      this.hud.showBoss();
       this.showBossSpeech(BOSS_FIXED_SPEECH.followup,{important:true});
       this.scriptedHomingPending=true;
     }
@@ -466,16 +482,32 @@ export class BossController {
   firePlayerProjectile(time){
     if(this.suspended||this.playerCombat.defeated||time<this.nextPlayerAttackAt
       ||[BOSS_STATES.DYING,BOSS_STATES.DEFEATED,BOSS_STATES.REWARD].includes(this.model.state))return false;
-    const origin={x:this.scene.player.body.center.x,y:this.scene.player.body.center.y};
+    const player=this.scene.player;
+    const center={x:player.body.center.x,y:player.body.center.y};
     const pointer=this.scene.input.activePointer;
     const target=this.scene.cameras.main.getWorldPoint(pointer.x,pointer.y);
+    const aimed=projectileVelocityToward(center,target,PLAYER_PROJECTILE_SPEED);
+    if(!aimed)return false;
+    const direction={x:aimed.x/PLAYER_PROJECTILE_SPEED,y:aimed.y/PLAYER_PROJECTILE_SPEED};
+    const visual=playerAttackVisual(this.scene.presence?.identity?.characterId);
+    const origin=visual?playerAttackSpawn(player,visual,direction)
+      :{x:center.x+direction.x*20,y:center.y+direction.y*20};
     const velocity=projectileVelocityToward(origin,target,PLAYER_PROJECTILE_SPEED);
     if(!velocity)return false;
-    const direction={x:velocity.x/PLAYER_PROJECTILE_SPEED,y:velocity.y/PLAYER_PROJECTILE_SPEED};
-    const projectile=this.acquireProjectile(this.playerProjectiles,origin.x+direction.x*20,origin.y+direction.y*20,PLAYER_PROJECTILE_TEXTURE,'player');
+    const projectile=this.acquireProjectile(this.playerProjectiles,origin.x,origin.y,
+      visual?.texture??PLAYER_PROJECTILE_TEXTURE,'player');
     if(!projectile)return false;
-    projectile.body.setCircle(5);projectile.setVelocity(velocity.x,velocity.y).setRotation(Math.atan2(velocity.y,velocity.x))
-      .setData('expiresAt',time+PLAYER_PROJECTILE_LIFETIME_MS);
+    if(visual){
+      projectile.setFrame('attack-0').setScale(visual.scale);
+      const bodyRadius=5/visual.scale;
+      projectile.body.setCircle(bodyRadius,(visual.frameWidth-bodyRadius*2)/2,
+        (visual.frameHeight-bodyRadius*2)/2);
+      if(visual.tint)projectile.setTint(visual.tint);
+      projectile.play(visual.animation);
+    }else projectile.body.setCircle(5);
+    projectile.setVelocity(velocity.x,velocity.y).setRotation(Math.atan2(velocity.y,velocity.x))
+      .setData('expiresAt',time+PLAYER_PROJECTILE_LIFETIME_MS)
+      .setData('spin',visual?.spin??0);
     this.nextPlayerAttackAt=time+PLAYER_ATTACK_COOLDOWN_MS;
     return true;
   }
@@ -550,7 +582,7 @@ export class BossController {
   finishBossDeath(){
     if(this.destroyed||this.suspended||!this.model.finishDying())return false;
     const drop={x:this.sprite.x,y:this.sprite.y};
-    this.sprite.setVisible(false);this.hud.showNotice('BOSS DEFEATED','victory');
+    this.sprite.setVisible(false);this.hud.hideBoss();this.hud.showNotice('BOSS DEFEATED','victory');
     this.defeatTimer=this.scene.time.delayedCall(2200,()=>this.hud?.hideNotice());
     this.scene.unlockBossExit?.();
     this.spawnLoot(drop);this.recordVictory();
@@ -699,6 +731,14 @@ export class BossController {
     }
   }
 
+  updatePlayerProjectileVisuals(delta){
+    for(const projectile of this.playerProjectiles.getChildren()){
+      if(!projectile.active)continue;
+      const spin=projectile.getData('spin');
+      if(spin)projectile.rotation+=spin*delta/1000;
+    }
+  }
+
   update(time,delta=0){
     if(this.destroyed||this.suspended)return;
     this.scene.player?.updateCombatHudPosition();
@@ -727,6 +767,7 @@ export class BossController {
       }
     }
     this.updateHomingProjectiles(delta);
+    this.updatePlayerProjectileVisuals(delta);
     this.cleanupProjectiles(this.bossProjectiles,time);this.cleanupProjectiles(this.playerProjectiles,time);
   }
 
@@ -758,7 +799,7 @@ export class BossController {
       .setPosition(this.home.x,this.home.y).setDepth(this.home.y).clearTint();
     this.applyBossVisual(1);
     this.sprite.body.enable=true;this.sprite.body.reset(this.home.x,this.home.y);
-    this.hud.setVisible(true);this.scene.gameHud?.setHealth(this.playerCombat.hp,this.playerCombat.maxHp);
+    this.hud.setVisible(true);this.hud.hideBoss({immediate:true});this.scene.gameHud?.setHealth(this.playerCombat.hp,this.playerCombat.maxHp);
     this.hud.setBossHealth(this.model.hp,this.model.maxHp);this.hud.setPhase(1);
     this.scene.player.setCombatHealth(this.playerCombat.hp,this.playerCombat.maxHp).setCombatHudVisible(true);
     this.clearPhaseTransition();

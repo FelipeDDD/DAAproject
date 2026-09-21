@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createCharacterSessionId } from '../src/CharacterMenu.js';
+import { CharacterMenu,createCharacterSessionId } from '../src/CharacterMenu.js';
 import { QuizLobby, shouldConfirmQuizLeave, shouldShowStartButton } from '../src/QuizLobby.js';
 import { readQuizSettingsControls,topicsForQuizCategory } from '../src/quiz/QuizSettingsControls.js';
 
@@ -10,6 +10,18 @@ test('character session id works without crypto.randomUUID',()=>{
   const id=createCharacterSessionId(cryptoApi);
   assert.match(id,/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
   assert.ok(createCharacterSessionId(null).length>=16);
+});
+
+test('character selection sends a valid presence snapshot before the map loads',async()=>{
+  let snapshot;
+  const menu=Object.assign(Object.create(CharacterMenu.prototype),{
+    sessionId:'session-123456789',render(){},message:{textContent:''},root:{hidden:false},
+    presence:{api:{players:{claim:'claim'}},client:{mutation:async()=>({ok:true})},enter:(room,getState)=>{
+      assert.equal(room,'selection');snapshot=getState();
+    }},onChoose(){},
+  });
+  await menu.choose({id:'felipe',name:'Felipe'});
+  assert.deepEqual(snapshot,{x:0,y:0,direction:'down',activeCharacterItem:null});
 });
 
 test('start button follows the current host and lobby status',()=>{

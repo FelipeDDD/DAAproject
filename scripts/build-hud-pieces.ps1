@@ -28,6 +28,9 @@ try {
   $graphics.Dispose(); $bar.Dispose(); $brush.Dispose()
 
   # Plain metal rail and an isolated jewel. No ornament is stretched.
+  Save-Cut 'hud-info-piece.png' 380 150 250 230
+  Save-Cut 'hud-inventory-piece.png' 630 150 800 230
+  Save-Cut 'hud-secondary-piece.png' 1430 165 430 215
   Save-Cut 'frame-edge-horizontal.png' 700 185 120 22
   $edge = [System.Drawing.Bitmap]::new((Join-Path $folder 'frame-edge-horizontal.png'))
   $edge.RotateFlip([System.Drawing.RotateFlipType]::Rotate90FlipNone)

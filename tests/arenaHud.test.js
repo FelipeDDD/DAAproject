@@ -27,11 +27,20 @@ function fakeDocument(){return {createElement:tag=>new FakeElement(tag),body:new
 test('arena HTML HUD updates boss HP and phase',()=>{
   const documentRef=fakeDocument(),gameRoot=new FakeElement('div');
   const hud=new ArenaHudOverlay({game:{canvas:{parentElement:gameRoot}}},{documentRef});
-  hud.setBossHealth(34,100);hud.setPhase(3);
+  assert.equal(hud.bossHud.hidden,true);
+  assert.equal(gameRoot.classList.contains('arena-hud-space'),true);
+  hud.showBoss();assert.equal(hud.bossHud.hidden,false);
+  assert.equal(hud.bossHud.classList.contains('visible'),true);
+  hud.setBossHealth(34,100);hud.setPhase(3);hud.setBossName('DER DIREKTOR');
   assert.equal(hud.bossFill.style.values.get('--boss-health-percent'),'34%');
   assert.equal(hud.phase.textContent,'PHASE 3');assert.equal(hud.bossHp.textContent,'34 / 100 HP');
   assert.match(hud.bossHud.attributes['aria-label'],/Phase 3, 34 of 100 HP/i);
+  assert.equal(hud.bossName.textContent,'DER DIREKTOR');
   assert.equal(healthPercent(120,100),100);assert.equal(healthPercent(-1,100),0);
+  hud.hideBoss({immediate:true});assert.equal(hud.bossHud.hidden,true);
+  hud.setVisible(false);assert.equal(gameRoot.classList.contains('arena-hud-space'),false);
+  hud.setVisible(true);assert.equal(hud.bossHud.hidden,true);
+  hud.destroy();
 });
 
 test('arena tutorial fades, can close immediately, and overlay cleanup removes all HTML',()=>{
@@ -41,6 +50,7 @@ test('arena tutorial fades, can close immediately, and overlay cleanup removes a
   assert.match(hud.tutorial.textContent,/SPACE or 0/);
   hud.hideTutorial({immediate:true});assert.equal(hud.tutorial.hidden,true);
   hud.destroy();assert.equal(gameRoot.children.length,0);assert.equal(hud.destroyed,true);
+  assert.equal(gameRoot.classList.contains('arena-hud-space'),false);
 });
 
 function fakeGraphics(){

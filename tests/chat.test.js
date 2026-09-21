@@ -24,6 +24,12 @@ test('chat rejects another room, another session and expired presence',async()=>
     const ctx=context(override);await assert.rejects(send._handler(ctx,args),/Invalid session/);assert.equal(ctx.inserted.length,0);
   }
 });
+test('chat accepts arena messages for an active character in the arena',async()=>{
+  const ctx=context({room:'arena'});
+  await send._handler(ctx,{...args,room:'arena',text:'Arena message'});
+  assert.equal(ctx.inserted[0].room,'arena');
+  assert.equal(ctx.inserted[0].text,'Arena message');
+});
 
 function renderMessage(text){
   const children=[];

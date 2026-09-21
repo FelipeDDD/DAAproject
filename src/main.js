@@ -4,6 +4,7 @@ import './style.css';
 import { closePresence, getPresence } from './multiplayer/client.js';
 import { CharacterMenu } from './CharacterMenu.js';
 import { DisplaySettingsController } from './ui/displaySettings.js';
+import { BackgroundSettingsController } from './ui/backgroundSettings.js';
 import { GameHudController,setGameHud } from './hud/GameHudController.js';
 
 let game, pausedScene;
@@ -12,6 +13,8 @@ const gameArea=document.getElementById('play-area');
 const changeButton=document.getElementById('change-character');
 const gameHud=setGameHud(new GameHudController());
 const displaySettings=new DisplaySettingsController(document.getElementById('viewport-size'),()=>game?.scale.refresh());
+const backgroundSettings=new BackgroundSettingsController(
+  document.getElementById('background-toggle'),document.getElementById('background-options'));
 const menu=new CharacterMenu(presence,()=>{
   gameArea.hidden=false;changeButton.hidden=false;gameHud.setVisible(true);
   if(!game)game=new Phaser.Game(gameConfig);
@@ -97,6 +100,7 @@ if (import.meta.hot) {
     window.removeEventListener('focus',restoreProjectFocus);
     document.removeEventListener('visibilitychange',restoreFocusWhenVisible);
     displaySettings.destroy();
+    backgroundSettings.destroy();
     gameHud.destroy();
     document.getElementById('character-list').replaceChildren();
   });

@@ -36,7 +36,7 @@ import { normalizeBossProgress } from '../boss/BossRewards.js';
 import { BossDevTools,shouldShowBossDevTools } from '../boss/BossDevTools.js';
 import { InventoryHotbar } from '../inventory/InventoryHotbar.js';
 import { CharacterItemController } from '../inventory/CharacterItemController.js';
-import { WorldPrompt } from '../ui/WorldPrompt.js';
+import { WorldPrompt,worldToViewport } from '../ui/WorldPrompt.js';
 import { getGameHud } from '../hud/GameHudController.js';
 import '../terminal/terminal.css';
 
@@ -173,6 +173,7 @@ export class MapScene extends Phaser.Scene {
     this.interactKey = this.input.keyboard.addKey('E');
     this.escapeKey = this.input.keyboard.addKey('ESC');
     this.hint = document.getElementById('interaction-hint');
+    this.interactionHintOffset=map.tileHeight*2.5;
     this.terminalPrompt=new WorldPrompt(this,TERMINAL_PROMPT.text,{className:'terminal-world-prompt'});
     const targetZoom=cameraZoomForMap(this.mapKey);
     this.cameras.main.setBounds(0,0,map.widthInPixels,map.heightInPixels).setZoom(CAMERA_ZOOM.default);
@@ -186,6 +187,7 @@ export class MapScene extends Phaser.Scene {
     const stop = () => { this.input.keyboard.resetKeys(); this.player.setVelocity(0, 0); };
     const wake = (_systems, arrival) => this.enter(arrival);
     const leave = () => {
+      this.hint.hidden=true;
       this.terminalPrompt?.setVisible(false);
       this.devTools?.destroy();this.devTools=null;
       this.inventoryHotbar?.destroy();this.inventoryHotbar=null;
@@ -217,6 +219,7 @@ export class MapScene extends Phaser.Scene {
 
   enter(destination = {}) {
     try {
+      this.hint.hidden=true;
       this.terminal?.destroy();
       this.terminal=new TerminalOverlayController(this);
       const spawn = resolveSpawn(this.source, destination);
@@ -326,13 +329,14 @@ export class MapScene extends Phaser.Scene {
   }
 
   update(_time, delta) {
-    if(this.terminal?.active||this.chat?.focused||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active||this.characterItems?.transforming)this.player.setVelocity(0,0);
+    if(this.terminal?.active||this.chat?.isInputActive||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active||this.characterItems?.transforming)this.player.setVelocity(0,0);
     else this.player.update();
+    if(this.terminal?.active||this.chat?.isInputActive||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active||this.characterItems?.transforming)this.hint.hidden=true;
     this.remotes.update(delta);
     this.emoteRenderer?.update();
     if(this.doorSync)for(const door of this.doors)door.updateBlocker(this.player.body);
     if(this.terminal?.active){this.terminalPrompt.setVisible(false);this.hint.textContent='Terminal · Esc: back to classroom';return;}
-    if(this.chat?.focused){this.terminalPrompt.setVisible(false);this.quiz?.updateSeatPrompt(false);this.soloStudy?.updateSeatPrompt(false);return;}
+    if(this.chat?.isInputActive){this.terminalPrompt.setVisible(false);this.quiz?.updateSeatPrompt(false);this.soloStudy?.updateSeatPrompt(false);return;}
     const interact = Phaser.Input.Keyboard.JustDown(this.interactKey);
     const escape = Phaser.Input.Keyboard.JustDown(this.escapeKey);
     const quizSeat=this.quiz?.nearbySeat();
@@ -424,13 +428,33 @@ export class MapScene extends Phaser.Scene {
       ? '[E] Open Terminal'
       : characterItemPickup
       ? '[E] Collect Lung Crusher 3000'
+      : wardrobe
+      ? '[E] Change appearance'
       : mapTransition
       ? `[E] Enter ${mapTransition.label}`
       : nearby
       ? [nearby.locked ? 'Door locked' : destination ? 'Press E to exit' : action,this.doorMessage]
         .filter(Boolean).join(' · ')
-      : `Press E to interact. ${this.doorMessage}`;
-    if (this.hint.textContent !== hint) this.hint.textContent = hint;
+      : '';
+    const canInteract=Boolean(quizSeat||studySeat||challengeLeaderboard||computer||characterItemPickup||wardrobe||
+      (mapTransition&&!mapTransition.auto)||(nearby&&(nearby.interactive!==false||destination)));
+    this.hint.hidden=!canInteract;
+    if(canInteract){
+      if(this.hint.textContent!==hint)this.hint.textContent=hint;
+      this.positionInteractionHint();
+    }
     if (escape && propertiesOf(this.source).escapeReturn && this.returnDestination) this.travelTo(this.returnDestination);
+  }
+
+  positionInteractionHint(){
+    const screen=worldToViewport(this,this.player.x,this.player.body.bottom+this.interactionHintOffset);
+    const shell=document.getElementById('game-shell').getBoundingClientRect();
+    const hudTop=document.getElementById('bottom-hud')?.getBoundingClientRect().top??screen.canvas.bottom;
+    const width=this.hint.offsetWidth,height=this.hint.offsetHeight,margin=10;
+    const minX=screen.canvas.left-shell.left+width/2+margin;
+    const maxX=screen.canvas.right-shell.left-width/2-margin;
+    const maxY=Math.max(screen.canvas.top+margin,Math.min(screen.canvas.bottom,hudTop)-height-margin);
+    this.hint.style.left=`${Math.round(Math.max(minX,Math.min(maxX,screen.x-shell.left)))}px`;
+    this.hint.style.top=`${Math.round(Math.max(screen.canvas.top+margin,Math.min(maxY,screen.y))-shell.top)}px`;
   }
 }

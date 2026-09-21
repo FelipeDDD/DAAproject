@@ -1,3 +1,5 @@
+import { PLAYER_MAX_HP,PLAYER_INVULNERABILITY_MS } from './config.js';
+
 export const BOSS_STATES=Object.freeze({
   IDLE:'idle',ATTACKING:'attacking',HURT:'hurt',MOVING:'moving',
   PHASE_TRANSITION:'phaseTransition',DYING:'dying',DEFEATED:'defeated',REWARD:'reward',
@@ -135,7 +137,7 @@ export class BossPhaseState {
 }
 
 export class PlayerCombatState {
-  constructor({maxHp=3,invulnerabilityMs=650}={}){
+  constructor({maxHp=PLAYER_MAX_HP,invulnerabilityMs=PLAYER_INVULNERABILITY_MS}={}){
     this.maxHp=maxHp;
     this.invulnerabilityMs=invulnerabilityMs;
     this.reset();

@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { GameHudController } from '../src/hud/GameHudController.js';
+import { PLAYER_MAX_HP } from '../src/boss/config.js';
+import { PlayerCombatState } from '../src/boss/BossCombatState.js';
 import { fixedHudEnabled,HUD_LAYOUT,hudHealthPercent,hudThemeDefinition,normalizeHudTheme } from '../src/hud/config.js';
 
 class FakeClassList {
@@ -40,6 +42,17 @@ test('HP orb fills from bottom using current over maximum health',()=>{
   hud.setHealth(100,100);
   assert.equal(h.nodes.get('#hud-hp-orb').style.values.get('--hud-hp-percent'),'100%');
   assert.equal(hudHealthPercent(0,100),0);assert.equal(hudHealthPercent(150,100),100);
+});
+
+test('HUD initial health and reset use the same configured HP as combat',()=>{
+  const h=harness(),hud=new GameHudController({root:h.root,documentRef:h.documentRef});
+  const player=new PlayerCombatState();
+  assert.equal(player.maxHp,PLAYER_MAX_HP);
+  assert.equal(h.nodes.get('#hud-hp-text').textContent,`${player.hp} / ${player.maxHp}`);
+  player.takeHit(1000,17);hud.setHealth(player.hp,player.maxHp);
+  assert.equal(h.nodes.get('#hud-hp-text').textContent,`${PLAYER_MAX_HP-17} / ${PLAYER_MAX_HP}`);
+  player.reset();hud.resetHealth();
+  assert.equal(h.nodes.get('#hud-hp-text').textContent,`${player.hp} / ${player.maxHp}`);
 });
 
 test('HUD panels keep dynamic text separate from their artwork',()=>{

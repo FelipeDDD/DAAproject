@@ -49,6 +49,9 @@
   filter: drop-shadow(0 7px 7px #000b);
 }
 
+/* The segmented HUD uses these wrappers for every viewport preset. */
+.hud-left,.hud-center,.hud-right { display:contents; }
+
 #hud-hp-orb {
   /* Same 380x400 cut and origin as the bar: its metal junction cannot drift.
      Inner coordinates are measured in the source PNG, not the entire frame. */
@@ -185,6 +188,157 @@
 .hud-fixed-hotbars #bottom-hud #emote-picker { left: 50%; bottom: calc(100% + 18px); z-index: 80; }
 
 html[data-viewport-size="compact"] #game-shell { --hud-frame-overflow:14px !important; }
-html[data-viewport-size="compact"] #bottom-hud { width: 98%; }
-html[data-viewport-size="compact"] #hud-status-panel { right: -5%; }
 @media(max-width:760px){#hud-status-panel{right:0}#hud-info-panel{display:none}#hud-inventory-mount{left:24%;width:42%}#hud-emote-mount{left:66%;width:28%}}
+
+/* Shared segmented composition. Artwork keeps its source ratio; only the plain
+   frame rails repeat. Preset-specific drop is set below. */
+html[data-viewport-size] #game-shell {
+  --hud-large-columns: 30fr 38fr 32fr;
+  --hud-large-height: 18.51cqw;
+  /* Anchor to the frame's bottom, so resizing cannot open a seam. */
+  --hud-large-drop: 8.2cqw;
+  --hud-large-bottom: calc(-1 * var(--hud-frame-overflow) - var(--hud-large-drop));
+  --hud-large-side-overlap: var(--hud-frame-overflow);
+  --hud-large-left-offset: -6px;
+  --hud-large-z: 50;
+  --hud-large-rail-bottom: 5%;
+  --hud-large-stone-width: 52%;
+  --hud-large-stone-offset: -6px;
+  --hud-large-slot-size: 4.5cqw;
+  --hud-large-emote-size: 2.65cqw;
+  --hud-large-slot-gap: .45cqw;
+  margin-bottom:calc(var(--hud-frame-overflow) + var(--hud-large-drop) + 7px);
+}
+/* Preserve the user-tuned Large position exactly. */
+html[data-viewport-size="large"] #game-shell { --hud-large-drop:105px; }
+html[data-viewport-size] #bottom-hud {
+  display:grid;
+  grid-template-columns:var(--hud-large-columns);
+  align-items:stretch;
+  top:auto;
+  bottom:var(--hud-large-bottom);
+  width:calc(100% + 2 * var(--hud-large-side-overlap));
+  height:var(--hud-large-height);
+  aspect-ratio:auto;
+  background:none;
+  transform:translateX(-50%);
+  z-index:var(--hud-large-z);
+  isolation:isolate;
+}
+/* Continuous backing joins all cutouts and covers the old bottom rail.
+   Side ornaments sit above it, joining the vertical frame to this base. */
+html[data-viewport-size] #bottom-hud::before {
+  content:"";
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:47%;
+  z-index:-1;
+  border-radius:0 0 10px 10px;
+  background:var(--frame-edge-horizontal) left bottom / 60px 11px repeat-x,
+    linear-gradient(#161e24,#090e13);
+  box-shadow:inset 0 -3px 5px #000b;
+}
+html[data-viewport-size] :is(.hud-left,.hud-center,.hud-right) {
+  display:block;
+  position:relative;
+  min-width:0;
+}
+html[data-viewport-size] #hud-hp-orb {
+  left:var(--hud-large-left-offset);
+  width:61%;
+  top:auto;
+  bottom:0;
+  z-index:3;
+}
+html[data-viewport-size] #hud-info-panel {
+  /* The paper itself occupies the middle of this cutout. Keep its text box
+     separate from the decorative top rail and bottom ornament. */
+  --hud-info-text-left:8%;
+  --hud-info-text-right:12%;
+  --hud-info-text-top:30%;
+  --hud-info-text-bottom:16%;
+  left:auto;
+  right:0;
+  top:auto;
+  bottom:var(--hud-large-rail-bottom);
+  width:42%;
+  height:auto;
+  aspect-ratio:250 / 230;
+  padding:0;
+  background:var(--hud-info-asset) center / contain no-repeat;
+}
+html[data-viewport-size] #hud-info-text {
+  position:absolute;
+  left:var(--hud-info-text-left);
+  right:var(--hud-info-text-right);
+  top:var(--hud-info-text-top);
+  bottom:var(--hud-info-text-bottom);
+  display:grid;
+  place-items:center;
+  width:auto;
+  text-align:center;
+  font-size:clamp(7px,1cqw,13px);
+}
+html[data-viewport-size] #hud-hp-text { font-size:clamp(9px,1.4cqw,18px); }
+html[data-viewport-size] #hud-inventory-mount {
+  inset:auto 0 var(--hud-large-rail-bottom);
+  width:100%;
+  height:auto;
+  aspect-ratio:800 / 230;
+  padding:3.3% 2% 1%;
+  background:var(--hud-inventory-asset) center / contain no-repeat;
+}
+html[data-viewport-size] #hud-emote-mount {
+  left:-1%;
+  top:auto;
+  bottom:var(--hud-large-rail-bottom);
+  width:68%;
+  height:auto;
+  aspect-ratio:430 / 215;
+  padding:4% 1% 1%;
+  background:var(--hud-secondary-asset) center / contain no-repeat;
+  z-index:2;
+}
+html[data-viewport-size] #hud-status-panel {
+  right:var(--hud-large-stone-offset);
+  bottom:0;
+  width:var(--hud-large-stone-width);
+  aspect-ratio:1;
+  padding:0;
+  z-index:1;
+}
+html[data-viewport-size] .hud-status-content {
+  position:absolute;
+  left:45%; right:13%; top:34%; bottom:23%;
+  display:grid;
+  place-items:center;
+  overflow:auto;
+  overflow-wrap:anywhere;
+  pointer-events:auto;
+}
+html[data-viewport-size] #hud-status-text { display:block; width:100%; font-size:clamp(7px,.95cqw,12px); line-height:1.5; letter-spacing:.02em; text-align:center; }
+html[data-viewport-size] #bottom-hud .school-hotbar-slots { gap:var(--hud-large-slot-gap); }
+/* Cover the example slots painted in the source with the actual six controls. */
+html[data-viewport-size] #bottom-hud :is(.inventory-hotbar,.hotbar-body) {
+  width:94%;
+  padding:.5cqw .2cqw;
+  border-radius:.4cqw;
+  background:linear-gradient(#151b21,#090e13);
+}
+html[data-viewport-size] #bottom-hud .hotbar-body { width:100%; }
+html[data-viewport-size] #bottom-hud .inventory-slot {
+  width:var(--hud-large-slot-size); height:var(--hud-large-slot-size); flex-shrink:0;
+}
+html[data-viewport-size] #bottom-hud .inventory-slot img { width:80%; height:80%; }
+html[data-viewport-size] #bottom-hud :is(#emote-slots button,#emote-settings) {
+  width:var(--hud-large-emote-size); height:var(--hud-large-emote-size); flex-shrink:0;
+  font-size:clamp(11px,1.8cqw,23px);
+}
+html[data-viewport-size] #bottom-hud :is(#emote-slots,.hotbar-body) { gap:.2cqw; }
+html[data-viewport-size] #bottom-hud .school-hotbar-slot kbd,
+html[data-viewport-size] #bottom-hud #emote-slots kbd { font-size:clamp(6px,.7cqw,10px); }
+html[data-viewport-size] #bottom-hud #emote-picker { left:auto; right:0; transform:none; max-width:80vw; }
+html[data-viewport-size] #game-frame .frame-edge--top,
+html[data-viewport-size] #game-frame .frame-edge--bottom { background-size:60px 11px; }
+html[data-viewport-size] #game-frame .frame-edge--left,
+html[data-viewport-size] #game-frame .frame-edge--right { background-size:11px 60px; }

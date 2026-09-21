@@ -1,4 +1,5 @@
 import { HUD_LAYOUT,HUD_THEME,fixedHudEnabled,hudHealthPercent,hudThemeDefinition,normalizeHudTheme } from './config.js';
+import { PLAYER_MAX_HP } from '../boss/config.js';
 
 let currentHud=null;
 const assetUrl=(path,documentRef)=>new URL(`${import.meta.env?.BASE_URL??'/'}${path}`,documentRef.baseURI).href;
@@ -10,8 +11,8 @@ export class GameHudController {
     this.infoText=root?.querySelector('#hud-info-text');this.statusText=root?.querySelector('#hud-status-text');
     const emoteMount=root?.querySelector('#hud-emote-mount'),emoteBar=documentRef.getElementById('emote-bar');
     if(emoteMount&&emoteBar)emoteMount.append(emoteBar);
-    this.applyTheme(theme);this.applyLayout();this.setHealth(3,3);
-    this.setInfoText('Good Code\nBetter Tomorrow');this.setStatusLines(['LEARN','BUILD','PLAY','REPEAT']);
+    this.applyTheme(theme);this.applyLayout();this.resetHealth();
+    this.setInfoText('I hate you,\nDie Already!');this.setStatusLines(['LEARN','BUILD','and','GO FUCK','YOURSELF!']);
   }
 
   applyTheme(theme){
@@ -24,6 +25,9 @@ export class GameHudController {
       this.root.style.setProperty(`--frame-${piece}`,`url("${assetUrl(`${definition.framePieces}frame-${piece}.png`,this.document)}")`);
     }
     this.root.style.setProperty('--hud-right-panel-asset',`url("${assetUrl(definition.rightPanelAsset,this.document)}")`);
+    for(const piece of ['info','inventory','secondary']){
+      this.root.style.setProperty(`--hud-${piece}-asset`,`url("${assetUrl(`${definition.framePieces}hud-${piece}-piece.png`,this.document)}")`);
+    }
   }
 
   applyLayout(){
@@ -48,7 +52,7 @@ export class GameHudController {
   setInfoText(text){if(this.infoText)this.infoText.textContent=String(text??'');}
   setStatusLines(lines){if(this.statusText)this.statusText.textContent=(Array.isArray(lines)?lines:[lines]).filter(Boolean).join('\n');}
   setVisible(visible){if(this.root)this.root.dataset.hudVisible=visible?'true':'false';}
-  resetHealth(){this.setHealth(3,3);}
+  resetHealth(){this.setHealth(PLAYER_MAX_HP,PLAYER_MAX_HP);}
   destroy(){if(this.destroyed)return;this.destroyed=true;if(currentHud===this)currentHud=null;}
 }
 
