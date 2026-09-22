@@ -1,4 +1,5 @@
 import { RewardPresentationState,isRewardDismissKey } from '../boss/BossRewardOverlay.js';
+import { inventoryPresentationAsset } from './config.js';
 
 const publicAsset=path=>new URL(`${import.meta.env.BASE_URL}${path}`,document.baseURI).href;
 
@@ -14,7 +15,7 @@ export class ItemRewardOverlay {
   show(item){
     this.close(true);this.state.begin();const panel=document.createElement('div');panel.className='boss-reward-panel';
     const eyebrow=document.createElement('small');eyebrow.textContent='NEW ITEM';
-    const image=document.createElement('img');image.className='boss-reward-image';image.src=publicAsset(item.presentationImage);image.alt=item.name;
+    const image=document.createElement('img');image.className='boss-reward-image';image.src=publicAsset(inventoryPresentationAsset(item));image.alt=item.name;
     const title=document.createElement('h2');title.textContent=item.name;const description=document.createElement('p');description.textContent=item.description;
     const button=document.createElement('button');button.type='button';button.textContent='Continue';button.disabled=true;
     button.addEventListener('click',event=>{event.stopPropagation();this.dismiss();});panel.append(eyebrow,image,title,description,button);this.root.replaceChildren(panel);this.root.hidden=false;

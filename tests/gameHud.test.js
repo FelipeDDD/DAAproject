@@ -71,3 +71,18 @@ test('game frame is authored outside the clipped Phaser container',async()=>{
   assert.doesNotMatch(source,/border-image-source/);
   assert.match(source,/#bottom-hud[\s\S]*position:\s*absolute/);
 });
+
+test('HUD info text size is controlled by one shared configurable variable',async()=>{
+  const source=await import('node:fs/promises').then(fs=>fs.readFile(new URL('../src/hud/hud.css',import.meta.url),'utf8'));
+  assert.match(source,/--hud-info-font-size:\s*clamp\(/);
+  assert.equal((source.match(/font-size:\s*var\(--hud-info-font-size\)/g)??[]).length,1);
+  assert.match(source,/font:\s*1000 var\(--hud-info-font-size\)\/1\.25/);
+});
+
+test('HUD status stone exposes one shared horizontal offset',async()=>{
+  const source=await import('node:fs/promises').then(fs=>fs.readFile(new URL('../src/hud/hud.css',import.meta.url),'utf8'));
+  assert.match(source,/--hud-status-offset-x:\s*-8px/);
+  const rule=/html\[data-viewport-size\] #hud-status-panel\s*\{([^}]*)\}/.exec(source)?.[1]??'';
+  assert.match(rule,/right:\s*var\(--hud-status-offset-x\)/);
+  assert.doesNotMatch(source,/--hud-inventory-offset-x/);
+});

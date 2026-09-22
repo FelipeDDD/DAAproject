@@ -12,7 +12,7 @@ const Controller=new Function('Phaser','CHARACTER_ITEM_IDS','characterItemDefini
 
 function fixture(){
   let finish;const animations=[];const visuals=[];
-  const sprite={setOrigin(){return this;},setDisplaySize(){return this;},setDepth(){return this;},
+  const sprite={setOrigin(){return this;},setDisplaySize(width,height){this.displaySize={width,height};return this;},setDepth(){return this;},
     once(event,fn){finish=fn;},play(){},destroy(){this.destroyed=true;}};
   const player={x:100,y:150,setVelocity(){},setVisible(value){this.visible=value;}};
   const scene={player,equippedSkin:'remastered',hint:{},add:{sprite:()=>sprite},anims:{exists:()=>false,
@@ -26,6 +26,7 @@ test('transformation keeps the owned item and hides pickup before and after comp
   const f=fixture();
   const pending=f.c.applyActiveItem({characterId:'michael',itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000,active:true});
   assert.equal(f.c.items.length,1);assert.equal(f.c.pickup.visible,false);assert.equal(f.player.visible,false);
+  assert.deepEqual(f.sprite.displaySize,{width:67,height:67});
   assert.deepEqual(f.animations[0].frames,{start:0,end:5});
   f.finish();await pending;
   assert.equal(f.c.items.length,1);assert.equal(f.c.pickup.visible,false);assert.equal(f.player.visible,true);

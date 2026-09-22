@@ -31,7 +31,31 @@
           </div>
         </div>
       </header>
-      <section id="character-menu" aria-labelledby="character-title">
+      <section id="profile-auth" class="profile-auth" aria-labelledby="profile-auth-title">
+        <h2 id="profile-auth-title">Player profile</h2>
+        <div class="profile-auth-tabs" role="tablist" aria-label="Profile access">
+          <button id="profile-login-tab" type="button" role="tab" aria-selected="true">Login</button>
+          <button id="profile-register-tab" type="button" role="tab" aria-selected="false">Create profile</button>
+        </div>
+        <form id="profile-login-form" class="profile-auth-form">
+          <label>Profile name <input id="profile-login-name" name="profileName" required minlength="3" maxlength="32" autocomplete="username"></label>
+          <label>Password <input id="profile-login-password" name="password" type="password" required minlength="8" maxlength="128" autocomplete="current-password"></label>
+          <button type="submit">Login</button>
+        </form>
+        <form id="profile-register-form" class="profile-auth-form" hidden>
+          <label>Profile name <input id="profile-register-name" name="profileName" required minlength="3" maxlength="32" autocomplete="username"></label>
+          <label>Password <input id="profile-register-password" name="password" type="password" required minlength="8" maxlength="128" autocomplete="new-password"></label>
+          <label>Starting character
+            <select id="profile-register-character" name="selectedCharacterId">
+              <option value="felipe">Felipe</option><option value="michael">Michael</option>
+              <option value="sarina">Sarina</option><option value="jassine">Yassin</option>
+            </select>
+          </label>
+          <button type="submit">Create</button>
+        </form>
+        <p id="profile-auth-message" role="status"></p>
+      </section>
+      <section id="character-menu" aria-labelledby="character-title" hidden>
         <h2 id="character-title">Choose your character</h2>
         <p>Four classmates, one school. Who will join?</p>
         <label class="character-style-control" for="character-style">
@@ -43,10 +67,12 @@
         </label>
         <div id="character-list"></div>
         <p id="character-message" role="status"></p>
+        <button id="logout-profile-menu" type="button">Logout profile</button>
       </section>
       <section id="play-area" hidden>
       <div id="play-toolbar">
         <button id="change-character" hidden>Change character</button>
+        <button id="logout-profile" hidden>Logout</button>
         <p id="movement-guide">Explore with <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> or the <kbd>arrow keys</kbd>.</p>
       </div>
       <div id="game-shell" data-hud-visible="true">

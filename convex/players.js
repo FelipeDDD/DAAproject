@@ -7,27 +7,34 @@ import {
   PRESENCE_TIMEOUT_MS,
 } from '../src/multiplayer/presencePolicy.js';
 import { canCharacterOwnItem } from '../src/inventory/characterItems.js';
+import { publicProfile,requireSession } from './profileStore.js';
 
 export const availability = query({
   args: {},
   handler: async ctx => {
     const rows = await ctx.db.query('players').collect();
-    return CHARACTERS.map(c => ({ characterId:c.id, lastSeen:rows.find(p=>p.playerId===c.id)?.lastSeen ?? 0 }));
+    return CHARACTERS.map(c => {
+      const presence=rows.find(player=>player.characterId===c.id);
+      return {characterId:c.id,active:isPresenceActive(presence?.lastSeen),lastSeen:presence?.lastSeen??0};
+    });
   },
 });
 
-export const claim = mutation({
-  args: { characterId:v.string(), sessionId:v.string() },
-  handler: async (ctx,{characterId,sessionId}) => {
+export const claim = internalMutation({
+  args: { tokenHash:v.string(),characterId:v.string(),sessionId:v.string() },
+  handler: async (ctx,{tokenHash,characterId,sessionId}) => {
     const c=characterById(characterId);
     if(!c||sessionId.length<16||sessionId.length>100)throw new Error('Invalid character/session');
+    const {profile}=await requireSession(ctx,tokenHash);
     const old=await ctx.db.query('players').withIndex('by_player',q=>q.eq('playerId',characterId)).unique();
-    if(old&&old.sessionId!==sessionId&&isPresenceActive(old.lastSeen))return {ok:false};
-    // One character per session, including simultaneous claims from this client.
-    for(const row of await ctx.db.query('players').collect())if(row.sessionId===sessionId&&row._id!==old?._id)await ctx.db.delete(row._id);
-    const state={playerId:c.id,characterId:c.id,name:c.name,sessionId,room:'selection',x:0,y:0,direction:'down',equippedSkin:'classic',activeCharacterItem:null,lastSeen:Date.now()};
+    if(old&&old.profileId!==profile._id&&old.sessionId!==sessionId&&isPresenceActive(old.lastSeen))return {ok:false};
+    const now=Date.now();
+    for(const row of await ctx.db.query('players').collect())
+      if((row.profileId===profile._id||row.sessionId===sessionId)&&row._id!==old?._id)await ctx.db.delete(row._id);
+    await ctx.db.patch(profile._id,{selectedCharacterId:c.id,updatedAt:now});
+    const state={profileId:profile._id,playerId:c.id,characterId:c.id,name:c.name,sessionId,room:'selection',x:0,y:0,direction:'down',equippedSkin:'classic',activeCharacterItem:null,lastSeen:now};
     if(old)await ctx.db.patch(old._id,state);else await ctx.db.insert('players',state);
-    return {ok:true};
+    return {ok:true,profile:publicProfile({...profile,selectedCharacterId:c.id,updatedAt:now})};
   },
 });
 
@@ -35,7 +42,9 @@ export const release = mutation({
   args:{characterId:v.string(),sessionId:v.string()},
   handler:async(ctx,{characterId,sessionId})=>{
     const row=await ctx.db.query('players').withIndex('by_player',q=>q.eq('playerId',characterId)).unique();
-    if(row?.sessionId===sessionId)await ctx.db.delete(row._id);
+    const released=row?.sessionId===sessionId;
+    if(released)await ctx.db.delete(row._id);
+    return {released};
   },
 });
 
@@ -48,6 +57,7 @@ export const inRoom = query({
 export const update = mutation({
   args: {
     playerId: v.string(), name: v.string(), room: v.string(),
+    profileId:v.optional(v.id('profiles')),
     characterId: v.string(), sessionId: v.string(),
     x: v.number(), y: v.number(), direction: v.string(),
     equippedSkin:v.optional(v.union(v.literal('classic'),v.literal('remastered'))),

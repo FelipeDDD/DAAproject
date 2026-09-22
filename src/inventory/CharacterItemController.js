@@ -1,16 +1,15 @@
 import Phaser from 'phaser';
 import { CHARACTER_ITEM_IDS,characterItemDefinition,normalizeCharacterItem } from './characterItems.js';
 import { CharacterItemClient } from './CharacterItemClient.js';
-import { ItemRewardOverlay } from './ItemRewardOverlay.js';
 
 export const LUNG_CRUSHER_PICKUP_OFFSET=Object.freeze({x:128,y:0});
 const PICKUP_DISTANCE=34;
 const TRANSFORM_ANIMATION='michael-lung-crusher-transform-v3';
+const TRANSFORMATION_DISPLAY_SIZE=67;
 
 export class CharacterItemController {
   constructor(scene,presence,{onVisualChange=()=>{},onItemsChange=()=>{}}={}){
     Object.assign(this,{scene,presence,onVisualChange,onItemsChange,client:new CharacterItemClient(presence),items:[]});
-    this.overlay=new ItemRewardOverlay();
   }
   get characterId(){return this.presence?.identity?.characterId;}
   get lungCrusher(){return this.items.find(item=>item.itemId===CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000);}
@@ -22,7 +21,7 @@ export class CharacterItemController {
   setItems(rows,{applyVisual=true}={}){
     if(this.destroyed)return;
     this.revision=(this.revision??0)+1;
-    this.items=(rows??[]).map(normalizeCharacterItem).filter(Boolean);this.onItemsChange(this.items);
+    this.items=(rows??[]).map(row=>normalizeCharacterItem(row,this.characterId)).filter(Boolean);this.onItemsChange(this.items);
     const item=this.lungCrusher;if(applyVisual)this.onVisualChange(item?.active?item.itemId:null,{instant:true});
     if(this.pickup)this.pickup.setVisible(this.characterId==='michael'&&!item);
   }
@@ -45,8 +44,8 @@ export class CharacterItemController {
     try{
       const result=await this.client.claim(CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000);
       if(this.destroyed)return true;
-      const item=normalizeCharacterItem(result.item);this.setItems([...this.items.filter(row=>row.itemId!==item.itemId),item]);
-      this.pickup?.destroy();this.pickup=null;if(!result.duplicate)this.overlay.show(characterItemDefinition(item.itemId));return true;
+      const item=normalizeCharacterItem(result.item,this.characterId);this.setItems([...this.items.filter(row=>row.itemId!==item.itemId),item]);
+      this.pickup?.destroy();this.pickup=null;return true;
     }catch(error){
       if(this.destroyed)return false;
       this.setItems(before);this.pickup?.setVisible(true);
@@ -55,7 +54,7 @@ export class CharacterItemController {
     }finally{this.collecting=false;}
   }
   async applyActiveItem(item){
-    const normalized=normalizeCharacterItem(item);if(!normalized)return;
+    const normalized=normalizeCharacterItem(item,this.characterId);if(!normalized)return;
     if(normalized.active&&!this.previousSkin)this.previousSkin=this.scene.equippedSkin;
     this.setItems([...this.items.filter(existing=>existing.itemId!==normalized.itemId),normalized],{applyVisual:false});
     if(normalized.active){
@@ -84,10 +83,11 @@ export class CharacterItemController {
     });
     this.transforming=new Promise(resolve=>{
       const player=this.scene.player;player.setVelocity(0,0);player.setVisible(false);
-      const sprite=this.scene.add.sprite(player.x,player.y,'michael-lung-transform',0).setOrigin(.5,1).setDisplaySize(102,102).setDepth(player.y+2);
+      const sprite=this.scene.add.sprite(player.x,player.y,'michael-lung-transform',0).setOrigin(.5,1)
+        .setDisplaySize(TRANSFORMATION_DISPLAY_SIZE,TRANSFORMATION_DISPLAY_SIZE).setDepth(player.y+2);
       this.finishTransformation=()=>{sprite.destroy();player.setVisible(true);this.transforming=null;this.finishTransformation=null;resolve();};
       sprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE,()=>this.finishTransformation?.());sprite.play(TRANSFORM_ANIMATION);
     });return this.transforming;
   }
-  destroy(){this.destroyed=true;this.finishTransformation?.();this.pickup?.destroy();this.overlay.destroy();}
+  destroy(){this.destroyed=true;this.finishTransformation?.();this.pickup?.destroy();}
 }

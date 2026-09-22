@@ -1,6 +1,7 @@
 param(
   [string]$ProjectRoot = (Split-Path -Parent $PSScriptRoot),
-  [switch]$TransformationOnly
+  [switch]$TransformationOnly,
+  [switch]$MichaelOnly
 )
 
 Add-Type -AssemblyName System.Drawing
@@ -285,6 +286,22 @@ function Export-NormalizedSheet {
         }
       } finally { $graphics.Dispose() }
 
+      # The third front pose contains two dark pixels above the right eye and
+      # shifts the left eye by one pixel. Copy the clean idle eyes so both stay
+      # rectangular and identical without changing the head or body animation.
+      if ([IO.Path]::GetFileName($Source) -eq 'Michael-sprite.png') {
+        $targetBase = 2 * $FrameWidth
+        foreach ($x in @(23,24,25,34,35,36)) {
+          $sheet.SetPixel($targetBase + $x, 27, $sheet.GetPixel($targetBase + $x, 26))
+        }
+        for ($y = 28; $y -le 32; $y++) {
+          # Remove the old left eye's right column with adjacent skin.
+          $sheet.SetPixel($targetBase + 25, $y, $sheet.GetPixel($targetBase + 26, $y))
+          foreach ($eyeX in @(23,24,34,35)) {
+            $sheet.SetPixel($targetBase + $eyeX, $y, $sheet.GetPixel($eyeX, $y))
+          }
+        }
+      }
 
       $sheet.Save($outputPath, [System.Drawing.Imaging.ImageFormat]::Png)
       $previewBitmap = $sheet.Clone((New-Object System.Drawing.Rectangle 0, 0, $FrameWidth, $FrameHeight), [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
@@ -534,8 +551,48 @@ function Export-TransformationSheet {
   } finally {$sourceBitmap.Dispose()}
 }
 
+function Export-SlotIcon {
+  param([string]$Source,[string]$Output)
+  $sourceBitmap=[System.Drawing.Bitmap]::FromFile((Join-Path $ProjectRoot $Source))
+  $size=362;$contentHeight=200
+  try {
+    $minX=$sourceBitmap.Width;$maxX=-1;$minY=$sourceBitmap.Height;$maxY=-1
+    for($y=0;$y -lt $sourceBitmap.Height;$y++){for($x=0;$x -lt $sourceBitmap.Width;$x++){
+      if($sourceBitmap.GetPixel($x,$y).A -ge $AlphaThreshold){
+        $minX=[math]::Min($minX,$x);$maxX=[math]::Max($maxX,$x)
+        $minY=[math]::Min($minY,$y);$maxY=[math]::Max($maxY,$y)
+      }
+    }}
+    if($maxX -lt $minX){throw 'Lung Crusher slot icon source is empty.'}
+    $sourceRect=[Drawing.Rectangle]::FromLTRB($minX,$minY,$maxX+1,$maxY+1)
+    $contentWidth=[math]::Round($sourceRect.Width*$contentHeight/$sourceRect.Height)
+    $destination=[Drawing.Rectangle]::new(
+      [math]::Floor(($size-$contentWidth)/2),[math]::Floor(($size-$contentHeight)/2),$contentWidth,$contentHeight)
+    $icon=[Drawing.Bitmap]::new($size,$size,[Drawing.Imaging.PixelFormat]::Format32bppArgb)
+    try {
+      $graphics=[Drawing.Graphics]::FromImage($icon)
+      try {
+        $graphics.Clear([Drawing.Color]::Transparent)
+        $graphics.CompositingMode=[Drawing.Drawing2D.CompositingMode]::SourceCopy
+        $graphics.InterpolationMode=[Drawing.Drawing2D.InterpolationMode]::NearestNeighbor
+        $graphics.PixelOffsetMode=[Drawing.Drawing2D.PixelOffsetMode]::Half
+        $graphics.SmoothingMode=[Drawing.Drawing2D.SmoothingMode]::None
+        $graphics.DrawImage($sourceBitmap,$destination,$sourceRect,[Drawing.GraphicsUnit]::Pixel)
+      } finally {$graphics.Dispose()}
+      $icon.Save((Join-Path $ProjectRoot $Output),[Drawing.Imaging.ImageFormat]::Png)
+      Write-Output "${Output}: centered ${size}x${size} inventory icon"
+    } finally {$icon.Dispose()}
+  } finally {$sourceBitmap.Dispose()}
+}
+
+Export-SlotIcon 'public/assets/items/lung-crusher-icon.png' 'public/assets/items/lung-crusher-slot-icon.png'
+
 if($TransformationOnly){
   Export-TransformationSheet 'public/assets/items/michael-bigcig.png' 'public/assets/items/michael-bigcig-normalized.png'
+  exit
+}
+if($MichaelOnly){
+  Export-NormalizedSheet 'public/assets/characters/Michael-sprite.png' 'public/assets/characters/michael-new.png' 'public/assets/characters/michael-new-preview.png'
   exit
 }
 Export-NormalizedSheet 'public/assets/characters/Michael-sprite.png' 'public/assets/characters/michael-new.png' 'public/assets/characters/michael-new-preview.png'

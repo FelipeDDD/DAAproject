@@ -26,7 +26,7 @@ export class BossDevTools {
     }
     this.status=document.createElement('small');this.status.setAttribute('role','status');
     this.content.append(buttons,this.status);this.root.append(header,this.content);document.body.append(this.root);
-    this.setCollapsed(false);
+    this.setCollapsed(true);
   }
 
   async apply(preset,label){

@@ -74,3 +74,9 @@ test('legacy permanent attack hint is absent from the boss controller',async()=>
   assert.equal(source.includes('SPACE: Attack'),false);
   assert.equal(source.includes('Player HP:'),false);
 });
+
+test('arena HUD does not reserve vertical layout space above the game',async()=>{
+  const css=await import('node:fs/promises').then(fs=>fs.readFile(new URL('../src/style.css',import.meta.url),'utf8'));
+  const rule=/\.arena-hud-space\s*\{([^}]*)\}/.exec(css)?.[1]??'';
+  assert.equal(/margin(?:-top)?\s*:/.test(rule),false);
+});

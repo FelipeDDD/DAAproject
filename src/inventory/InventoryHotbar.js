@@ -1,6 +1,7 @@
 import { BossProgressClient } from '../boss/BossProgressClient.js';
 import { itemCooldownRemaining } from './characterItems.js';
-import { INVENTORY_POSITION_STORAGE_KEY,inventoryItemsFromSources,inventoryShortcutSlot,inventorySlots } from './config.js';
+import { INVENTORY_POSITION_STORAGE_KEY,inventoryItemUseBehavior,inventoryItemsFromSources,inventoryShortcutSlot,inventorySlots } from './config.js';
+import { ItemRewardOverlay } from './ItemRewardOverlay.js';
 import { FloatingHotbar } from '../ui/FloatingHotbar.js';
 import { fixedHudEnabled,HUD_LAYOUT } from '../hud/config.js';
 
@@ -10,6 +11,7 @@ export class InventoryHotbar {
   constructor(presence,{onToggleItem=()=>{},layout=HUD_LAYOUT}={}){
     this.client=new BossProgressClient(presence);
     this.presence=presence;this.onToggleItem=onToggleItem;this.items=[];this.progress=null;this.characterItems=[];
+    this.overlay=new ItemRewardOverlay();this.slots=[];
     this.root=document.createElement('section');this.root.className='school-hotbar inventory-hotbar';this.root.setAttribute('aria-label','Inventory');
     const header=document.createElement('div');header.className='school-hotbar-header inventory-drag-handle';
     const title=document.createElement('span');title.textContent='INVENTORY';
@@ -34,18 +36,23 @@ export class InventoryHotbar {
     if(Number.isFinite(next))this.cooldownTimer=setTimeout(()=>this.refreshItems(),Math.min(next,250));
   }
   async activate(item){
-    if(!item.activatable||itemCooldownRemaining(item)>0)return;
+    if(item?.compatible===false)return;
+    const behavior=inventoryItemUseBehavior(item);
+    if(behavior==='presentation'){this.overlay.show(item);return;}
+    if(behavior!=='functional'||!item.activatable||itemCooldownRemaining(item)>0)return;
     try{await this.onToggleItem(item);}catch(error){console.warn('Inventory activation:',error);}
   }
   handleHotkey(event){
     if(event.defaultPrevented)return;
-    const index=inventoryShortcutSlot(event);if(index<0||index>=this.items.length)return;
-    const item=this.items[index];if(!item?.activatable||itemCooldownRemaining(item)>0)return;
+    const index=inventoryShortcutSlot(event);if(index<0)return;
+    const item=this.slots[index];if(!item||itemCooldownRemaining(item)>0)return;
     event.preventDefault();void this.activate(item);
   }
   render(){
-    this.slotsRoot.replaceChildren(...inventorySlots(this.items).map((item,index)=>{
-      const slot=document.createElement(item?.activatable?'button':'div');slot.className='school-hotbar-slot inventory-slot';slot.dataset.slot=String(index+1);
+    this.slots=inventorySlots(this.items);
+    this.slotsRoot.replaceChildren(...this.slots.map((item,index)=>{
+      const usable=Boolean(inventoryItemUseBehavior(item))&&item?.compatible!==false;
+      const slot=document.createElement(usable?'button':'div');slot.className='school-hotbar-slot inventory-slot';slot.dataset.slot=String(index+1);
       if(slot instanceof HTMLButtonElement)slot.type='button';
       const hotkey=document.createElement('kbd');hotkey.textContent=`⇧${index+1}`;slot.append(hotkey);
       if(!item){slot.classList.add('empty');slot.setAttribute('aria-label',`Empty inventory slot ${index+1}`);return slot;}
@@ -53,14 +60,14 @@ export class InventoryHotbar {
       slot.setAttribute('aria-label',`${item.name}. ${item.description}`);
       const image=document.createElement('img');image.src=publicAsset(item.icon);image.alt='';slot.append(image);
       if(item.activatable){
-        const remaining=itemCooldownRemaining(item);slot.disabled=remaining>0;
+        const remaining=itemCooldownRemaining(item);slot.disabled=remaining>0||item.compatible===false;
         slot.classList.toggle('active',Boolean(item.active));
-        slot.dataset.tooltip=`${item.name}\n${remaining>0?`Cooldown: ${Math.ceil(remaining/1000)}s`:item.active?'Click to deactivate.':'Click to activate.'}`;
-        slot.addEventListener('click',()=>void this.activate(item));
+        slot.dataset.tooltip=`${item.name}\n${item.compatible===false?'Available while playing Michael.':remaining>0?`Cooldown: ${Math.ceil(remaining/1000)}s`:item.active?'Click to deactivate.':'Click to activate.'}`;
       }
+      if(usable)slot.addEventListener('click',()=>void this.activate(item));
       if(item.quantity>1){const quantity=document.createElement('span');quantity.className='inventory-quantity';quantity.textContent=String(item.quantity);slot.append(quantity);}
       return slot;
     }));
   }
-  destroy(){clearTimeout(this.cooldownTimer);window.removeEventListener('keydown',this.onKeyDown);this.floating?.destroy();this.root.remove();}
+  destroy(){clearTimeout(this.cooldownTimer);window.removeEventListener('keydown',this.onKeyDown);this.floating?.destroy();this.overlay.destroy();this.root.remove();}
 }

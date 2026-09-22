@@ -6,8 +6,8 @@ export const CHARACTER_ITEMS=Object.freeze({
     itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000,type:'character_item',quantity:1,
     allowedCharacter:'michael',name:'Lung Crusher 3000',
     description:'A very large cigarette. Click to activate or deactivate.',
-    icon:'assets/items/lung-crusher-icon.png',presentationImage:'assets/items/lung-crusher-3000.png',
-    activatable:true,
+    icon:'assets/items/lung-crusher-slot-icon.png',presentationImage:'assets/items/lung-crusher-3000.png',
+    activatable:true,useBehavior:'functional',
   }),
 });
 
@@ -15,15 +15,17 @@ export function characterItemDefinition(itemId){return CHARACTER_ITEMS[itemId]??
 export function canCharacterOwnItem(characterId,itemId){
   const item=characterItemDefinition(itemId);return Boolean(item&&item.allowedCharacter===characterId);
 }
-export function normalizeCharacterItem(row){
+export function normalizeCharacterItem(row,currentCharacterId=row?.characterId){
   const item=characterItemDefinition(row?.itemId);
-  if(!item||!canCharacterOwnItem(row?.characterId,row.itemId))return null;
-  return {...item,characterId:row.characterId,active:Boolean(row.active),cooldownUntil:Math.max(0,Number(row.cooldownUntil)||0)};
+  if(!item)return null;
+  const selectedCharacterId=typeof currentCharacterId==='string'?currentCharacterId:row?.characterId;
+  const compatible=canCharacterOwnItem(selectedCharacterId,row.itemId);
+  return {...item,characterId:row.characterId,compatible,active:compatible&&Boolean(row.active),cooldownUntil:Math.max(0,Number(row.cooldownUntil)||0)};
 }
 export function characterInventoryItems(rows,characterId){
   const unique=new Map();
   for(const row of rows??[]){
-    const item=normalizeCharacterItem({...row,characterId:row?.characterId??characterId});
+    const item=normalizeCharacterItem(row,characterId);
     if(item&&!unique.has(item.itemId))unique.set(item.itemId,item);
   }
   return [...unique.values()];

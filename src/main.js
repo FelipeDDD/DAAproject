@@ -6,17 +6,20 @@ import { CharacterMenu } from './CharacterMenu.js';
 import { DisplaySettingsController } from './ui/displaySettings.js';
 import { BackgroundSettingsController } from './ui/backgroundSettings.js';
 import { GameHudController,setGameHud } from './hud/GameHudController.js';
+import { ProfileAuth } from './ProfileAuth.js';
 
 let game, pausedScene;
 const presence=getPresence();
 const gameArea=document.getElementById('play-area');
 const changeButton=document.getElementById('change-character');
+const logoutButton=document.getElementById('logout-profile');
+const menuLogoutButton=document.getElementById('logout-profile-menu');
 const gameHud=setGameHud(new GameHudController());
 const displaySettings=new DisplaySettingsController(document.getElementById('viewport-size'),()=>game?.scale.refresh());
 const backgroundSettings=new BackgroundSettingsController(
   document.getElementById('background-toggle'),document.getElementById('background-options'));
 const menu=new CharacterMenu(presence,()=>{
-  gameArea.hidden=false;changeButton.hidden=false;gameHud.setVisible(true);
+  gameArea.hidden=false;changeButton.hidden=false;logoutButton.hidden=false;gameHud.setVisible(true);
   if(!game)game=new Phaser.Game(gameConfig);
   else if(pausedScene){
     const scene=pausedScene;pausedScene=null;
@@ -25,13 +28,14 @@ const menu=new CharacterMenu(presence,()=>{
     scene.scene.resume();
   }
 });
+const auth=new ProfileAuth(presence,{
+  onAuthenticated(profile,token){menu.setAuthentication(profile,token);menu.show();},
+  onLoggedOut(){menu.hide();},
+});
+void auth.start();
 
 function releaseCurrentCharacter(){
-  const identity=presence?.identity;
-  if(!identity)return Promise.resolve();
-  return presence.client.mutation(presence.api.players.release,{
-    characterId:identity.characterId,sessionId:identity.sessionId,
-  });
+  return presence?.release()??Promise.resolve({released:false});
 }
 
 function releaseOnPageHide(){void releaseCurrentCharacter().catch(()=>{});}
@@ -82,12 +86,21 @@ async function changeCharacter(event){
     pausedScene.doorSync?.close();pausedScene.doorSync=null;
     pausedScene.scene.pause();
   }
-  presence?.leave();gameArea.hidden=true;changeButton.hidden=true;gameHud.setVisible(false);menu.pending=true;menu.show();
+  gameArea.hidden=true;changeButton.hidden=true;gameHud.setVisible(false);menu.pending=true;menu.show();
   try{await releaseCurrentCharacter();}
   catch{menu.message.textContent='The previous session will be released after its timeout.';}
   menu.pending=false;menu.render();
 }
+async function logoutProfile(){
+  if(menu.pending)return;
+  try{
+    if(!gameArea.hidden)await changeCharacter();
+    await auth.logout();menu.hide();changeButton.hidden=true;logoutButton.hidden=true;
+  }catch(error){menu.message.textContent='Logout failed. Check the connection and try again.';console.warn(error);}
+}
 changeButton.addEventListener('click',changeCharacter);
+logoutButton.addEventListener('click',logoutProfile);
+menuLogoutButton.addEventListener('click',logoutProfile);
 window.addEventListener('character-session-lost',changeCharacter);
 
 // Prevent duplicate canvases and keyboard listeners during Vite hot reloads.
@@ -95,6 +108,8 @@ if (import.meta.hot) {
   import.meta.hot.dispose(() => {
     menu.close();game?.destroy(true);closePresence();
     changeButton.removeEventListener('click',changeCharacter);
+    logoutButton.removeEventListener('click',logoutProfile);
+    menuLogoutButton.removeEventListener('click',logoutProfile);
     window.removeEventListener('character-session-lost',changeCharacter);
     window.removeEventListener('pagehide',releaseOnPageHide);
     window.removeEventListener('focus',restoreProjectFocus);
@@ -102,6 +117,7 @@ if (import.meta.hot) {
     displaySettings.destroy();
     backgroundSettings.destroy();
     gameHud.destroy();
+    auth.destroy();
     document.getElementById('character-list').replaceChildren();
   });
 }

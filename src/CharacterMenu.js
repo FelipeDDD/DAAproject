@@ -62,7 +62,7 @@ export class CharacterMenu {
   }
   render(){
     for(const {c,button,state}of this.cards){
-      const busy=this.rows.some(r=>r.characterId===c.id&&isPresenceActive(r.lastSeen));
+      const busy=this.rows.some(r=>r.characterId===c.id&&(r.active??isPresenceActive(r.lastSeen)));
       button.disabled=!this.ready||this.pending||busy;
       state.textContent=busy?'In use':this.ready?'Available':this.connectionFailed?'Offline':'Loading…';
     }
@@ -74,13 +74,21 @@ export class CharacterMenu {
       image.dataset.style=visual.style;
     }
   }
+  setAuthentication(profile,token){
+    this.profile=profile;this.authToken=token;
+    this.presence.profileSessionToken=token;
+    for(const {c,button}of this.cards)button.classList.toggle('preferred',c.id===profile.selectedCharacterId);
+  }
   async choose(c){
-    if(this.pending)return;
+    if(this.pending||!this.authToken)return;
     this.pending=true;this.render();this.message.textContent='Claiming character…';
     try{
-      const result=await this.presence.client.mutation(this.presence.api.players.claim,{characterId:c.id,sessionId:this.sessionId});
+      const result=await this.presence.client.action(this.presence.api.profiles.claimCharacter,{
+        token:this.authToken,characterId:c.id,presenceSessionId:this.sessionId,
+      });
       if(!result.ok){this.message.textContent='Another session just selected this character.';return;}
-      this.presence.identity={playerId:c.id,characterId:c.id,name:c.name,sessionId:this.sessionId};
+      this.profile=result.profile;
+      this.presence.identity={playerId:c.id,characterId:c.id,name:c.name,sessionId:this.sessionId,profileId:result.profile.profileId};
       try{localStorage.setItem(CHARACTER_STORAGE_KEY,c.id);}catch{}
       // Keep the claim alive while Phaser loads its maps and sprites.
       this.presence.enter('selection',()=>({x:0,y:0,direction:'down',activeCharacterItem:null}),()=>{});
@@ -90,6 +98,7 @@ export class CharacterMenu {
     finally{this.pending=false;this.render();}
   }
   show(){this.root.hidden=false;this.render();}
+  hide(){this.root.hidden=true;}
   close(){
     this.closed=true;clearInterval(this.timer);clearTimeout(this.connectionTimer);this.unsubscribe?.();
   }

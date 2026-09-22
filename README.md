@@ -704,3 +704,18 @@ A área `.quiz-media` fica acima de `.quiz-question-body`, dentro de
 
 Conteúdo longo tem rolagem dentro da área auxiliar. Os testes de renderização,
 texto literal, media ausente e troca de conteúdo rodam com `npm.cmd test`.
+
+## Ownership de progresso por profile
+
+`bossProgress`, `bossVictoryReceipts` e `characterItems` pertencem ao profile
+autenticado. As funções públicas recebem o token da sessão, resolvem o `profileId`
+no backend e não usam `characterId`, `profileId` enviado pelo browser ou uma linha
+de presence como autorização. `characterId` permanece apenas como metadado visual;
+o item ativo e a skin atual ainda são espelhados em `players` para o multiplayer.
+
+Registros antigos continuam intactos e com os índices antigos disponíveis. A
+mutation interna `profileDataMigration.attachLegacyCharacterData` é a única rotina
+de conversão: ela exige que `profile.profileName` seja exatamente o antigo
+`characterId`, recusa conflitos com dados já pertencentes ao profile e nunca roda
+automaticamente. Execute-a somente como operação administrativa depois de revisar
+o profile e os registros; nenhuma migração remota faz parte do fluxo de login.

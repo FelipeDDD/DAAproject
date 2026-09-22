@@ -47,16 +47,19 @@ export class Presence {
     if (!stateChanged && now - active.sentAt < PRESENCE_HEARTBEAT_MS) return;
     this.busy = true;
     try {
-      if (stateChanged) await this.client.mutation(this.api.players.update, state);
-      else await this.client.mutation(this.api.players.heartbeat, {
+      const request=stateChanged
+        ? this.client.mutation(this.api.players.update,state)
+        : this.client.mutation(this.api.players.heartbeat,{
         characterId: this.identity.characterId,
         sessionId: this.identity.sessionId,
       });
+      this.pendingSend=request;
+      await request;
       active.previous = serialized;
       active.sentAt = now;
       if (this.active === active) this.status('Online');
     } catch (error) { this.fail(error); }
-    finally { this.busy = false; }
+    finally { this.pendingSend=null;this.busy = false; }
   }
 
   fail(error) {
@@ -75,6 +78,18 @@ export class Presence {
     this.unsubscribe = null;
     this.active?.receive([]);
     this.active = null;
+  }
+
+  async release(){
+    const identity=this.identity;
+    this.leave();
+    if(!identity?.characterId||!identity?.sessionId)return {released:false};
+    try{await this.pendingSend;}catch{}
+    const result=await this.client.mutation(this.api.players.release,{
+      characterId:identity.characterId,sessionId:identity.sessionId,
+    });
+    if(this.identity===identity)this.identity=null;
+    return result;
   }
 
   close() { this.leave(); return this.client.close(); }

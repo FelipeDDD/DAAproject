@@ -2,6 +2,10 @@
   /* The horizontal frame starts about 44% down the asset, below the dragon.
      Lift the whole HUD by that amount so the visible rail meets the canvas. */
   --hud-attach-ratio: .44;
+  /* Customize the paper/info text here for every viewport preset. */
+  --hud-info-font-size: clamp(9px,1.15cqw,15px);
+  /* Negative values move the LEARN / BUILD stone farther right. */
+  --hud-status-offset-x: -8px;
   position: relative;
   container-type: inline-size;
   width: min(100%,var(--game-viewport-width),max(320px,calc((100dvh - 225px) * 16 / 9)));
@@ -117,7 +121,7 @@
   text-align: center;
   text-shadow: 0 1px 1px #fff0c9;
 }
-#hud-info-text { margin: 0; max-width: 100%; font: 800 clamp(7px,.85cqw,11px)/1.25 Georgia,serif; white-space: pre-line; overflow-wrap: anywhere; }
+#hud-info-text { margin: 0; max-width: 100%; font: 1000 var(--hud-info-font-size)/1.25 Georgia,serif; white-space: pre-line; overflow-wrap: anywhere; }
 
 #hud-inventory-mount {
   position: absolute;
@@ -203,7 +207,6 @@ html[data-viewport-size] #game-shell {
   --hud-large-z: 50;
   --hud-large-rail-bottom: 5%;
   --hud-large-stone-width: 52%;
-  --hud-large-stone-offset: -6px;
   --hud-large-slot-size: 4.5cqw;
   --hud-large-emote-size: 2.65cqw;
   --hud-large-slot-gap: .45cqw;
@@ -277,7 +280,7 @@ html[data-viewport-size] #hud-info-text {
   place-items:center;
   width:auto;
   text-align:center;
-  font-size:clamp(7px,1cqw,13px);
+  font-size:var(--hud-info-font-size);
 }
 html[data-viewport-size] #hud-hp-text { font-size:clamp(9px,1.4cqw,18px); }
 html[data-viewport-size] #hud-inventory-mount {
@@ -300,7 +303,7 @@ html[data-viewport-size] #hud-emote-mount {
   z-index:2;
 }
 html[data-viewport-size] #hud-status-panel {
-  right:var(--hud-large-stone-offset);
+  right:var(--hud-status-offset-x);
   bottom:0;
   width:var(--hud-large-stone-width);
   aspect-ratio:1;
@@ -328,6 +331,9 @@ html[data-viewport-size] #bottom-hud :is(.inventory-hotbar,.hotbar-body) {
 html[data-viewport-size] #bottom-hud .hotbar-body { width:100%; }
 html[data-viewport-size] #bottom-hud .inventory-slot {
   width:var(--hud-large-slot-size); height:var(--hud-large-slot-size); flex-shrink:0;
+  border:1px solid #786851;
+  background:linear-gradient(145deg,#1a2026f2,#080b0ff5);
+  box-shadow:inset 0 0 0 1px #d9c49b18,inset 0 0 8px #000,inset 0 1px #d9c49b24;
 }
 html[data-viewport-size] #bottom-hud .inventory-slot img { width:80%; height:80%; }
 html[data-viewport-size] #bottom-hud :is(#emote-slots button,#emote-settings) {

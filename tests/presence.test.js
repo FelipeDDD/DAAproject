@@ -78,6 +78,27 @@ test('a stationary player sends a lightweight heartbeat instead of full position
   assert.deepEqual(calls,[{fn:'heartbeat',args:{characterId:'me',sessionId:'session-123456789'}}]);
 });
 
+test('explicit release waits for an in-flight presence update before deleting the session',async()=>{
+  const calls=[];let finishUpdate;
+  const updateFinished=new Promise(resolve=>{finishUpdate=resolve;});
+  const client={mutation:async(fn,args)=>{
+    calls.push({fn,args});
+    if(fn==='update')await updateFinished;
+    return fn==='release'?{released:true}:undefined;
+  }};
+  const identity={playerId:'felipe',characterId:'felipe',name:'Felipe',sessionId:'session-123456789'};
+  const presence=new Presence(client,{players:{update:'update',heartbeat:'heartbeat',release:'release'}},identity);
+  presence.active={room:'school',snapshot:()=>({x:1,y:2,direction:'down',activeCharacterItem:null}),previous:'',sentAt:0,receive() {}};
+  const sending=presence.send();
+  await Promise.resolve();
+  const releasing=presence.release();
+  assert.deepEqual(calls.map(call=>call.fn),['update']);
+  finishUpdate();
+  await Promise.all([sending,releasing]);
+  assert.deepEqual(calls.map(call=>call.fn),['update','release']);
+  assert.equal(presence.identity,null);
+});
+
 test('a simulated background tab remains active while heartbeats continue',async()=>{
   let serverLastSeen=0;
   const presence=stationaryPresence(async(fn)=>{assert.equal(fn,'heartbeat');serverLastSeen=presence.active.sentAt+PRESENCE_HEARTBEAT_MS;});

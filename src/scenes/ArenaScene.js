@@ -11,7 +11,7 @@ import { ArenaRetryOverlay } from '../boss/ArenaRetryOverlay.js';
 import { BOSS_RETRY_DELAY_MS } from '../boss/config.js';
 import { resolveSpawn } from '../maps/tiledObjects.js';
 import { ArenaCrosshair } from '../boss/ArenaCrosshair.js';
-import { PLAYER_ATTACK_VISUALS } from '../boss/PlayerAttackVisuals.js';
+import { allPlayerAttackVisuals } from '../boss/PlayerAttackVisuals.js';
 
 export class ArenaScene extends MapScene {
   constructor(){super('arena','arena.tmj');}
@@ -20,7 +20,7 @@ export class ArenaScene extends MapScene {
 
   preload(){
     super.preload();
-    for(const visual of Object.values(PLAYER_ATTACK_VISUALS)){
+    for(const visual of allPlayerAttackVisuals()){
       this.load.image(visual.texture,`${import.meta.env.BASE_URL}${visual.asset}`);
     }
     this.load.spritesheet(BOSS_SINGLE_PROJECTILE_TEXTURE,

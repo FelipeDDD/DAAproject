@@ -95,22 +95,38 @@ export default defineSchema({
     .index('by_room_createdAt',['room','createdAt']),
   doors: defineTable({room:v.string(),doorId:v.string(),open:v.boolean(),locked:v.boolean()})
     .index('by_room_door',['room','doorId']),
+  profiles: defineTable({
+    profileName:v.string(),displayName:v.string(),selectedCharacterId:v.string(),
+    passwordHash:v.optional(v.string()),passwordVersion:v.optional(v.number()),
+    createdAt:v.number(),updatedAt:v.number(),
+  }).index('by_profile_name',['profileName']),
+  profileSessions: defineTable({
+    profileId:v.id('profiles'),tokenHash:v.string(),createdAt:v.number(),expiresAt:v.number(),
+  }).index('by_token_hash',['tokenHash'])
+    .index('by_profile',['profileId'])
+    .index('by_expires_at',['expiresAt']),
+  profileLoginAttempts: defineTable({
+    loginKey:v.string(),failures:v.number(),windowStartedAt:v.number(),
+    blockedUntil:v.number(),updatedAt:v.number(),
+  }).index('by_login_key',['loginKey']).index('by_updated_at',['updatedAt']),
   players: defineTable({
     playerId: v.string(), name: v.string(), room: v.string(),
+    profileId:v.optional(v.id('profiles')),
     characterId: v.optional(v.string()), sessionId: v.optional(v.string()),
     x: v.number(), y: v.number(), direction: v.string(),
     equippedSkin:v.optional(v.union(v.literal('classic'),v.literal('remastered'))),
     activeCharacterItem:v.union(v.literal('lung_crusher_3000'),v.null()),lastSeen: v.number(),
   }).index('by_player', ['playerId']).index('by_room', ['room']).index('by_lastSeen', ['lastSeen']),
   bossProgress: defineTable({
-    characterId:v.string(),bossId:v.string(),wins:v.number(),defeated:v.boolean(),
+    profileId:v.optional(v.id('profiles')),characterId:v.optional(v.string()),bossId:v.string(),wins:v.number(),defeated:v.boolean(),
     rewards:v.array(v.string()),equippedSkin:v.optional(v.union(v.literal('classic'),v.literal('remastered'))),updatedAt:v.number(),
-  }).index('by_character_boss',['characterId','bossId']),
+  }).index('by_profile_boss',['profileId','bossId']).index('by_character_boss',['characterId','bossId']),
   characterItems: defineTable({
-    characterId:v.string(),itemId:v.string(),active:v.boolean(),cooldownUntil:v.number(),updatedAt:v.number(),
-  }).index('by_character_item',['characterId','itemId']).index('by_character',['characterId']),
+    profileId:v.optional(v.id('profiles')),characterId:v.optional(v.string()),itemId:v.string(),active:v.boolean(),cooldownUntil:v.number(),updatedAt:v.number(),
+  }).index('by_profile_item',['profileId','itemId']).index('by_profile',['profileId'])
+    .index('by_character_item',['characterId','itemId']).index('by_character',['characterId']),
   bossVictoryReceipts: defineTable({
-    victoryId:v.string(),characterId:v.string(),bossId:v.string(),wins:v.number(),
+    victoryId:v.string(),profileId:v.optional(v.id('profiles')),characterId:v.optional(v.string()),bossId:v.string(),wins:v.number(),
     outcome:v.union(v.literal('choice'),v.literal('automatic'),v.literal('none')),
     rewardId:v.optional(v.string()),createdAt:v.number(),
   }).index('by_victory_id',['victoryId']),

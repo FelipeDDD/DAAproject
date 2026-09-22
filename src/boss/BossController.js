@@ -39,7 +39,7 @@ import {
   BOSS_REWARDS,DIRECTOR_BOSS_ID,hasPendingDirectorReward,shouldClearDirectorLoot,
 } from './BossRewards.js';
 import { ArenaHudOverlay } from './ArenaHudOverlay.js';
-import { PLAYER_ATTACK_VISUALS,playerAttackSpawn,playerAttackVisual } from './PlayerAttackVisuals.js';
+import { allPlayerAttackVisuals,playerAttackSpawn,playerAttackVisual } from './PlayerAttackVisuals.js';
 
 const BOSS_PROJECTILE_TEXTURE='arena-boss-projectile';
 export const BOSS_SINGLE_PROJECTILE_TEXTURE='director-paper-projectile';
@@ -70,7 +70,7 @@ function createTextures(scene){
       frameRate:BOSS_SINGLE_PROJECTILE_FRAME_RATE,repeat:-1,
     });
   }
-  for(const visual of Object.values(PLAYER_ATTACK_VISUALS)){
+  for(const visual of allPlayerAttackVisuals()){
     if(!scene.textures.exists(visual.texture))continue;
     const texture=scene.textures.get(visual.texture);
     for(let index=0;index<visual.frames;index++){

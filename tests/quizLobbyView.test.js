@@ -16,7 +16,7 @@ test('character selection sends a valid presence snapshot before the map loads',
   let snapshot;
   const menu=Object.assign(Object.create(CharacterMenu.prototype),{
     sessionId:'session-123456789',render(){},message:{textContent:''},root:{hidden:false},
-    presence:{api:{players:{claim:'claim'}},client:{mutation:async()=>({ok:true})},enter:(room,getState)=>{
+    authToken:'profile-token',presence:{api:{profiles:{claimCharacter:'claim'}},client:{action:async()=>({ok:true,profile:{profileId:'profile-id'}})},enter:(room,getState)=>{
       assert.equal(room,'selection');snapshot=getState();
     }},onChoose(){},
   });

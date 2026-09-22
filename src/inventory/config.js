@@ -7,7 +7,8 @@ export const ITEM_TYPES=Object.freeze(['key','quest','consumable','character_ite
 export const ITEM_CATALOG=Object.freeze({
   [BOSS_REWARDS.DIRECTOR_ACCESS_BADGE]:Object.freeze({
     itemId:BOSS_REWARDS.DIRECTOR_ACCESS_BADGE,type:'key',quantity:1,
-    icon:'assets/school-key.png',name:'Director Access Badge',description:'Opens restricted school areas.',
+    icon:'assets/school-key.png',presentationImage:'assets/school-key.png',useBehavior:'presentation',
+    name:'Director Access Badge',description:'Opens restricted school areas.',
   }),
   ...CHARACTER_ITEMS,
 });
@@ -32,9 +33,26 @@ export function inventoryItemsFromSources(progress,characterItems,characterId){
 }
 
 export function inventorySlots(items,count=INVENTORY_SLOT_COUNT){
-  const normalized=normalizeInventoryItems(items).slice(0,count);
-  return Array.from({length:count},(_,index)=>normalized[index]??null);
+  const slots=Array(count).fill(null);
+  const normalized=normalizeInventoryItems(items);
+  const functional=normalized.filter(item=>item.useBehavior==='functional'||item.activatable);
+  const presentable=normalized.filter(item=>!functional.includes(item));
+  functional.slice(0,count).forEach((item,index)=>{slots[index]=item;});
+  let index=count-1;
+  for(const item of presentable){
+    while(index>=0&&slots[index])index--;
+    if(index<0)break;
+    slots[index--]=item;
+  }
+  return slots;
 }
+
+export function inventoryItemUseBehavior(item){
+  if(item?.useBehavior==='functional'||item?.activatable)return 'functional';
+  return item?.useBehavior==='presentation'||item?.presentationImage||item?.icon?'presentation':null;
+}
+
+export function inventoryPresentationAsset(item){return item?.presentationImage??item?.icon??'';}
 
 export function inventoryShortcutSlot(event,activeElement=globalThis.document?.activeElement){
   const editable=element=>Boolean(element?.closest?.('input,textarea,select,[contenteditable="true"],[contenteditable=""]'));
