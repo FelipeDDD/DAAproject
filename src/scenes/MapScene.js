@@ -36,7 +36,7 @@ import { normalizeBossProgress } from '../boss/BossRewards.js';
 import { BossDevTools,shouldShowBossDevTools } from '../boss/BossDevTools.js';
 import { InventoryHotbar } from '../inventory/InventoryHotbar.js';
 import { CharacterItemController } from '../inventory/CharacterItemController.js';
-import { WorldPrompt,worldToViewport } from '../ui/WorldPrompt.js';
+import { WorldPrompt,centeredMessageViewport } from '../ui/WorldPrompt.js';
 import { getGameHud } from '../hud/GameHudController.js';
 import '../terminal/terminal.css';
 
@@ -399,6 +399,19 @@ export class MapScene extends Phaser.Scene {
       void this.terminal.open(computer);
       return;
     }
+    if(mapTransition?.locked){
+      if(this.lockedTransitionId!==mapTransition.id)this.doorMessage='';
+      this.lockedTransitionId=mapTransition.id;
+      if(interact){
+        this.doorMessage='The door is locked.';
+        this.onLockedMapTransition?.(mapTransition,_time);
+      }
+      this.hint.hidden=false;
+      this.hint.textContent=this.doorMessage?this.doorMessage:`[E] ${mapTransition.label}`;
+      this.positionInteractionHint();
+      return;
+    }
+    if(this.lockedTransitionId){this.lockedTransitionId=null;this.doorMessage='';}
     if(mapTransition?.auto||(interact&&mapTransition)){
       this.travelTo(mapTransition);
       return;
@@ -447,7 +460,7 @@ export class MapScene extends Phaser.Scene {
   }
 
   positionInteractionHint(){
-    const screen=worldToViewport(this,this.player.x,this.player.body.bottom+this.interactionHintOffset);
+    const screen=centeredMessageViewport(this,this.interactionHintOffset);
     const shell=document.getElementById('game-shell').getBoundingClientRect();
     const hudTop=document.getElementById('bottom-hud')?.getBoundingClientRect().top??screen.canvas.bottom;
     const width=this.hint.offsetWidth,height=this.hint.offsetHeight,margin=10;

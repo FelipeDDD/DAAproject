@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 380" preserveAspectRatio="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="upper" x2="1" y2="0">
+      <stop stop-color="#aabac7"/>
+      <stop offset=".52" stop-color="#d4dce5"/>
+      <stop offset="1" stop-color="#b8c4d5"/>
+    </linearGradient>
+    <linearGradient id="middle" x2="1" y2=".18">
+      <stop stop-color="#bcc9d0"/>
+      <stop offset=".5" stop-color="#aebfcf"/>
+      <stop offset="1" stop-color="#c7bed1"/>
+    </linearGradient>
+    <linearGradient id="lower" x2="1" y2="0">
+      <stop stop-color="#a9bdc9"/>
+      <stop offset=".48" stop-color="#c7d5dc"/>
+      <stop offset="1" stop-color="#aab8c8"/>
+    </linearGradient>
+  </defs>
+  <path d="M0 63 C160 20 280 132 454 91 S770 37 920 92 S1090 118 1200 73 L1200 167 C1040 207 979 106 816 138 S534 214 366 149 S103 187 0 144 Z" fill="url(#upper)" opacity=".55"/>
+  <path d="M0 181 C180 98 310 213 477 165 S727 121 889 179 S1072 207 1200 139 L1200 275 C1043 332 941 215 780 249 S525 292 352 240 S150 299 0 251 Z" fill="url(#middle)" opacity=".49"/>
+  <path d="M0 284 C166 217 311 326 473 271 S710 249 864 287 S1080 266 1200 229 L1200 380 H0 Z" fill="url(#lower)" opacity=".58"/>
+  <path d="M0 181 C180 98 310 213 477 165 S727 121 889 179 S1072 207 1200 139" fill="none" stroke="#fff" stroke-opacity=".34" stroke-width="3"/>
+  <path d="M0 284 C166 217 311 326 473 271 S710 249 864 287 S1080 266 1200 229" fill="none" stroke="#fff" stroke-opacity=".29" stroke-width="3"/>
+</svg>

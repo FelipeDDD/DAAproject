@@ -9,10 +9,11 @@ export function readMapTransitions(source){
     if(!props.targetMap||!props.targetSpawn)throw new Error(`Transition ${object.name||object.id}: targetMap and targetSpawn are required.`);
     const radius=props.interactionRadius??40;
     if(!Number.isFinite(radius)||radius<=0)throw new Error(`Transition ${object.name||object.id}: interactionRadius must be positive.`);
+    if(props.locked!==undefined&&typeof props.locked!=='boolean')throw new Error(`Transition ${object.name||object.id}: locked must be a bool property in Tiled.`);
     return [{
       id:String(props.id??object.name??object.id),x:object.x,y:object.y,radius,
       label:props.label??object.name??'area',targetMap:props.targetMap,targetSpawn:props.targetSpawn,
-      auto:props.autoTransition===true,
+      auto:props.autoTransition===true,locked:props.locked===true,
     }];
   });
 }

@@ -4,6 +4,15 @@ export function worldToViewport(scene,x,y){
   return {x:rect.left+point.x*rect.width/gameSize.width,y:rect.top+point.y*rect.height/gameSize.height,canvas:rect};
 }
 
+// General interaction messages stay below the center of the canvas even when
+// the camera reaches a map edge. Character speech remains world-anchored.
+export function centeredMessageViewport(scene,offsetWorld=0){
+  const canvas=scene.game.canvas.getBoundingClientRect(),gameSize=scene.scale.gameSize;
+  const zoom=scene.cameras.main.zoom;
+  return {x:canvas.left+canvas.width/2,
+    y:canvas.top+canvas.height/2+offsetWorld*zoom*canvas.height/gameSize.height,canvas};
+}
+
 export class WorldPrompt {
   constructor(scene,text,{className='',clamp=false}={}){
     this.scene=scene;this.requestedVisible=false;this.clampToCanvas=clamp;this.position={x:0,y:0};

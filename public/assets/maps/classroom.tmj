@@ -7319,6 +7319,11 @@
                          "value":"Office"
                         },
                         {
+                         "name":"locked",
+                         "type":"bool",
+                         "value":true
+                        },
+                        {
                          "name":"targetMap",
                          "type":"string",
                          "value":"office2"
@@ -8588,7 +8593,7 @@
                  "visible":true,
                  "width":0,
                  "x":143.5,
-                 "y":398.25
+                 "y":430.25
                 },
                 {
                  "height":0,

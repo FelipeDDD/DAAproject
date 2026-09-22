@@ -12,10 +12,12 @@ test('office door uses the existing E transition and its saved-map position', ()
   const note = objectsIn(classroom, 'Notes').find((item) => item.name === 'door-office2');
   assert.equal(transition?.label, 'Office');
   assert.equal(transition?.targetSpawn, 'office2-spawn');
+  assert.equal(transition?.locked,true);
   assert.ok(note);
   assert.deepEqual(officeDoorPlacement(classroom), {
     x: note.x, bottom: note.y, width: 80, height: 44,
   });
+  assert.equal(note.y,430.25);
 });
 
 test('a resized Tiled note controls the door art, with the transition as fallback', () => {
