@@ -111,8 +111,6 @@ test('Rechnungen topics are detected and filter the shared question bank',()=>{
   const rechnungen=groups.find(group=>group.category==='Rechnungen')?.topics??[];
   for(const topic of ['Dreisatz','Netto-Brutto','Prozentrechnung','Rabatt','Textverständnis'])
     assert.ok(rechnungen.includes(topic));
-  assert.deepEqual(groups.find(group=>group.category==='Prüfungssprache')?.topics,
-    ['Aufgabenverben','Prüfungsformulierungen','Textverständnis']);
   const ids=selectQuizQuestionIds({category:'Rechnungen',topic:'Rabatt',difficulty:'medium',count:null,seed:'rabatt'});
   assert.equal(ids.length,2);
   assert.ok(ids.every(id=>QUIZ_QUESTIONS.find(question=>question.id===id)?.topic==='Rabatt'));

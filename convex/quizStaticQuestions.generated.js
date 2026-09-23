@@ -67,17 +67,17 @@ export default [
   {
     "id": "betriebssysteme-005",
     "category": "Betriebssysteme",
-    "topic": null,
+    "topic": "Umgebungsvariablen",
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat ein Gerätetreiber?",
+    "question": "Ein ausführbares Linux-Programm lässt sich über seinen vollständigen Pfad starten, über seinen Namen jedoch nicht. Welche Umgebungsvariable bestimmt die durchsuchten Programmverzeichnisse?",
     "answers": [
-      "Er ermöglicht dem Betriebssystem die Kommunikation mit bestimmter Hardware",
-      "Er verwaltet ausschließlich Benutzerkennwörter",
-      "Er ersetzt das Dateisystem",
-      "Er erstellt automatisch Sicherungskopien aller Dateien"
+      "HOME",
+      "PATH",
+      "LANG",
+      "SHELL"
     ],
-    "correctAnswer": 0,
-    "explanation": "Ein Gerätetreiber stellt die notwendige Schnittstelle zwischen Betriebssystem und einer bestimmten Hardwarekomponente bereit.",
+    "correctAnswer": 1,
+    "explanation": "PATH enthält die Verzeichnisse, in denen die Shell nach externen Befehlen ohne Pfadangabe sucht. Fehlt das Programmverzeichnis dort, kann der vollständige Pfad weiterhin funktionieren.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -259,17 +259,17 @@ export default [
   {
     "id": "betriebssysteme-017",
     "category": "Betriebssysteme",
-    "topic": null,
+    "topic": "Linux-Prozesssignale",
     "difficulty": "medium",
-    "question": "Was ist ein Prozess?",
+    "question": "Ein Linux-Prozess soll zum Beenden aufgefordert werden und dabei Gelegenheit erhalten, eigene Aufräumroutinen auszuführen. Welches Signal ist dafür vorgesehen?",
     "answers": [
-      "Eine laufende Instanz eines Programms.",
-      "Eine Partition auf einer Festplatte.",
-      "Ein Eintrag in der MAC-Adresstabelle.",
-      "Eine BIOS-Einstellung."
+      "SIGSTOP",
+      "SIGKILL",
+      "SIGTERM",
+      "SIGCONT"
     ],
-    "correctAnswer": 0,
-    "explanation": "Ein Programm auf Datenträger ist nicht dasselbe wie ein laufender Prozess im Arbeitsspeicher.",
+    "correctAnswer": 2,
+    "explanation": "SIGTERM fordert die Beendigung an und kann vom Prozess behandelt werden, etwa zum Schließen von Dateien. SIGKILL lässt sich nicht abfangen und ermöglicht solche Aufräumroutinen nicht.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -499,33 +499,33 @@ export default [
   {
     "id": "betriebssysteme-032",
     "category": "Betriebssysteme",
-    "topic": null,
+    "topic": "Linux-Dateisystemdiagnose",
     "difficulty": "medium",
-    "question": "Wozu dient nslookup?",
+    "question": "Auf einem ext4-Dateisystem lassen sich keine neuen Dateien anlegen. df -h zeigt freien Speicherplatz, df -i jedoch 100 % belegte Inodes. Welche Ressource ist erschöpft?",
     "answers": [
-      "DNS-Abfragen und Namensauflösung untersuchen.",
-      "Dateisystemfehler reparieren.",
-      "Windows-Dienste starten.",
-      "RAM testen."
+      "Die verfügbaren Datenblöcke des Dateisystems",
+      "Die verfügbaren Inodes des Dateisystems",
+      "Die verfügbaren Dateideskriptoren des Prozesses",
+      "Die verfügbaren Arbeitsspeicherseiten des Systems"
     ],
-    "correctAnswer": 0,
-    "explanation": "nslookup ist ein Werkzeug für DNS-Abfragen.",
+    "correctAnswer": 1,
+    "explanation": "Eine neue Datei benötigt einen freien Inode für ihre Metadaten. Sind alle Inodes belegt, können trotz freier Datenblöcke keine weiteren Dateien angelegt werden.",
     "source": "betriebssysteme.csv"
   },
   {
     "id": "betriebssysteme-033",
     "category": "Betriebssysteme",
-    "topic": null,
+    "topic": "Energieverwaltung",
     "difficulty": "medium",
-    "question": "Was ist ein Windows-Dienst?",
+    "question": "Wie bewahrt ein Notebook im Ruhezustand (Hibernate) seinen Arbeitszustand auch bei vollständig unterbrochener Stromversorgung?",
     "answers": [
-      "Ein Hintergrundprozess bzw. eine Systemkomponente, die meist ohne direkte Benutzeroberfläche arbeitet.",
-      "Ein physischer USB-Port.",
-      "Eine Partition mit Bootloader.",
-      "Ein Eintrag in der DNS-Zone."
+      "Es hält den Arbeitsspeicher über die Mainboard-Batterie unter Spannung.",
+      "Es überträgt den Arbeitsspeicherinhalt in den Flash-Speicher der UEFI-Firmware.",
+      "Es hält den Arbeitsspeicherinhalt ohne Versorgung in den RAM-Modulen.",
+      "Es sichert den Arbeitsspeicherinhalt vor dem Abschalten auf einem Massenspeicher."
     ],
-    "correctAnswer": 0,
-    "explanation": "Dienste stellen Hintergrundfunktionen wie Netzwerk- oder Systemservices bereit.",
+    "correctAnswer": 3,
+    "explanation": "Beim Ruhezustand wird der Arbeitszustand auf nichtflüchtigem Speicher gesichert. Beim Fortsetzen wird er wiederhergestellt; eine dauerhafte Stromversorgung des RAM ist dafür nicht erforderlich.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -979,17 +979,17 @@ export default [
   {
     "id": "betriebssysteme-062",
     "category": "Betriebssysteme",
-    "topic": "Windows",
+    "topic": "Windows-Automatisierung",
     "difficulty": "medium",
-    "question": "Was ist ein Windows-Dienst?",
+    "question": "Ein vorhandenes Wartungsskript soll unter Windows jeden Werktag um 19 Uhr automatisch ausgeführt werden. Welches Verwaltungswerkzeug ist dafür vorgesehen?",
     "answers": [
-      "Ein Hintergrundprozess, der Systemfunktionen bereitstellt",
-      "Ein Benutzerkonto",
-      "Ein Dateiformat",
-      "Eine Partition"
+      "Aufgabenplanung",
+      "Diensteverwaltung",
+      "Ereignisanzeige",
+      "Leistungsüberwachung"
     ],
     "correctAnswer": 0,
-    "explanation": "Windows-Dienste laufen häufig im Hintergrund und stellen bestimmte Funktionen bereit.",
+    "explanation": "Die Aufgabenplanung startet Programme oder Skripte anhand definierter Auslöser. Ein wöchentlicher Zeittrigger kann auf Montag bis Freitag um 19 Uhr eingestellt werden.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1155,17 +1155,17 @@ export default [
   {
     "id": "betriebssysteme-073",
     "category": "Betriebssysteme",
-    "topic": "Dateisysteme",
+    "topic": "NTFS-Speicherkontingente",
     "difficulty": "medium",
-    "question": "Was ist eine Partition?",
+    "question": "Auf einem gemeinsam genutzten NTFS-Volume soll der belegbare Speicherplatz pro Benutzer begrenzt werden. Welche Funktion ist dafür vorgesehen?",
     "answers": [
-      "Ein logisch abgegrenzter Bereich eines Datenträgers",
-      "Ein Benutzerkonto",
-      "Ein Prozess",
-      "Ein Netzwerkprotokoll"
+      "NTFS-Dateikomprimierung",
+      "NTFS-Zugriffsberechtigungen",
+      "NTFS-Datenträgerkontingente",
+      "NTFS-Dateiverschlüsselung"
     ],
-    "correctAnswer": 0,
-    "explanation": "Partitionen teilen einen Datenträger in logisch getrennte Bereiche.",
+    "correctAnswer": 2,
+    "explanation": "NTFS-Datenträgerkontingente erfassen die Speicherbelegung anhand des Dateibesitzers. Mit einem erzwungenen Kontingentlimit lässt sich weiterer Speicherverbrauch oberhalb der Grenze verhindern.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1187,33 +1187,33 @@ export default [
   {
     "id": "betriebssysteme-075",
     "category": "Betriebssysteme",
-    "topic": "Prozesse",
+    "topic": "Linux-Prozesszustände",
     "difficulty": "medium",
-    "question": "Was ist ein Prozess?",
+    "question": "Ein Linux-Prozess wird in der Prozessliste mit dem Zustand Z angezeigt. Was bedeutet dieser Zustand?",
     "answers": [
-      "Eine laufende Instanz eines Programms",
-      "Ein Dateisystem",
-      "Ein Benutzerkonto",
-      "Ein Treiber"
+      "Er ist beendet, sein Elternprozess hat den Exit-Status noch nicht abgeholt.",
+      "Er ist angehalten und wartet auf ein Signal zum Fortsetzen.",
+      "Er ist ausführungsbereit und wartet auf die Zuteilung von CPU-Zeit.",
+      "Er ist blockiert und wartet auf den Abschluss einer Ein-/Ausgabeoperation."
     ],
     "correctAnswer": 0,
-    "explanation": "Ein Prozess ist ein aktuell ausgeführtes Programm mit eigenen Ressourcen.",
+    "explanation": "Z bezeichnet einen Zombie-Prozess. Seine Ausführung ist beendet, aber ein Prozesseintrag bleibt erhalten, bis der Elternprozess den Beendigungsstatus mit einer wait-Funktion abholt.",
     "source": "betriebssysteme.csv"
   },
   {
     "id": "betriebssysteme-076",
     "category": "Betriebssysteme",
-    "topic": "Prozesse",
+    "topic": "Dateisysteme",
     "difficulty": "medium",
-    "question": "Was ist ein Thread?",
+    "question": "Auf einem Linux-Dateisystem sind bericht.txt und archiv.txt Hardlinks auf dieselbe reguläre Datei. Was geschieht, wenn nur bericht.txt gelöscht wird?",
     "answers": [
-      "Ein Ausführungsstrang innerhalb eines Prozesses",
-      "Eine Partition",
-      "Ein Gerätetreiber",
-      "Ein Dateityp"
+      "archiv.txt bleibt als Name bestehen, verweist aber auf ein fehlendes Ziel.",
+      "archiv.txt wird ebenfalls gelöscht, weil beide Namen dieselbe Datei bezeichnen.",
+      "archiv.txt bleibt nutzbar und ermöglicht weiterhin Zugriff auf denselben Inhalt.",
+      "archiv.txt bleibt bestehen, enthält danach aber eine neu angelegte leere Datei."
     ],
-    "correctAnswer": 0,
-    "explanation": "Threads sind Ausführungsstränge innerhalb eines Prozesses.",
+    "correctAnswer": 2,
+    "explanation": "Hardlinks sind gleichwertige Namen für dieselbe Datei. Das Entfernen eines Namens löscht den Inhalt nicht, solange ein weiterer Hardlink darauf verweist.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1411,17 +1411,17 @@ export default [
   {
     "id": "betriebssysteme-089",
     "category": "Betriebssysteme",
-    "topic": "Treiber",
+    "topic": "Linux-Shell",
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat ein Gerätetreiber?",
+    "question": "Welche Umleitung hängt in Bash nur die Standardfehlerausgabe eines Befehls an eine vorhandene Datei fehler.log an?",
     "answers": [
-      "Er ermöglicht die Kommunikation zwischen Betriebssystem und Hardware",
-      "Er ersetzt das Betriebssystem",
-      "Er speichert Benutzerpasswörter",
-      "Er vergibt IP-Adressen"
+      "> fehler.log",
+      "2> fehler.log",
+      ">> fehler.log",
+      "2>> fehler.log"
     ],
-    "correctAnswer": 0,
-    "explanation": "Treiber stellen die Verbindung zwischen Hardware und Betriebssystem her.",
+    "correctAnswer": 3,
+    "explanation": "Dateideskriptor 2 bezeichnet die Standardfehlerausgabe. Der Operator >> hängt Ausgaben an, ohne den bisherigen Dateiinhalt zu überschreiben.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1491,17 +1491,17 @@ export default [
   {
     "id": "betriebssysteme-094",
     "category": "Betriebssysteme",
-    "topic": "Virtualisierung",
+    "topic": "Linux-Dateisystemverwaltung",
     "difficulty": "medium",
-    "question": "Was ist eine virtuelle Maschine?",
+    "question": "In welcher Konfigurationsdatei werden unter Linux üblicherweise dauerhafte Zuordnungen zwischen Dateisystemen, Einhängepunkten und Mount-Optionen hinterlegt?",
     "answers": [
-      "Ein softwarebasierter, isolierter Computer",
-      "Ein physischer Switch",
-      "Ein Dateisystem",
-      "Ein Benutzerkonto"
+      "/etc/hosts",
+      "/etc/fstab",
+      "/etc/passwd",
+      "/etc/resolv.conf"
     ],
-    "correctAnswer": 0,
-    "explanation": "Eine VM bildet einen Computer softwareseitig nach.",
+    "correctAnswer": 1,
+    "explanation": "/etc/fstab beschreibt Dateisysteme, ihre Einhängepunkte und Mount-Optionen. Die Einträge können unter anderem zum automatischen Einhängen beim Systemstart verwendet werden.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -4979,17 +4979,17 @@ export default [
   {
     "id": "hardware-112",
     "category": "Hardware",
-    "topic": "Kühlung",
+    "topic": "SSD-Schreibausdauer",
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat Wärmeleitpaste zwischen CPU und Kühler?",
+    "question": "Im Datenblatt einer SSD ist eine Schreibausdauer von 600 TBW angegeben. Was beschreibt dieser Wert?",
     "answers": [
-      "Den Prozessor elektrisch mit Netzspannung zu versorgen",
-      "Kleine Unebenheiten zu füllen und den Wärmeübergang zu verbessern",
-      "Die CPU dauerhaft mit dem Sockel zu verkleben",
-      "Die Luftfeuchtigkeit im Gehäuse zu regulieren"
+      "Die maximal gleichzeitig speicherbare Datenmenge",
+      "Die maximal pro Sekunde übertragbare Datenmenge",
+      "Die insgesamt aus dem Laufwerk gelesene Datenmenge",
+      "Die spezifizierte insgesamt schreibbare Datenmenge"
     ],
-    "correctAnswer": 1,
-    "explanation": "Wärmeleitpaste verbessert den thermischen Kontakt zwischen den Oberflächen.",
+    "correctAnswer": 3,
+    "explanation": "TBW beschreibt die spezifizierte Schreibausdauer als kumulierte Datenmenge in Terabyte. Der Wert bezeichnet weder die Speicherkapazität noch einen festen Zeitpunkt, an dem die SSD ausfällt.",
     "source": "hardware.csv"
   },
   {
@@ -5155,17 +5155,17 @@ export default [
   {
     "id": "hardware-123",
     "category": "Hardware",
-    "topic": "Firmware und Boot",
+    "topic": "Servermanagement",
     "difficulty": "medium",
-    "question": "Was ist Secure Boot?",
+    "question": "Ein Serverbetriebssystem reagiert nicht mehr. Stromversorgung und Managementnetz sind verfügbar. Welche Lösung ermöglicht weiterhin Fernzugriff auf Hardwarestatus und Einschaltsteuerung?",
     "answers": [
-      "Eine UEFI-Funktion zur Prüfung vertrauenswürdiger Boot-Komponenten",
-      "Ein RAID-Modus zur Spiegelung der Systemfestplatte",
-      "Ein Verfahren zur Kühlung des Prozessors beim Einschalten",
-      "Ein USB-Modus zum schnelleren Laden externer Geräte"
+      "Ein BMC mit eigener Management-Firmware",
+      "Ein RDP-Dienst im Serverbetriebssystem",
+      "Ein SSH-Dienst im Serverbetriebssystem",
+      "Ein Monitoring-Agent im Serverbetriebssystem"
     ],
     "correctAnswer": 0,
-    "explanation": "Secure Boot prüft signierte und vertrauenswürdige Komponenten des Startvorgangs.",
+    "explanation": "Ein Baseboard Management Controller (BMC) arbeitet unabhängig vom Serverbetriebssystem. Bei vorhandener Stromversorgung und Netzverbindung ermöglicht er Hardwareüberwachung und Fernsteuerung.",
     "source": "hardware.csv"
   },
   {
@@ -9347,17 +9347,17 @@ export default [
   {
     "id": "netzwerk-189",
     "category": "Netzwerk",
-    "topic": "OSI Szenarien",
+    "topic": "HTTP-Diagnose",
     "difficulty": "hard",
-    "question": "Ein Browser fordert per GET eine Webseite an. Welche Schicht steht dabei im Vordergrund?",
+    "question": "Die DNS-Auflösung und der TCP-Verbindungsaufbau zu einem Webserver funktionieren. Der Server antwortet auf die Anfrage mit HTTP 404. Welche Schlussfolgerung ist korrekt?",
     "answers": [
-      "Schicht 3 Vermittlung",
-      "Schicht 5 Sitzung",
-      "Schicht 6 Darstellung",
-      "Schicht 7 Anwendung"
+      "Die angeforderte Ressource wurde auf Anwendungsebene nicht gefunden.",
+      "Die DNS-Auflösung des Servernamens ist fehlgeschlagen.",
+      "Der TCP-Verbindungsaufbau zum Webserver wurde blockiert.",
+      "Die physische Netzwerkverbindung zum Client ist unterbrochen."
     ],
-    "correctAnswer": 3,
-    "explanation": "GET ist eine HTTP-Anfrage und wird der Anwendungsschicht zugeordnet.",
+    "correctAnswer": 0,
+    "explanation": "Eine HTTP-404-Antwort zeigt, dass die Anfrage den Webserver erreicht hat, die angeforderte Ressource dort jedoch nicht gefunden wurde.",
     "source": "netzwerk.csv"
   },
   {
@@ -10181,15 +10181,15 @@ export default [
     "category": "Netzwerk",
     "topic": "CSMA",
     "difficulty": "medium",
-    "question": "Was macht CSMA/CD bei einer erkannten Kollision?",
+    "question": "Nach einer erkannten Kollision sendet eine Ethernet-Station ein Jam-Signal und bricht die Übertragung ab. Was bestimmt, wann sie erneut sendet?",
     "answers": [
-      "Es stoppt die Übertragung",
-      "Es vergibt eine neue MAC-Adresse",
-      "Es wechselt zu DNS",
-      "Es aktiviert IMAP"
+      "Eine zufällige Backoff-Zeit",
+      "Eine neue IP-Adresse",
+      "Eine Bestätigung des DNS-Servers",
+      "Ein Wechsel der MAC-Adresse"
     ],
     "correctAnswer": 0,
-    "explanation": "CSMA/CD erkennt eine Kollision während des Sendens und bricht ab.",
+    "explanation": "CSMA/CD verwendet vor dem erneuten Sendeversuch eine zufällige Wartezeit. Der binäre exponentielle Backoff vergrößert nach weiteren Kollisionen den möglichen Wartebereich.",
     "source": "netzwerk.csv"
   },
   {
@@ -10959,806 +10959,6 @@ export default [
     "correctAnswer": 1,
     "explanation": "Der strikte Gleichheitsoperator === vergleicht Wert und Datentyp ohne die implizite Typumwandlung, die bei == auftreten kann.",
     "source": "programming.csv"
-  },
-  {
-    "id": "pruefungssprache-001",
-    "category": "Prüfungssprache",
-    "topic": "Aufgabenverben",
-    "difficulty": "medium",
-    "question": "Was bedeutet die Aufgabenanweisung „nennen“?",
-    "answers": [
-      "Etwas kurz aufzählen, ohne es ausführlich zu erklären",
-      "Etwas mathematisch berechnen",
-      "Eine Entscheidung ausführlich begründen",
-      "Zwei Dinge miteinander vergleichen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Nennen“ bedeutet normalerweise, Begriffe oder Punkte kurz anzugeben.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-002",
-    "category": "Prüfungssprache",
-    "topic": "Aufgabenverben",
-    "difficulty": "medium",
-    "question": "Was bedeutet „beschreiben“?",
-    "answers": [
-      "Einen Sachverhalt in eigenen Worten darstellen",
-      "Nur ein Stichwort nennen",
-      "Eine Rechnung durchführen",
-      "Nur eine Meinung äußern"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Beschreiben“ bedeutet, einen Sachverhalt verständlich darzustellen.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-003",
-    "category": "Prüfungssprache",
-    "topic": "Aufgabenverben",
-    "difficulty": "medium",
-    "question": "Was bedeutet „erläutern“?",
-    "answers": [
-      "Etwas erklären und Zusammenhänge verständlich machen",
-      "Nur einen Begriff nennen",
-      "Eine Zahl schätzen",
-      "Etwas auswendig abschreiben"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Erläutern“ verlangt normalerweise mehr als nur eine kurze Nennung.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-004",
-    "category": "Prüfungssprache",
-    "topic": "Aufgabenverben",
-    "difficulty": "medium",
-    "question": "Was bedeutet „begründen“?",
-    "answers": [
-      "Eine Aussage mit nachvollziehbaren Argumenten erklären",
-      "Nur das Ergebnis nennen",
-      "Nur eine Formel angeben",
-      "Ein Beispiel abschreiben"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Bei „begründen“ soll erklärt werden, warum eine Aussage oder Entscheidung sinnvoll ist.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-005",
-    "category": "Prüfungssprache",
-    "topic": "Aufgabenverben",
-    "difficulty": "medium",
-    "question": "Was bedeutet „berechnen“?",
-    "answers": [
-      "Einen Wert mit einer Rechnung ermitteln",
-      "Etwas nur beschreiben",
-      "Mehrere Begriffe nennen",
-      "Eine Meinung formulieren"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Berechnen“ bedeutet, einen Wert mathematisch zu bestimmen.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-006",
-    "category": "Prüfungssprache",
-    "topic": "Aufgabenverben",
-    "difficulty": "medium",
-    "question": "Was bedeutet „ermitteln“?",
-    "answers": [
-      "Einen Wert oder Sachverhalt feststellen beziehungsweise herausfinden",
-      "Nur einen Text lesen",
-      "Etwas ignorieren",
-      "Eine Meinung ohne Grundlage geben"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Ermitteln“ kann je nach Aufgabe durch Berechnung, Vergleich oder Analyse erfolgen.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-007",
-    "category": "Prüfungssprache",
-    "topic": "Aufgabenverben",
-    "difficulty": "medium",
-    "question": "Was bedeutet „vergleichen“?",
-    "answers": [
-      "Gemeinsamkeiten und Unterschiede gegenüberstellen",
-      "Nur den größeren Wert nennen",
-      "Nur eine Definition geben",
-      "Eine Rechnung ohne Ergebnis durchführen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Beim Vergleichen werden mindestens zwei Dinge gegenübergestellt.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-008",
-    "category": "Prüfungssprache",
-    "topic": "Aufgabenverben",
-    "difficulty": "medium",
-    "question": "Was bedeutet „beurteilen“?",
-    "answers": [
-      "Einen Sachverhalt anhand von Kriterien bewerten",
-      "Nur einen Begriff nennen",
-      "Nur Zahlen abschreiben",
-      "Etwas zeichnen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Beurteilen“ verlangt eine Bewertung auf Basis nachvollziehbarer Kriterien.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-009",
-    "category": "Prüfungssprache",
-    "topic": "Aufgabenverben",
-    "difficulty": "medium",
-    "question": "Was bedeutet „bewerten“?",
-    "answers": [
-      "Einen Sachverhalt anhand eines Maßstabs oder von Kriterien einschätzen",
-      "Nur beschreiben, was zu sehen ist",
-      "Eine Zahl berechnen",
-      "Einen Begriff übersetzen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Bewerten“ geht über eine reine Beschreibung hinaus und verlangt eine Einschätzung.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-010",
-    "category": "Prüfungssprache",
-    "topic": "Aufgabenverben",
-    "difficulty": "medium",
-    "question": "Was bedeutet „zuordnen“?",
-    "answers": [
-      "Elemente der passenden Kategorie oder Aussage zuweisen",
-      "Alle Werte addieren",
-      "Nur den ersten Begriff erklären",
-      "Etwas neu berechnen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Zuordnen“ bedeutet, etwas der passenden Gruppe, Funktion oder Aussage zuzuweisen.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-011",
-    "category": "Prüfungssprache",
-    "topic": "Aufgabenverben",
-    "difficulty": "medium",
-    "question": "Was bedeutet „ableiten“?",
-    "answers": [
-      "Aus vorhandenen Informationen eine Folgerung entwickeln",
-      "Nur eine Formel abschreiben",
-      "Etwas auswendig nennen",
-      "Eine Grafik zeichnen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Ableiten“ bedeutet, aus gegebenen Informationen logisch zu einer Schlussfolgerung zu kommen.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-012",
-    "category": "Prüfungssprache",
-    "topic": "Aufgabenverben",
-    "difficulty": "medium",
-    "question": "Was bedeutet „kennzeichnen“?",
-    "answers": [
-      "Etwas eindeutig markieren oder durch ein Merkmal kenntlich machen",
-      "Etwas ausführlich begründen",
-      "Eine Zahl berechnen",
-      "Eine Alternative bewerten"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Kennzeichnen“ bedeutet, etwas erkennbar zu markieren oder charakteristisch zu benennen.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-013",
-    "category": "Prüfungssprache",
-    "topic": "Aufgabenverben",
-    "difficulty": "medium",
-    "question": "Was bedeutet „darstellen“?",
-    "answers": [
-      "Einen Sachverhalt strukturiert wiedergeben",
-      "Nur einen Wert berechnen",
-      "Etwas nur beurteilen",
-      "Eine falsche Antwort korrigieren"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Darstellen“ bedeutet, Informationen geordnet und verständlich wiederzugeben.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-014",
-    "category": "Prüfungssprache",
-    "topic": "Aufgabenverben",
-    "difficulty": "medium",
-    "question": "Was bedeutet „erklären“?",
-    "answers": [
-      "Einen Sachverhalt so darstellen, dass Ursachen oder Zusammenhänge verständlich werden",
-      "Nur einen Begriff nennen",
-      "Nur ein Ergebnis angeben",
-      "Etwas zufällig auswählen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Beim Erklären sollen Zusammenhänge verständlich gemacht werden.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-015",
-    "category": "Prüfungssprache",
-    "topic": "Aufgabenverben",
-    "difficulty": "medium",
-    "question": "Was bedeutet „begrenzen“?",
-    "answers": [
-      "Eine Ober- oder Untergrenze festlegen",
-      "Etwas verdoppeln",
-      "Etwas vergleichen",
-      "Etwas automatisch löschen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Begrenzen“ bedeutet, einen Wert oder Bereich einzuschränken.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-016",
-    "category": "Prüfungssprache",
-    "topic": "Prüfungsformulierungen",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Nennen Sie zwei Vorteile“?",
-    "answers": [
-      "Zwei Vorteile kurz angeben",
-      "Zwei Vorteile ausführlich berechnen",
-      "Zwei Nachteile erklären",
-      "Eine Entscheidung begründen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Bei „nennen“ reicht normalerweise eine knappe Angabe der geforderten Punkte.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-017",
-    "category": "Prüfungssprache",
-    "topic": "Prüfungsformulierungen",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Begründen Sie Ihre Antwort“?",
-    "answers": [
-      "Erklären, warum die Antwort richtig oder sinnvoll ist",
-      "Nur Ja oder Nein schreiben",
-      "Nur einen Wert nennen",
-      "Die Aufgabe wiederholen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Eine Begründung braucht nachvollziehbare Argumente.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-018",
-    "category": "Prüfungssprache",
-    "topic": "Prüfungsformulierungen",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Erläutern Sie anhand eines Beispiels“?",
-    "answers": [
-      "Die Erklärung soll durch ein passendes Beispiel verdeutlicht werden",
-      "Nur das Beispiel nennen",
-      "Nur eine Definition schreiben",
-      "Eine Rechnung durchführen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Anhand eines Beispiels“ bedeutet, dass das Beispiel zur Erklärung verwendet werden soll.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-019",
-    "category": "Prüfungssprache",
-    "topic": "Prüfungsformulierungen",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Vergleichen Sie die beiden Lösungen“?",
-    "answers": [
-      "Gemeinsamkeiten und Unterschiede der beiden Lösungen darstellen",
-      "Nur die bessere Lösung nennen",
-      "Beide Lösungen addieren",
-      "Nur die Kosten berechnen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Ein Vergleich verlangt eine Gegenüberstellung beider Lösungen.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-020",
-    "category": "Prüfungssprache",
-    "topic": "Prüfungsformulierungen",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Beurteilen Sie, welche Lösung geeigneter ist“?",
-    "answers": [
-      "Die Lösungen anhand sinnvoller Kriterien bewerten und eine Entscheidung treffen",
-      "Nur technische Daten abschreiben",
-      "Nur die billigere Lösung wählen",
-      "Beide Lösungen als gleich bezeichnen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Beurteilen“ verlangt eine begründete Bewertung.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-021",
-    "category": "Prüfungssprache",
-    "topic": "Prüfungsformulierungen",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Ermitteln Sie den benötigten Speicherplatz“?",
-    "answers": [
-      "Den erforderlichen Speicherplatz herausfinden beziehungsweise berechnen",
-      "Nur den vorhandenen Speicher nennen",
-      "Den Speicher erklären",
-      "Eine Festplatte auswählen, ohne zu rechnen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Ermitteln“ verlangt hier das Bestimmen des gesuchten Werts.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-022",
-    "category": "Prüfungssprache",
-    "topic": "Prüfungsformulierungen",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Berechnen Sie den prozentualen Anteil“?",
-    "answers": [
-      "Den Anteil als Prozentwert bestimmen",
-      "Nur den Gesamtwert nennen",
-      "Den Anteil beschreiben, ohne zu rechnen",
-      "Nur die Differenz bilden"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Die Formulierung verlangt eine Prozentrechnung.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-023",
-    "category": "Prüfungssprache",
-    "topic": "Prüfungsformulierungen",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Geben Sie das Ergebnis in Prozent an“?",
-    "answers": [
-      "Das Endergebnis soll als Prozentwert dargestellt werden",
-      "Das Ergebnis soll in Euro angegeben werden",
-      "Es darf keine Rechnung gezeigt werden",
-      "Das Ergebnis muss gerundet werden"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„In Prozent angeben“ bestimmt die gewünschte Einheit des Ergebnisses.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-024",
-    "category": "Prüfungssprache",
-    "topic": "Prüfungsformulierungen",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Runden Sie auf zwei Nachkommastellen“?",
-    "answers": [
-      "Das Ergebnis soll zwei Stellen nach dem Komma haben",
-      "Das Ergebnis soll auf eine ganze Zahl gerundet werden",
-      "Das Ergebnis soll verdoppelt werden",
-      "Nur die ersten zwei Ziffern sollen verwendet werden"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Nachkommastellen“ sind die Stellen rechts vom Komma.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-025",
-    "category": "Prüfungssprache",
-    "topic": "Prüfungsformulierungen",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Gehen Sie davon aus, dass ...“?",
-    "answers": [
-      "Die folgende Annahme soll für die Aufgabe als gegeben betrachtet werden",
-      "Die Aussage soll bewiesen werden",
-      "Die Aussage soll ignoriert werden",
-      "Es muss eine andere Annahme gewählt werden"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Diese Formulierung gibt eine Annahme vor, mit der weitergearbeitet werden soll.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-026",
-    "category": "Prüfungssprache",
-    "topic": "Prüfungsformulierungen",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Unter der Annahme, dass ...“?",
-    "answers": [
-      "Die Berechnung oder Bewertung soll auf dieser Voraussetzung basieren",
-      "Die Voraussetzung ist falsch",
-      "Es darf keine Rechnung durchgeführt werden",
-      "Nur eine Definition ist gefragt"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Unter der Annahme“ gibt eine Voraussetzung für die weitere Bearbeitung vor.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-027",
-    "category": "Prüfungssprache",
-    "topic": "Prüfungsformulierungen",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Berücksichtigen Sie dabei ...“?",
-    "answers": [
-      "Der genannte Faktor muss in die Lösung einbezogen werden",
-      "Der genannte Faktor soll ignoriert werden",
-      "Nur dieser Faktor darf genannt werden",
-      "Der Faktor muss verdoppelt werden"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Berücksichtigen“ bedeutet in die Überlegung oder Berechnung einbeziehen.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-028",
-    "category": "Prüfungssprache",
-    "topic": "Prüfungsformulierungen",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Vernachlässigen Sie ...“?",
-    "answers": [
-      "Der genannte Faktor soll für diese Aufgabe nicht berücksichtigt werden",
-      "Der Faktor soll besonders genau berechnet werden",
-      "Der Faktor soll verdoppelt werden",
-      "Der Faktor soll begründet werden"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Vernachlässigen“ bedeutet hier, den Faktor nicht in die Berechnung einzubeziehen.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-029",
-    "category": "Prüfungssprache",
-    "topic": "Prüfungsformulierungen",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Welche Aussage trifft zu?“?",
-    "answers": [
-      "Es soll die richtige Aussage ausgewählt werden",
-      "Alle Aussagen sind automatisch richtig",
-      "Es soll eine Rechnung durchgeführt werden",
-      "Es soll nur die längste Aussage gewählt werden"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Trifft zu“ bedeutet „ist richtig“.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-030",
-    "category": "Prüfungssprache",
-    "topic": "Prüfungsformulierungen",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Welche Aussage trifft nicht zu?“?",
-    "answers": [
-      "Es soll die falsche Aussage gefunden werden",
-      "Es soll die richtige Aussage gefunden werden",
-      "Alle Aussagen sollen erklärt werden",
-      "Es soll eine Zahl berechnet werden"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Das Wort „nicht“ kehrt die Auswahl um: Gesucht ist die unzutreffende Aussage.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-031",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „zutreffend“?",
-    "answers": [
-      "Richtig beziehungsweise passend",
-      "Unmöglich",
-      "Unvollständig",
-      "Besonders teuer"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Zutreffend“ bedeutet, dass eine Aussage richtig oder passend ist.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-032",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „unzulässig“?",
-    "answers": [
-      "Nicht erlaubt",
-      "Empfohlen",
-      "Besonders günstig",
-      "Technisch schneller"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Unzulässig“ bedeutet nicht erlaubt oder nicht gestattet.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-033",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „zulässig“?",
-    "answers": [
-      "Erlaubt beziehungsweise gestattet",
-      "Verboten",
-      "Unwirtschaftlich",
-      "Unbekannt"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Zulässig“ bedeutet erlaubt.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-034",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „erforderlich“?",
-    "answers": [
-      "Notwendig",
-      "Optional",
-      "Verboten",
-      "Bereits abgeschlossen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Erforderlich“ bedeutet notwendig.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-035",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „ausreichend“?",
-    "answers": [
-      "Genug für den vorgesehenen Zweck",
-      "Zu wenig",
-      "Unzulässig",
-      "Sehr teuer"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Ausreichend“ bedeutet, dass etwas in genügendem Maß vorhanden ist.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-036",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „geeignet“?",
-    "answers": [
-      "Für den vorgesehenen Zweck passend",
-      "Grundsätzlich verboten",
-      "Immer die billigste Lösung",
-      "Nicht verfügbar"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Geeignet“ bedeutet passend oder verwendbar für einen bestimmten Zweck.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-037",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „zweckmäßig“?",
-    "answers": [
-      "Für den vorgesehenen Zweck sinnvoll und geeignet",
-      "Besonders teuer",
-      "Nur vorübergehend erlaubt",
-      "Mathematisch exakt"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Zweckmäßig“ beschreibt eine sinnvolle Lösung für den vorgesehenen Zweck.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-038",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „gegebenenfalls“?",
-    "answers": [
-      "Falls es notwendig oder passend ist",
-      "Auf jeden Fall",
-      "Unter keinen Umständen",
-      "Nur am Ende"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Gegebenenfalls“ bedeutet „wenn nötig“ beziehungsweise „falls erforderlich“.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-039",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet die Abkürzung „ggf.“?",
-    "answers": [
-      "gegebenenfalls",
-      "gegeben für",
-      "gegenübergestellt",
-      "grundsätzlich gültig"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„ggf.“ steht für „gegebenenfalls“.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-040",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „beziehungsweise“ in vielen Prüfungsaufgaben?",
-    "answers": [
-      "Je nach Zusammenhang „oder genauer gesagt“ beziehungsweise „oder“",
-      "Immer „und“",
-      "Immer „aber“",
-      "Immer „deshalb“"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Beziehungsweise“ kann je nach Kontext präzisieren oder Alternativen verbinden.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-041",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „hinsichtlich“?",
-    "answers": [
-      "In Bezug auf",
-      "Trotz",
-      "Ohne",
-      "Zusätzlich zu"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Hinsichtlich“ bedeutet „bezüglich“ oder „in Bezug auf“.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-042",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „bezüglich“?",
-    "answers": [
-      "In Bezug auf",
-      "Unterhalb von",
-      "Anstelle von",
-      "Ohne Berücksichtigung von"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Bezüglich“ bezeichnet den Gegenstand, auf den sich eine Aussage bezieht.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-043",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „im Hinblick auf“?",
-    "answers": [
-      "In Bezug auf einen bestimmten Aspekt",
-      "Ohne Bezug zu",
-      "Trotz eines Aspekts",
-      "Am Ende einer Aufgabe"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Die Formulierung lenkt die Betrachtung auf einen bestimmten Aspekt.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-044",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „entsprechend“?",
-    "answers": [
-      "Passend zu einer Vorgabe oder Situation",
-      "Vollständig unabhängig davon",
-      "Immer identisch",
-      "Automatisch falsch"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Entsprechend“ bedeutet einer Vorgabe oder einem Zusammenhang gemäß.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-045",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „vorgegeben“?",
-    "answers": [
-      "Bereits festgelegt und als gegeben anzunehmen",
-      "Noch frei wählbar",
-      "Nicht relevant",
-      "Bereits falsch"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Ein vorgegebener Wert oder eine Vorgabe ist bereits festgelegt.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-046",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „jeweils“?",
-    "answers": [
-      "Für jedes genannte Element einzeln",
-      "Nur einmal insgesamt",
-      "Nur für das erste Element",
-      "Immer gleichzeitig"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Jeweils“ bedeutet für jedes einzelne Element beziehungsweise jeden einzelnen Fall.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-047",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „mindestens“?",
-    "answers": [
-      "Der genannte Wert ist die Untergrenze",
-      "Der genannte Wert ist die Obergrenze",
-      "Genau dieser Wert ist erlaubt",
-      "Der Wert muss kleiner sein"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Mindestens“ bedeutet gleich viel oder mehr.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-048",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „höchstens“?",
-    "answers": [
-      "Der genannte Wert ist die Obergrenze",
-      "Der genannte Wert ist die Untergrenze",
-      "Der Wert muss größer sein",
-      "Genau dieser Wert ist verboten"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Höchstens“ bedeutet gleich viel oder weniger.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-049",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „nicht mehr als 20“?",
-    "answers": [
-      "Höchstens 20",
-      "Mindestens 20",
-      "Mehr als 20",
-      "Genau 21"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Nicht mehr als“ bezeichnet eine Obergrenze.",
-    "source": "pruefungssprache.csv"
-  },
-  {
-    "id": "pruefungssprache-050",
-    "category": "Prüfungssprache",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „nicht weniger als 20“?",
-    "answers": [
-      "Mindestens 20",
-      "Höchstens 20",
-      "Weniger als 20",
-      "Genau 19"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Nicht weniger als“ bezeichnet eine Untergrenze.",
-    "source": "pruefungssprache.csv"
   },
   {
     "id": "rechnungen-001",
@@ -13245,7 +12445,7 @@ export default [
       "Der Einkaufspreis"
     ],
     "correctAnswer": 0,
-    "explanation": "Im Übungsblatt wird das Betriebsergebnis unter anderem als Gesamtdeckungsbeitrag minus Fixkosten berechnet.",
+    "explanation": "Das Betriebsergebnis ergibt sich aus dem Gesamtdeckungsbeitrag abzüglich der Fixkosten.",
     "source": "rechnungen.csv"
   },
   {
@@ -13461,7 +12661,7 @@ export default [
     "category": "Rechnungen",
     "topic": "Break-Even",
     "difficulty": "medium",
-    "question": "Was beschreibt die „Sicherheitsspanne“ im Übungsblatt?",
+    "question": "Ein Betrieb verkauft mehr als die Break-Even-Menge. Was beschreibt die „Sicherheitsspanne“?",
     "answers": [
       "Wie weit der tatsächliche Absatz über der Break-Even-Menge liegt",
       "Den Unterschied zwischen zwei Verkaufspreisen",
@@ -13469,7 +12669,7 @@ export default [
       "Die maximale Produktionskapazität"
     ],
     "correctAnswer": 0,
-    "explanation": "Die Sicherheitsspanne vergleicht Ist-Absatz und Break-Even-Menge. :contentReference[oaicite:3]{index=3}",
+    "explanation": "Die Sicherheitsspanne ist die Differenz zwischen Ist-Absatz und Break-Even-Menge.",
     "source": "rechnungen.csv"
   },
   {
@@ -13813,7 +13013,7 @@ export default [
     "category": "Rechnungen",
     "topic": "Textverständnis",
     "difficulty": "medium",
-    "question": "Was bedeutet „Upselling“ im Beispiel mit Standard- und Premium-Service?",
+    "question": "Was bedeutet „Upselling“ bei einem Angebot mit Standard- und Premium-Service?",
     "answers": [
       "Kunden werden zu einer höherwertigen beziehungsweise teureren Variante bewegt",
       "Der Preis wird für alle Kunden gesenkt",
@@ -13821,7 +13021,7 @@ export default [
       "Fixkosten werden abgeschafft"
     ],
     "correctAnswer": 0,
-    "explanation": "Im Übungsblatt wird damit die Umwandlung von Standard-Arbeitsplätzen in Premium bezeichnet. :contentReference[oaicite:4]{index=4}",
+    "explanation": "Beim Upselling wird einem Kunden eine höherwertige Premiumvariante anstelle der Standardvariante angeboten.",
     "source": "rechnungen.csv"
   },
   {
@@ -13869,7 +13069,7 @@ export default [
       "Die Absatzmenge"
     ],
     "correctAnswer": 0,
-    "explanation": "Im Übungsblatt entspricht das eingesetzte Kapital der Investitionssumme.",
+    "explanation": "Bei einer Investition ist das eingesetzte Kapital der dafür aufgewendete Geldbetrag, also die Investitionssumme.",
     "source": "rechnungen.csv"
   },
   {
@@ -14093,7 +13293,7 @@ export default [
       "Kosten im Verhältnis zum Umsatz"
     ],
     "correctAnswer": 0,
-    "explanation": "Im Übungsblatt wird die Umsatzrentabilität als Gewinn / Umsatz × 100 berechnet.",
+    "explanation": "Die Umsatzrentabilität in Prozent berechnet sich als Gewinn / Umsatz × 100.",
     "source": "rechnungen.csv"
   },
   {
@@ -14311,13 +13511,13 @@ export default [
     "difficulty": "medium",
     "question": "Was bedeutet „Marge“?",
     "answers": [
-      "Der Anteil beziehungsweise Unterschied zwischen Erlös und Kosten, der wirtschaftlich verbleibt",
+      "Der Betrag oder Anteil des Erlöses, der nach Abzug der berücksichtigten Kosten verbleibt",
       "Die Gesamtzahl der Kunden",
       "Die Investitionsdauer",
       "Die Höhe der Fixkosten"
     ],
     "correctAnswer": 0,
-    "explanation": "Im Übungsblatt wird eine durchschnittliche Marge genutzt, um aus Umsatz einen wirtschaftlichen Gewinnanteil abzuleiten.",
+    "explanation": "Die absolute Marge ist Erlös minus berücksichtigte Kosten. Die prozentuale Marge setzt diese Differenz ins Verhältnis zum Erlös.",
     "source": "rechnungen.csv"
   },
   {
@@ -14493,7 +13693,7 @@ export default [
       "Die Investitionssumme"
     ],
     "correctAnswer": 0,
-    "explanation": "Im Übungsblatt wird der Nettonutzen aus Erlösen plus Einsparungen minus laufenden Kosten gebildet.",
+    "explanation": "Erlöse und Einsparungen erhöhen den Nettonutzen. Laufende Kosten vermindern ihn. Die Investitionssumme wird in dieser Formel nicht abgezogen.",
     "source": "rechnungen.csv"
   },
   {
