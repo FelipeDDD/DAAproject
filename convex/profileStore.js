@@ -43,7 +43,16 @@ export async function requireSessionToken(ctx,token,now=Date.now()){
   return requireSession(ctx,await sessionTokenHash(token),now);
 }
 
-async function legacyProfileHasPersistentData(ctx,characterId){
+async function legacyProfileHasPersistentData(ctx,profile){
+  const profileId=profile._id;
+  const ownedProgress=await ctx.db.query('bossProgress').withIndex(
+    'by_profile_boss',query=>query.eq('profileId',profileId),
+  ).first();
+  const ownedItem=await ctx.db.query('characterItems').withIndex(
+    'by_profile',query=>query.eq('profileId',profileId),
+  ).first();
+  if(ownedProgress||ownedItem)return true;
+  const characterId=profile.selectedCharacterId;
   const checks=[
     ['bossProgress','by_character_boss'],['characterItems','by_character'],
     ['quizPerformance','by_character'],['itChallengeHighScores','by_character_rules'],
@@ -69,7 +78,7 @@ export const register=internalMutation({
     let profileId;
     if(existing?.passwordHash)return {status:'exists'};
     if(existing){
-      if(await legacyProfileHasPersistentData(ctx,existing.selectedCharacterId))return {status:'legacy_protected'};
+      if(await legacyProfileHasPersistentData(ctx,existing))return {status:'legacy_protected'};
       profileId=existing._id;
       await ctx.db.patch(profileId,{
         displayName:args.displayName,passwordHash:args.passwordHash,passwordVersion:args.passwordVersion,

@@ -5,6 +5,10 @@ import { availability,claim,claimGuest,cleanup,release,update } from '../convex/
 import * as store from '../convex/profileStore.js';
 import { claimCharacter,login,logout,me,register } from '../convex/profiles.js';
 import { requireAuthenticatedPlayer } from '../convex/playerSessions.js';
+import { get as getBossProgress } from '../convex/bossProgress.js';
+import { forProfile as getCharacterItems } from '../convex/characterItems.js';
+import { normalizeBossProgress } from '../src/boss/BossRewards.js';
+import { inventoryItemsFromSources,inventorySlots } from '../src/inventory/config.js';
 
 function memoryContext(){
   const tables={
@@ -72,6 +76,20 @@ test('registration normalizes names, hashes passwords and returns no secret fiel
   assert.doesNotMatch(JSON.stringify(result),/passwordHash|tokenHash|salt/i);
   assert.ok(result.token.length>=32);
   assert.notEqual(ctx.tables.profileSessions[0].tokenHash,result.token);
+});
+
+test('a newly registered profile starts without boss progress or inventory items',async()=>{
+  const ctx=memoryContext();
+  const registered=await createAccount(ctx,'new_player','michael');
+  const progress=await getBossProgress._handler(ctx,{token:registered.token});
+  const items=await getCharacterItems._handler(ctx,{token:registered.token});
+  assert.equal(progress,null);
+  assert.deepEqual(normalizeBossProgress(progress),{
+    characterId:'',bossId:'director',wins:0,defeated:false,rewards:[],equippedSkin:'classic',
+  });
+  assert.deepEqual(items,[]);
+  assert.deepEqual(inventorySlots(inventoryItemsFromSources(progress,items,'michael')),
+    [null,null,null,null,null,null]);
 });
 
 test('profile names are case-insensitively unique',async()=>{
@@ -185,6 +203,10 @@ test('guest presence uses a temporary identity without creating a profile',async
   assert.equal(ctx.tables.profiles.length,0);assert.equal(ctx.tables.profileSessions.length,0);
   assert.equal(ctx.tables.players[0].identityKind,'guest');
   assert.equal(ctx.tables.players[0].guestId,'guest-temporary-identity-123456');
+  assert.equal(ctx.tables.players[0].equippedSkin,'classic');
+  assert.equal(ctx.tables.players[0].activeCharacterItem,null);
+  assert.equal(ctx.tables.bossProgress.length,0);
+  assert.equal(ctx.tables.characterItems.length,0);
   await update._handler(ctx,{
     playerId:'felipe',characterId:'felipe',sessionId:'guest-presence-session-123456',name:'Forged',
     room:'school',x:12,y:34,direction:'right',activeCharacterItem:null,profileId:'forged-profile',
@@ -260,4 +282,20 @@ test('legacy profiles with persistent character data require administrative conv
   await ctx.db.insert('characterItems',{characterId:'felipe',itemId:'important-item'});
   await assert.rejects(createAccount(ctx,'Felipe'),/PROFILE_EXISTS/);
   assert.equal(ctx.tables.profiles[0]._id,id);assert.equal(ctx.tables.profiles[0].passwordHash,undefined);
+});
+
+test('legacy profiles with profile-owned progress or items cannot be registered as fresh accounts',async()=>{
+  for(const [table,data] of [
+    ['bossProgress',{characterId:'felipe',bossId:'director',wins:1,rewards:['director_access_badge']}],
+    ['characterItems',{characterId:'felipe',itemId:'lung_crusher_3000'}],
+  ]){
+    const ctx=memoryContext();
+    const id=await ctx.db.insert('profiles',{
+      profileName:'felipe',displayName:'Felipe',selectedCharacterId:'felipe',createdAt:1,updatedAt:1,
+    });
+    await ctx.db.insert(table,{profileId:id,...data});
+    await assert.rejects(createAccount(ctx,'Felipe'),/PROFILE_EXISTS/);
+    assert.equal(ctx.tables.profiles[0].passwordHash,undefined);
+    assert.equal(ctx.tables.profileSessions.length,0);
+  }
 });

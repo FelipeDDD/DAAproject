@@ -7,10 +7,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Hauptaufgabe übernimmt ein Betriebssystem zwischen Hardware und Anwendungssoftware?",
     "answers": [
-      "Es verwaltet Ressourcen und stellt Anwendungen standardisierte Dienste zur Verfügung",
-      "Es ersetzt die Firmware des Mainboards vollständig",
-      "Es speichert ausschließlich Benutzerdaten",
-      "Es erhöht automatisch die Taktfrequenz der CPU"
+      "Es verwaltet Ressourcen und bietet Anwendungen gemeinsame Systemdienste.",
+      "Es übersetzt den Quellcode von Anwendungen in ausführbare Programme.",
+      "Es initialisiert die Hardware vor dem Laden des Betriebssystemkerns.",
+      "Es führt Anwendungsbefehle als elektronische Rechenschaltung aus."
     ],
     "correctAnswer": 0,
     "explanation": "Das Betriebssystem verwaltet unter anderem Prozessorzeit, Arbeitsspeicher, Geräte und Dateien und stellt Anwendungen Schnittstellen zu diesen Ressourcen bereit.",
@@ -23,10 +23,10 @@ export default [
     "difficulty": "medium",
     "question": "Ein Programm reagiert nicht mehr, während andere Programme weiterhin normal funktionieren. Welche Aussage trifft am ehesten zu?",
     "answers": [
-      "Das gesamte Betriebssystem muss abgestürzt sein",
-      "Wahrscheinlich ist nur der betreffende Prozess blockiert oder fehlerhaft",
-      "Der Arbeitsspeicher wurde vollständig gelöscht",
-      "Die Festplatte wurde automatisch formatiert"
+      "Der Scheduler hat die Ausführung sämtlicher Prozesse eingestellt.",
+      "Der betroffene Prozess wartet auf eine Ressource oder ist fehlerhaft.",
+      "Die grafische Sitzung verarbeitet keine Eingaben mehr für Anwendungen.",
+      "Der Rechner hat den laufenden Betrieb für einen Neustart beendet."
     ],
     "correctAnswer": 1,
     "explanation": "Moderne Betriebssysteme trennen Prozesse voneinander. Ein einzelner blockierter Prozess muss deshalb nicht das gesamte System beeinträchtigen.",
@@ -37,15 +37,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": null,
     "difficulty": "medium",
-    "question": "Wozu dient virtueller Arbeitsspeicher hauptsächlich?",
+    "question": "Welche grundlegende Funktion erfüllt virtueller Speicher?",
     "answers": [
-      "Er ersetzt dauerhaft den physischen RAM durch die CPU",
-      "Er ermöglicht dem Betriebssystem, Speicherbereiche bei Bedarf auf einen Massenspeicher auszulagern",
-      "Er erhöht automatisch die Anzahl der CPU-Kerne",
-      "Er speichert ausschließlich BIOS-Einstellungen"
+      "Er hält Kopien häufig verwendeter Daten in einem schnellen Zwischenspeicher bereit.",
+      "Er stellt virtuelle Adressräume bereit und ordnet deren Adressen physischen Speicherbereichen zu.",
+      "Er bezeichnet einen Datenträgerbereich, in dem ausgelagerte Speicherseiten liegen.",
+      "Er reserviert jedem Prozess einen festen, zusammenhängenden Bereich im physischen RAM."
     ],
     "correctAnswer": 1,
-    "explanation": "Virtueller Arbeitsspeicher erweitert den nutzbaren Adressraum und ermöglicht das Auslagern von Speicherseiten auf einen Massenspeicher, wenn physischer RAM knapp wird.",
+    "explanation": "Virtueller Speicher stellt Prozessen virtuelle Adressräume bereit. Seitentabellen und die Speicherverwaltung bilden virtuelle Adressen auf physischen Speicher ab und unterstützen den Speicherschutz. Das Auslagern von Seiten auf Datenträger ist eine mögliche Ergänzung, aber keine Voraussetzung.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -55,10 +55,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum ist ständiges starkes Auslagern auf eine SSD oder HDD meist ein Hinweis auf ein Leistungsproblem?",
     "answers": [
-      "Massenspeicher ist deutlich langsamer als Arbeitsspeicher",
-      "Die CPU kann während des Auslagerns keine Befehle ausführen",
-      "Virtueller Speicher funktioniert nur mit HDDs",
-      "Beim Auslagern werden Dateien dauerhaft gelöscht"
+      "Das Nachladen vom Datenträger verursacht höhere Zugriffszeiten als der Zugriff auf bereits im RAM liegende Seiten.",
+      "Der Zugriff auf eine ausgelagerte Seite ist schneller als ein RAM-Zugriff, die Verzögerung entsteht beim Bildschirmaufbau.",
+      "Ausgelagerte Seiten werden direkt von der CPU auf dem Datenträger verarbeitet und müssen nicht in den RAM zurück.",
+      "Ein größerer Auslagerungsbereich erhöht die Zugriffszeit des physischen RAMs auch ohne Auslagerungszugriffe."
     ],
     "correctAnswer": 0,
     "explanation": "Wenn häufig Speicherseiten zwischen RAM und Massenspeicher übertragen werden, entstehen deutlich höhere Zugriffszeiten als bei direktem Zugriff auf den Arbeitsspeicher.",
@@ -85,15 +85,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": null,
     "difficulty": "medium",
-    "question": "Ein Benutzer besitzt Leserechte auf eine Datei, aber keine Schreibrechte. Welche Aktion sollte ihm normalerweise möglich sein?",
+    "question": "Ein Benutzer öffnet eine reguläre Datei unter Linux. Er besitzt Leserechte, aber keine Schreibrechte auf diese Datei; der Zugriff auf das übergeordnete Verzeichnis ist erlaubt. Welche Operation am Dateiinhalt ist damit zulässig?",
     "answers": [
-      "Die Datei lesen, aber nicht verändern",
-      "Die Datei verändern, aber nicht öffnen",
-      "Die Zugriffsrechte anderer Benutzer ändern",
-      "Die Datei unabhängig von weiteren Rechten löschen"
+      "Den vorhandenen Inhalt anzeigen.",
+      "Den vorhandenen Inhalt überschreiben.",
+      "Weitere Daten an die Datei anhängen.",
+      "Den Inhalt auf eine Länge von null Bytes kürzen."
     ],
     "correctAnswer": 0,
-    "explanation": "Leserechte erlauben den Zugriff auf den Inhalt. Änderungen am Inhalt erfordern normalerweise zusätzliche Schreibrechte.",
+    "explanation": "Leserechte erlauben das Lesen des Inhalts. Überschreiben, Anhängen und Kürzen erfordern Schreibrechte auf die Datei. Das Löschen eines Verzeichniseintrags hängt dagegen von den Rechten am übergeordneten Verzeichnis ab.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -103,10 +103,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Aussage beschreibt den Unterschied zwischen einem Prozess und einem Thread am besten?",
     "answers": [
-      "Ein Prozess besitzt einen eigenen Ausführungskontext, während mehrere Threads innerhalb eines Prozesses Ressourcen gemeinsam nutzen können",
-      "Ein Thread ist immer ein vollständig separates Betriebssystem",
-      "Ein Prozess kann grundsätzlich nur einen einzigen Thread besitzen",
-      "Threads werden ausschließlich auf Massenspeichern ausgeführt"
+      "Threads eines Prozesses teilen dessen Adressraum; Prozesse haben normalerweise getrennte Adressräume.",
+      "Threads eines Prozesses haben getrennte Adressräume; Prozesse teilen normalerweise denselben Adressraum.",
+      "Ein Prozess ist eine gespeicherte Programmdatei; ein Thread ist die gestartete Instanz dieser Datei.",
+      "Ein Prozess verwaltet Benutzerrechte; ein Thread verwaltet die Dateien des Benutzers."
     ],
     "correctAnswer": 0,
     "explanation": "Threads gehören zu einem Prozess und können Ressourcen wie dessen Adressraum gemeinsam nutzen. Prozesse sind stärker voneinander getrennte Ausführungseinheiten.",
@@ -119,10 +119,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum sind regelmäßige Betriebssystem-Updates in Unternehmen wichtig?",
     "answers": [
-      "Sie können Sicherheitslücken schließen und Fehler beheben",
-      "Sie erhöhen grundsätzlich die physische Speicherkapazität",
-      "Sie ersetzen automatisch jede installierte Hardware",
-      "Sie verhindern vollständig alle zukünftigen Sicherheitsangriffe"
+      "Sie können bekannte Sicherheitslücken schließen und Softwarefehler beheben.",
+      "Sie können die Überprüfung von Zugriffsrechten im Betrieb ersetzen.",
+      "Sie können die Sicherung veränderlicher Benutzerdaten übernehmen.",
+      "Sie können die betriebliche Freigabe neuer Software überflüssig machen."
     ],
     "correctAnswer": 0,
     "explanation": "Updates beheben häufig bekannte Fehler und Sicherheitslücken. Sie reduzieren Risiken, können Angriffe aber nicht grundsätzlich verhindern.",
@@ -135,10 +135,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Aufgabe übernimmt ein Dateisystem wie NTFS oder ext4?",
     "answers": [
-      "Es organisiert Dateien und Verzeichnisse auf einem Datenträger",
-      "Es bestimmt ausschließlich die Geschwindigkeit der CPU",
-      "Es ersetzt den Arbeitsspeicher",
-      "Es konfiguriert automatisch das Netzwerkprotokoll"
+      "Es organisiert Dateien, Verzeichnisse und deren Metadaten auf einem Datenträger.",
+      "Es legt die Reihenfolge fest, in der Prozesse Rechenzeit erhalten.",
+      "Es übersetzt virtuelle Speicheradressen in physische RAM-Adressen.",
+      "Es teilt einen Datenträger durch Partitionseinträge in logische Bereiche auf."
     ],
     "correctAnswer": 0,
     "explanation": "Ein Dateisystem organisiert die Speicherung, Benennung und Verwaltung von Dateien und Verzeichnissen auf einem Datenträger.",
@@ -149,15 +149,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": null,
     "difficulty": "medium",
-    "question": "Warum kann ein 64-Bit-Betriebssystem gegenüber einem 32-Bit-System Vorteile bei großen Arbeitsspeichermengen haben?",
+    "question": "Welchen Vorteil kann eine native 64-Bit-Anwendung gegenüber einer 32-Bit-Anwendung bei großen Datenmengen haben?",
     "answers": [
-      "Es kann einen wesentlich größeren Adressraum unterstützen",
-      "Es benötigt grundsätzlich keine Gerätetreiber",
-      "Es verwendet immer doppelt so viele CPU-Kerne",
-      "Es verdoppelt automatisch die Geschwindigkeit jeder Anwendung"
+      "Sie kann einen größeren virtuellen Adressraum innerhalb ihres Prozesses nutzen.",
+      "Sie benötigt für jede Speicheradresse weniger Bits als eine 32-Bit-Anwendung.",
+      "Sie greift ohne virtuelle Adressen unmittelbar auf alle physischen RAM-Bereiche zu.",
+      "Sie verdoppelt allein durch das Programmformat die Speicherbandbreite des Rechners."
     ],
     "correctAnswer": 0,
-    "explanation": "Ein 64-Bit-System kann einen wesentlich größeren Speicheradressraum verwenden als ein 32-Bit-System und dadurch große RAM-Mengen besser unterstützen.",
+    "explanation": "Ein 64-Bit-Programmformat ermöglicht einen größeren virtuellen Adressraum pro Prozess. Die tatsächlich nutzbare Größe hängt von Architektur und Betriebssystem ab; eine höhere Speicherbandbreite folgt daraus nicht automatisch.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -167,10 +167,10 @@ export default [
     "difficulty": "hard",
     "question": "Ein Prozess fordert Speicher an, greift aber zunächst nicht auf alle angeforderten Seiten zu. Warum kann der tatsächlich belegte physische RAM zunächst kleiner sein als der reservierte virtuelle Adressraum?",
     "answers": [
-      "Speicherseiten können erst bei tatsächlichem Zugriff physisch zugeordnet werden",
-      "Virtueller Speicher benötigt grundsätzlich keinen physischen Speicher",
-      "Die CPU speichert alle Seiten dauerhaft im Cache",
-      "Reservierter Speicher wird automatisch auf andere Rechner verteilt"
+      "Physische Seiten können erst bei einem tatsächlichen Zugriff zugeordnet werden.",
+      "Jede Reservierung belegt sofort dieselbe Menge physischen RAMs; die RAM-Anzeige erfasst diesen Speicher nicht.",
+      "Reservierte Bereiche werden zunächst im Datenträgercache hinterlegt und deshalb nicht als Prozessspeicher gezählt.",
+      "Der Scheduler teilt reservierten Speicher nach CPU-Priorität zu, unabhängig vom Zugriff auf die Seiten."
     ],
     "correctAnswer": 0,
     "explanation": "Moderne Betriebssysteme können Speicher per Demand Paging erst dann mit physischen Seiten hinterlegen, wenn tatsächlich darauf zugegriffen wird.",
@@ -183,10 +183,10 @@ export default [
     "difficulty": "hard",
     "question": "Zwei Prozesse laufen gleichzeitig auf demselben Betriebssystem. Warum kann Prozess A normalerweise nicht direkt auf beliebige Speicheradressen von Prozess B zugreifen?",
     "answers": [
-      "Virtuelle Adressräume und Speicherschutz isolieren Prozesse voneinander",
-      "Jeder Prozess läuft grundsätzlich auf einer eigenen CPU",
-      "Der Arbeitsspeicher wird physisch in exakt gleich große Prozessbereiche geteilt",
-      "Prozesse dürfen nur auf SSDs zugreifen"
+      "Virtuelle Adressräume und hardwaregestützte Zugriffsprüfungen begrenzen den erreichbaren Prozessspeicher.",
+      "Die Vergabe unterschiedlicher Prozess-IDs genügt bereits als Zugriffsschutz für alle Speicheradressen.",
+      "Die Trennung der CPU-Zeitscheiben verhindert Speicherzugriffe auf Daten eines anderen Prozesses.",
+      "Die Leserechte der ausführbaren Programmdatei legen fest, welche fremden RAM-Adressen erreichbar sind."
     ],
     "correctAnswer": 0,
     "explanation": "Virtuelle Speicherverwaltung und Schutzmechanismen des Prozessors sorgen dafür, dass Prozesse getrennte Adressräume verwenden und nicht beliebig auf fremden Speicher zugreifen können.",
@@ -215,10 +215,10 @@ export default [
     "difficulty": "hard",
     "question": "Warum kann ein Dateisystem mit Journaling nach einem unerwarteten Stromausfall Vorteile bieten?",
     "answers": [
-      "Änderungen an Dateisystemstrukturen werden protokolliert und können dadurch leichter konsistent wiederhergestellt werden",
-      "Alle Dateien werden automatisch vollständig gespiegelt",
-      "Journaling ersetzt jede Form von Backup",
-      "Die Festplatte benötigt dadurch keinen Cache mehr"
+      "Ein Änderungsprotokoll unterstützt die Wiederherstellung konsistenter Dateisystemstrukturen.",
+      "Historische Kopien der Dateiinhalte ermöglichen die Auswahl einer beliebigen früheren Dateiversion.",
+      "Eine zweite Datenträgerkopie übernimmt nach dem Ausfall die Rolle des ursprünglichen Laufwerks.",
+      "Ein batteriegepufferter Schreibcache bewahrt noch nicht geschriebene Daten über den Stromausfall hinaus auf."
     ],
     "correctAnswer": 0,
     "explanation": "Ein Journal protokolliert relevante Dateisystemänderungen, sodass nach einem Absturz oder Stromausfall die Konsistenz des Dateisystems schneller und zuverlässiger wiederhergestellt werden kann.",
@@ -229,15 +229,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": null,
     "difficulty": "hard",
-    "question": "Ein Prozess besitzt mehrere Threads. Einer dieser Threads blockiert auf eine langsame Ein-/Ausgabeoperation. Welche Aussage ist bei einem modernen Betriebssystem grundsätzlich richtig?",
+    "question": "Ein Prozess verwendet mehrere vom Kernel verwaltete Threads. Ein Thread wartet auf eine langsame Ein-/Ausgabeoperation. Was gilt für andere ausführungsbereite Threads dieses Prozesses?",
     "answers": [
-      "Andere Threads desselben Prozesses können weiterhin ausgeführt werden, sofern sie nicht von derselben Ressource abhängig sind",
-      "Der gesamte Rechner muss warten, bis die Operation beendet ist",
-      "Alle Threads werden automatisch beendet",
-      "Der blockierte Thread wird automatisch in einen separaten Prozess umgewandelt"
+      "Sie können weiterlaufen, wenn keine zusätzliche Abhängigkeit sie blockiert.",
+      "Sie müssen bis zum Abschluss der Ein-/Ausgabe ebenfalls im Wartezustand bleiben.",
+      "Sie werden vom Scheduler bis zum nächsten Prozessstart aus der Warteschlange entfernt.",
+      "Sie übernehmen automatisch die noch ausstehende Ein-/Ausgabe des wartenden Threads."
     ],
     "correctAnswer": 0,
-    "explanation": "Threads werden vom Scheduler einzeln verwaltet. Blockiert ein Thread auf I/O, können andere ausführbare Threads weiterhin Rechenzeit erhalten.",
+    "explanation": "Der Kernel kann ausführungsbereite Threads unabhängig vom auf I/O wartenden Thread einplanen. Gemeinsame Sperren oder andere Abhängigkeiten können die übrigen Threads allerdings ebenfalls blockieren.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -245,15 +245,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Hauptaufgabe hat ein Betriebssystem?",
+    "question": "Über welche Schnittstelle fordert eine Anwendung beim Kernel typischerweise das Öffnen oder Lesen einer Datei an?",
     "answers": [
-      "Hardware verwalten und Dienste/Schnittstellen für Anwendungen bereitstellen.",
-      "Nur Webseiten darstellen.",
-      "Ausschließlich Netzwerkpakete routen.",
-      "Nur Dateien komprimieren."
+      "Über die Systemaufrufschnittstelle.",
+      "Über die Systemstartkonfiguration.",
+      "Über die Paketquellenkonfiguration.",
+      "Über die Prozessprioritätseinstellung."
     ],
     "correctAnswer": 0,
-    "explanation": "Das Betriebssystem vermittelt zwischen Hardware, Benutzern und Anwendungen und verwaltet Ressourcen.",
+    "explanation": "Bibliotheksfunktionen können Dateizugriffe über Systemaufrufe anfordern. Der Kernel prüft dabei Berechtigungen und koordiniert den Zugriff auf das Dateisystem.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -280,12 +280,12 @@ export default [
     "question": "Was ist ein Thread?",
     "answers": [
       "Ein Ausführungsstrang innerhalb eines Prozesses.",
-      "Ein Benutzerkonto mit Administratorrechten.",
-      "Eine physische CPU.",
-      "Ein Dateisystem-Ordner."
+      "Eine noch nicht gestartete ausführbare Programmdatei.",
+      "Ein vom Scheduler zugeteilter Zeitraum auf einer CPU.",
+      "Ein gespeichertes Abbild eines beendeten Prozesses."
     ],
     "correctAnswer": 0,
-    "explanation": "Ein Prozess kann einen oder mehrere Threads besitzen.",
+    "explanation": "Ein Thread ist ein Ausführungsstrang mit eigenem Befehlszeiger und Stack. Mehrere Threads eines Prozesses teilen typischerweise dessen Adressraum und weitere Ressourcen.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -293,15 +293,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": null,
     "difficulty": "medium",
-    "question": "Was ist ein Dateisystem?",
+    "question": "Welche Information gehört typischerweise zu den Metadaten einer Datei?",
     "answers": [
-      "Eine Struktur zur Organisation und Verwaltung von Dateien und Metadaten auf Datenträgern.",
-      "Eine Methode zur IP-Adressvergabe.",
-      "Ein CPU-Befehlssatz.",
-      "Ein E-Mail-Protokoll."
+      "Der Zeitpunkt ihrer letzten Änderung.",
+      "Der erste Absatz ihres Textinhalts.",
+      "Das abgebildete Motiv einer Bilddatei.",
+      "Die Melodie einer gespeicherten Audiodatei."
     ],
     "correctAnswer": 0,
-    "explanation": "Dateisysteme wie NTFS oder ext4 organisieren Dateien, Verzeichnisse und Metadaten.",
+    "explanation": "Metadaten beschreiben eine Datei, etwa Größe, Zeitstempel, Eigentümer und Zugriffsrechte. Sie sind von den eigentlichen Nutzdaten der Datei zu unterscheiden.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -329,7 +329,7 @@ export default [
     "answers": [
       "ext4",
       "NTFS",
-      "ReFS ausschließlich",
+      "APFS",
       "FAT12"
     ],
     "correctAnswer": 0,
@@ -343,10 +343,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Aussage zu Dateiberechtigungen ist korrekt?",
     "answers": [
-      "Sie steuern, welche Benutzer oder Gruppen welche Operationen auf Dateien und Ordnern ausführen dürfen.",
-      "Sie legen nur die physische Position auf der SSD fest.",
-      "Sie bestimmen die CPU-Taktfrequenz.",
-      "Sie sind identisch mit IP-Subnetzmasken."
+      "Sie legen erlaubte Dateioperationen für Benutzer und Gruppen fest.",
+      "Sie legen die Reihenfolge der physischen Datenblöcke einer Datei fest.",
+      "Sie legen das vom Dateisystem verwendete Kompressionsverfahren fest.",
+      "Sie legen die Aufbewahrungsdauer gelöschter Dateien im Papierkorb fest."
     ],
     "correctAnswer": 0,
     "explanation": "Berechtigungen regeln Zugriffsrechte auf Ressourcen.",
@@ -356,16 +356,16 @@ export default [
     "id": "betriebssysteme-023",
     "category": "Betriebssysteme",
     "topic": null,
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Warum ist das Prinzip der geringsten Rechte sinnvoll?",
     "answers": [
-      "Benutzer und Dienste erhalten nur die Rechte, die sie für ihre Aufgabe benötigen.",
-      "Alle Benutzer erhalten Administratorrechte, damit weniger Supportfälle entstehen.",
-      "Rechte werden zufällig verteilt, um Angriffe zu erschweren.",
-      "Nur Gastkonten dürfen auf Dateien zugreifen."
+      "Begrenzte Rechte verringern den möglichen Schaden bei Fehlern oder kompromittierten Konten.",
+      "Gleiche Administratorrechte für alle Konten erleichtern die Nachverfolgung einzelner Aktionen.",
+      "Häufig wechselnde Rechte ersetzen die Prüfung der Benutzeridentität bei der Anmeldung.",
+      "Zusätzliche Schreibrechte verhindern, dass Anwendungen durch fehlende Berechtigungen angreifbar werden."
     ],
     "correctAnswer": 0,
-    "explanation": "Least Privilege reduziert mögliche Schäden durch Fehler oder kompromittierte Konten.",
+    "explanation": "Beim Prinzip der geringsten Rechte erhalten Benutzer und Dienste die für ihre Aufgaben erforderlichen Berechtigungen. Dadurch bleiben die Auswirkungen von Fehlbedienung oder einem kompromittierten Konto begrenzt.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -373,15 +373,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": null,
     "difficulty": "medium",
-    "question": "Was ist der Unterschied zwischen lokaler Benutzeranmeldung und Domänenanmeldung?",
+    "question": "Was unterscheidet ein lokales Windows-Benutzerkonto von einem Konto in einer Active-Directory-Domäne?",
     "answers": [
-      "Lokale Konten werden auf dem einzelnen Rechner verwaltet, Domänenkonten zentral über eine Domäneninfrastruktur.",
-      "Domänenkonten funktionieren nur ohne Netzwerk.",
-      "Lokale Konten benötigen zwingend einen Domain Controller.",
-      "Es gibt keinen Unterschied."
+      "Das lokale Konto wird auf dem Rechner verwaltet, das Domänenkonto zentral in Active Directory.",
+      "Das lokale Konto gilt auf allen Domänenrechnern, das Domänenkonto auf einem einzelnen Rechner.",
+      "Das lokale Konto speichert Gruppenmitgliedschaften zentral, das Domänenkonto in jeder Anwendung.",
+      "Das lokale Konto nutzt einen Domänencontroller zur Verwaltung, das Domänenkonto die lokale Kontodatenbank."
     ],
     "correctAnswer": 0,
-    "explanation": "Domänenkonten ermöglichen zentrale Verwaltung über Dienste wie Active Directory.",
+    "explanation": "Lokale Konten werden in der Kontodatenbank des jeweiligen Rechners verwaltet. Konten einer Active-Directory-Domäne werden zentral verwaltet und können für den Zugriff auf Domänenressourcen berechtigt werden.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -392,9 +392,9 @@ export default [
     "question": "Welcher Befehl zeigt unter Windows typischerweise die IP-Konfiguration an?",
     "answers": [
       "ipconfig",
-      "ifconfig ausschließlich",
-      "format",
-      "taskkill"
+      "nslookup",
+      "netstat",
+      "tracert"
     ],
     "correctAnswer": 0,
     "explanation": "ipconfig zeigt unter Windows Netzwerkadapter und IP-Konfigurationen.",
@@ -405,15 +405,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": null,
     "difficulty": "medium",
-    "question": "Was bewirkt ipconfig /release bei DHCP?",
+    "question": "Was bewirkt ipconfig /release auf einer Windows-Schnittstelle, die ihre IPv4-Konfiguration per DHCP bezieht?",
     "answers": [
-      "Der Client gibt seine aktuelle DHCP-Lease für die Schnittstelle frei.",
-      "Der Client löscht alle Dateien im DNS-Cache.",
-      "Der Router setzt seine Routingtabelle zurück.",
-      "Die Netzwerkkarte erhält eine neue MAC-Adresse."
+      "Der Client gibt die DHCP-Lease frei und verwirft die zugehörige IPv4-Konfiguration.",
+      "Der Client erneuert die Lease und übernimmt die vom DHCP-Server angebotene Konfiguration.",
+      "Der Client leert die gespeicherten Antworten des lokalen DNS-Resolver-Caches.",
+      "Der Client registriert seinen Rechnernamen erneut beim konfigurierten DNS-Server."
     ],
     "correctAnswer": 0,
-    "explanation": "Mit /release wird eine aktuelle DHCP-Konfiguration freigegeben.",
+    "explanation": "ipconfig /release sendet eine DHCPRELEASE-Nachricht und verwirft die DHCP-Konfiguration der betroffenen Schnittstelle. Die Verbindung über diese IPv4-Konfiguration steht danach nicht mehr zur Verfügung, bis eine neue Konfiguration eingerichtet wird.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -423,10 +423,10 @@ export default [
     "difficulty": "medium",
     "question": "Was bewirkt ipconfig /renew?",
     "answers": [
-      "Der Client fordert eine DHCP-Konfiguration bzw. Lease an oder erneuert sie.",
-      "Der PC startet neu.",
-      "Der DNS-Server wird deinstalliert.",
-      "Alle TCP-Verbindungen werden permanent blockiert."
+      "Der Client fordert eine DHCP-Konfiguration an oder erneuert seine Lease.",
+      "Der Client gibt seine DHCP-Lease frei und entfernt die zugehörige IP-Konfiguration.",
+      "Der Client leert die gespeicherten Antworten seines DNS-Resolver-Caches.",
+      "Der Client zeigt die aktuellen Einträge seiner IPv4-Routingtabelle an."
     ],
     "correctAnswer": 0,
     "explanation": "Der Befehl initiiert eine DHCP-Erneuerung.",
@@ -439,13 +439,13 @@ export default [
     "difficulty": "medium",
     "question": "Was macht ipconfig /flushdns?",
     "answers": [
-      "Den lokalen DNS-Resolver-Cache leeren.",
-      "Die ARP-Tabelle des Switches löschen.",
-      "Alle DHCP-Leases im Netzwerk löschen.",
-      "Die UEFI-Konfiguration zurücksetzen."
+      "Die zwischengespeicherten DNS-Antworten des lokalen Windows-Resolvers leeren.",
+      "Die gespeicherten IPv4-zu-MAC-Zuordnungen des lokalen Rechners leeren.",
+      "Die DHCP-Lease der lokalen Netzwerkschnittstelle freigeben.",
+      "Die statischen Routen aus der lokalen IPv4-Routingtabelle entfernen."
     ],
     "correctAnswer": 0,
-    "explanation": "Der lokale DNS-Cache wird geleert, sodass Namen neu aufgelöst werden müssen.",
+    "explanation": "ipconfig /flushdns leert den lokalen DNS-Resolver-Cache von Windows. Das kann veraltete oder negativ zwischengespeicherte Antworten beseitigen; Caches anderer Rechner oder einzelner Anwendungen werden dadurch nicht geleert.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -472,12 +472,12 @@ export default [
     "question": "Welcher Befehl testet typischerweise die Erreichbarkeit eines Hosts mit ICMP?",
     "answers": [
       "ping",
-      "dir",
-      "copy",
-      "shutdown"
+      "nslookup",
+      "netstat",
+      "arp"
     ],
     "correctAnswer": 0,
-    "explanation": "ping sendet ICMP Echo Requests.",
+    "explanation": "ping sendet ICMP-Echo-Anfragen und wertet Antworten sowie Laufzeiten aus. Eine fehlende Antwort beweist keine Nichterreichbarkeit, da ICMP gefiltert oder nicht beantwortet werden kann.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -489,11 +489,11 @@ export default [
     "answers": [
       "tracert",
       "nslookup",
-      "netstat -r ausschließlich",
-      "chkdsk"
+      "netstat -r",
+      "arp -a"
     ],
     "correctAnswer": 0,
-    "explanation": "tracert verwendet u. a. TTL-Werte, um Zwischenstationen sichtbar zu machen.",
+    "explanation": "tracert sendet Pakete mit schrittweise erhöhtem Hop-Limit, bei IPv4 als TTL bezeichnet. Antworten von Zwischenstationen machen Hops sichtbar; Filterung oder fehlende Antworten können Lücken in der Ausgabe verursachen.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -532,16 +532,16 @@ export default [
     "id": "betriebssysteme-034",
     "category": "Betriebssysteme",
     "topic": null,
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Warum kann das Neustarten eines Dienstes ein Problem beheben, ohne den gesamten PC neu zu starten?",
     "answers": [
-      "Nur die betroffene Hintergrundkomponente wird neu initialisiert.",
-      "Der Arbeitsspeicher wird physisch ausgetauscht.",
-      "Das BIOS wird neu geflasht.",
-      "Die CPU erhält automatisch mehr Kerne."
+      "Die betroffene Dienstinstanz wird beendet und mit neuem internem Zustand gestartet.",
+      "Die ausführbare Datei des Dienstes wird dabei aus einer Sicherung wiederhergestellt.",
+      "Die registrierten Abhängigkeiten des Dienstes werden dabei aus der Konfiguration entfernt.",
+      "Die gespeicherten Einstellungen des Dienstes werden dabei auf Installationswerte zurückgesetzt."
     ],
     "correctAnswer": 0,
-    "explanation": "Ein Dienst kann isoliert beendet und neu gestartet werden, wodurch sein Zustand zurückgesetzt wird.",
+    "explanation": "Ein Neustart kann einen fehlerhaften Laufzeitzustand des Dienstes beseitigen. Persistente Konfigurationsfehler bleiben dabei bestehen; abhängige Dienste können ebenfalls betroffen sein.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -551,10 +551,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist der Unterschied zwischen Herunterfahren und hartem Ausschalten einer VM?",
     "answers": [
-      "Herunterfahren lässt das Gastbetriebssystem sauber Dienste und Dateisysteme beenden; hartes Ausschalten entspricht eher Stromverlust.",
-      "Es gibt keinen technischen Unterschied.",
-      "Hartes Ausschalten erstellt automatisch ein Backup.",
-      "Herunterfahren löscht immer die virtuelle Festplatte."
+      "Herunterfahren gibt dem Gast Zeit zum Abschließen von Schreibvorgängen; hartes Ausschalten unterbricht ihn sofort.",
+      "Herunterfahren verwirft ausstehende Schreibvorgänge; hartes Ausschalten wartet auf deren Abschluss.",
+      "Herunterfahren speichert den RAM zum Fortsetzen; hartes Ausschalten beendet die Dienste geordnet.",
+      "Herunterfahren setzt den letzten Checkpoint zurück; hartes Ausschalten sichert den aktuellen Zustand."
     ],
     "correctAnswer": 0,
     "explanation": "Sauberes Herunterfahren reduziert das Risiko inkonsistenter Daten.",
@@ -567,10 +567,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist eine virtuelle Maschine?",
     "answers": [
-      "Ein softwarebasiertes Computersystem mit virtueller Hardware, auf dem ein Gastbetriebssystem läuft.",
-      "Eine komprimierte Datei ohne eigenes Betriebssystem.",
-      "Ein physischer Switch im Rechenzentrum.",
-      "Ein DNS-Eintrag für Server."
+      "Ein System mit virtueller Hardware, auf dem ein eigenes Gastbetriebssystem ausgeführt wird.",
+      "Eine isolierte Anwendungsumgebung, die den Kernel des Hosts mit anderen Umgebungen teilt.",
+      "Eine gespeicherte Installationsdatei, aus der ein Betriebssystem eingerichtet werden kann.",
+      "Eine Fernzugriffssitzung, die den Bildschirm eines anderen Rechners überträgt."
     ],
     "correctAnswer": 0,
     "explanation": "VMs virtualisieren Hardware-Ressourcen und führen Gastbetriebssysteme isoliert aus.",
@@ -583,10 +583,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist ein Hypervisor?",
     "answers": [
-      "Software bzw. Firmware, die virtuelle Maschinen und deren Ressourcen verwaltet.",
-      "Ein Dateisystemtreiber.",
-      "Ein E-Mail-Protokoll.",
-      "Ein Tool zur Passwortgenerierung."
+      "Eine Plattform, die virtuelle Maschinen ausführt und ihnen Hardware-Ressourcen zuweist.",
+      "Ein Programm, das Anwendungen in einem gemeinsamen Gastbetriebssystem installiert.",
+      "Ein Dienst, der Benutzerprofile zwischen mehreren virtuellen Maschinen synchronisiert.",
+      "Ein Werkzeug, das den Inhalt virtueller Festplatten unabhängig von laufenden VMs archiviert."
     ],
     "correctAnswer": 0,
     "explanation": "Hypervisoren wie Hyper-V koordinieren virtuelle CPUs, RAM, Datenträger und Netzwerkgeräte.",
@@ -596,16 +596,16 @@ export default [
     "id": "betriebssysteme-038",
     "category": "Betriebssysteme",
     "topic": null,
-    "difficulty": "hard",
-    "question": "Was ist der grundlegende Unterschied zwischen Typ-1- und Typ-2-Hypervisor?",
+    "difficulty": "medium",
+    "question": "Wie unterscheiden sich Typ-1- und Typ-2-Hypervisoren in ihrer grundlegenden Architektur?",
     "answers": [
-      "Typ 1 läuft direkt auf der Hardware bzw. als Bare-Metal-Plattform, Typ 2 auf einem Host-Betriebssystem.",
-      "Typ 1 kann nur Linux, Typ 2 nur Windows virtualisieren.",
-      "Typ 1 unterstützt kein Netzwerk, Typ 2 schon.",
-      "Typ 2 verwendet keine virtuelle Hardware."
+      "Typ 1 läuft direkt auf der Hardware; Typ 2 setzt auf einem Host-Betriebssystem auf.",
+      "Typ 1 setzt auf einem Host-Betriebssystem auf; Typ 2 läuft direkt auf der Hardware.",
+      "Typ 1 benötigt einen festen CPU-Kern je VM; Typ 2 teilt CPU-Zeit zwischen VMs auf.",
+      "Typ 1 speichert virtuelle Festplatten als Dateien; Typ 2 greift auf Datenträger ohne Virtualisierung zu."
     ],
     "correctAnswer": 0,
-    "explanation": "Die Einordnung bezieht sich auf die Schicht, auf der der Hypervisor betrieben wird.",
+    "explanation": "Die Einteilung beschreibt die Position des Hypervisors im Systemaufbau. Typ 1 bildet die Virtualisierungsschicht auf der Hardware, Typ 2 nutzt ein Host-Betriebssystem.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -615,13 +615,13 @@ export default [
     "difficulty": "medium",
     "question": "Was ist ein Snapshot/Checkpoint einer VM?",
     "answers": [
-      "Ein gespeicherter Zustandspunkt, zu dem die VM später zurückgesetzt werden kann.",
-      "Ein vollständiges externes Backup mit Langzeitaufbewahrung.",
-      "Ein TCP-Port für Hyper-V.",
-      "Eine feste MAC-Adresse."
+      "Ein gesicherter Zustandspunkt, zu dem eine VM zurückgesetzt werden kann.",
+      "Eine unabhängige Archivkopie der VM auf einem getrennten Sicherungsmedium.",
+      "Eine Vorlage, aus der neue VMs mit eigener Identität bereitgestellt werden.",
+      "Eine laufend synchronisierte zweite VM für die Übernahme bei Hostausfall."
     ],
     "correctAnswer": 0,
-    "explanation": "Checkpoints sind nützlich für Tests, ersetzen aber keine unabhängige Backupstrategie.",
+    "explanation": "Ein Checkpoint hält einen Zustand der VM zum späteren Zurücksetzen fest. Welche Zustandsbestandteile erfasst werden, hängt vom Checkpoint-Typ ab. Checkpoints hängen typischerweise von vorhandenen VM-Datenträgern ab und ersetzen deshalb kein unabhängiges Backup.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -629,15 +629,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": null,
     "difficulty": "hard",
-    "question": "Warum können viele lange Checkpoint-Ketten problematisch sein?",
+    "question": "Eine VM verwendet mehrere aufeinander aufbauende differenzierende Datenträger. Warum kann eine lange Checkpoint-Kette Lesezugriffe aufwendiger machen?",
     "answers": [
-      "Sie erhöhen Komplexität, Speicherbedarf und können Performance sowie Wiederherstellung erschweren.",
-      "Sie deaktivieren grundsätzlich das Gastbetriebssystem.",
-      "Sie verdoppeln immer die CPU-Leistung.",
-      "Sie ersetzen automatisch alle VHDX-Dateien durch ISO-Dateien."
+      "Ein angeforderter Block muss gegebenenfalls in mehreren Ebenen der Kette gesucht werden.",
+      "Jeder Lesezugriff muss zuerst alle älteren Checkpoints in eine neue Vollkopie zusammenführen.",
+      "Jeder Datenträger der Kette muss denselben Block enthalten, bevor der Gast ihn lesen darf.",
+      "Der Gast muss für jeden Zugriff die Dateisystemprüfung aller Checkpoints abschließen."
     ],
     "correctAnswer": 0,
-    "explanation": "Differencing Disks und lange Ketten können Verwaltung und I/O aufwendiger machen.",
+    "explanation": "Liegt ein Block nicht im aktuellen differenzierenden Datenträger, kann er in einer übergeordneten Ebene liegen. Das Durchlaufen mehrerer Ebenen kann zusätzlichen Aufwand erzeugen; tatsächliche Auswirkungen hängen unter anderem von Speichertechnik und Caching ab.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -647,10 +647,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist ein Bootloader?",
     "answers": [
-      "Ein Programm, das den Start des Betriebssystems einleitet.",
-      "Ein DHCP-Dienst.",
-      "Ein RAM-Test ausschließlich im Browser.",
-      "Ein Protokoll zur Dateiübertragung."
+      "Ein Programm, das den Betriebssystemkernel lädt und dessen Start vorbereitet.",
+      "Ein Programm, das laufenden Prozessen CPU-Zeit zuweist.",
+      "Ein Dienst, der Benutzer nach dem Systemstart authentifiziert.",
+      "Ein Treiber, der im laufenden System Dateizugriffe bearbeitet."
     ],
     "correctAnswer": 0,
     "explanation": "UEFI/BIOS lädt typischerweise einen Bootloader, der anschließend das Betriebssystem startet.",
@@ -660,13 +660,13 @@ export default [
     "id": "betriebssysteme-042",
     "category": "Betriebssysteme",
     "topic": null,
-    "difficulty": "hard",
-    "question": "Welche Reihenfolge ist vereinfacht plausibel?",
+    "difficulty": "medium",
+    "question": "Welche Reihenfolge beschreibt vereinfacht den Start eines Rechners mit separatem Bootloader?",
     "answers": [
       "UEFI/BIOS → Bootloader → Betriebssystemkernel → Dienste/Benutzerumgebung",
-      "DNS → Switch → UEFI → RAM",
-      "Betriebssystemkernel → UEFI → Bootloader → CPU",
-      "TCP → Bootloader → DHCP → Dateisystem"
+      "Bootloader → UEFI/BIOS → Betriebssystemkernel → Dienste/Benutzerumgebung",
+      "UEFI/BIOS → Betriebssystemkernel → Bootloader → Dienste/Benutzerumgebung",
+      "UEFI/BIOS → Bootloader → Dienste/Benutzerumgebung → Betriebssystemkernel"
     ],
     "correctAnswer": 0,
     "explanation": "Firmware initialisiert die Plattform, danach folgt der Bootloader und anschließend der Kernel.",
@@ -679,10 +679,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist ein Kernel?",
     "answers": [
-      "Der zentrale Teil eines Betriebssystems, der u. a. Hardware und Prozesse verwaltet.",
-      "Ein Benutzerkonto.",
-      "Ein Backup-Format.",
-      "Eine VLAN-Konfiguration."
+      "Der Betriebssystemkern, der Speicher, Prozesse und Gerätezugriffe koordiniert.",
+      "Die grafische Oberfläche, über die Benutzer Programme und Dateien öffnen.",
+      "Die Kommandozeilenumgebung, die Benutzereingaben als Befehle interpretiert.",
+      "Die Firmware, die vor dem Laden des Betriebssystems die Hardware initialisiert."
     ],
     "correctAnswer": 0,
     "explanation": "Der Kernel bildet den Kern des Betriebssystems und stellt grundlegende Systemfunktionen bereit.",
@@ -695,10 +695,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist Swap bzw. eine Auslagerungsdatei?",
     "answers": [
-      "Speicherplatz auf Massenspeicher, der als Ergänzung zum RAM genutzt werden kann.",
-      "Ein zweiter CPU-Cache ausschließlich im BIOS.",
-      "Eine Kopie der MAC-Adresstabelle.",
-      "Ein DNS-Server."
+      "Ein Bereich auf einem Datenträger, in den Speicherseiten ausgelagert werden können.",
+      "Ein RAM-Bereich, in dem kürzlich gelesene Dateiinhalte zwischengespeichert werden.",
+      "Ein CPU-Speicher, der häufig benötigte Befehle und Daten bereithält.",
+      "Ein Datenträgerabbild, das den Arbeitszustand für den Ruhezustand sichert."
     ],
     "correctAnswer": 0,
     "explanation": "Auslagerung kann RAM-Inhalte auf Datenträger verschieben, ist aber deutlich langsamer als RAM.",
@@ -709,15 +709,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": null,
     "difficulty": "hard",
-    "question": "Warum kann starke Auslagerung ein System spürbar verlangsamen?",
+    "question": "Ein Rechner wird bei hoher Auslastung sehr langsam. Welche Messwerte sprechen besonders für Speicherdruck mit starker Auslagerung?",
     "answers": [
-      "Massenspeicher ist im Vergleich zu RAM deutlich langsamer und erzeugt zusätzliche I/O.",
-      "Die CPU deaktiviert dann automatisch alle Kerne.",
-      "Auslagerung reduziert die Netzwerkkarte auf 10 Mbit/s.",
-      "Swap blockiert grundsätzlich die GPU."
+      "Wenig verfügbarer RAM zusammen mit vielen Seitenzugriffen auf den Auslagerungsdatenträger.",
+      "Hohe CPU-Auslastung zusammen mit viel verfügbarem RAM und wenigen Datenträgerzugriffen.",
+      "Hohe Netzwerklatenz zusammen mit wenig CPU-Auslastung und viel verfügbarem RAM.",
+      "Hohe GPU-Auslastung zusammen mit wenig Datenträgeraktivität und viel verfügbarem RAM."
     ],
     "correctAnswer": 0,
-    "explanation": "Wenn häufig Seiten zwischen RAM und Datenträger verschoben werden, entsteht hoher I/O-Aufwand.",
+    "explanation": "Wenig verfügbarer RAM und häufige Zugriffe auf ausgelagerte Speicherseiten sprechen zusammen für Speicherdruck. Hohe Datenträgerauslastung allein reicht nicht aus, weil auch normale Dateioperationen sie verursachen können.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -727,10 +727,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist der Unterschied zwischen Administrator- und Standardbenutzerkonto?",
     "answers": [
-      "Administratorkonten können weitreichende Systemänderungen durchführen, Standardkonten sind stärker eingeschränkt.",
-      "Standardbenutzer können keine Programme starten.",
-      "Administratoren dürfen keine Netzwerkverbindungen aufbauen.",
-      "Es gibt unter modernen Betriebssystemen keinen Unterschied."
+      "Administrative Rechte ermöglichen systemweite Änderungen; Standardkonten benötigen dafür eine Berechtigungserhöhung.",
+      "Administrative Rechte betreffen persönliche Dateien; Standardkonten verwalten die systemweiten Einstellungen.",
+      "Administrative Rechte gelten für grafische Programme; Standardkonten verwalten das System über die Kommandozeile.",
+      "Administrative Rechte erlauben Netzwerkzugriffe; Standardkonten dürfen Programme lokal installieren und Dienste ändern."
     ],
     "correctAnswer": 0,
     "explanation": "Die Trennung reduziert Risiken durch unnötig hohe Rechte.",
@@ -743,10 +743,10 @@ export default [
     "difficulty": "medium",
     "question": "Wozu dient UAC unter Windows?",
     "answers": [
-      "Administrative Änderungen kontrollieren und eine bewusste Rechteerhöhung anfordern.",
-      "DHCP-Adressen verteilen.",
-      "SSD-Blöcke defragmentieren.",
-      "IPv6 in IPv4 übersetzen."
+      "Eine kontrollierte Rechteerhöhung für administrative Aktionen ermöglichen.",
+      "Dateiinhalte anhand des angemeldeten Benutzers verschlüsseln.",
+      "Die Mitgliedschaft von Benutzerkonten in Domänengruppen verwalten.",
+      "Das Kennwort eines Benutzerkontos nach einer festgelegten Frist erneuern."
     ],
     "correctAnswer": 0,
     "explanation": "User Account Control hilft, administrative Aktionen von normalen Benutzeraktionen zu trennen.",
@@ -757,15 +757,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Aussage zu Linux sudo ist korrekt?",
+    "question": "Welche Aussage beschreibt sudo unter Linux korrekt?",
     "answers": [
-      "Es erlaubt berechtigten Benutzern, einzelne Befehle mit erhöhten Rechten auszuführen.",
-      "Es ist ein Dateisystem.",
-      "Es ersetzt den Linux-Kernel.",
-      "Es ist ein DNS-Protokoll."
+      "Es führt erlaubte Befehle im Kontext eines anderen Benutzers aus, standardmäßig root.",
+      "Es fügt den aufrufenden Benutzer dauerhaft zur Administratorgruppe hinzu.",
+      "Es ändert den Eigentümer der angegebenen ausführbaren Datei auf root.",
+      "Es startet den angegebenen Befehl nach einem festgelegten Zeitplan."
     ],
     "correctAnswer": 0,
-    "explanation": "sudo ermöglicht kontrollierte Rechteerhöhung für bestimmte Befehle.",
+    "explanation": "sudo prüft eine Richtlinie und führt erlaubte Befehle als Zielbenutzer aus, standardmäßig als root. Der Zielbenutzer kann auch ein anderes, weniger privilegiertes Konto sein.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -805,15 +805,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat der Linux-Befehl sudo apt update?",
+    "question": "Welche Aufgabe hat sudo apt update auf einem Debian- oder Ubuntu-System?",
     "answers": [
-      "Paketlisten aus den konfigurierten Paketquellen aktualisieren.",
-      "Alle installierten Pakete zwangsläufig auf eine neue Major-Version upgraden.",
-      "Die Festplatte formatieren.",
-      "Die IP-Adresse automatisch erneuern."
+      "Die lokalen Paketlisten aus den konfigurierten Paketquellen aktualisieren.",
+      "Die installierten Pakete auf neuere verfügbare Versionen aktualisieren.",
+      "Nicht mehr benötigte automatisch installierte Pakete entfernen.",
+      "Bereits heruntergeladene Paketdateien aus dem lokalen Cache löschen."
     ],
     "correctAnswer": 0,
-    "explanation": "apt update aktualisiert die Informationen über verfügbare Pakete.",
+    "explanation": "apt update lädt aktuelle Paketinformationen aus den konfigurierten Quellen. Installierte Programme werden dadurch noch nicht aktualisiert; dafür dient beispielsweise apt upgrade.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -821,31 +821,31 @@ export default [
     "category": "Betriebssysteme",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat sudo apt upgrade typischerweise?",
+    "question": "Welche Aufgabe hat sudo apt upgrade auf einem Debian- oder Ubuntu-System?",
     "answers": [
       "Installierte Pakete auf verfügbare neuere Versionen aktualisieren.",
-      "Die Paketquellen löschen.",
-      "Das Dateisystem von ext4 auf NTFS umstellen.",
-      "Den Rechner in eine Windows-Domäne aufnehmen."
+      "Die lokalen Informationen über verfügbare Paketversionen neu einlesen.",
+      "Nicht mehr benötigte automatisch installierte Pakete entfernen.",
+      "Die Paketdateien aus dem lokalen Download-Cache löschen."
     ],
     "correctAnswer": 0,
-    "explanation": "apt upgrade aktualisiert installierte Pakete unter Beachtung der Paketverwaltung.",
+    "explanation": "apt upgrade installiert neuere Versionen vorhandener Pakete anhand der lokalen Paketlisten. Bei Bedarf können neue Abhängigkeiten hinzukommen; vorhandene Pakete werden dabei nicht entfernt. Solche Konflikte können dazu führen, dass Aktualisierungen zurückgehalten werden.",
     "source": "betriebssysteme.csv"
   },
   {
     "id": "betriebssysteme-053",
     "category": "Betriebssysteme",
     "topic": null,
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Warum sollte man vor tiefgreifenden Systemänderungen einen Wiederherstellungsplan besitzen?",
     "answers": [
-      "Fehler können das System unbrauchbar machen; ein Rückweg reduziert Ausfallzeit und Datenverlust.",
-      "Weil jede Änderung automatisch die CPU beschädigt.",
-      "Weil Backups die Netzwerkgeschwindigkeit verdoppeln.",
-      "Weil ohne Backup keine Benutzerkonten existieren dürfen."
+      "Ein getesteter Rückweg begrenzt Ausfallzeit und Datenverlust, wenn die Änderung fehlschlägt.",
+      "Ein dokumentierter Rückweg ersetzt die Prüfung, ob vorhandene Sicherungen lesbar sind.",
+      "Ein Wiederherstellungsplan behebt vorhandene Konfigurationsfehler bereits vor der Änderung.",
+      "Ein Wiederherstellungsplan macht die Abstimmung eines Wartungsfensters überflüssig."
     ],
     "correctAnswer": 0,
-    "explanation": "Änderungsmanagement und Wiederherstellbarkeit sind zentrale Betriebsprinzipien.",
+    "explanation": "Ein Wiederherstellungsplan beschreibt, wie nach einer fehlgeschlagenen Änderung ein funktionsfähiger Zustand erreicht wird. Dazu gehören geeignete Sicherungen, getestete Schritte und die benötigten Zugänge oder Werkzeuge.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -855,10 +855,10 @@ export default [
     "difficulty": "medium",
     "question": "Was bedeutet 'Patchen' eines Betriebssystems?",
     "answers": [
-      "Updates zur Fehlerbehebung, Sicherheit oder Funktion installieren.",
-      "Den RAM physisch austauschen.",
-      "Eine neue MAC-Adresse anlöten.",
-      "Nur die Bildschirmauflösung ändern."
+      "Korrekturpakete für bekannte Softwarefehler oder Sicherheitslücken installieren.",
+      "Die Konfiguration des Systems auf die ursprünglichen Installationswerte zurücksetzen.",
+      "Das Betriebssystem mit derselben Version vollständig neu installieren.",
+      "Eine Sicherungskopie der installierten Systemdateien auf einem anderen Datenträger anlegen."
     ],
     "correctAnswer": 0,
     "explanation": "Patches schließen Fehler und Sicherheitslücken oder verbessern Funktionen.",
@@ -868,13 +868,13 @@ export default [
     "id": "betriebssysteme-055",
     "category": "Betriebssysteme",
     "topic": null,
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Warum sollten Systeme nicht dauerhaft mit nicht benötigten Diensten betrieben werden?",
     "answers": [
-      "Jeder zusätzliche Dienst kann Ressourcen verbrauchen und die Angriffsfläche vergrößern.",
-      "Nicht benötigte Dienste erhöhen automatisch die CPU-Kernzahl.",
-      "Dienste beeinflussen nur die Bildschirmfarbe.",
-      "Ein deaktivierter Dienst verhindert grundsätzlich Updates."
+      "Sie können unnötig Ressourcen beanspruchen und zusätzliche Angriffspunkte bieten.",
+      "Sie beschleunigen die Anmeldung, weil sie Berechtigungsprüfungen übernehmen.",
+      "Sie ersetzen Sicherheitsupdates für andere laufende Hintergrundkomponenten.",
+      "Sie verringern den Verwaltungsaufwand, weil mehr Funktionen dauerhaft aktiv bleiben."
     ],
     "correctAnswer": 0,
     "explanation": "Minimierung unnötiger Dienste reduziert Komplexität und mögliche Angriffsflächen.",
@@ -885,28 +885,28 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Systemverwaltung",
     "difficulty": "medium",
-    "question": "Was ist ein typischer Vorteil regelmäßiger Betriebssystem-Updates?",
+    "question": "Warum bleibt ein nicht mehr mit Sicherheitsupdates versorgtes Betriebssystem trotz aktuellem Virenschutz ein Risiko?",
     "answers": [
-      "Sie schließen Sicherheitslücken und beheben Fehler",
-      "Sie erhöhen automatisch den physischen RAM",
-      "Sie ersetzen Gerätetreiber immer vollständig",
-      "Sie formatieren die Systempartition"
+      "Neu entdeckte Lücken im Betriebssystem können ungepatcht bleiben.",
+      "Aktuelle Virensignaturen ersetzen fehlende Betriebssystemkorrekturen vollständig.",
+      "Virenschutz macht verwundbare Systemdienste unabhängig von ihrer Konfiguration unerreichbar.",
+      "Ein älteres Betriebssystem kann nach dem Supportende keine neuen Schwachstellen mehr aufweisen."
     ],
     "correctAnswer": 0,
-    "explanation": "Regelmäßige Updates verbessern Sicherheit, Stabilität und beheben bekannte Fehler",
+    "explanation": "Virenschutz und Betriebssystemupdates erfüllen unterschiedliche Aufgaben. Fehlen Sicherheitskorrekturen, können Schwachstellen bestehen bleiben, die ein Virenschutz nicht zuverlässig ausgleicht.",
     "source": "betriebssysteme.csv"
   },
   {
     "id": "betriebssysteme-057",
     "category": "Betriebssysteme",
     "topic": "Virtualisierung",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Was ist ein typischer Unterschied zwischen Host und Gast in einer Virtualisierungsumgebung?",
     "answers": [
-      "Der Host stellt die physische Hardware und Ressourcen bereit, der Gast läuft als virtuelles System",
-      "Der Gast besitzt immer mehr RAM als der Host",
-      "Der Host ist immer Linux und der Gast immer Windows",
-      "Der Gast verwaltet die physische CPU direkt ohne Hypervisor"
+      "Der Host stellt Ressourcen bereit; das Gastbetriebssystem läuft innerhalb einer VM.",
+      "Der Gast stellt die Hardware bereit; der Host läuft als Anwendung innerhalb des Gastes.",
+      "Host und Gast sind zwei Benutzerkonten innerhalb desselben Betriebssystems.",
+      "Host und Gast bezeichnen aktive und inaktive Kopien derselben virtuellen Festplatte."
     ],
     "correctAnswer": 0,
     "explanation": "Der Host ist das zugrunde liegende System mit der Hardware, während der Gast als virtuelle Maschine darauf ausgeführt wird",
@@ -919,10 +919,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Aufgabe hat der Windows-Explorer hauptsächlich?",
     "answers": [
-      "Dateien und Ordner verwalten",
-      "Treiber kompilieren",
-      "RAM reservieren",
-      "BIOS aktualisieren"
+      "Dateien, Ordner und Laufwerke anzeigen und verwalten.",
+      "Laufende Prozesse und ihre Ressourcennutzung überwachen.",
+      "Hardwaregeräte und deren Treiberkonfiguration verwalten.",
+      "Systemereignisse und Anwendungsfehler protokolliert anzeigen."
     ],
     "correctAnswer": 0,
     "explanation": "Der Windows-Explorer dient zur Verwaltung von Dateien, Ordnern und Laufwerken.",
@@ -936,9 +936,9 @@ export default [
     "question": "Welches Windows-Werkzeug zeigt laufende Prozesse und deren Ressourcennutzung?",
     "answers": [
       "Task-Manager",
-      "Editor",
-      "Paint",
-      "Datenträgerbereinigung"
+      "Ereignisanzeige",
+      "Geräte-Manager",
+      "Datenträgerverwaltung"
     ],
     "correctAnswer": 0,
     "explanation": "Der Task-Manager zeigt Prozesse sowie CPU-, RAM- und Datenträgerauslastung.",
@@ -951,10 +951,10 @@ export default [
     "difficulty": "medium",
     "question": "Wofür wird der Geräte-Manager unter Windows verwendet?",
     "answers": [
-      "Hardware und Treiber verwalten",
-      "Benutzerpasswörter speichern",
-      "Dateien komprimieren",
-      "Webseiten öffnen"
+      "Erkannte Hardwaregeräte und zugehörige Treiber prüfen und verwalten.",
+      "Laufende Programme und deren Arbeitsspeicherverbrauch anzeigen.",
+      "Datenträger partitionieren und Laufwerksbuchstaben zuordnen.",
+      "Anmeldeereignisse und fehlgeschlagene Systemdienste auswerten."
     ],
     "correctAnswer": 0,
     "explanation": "Im Geräte-Manager lassen sich Hardwaregeräte und Treiber prüfen und verwalten.",
@@ -968,12 +968,12 @@ export default [
     "question": "Welches Werkzeug hilft bei der Analyse von Windows-Systemereignissen und Fehlern?",
     "answers": [
       "Ereignisanzeige",
-      "Rechner",
-      "Zwischenablage",
-      "Editor"
+      "Task-Manager",
+      "Geräte-Manager",
+      "Aufgabenplanung"
     ],
     "correctAnswer": 0,
-    "explanation": "Die Ereignisanzeige protokolliert System-, Anwendungs- und Sicherheitsereignisse.",
+    "explanation": "Die Ereignisanzeige zeigt protokollierte System-, Anwendungs- und Sicherheitsereignisse an. Zeitstempel, Ereignisquellen und Ereignis-IDs unterstützen die Fehleranalyse.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -981,7 +981,7 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Windows-Automatisierung",
     "difficulty": "medium",
-    "question": "Ein vorhandenes Wartungsskript soll unter Windows jeden Werktag um 19 Uhr automatisch ausgeführt werden. Welches Verwaltungswerkzeug ist dafür vorgesehen?",
+    "question": "Ein vorhandenes Wartungsskript soll unter Windows montags bis freitags jeweils um 19 Uhr automatisch ausgeführt werden. Welches Verwaltungswerkzeug ist dafür vorgesehen?",
     "answers": [
       "Aufgabenplanung",
       "Diensteverwaltung",
@@ -997,15 +997,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Linux",
     "difficulty": "medium",
-    "question": "Welcher Befehl zeigt unter Linux den Inhalt eines Verzeichnisses an?",
+    "question": "Welcher Linux-Befehl zeigt Verzeichniseinträge einschließlich versteckter Namen in ausführlicher Form an?",
     "answers": [
-      "ls",
-      "cd",
-      "pwd",
-      "rm"
+      "ls -la",
+      "ls -l",
+      "ls -d",
+      "ls -R"
     ],
     "correctAnswer": 0,
-    "explanation": "ls listet Dateien und Verzeichnisse auf.",
+    "explanation": "Bei ls aktiviert -l das ausführliche Format und -a die Anzeige aller Namen einschließlich der Einträge mit führendem Punkt. -d zeigt Verzeichnisse selbst statt ihrer Inhalte; -R arbeitet rekursiv.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1013,15 +1013,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Linux",
     "difficulty": "medium",
-    "question": "Welcher Linux-Befehl zeigt das aktuelle Arbeitsverzeichnis?",
+    "question": "In Bash führt der Pfad zum aktuellen Verzeichnis über einen symbolischen Link. Welcher Befehl zeigt den physischen Pfad mit aufgelösten symbolischen Links?",
     "answers": [
-      "pwd",
-      "ls",
-      "mkdir",
-      "cat"
+      "pwd -P",
+      "pwd -L",
+      "cd -",
+      "ls -d ."
     ],
     "correctAnswer": 0,
-    "explanation": "pwd zeigt den Pfad des aktuellen Verzeichnisses.",
+    "explanation": "pwd -P zeigt den physischen Verzeichnispfad und löst dabei symbolische Links auf. pwd -L verwendet den logischen Pfad, der solche Links enthalten kann.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1047,10 +1047,10 @@ export default [
     "difficulty": "medium",
     "question": "Was macht der Befehl mkdir?",
     "answers": [
-      "Er erstellt ein Verzeichnis",
-      "Er löscht ein Verzeichnis",
-      "Er zeigt Prozesse",
-      "Er ändert Dateirechte"
+      "Er legt ein neues Verzeichnis an.",
+      "Er wechselt in ein vorhandenes Verzeichnis.",
+      "Er benennt ein vorhandenes Verzeichnis um.",
+      "Er entfernt ein vorhandenes leeres Verzeichnis."
     ],
     "correctAnswer": 0,
     "explanation": "mkdir erstellt ein neues Verzeichnis.",
@@ -1061,15 +1061,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Linux",
     "difficulty": "medium",
-    "question": "Welcher Befehl zeigt den Inhalt einer Textdatei direkt im Terminal an?",
+    "question": "Die Textdatei notiz.txt enthält zehn unterschiedliche Zeilen. Welcher Linux-Befehl gibt ihren gesamten Inhalt ohne interaktive Seitenanzeige auf der Standardausgabe aus?",
     "answers": [
-      "cat",
-      "mkdir",
-      "ps",
-      "chmod"
+      "cat notiz.txt",
+      "wc -l notiz.txt",
+      "head -n 1 notiz.txt",
+      "tail -n 1 notiz.txt"
     ],
     "correctAnswer": 0,
-    "explanation": "cat kann den Inhalt einer Textdatei im Terminal ausgeben.",
+    "explanation": "cat gibt den vollständigen Dateiinhalt auf der Standardausgabe aus. wc -l zählt Zeilen, head -n 1 zeigt die erste und tail -n 1 die letzte Zeile.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1077,15 +1077,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Linux",
     "difficulty": "medium",
-    "question": "Wozu dient sudo unter Linux?",
+    "question": "Welcher Befehl führt unter Linux id als Benutzer www-data aus, sofern die sudo-Richtlinie dies erlaubt?",
     "answers": [
-      "Einen Befehl mit erhöhten Rechten auszuführen",
-      "Ein Verzeichnis zu löschen",
-      "Den Rechner herunterzufahren",
-      "Dateien zu komprimieren"
+      "sudo -u www-data id",
+      "sudo id www-data",
+      "id -u www-data",
+      "whoami www-data"
     ],
     "correctAnswer": 0,
-    "explanation": "sudo erlaubt berechtigten Benutzern die Ausführung von Befehlen mit erhöhten Rechten.",
+    "explanation": "Bei sudo wählt -u das Zielkonto für den auszuführenden Befehl. sudo -u www-data id startet id mit der Identität von www-data; eine reine Kontoabfrage wechselt dagegen nicht den Ausführungskontext.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1093,15 +1093,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Dateisysteme",
     "difficulty": "medium",
-    "question": "Welches Dateisystem wird häufig auf modernen Windows-Systempartitionen verwendet?",
+    "question": "Eine Datei liegt in einem unter Windows freigegebenen NTFS-Ordner. Der Benutzer öffnet sie direkt über den lokalen Pfad C:\\Projekte\\plan.txt, nicht über die Freigabe. Welche Berechtigungsebene wird für diesen lokalen Dateizugriff geprüft?",
     "answers": [
-      "NTFS",
-      "ext4",
-      "HFS+",
-      "ISO 9660"
+      "Die NTFS-Berechtigungen der Datei und ihres Zugriffspfads.",
+      "Die SMB-Freigabeberechtigungen des Ordners.",
+      "Die Schnittmenge aus SMB-Freigabe- und NTFS-Berechtigungen.",
+      "Die jeweils weitergehende Berechtigung aus SMB-Freigabe und NTFS."
     ],
     "correctAnswer": 0,
-    "explanation": "NTFS ist das übliche Dateisystem für moderne Windows-Systemlaufwerke.",
+    "explanation": "Ein Zugriff über den lokalen Dateipfad unterliegt den Dateisystemberechtigungen. SMB-Freigaberechte kommen beim Zugriff über die Freigabe hinzu, nicht allein deshalb, weil der Ordner auch freigegeben ist.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1109,15 +1109,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Dateisysteme",
     "difficulty": "medium",
-    "question": "Welches Dateisystem ist unter Linux weit verbreitet?",
+    "question": "Welches Merkmal unterscheidet ext4 von ext2 hinsichtlich der Wiederherstellung nach einem Absturz?",
     "answers": [
-      "ext4",
-      "NTFS",
-      "APFS",
-      "FAT12"
+      "ext4 unterstützt ein Journal für Dateisystemänderungen.",
+      "ext4 speichert mehrere historische Versionen jeder Datei.",
+      "ext4 legt für jede Datei eine Kopie auf einem zweiten Datenträger an.",
+      "ext4 prüft nach jedem Schreibvorgang automatisch den gesamten Datenträger auf Dateisystemfehler."
     ],
     "correctAnswer": 0,
-    "explanation": "ext4 ist ein häufig verwendetes Linux-Dateisystem.",
+    "explanation": "ext4 unterstützt Journaling; ext2 besitzt kein Journal. Das Journal erleichtert die Wiederherstellung konsistenter Dateisystemstrukturen, ersetzt aber weder Dateiversionierung noch Backups.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1127,13 +1127,13 @@ export default [
     "difficulty": "medium",
     "question": "Welcher Nachteil von FAT32 ist im Alltag besonders relevant?",
     "answers": [
-      "Einzelne Dateien dürfen maximal etwa 4 GB groß sein",
-      "Es funktioniert nur mit Linux",
-      "Es unterstützt keine USB-Sticks",
-      "Es kann keine Ordner speichern"
+      "Die Größe einer einzelnen Datei ist auf 4 GiB minus 1 Byte begrenzt.",
+      "Die Gesamtgröße eines Volumes ist auf 4 GiB minus 1 Byte begrenzt.",
+      "Die Summe der Dateigrößen je Verzeichnis ist auf 4 GiB minus 1 Byte begrenzt.",
+      "Der freie Speicher muss mindestens 4 GiB minus 1 Byte betragen."
     ],
     "correctAnswer": 0,
-    "explanation": "FAT32 hat eine Dateigrößenbegrenzung von ungefähr 4 GB.",
+    "explanation": "Bei FAT32 beträgt die maximale Größe einer einzelnen Datei 2^32 - 1 Byte, also 4 GiB minus 1 Byte. Diese Grenze ist von der maximalen Größe des gesamten Volumes zu unterscheiden.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1173,15 +1173,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Dateisysteme",
     "difficulty": "medium",
-    "question": "Was bedeutet es, ein Dateisystem zu formatieren?",
+    "question": "Was bedeutet es, ein Volume zu formatieren?",
     "answers": [
-      "Eine Speicherstruktur für Dateien und Verzeichnisse einzurichten",
-      "RAM zu erweitern",
-      "Die CPU zu übertakten",
-      "Ein Benutzerkonto zu löschen"
+      "Auf dem Volume die Strukturen eines Dateisystems einzurichten.",
+      "Den Datenträger durch eine Partitionstabelle in Bereiche aufzuteilen.",
+      "Die vorhandenen Dateien auf einen zweiten Datenträger zu kopieren.",
+      "Die Datenblöcke vorhandener Dateien zur Beschleunigung neu anzuordnen."
     ],
     "correctAnswer": 0,
-    "explanation": "Beim Formatieren wird auf einer Partition ein Dateisystem eingerichtet.",
+    "explanation": "Beim Formatieren werden Dateisystemstrukturen eingerichtet, etwa zur Verwaltung von Dateien und freiem Speicher. Das ist von Partitionieren, Sichern und Defragmentieren zu unterscheiden.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1220,13 +1220,13 @@ export default [
     "id": "betriebssysteme-077",
     "category": "Betriebssysteme",
     "topic": "Prozesse",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Warum kann ein Programm mehrere Threads verwenden?",
     "answers": [
-      "Um mehrere Aufgaben innerhalb eines Prozesses parallel oder nebenläufig zu bearbeiten",
-      "Um mehrere Betriebssysteme gleichzeitig zu installieren",
-      "Um automatisch mehr RAM einzubauen",
-      "Um Dateisysteme zu wechseln"
+      "Um mehrere Aufgaben innerhalb eines Prozesses nebenläufig oder parallel zu bearbeiten.",
+      "Um jeder Aufgabe einen eigenen, von den anderen Threads isolierten Adressraum zu geben.",
+      "Um die Synchronisierung gemeinsam verwendeter Daten dem Dateisystem zu überlassen.",
+      "Um die Ausführungsreihenfolge aller Aufgaben unabhängig vom Scheduler festzulegen."
     ],
     "correctAnswer": 0,
     "explanation": "Mehrere Threads können unterschiedliche Aufgaben desselben Prozesses gleichzeitig oder überlappend bearbeiten.",
@@ -1239,13 +1239,13 @@ export default [
     "difficulty": "medium",
     "question": "Was passiert typischerweise, wenn ein Prozess beendet wird?",
     "answers": [
-      "Die von ihm belegten Ressourcen werden freigegeben",
-      "Das Betriebssystem wird gelöscht",
-      "Die CPU wird ausgeschaltet",
-      "Alle Benutzer werden abgemeldet"
+      "Private Speicherbereiche und offene Handles werden vom Betriebssystem freigegeben.",
+      "Die ausführbare Programmdatei wird vom Dateisystem entfernt.",
+      "Die von ihm erzeugten Dateien werden auf den Zustand vor dem Start zurückgesetzt.",
+      "Die von ihm verwendeten Benutzerkonten werden aus der Kontodatenbank entfernt."
     ],
     "correctAnswer": 0,
-    "explanation": "Beim Beenden eines Prozesses gibt das Betriebssystem dessen Ressourcen wieder frei.",
+    "explanation": "Beim Prozessende räumt das Betriebssystem Ressourcen wie privaten Speicher und offene Handles auf. Gemeinsam genutzte Ressourcen können weiterbestehen; unter Unix kann ein kleiner Prozesseintrag bis zum Abholen des Exit-Status erhalten bleiben.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1255,10 +1255,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Aufgabe hat der RAM?",
     "answers": [
-      "Aktuell benötigte Daten und Programme kurzfristig bereitzuhalten",
-      "Daten dauerhaft ohne Strom zu speichern",
-      "Das Betriebssystem zu starten",
-      "Netzwerkpakete zu routen"
+      "Aktuell verwendete Programme und Daten als flüchtiger Arbeitsspeicher bereithalten.",
+      "Programme und Daten ohne Stromversorgung dauerhaft aufbewahren.",
+      "Häufig verwendete Daten direkt innerhalb des Prozessors zwischenspeichern.",
+      "Hardwareeinstellungen für den nächsten Start in nichtflüchtigem Speicher sichern."
     ],
     "correctAnswer": 0,
     "explanation": "RAM dient als schneller, flüchtiger Arbeitsspeicher.",
@@ -1269,15 +1269,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Arbeitsspeicher",
     "difficulty": "medium",
-    "question": "Was bedeutet virtueller Speicher?",
+    "question": "Kann ein Betriebssystem virtuelle Adressräume verwenden, wenn kein Swap-Bereich eingerichtet ist?",
     "answers": [
-      "Datenträgerspeicher wird ergänzend zum RAM verwendet",
-      "Mehrere CPUs werden kombiniert",
-      "Ein virtuelles Netzwerk wird erstellt",
-      "Dateien werden verschlüsselt"
+      "Ja, virtuelle Adressen können auch ohne Auslagerung auf physischen RAM abgebildet werden.",
+      "Nein, virtuelle Adressen sind immer Positionen innerhalb einer Auslagerungsdatei.",
+      "Nein, ohne Swap muss jeder Prozess dieselben physischen Adressen verwenden.",
+      "Ja, aber dann müssen alle Prozesse auf den Speicherschutz verzichten."
     ],
     "correctAnswer": 0,
-    "explanation": "Virtueller Speicher nutzt Datenträgerplatz, wenn zusätzlicher Arbeitsspeicher benötigt wird.",
+    "explanation": "Virtuelle Adressierung und Speicherschutz funktionieren unabhängig von einem Swap-Bereich. Ohne Swap stehen bestimmte Auslagerungsmöglichkeiten nicht zur Verfügung; dadurch entfällt aber nicht die virtuelle Adressverwaltung.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1285,15 +1285,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Arbeitsspeicher",
     "difficulty": "medium",
-    "question": "Was ist unter Linux Swap?",
+    "question": "Wie lässt sich ein geeigneter, vorbereiteter Swap-Bereich unter Linux für die Speicherauslagerung aktivieren?",
     "answers": [
-      "Speicher auf einem Datenträger zur Ergänzung des RAM",
-      "Ein Dateisystemtreiber",
-      "Ein Paketmanager",
-      "Ein Bootloader"
+      "Mit swapon für die Swap-Datei oder Swap-Partition.",
+      "Mit mount für einen Einhängepunkt im Verzeichnisbaum.",
+      "Mit chmod +x für die Swap-Datei oder das Blockgerät.",
+      "Mit fsck zur Freigabe der darin enthaltenen Datenblöcke."
     ],
     "correctAnswer": 0,
-    "explanation": "Swap dient als Auslagerungsspeicher.",
+    "explanation": "swapon aktiviert einen dafür vorbereiteten Swap-Bereich. Das Erstellen geeigneter Swap-Strukturen und das Aktivieren sind getrennte Schritte; normales Einhängen mit mount macht einen Bereich nicht zu aktivem Swap.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1301,15 +1301,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Arbeitsspeicher",
     "difficulty": "hard",
-    "question": "Warum ist Auslagerung auf SSD oder HDD deutlich langsamer als direkter RAM-Zugriff?",
+    "question": "Ein bereits laufender Prozess greift auf eine ausgelagerte Speicherseite zu. Was muss geschehen, bevor der unterbrochene Zugriff fortgesetzt werden kann?",
     "answers": [
-      "Massenspeicher hat wesentlich höhere Zugriffszeiten als RAM",
-      "Swap verwendet keine Dateien",
-      "RAM ist immer verschlüsselt",
-      "Die CPU darf nicht auf SSDs zugreifen"
+      "Das Betriebssystem muss die benötigte Seite wieder in den RAM laden.",
+      "Der Kernel muss den Zugriff als ungültig ablehnen, weil ausgelagerte Seiten nicht mehr zum Prozess gehören.",
+      "Der Prozess muss die fehlende Seite selbst aus der Auslagerungsdatei lesen und danach neu starten.",
+      "Der Kernel muss den gesamten virtuellen Adressraum des Prozesses gleichzeitig in den RAM übernehmen."
     ],
     "correctAnswer": 0,
-    "explanation": "RAM besitzt wesentlich geringere Zugriffszeiten und höhere Bandbreite als Massenspeicher.",
+    "explanation": "Ein Zugriff auf eine gültige, aber ausgelagerte Seite löst einen Seitenfehler aus. Das Betriebssystem lädt die Seite in den RAM, aktualisiert die Zuordnung und kann anschließend den Zugriff fortsetzen.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1319,10 +1319,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum gibt es unterschiedliche Benutzerrechte in einem Betriebssystem?",
     "answers": [
-      "Um Zugriffe auf Dateien und Systemfunktionen zu kontrollieren",
-      "Um die CPU schneller zu machen",
-      "Um mehr Speicherplatz zu erzeugen",
-      "Um Netzwerkkabel zu ersetzen"
+      "Damit erlaubte Zugriffe auf Daten und Systemfunktionen den Aufgaben der Benutzer entsprechen.",
+      "Damit die Identität eines Benutzers allein anhand der vorhandenen Dateirechte festgestellt wird.",
+      "Damit jede erlaubte Aktion ohne zusätzliche Protokollierung einem Benutzer nachweisbar zugeordnet ist.",
+      "Damit Dateien durch die Rechtevergabe automatisch gegen das Auslesen außerhalb des Systems verschlüsselt werden."
     ],
     "correctAnswer": 0,
     "explanation": "Berechtigungen schützen Daten und Systemfunktionen vor unerlaubtem Zugriff.",
@@ -1381,7 +1381,7 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Benutzer und Rechte",
     "difficulty": "medium",
-    "question": "Was bedeutet unter Linux die Berechtigung 'x'?",
+    "question": "Wofür steht das Berechtigungszeichen x bei einer regulären Datei unter Linux?",
     "answers": [
       "execute",
       "export",
@@ -1389,23 +1389,23 @@ export default [
       "exit"
     ],
     "correctAnswer": 0,
-    "explanation": "x steht für execute, also Ausführen.",
+    "explanation": "Bei einer regulären Datei steht x für execute, also die Ausführungsberechtigung. Bei Verzeichnissen erlaubt x dagegen das Durchsuchen beziehungsweise Durchqueren des Verzeichnispfads.",
     "source": "betriebssysteme.csv"
   },
   {
     "id": "betriebssysteme-088",
     "category": "Betriebssysteme",
     "topic": "Benutzer und Rechte",
-    "difficulty": "hard",
-    "question": "Welche Berechtigung benötigt ein Benutzer bei einer normalen Datei mindestens, um deren Inhalt verändern zu können?",
+    "difficulty": "medium",
+    "question": "Welche Dateiberechtigung benötigt ein gewöhnlicher Linux-Benutzer, um den Inhalt einer vorhandenen regulären Datei direkt zu überschreiben? Der Zugriff auf den Pfad ist bereits erlaubt.",
     "answers": [
-      "write",
-      "execute",
-      "read-only",
-      "owner"
+      "Schreibberechtigung auf die Datei.",
+      "Leseberechtigung auf die Datei.",
+      "Ausführungsberechtigung auf die Datei.",
+      "Schreibberechtigung auf das übergeordnete Verzeichnis."
     ],
     "correctAnswer": 0,
-    "explanation": "Zum Ändern einer Datei wird Schreibberechtigung benötigt.",
+    "explanation": "Direktes Überschreiben des vorhandenen Dateiinhalts erfordert Schreibberechtigung auf die Datei. Das Löschen und Neuanlegen eines Verzeichniseintrags ist eine andere Operation und wird über Verzeichnisrechte kontrolliert.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1429,12 +1429,12 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Treiber",
     "difficulty": "medium",
-    "question": "Was kann passieren, wenn ein notwendiger Gerätetreiber fehlt?",
+    "question": "Ein neu angeschlossenes Gerät wird erkannt, aber Windows findet keinen passenden Gerätetreiber. Welche Folge ist plausibel?",
     "answers": [
-      "Das Gerät funktioniert möglicherweise nicht korrekt",
-      "Der RAM verdoppelt sich",
-      "Das BIOS wird gelöscht",
-      "Das Dateisystem ändert sich automatisch"
+      "Gerätefunktionen sind nicht oder nur eingeschränkt verfügbar.",
+      "Die Hardwareerkennung genügt, um sämtliche Gerätefunktionen unverändert bereitzustellen.",
+      "Der bereits vorhandene Treiber eines anderen Gerätetyps übernimmt dieselben Funktionen.",
+      "Ein Neustart ersetzt die Treiberinstallation unabhängig von verfügbaren Treiberpaketen."
     ],
     "correctAnswer": 0,
     "explanation": "Ohne passenden Treiber kann Hardware nicht oder nur eingeschränkt funktionieren.",
@@ -1447,10 +1447,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Komponente startet nach dem Einschalten zunächst die Hardwareinitialisierung eines modernen PCs?",
     "answers": [
-      "UEFI/BIOS",
-      "Webbrowser",
-      "Task-Manager",
-      "Datei-Explorer"
+      "UEFI-Firmware",
+      "Bootloader",
+      "Betriebssystemkernel",
+      "Anmeldedienst"
     ],
     "correctAnswer": 0,
     "explanation": "UEFI bzw. BIOS initialisiert die Hardware und startet anschließend den Bootvorgang.",
@@ -1461,31 +1461,31 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Bootprozess",
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat ein Bootloader?",
+    "question": "Auf einem Rechner sind zwei Betriebssysteme installiert. Welche Funktion kann ein Bootmanager vor dem Start des Kernels bereitstellen?",
     "answers": [
-      "Ein Betriebssystem bzw. dessen Kernel zu laden",
-      "Dateien zu komprimieren",
-      "Benutzer zu erstellen",
-      "Treiber zu deinstallieren"
+      "Die Auswahl des zu startenden Betriebssystems.",
+      "Die Vergabe von CPU-Zeit an bereits laufende Benutzerprogramme.",
+      "Die Prüfung der Zugriffsrechte auf freigegebene Netzwerkordner.",
+      "Die Installation ausstehender Anwendungspakete im angemeldeten Benutzerkonto."
     ],
     "correctAnswer": 0,
-    "explanation": "Der Bootloader startet den Ladevorgang des Betriebssystems.",
+    "explanation": "Ein Bootmanager kann mehrere Startoptionen anbieten und den ausgewählten Ladepfad starten. Diese Auswahl erfolgt vor der regulären Benutzerumgebung des gewählten Betriebssystems.",
     "source": "betriebssysteme.csv"
   },
   {
     "id": "betriebssysteme-093",
     "category": "Betriebssysteme",
     "topic": "Bootprozess",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Warum kann die Bootreihenfolge im UEFI wichtig sein?",
     "answers": [
-      "Sie bestimmt, von welchem Gerät zuerst nach einem bootfähigen System gesucht wird",
-      "Sie bestimmt die CPU-Taktrate",
-      "Sie vergibt Benutzerrechte",
-      "Sie ändert das Dateisystem automatisch"
+      "Sie legt fest, welche konfigurierten Bootoptionen zuerst versucht werden.",
+      "Sie legt fest, in welcher Reihenfolge Benutzerprogramme CPU-Zeit erhalten.",
+      "Sie legt fest, welche Benutzerkonten zuerst zur Anmeldung angeboten werden.",
+      "Sie legt fest, in welcher Reihenfolge Gerätetreiber Updates erhalten."
     ],
     "correctAnswer": 0,
-    "explanation": "Die Bootreihenfolge legt fest, welche Geräte zuerst als Startmedium geprüft werden.",
+    "explanation": "Die UEFI-Bootreihenfolge legt fest, welche konfigurierten Startoptionen zuerst versucht werden, etwa der installierte Bootmanager, ein USB-Medium oder der Netzwerkstart.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1509,15 +1509,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Virtualisierung",
     "difficulty": "medium",
-    "question": "Welches Programm verwaltet virtuelle Maschinen und deren virtuelle Hardware?",
+    "question": "Mehrere VMs besitzen zusammen mehr virtuelle CPUs, als der Host gleichzeitig ausführen kann. Wie ermöglicht der Hypervisor dennoch ihren Betrieb?",
     "answers": [
-      "Hypervisor",
-      "Bootloader",
-      "Dateimanager",
-      "Paketmanager"
+      "Er plant virtuelle CPUs zeitlich auf den verfügbaren physischen Ausführungseinheiten ein.",
+      "Er reserviert für jede virtuelle CPU dauerhaft einen eigenen physischen Kern.",
+      "Er führt jeweils eine vollständige VM bis zu deren Herunterfahren aus, bevor die nächste Rechenzeit erhält.",
+      "Er überlässt jedem Gast unabhängig von den anderen Gästen die alleinige Auswahl physischer Kerne."
     ],
     "correctAnswer": 0,
-    "explanation": "Ein Hypervisor stellt Ressourcen für virtuelle Maschinen bereit und verwaltet sie.",
+    "explanation": "Der Hypervisor teilt verfügbare CPU-Zeit zwischen ausführungsbereiten virtuellen CPUs auf. Mehr zugewiesene vCPUs erhöhen die physische Rechenkapazität nicht und können bei Konkurrenz Wartezeiten verursachen.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1527,10 +1527,10 @@ export default [
     "difficulty": "medium",
     "question": "Welcher Vorteil von Virtualisierung ist typisch?",
     "answers": [
-      "Mehrere Betriebssysteme können auf einem Host betrieben werden",
-      "Jede VM benötigt zwingend einen eigenen physischen PC",
-      "RAM wird unbegrenzt",
-      "Netzwerke werden überflüssig"
+      "Mehrere getrennte Gastbetriebssysteme können dieselbe physische Hardware nutzen.",
+      "Gastbetriebssysteme müssen deshalb nicht mehr auf ihre jeweiligen Softwarelizenzen geprüft werden.",
+      "Ein Ausfall des gemeinsamen Hosts lässt die darauf laufenden Gastbetriebssysteme unbeeinträchtigt.",
+      "Ressourcenengpässe einer VM können dadurch grundsätzlich keine andere VM beeinflussen."
     ],
     "correctAnswer": 0,
     "explanation": "Virtualisierung ermöglicht mehrere getrennte Systeme auf derselben physischen Hardware.",
@@ -1540,16 +1540,16 @@ export default [
     "id": "betriebssysteme-097",
     "category": "Betriebssysteme",
     "topic": "Virtualisierung",
-    "difficulty": "hard",
-    "question": "Was passiert, wenn mehreren virtuellen Maschinen zusammen mehr RAM zugewiesen wird, als der Host sinnvoll bereitstellen kann?",
+    "difficulty": "medium",
+    "question": "Ein Hypervisor reserviert den konfigurierten RAM beim Start jeder VM und erlaubt keine Speicherüberbelegung. Eine neue VM benötigt mehr RAM, als der Host noch bereitstellen kann. Welche Folge ist zu erwarten?",
     "answers": [
-      "Es kann zu starkem Leistungsabfall oder Auslagerung kommen",
-      "Die VMs erzeugen automatisch zusätzlichen physischen RAM",
-      "Der Hypervisor deaktiviert das Dateisystem",
-      "Die CPU wird verdoppelt"
+      "Der Start der VM wird wegen unzureichenden Arbeitsspeichers abgelehnt.",
+      "Die VM startet, weil freier Platz auf ihrer virtuellen Festplatte als reservierter RAM zählt.",
+      "Die VM startet, indem sie ohne Rückfrage den reservierten RAM einer anderen laufenden VM übernimmt.",
+      "Die VM startet, weil ihre konfigurierte RAM-Größe beim Start automatisch auf den freien Rest reduziert wird."
     ],
     "correctAnswer": 0,
-    "explanation": "Überbelegung von Arbeitsspeicher kann zu Auslagerung und deutlichen Performanceproblemen führen.",
+    "explanation": "Bei der beschriebenen Reservierungspolitik muss die benötigte RAM-Menge beim Start verfügbar sein. Freier Datenträgerspeicher ersetzt diese Voraussetzung nicht. Andere Hypervisoren oder Konfigurationen können mit Speicherüberbelegung anders umgehen.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1557,15 +1557,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Systemverwaltung",
     "difficulty": "medium",
-    "question": "Wozu dienen Betriebssystem-Updates?",
+    "question": "Ein Update wurde als heruntergeladen gemeldet. Welche Prüfung zeigt am zuverlässigsten, ob die Installation einschließlich eines erforderlichen Neustarts abgeschlossen ist?",
     "answers": [
-      "Unter anderem Sicherheitslücken zu schließen und Fehler zu beheben",
-      "Die Netzwerkkarte physisch zu ersetzen",
-      "RAM dauerhaft zu vergrößern",
-      "Dateisysteme automatisch zu löschen"
+      "Installationsstatus und installierte Version nach einem erforderlichen Neustart prüfen.",
+      "Das Vorhandensein der heruntergeladenen Paketdatei als Installationsnachweis verwenden.",
+      "Die verfügbare Zielversion im Updatekatalog mit der installierten Version gleichsetzen.",
+      "Die erfolgreiche Downloadmeldung ohne Prüfung der weiteren Installationsschritte übernehmen."
     ],
     "correctAnswer": 0,
-    "explanation": "Updates liefern häufig Sicherheitskorrekturen, Fehlerbehebungen und Verbesserungen.",
+    "explanation": "Ein erfolgreicher Download belegt noch keine Installation. Installationsstatus, installierte Version und gegebenenfalls ein abgeschlossener Neustart liefern dafür die entscheidenden Hinweise.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1575,10 +1575,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist ein Paketmanager unter Linux?",
     "answers": [
-      "Ein Werkzeug zum Installieren, Aktualisieren und Entfernen von Softwarepaketen",
-      "Ein Dateisystem",
-      "Ein Bootloader",
-      "Ein Gerätetreiber"
+      "Ein Werkzeug, das Softwarepakete installiert, aktualisiert und entfernt.",
+      "Ein Werkzeug, das die CPU-Zeit zwischen laufenden Programmen verteilt.",
+      "Ein Werkzeug, das Quellcode in ausführbare Maschinensprache übersetzt.",
+      "Ein Werkzeug, das Dateien anhand ihres Inhalts auf Schadcode untersucht."
     ],
     "correctAnswer": 0,
     "explanation": "Paketmanager verwalten Software und deren Abhängigkeiten.",
@@ -1588,13 +1588,13 @@ export default [
     "id": "betriebssysteme-100",
     "category": "Betriebssysteme",
     "topic": "Systemverwaltung",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Warum ist die Installation von Software über einen Paketmanager oft vorteilhaft?",
     "answers": [
-      "Abhängigkeiten und Updates können zentral verwaltet werden",
-      "Programme erhalten automatisch Administratorrechte",
-      "Das Betriebssystem benötigt danach keinen Kernel mehr",
-      "Es verhindert jede Sicherheitslücke"
+      "Abhängigkeiten und verfügbare Aktualisierungen lassen sich gemeinsam verwalten.",
+      "Die enthaltenen Programme erhalten bei jedem Start administrative Berechtigungen.",
+      "Die installierten Programme verwenden unabhängig vom Paketinhalt denselben Konfigurationspfad.",
+      "Die Prüfung der Herkunft heruntergeladener Pakete wird durch die Installation entbehrlich."
     ],
     "correctAnswer": 0,
     "explanation": "Paketmanager vereinfachen Installation, Abhängigkeitsverwaltung und Aktualisierung.",
@@ -1605,15 +1605,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Windows Grundlagen",
     "difficulty": "medium",
-    "question": "Welche Hauptaufgabe übernimmt ein Betriebssystem?",
+    "question": "Mehrere Programme laufen auf einem Rechner, dem genau ein logischer Prozessor zur Verfügung steht. Wie ermöglicht das Betriebssystem ihre nebenläufige Ausführung?",
     "answers": [
-      "Es verwaltet Hardware, Ressourcen und Anwendungen",
-      "Es ersetzt dauerhaft alle Gerätetreiber",
-      "Es speichert ausschließlich Benutzerdokumente",
-      "Es stellt nur die grafische Oberfläche bereit"
+      "Es verteilt CPU-Zeit und wechselt zwischen ausführungsbereiten Prozessen.",
+      "Es lässt jeden Prozess nach dem Start bis zum vollständigen Ende laufen, bevor ein anderer beginnen darf.",
+      "Es bearbeitet die Programme gleichzeitig auf getrennten virtuellen CPU-Kernen ohne zeitliche Aufteilung.",
+      "Es führt während einer Ein-/Ausgabe-Wartezeit grundsätzlich keine andere Programminstanz aus."
     ],
     "correctAnswer": 0,
-    "explanation": "Ein Betriebssystem koordiniert Hardware, Prozesse, Speicher, Dateien, Benutzer und Anwendungen.",
+    "explanation": "Der Scheduler weist ausführungsbereiten Prozessen abwechselnd CPU-Zeit zu. Bei einem einzigen logischen Prozessor entsteht dadurch Nebenläufigkeit, ohne dass mehrere Prozesse zugleich auf unterschiedlichen logischen Prozessoren laufen.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1621,15 +1621,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Windows Grundlagen",
     "difficulty": "medium",
-    "question": "Was ist der Windows-Kernel?",
+    "question": "Warum können Anwendungen im Benutzermodus geschützte Kerneloperationen nicht wie gewöhnliche Speicherzugriffe direkt ausführen?",
     "answers": [
-      "Der zentrale Systemkern für grundlegende Betriebssystemfunktionen",
-      "Eine Benutzeranwendung zur Dateiverwaltung",
-      "Ein optionales Grafikthema für den Desktop",
-      "Ein ausschließliches Werkzeug zur Datensicherung"
+      "Die CPU und das Betriebssystem trennen privilegierte Kerneloperationen vom Benutzermodus.",
+      "Der Speicherort der ausführbaren Datei bestimmt, ob die CPU ihre Befehle privilegiert ausführt.",
+      "Der Scheduler erteilt privilegierte CPU-Rechte automatisch an Prozesse mit hoher Priorität.",
+      "Die Menge des reservierten Arbeitsspeichers legt fest, welche Kernelbefehle eine Anwendung nutzen darf."
     ],
     "correctAnswer": 0,
-    "explanation": "Der Kernel steuert zentrale Funktionen wie Prozess-, Speicher- und Hardwarezugriffe.",
+    "explanation": "Prozessormodi und Speicherschutz begrenzen privilegierte Operationen. Anwendungen fordern Kernelservices über definierte Schnittstellen wie Systemaufrufe an; der Kernel prüft dabei Zugriffe.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1637,15 +1637,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Windows Grundlagen",
     "difficulty": "medium",
-    "question": "Was bedeutet ein 64-Bit-Betriebssystem?",
+    "question": "Welche Eigenschaft ist für eine 64-Bit-Prozessorarchitektur typisch?",
     "answers": [
-      "Es kann 64-Bit-Prozessorfunktionen und größere Adressräume nutzen",
-      "Es kann gleichzeitig höchstens 64 Anwendungen im Benutzerprofil verwalten",
-      "Es unterstützt ausschließlich Dateien mit einer Größe unter 64 Megabyte",
-      "Es benötigt für den Betrieb zwingend einen Prozessor mit genau 64 Kernen"
+      "Allzweckregister können Werte mit einer Breite von 64 Bit verarbeiten.",
+      "Der Prozessor besitzt 64 physische Rechenkerne.",
+      "Der Betriebssystem-Scheduler kann bis zu 64 Prozesse verwalten.",
+      "Jede Datei wird in Datenblöcken von 64 Byte gespeichert."
     ],
     "correctAnswer": 0,
-    "explanation": "64-Bit-Systeme können größere Adressräume und entsprechende CPU-Funktionen nutzen.",
+    "explanation": "Die Bezeichnung bezieht sich unter anderem auf 64 Bit breite Allzweckregister und entsprechende Befehle. Sie nennt weder eine Kernzahl noch die tatsächlich implementierte Größe des physischen oder virtuellen Adressraums.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1653,15 +1653,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Windows Grundlagen",
     "difficulty": "medium",
-    "question": "Welcher Vorteil ist mit einem 64-Bit-Windows gegenüber 32 Bit typischerweise verbunden?",
+    "question": "Eine 32-Bit-Anwendung läuft auf einem 64-Bit-Windows. Was folgt daraus für ihren eigenen virtuellen Adressraum?",
     "answers": [
-      "Es kann deutlich mehr Arbeitsspeicher adressieren",
-      "Es benötigt grundsätzlich keinen virtuellen Speicher",
-      "Es kann nur 64-Bit-Dateisysteme verwenden",
-      "Es startet immer doppelt so schnell"
+      "Die Anwendung bleibt eine 32-Bit-Anwendung mit entsprechend begrenztem virtuellem Adressraum.",
+      "Der Betrieb unter 64-Bit-Windows wandelt ihre Speicheradressen automatisch in 64-Bit-Adressen um.",
+      "Der virtuelle Adressraum jeder 32-Bit-Anwendung entspricht dann der gesamten physischen RAM-Kapazität.",
+      "Die Anwendung teilt sich unter 64-Bit-Windows einen gemeinsamen virtuellen Adressraum mit allen anderen Programmen."
     ],
     "correctAnswer": 0,
-    "explanation": "Ein wesentlicher Vorteil ist der deutlich größere adressierbare Speicherbereich.",
+    "explanation": "Ein 64-Bit-Windows kann geeignete 32-Bit-Anwendungen ausführen, erweitert deren Programmformat aber nicht auf 64 Bit. Der nutzbare virtuelle Adressraum bleibt begrenzt und hängt zusätzlich von Programmeigenschaften und Betriebssystemregeln ab.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1669,15 +1669,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Windows Grundlagen",
     "difficulty": "medium",
-    "question": "Welche Windows-Edition ist typischerweise für professionelle Unternehmensfunktionen ausgelegt?",
+    "question": "Welche Funktion unterstützt Windows 11 Pro im Unterschied zu Windows 11 Home?",
     "answers": [
-      "Windows Pro",
-      "Windows Home Basic",
-      "Windows Media Edition",
-      "Windows Starter Plus"
+      "Den Beitritt zu einer lokalen Active-Directory-Domäne.",
+      "Die Anmeldung mit einem persönlichen Microsoft-Konto.",
+      "Die Installation von Anwendungen aus dem Microsoft Store.",
+      "Die Verbindung mit einem drahtlosen Netzwerk."
     ],
     "correctAnswer": 0,
-    "explanation": "Pro-Editionen enthalten typischerweise zusätzliche Verwaltungs- und Unternehmensfunktionen.",
+    "explanation": "Windows 11 Pro unterstützt den Beitritt zu einer lokalen Active-Directory-Domäne und damit die zentrale Verwaltung in dieser Infrastruktur. Die anderen genannten Funktionen stehen auch in Windows 11 Home zur Verfügung.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1685,15 +1685,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Benutzer und Rechte",
     "difficulty": "medium",
-    "question": "Warum sollten Benutzer im Alltag möglichst ohne Administratorrechte arbeiten?",
+    "question": "Eine Mitarbeiterin liest E-Mails und bearbeitet Dokumente. Welche Kontonutzung setzt das Prinzip der geringsten Rechte sinnvoll um?",
     "answers": [
-      "Das reduziert das Risiko unerwünschter Systemänderungen",
-      "Das erhöht automatisch die CPU-Leistung",
-      "Das vergrößert den verfügbaren Arbeitsspeicher",
-      "Das beschleunigt grundsätzlich jede Netzwerkverbindung"
+      "Ein Standardkonto für die tägliche Arbeit und gezielte Rechteerhöhung für Verwaltungsaufgaben.",
+      "Ein Administratorkonto für die tägliche Arbeit und ein Standardkonto für Installationen.",
+      "Ein gemeinsam genutztes Administratorkonto für sämtliche Beschäftigten.",
+      "Ein Gastkonto für Verwaltungsaufgaben und ein Administratorkonto zum Lesen von E-Mails."
     ],
     "correctAnswer": 0,
-    "explanation": "Das Prinzip der geringsten Rechte begrenzt Schäden durch Fehlbedienung oder Schadsoftware.",
+    "explanation": "Alltagsprogramme benötigen in der Regel keine administrativen Rechte. Ein Standardkonto begrenzt ihren Handlungsspielraum; notwendige Verwaltungsaufgaben werden getrennt und kontrolliert erhöht ausgeführt.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1701,15 +1701,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Benutzer und Rechte",
     "difficulty": "medium",
-    "question": "Was ist die Aufgabe der Benutzerkontensteuerung UAC?",
+    "question": "Eine Standardbenutzerin startet unter Windows eine administrative Aufgabe. Die UAC-Richtlinie sieht dafür eine Anmeldeinformationsabfrage vor. Was muss sie bereitstellen?",
     "answers": [
-      "Sie fordert bei privilegierten Änderungen eine Bestätigung an",
-      "Sie verwaltet ausschließlich WLAN-Verbindungen",
-      "Sie ersetzt Benutzerkennwörter vollständig",
-      "Sie verschlüsselt automatisch alle Dateien"
+      "Gültige Anmeldeinformationen eines berechtigten Administratorkontos.",
+      "Eine zusätzliche Bestätigung mit dem Kennwort ihres unveränderten Standardkontos.",
+      "Die Anmeldeinformationen eines Domänenkontos ohne administrative Rechte auf diesem Rechner.",
+      "Die Zustimmung eines beliebigen anderen angemeldeten Standardbenutzers."
     ],
     "correctAnswer": 0,
-    "explanation": "UAC trennt normale Nutzung von administrativen Aktionen und fordert bei Bedarf Zustimmung.",
+    "explanation": "Bei einer UAC-Anmeldeinformationsabfrage werden die Anmeldeinformationen eines berechtigten Administratorkontos benötigt. Das unterscheidet sich von einer reinen Zustimmungsabfrage für ein Administratorkonto; Richtlinien können das Verhalten ändern.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1717,15 +1717,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Benutzer und Rechte",
     "difficulty": "medium",
-    "question": "Was unterscheidet ein Standardkonto von einem Administratorkonto?",
+    "question": "Eine Anwendung ist systemweit installiert und für Standardbenutzer freigegeben. Welche Aussage zur Nutzung durch ein Standardkonto trifft zu?",
     "answers": [
-      "Ein Standardkonto besitzt weniger Rechte für Systemänderungen",
-      "Ein Standardkonto kann keine eigenen Dateien speichern",
-      "Ein Administratorkonto besitzt keinen Passwortschutz",
-      "Ein Administratorkonto darf keine Programme starten"
+      "Das Konto kann die Anwendung nutzen, ohne dadurch administrative Systemrechte zu erhalten.",
+      "Das Konto erhält beim Start der Anwendung automatisch die Rechte des Installierenden.",
+      "Das Konto muss zum Start jeder systemweit installierten Anwendung in die Administratorgruppe wechseln.",
+      "Das Konto kann die Anwendung nutzen, erhält dabei aber automatisch Schreibrechte auf deren geschützten Installationsordner."
     ],
     "correctAnswer": 0,
-    "explanation": "Standardkonten sind bei systemweiten Änderungen stärker eingeschränkt.",
+    "explanation": "Installation und spätere Ausführung sind unterschiedliche Vorgänge. Eine für Standardbenutzer geeignete Anwendung kann mit deren normalen Rechten laufen, auch wenn ihre systemweite Installation administrative Rechte erforderte.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1735,13 +1735,13 @@ export default [
     "difficulty": "medium",
     "question": "Was ist eine lokale Benutzergruppe in Windows?",
     "answers": [
-      "Eine Zusammenfassung von Konten mit gemeinsamen Berechtigungen",
-      "Ein Ordner mit ausschließlich lokalen Dateien",
-      "Eine Liste aller installierten Programme",
-      "Ein Cache für Netzwerkverbindungen"
+      "Eine Sammlung von Konten, der Rechte und Berechtigungen gemeinsam zugewiesen werden können.",
+      "Eine Sammlung von Benutzerprofilen, die sich ein gemeinsames Anmeldekennwort teilen.",
+      "Eine Sammlung laufender Prozesse, die denselben Arbeitsspeicherbereich verwenden.",
+      "Eine Sammlung von Rechnern, die ihre Konten über einen Domänencontroller verwalten."
     ],
     "correctAnswer": 0,
-    "explanation": "Gruppen vereinfachen die gemeinsame Zuweisung von Rechten und Berechtigungen.",
+    "explanation": "Lokale Gruppen bündeln Konten für die Vergabe von Rechten auf einem Rechner. Mitglieder können daneben weitere individuelle Rechte oder Gruppenmitgliedschaften besitzen.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1764,16 +1764,16 @@ export default [
     "id": "betriebssysteme-111",
     "category": "Betriebssysteme",
     "topic": "Benutzer und Rechte",
-    "difficulty": "hard",
-    "question": "Was beschreibt das Prinzip 'Least Privilege'?",
+    "difficulty": "medium",
+    "question": "Ein Dienst soll Protokolldateien in einem festgelegten Ordner anlegen. Welche Berechtigungsvergabe entspricht Least Privilege?",
     "answers": [
-      "Benutzer erhalten nur die Rechte, die sie für ihre Aufgaben benötigen",
-      "Benutzer erhalten immer vollständige Administratorrechte",
-      "Jeder Prozess erhält Zugriff auf sämtliche Systemressourcen",
-      "Alle Freigaben werden grundsätzlich ohne Einschränkungen eingerichtet"
+      "Dem Dienstkonto die benötigten Schreibrechte für diesen Ordner gewähren.",
+      "Das Dienstkonto für diese Aufgabe zur lokalen Administratorgruppe hinzufügen.",
+      "Allen lokalen Benutzern Vollzugriff auf den Protokollordner gewähren.",
+      "Dem Dienstkonto Schreibrechte auf sämtliche Benutzerprofile gewähren."
     ],
     "correctAnswer": 0,
-    "explanation": "Least Privilege reduziert unnötige Rechte und damit potenzielle Angriffsflächen.",
+    "explanation": "Die Rechte sollten auf die tatsächlich benötigten Ressourcen und Aktionen begrenzt werden. Für das Schreiben in einen Protokollordner sind keine pauschalen Administratorrechte oder Zugriffe auf fremde Profile erforderlich.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1781,15 +1781,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Dateisysteme",
     "difficulty": "medium",
-    "question": "Welches Dateisystem wird häufig für Windows-Systemlaufwerke verwendet?",
+    "question": "Eine NTFS-Datei wird innerhalb desselben Volumes umbenannt. Was geschieht typischerweise mit ihrem Inhalt?",
     "answers": [
-      "NTFS",
-      "ext4",
-      "APFS",
-      "HFS+"
+      "Der Inhalt bleibt bestehen; geändert wird die Zuordnung des Dateinamens.",
+      "Die Nutzdaten werden abhängig von der neuen Dateiendung in ein anderes Datenformat konvertiert.",
+      "Die Nutzdaten werden vollständig in eine zweite Datei kopiert; die bisherige Datei bleibt erhalten.",
+      "Die Nutzdaten werden gelöscht; der neue Dateiname bezeichnet zunächst eine leere Datei."
     ],
     "correctAnswer": 0,
-    "explanation": "NTFS ist das übliche Dateisystem für moderne Windows-Systempartitionen.",
+    "explanation": "Eine Umbenennung ändert den Namen beziehungsweise den Verzeichniseintrag der bestehenden Datei. Sie konvertiert den Dateiinhalt nicht; auch eine andere Dateiendung ändert das Datenformat nicht.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1797,15 +1797,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Dateisysteme",
     "difficulty": "medium",
-    "question": "Welchen Vorteil bietet NTFS gegenüber FAT32?",
+    "question": "Welche Funktion unterstützt NTFS im Unterschied zu FAT32 direkt im Dateisystem?",
     "answers": [
-      "Es unterstützt unter anderem Berechtigungen und große Dateien",
-      "Es funktioniert ausschließlich auf USB-Sticks",
-      "Es erlaubt keine Ordnerhierarchien",
-      "Es unterstützt nur Dateien bis etwa 4 GB"
+      "Zugriffssteuerungslisten für einzelne Dateien und Verzeichnisse.",
+      "Die Organisation von Dateien in einer Verzeichnishierarchie.",
+      "Die Speicherung von Dateinamen und Änderungszeitpunkten.",
+      "Die Verwaltung von belegten und freien Speicherbereichen."
     ],
     "correctAnswer": 0,
-    "explanation": "NTFS bietet Funktionen wie ACL-Berechtigungen, Journaling und Unterstützung großer Dateien.",
+    "explanation": "NTFS unterstützt Zugriffssteuerungslisten, mit denen Zugriffe für Benutzer und Gruppen festgelegt werden. FAT32 bietet keine entsprechende dateisystemeigene ACL-Verwaltung; grundlegende Verzeichnisse und Metadaten unterstützen beide.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1813,15 +1813,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Dateisysteme",
     "difficulty": "medium",
-    "question": "Was bedeutet eine NTFS-Berechtigung?",
+    "question": "Was bedeutet die Vererbung von NTFS-Berechtigungen bei einem Unterordner?",
     "answers": [
-      "Sie steuert den Zugriff auf Dateien und Ordner",
-      "Sie legt die CPU-Taktfrequenz fest",
-      "Sie bestimmt die Bildschirmauflösung",
-      "Sie steuert die Lüfterdrehzahl"
+      "Er kann als vererbbar markierte Berechtigungseinträge seines übergeordneten Ordners übernehmen.",
+      "Er ersetzt die Berechtigungen des übergeordneten Ordners durch seine eigenen expliziten Einträge.",
+      "Er übernimmt automatisch alle Rechte des Benutzers, der den Ordner zuletzt geöffnet hat.",
+      "Er erhält dieselben Rechte wie jeder andere Ordner mit demselben Namen auf einem anderen Volume."
     ],
     "correctAnswer": 0,
-    "explanation": "NTFS-Berechtigungen regeln, welche Benutzer oder Gruppen auf Objekte zugreifen dürfen.",
+    "explanation": "Bei aktivierter Vererbung können passende Berechtigungseinträge vom übergeordneten Objekt übernommen werden. Explizite Einträge und Änderungen der Vererbung sind davon zu unterscheiden.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1829,15 +1829,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Dateisysteme",
     "difficulty": "medium",
-    "question": "Was bedeutet 'Lesen' bei einer Dateiberechtigung?",
+    "question": "Ein Benutzer gehört zu zwei Gruppen. Auf derselben NTFS-Datei erlaubt eine Gruppe Lesen und die andere Schreiben. Es gibt keine Verweigerungen oder weiteren Einschränkungen. Welche dieser Rechte erhält der Benutzer?",
     "answers": [
-      "Der Inhalt darf angezeigt beziehungsweise geöffnet werden",
-      "Der Inhalt darf automatisch gelöscht werden",
-      "Der Besitzer wird automatisch geändert",
-      "Die Datei wird permanent verschlüsselt"
+      "Lesen und Schreiben werden gemeinsam gewährt.",
+      "Es gilt Lesen, weil die geringere Berechtigung entscheidet.",
+      "Es gilt Schreiben, weil die zuletzt genannte Gruppe entscheidet.",
+      "Beide Berechtigungen werden wegen der unterschiedlichen Gruppen aufgehoben."
     ],
     "correctAnswer": 0,
-    "explanation": "Leserechte ermöglichen den Zugriff auf den Inhalt ohne notwendigerweise Änderungen zu erlauben.",
+    "explanation": "Erlaubte NTFS-Rechte aus passenden Benutzer- und Gruppeneinträgen können sich ergänzen. Ohne entgegenstehende Verweigerungen erhält der Benutzer hier Lesen und Schreiben. Das ist von der zusätzlichen Begrenzung durch SMB-Freigaberechte zu unterscheiden.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1845,15 +1845,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Dateisysteme",
     "difficulty": "medium",
-    "question": "Was erlaubt die Berechtigung 'Ändern' typischerweise?",
+    "question": "Welche Operationen umfasst die NTFS-Standardberechtigung Ändern auf einer regulären Datei typischerweise?",
     "answers": [
-      "Dateien lesen, verändern und löschen",
-      "Nur Dateinamen anzeigen",
-      "Nur Dateien ausführen, aber nicht lesen",
-      "Ausschließlich den Besitzer ändern"
+      "Den Inhalt lesen, schreiben und die Datei löschen.",
+      "Den Inhalt lesen und die Zugriffsberechtigungen beliebig ändern.",
+      "Den Inhalt lesen und den Besitz der Datei übernehmen.",
+      "Den Inhalt ausführen und die Zugriffsrechte anderer Benutzer verwalten."
     ],
     "correctAnswer": 0,
-    "explanation": "Ändern umfasst typischerweise Lesen, Schreiben und Löschen.",
+    "explanation": "Ändern umfasst unter anderem Lesen, Schreiben, Ausführen und Löschen. Das Ändern von Berechtigungen oder die Übernahme des Besitzes gehört nicht automatisch dazu und unterscheidet Ändern von Vollzugriff.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1861,15 +1861,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Dateisysteme",
     "difficulty": "hard",
-    "question": "Welche Berechtigungen wirken typischerweise stärker: explizites Verweigern oder Erlauben?",
+    "question": "In einer NTFS-Zugriffsliste stehen explizite Verweigerungen vor expliziten Erlaubnissen. Für denselben Benutzer wird Schreiben ausdrücklich verweigert und auch ausdrücklich erlaubt. Wie endet eine gewöhnliche Prüfung dieses Schreibzugriffs?",
     "answers": [
-      "Explizites Verweigern hat in der Regel Vorrang",
-      "Explizites Erlauben hat immer Vorrang",
-      "Beide werden grundsätzlich ignoriert",
-      "Die Reihenfolge hängt nur vom Dateinamen ab"
+      "Schreiben wird verweigert; der passende Verweigerungseintrag greift zuerst.",
+      "Schreiben wird erlaubt; die Erlaubnis hebt die Verweigerung auf.",
+      "Schreiben wird erlaubt; widersprüchliche Einträge werden bei der Prüfung ignoriert.",
+      "Schreiben wird erlaubt; beide Einträge werden zu erweiterten Rechten zusammengeführt."
     ],
     "correctAnswer": 0,
-    "explanation": "Explizite Verweigerungen haben bei NTFS-Berechtigungen üblicherweise hohe Priorität.",
+    "explanation": "Bei der beschriebenen Reihenfolge entscheidet die passende explizite Verweigerung über den angeforderten Schreibzugriff. Daraus folgt keine pauschale Regel für alle Kombinationen aus expliziten und geerbten Einträgen.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1877,15 +1877,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Dateisysteme",
     "difficulty": "medium",
-    "question": "Wofür dient das NTFS-Journaling?",
+    "question": "Was bietet das NTFS-Journal im Unterschied zu einer versionierten Dateisicherung?",
     "answers": [
-      "Dateisystemänderungen können konsistenter protokolliert und wiederhergestellt werden",
-      "Benutzerkennwörter werden vollständig im Dateisystemprotokoll gespeichert",
-      "Sicherungen werden automatisch durch eine zweite lokale Kopie ersetzt",
-      "Die physische Speicherkapazität eines Laufwerks wird dynamisch erweitert"
+      "Unterstützung für konsistente Dateisystemstrukturen, aber kein vollständiges Archiv früherer Dateiinhalte.",
+      "Eine vollständige Historie der Dateiinhalte, aber keine Informationen über Dateisystemänderungen.",
+      "Eine unabhängige Kopie der Dateien auf einem zweiten Datenträger, aber keine lokale Protokollierung.",
+      "Eine dauerhafte Ablage gelöschter Benutzerdateien, aber keine Hilfe nach einem Systemabsturz."
     ],
     "correctAnswer": 0,
-    "explanation": "Journaling hilft bei der Konsistenz des Dateisystems nach unerwarteten Unterbrechungen.",
+    "explanation": "Das Journal unterstützt konsistente Dateisystemstrukturen, ist aber keine vollständige Sicherung früherer Dateiinhalte. Für die Wiederherstellung versehentlich gelöschter Daten sind geeignete Sicherungen oder andere Wiederherstellungsmechanismen erforderlich.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1895,10 +1895,10 @@ export default [
     "difficulty": "medium",
     "question": "Wozu dient die Windows-Datenträgerverwaltung?",
     "answers": [
-      "Partitionen und Volumes können verwaltet werden",
-      "CPU-Kerne können aktiviert werden",
-      "Benutzerkennwörter können zurückgesetzt werden",
-      "Netzwerkports können gesperrt werden"
+      "Partitionen und Volumes erstellen, formatieren und Laufwerksbuchstaben zuordnen.",
+      "Verzeichnisse nach Dateitypen durchsuchen und Dateien zwischen Ordnern verschieben.",
+      "Regelmäßige Sicherungsaufträge planen und frühere Dateiversionen wiederherstellen.",
+      "Zugriffsrechte für Benutzergruppen auf Netzwerkfreigaben konfigurieren."
     ],
     "correctAnswer": 0,
     "explanation": "Die Datenträgerverwaltung dient unter anderem zum Erstellen, Formatieren und Verwalten von Volumes.",
@@ -1911,10 +1911,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist ein Laufwerksbuchstabe unter Windows?",
     "answers": [
-      "Eine logische Bezeichnung für ein Volume oder Laufwerk",
-      "Die Seriennummer eines Prozessors",
-      "Die Kennung eines Benutzerkontos",
-      "Die Verschlüsselungsstufe einer Datei"
+      "Eine logische Zuordnung wie C: für den Zugriff auf ein Volume oder Laufwerk.",
+      "Die vom Hersteller festgelegte Seriennummer des physischen Datenträgers.",
+      "Der im Dateisystem gespeicherte Name einer einzelnen Datei.",
+      "Die Kennung eines Benutzerkontos, dem der Datenträger gehört."
     ],
     "correctAnswer": 0,
     "explanation": "Windows verwendet Laufwerksbuchstaben wie C: oder D: zur Adressierung von Volumes.",
@@ -1925,15 +1925,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Datenträgerverwaltung",
     "difficulty": "medium",
-    "question": "Was passiert beim Formatieren eines Volumes?",
+    "question": "Was lässt sich aus einer Schnellformatierung eines zuvor verwendeten Volumes nicht zuverlässig ableiten?",
     "answers": [
-      "Ein Dateisystem wird auf dem Volume eingerichtet",
-      "Die CPU-Firmware wird aktualisiert",
-      "Das Benutzerkonto wird gelöscht",
-      "Die Netzwerkadresse wird geändert"
+      "Dass sämtliche früheren Nutzdaten unwiederbringlich überschrieben wurden.",
+      "Dass neue Dateisystemstrukturen für die Dateiverwaltung eingerichtet wurden.",
+      "Dass das Volume nach erfolgreichem Abschluss als neues Dateisystem genutzt werden kann.",
+      "Dass frühere Dateien nicht mehr über die bisherige Verzeichnisstruktur erreichbar sind."
     ],
     "correctAnswer": 0,
-    "explanation": "Formatieren richtet die logische Dateisystemstruktur auf einem Volume ein.",
+    "explanation": "Eine Schnellformatierung richtet die Dateisystemverwaltung neu ein, überschreibt aber nicht zuverlässig alle früheren Nutzdaten. Sie ist deshalb kein allgemeiner Nachweis einer sicheren Datenvernichtung; Datenträgertyp und weitere Mechanismen können die Wiederherstellbarkeit beeinflussen.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1943,10 +1943,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist eine Partition?",
     "answers": [
-      "Ein logisch abgegrenzter Bereich eines Datenträgers",
-      "Ein laufender Hintergrunddienst",
-      "Eine virtuelle Benutzergruppe",
-      "Ein installierter Gerätetreiber"
+      "Ein durch Partitionseinträge abgegrenzter Bereich eines Datenträgers.",
+      "Ein Verzeichnis mit einem eigenen Namen innerhalb eines Dateisystems.",
+      "Ein einzelner Datenblock, den ein Dateisystem einer Datei zuordnet.",
+      "Ein gespeichertes Abbild des Arbeitsspeichers für den Ruhezustand."
     ],
     "correctAnswer": 0,
     "explanation": "Partitionen unterteilen einen physischen oder virtuellen Datenträger in logische Bereiche.",
@@ -1957,15 +1957,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Datenträgerverwaltung",
     "difficulty": "medium",
-    "question": "Warum kann ein neues Laufwerk im Explorer fehlen, obwohl es erkannt wurde?",
+    "question": "Ein fabrikneuer, leerer Datenträger wird in der Windows-Datenträgerverwaltung als nicht zugeordnet angezeigt. Warum erscheint noch kein nutzbares Laufwerk im Explorer?",
     "answers": [
-      "Es besitzt möglicherweise noch kein nutzbares Volume oder keinen Laufwerksbuchstaben",
-      "Der verwendete Grafiktreiber unterstützt möglicherweise die aktuelle Bildschirmauflösung nicht",
-      "Das Benutzerkonto besitzt möglicherweise zu wenige CPU-Ressourcen für den Explorer",
-      "Die angeschlossene Tastatur wurde möglicherweise beim Systemstart nicht korrekt erkannt"
+      "Es wurde noch kein nutzbares Volume mit einer passenden Einbindung eingerichtet.",
+      "Der Datenträger enthält bereits ein nutzbares Volume, das durch einen Laufwerksbuchstabenkonflikt verdeckt wird.",
+      "Der Datenträger enthält bereits ein nutzbares Volume, dessen NTFS-Rechte die Anzeige im Explorer verhindern.",
+      "Der Datenträger enthält bereits ein nutzbares Volume, das ausschließlich für SMB-Zugriffe eingerichtet wurde."
     ],
     "correctAnswer": 0,
-    "explanation": "Ein Datenträger muss oft initialisiert, partitioniert und mit einem Laufwerksbuchstaben versehen werden.",
+    "explanation": "Nicht zugeordneter Speicher gehört noch keinem Volume. Auf dem beschriebenen leeren Datenträger muss ein Volume eingerichtet, mit einem unterstützten Dateisystem formatiert und beispielsweise über einen Laufwerksbuchstaben eingebunden werden.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -1975,10 +1975,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist ein Prozess?",
     "answers": [
-      "Eine laufende Instanz eines Programms",
-      "Ein dauerhaft gespeicherter Treiber",
-      "Ein physischer Teil des Mainboards",
-      "Ein Benutzerprofil auf dem Server"
+      "Eine gestartete Programminstanz mit Ausführungszustand und zugeordneten Ressourcen.",
+      "Eine ausführbare Programmdatei, die noch nicht gestartet wurde.",
+      "Ein einzelner Ausführungsstrang innerhalb einer Programminstanz.",
+      "Ein Zeitabschnitt, für den der Scheduler einer Aufgabe die CPU zuteilt."
     ],
     "correctAnswer": 0,
     "explanation": "Ein Prozess repräsentiert ein aktuell ausgeführtes Programm mit zugewiesenen Ressourcen.",
@@ -1989,15 +1989,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Prozesse",
     "difficulty": "medium",
-    "question": "Welche Information zeigt der Task-Manager?",
+    "question": "Ein Prozessname erscheint mehrfach im Task-Manager. Welche Angabe unterscheidet die gleichzeitig laufenden Prozessinstanzen eindeutig?",
     "answers": [
-      "Auslastung und laufende Prozesse",
-      "Nur die Dateiberechtigungen eines Ordners",
-      "Nur die Netzwerkkonfiguration des Routers",
-      "Nur die installierten Druckermodelle"
+      "Die Prozess-ID (PID).",
+      "Der Name der ausführbaren Datei.",
+      "Das Installationsverzeichnis der Anwendung.",
+      "Der Name des angemeldeten Benutzers."
     ],
     "correctAnswer": 0,
-    "explanation": "Der Task-Manager zeigt unter anderem Prozesse, Leistung und Autostartprogramme.",
+    "explanation": "Jeder gleichzeitig bestehende Prozess besitzt eine eigene Prozess-ID. Namen, Pfade und Benutzer können bei mehreren Instanzen gleich sein; PIDs können nach dem Ende eines Prozesses später wiederverwendet werden.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2007,13 +2007,13 @@ export default [
     "difficulty": "medium",
     "question": "Was bedeutet eine hohe CPU-Auslastung im Task-Manager?",
     "answers": [
-      "Die CPU ist stark mit Verarbeitung beschäftigt",
-      "Die SSD ist vollständig verschlüsselt",
-      "Der Arbeitsspeicher ist zwingend defekt",
-      "Das Netzwerk verwendet zu viele IP-Adressen"
+      "Ein großer Anteil der verfügbaren CPU-Zeit wird für Verarbeitung genutzt.",
+      "Ein großer Anteil der installierten Anwendungen wird gerade von der SSD gelesen.",
+      "Ein großer Anteil des physischen RAMs wurde bereits dauerhaft reserviert.",
+      "Ein großer Anteil der Netzwerkbandbreite wird für den Prozess reserviert."
     ],
     "correctAnswer": 0,
-    "explanation": "Hohe CPU-Auslastung zeigt starke Rechenaktivität an.",
+    "explanation": "Hohe CPU-Auslastung zeigt, dass viel verfügbare Rechenzeit genutzt wird. Bei rechenintensiven Aufgaben kann das normal sein; für eine Diagnose sind Dauer, betroffene Prozesse und die tatsächlich wahrgenommene Störung entscheidend.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2021,12 +2021,12 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Prozesse",
     "difficulty": "medium",
-    "question": "Was zeigt die Speicherauslastung im Task-Manager?",
+    "question": "Was zeigt im Windows-Task-Manager die Anzeige des verwendeten Arbeitsspeichers im Bereich Leistung?",
     "answers": [
-      "Wie viel Arbeitsspeicher aktuell verwendet wird",
-      "Wie viel Speicherplatz auf der SSD frei ist",
-      "Wie viele Benutzer angemeldet sind",
-      "Wie viele Programme installiert sind"
+      "Wie viel physischer RAM aktuell genutzt wird.",
+      "Wie viel freier Speicherplatz auf dem Systemlaufwerk vorhanden ist.",
+      "Wie groß die Summe der ausführbaren Programmdateien auf dem Datenträger ist.",
+      "Wie groß der von allen Prozessen reservierte virtuelle Adressraum insgesamt ist."
     ],
     "correctAnswer": 0,
     "explanation": "Die RAM-Auslastung zeigt die aktuelle Nutzung des physischen Arbeitsspeichers.",
@@ -2037,28 +2037,28 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Prozesse",
     "difficulty": "medium",
-    "question": "Wann ist das Beenden eines Prozesses sinnvoll?",
+    "question": "Eine Anwendung reagiert dauerhaft nicht mehr und lässt sich über ihre Oberfläche nicht schließen. Welche Maßnahme kann als letzter Schritt sinnvoll sein?",
     "answers": [
-      "Wenn eine Anwendung nicht mehr reagiert und kontrolliert beendet werden muss",
-      "Wenn die Festplatte mehr freien Speicher benötigt",
-      "Wenn ein Benutzer sein Kennwort ändern möchte",
-      "Wenn ein Monitor eine andere Auflösung benötigt"
+      "Den betroffenen Prozess im Task-Manager beenden und möglichen Datenverlust berücksichtigen.",
+      "Die Priorität des Prozesses erhöhen, damit er ungespeicherte Daten automatisch sichert.",
+      "Die Programmdatei auf dem Datenträger umbenennen, damit alle offenen Dateien geschlossen werden.",
+      "Ein zweites Fenster der Anwendung öffnen, damit das erste Fenster geordnet beendet wird."
     ],
     "correctAnswer": 0,
-    "explanation": "Nicht reagierende Prozesse können über den Task-Manager beendet werden.",
+    "explanation": "Ein erzwungenes Prozessende kann eine nicht reagierende Anwendung schließen. Es garantiert jedoch keine Ausführung ihrer Aufräum- oder Speicherroutinen; ungespeicherte Änderungen können verloren gehen.",
     "source": "betriebssysteme.csv"
   },
   {
     "id": "betriebssysteme-129",
     "category": "Betriebssysteme",
     "topic": "Prozesse",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Welche Gefahr besteht beim Beenden eines unbekannten Systemprozesses?",
     "answers": [
-      "Wichtige Systemfunktionen können beeinträchtigt werden",
-      "Die SSD wird automatisch größer",
-      "Der Monitor verliert dauerhaft seine Auflösung",
-      "Das Netzwerkkabel kann elektrisch beschädigt werden"
+      "Abhängige Systemfunktionen können ausfallen oder Windows kann instabil werden.",
+      "Die zugehörige Programmdatei wird automatisch aus dem Systemverzeichnis entfernt.",
+      "Die gespeicherten Einstellungen aller Benutzer werden auf Standardwerte zurückgesetzt.",
+      "Die installierten Sicherheitsupdates des Prozesses werden automatisch deinstalliert."
     ],
     "correctAnswer": 0,
     "explanation": "Systemprozesse erfüllen wichtige Aufgaben; unüberlegtes Beenden kann Instabilität verursachen.",
@@ -2071,13 +2071,13 @@ export default [
     "difficulty": "medium",
     "question": "Was ist ein Windows-Dienst?",
     "answers": [
-      "Ein Hintergrundprozess für System- oder Anwendungsfunktionen",
-      "Ein lokales Benutzerkonto für automatisierte Anmeldungen",
-      "Ein Dateisystem speziell für externe und wechselbare Laufwerke",
-      "Ein physischer Prozessorbereich für Hintergrundberechnungen"
+      "Eine vom Service Control Manager verwaltete Komponente für Hintergrundaufgaben.",
+      "Ein bei der Benutzeranmeldung geöffnetes Fenster einer Desktopanwendung.",
+      "Eine zeitgesteuerte Aufgabe, die ausschließlich durch die Aufgabenplanung verwaltet wird.",
+      "Ein Benutzerprofil, das Einstellungen für mehrere Anwendungen zusammenfasst."
     ],
     "correctAnswer": 0,
-    "explanation": "Dienste laufen häufig ohne direkte Benutzeroberfläche im Hintergrund.",
+    "explanation": "Windows-Dienste werden vom Service Control Manager verwaltet und arbeiten häufig ohne direkte Benutzeroberfläche. Ein Prozess kann einen oder mehrere Dienste beherbergen; ein Dienst ist daher nicht mit einem eigenen Prozess gleichzusetzen.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2085,15 +2085,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Dienste",
     "difficulty": "medium",
-    "question": "Welche Startart kann ein Windows-Dienst besitzen?",
+    "question": "Welche Startart sieht den regulären Start eines Windows-Dienstes beim Systemstart ohne verzögerten automatischen Start vor?",
     "answers": [
       "Automatisch",
-      "Verschlüsselt",
-      "Komprimiert",
-      "Partitioniert"
+      "Automatisch (Verzögerter Start)",
+      "Manuell",
+      "Deaktiviert"
     ],
     "correctAnswer": 0,
-    "explanation": "Dienste können beispielsweise automatisch, manuell oder deaktiviert gestartet werden.",
+    "explanation": "Automatisch startet den Dienst im Rahmen des Systemstarts. Automatisch (Verzögerter Start) verschiebt den Start auf eine spätere Phase. Manuell erfordert eine Startanforderung, während Deaktiviert einen Start bis zur Änderung dieser Einstellung verhindert.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2103,13 +2103,13 @@ export default [
     "difficulty": "medium",
     "question": "Was bedeutet die Startart 'Manuell' bei einem Dienst?",
     "answers": [
-      "Der Dienst startet nur bei Bedarf oder durch einen Auslöser",
-      "Der Dienst startet bei jedem Systemstart zwingend",
-      "Der Dienst darf nie gestartet werden",
-      "Der Dienst startet nur im abgesicherten Modus"
+      "Er kann durch eine Startanforderung gestartet werden, etwa durch einen Benutzer oder ein Programm.",
+      "Er wird vom Service Control Manager regulär bei jedem Systemstart automatisch gestartet.",
+      "Er wird beim Systemstart automatisch nach einer zusätzlichen Verzögerung gestartet.",
+      "Er ist für Startanforderungen gesperrt, bis seine Startart geändert wird."
     ],
     "correctAnswer": 0,
-    "explanation": "Manuell bedeutet, dass der Dienst nicht grundsätzlich bei jedem Start geladen wird.",
+    "explanation": "Manuell entspricht einem Start bei Bedarf. Eine Anforderung kann von einem Benutzer, einem Programm oder einer abhängigen Komponente kommen; bei entsprechend konfigurierten Diensten sind auch Trigger möglich. Manuell bedeutet nicht, dass ausschließlich ein Mensch den Dienst starten kann.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2119,10 +2119,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum sollte man unbekannte Windows-Dienste nicht wahllos deaktivieren?",
     "answers": [
-      "Abhängige Funktionen oder Anwendungen können ausfallen",
-      "Die CPU-Taktfrequenz kann permanent verdoppelt werden",
-      "Das Dateisystem wird automatisch gelöscht",
-      "Der Benutzer verliert dauerhaft sein Kennwort"
+      "Abhängige Dienste oder Anwendungen können dadurch ihre Funktion verlieren.",
+      "Die Dienstdateien werden beim Deaktivieren aus dem Systemverzeichnis gelöscht.",
+      "Die Konfiguration sämtlicher Dienste wird beim Deaktivieren auf Standardwerte gesetzt.",
+      "Die zum Dienst gehörende Anwendung wird beim nächsten Start neu installiert."
     ],
     "correctAnswer": 0,
     "explanation": "Viele Dienste haben Abhängigkeiten und erfüllen zentrale Systemaufgaben.",
@@ -2132,13 +2132,13 @@ export default [
     "id": "betriebssysteme-134",
     "category": "Betriebssysteme",
     "topic": "Dienste",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Was beschreibt eine Dienstabhängigkeit?",
     "answers": [
-      "Ein Dienst benötigt einen anderen Dienst für seine Funktion",
-      "Ein Dienst benötigt zwingend einen zweiten Monitor",
-      "Ein Dienst kann nur auf einer zweiten Partition laufen",
-      "Ein Dienst funktioniert nur mit einem lokalen Benutzerkonto"
+      "Ein Dienst benötigt einen anderen Dienst, der deshalb zuerst gestartet werden muss.",
+      "Zwei Dienste verwenden denselben Anzeigenamen in der Diensteverwaltung.",
+      "Zwei Dienste speichern ihre ausführbaren Dateien im selben Verzeichnis.",
+      "Ein Dienst wurde zusammen mit einem anderen Dienst am selben Tag installiert."
     ],
     "correctAnswer": 0,
     "explanation": "Windows-Dienste können voneinander abhängig sein und in bestimmter Reihenfolge benötigt werden.",
@@ -2151,10 +2151,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist ein Autostartprogramm?",
     "answers": [
-      "Eine Anwendung, die beim Anmelden oder Systemstart automatisch gestartet wird",
-      "Ein Programm, das nur nach einem Absturz startet",
-      "Ein Prozess, der ausschließlich im BIOS ausgeführt wird",
-      "Ein Treiber, der niemals beendet werden kann"
+      "Eine Anwendung, deren Start durch Systemstart oder Benutzeranmeldung ausgelöst wird.",
+      "Eine Anwendung, die vom Benutzer bei jedem Start mit erhöhten Rechten aufgerufen wird.",
+      "Eine Anwendung, die beim Öffnen eines zugeordneten Dateityps durch den Benutzer startet.",
+      "Eine Anwendung, die zur Ausführung von einem Installationsmedium aufgerufen werden muss."
     ],
     "correctAnswer": 0,
     "explanation": "Autostartprogramme werden automatisch beim Systemstart oder der Benutzeranmeldung geladen.",
@@ -2167,13 +2167,13 @@ export default [
     "difficulty": "medium",
     "question": "Wo können Autostartprogramme unter Windows einfach geprüft werden?",
     "answers": [
-      "Im Task-Manager im Bereich Autostart",
-      "Nur in der Datenträgerverwaltung",
-      "Nur im Geräte-Manager",
-      "Nur in der Ereignisanzeige"
+      "Im Task-Manager im Bereich für Autostart-Apps.",
+      "In der Datenträgerverwaltung in der Liste der Volumes.",
+      "Im Geräte-Manager in den Eigenschaften der Netzwerkadapter.",
+      "In der Ereignisanzeige in den Eigenschaften des Sicherheitsprotokolls."
     ],
     "correctAnswer": 0,
-    "explanation": "Der Task-Manager bietet eine Übersicht über viele Autostarteinträge.",
+    "explanation": "Der Task-Manager zeigt viele Anwendungen an, die bei der Benutzeranmeldung starten, und erlaubt deren Deaktivierung. Er ist keine vollständige Übersicht über alle Startmechanismen, etwa Dienste und geplante Aufgaben.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2183,10 +2183,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum kann das Deaktivieren unnötiger Autostartprogramme sinnvoll sein?",
     "answers": [
-      "Startzeit und Ressourcenverbrauch können reduziert werden",
-      "Die SSD-Kapazität wird dadurch automatisch erhöht",
-      "Windows erhält dadurch zusätzliche Benutzerkonten",
-      "Die Netzwerkadresse wird dadurch dauerhaft geändert"
+      "Die Anmeldung kann schneller ablaufen, und weniger automatisch gestartete Programme können Ressourcen beanspruchen.",
+      "Die Programme werden dadurch vom Datenträger entfernt und geben ihren Installationsplatz frei.",
+      "Die Programme verlieren dadurch ihre Berechtigungen für einen späteren manuellen Start.",
+      "Die Programme werden dadurch bei jeder Ausführung mit niedrigerer Prozesspriorität gestartet."
     ],
     "correctAnswer": 0,
     "explanation": "Weniger unnötige Hintergrundprogramme können Start und Ressourcennutzung verbessern.",
@@ -2199,10 +2199,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Aufgabe hat ein Gerätetreiber?",
     "answers": [
-      "Er ermöglicht die Kommunikation zwischen Betriebssystem und Hardware",
-      "Er ersetzt die eigentliche Hardware durch eine vollständig virtuelle Komponente",
-      "Er speichert Benutzerdateien dauerhaft außerhalb des normalen Dateisystems",
-      "Er verwaltet ausschließlich Kennwörter und Zugangsdaten von Netzwerkverbindungen"
+      "Er setzt Geräteanforderungen des Betriebssystems in passende gerätespezifische Operationen um.",
+      "Er wählt vor dem Systemstart das zu ladende Betriebssystem aus.",
+      "Er verwaltet die Reihenfolge, in der Benutzerprogramme CPU-Zeit erhalten.",
+      "Er legt die Zugriffsrechte von Benutzern auf gespeicherte Dokumente fest."
     ],
     "correctAnswer": 0,
     "explanation": "Treiber stellen die Softwareschnittstelle zwischen Betriebssystem und Gerät bereit.",
@@ -2213,15 +2213,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Treiber",
     "difficulty": "medium",
-    "question": "Wofür wird der Geräte-Manager verwendet?",
+    "question": "Ein Gerät funktioniert seit einer Treiberänderung nicht mehr. Welche Information aus dem Geräte-Manager hilft, die installierte Treiberversion zu dokumentieren?",
     "answers": [
-      "Hardwaregeräte und zugehörige Treiber können geprüft und verwaltet werden",
-      "Benutzerprofile und persönliche Dateien können vollständig archiviert werden",
-      "Partitionen und Dateisysteme können erstellt und anschließend formatiert werden",
-      "Domänenkonten und zentrale Gruppenrichtlinien können eingerichtet werden"
+      "Anbieter, Datum und Versionsnummer auf der Registerkarte Treiber.",
+      "Hardware-IDs und kompatible IDs auf der Registerkarte Details.",
+      "Interrupt- und Speicherbereiche auf der Registerkarte Ressourcen.",
+      "Die allgemeine Statusmeldung auf der Registerkarte Allgemein."
     ],
     "correctAnswer": 0,
-    "explanation": "Der Geräte-Manager zeigt erkannte Hardware und deren Treiberstatus.",
+    "explanation": "Die Treibereigenschaften liefern unter anderem Anbieter, Datum und Versionsnummer. Diese Angaben helfen beim Vergleich mit einer zuvor funktionierenden Version; das Datum allein beweist nicht, wann der Treiber installiert wurde.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2231,13 +2231,13 @@ export default [
     "difficulty": "medium",
     "question": "Was kann ein gelbes Warnsymbol im Geräte-Manager bedeuten?",
     "answers": [
-      "Es besteht ein Problem mit Gerät oder Treiber",
-      "Das Gerät arbeitet immer mit maximaler Leistung",
-      "Das Gerät ist erfolgreich verschlüsselt",
-      "Das Gerät befindet sich zwingend im Energiesparmodus"
+      "Windows meldet ein Problem mit dem Gerät oder seinem Treiber.",
+      "Windows kennzeichnet das Gerät als optional und momentan unbenutzt.",
+      "Windows zeigt eine verfügbare neuere Treiberversion für das Gerät an.",
+      "Windows bestätigt, dass der Treiber erfolgreich geladen wurde und das Gerät betriebsbereit ist."
     ],
     "correctAnswer": 0,
-    "explanation": "Warnsymbole weisen auf Geräte- oder Treiberprobleme hin.",
+    "explanation": "Ein gelbes Warnsymbol weist auf einen gemeldeten Gerätefehler hin. In den Geräteeigenschaften liefern Gerätestatus und Fehlercode nähere Hinweise; das Symbol allein nennt noch nicht die Ursache.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2245,12 +2245,12 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Treiber",
     "difficulty": "medium",
-    "question": "Warum kann ein Treiberupdate sinnvoll sein?",
+    "question": "Nach einer Betriebssystemaktualisierung tritt ein dokumentierter Fehler im Grafiktreiber auf. Wozu kann ein passendes Treiberupdate dienen?",
     "answers": [
-      "Fehler, Kompatibilität oder Sicherheit können verbessert werden",
-      "Der physische Arbeitsspeicher wird ohne Hardwareänderung dauerhaft erweitert",
-      "Das Systemlaufwerk wird beim Update automatisch neu formatiert",
-      "Der Prozessor erhält durch den Treiber zusätzliche physische Rechenkerne"
+      "Den Softwarefehler beheben und die Zusammenarbeit mit dem Betriebssystem verbessern.",
+      "Die aktuelle Betriebssystemversion ohne gesonderte Wiederherstellung zurücksetzen.",
+      "Die Einstellungen aller Grafikprogramme auf dieselbe Konfiguration vereinheitlichen.",
+      "Die Mindestanforderungen der installierten Programme nachträglich herabsetzen."
     ],
     "correctAnswer": 0,
     "explanation": "Treiberupdates können Fehler beheben und Unterstützung für Hardware oder Software verbessern.",
@@ -2277,15 +2277,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Windows Update",
     "difficulty": "medium",
-    "question": "Welches Ziel haben Sicherheitsupdates?",
+    "question": "Zwei gleich wichtige Server haben dieselbe Sicherheitslücke. Der betroffene Dienst ist bei einem Server aus dem Internet erreichbar, beim anderen gegen die relevanten Angriffswege isoliert. Was spricht dafür, den erreichbaren Server zuerst zu patchen?",
     "answers": [
-      "Bekannte Sicherheitslücken zu schließen",
-      "Die SSD-Kapazität zu erhöhen",
-      "Den Prozessor physisch auszutauschen",
-      "Alle Benutzerprofile zurückzusetzen"
+      "Angreifer können den verwundbaren Dienst unmittelbar erreichen.",
+      "Eine Internetverbindung senkt die Wahrscheinlichkeit von Installationsfehlern.",
+      "Ein isolierter Server benötigt auch nach Aufhebung der Isolation keine Korrektur.",
+      "Die Erreichbarkeit ersetzt die Prüfung, ob das Update zum Betriebssystem passt."
     ],
     "correctAnswer": 0,
-    "explanation": "Sicherheitsupdates beheben bekannte Schwachstellen in Software.",
+    "explanation": "Für die Priorisierung zählen unter anderem Betroffenheit, Ausnutzbarkeit und Exposition der verwundbaren Komponente sowie die Bedeutung des Systems. Ein vorhandenes Update muss mit angemessener Dringlichkeit geprüft und ausgerollt werden.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2295,10 +2295,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum sollten Updates in Unternehmen geplant ausgerollt werden?",
     "answers": [
-      "Kompatibilität und Betriebsunterbrechungen können kontrolliert werden",
-      "Updates funktionieren nur während der Arbeitszeit",
-      "Updates benötigen grundsätzlich Administratoren vor jedem Monitor",
-      "Updates dürfen nur auf neuen Geräten installiert werden"
+      "Tests und gestufte Verteilung helfen, Kompatibilitätsprobleme und Ausfälle früh zu erkennen.",
+      "Ein fester Zeitplan macht die Prüfung der tatsächlich installierten Updateversion entbehrlich.",
+      "Eine gleichzeitige Installation auf allen Geräten ersetzt den Test geschäftskritischer Anwendungen.",
+      "Ein Rolloutplan stellt fehlgeschlagene Installationen ohne weitere Maßnahmen automatisch wieder her."
     ],
     "correctAnswer": 0,
     "explanation": "Geplante Rollouts reduzieren Risiken und erlauben Tests vor breiter Verteilung.",
@@ -2311,10 +2311,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist ein Funktionsupdate?",
     "answers": [
-      "Ein größeres Update mit neuen oder geänderten Systemfunktionen",
-      "Eine tägliche Aktualisierung der Systemuhr",
-      "Ein Treiber ausschließlich für Drucker",
-      "Eine Sicherung des Benutzerprofils"
+      "Ein Update, das neue oder wesentlich geänderte Betriebssystemfunktionen bereitstellt.",
+      "Ein Update, das ausschließlich aktuelle Erkennungsdaten für den Virenschutz bereitstellt.",
+      "Ein Paket, das den Gerätetreiber einer bestimmten Hardwarekomponente ersetzt.",
+      "Eine Sicherung, die ausgewählte Systemeinstellungen auf einem Datenträger ablegt."
     ],
     "correctAnswer": 0,
     "explanation": "Funktionsupdates verändern typischerweise größere Teile des Betriebssystems.",
@@ -2341,15 +2341,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Ereignisanzeige",
     "difficulty": "medium",
-    "question": "Wozu dient die Windows-Ereignisanzeige?",
+    "question": "Ein Anwendungsabsturz soll in der Windows-Ereignisanzeige untersucht werden. In welchem Windows-Protokoll sind entsprechende Anwendungsmeldungen typischerweise zu suchen?",
     "answers": [
-      "System-, Anwendungs- und Sicherheitsereignisse können analysiert werden",
-      "Festplatten können physisch repariert werden",
-      "Arbeitsspeicher kann erweitert werden",
-      "Benutzer können direkt im BIOS angelegt werden"
+      "Anwendung",
+      "Sicherheit",
+      "Setup",
+      "Weitergeleitete Ereignisse"
     ],
     "correctAnswer": 0,
-    "explanation": "Die Ereignisanzeige protokolliert viele wichtige System- und Anwendungsereignisse.",
+    "explanation": "Das Protokoll Anwendung enthält Meldungen von Anwendungen und zugehörigen Komponenten. Abhängig vom Programm können zusätzlich eigene Protokolle vorhanden sein; Sicherheits- oder Installationsprotokolle verfolgen andere Schwerpunkte.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2359,10 +2359,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum ist ein Zeitstempel in einem Ereignisprotokoll hilfreich?",
     "answers": [
-      "Fehler können zeitlich mit anderen Vorgängen abgeglichen werden",
-      "Die CPU erhält dadurch eine höhere Taktfrequenz",
-      "Das Ereignis wird dadurch automatisch behoben",
-      "Der Benutzer erhält dadurch Administratorrechte"
+      "Ereignisse lassen sich mit Änderungen und Störungen im selben Zeitraum abgleichen.",
+      "Ein Zeitstempel weist unabhängig vom Inhalt die eigentliche Fehlerursache nach.",
+      "Ein Zeitstempel bestätigt, dass eine gemeldete Störung bereits behoben wurde.",
+      "Ein Zeitstempel ersetzt die Prüfung, welcher Dienst das Ereignis gemeldet hat."
     ],
     "correctAnswer": 0,
     "explanation": "Zeitliche Zusammenhänge helfen bei der Ursachenanalyse.",
@@ -2375,10 +2375,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist bei der Fehlersuche mit der Ereignisanzeige sinnvoll?",
     "answers": [
-      "Relevante Fehler und Warnungen zum Problemzeitpunkt prüfen",
-      "Alle Protokolle ohne Prüfung sofort löschen",
-      "Nur erfolgreiche Ereignisse auswerten",
-      "Jede Warnung automatisch als Hardwaredefekt behandeln"
+      "Zeitpunkt, Quelle und Inhalt passender Ereignisse mit dem beobachteten Fehler vergleichen.",
+      "Das jüngste Ereignis mit dem höchsten Schweregrad ohne weiteren Kontext als Ursache festlegen.",
+      "Die Anzahl aller Warnungen als unmittelbares Maß für einen Hardwaredefekt verwenden.",
+      "Ein erfolgreiches Ereignis nach dem Fehler als ausreichenden Nachweis der Behebung ansehen."
     ],
     "correctAnswer": 0,
     "explanation": "Kontext, Zeitpunkt und Quelle eines Ereignisses sind wichtig für die Diagnose.",
@@ -2389,15 +2389,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Windows Netzwerk",
     "difficulty": "medium",
-    "question": "Welcher Befehl zeigt unter Windows die IP-Konfiguration?",
+    "question": "ipconfig /all zeigt für einen Windows-Adapter DHCP aktiviert: Nein. Seine IPv4-Adresse wurde manuell eingetragen. Warum kann ipconfig /renew diese Adresse nicht als DHCP-Lease erneuern?",
     "answers": [
-      "ipconfig",
-      "format",
-      "taskkill",
-      "mkdir"
+      "Der Adapter verwendet für diese IPv4-Konfiguration keine DHCP-Lease.",
+      "Eine DHCP-Lease kann erst nach Ablauf ihrer gesamten Gültigkeitsdauer erneuert werden.",
+      "Vor jeder DHCP-Erneuerung muss der Rechner seine physische Adapteradresse ändern.",
+      "Die Erneuerung einer DHCP-Lease setzt das erfolgreiche Leeren des DNS-Caches voraus."
     ],
     "correctAnswer": 0,
-    "explanation": "ipconfig zeigt IP-Adresse, Subnetzmaske und weitere Netzwerkinformationen.",
+    "explanation": "ipconfig /renew erneuert DHCP-Konfigurationen. Eine manuell eingetragene IPv4-Adresse ist keine DHCP-Lease; für eine automatische Zuweisung müsste der Adapter entsprechend auf DHCP umgestellt werden.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2405,12 +2405,12 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Windows Netzwerk",
     "difficulty": "medium",
-    "question": "Was zeigt 'ipconfig /all' zusätzlich an?",
+    "question": "Welche Angaben zeigt ipconfig /all unter Windows zusätzlich zur grundlegenden Ausgabe von ipconfig?",
     "answers": [
-      "Detaillierte Adapter-, DHCP-, DNS- und Adressinformationen",
-      "Detaillierte Angaben zur aktuellen Prozessor- und Speicherauslastung",
-      "Detaillierte NTFS-Berechtigungen aller lokalen Benutzerverzeichnisse",
-      "Detaillierte Versionsinformationen zu Windows und installierten Updates"
+      "Unter anderem physische Adapteradressen, DHCP-Status und konfigurierte DNS-Server.",
+      "Unter anderem aktive TCP-Verbindungen, Prozess-IDs und lauschende Ports.",
+      "Unter anderem Router entlang eines Pfads und die Laufzeit zu jedem Hop.",
+      "Unter anderem Dateifreigaben, deren Besitzer und die zugewiesenen NTFS-Rechte."
     ],
     "correctAnswer": 0,
     "explanation": "ipconfig /all zeigt unter anderem MAC-Adresse, DHCP- und DNS-Informationen.",
@@ -2421,15 +2421,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Windows Netzwerk",
     "difficulty": "medium",
-    "question": "Wozu dient der Befehl ping?",
+    "question": "Eine direkte HTTPS-Verbindung zu einem Server funktioniert, ping auf dieselbe IP-Adresse erhält jedoch keine Antwort. Welche Erklärung ist plausibel?",
     "answers": [
-      "Er testet die Erreichbarkeit eines Netzwerkziels",
-      "Er formatiert ein Netzlaufwerk",
-      "Er erstellt ein Benutzerkonto",
-      "Er beendet einen Hintergrunddienst"
+      "ICMP-Echo-Anfragen oder ihre Antworten werden gefiltert, während HTTPS erlaubt ist.",
+      "Der erfolgreiche HTTPS-Zugriff bedeutet, dass der Server auch jede ICMP-Echo-Anfrage beantworten muss.",
+      "Ein Server benötigt für ICMP grundsätzlich eine andere Ziel-IP-Adresse als für HTTPS.",
+      "Ein fehlendes ICMP-Echo beweist, dass auch die beobachtete HTTPS-Verbindung keine Daten übertragen konnte."
     ],
     "correctAnswer": 0,
-    "explanation": "ping prüft mit ICMP-Echo-Anfragen, ob ein Ziel erreichbar ist.",
+    "explanation": "ICMP-Echo und HTTPS sind unterschiedliche Arten von Netzwerkverkehr und können unterschiedlich gefiltert werden. Ein fehlendes Echo allein beweist daher nicht, dass ein Host oder sein Webdienst unerreichbar ist.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2439,13 +2439,13 @@ export default [
     "difficulty": "medium",
     "question": "Was prüft 'ping 127.0.0.1' hauptsächlich?",
     "answers": [
-      "Den lokalen TCP/IP-Stack",
-      "Die physische Verbindung zum Internetprovider",
-      "Die Funktion eines entfernten DNS-Servers",
-      "Die Geschwindigkeit des WLAN-Routers"
+      "Die lokale IPv4-Verarbeitung über die Loopback-Schnittstelle.",
+      "Die Verbindung zwischen Netzwerkkarte und lokalem Standardgateway.",
+      "Die Erreichbarkeit eines konfigurierten DNS-Servers.",
+      "Die Weiterleitung durch den Router in ein entferntes Netz."
     ],
     "correctAnswer": 0,
-    "explanation": "Die Loopback-Adresse testet die lokale IP-Verarbeitung des Rechners.",
+    "explanation": "127.0.0.1 ist eine IPv4-Loopback-Adresse. Ein erfolgreicher ping darauf prüft lokale IP-Verarbeitung, aber weder das Netzwerkkabel noch den Weg zum Router oder ins Internet.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2453,15 +2453,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Windows Netzwerk",
     "difficulty": "medium",
-    "question": "Welcher Befehl zeigt den Weg über mehrere Router zu einem Ziel?",
+    "question": "In einer Windows-tracert-Ausgabe erscheinen bei einem Hop Sternchen, spätere Hops antworten jedoch. Was lässt sich daraus ableiten?",
     "answers": [
-      "tracert",
-      "hostname",
-      "whoami",
-      "chkdsk"
+      "Für diesen Hop kam innerhalb der Wartezeit keine passende Antwort zurück.",
+      "Der gesamte Pfad zum Ziel ist ab diesem Hop nachweislich unterbrochen.",
+      "Der Zielrechner hat für alle Protokolle die Verbindung zum Absender gesperrt.",
+      "Der lokale DNS-Resolver hat die IP-Adresse dieses Routers aus seinem Cache gelöscht."
     ],
     "correctAnswer": 0,
-    "explanation": "tracert zeigt die Zwischenstationen beziehungsweise Hops zu einem Ziel.",
+    "explanation": "Sternchen kennzeichnen ausgebliebene Antworten innerhalb der Wartezeit. Ein Router kann Diagnoseantworten filtern oder begrenzen und trotzdem Nutzverkehr weiterleiten; spätere Antworten sprechen gegen einen vollständigen Abbruch an diesem Hop.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2471,10 +2471,10 @@ export default [
     "difficulty": "medium",
     "question": "Wozu dient nslookup?",
     "answers": [
-      "DNS-Namensauflösung kann geprüft werden",
-      "NTFS-Berechtigungen können geändert werden",
-      "Treiber können aktualisiert werden",
-      "Prozesse können beendet werden"
+      "DNS-Einträge bei einem DNS-Server abfragen.",
+      "Die lokale IPv4-Routingtabelle anzeigen.",
+      "Aktive TCP-Verbindungen und lauschende Ports auflisten.",
+      "Die gespeicherten IPv4-zu-MAC-Zuordnungen anzeigen."
     ],
     "correctAnswer": 0,
     "explanation": "nslookup fragt DNS-Informationen ab und hilft bei der Analyse der Namensauflösung.",
@@ -2487,10 +2487,10 @@ export default [
     "difficulty": "medium",
     "question": "Was zeigt der Befehl hostname?",
     "answers": [
-      "Den Namen des lokalen Rechners",
-      "Die MAC-Adresse des Routers",
-      "Die Seriennummer der SSD",
-      "Die Windows-Produkt-ID"
+      "Den Namen des lokalen Rechners.",
+      "Den Namen des angemeldeten Benutzerkontos.",
+      "Den Namen des konfigurierten DNS-Servers.",
+      "Den Namen der Windows-Arbeitsgruppe."
     ],
     "correctAnswer": 0,
     "explanation": "hostname gibt den Computernamen des lokalen Systems aus.",
@@ -2501,15 +2501,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Windows Netzwerk",
     "difficulty": "medium",
-    "question": "Was kann 'ipconfig /release' bei DHCP bewirken?",
+    "question": "Ein Windows-PC besitzt zwei aktive DHCP-Adapter namens Ethernet und WLAN. Die DHCP-Konfiguration von Ethernet soll freigegeben werden; die Konfiguration von WLAN soll unverändert bleiben. Welcher Befehl passt?",
     "answers": [
-      "Die aktuell bezogene DHCP-Adresse wird freigegeben",
-      "Die Netzwerkkarte wird dauerhaft deaktiviert",
-      "Das DNS-Protokoll wird deinstalliert",
-      "Die lokale Firewall wird ausgeschaltet"
+      "ipconfig /release \"Ethernet\"",
+      "ipconfig /renew \"Ethernet\"",
+      "ipconfig /release",
+      "ipconfig /flushdns"
     ],
     "correctAnswer": 0,
-    "explanation": "release gibt eine per DHCP erhaltene Konfiguration frei.",
+    "explanation": "Ein Adaptername begrenzt /release auf die passende Schnittstelle. Ohne Adapterangabe richtet sich /release an alle passenden DHCP-Adapter; /renew erneuert Konfigurationen und /flushdns betrifft den Resolver-Cache.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2517,15 +2517,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Windows Netzwerk",
     "difficulty": "medium",
-    "question": "Was bewirkt 'ipconfig /renew' typischerweise?",
+    "question": "Nach ipconfig /renew besitzt ein DHCP-Client wieder dieselbe IPv4-Adresse. Welche Aussage ist korrekt?",
     "answers": [
-      "Eine DHCP-Konfiguration wird neu angefordert",
-      "Alle Netzwerkprofile werden gelöscht",
-      "Der DNS-Server wird neu installiert",
-      "Das Benutzerkonto wird erneuert"
+      "Eine erfolgreiche Lease-Erneuerung kann dieselbe Adresse beibehalten.",
+      "Der Befehl ist fehlgeschlagen, weil jede Erneuerung die Adresse ändern muss.",
+      "Der Client hat dadurch automatisch auf eine statische Adresskonfiguration gewechselt.",
+      "Der DNS-Server hat die bisherige DHCP-Adresse unabhängig vom DHCP-Server reserviert."
     ],
     "correctAnswer": 0,
-    "explanation": "renew fordert vom DHCP-Server eine neue oder erneuerte Lease an.",
+    "explanation": "Die Erneuerung einer DHCP-Lease erzwingt keinen Adresswechsel. Der Server kann die bisherige Adresse weiter bestätigen; Erfolg und Gültigkeit müssen anhand der Konfiguration und Lease-Informationen beurteilt werden.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2533,15 +2533,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Windows Netzwerk",
     "difficulty": "hard",
-    "question": "Ein Rechner kann eine IP-Adresse anpingen, aber keinen Hostnamen. Welche Ursache ist besonders plausibel?",
+    "question": "ping auf die bekannte IPv4-Adresse eines Servers funktioniert. ping auf dessen vollständigen DNS-Namen meldet dagegen, dass der Host nicht gefunden wurde. Welche Ursache ist besonders plausibel?",
     "answers": [
-      "Die DNS-Namensauflösung funktioniert nicht korrekt",
-      "Der Arbeitsspeicher ist vollständig ausgelastet",
-      "Der Monitor verwendet die falsche Auflösung",
-      "Die SSD besitzt kein Laufwerkslabel"
+      "Die DNS-Auflösung des angegebenen Namens ist gestört oder der Name ist falsch.",
+      "Der Server blockiert sämtliche ICMP-Echo-Anfragen an seine IPv4-Adresse.",
+      "Die Netzwerkkarte besitzt keine funktionsfähige Verbindung zum lokalen Netz.",
+      "Die lokale IPv4-Route zur bekannten Serveradresse fehlt vollständig."
     ],
     "correctAnswer": 0,
-    "explanation": "Wenn IP-Konnektivität funktioniert, aber Namen nicht, sollte DNS geprüft werden.",
+    "explanation": "Die Meldung, dass der Hostname nicht gefunden wurde, betrifft die Namensauflösung. Bei funktionierendem Zugriff auf die bekannte IP-Adresse sollten Schreibweise, DNS-Konfiguration und DNS-Einträge geprüft werden.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2551,10 +2551,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist eine Netzwerkfreigabe?",
     "answers": [
-      "Ein Ordner oder eine Ressource, die über das Netzwerk bereitgestellt wird",
-      "Ein ausschließlich lokaler Systemordner, auf den nur Windows selbst zugreifen kann",
-      "Eine Partition ohne Dateisystem, die erst später einem Benutzer zugewiesen wird",
-      "Ein Hintergrundprozess, der ausschließlich Kernel-Funktionen lokal ausführt"
+      "Eine Ressource, die ein Rechner für Zugriffe über das Netzwerk bereitstellt.",
+      "Ein Ordner, der im lokalen Explorer als Favorit markiert wurde.",
+      "Eine Partition, die einem lokalen Laufwerksbuchstaben zugeordnet wurde.",
+      "Ein Dateisystembereich, den ein Benutzer für den Offlinebetrieb reserviert hat."
     ],
     "correctAnswer": 0,
     "explanation": "Freigaben ermöglichen autorisierten Benutzern den Netzwerkzugriff auf Ressourcen.",
@@ -2567,10 +2567,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche zwei Berechtigungsebenen können bei einer Windows-Dateifreigabe relevant sein?",
     "answers": [
-      "Freigabeberechtigungen und NTFS-Berechtigungen",
-      "BIOS-Berechtigungen und CPU-Berechtigungen",
-      "Monitorrechte und Druckerrechte",
-      "UEFI-Rechte und SATA-Rechte"
+      "Freigabeberechtigungen und NTFS-Berechtigungen.",
+      "Freigabeberechtigungen und Datenträgerkontingente.",
+      "NTFS-Berechtigungen und Firewallprofile.",
+      "Datenträgerverschlüsselung und Dateikomprimierung."
     ],
     "correctAnswer": 0,
     "explanation": "Bei Netzwerkzugriff können sowohl Freigabe- als auch Dateisystemberechtigungen wirken.",
@@ -2581,15 +2581,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Freigaben",
     "difficulty": "hard",
-    "question": "Welche Berechtigung ist bei Netzwerkzugriff auf eine NTFS-Freigabe praktisch entscheidend?",
+    "question": "Ein Benutzer erhält über die SMB-Freigabe Lesen und über NTFS Ändern. Es gelten keine weiteren Einschränkungen. Welche der folgenden Aktionen ist über diese Freigabe erlaubt?",
     "answers": [
-      "Die wirksamste Einschränkung aus Freigabe- und NTFS-Rechten",
-      "Immer ausschließlich die Freigabeberechtigung",
-      "Immer ausschließlich die NTFS-Berechtigung",
-      "Immer die Einstellung mit den meisten Rechten"
+      "Den vorhandenen Dateiinhalt lesen.",
+      "Den vorhandenen Dateiinhalt überschreiben.",
+      "Die vorhandene Datei löschen.",
+      "Eine neue Datei im freigegebenen Ordner anlegen."
     ],
     "correctAnswer": 0,
-    "explanation": "Die effektiven Rechte ergeben sich aus beiden Ebenen; restriktivere Rechte begrenzen den Zugriff.",
+    "explanation": "Beim SMB-Zugriff muss eine Operation sowohl durch die effektiven Freigaberechte als auch durch die effektiven NTFS-Rechte erlaubt sein. Hier begrenzt die Freigabeberechtigung Lesen den Netzwerkzugriff trotz weitergehender NTFS-Rechte.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2597,15 +2597,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Freigaben",
     "difficulty": "medium",
-    "question": "Wofür wird ein UNC-Pfad verwendet?",
+    "question": "Welche Angabe ist ein UNC-Pfad zu einem freigegebenen Ordner auf einem Server?",
     "answers": [
-      "Für den Zugriff auf Netzwerkressourcen wie \\\\Server\\Freigabe",
-      "Für die Angabe eines lokalen CPU-Sockels",
-      "Für die Benennung einer Partitionstabelle",
-      "Für die Beschreibung einer Bildschirmauflösung"
+      "\\\\Server\\Freigabe",
+      "C:\\Freigabe",
+      "https://Server/Freigabe",
+      "Server:Freigabe"
     ],
     "correctAnswer": 0,
-    "explanation": "UNC-Pfade adressieren Netzwerkressourcen unabhängig von Laufwerksbuchstaben.",
+    "explanation": "Ein UNC-Pfad beginnt mit zwei umgekehrten Schrägstrichen, gefolgt von Servername und Freigabename. Er adressiert die Freigabe, ohne dass zuvor ein Laufwerksbuchstabe zugeordnet werden muss.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2613,15 +2613,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Freigaben",
     "difficulty": "medium",
-    "question": "Was ist ein Netzlaufwerk?",
+    "question": "Was bezeichnet ein verbundenes Netzlaufwerk mit dem Buchstaben Z: unter Windows?",
     "answers": [
-      "Eine Netzwerkfreigabe, die einem Laufwerksbuchstaben zugeordnet ist",
-      "Eine Festplatte mit eingebautem WLAN-Modul",
-      "Ein virtuelles DVD-Laufwerk ohne Netzwerkzugriff",
-      "Eine SSD mit eigener IP-Adresse im PC"
+      "Eine Netzwerkfreigabe, die unter einem lokalen Laufwerksbuchstaben erreichbar ist.",
+      "Eine lokale Partition, die für den angemeldeten Benutzer umbenannt wurde.",
+      "Eine virtuelle Festplattendatei, die als lokales Volume eingebunden wurde.",
+      "Ein vollständiges Abbild einer Freigabe, das dauerhaft ohne Server verfügbar ist."
     ],
     "correctAnswer": 0,
-    "explanation": "Netzlaufwerke binden Freigaben bequem als Laufwerksbuchstaben ein.",
+    "explanation": "Ein verbundenes Netzlaufwerk ordnet einer Netzwerkfreigabe einen Laufwerksbuchstaben zu. Die Daten verbleiben grundsätzlich auf dem Server; die Zuordnung allein erstellt keine vollständige lokale Kopie.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2631,10 +2631,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Aufgabe hat die Windows-Firewall?",
     "answers": [
-      "Netzwerkverkehr anhand von Regeln zu erlauben oder zu blockieren",
-      "Arbeitsspeicher auf Fehler zu prüfen",
-      "Festplatten automatisch zu defragmentieren",
-      "Benutzerdateien dauerhaft zu archivieren"
+      "Ein- und ausgehenden Netzwerkverkehr anhand von Regeln zulassen oder blockieren.",
+      "Übertragene Dateien anhand von Schadsoftwaresignaturen untersuchen.",
+      "Die Identität eines Benutzers bei der Windows-Anmeldung überprüfen.",
+      "Den Inhalt gespeicherter Dateien gegen Offlinezugriffe verschlüsseln."
     ],
     "correctAnswer": 0,
     "explanation": "Eine Firewall kontrolliert ein- und ausgehenden Netzwerkverkehr.",
@@ -2647,10 +2647,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum unterscheiden sich Firewallprofile wie Privat und Öffentlich?",
     "answers": [
-      "Je nach Netzwerkumgebung können unterschiedliche Regeln gelten",
-      "Jedes Profil verwendet ein anderes Dateisystem",
-      "Jedes Profil benötigt eine eigene CPU",
-      "Die Profile bestimmen ausschließlich das Desktopdesign"
+      "Sie ermöglichen unterschiedliche Firewallregeln je nach eingestufter Netzwerkumgebung.",
+      "Sie legen für jedes Netzwerk automatisch einen anderen DNS-Namensraum an.",
+      "Sie ersetzen die Zugriffsberechtigungen von Benutzern auf freigegebene Dateien.",
+      "Sie legen die Funkverschlüsselung und das WLAN-Kennwort für das jeweilige Netzwerk fest."
     ],
     "correctAnswer": 0,
     "explanation": "Öffentliche Netze erfordern typischerweise restriktivere Regeln als vertrauenswürdige private Netze.",
@@ -2663,10 +2663,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Aufgabe erfüllt Microsoft Defender Antivirus?",
     "answers": [
-      "Schadsoftware erkennen und blockieren",
-      "IP-Adressen automatisch vergeben",
-      "Partitionen erstellen und formatieren",
-      "Druckertreiber installieren"
+      "Dateien und Aktivitäten auf Schadsoftware untersuchen und Bedrohungen abwehren.",
+      "Laufwerke gegen das Auslesen ohne passenden Entsperrschlüssel verschlüsseln.",
+      "Netzwerkpakete anhand von Port- und Adressregeln filtern.",
+      "Die Installation von Windows mit einem Aktivierungsnachweis verknüpfen."
     ],
     "correctAnswer": 0,
     "explanation": "Defender Antivirus schützt vor verschiedenen Arten von Schadsoftware.",
@@ -2679,10 +2679,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum sollten Virensignaturen beziehungsweise Schutzinformationen aktuell sein?",
     "answers": [
-      "Neue bekannte Bedrohungen können besser erkannt werden",
-      "Der Arbeitsspeicher wird dadurch schneller",
-      "Die Netzwerkkarte erhält eine neue MAC-Adresse",
-      "Die SSD wird dadurch größer"
+      "Neue Erkennungsinformationen verbessern die Erkennung inzwischen bekannter Bedrohungen.",
+      "Neue Erkennungsinformationen beheben automatisch die Sicherheitslücken jeder installierten Anwendung.",
+      "Neue Erkennungsinformationen ersetzen die Überprüfung verdächtiger Dateien während ihrer Nutzung.",
+      "Neue Erkennungsinformationen stellen beschädigte Benutzerdateien aus einem Backup wieder her."
     ],
     "correctAnswer": 0,
     "explanation": "Aktuelle Erkennungsdaten verbessern den Schutz gegen neu bekannte Schadsoftware.",
@@ -2692,13 +2692,13 @@ export default [
     "id": "betriebssysteme-169",
     "category": "Betriebssysteme",
     "topic": "Windows Sicherheit",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Warum ist ein deaktivierter Echtzeitschutz auf einem Arbeitsplatz riskant?",
     "answers": [
-      "Schädliche Dateien können weniger unmittelbar erkannt werden",
-      "Windows verliert dadurch automatisch seine Lizenz",
-      "Die CPU arbeitet danach nur noch mit einem Kern",
-      "Alle Netzwerkfreigaben werden automatisch gelöscht"
+      "Dateien und Aktivitäten werden während der Nutzung nicht mehr durch diesen Schutz laufend geprüft.",
+      "Die gespeicherten Virensignaturen werden beim Ausschalten des Schutzes automatisch gelöscht.",
+      "Die Firewall lässt beim Ausschalten des Schutzes jede eingehende Netzwerkverbindung zu.",
+      "Die Verschlüsselung der Systempartition wird beim Ausschalten des Schutzes aufgehoben."
     ],
     "correctAnswer": 0,
     "explanation": "Echtzeitschutz prüft Dateien und Aktivitäten während der Nutzung.",
@@ -2711,10 +2711,10 @@ export default [
     "difficulty": "medium",
     "question": "Wozu dient BitLocker?",
     "answers": [
-      "Laufwerke können verschlüsselt werden",
-      "CPU-Kerne können virtualisiert werden",
-      "Netzwerkpakete können priorisiert werden",
-      "Druckaufträge können komprimiert werden"
+      "Daten auf Laufwerken durch Verschlüsselung gegen unbefugtes Offlineauslesen schützen.",
+      "Netzwerkverbindungen anhand von Adressen und Ports zulassen oder blockieren.",
+      "Dateien bei ihrer Verwendung anhand von Schadsoftwaremerkmalen prüfen.",
+      "Zugriffsrechte einzelner Benutzer auf Dateien über ACL-Einträge festlegen."
     ],
     "correctAnswer": 0,
     "explanation": "BitLocker schützt Daten auf Laufwerken durch Verschlüsselung.",
@@ -2727,13 +2727,13 @@ export default [
     "difficulty": "medium",
     "question": "Warum ist ein BitLocker-Wiederherstellungsschlüssel wichtig?",
     "answers": [
-      "Er kann bei bestimmten Sicherheits- oder Hardwareänderungen den Zugriff wieder ermöglichen",
-      "Er ersetzt das normale Windows-Kennwort dauerhaft bei jeder Benutzeranmeldung",
-      "Er vergrößert den verfügbaren Speicherplatz eines verschlüsselten Laufwerks automatisch",
-      "Er startet Windows bei jedem Fehler automatisch im abgesicherten Modus"
+      "Er ermöglicht das Entsperren eines verschlüsselten Laufwerks, wenn der normale Entsperrweg nicht verfügbar ist.",
+      "Er setzt das Kennwort jedes lokalen Windows-Benutzerkontos ohne weitere Prüfung zurück.",
+      "Er stellt gelöschte Dateien aus dem verschlüsselten Laufwerk als frühere Versionen wieder her.",
+      "Er ersetzt die Lizenzaktivierung nach dem Austausch des Mainboards."
     ],
     "correctAnswer": 0,
-    "explanation": "Bei Sicherheitsprüfungen oder Änderungen kann Windows den Recovery Key verlangen.",
+    "explanation": "Der BitLocker-Wiederherstellungsschlüssel ermöglicht den Zugriff auf das verschlüsselte Laufwerk in einem Wiederherstellungsfall, etwa nach relevanten Änderungen der Startumgebung. Er ist kein Ersatz für ein Benutzerkennwort und kein Backup verlorener Dateien.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2741,15 +2741,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "BitLocker",
     "difficulty": "medium",
-    "question": "Welches Hardwaremodul kann BitLocker unterstützen?",
+    "question": "Welche Komponente kann bei BitLocker Schlüsselmaterial an Messwerte der Startumgebung binden?",
     "answers": [
-      "TPM",
-      "GPU",
-      "Soundkarte",
-      "USB-Hub"
+      "Trusted Platform Module (TPM)",
+      "Windows-Anmeldeinformationsverwaltung",
+      "NTFS-Zugriffssteuerungsliste",
+      "Windows-Firewallprofil"
     ],
     "correctAnswer": 0,
-    "explanation": "Ein TPM kann Schlüsselmaterial sicher an die Plattformkonfiguration binden.",
+    "explanation": "Ein TPM kann die Freigabe von Schlüsselmaterial an bestimmte Plattformmesswerte binden. Dadurch kann BitLocker auf unerwartete Änderungen der Startumgebung reagieren.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2757,15 +2757,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "BitLocker",
     "difficulty": "hard",
-    "question": "Warum kann eine größere Firmware- oder Hardwareänderung eine BitLocker-Abfrage auslösen?",
+    "question": "Warum kann eine Änderung der gemessenen Startumgebung bei BitLocker mit TPM-Schutz eine Wiederherstellungsabfrage auslösen?",
     "answers": [
-      "Die gemessene Systemkonfiguration kann von der erwarteten Konfiguration abweichen",
-      "Die SSD verliert dadurch automatisch ihr Dateisystem",
-      "Der Benutzername wird dadurch verändert",
-      "Windows erkennt danach grundsätzlich keine USB-Geräte mehr"
+      "Die aktuellen Startmesswerte erfüllen die Bedingungen für die normale Freigabe des Schlüsselmaterials nicht.",
+      "BitLocker vergleicht dabei das Windows-Anmeldekennwort mit einer im TPM gespeicherten Kennwortkopie.",
+      "BitLocker wertet dabei die NTFS-Berechtigungen des angemeldeten Benutzers als Freigabe für den Start aus.",
+      "BitLocker prüft dabei den Windows-Aktivierungsstatus als Voraussetzung für die Laufwerksentschlüsselung."
     ],
     "correctAnswer": 0,
-    "explanation": "BitLocker kann Plattformmessungen verwenden, um unerwartete Startänderungen zu erkennen.",
+    "explanation": "Bei TPM-gestütztem BitLocker können Messwerte der Startumgebung an der Schlüsselfreigabe beteiligt sein. Relevante Änderungen können die normale Freigabe verhindern und die Eingabe eines Wiederherstellungsschlüssels erforderlich machen; nicht jede Hardwareänderung hat diesen Effekt.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2775,10 +2775,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum ist ein Backup wichtig?",
     "answers": [
-      "Daten können nach Verlust oder Beschädigung wiederhergestellt werden",
-      "Die Rechenleistung des Systems kann ohne Hardwareänderung deutlich erhöht werden",
-      "Benutzeranmeldungen und Zugriffsrechte werden durch das Backup vollständig ersetzt",
-      "Hardwaredefekte können durch eine vorhandene Sicherung vollständig verhindert werden"
+      "Es ermöglicht die Wiederherstellung gesicherter Daten nach Verlust oder Beschädigung.",
+      "Es verhindert die Ausführung von Schadsoftware durch Prüfung aller Dateiänderungen.",
+      "Es verschlüsselt vorhandene Dateien gegen das Auslesen durch fremde Benutzer.",
+      "Es verhindert das Löschen von Dateien durch Einschränkung der Benutzerrechte."
     ],
     "correctAnswer": 0,
     "explanation": "Backups reduzieren die Folgen von Datenverlust.",
@@ -2789,15 +2789,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Backup und Wiederherstellung",
     "difficulty": "medium",
-    "question": "Warum sollte ein Backup nicht ausschließlich auf demselben Datenträger liegen?",
+    "question": "Originaldaten und ihre einzige Sicherung liegen auf zwei Partitionen derselben SSD. Welches Ereignis kann beide Kopien gleichzeitig unzugänglich machen?",
     "answers": [
-      "Ein Defekt des Datenträgers könnte Original und Sicherung gleichzeitig betreffen",
-      "Das Betriebssystem könnte sonst grundsätzlich nicht mehr vom Systemlaufwerk starten",
-      "Windows erlaubt auf einem Datenträger grundsätzlich keine zweite Kopie derselben Datei",
-      "Der angemeldete Benutzer könnte dadurch automatisch zu viele Dateiberechtigungen erhalten"
+      "Ein vollständiger Ausfall des SSD-Controllers.",
+      "Das versehentliche Löschen einer einzelnen Originaldatei ohne Synchronisation.",
+      "Das Ändern des Namens eines Ordners mit Originaldaten.",
+      "Das Schließen des Programms, mit dem die Originaldatei bearbeitet wurde."
     ],
     "correctAnswer": 0,
-    "explanation": "Getrennte Speicherorte reduzieren gemeinsame Ausfallrisiken.",
+    "explanation": "Partitionen teilen sich die physische Hardware ihres Datenträgers. Fällt der SSD-Controller aus, können Original und Sicherung gemeinsam betroffen sein; getrennte Datenträger reduzieren dieses gemeinsame Ausfallrisiko.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2807,13 +2807,13 @@ export default [
     "difficulty": "medium",
     "question": "Was ist ein Wiederherstellungspunkt in Windows?",
     "answers": [
-      "Ein gespeicherter Systemzustand für bestimmte Konfigurationsänderungen",
-      "Eine vollständige Kopie aller persönlichen Dateien",
-      "Ein Ersatz für jedes externe Backup",
-      "Eine dauerhafte Kopie des gesamten Arbeitsspeichers"
+      "Ein gespeicherter Zustand ausgewählter Systemdateien und Systemeinstellungen.",
+      "Eine vollständige Sicherung aller persönlichen Dokumente des Benutzers.",
+      "Ein Abbild des Arbeitsspeichers zum Fortsetzen der laufenden Sitzung.",
+      "Eine Kopie des Windows-Installationsmediums auf einem externen Datenträger."
     ],
     "correctAnswer": 0,
-    "explanation": "Systemwiederherstellung kann bestimmte Systemdateien und Einstellungen auf einen früheren Zustand setzen.",
+    "explanation": "Ein Wiederherstellungspunkt ermöglicht es, bestimmte Systemdateien, installierte Komponenten und Einstellungen auf einen früheren Zustand zurückzusetzen. Er ist keine vollständige Sicherung persönlicher Dateien.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2821,31 +2821,31 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Backup und Wiederherstellung",
     "difficulty": "medium",
-    "question": "Was sollte nach Erstellung einer Datensicherung regelmäßig geprüft werden?",
+    "question": "Welche regelmäßige Prüfung belegt die praktische Nutzbarkeit einer Datensicherung am unmittelbarsten?",
     "answers": [
-      "Ob die Sicherung tatsächlich wiederherstellbar ist",
-      "Ob die Datei möglichst groß geworden ist",
-      "Ob der Monitor ausgeschaltet bleibt",
-      "Ob keine Protokolle erzeugt wurden"
+      "Benötigte Daten testweise wiederherstellen und ihre Vollständigkeit sowie Lesbarkeit prüfen.",
+      "Die Erfolgsmeldung des Sicherungsprogramms ohne Öffnen wiederhergestellter Daten kontrollieren.",
+      "Die Existenz und Größe der Sicherungsdateien im Zielverzeichnis kontrollieren.",
+      "Die planmäßige Ausführung des Sicherungsauftrags anhand seiner Startzeit kontrollieren."
     ],
     "correctAnswer": 0,
-    "explanation": "Ein Backup ist nur wertvoll, wenn die Wiederherstellung funktioniert.",
+    "explanation": "Regelmäßige Wiederherstellungstests prüfen, ob Daten lesbar, vollständig und mit den verfügbaren Werkzeugen wiederherstellbar sind. Ein erfolgreich gemeldeter Sicherungslauf allein beweist noch keine erfolgreiche Wiederherstellung.",
     "source": "betriebssysteme.csv"
   },
   {
     "id": "betriebssysteme-178",
     "category": "Betriebssysteme",
     "topic": "Backup und Wiederherstellung",
-    "difficulty": "hard",
-    "question": "Warum schützt eine reine Dateisynchronisation nicht zwingend wie ein Backup?",
+    "difficulty": "medium",
+    "question": "Zwei Ordner werden ohne Versionsverlauf synchronisiert, einschließlich Löschungen. Eine wichtige Datei wird versehentlich im Quellordner gelöscht. Was ist nach der nächsten erfolgreichen Synchronisation zu erwarten?",
     "answers": [
-      "Gelöschte oder beschädigte Daten können synchron auf das Ziel übernommen werden",
-      "Synchronisation speichert grundsätzlich keine Dateien",
-      "Synchronisation funktioniert ausschließlich mit DVDs",
-      "Synchronisation deaktiviert automatisch Dateiberechtigungen"
+      "Die Datei kann auch im Ziel fehlen; für den früheren Inhalt ist eine andere Sicherung nötig.",
+      "Die Datei bleibt als ältere Version im Ziel erhalten, weil Synchronisation Löschungen als neue Versionen speichert.",
+      "Die Datei wird aus dem Ziel wieder in die Quelle kopiert, weil die ältere Kopie grundsätzlich Vorrang hat.",
+      "Die Synchronisation bricht bei jeder Löschung ab, bis eine unabhängige Datensicherung bestätigt wurde."
     ],
     "correctAnswer": 0,
-    "explanation": "Synchronisation kann Änderungen inklusive Fehlern oder Löschungen spiegeln.",
+    "explanation": "Eine Synchronisation kann den aktuellen Zustand einschließlich Löschungen übernehmen. Ohne Versionsverlauf oder eine unabhängige Sicherung kann die vorherige Datei deshalb an beiden Orten fehlen.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2853,15 +2853,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Wiederherstellung",
     "difficulty": "medium",
-    "question": "Wozu dient der abgesicherte Modus?",
+    "question": "Wie unterstützt der abgesicherte Modus die Fehlersuche bei Windows?",
     "answers": [
-      "Windows startet mit einer reduzierten Auswahl an Treibern und Diensten",
-      "Windows startet mit maximaler Grafikleistung",
-      "Alle Benutzer erhalten Administratorrechte",
-      "Alle Laufwerke werden automatisch formatiert"
+      "Er startet mit einem begrenzten Satz von Treibern und Diensten und hilft so, Störquellen einzugrenzen.",
+      "Er ersetzt die installierten Treiber automatisch durch ihre neuesten Versionen aus dem Internet.",
+      "Er setzt die Berechtigungen sämtlicher Benutzerdateien auf ein gemeinsames Administratorkonto.",
+      "Er stellt alle Programme auf die Version zum Zeitpunkt der Windows-Installation zurück."
     ],
     "correctAnswer": 0,
-    "explanation": "Der abgesicherte Modus erleichtert Diagnose bei Treiber- oder Startproblemen.",
+    "explanation": "Der abgesicherte Modus lädt einen reduzierten Satz von Treibern und Diensten. Tritt ein Fehler dort nicht auf, kann dies helfen, zusätzliche Komponenten als mögliche Ursache einzugrenzen; eine Reparatur erfolgt dadurch nicht automatisch.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2869,15 +2869,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Wiederherstellung",
     "difficulty": "medium",
-    "question": "Wann ist der abgesicherte Modus besonders nützlich?",
+    "question": "Windows startet im abgesicherten Modus, stürzt beim normalen Start aber nach dem Laden zusätzlicher Komponenten ab. Was ist ein sinnvoller nächster Diagnoseschritt?",
     "answers": [
-      "Wenn ein Treiber oder Autostartprogramm den normalen Start stört",
-      "Wenn die SSD mehr Speicherplatz benötigt",
-      "Wenn ein Drucker neues Papier benötigt",
-      "Wenn ein Benutzer ein neues Kennwort wünscht"
+      "Zuletzt geänderte Treiber und Autostartkomponenten gezielt prüfen.",
+      "Die erfolgreiche Anmeldung als Nachweis ansehen, dass sämtliche Hardware fehlerfrei ist.",
+      "Alle Benutzerkonten neu anlegen, ohne Protokolle oder Änderungen zu prüfen.",
+      "Die Systempartition formatieren, bevor einzelne Startkomponenten untersucht werden."
     ],
     "correctAnswer": 0,
-    "explanation": "Mit reduziertem Startumfang können störende Komponenten leichter identifiziert werden.",
+    "explanation": "Der Unterschied zwischen normalem und reduziertem Start liefert einen Hinweis auf zusätzlich geladene Komponenten. Änderungen und Ereignisprotokolle helfen, Kandidaten gezielt zu prüfen; ein erfolgreicher abgesicherter Start beweist keine vollständig fehlerfreie Hardware.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2887,10 +2887,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist die Windows-Wiederherstellungsumgebung WinRE?",
     "answers": [
-      "Eine Umgebung mit Werkzeugen zur Reparatur und Wiederherstellung",
-      "Eine alternative Desktopumgebung für Spiele und Multimediaanwendungen",
-      "Ein Dateisystem speziell für externe Sicherungs- und Installationslaufwerke",
-      "Ein eigenständiges Programm ausschließlich zur Bearbeitung von Videos"
+      "Eine separate Umgebung mit Werkzeugen zur Diagnose und Reparatur von Windows.",
+      "Eine normale Windows-Sitzung mit dauerhaft erhöhten Rechten für alle Anwendungen.",
+      "Ein Abbild des RAMs, aus dem eine zuvor angehaltene Sitzung fortgesetzt wird.",
+      "Ein vollständiger Ersatz für die Sicherung persönlicher Benutzerdateien."
     ],
     "correctAnswer": 0,
     "explanation": "WinRE bietet Werkzeuge für Startreparatur, Wiederherstellung und weitere Fehlerbehebung.",
@@ -2901,15 +2901,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Wiederherstellung",
     "difficulty": "medium",
-    "question": "Welche Funktion kann bei Startproblemen helfen?",
+    "question": "Welches WinRE-Werkzeug ist dafür vorgesehen, häufige Fehler der Windows-Startkonfiguration automatisch zu diagnostizieren und zu reparieren?",
     "answers": [
-      "Starthilfe beziehungsweise Startup Repair",
-      "Datenträgerbereinigung für temporäre Systemdateien",
-      "Bildschirmlupe für die barrierefreie Darstellung",
-      "Zwischenablageverlauf für kopierte Texte und Dateien"
+      "Starthilfe (Startup Repair)",
+      "Eingabeaufforderung",
+      "Systemabbild-Wiederherstellung",
+      "Starteinstellungen"
     ],
     "correctAnswer": 0,
-    "explanation": "Die Starthilfe analysiert bestimmte Probleme, die den Windows-Start verhindern.",
+    "explanation": "Die Starthilfe untersucht häufige Ursachen fehlgeschlagener Windows-Starts und versucht passende Reparaturen. Sie behebt nicht jede mögliche Ursache und ist von manueller Diagnose oder einer Wiederherstellung aus einem Systemabbild zu unterscheiden.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2917,15 +2917,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Kommandozeile",
     "difficulty": "medium",
-    "question": "Welcher Befehl zeigt den aktuellen Benutzer in Windows an?",
+    "question": "Welcher Windows-Befehl zeigt die Benutzeridentität des Sicherheitskontexts, in dem die aktuelle Eingabeaufforderung läuft?",
     "answers": [
       "whoami",
-      "ipconfig",
-      "dir",
-      "format"
+      "hostname",
+      "net user",
+      "query user"
     ],
     "correctAnswer": 0,
-    "explanation": "whoami zeigt die Identität des aktuell verwendeten Sicherheitskontexts.",
+    "explanation": "whoami zeigt die Identität des aktuellen Sicherheitskontexts. Wird die Eingabeaufforderung unter einem anderen Konto ausgeführt, kann diese Identität vom Benutzer der interaktiven Desktopsitzung abweichen.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2949,15 +2949,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Kommandozeile",
     "difficulty": "medium",
-    "question": "Welcher Befehl wechselt in ein anderes Verzeichnis?",
+    "question": "Welcher Befehl wechselt in der Windows-Eingabeaufforderung CMD von C: in das vorhandene Verzeichnis D:\\Daten und aktiviert dabei zugleich Laufwerk D:?",
     "answers": [
-      "cd",
-      "dir",
-      "type",
-      "hostname"
+      "cd /d D:\\Daten",
+      "cd D:\\Daten",
+      "dir D:\\Daten",
+      "type D:\\Daten"
     ],
     "correctAnswer": 0,
-    "explanation": "cd steht für change directory.",
+    "explanation": "In CMD wechselt cd /d sowohl das Laufwerk als auch das Verzeichnis. cd mit einem Pfad auf einem anderen Laufwerk ändert ohne /d nicht zugleich das aktive Laufwerk.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -2981,12 +2981,12 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Kommandozeile",
     "difficulty": "medium",
-    "question": "Welcher Befehl kann Prozesse in der CMD anzeigen?",
+    "question": "Welcher Befehl listet in der Windows-Eingabeaufforderung laufende Prozesse mit ihren Prozessnamen und PIDs auf?",
     "answers": [
       "tasklist",
-      "netstat",
-      "mkdir",
-      "copy"
+      "netstat -ano",
+      "sc query",
+      "query user"
     ],
     "correctAnswer": 0,
     "explanation": "tasklist zeigt laufende Prozesse und zugehörige Informationen.",
@@ -2997,15 +2997,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Kommandozeile",
     "difficulty": "medium",
-    "question": "Welcher Befehl kann einen Prozess gezielt beenden?",
+    "question": "Welcher Windows-CMD-Befehl ist dafür vorgesehen, einen Prozess anhand seiner PID zu beenden?",
     "answers": [
       "taskkill",
-      "tracert",
-      "hostname",
-      "chkdsk"
+      "tasklist",
+      "sc query",
+      "netstat"
     ],
     "correctAnswer": 0,
-    "explanation": "taskkill kann Prozesse anhand verschiedener Kriterien beenden.",
+    "explanation": "taskkill kann einen Prozess beispielsweise mit /PID gezielt ansprechen. Die PID sollte vorher geprüft werden. Beim erzwungenen Beenden mit /F können ungespeicherte Änderungen verloren gehen.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -3015,10 +3015,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist PowerShell?",
     "answers": [
-      "Eine Shell und Skriptumgebung zur Administration",
-      "Ein Dateisystem ausschließlich für Windows",
-      "Eine Hardwarekomponente auf dem Mainboard",
-      "Ein Antivirenprogramm ohne Skriptfunktion"
+      "Eine Shell mit Skriptsprache und Automatisierungsfunktionen für Verwaltungsaufgaben.",
+      "Ein Texteditor, der Skriptdateien bearbeiten, aber keine Befehle ausführen kann.",
+      "Ein Paketarchiv, das installierbare Windows-Komponenten bereitstellt.",
+      "Ein Aufgabenplaner, der Programme anhand von Zeitplänen startet."
     ],
     "correctAnswer": 0,
     "explanation": "PowerShell kombiniert Kommandozeile, Objekte und Skripting für Administration und Automatisierung.",
@@ -3029,15 +3029,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "PowerShell",
     "difficulty": "medium",
-    "question": "Welcher Vorteil von PowerShell gegenüber rein textbasierter Ausgabe ist typisch?",
+    "question": "Welcher Vorteil ergibt sich aus den strukturierten Objekten vieler PowerShell-Cmdlets?",
     "answers": [
-      "Viele Befehle geben strukturierte Objekte zurück",
-      "PowerShell benötigt grundsätzlich keine Berechtigungen",
-      "PowerShell kann ausschließlich Netzwerkbefehle ausführen",
-      "PowerShell funktioniert nur ohne grafische Oberfläche"
+      "Nachfolgende Cmdlets können Eigenschaften gezielt filtern oder sortieren.",
+      "Nachfolgende Cmdlets müssen die sichtbare Spaltenbreite zur Erkennung von Eigenschaften auswerten.",
+      "Nachfolgende Cmdlets erhalten unabhängig vom Befehl ausschließlich unstrukturierte Zeichenfolgen.",
+      "Nachfolgende Cmdlets können Daten erst nach einem Export in eine Textdatei übernehmen."
     ],
     "correctAnswer": 0,
-    "explanation": "PowerShell-Pipelines verarbeiten häufig Objekte mit Eigenschaften statt nur Text.",
+    "explanation": "Viele Cmdlets geben Objekte mit benannten Eigenschaften zurück. Die Pipeline kann diese direkt weiterverarbeiten, etwa mit Where-Object oder Sort-Object, ohne die formatierte Bildschirmausgabe zerlegen zu müssen.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -3045,12 +3045,12 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Systeminformationen",
     "difficulty": "medium",
-    "question": "Welches Windows-Werkzeug zeigt umfangreiche Systeminformationen?",
+    "question": "Welches Windows-Werkzeug bietet eine zusammenhängende Übersicht über Betriebssystem, Hardware-Ressourcen, Komponenten und Softwareumgebung?",
     "answers": [
       "msinfo32",
-      "calc",
-      "mspaint",
-      "notepad"
+      "winver",
+      "devmgmt.msc",
+      "diskmgmt.msc"
     ],
     "correctAnswer": 0,
     "explanation": "msinfo32 zeigt Hardware-, System- und Ressourcendetails.",
@@ -3079,10 +3079,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum ist die genaue Windows-Buildnummer bei Supportfällen hilfreich?",
     "answers": [
-      "Fehler und Updates können versionsabhängig sein",
-      "Sie bestimmt die Größe des Arbeitsspeichers",
-      "Sie legt die MAC-Adresse des Rechners fest",
-      "Sie ersetzt die Seriennummer der Hardware"
+      "Sie hilft, bekannte Fehler und Korrekturen einer konkreten Betriebssystemversion zuzuordnen.",
+      "Sie weist nach, dass alle installierten Anwendungen fehlerfrei mit Windows zusammenarbeiten.",
+      "Sie legt fest, welche Zugriffsrechte der angemeldete Benutzer auf Systemdateien besitzt.",
+      "Sie identifiziert den Hersteller und die Seriennummer des verbauten Mainboards."
     ],
     "correctAnswer": 0,
     "explanation": "Bestimmte Fehler, Funktionen und Patches hängen von der genauen Version ab.",
@@ -3095,10 +3095,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist eine Neuinstallation von Windows?",
     "answers": [
-      "Das Betriebssystem wird neu auf einem Zielsystem eingerichtet",
-      "Nur ein Benutzerkonto wird neu angelegt",
-      "Nur der Browser wird aktualisiert",
-      "Nur die Netzwerkkarte wird zurückgesetzt"
+      "Windows wird auf einem Zielsystem als neue Betriebssysteminstallation eingerichtet.",
+      "Eine bestehende Windows-Installation wird auf eine neuere Version aktualisiert.",
+      "Ein vorhandener Wiederherstellungspunkt setzt ausgewählte Systemeinstellungen zurück.",
+      "Eine Sicherung der Benutzerdateien wird in vorhandene Benutzerprofile zurückkopiert."
     ],
     "correctAnswer": 0,
     "explanation": "Bei einer Neuinstallation wird Windows auf einer Partition neu eingerichtet.",
@@ -3111,10 +3111,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum sollte vor einer Neuinstallation ein Backup geprüft werden?",
     "answers": [
-      "Persönliche Daten könnten beim Installationsprozess verloren gehen",
-      "Windows könnte ohne vorhandene Sicherung grundsätzlich nicht mehr gestartet werden",
-      "Die Firmwareeinstellungen könnten ohne Backup nicht mehr geöffnet oder geändert werden",
-      "Der Prozessor könnte während der Neuinstallation dauerhaft zu wenig Spannung erhalten"
+      "Der Vorgang kann vorhandene Daten überschreiben; die benötigten Sicherungen müssen wiederherstellbar sein.",
+      "Der Installer prüft anhand des Backups, ob alle installierten Anwendungen weiterhin kompatibel sind.",
+      "Ein vorhandenes Backup verhindert Änderungen an den Partitionen während der Installation.",
+      "Ein geprüftes Backup stellt sämtliche Benutzerdateien nach der Installation ohne Rücksicherung bereit."
     ],
     "correctAnswer": 0,
     "explanation": "Neuinstallation oder Partitionierung kann bestehende Daten überschreiben.",
@@ -3125,15 +3125,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Windows Installation",
     "difficulty": "medium",
-    "question": "Von welchem Medium kann Windows typischerweise installiert werden?",
+    "question": "Welches USB-Medium eignet sich typischerweise zum Start einer Windows-Neuinstallation auf einem kompatiblen PC?",
     "answers": [
-      "Von einem bootfähigen USB-Stick",
-      "Nur von einer internen HDD",
-      "Nur über einen Druckeranschluss",
-      "Nur aus dem Arbeitsspeicher"
+      "Ein für den Start vorbereiteter USB-Stick mit den passenden Windows-Installationsdateien.",
+      "Ein USB-Stick, auf dem lediglich eine Verknüpfung zur Windows-Downloadseite liegt.",
+      "Ein USB-Stick, der die persönlichen Dateien des bisherigen Benutzerprofils enthält.",
+      "Ein USB-Stick, auf den der vorhandene Windows-Ordner ohne weitere Vorbereitung kopiert wurde."
     ],
     "correctAnswer": 0,
-    "explanation": "Windows-Installationsmedien werden häufig als bootfähige USB-Sticks verwendet.",
+    "explanation": "Ein Installationsmedium muss passende Startstrukturen und Installationsdateien enthalten. Eine Verknüpfung, ein Benutzerdatei-Backup oder eine gewöhnliche Kopie des Windows-Ordners macht einen USB-Stick nicht zu einem Installationsmedium.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -3141,15 +3141,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Windows Installation",
     "difficulty": "medium",
-    "question": "Warum muss die Bootreihenfolge für eine Installation eventuell geändert werden?",
+    "question": "Ein Rechner soll einmalig von einem Installations-USB-Stick starten und danach wieder regulär von der internen SSD. Welche Firmwarefunktion ist dafür besonders geeignet?",
     "answers": [
-      "Der Rechner soll zunächst vom Installationsmedium starten",
-      "Die SSD soll dadurch mehr Speicher erhalten",
-      "Die CPU soll dadurch höher takten",
-      "Der Benutzer soll dadurch Administrator werden"
+      "Das einmalige Bootmenü zur Auswahl des USB-Sticks.",
+      "Eine dauerhafte Deaktivierung der internen SSD in der Firmware.",
+      "Das Löschen des Boot-Eintrags des installierten Betriebssystems.",
+      "Das Zurücksetzen sämtlicher Firmwareeinstellungen auf Werkseinstellungen."
     ],
     "correctAnswer": 0,
-    "explanation": "Das Installationsmedium muss vor dem vorhandenen Betriebssystem ausgewählt werden können.",
+    "explanation": "Ein einmaliges Bootmenü erlaubt die Auswahl eines Startmediums für diesen Startvorgang. Damit muss die dauerhafte Bootreihenfolge nicht geändert werden; die konkrete Taste hängt vom Gerät ab.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -3157,15 +3157,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Windows Installation",
     "difficulty": "medium",
-    "question": "Was ist nach einer frischen Windows-Installation typischerweise zu prüfen?",
+    "question": "Welche Prüfung ist vor der betrieblichen Übergabe eines frisch installierten Windows-Rechners besonders geeignet, seine technische Einsatzbereitschaft zu beurteilen?",
     "answers": [
-      "Treiber, Updates, Aktivierung und benötigte Anwendungen",
-      "Desktopdesign, Hintergrundbild, Farbschema und Mauszeiger",
-      "Systemtöne, Lautstärkeeinstellung, Screensaver und Uhrformat",
-      "Taskleistenposition, Symbolgröße, Fensterfarbe und Wallpaper"
+      "Gerätefunktion, Patchstand, Aktivierungsstatus und benötigte Anwendungen prüfen.",
+      "Die erfolgreiche Anmeldung und das Vorhandensein der erwarteten Desktopverknüpfungen als Abnahme verwenden.",
+      "Die Liste der sichtbaren Laufwerke als Nachweis einer vollständigen Treiberinstallation verwenden.",
+      "Die aktuelle Windows-Versionsbezeichnung als Nachweis einer vollständigen Anwendungsausstattung verwenden."
     ],
     "correctAnswer": 0,
-    "explanation": "Ein einsatzbereites System benötigt passende Treiber, aktuelle Updates und die erforderliche Software.",
+    "explanation": "Eine abgeschlossene Installation belegt noch nicht die betriebliche Einsatzbereitschaft. Funktionsprüfung, passende Treiber, vorgesehene Updates, Aktivierungsstatus und benötigte Anwendungen gehören zur technischen Abnahme.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -3173,15 +3173,15 @@ export default [
     "category": "Betriebssysteme",
     "topic": "Lizenzierung",
     "difficulty": "medium",
-    "question": "Was ist die Windows-Aktivierung?",
+    "question": "Welche Aufgabe hat die technische Windows-Aktivierung?",
     "answers": [
-      "Eine Prüfung, ob die Windows-Lizenz ordnungsgemäß verwendet wird",
-      "Eine Verschlüsselung sämtlicher Benutzerdateien",
-      "Eine automatische Aktualisierung aller Treiber",
-      "Eine Formatierung des Systemlaufwerks"
+      "Prüfen, ob für die Windows-Installation eine passende technische Aktivierungsberechtigung vorliegt.",
+      "Die Installation automatisch als vollständigen Nachweis aller vertraglichen Nutzungsrechte zertifizieren.",
+      "Die Benutzeridentität für den Zugriff auf sämtliche Unternehmensanwendungen bestätigen.",
+      "Die installierten Treiber auf vollständige Kompatibilität mit der Hardware prüfen."
     ],
     "correctAnswer": 0,
-    "explanation": "Aktivierung verbindet die Installation mit einer gültigen Lizenzberechtigung.",
+    "explanation": "Windows kann anhand eines Product Keys oder einer digitalen Lizenz aktiviert werden. Die Aktivierung hilft, die Installation einer entsprechenden Berechtigung zuzuordnen; sie ersetzt nicht die betriebliche Dokumentation der erworbenen Nutzungsrechte.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -3191,13 +3191,13 @@ export default [
     "difficulty": "medium",
     "question": "Warum ist Lizenzmanagement in Unternehmen wichtig?",
     "answers": [
-      "Nutzungsrechte und Lizenzbedarf müssen nachvollziehbar bleiben",
-      "Lizenzen erhöhen automatisch die CPU-Leistung",
-      "Lizenzen ersetzen jede Benutzerverwaltung",
-      "Lizenzen machen Updates unnötig"
+      "Es gleicht eingesetzte Software mit vorhandenen Nutzungsrechten und dem künftigen Bedarf ab.",
+      "Es gleicht Benutzerkennwörter zwischen allen installierten Anwendungen automatisch ab.",
+      "Es ersetzt die Prüfung, welche Sicherheitsupdates auf den Geräten installiert sind.",
+      "Es weist jeder aktivierten Installation unabhängig vom Vertrag zusätzliche Nutzungsrechte zu."
     ],
     "correctAnswer": 0,
-    "explanation": "Unternehmen müssen eingesetzte Software und Nutzungsrechte kontrollieren.",
+    "explanation": "Lizenzmanagement dokumentiert eingesetzte Produkte, vorhandene Nutzungsrechte und relevante Zuordnungen. Das unterstützt nachvollziehbare Beschaffung und Nutzung; technische Aktivierung und vertragliche Berechtigung sind dabei zu unterscheiden.",
     "source": "betriebssysteme.csv"
   },
   {
@@ -3205,15 +3205,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Ein PC besitzt zwei identische RAM-Module. Wie sollten sie bei einem Mainboard mit vier RAM-Steckplätzen normalerweise eingesetzt werden, um Dual-Channel zu nutzen?",
+    "question": "Ein DDR4-PC soll mit zwei identischen RAM-Modulen im Dual-Channel-Modus betrieben werden. Welche Bestückungsregel ist maßgeblich?",
     "answers": [
-      "In die vom Mainboard-Handbuch vorgesehenen Dual-Channel-Steckplätze",
-      "Direkt nebeneinander, unabhängig vom Mainboard",
-      "Nur ein Modul darf eingesetzt werden",
-      "In beliebige Steckplätze, da Dual-Channel automatisch immer aktiv ist"
+      "Die Module nach Handbuch auf beide Speicherkanäle verteilen",
+      "Die Module innerhalb desselben Speicherkanals zusammenfassen",
+      "Die räumlich benachbarten Slots ohne Prüfung ihrer Kanalzuordnung wählen",
+      "Die Slots anhand ihrer kürzesten Entfernung zur CPU auswählen"
     ],
     "correctAnswer": 0,
-    "explanation": "Für Dual-Channel müssen die Module in den dafür vorgesehenen Speicherkanälen eingesetzt werden. Die genaue Belegung steht im Mainboard-Handbuch.",
+    "explanation": "Dual Channel erfordert die passende Belegung beider Speicherkanäle. Welche Steckplätze dafür vorgesehen sind, beschreibt das Mainboard-Handbuch; räumliche Nähe allein ist kein Kriterium.",
     "source": "hardware.csv"
   },
   {
@@ -3221,15 +3221,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Ein Mainboard unterstützt ausschließlich DDR5-Arbeitsspeicher. Welches RAM-Modul kann darin verwendet werden?",
+    "question": "Vorhandene DDR4-UDIMMs sollen in einem Desktop-Mainboard weiterverwendet werden, das ausschließlich DDR5 unterstützt. Welche Aussage ist richtig?",
     "answers": [
-      "DDR4, wenn die Taktfrequenz gleich ist",
-      "DDR5",
-      "DDR3 oder DDR4 mit Adapter",
-      "Jeder DIMM-Arbeitsspeicher"
+      "Ein niedrigerer eingestellter Speichertakt ermöglicht den Einbau",
+      "Die Module sind mit den DDR5-Steckplätzen nicht kompatibel",
+      "Ein aktueller DDR5-Treiber stellt die elektrische Kompatibilität her",
+      "Eine gleiche Kontaktzahl macht die Module austauschbar"
     ],
     "correctAnswer": 1,
-    "explanation": "DDR-Generationen sind elektrisch und mechanisch unterschiedlich. Ein DDR5-Mainboard benötigt kompatiblen DDR5-Arbeitsspeicher.",
+    "explanation": "DDR4 und DDR5 unterscheiden sich mechanisch und elektrisch. Weder niedrigere Taktraten noch ein Treiber machen DDR4-UDIMMs zu passenden DDR5-Modulen.",
     "source": "hardware.csv"
   },
   {
@@ -3271,10 +3271,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum wird ECC-Arbeitsspeicher besonders häufig in Servern eingesetzt?",
     "answers": [
-      "Er erhöht automatisch die CPU-Taktfrequenz",
-      "Er kann bestimmte Speicherfehler erkennen und korrigieren",
-      "Er verdoppelt die verfügbare Speicherkapazität",
-      "Er benötigt keine Speichercontroller"
+      "Er verschlüsselt die Daten zwischen CPU und RAM",
+      "Er erkennt und korrigiert bestimmte Speicherfehler",
+      "Er hält den RAM-Inhalt bei Stromausfall ohne Versorgung",
+      "Er verteilt Speicherzugriffe auf zusätzliche Kanäle"
     ],
     "correctAnswer": 1,
     "explanation": "ECC-Speicher kann bestimmte Bitfehler erkennen und korrigieren und erhöht dadurch die Zuverlässigkeit des Systems.",
@@ -3285,15 +3285,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Eine PCIe-4.0-Grafikkarte wird in einen kompatiblen PCIe-5.0-x16-Steckplatz eingebaut. Was ist grundsätzlich zu erwarten?",
+    "question": "Eine PCIe-4.0-x16-Grafikkarte wird in einem elektrisch mit x16 angebundenen PCIe-5.0-Slot betrieben. Welche höchste Link-Konfiguration ist bei störungsfreiem Betrieb zu erwarten?",
     "answers": [
-      "Die Grafikkarte kann wegen der unterschiedlichen PCIe-Version nicht verwendet werden",
-      "Die Grafikkarte arbeitet grundsätzlich mit ihrer unterstützten PCIe-Version",
-      "Die Grafikkarte wird automatisch zu einer PCIe-5.0-Grafikkarte",
-      "Der PCIe-Steckplatz wird dauerhaft beschädigt"
+      "PCIe 5.0 x16",
+      "PCIe 4.0 x16",
+      "PCIe 4.0 x8",
+      "PCIe 3.0 x16"
     ],
     "correctAnswer": 1,
-    "explanation": "PCIe ist grundsätzlich abwärtskompatibel. Eine PCIe-4.0-Karte kann daher in einem kompatiblen PCIe-5.0-Steckplatz betrieben werden.",
+    "explanation": "Karte und Steckplatz handeln eine gemeinsam unterstützte Generation und Lane-Anzahl aus. Hier begrenzt die Karte die Generation auf PCIe 4.0.",
     "source": "hardware.csv"
   },
   {
@@ -3301,15 +3301,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Ein PC schaltet sich unter hoher CPU-Last nach einiger Zeit ab. Die CPU-Temperatur steigt dabei stark an. Welche Maßnahme sollte zuerst geprüft werden?",
+    "question": "Ein PC schaltet unter CPU-Last ab; kurz zuvor erreicht die CPU ihre Temperaturgrenze. Welche Prüfung passt am unmittelbarsten zu diesem Befund?",
     "answers": [
-      "CPU-Kühler, Lüfter und Wärmeübertragung kontrollieren",
-      "Die SSD formatieren",
-      "Mehr Arbeitsspeicher einbauen",
-      "Die Bildschirmauflösung reduzieren"
+      "Kühlersitz, Lüfterfunktion und Wärmeübergang prüfen",
+      "RAM-Timings und Speichertakt auf Stabilität prüfen",
+      "Netzteilanschlüsse und Versorgungsspannungen prüfen",
+      "SSD-Zustand und Fehlerprotokoll des Laufwerks prüfen"
     ],
     "correctAnswer": 0,
-    "explanation": "Stark steigende CPU-Temperaturen unter Last deuten auf ein Problem mit Kühlung, Lüfter, Montage oder Wärmeübertragung hin.",
+    "explanation": "Bei nachgewiesener Überhitzung ist zuerst die Wärmeabfuhr zu prüfen. Andere Hardwarefehler können ebenfalls Abstürze verursachen, erklären den Temperaturbefund aber nicht unmittelbar.",
     "source": "hardware.csv"
   },
   {
@@ -3319,10 +3319,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum sollte ein Netzteil nicht ausschließlich nach der typischen Leistungsaufnahme eines PCs dimensioniert werden?",
     "answers": [
-      "Weil ein Netzteil immer exakt doppelt so viel Leistung wie die CPU benötigt",
-      "Weil Lastspitzen, weitere Komponenten und Leistungsreserve berücksichtigt werden sollten",
-      "Weil die Leistung des Netzteils keinen Einfluss auf das System hat",
-      "Weil Grafikkarten grundsätzlich ein eigenes Netzteil benötigen"
+      "Die typische Aufnahme entspricht bereits der nötigen Dauerleistung",
+      "Lastspitzen und geplante Erweiterungen benötigen zusätzlichen Spielraum",
+      "Die CPU-TDP deckt den Leistungsbedarf des gesamten PCs ab",
+      "Die Effizienzklasse gibt die verfügbare Leistungsreserve vor"
     ],
     "correctAnswer": 1,
     "explanation": "Bei der Dimensionierung müssen die gesamte Hardware, mögliche Lastspitzen und eine angemessene Leistungsreserve berücksichtigt werden.",
@@ -3333,15 +3333,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Ein Prozessor besitzt 8 Kerne und unterstützt 16 Threads. Welche Aussage ist korrekt?",
+    "question": "Eine CPU besitzt acht physische Kerne und stellt mit aktiviertem SMT insgesamt 16 logische Prozessoren bereit. Welche Aussage trifft zu?",
     "answers": [
-      "Der Prozessor besitzt 16 physische Kerne",
-      "Jeder Thread benötigt einen eigenen RAM-Riegel",
-      "Der Prozessor kann bis zu 16 Ausführungs-Threads gleichzeitig bereitstellen",
-      "Die Anzahl der Threads entspricht der Anzahl der PCIe-Steckplätze"
+      "Jeder logische Prozessor besitzt eigene vollständige Ausführungseinheiten.",
+      "Die beiden logischen Prozessoren eines Kerns müssen denselben Programmcode ausführen.",
+      "Je zwei logische Prozessoren teilen sich Ressourcen eines Kerns",
+      "Bei aktivem SMT verdoppelt sich die Taktfrequenz jedes physischen Kerns."
     ],
     "correctAnswer": 2,
-    "explanation": "Die 8 Kerne sind physische Recheneinheiten. Durch die unterstützte Multithreading-Technik können insgesamt 16 Threads bereitgestellt werden.",
+    "explanation": "Bei zwei SMT-Kontexten pro Kern erscheinen acht physische Kerne als 16 logische Prozessoren. Ressourcen eines Kerns werden geteilt; die Anwendungsleistung verdoppelt sich dadurch nicht automatisch.",
     "source": "hardware.csv"
   },
   {
@@ -3367,10 +3367,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Aufgabe hat der Cache eines Prozessors hauptsächlich?",
     "answers": [
-      "Häufig benötigte Daten besonders schnell für die CPU bereitzustellen",
-      "Dateien dauerhaft zu speichern",
-      "Die Netzspannung für den Prozessor umzuwandeln",
-      "Den Arbeitsspeicher bei Stromausfall zu sichern"
+      "Häufig benötigte Daten und Befehle mit geringer Zugriffszeit bereitstellen",
+      "Den virtuellen Adressraum auf dem Massenspeicher vergrößern",
+      "Programmbefehle vor der Ausführung in Maschinencode übersetzen",
+      "Speicherzugriffe durch zusätzliche externe RAM-Kanäle beschleunigen"
     ],
     "correctAnswer": 0,
     "explanation": "Der CPU-Cache ist ein sehr schneller Speicher für häufig benötigte Daten und Befehle und reduziert dadurch Zugriffe auf den langsameren Arbeitsspeicher.",
@@ -3397,12 +3397,12 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Aussage über den Formfaktor eines Mainboards ist korrekt?",
+    "question": "Welche Eigenschaften legt der Formfaktor eines Mainboards insbesondere fest?",
     "answers": [
-      "Er beschreibt unter anderem Abmessungen und Befestigungspunkte des Mainboards",
-      "Er bestimmt ausschließlich die Taktfrequenz der CPU",
-      "Er gibt die maximale Geschwindigkeit einer SSD an",
-      "Er legt die Bildschirmauflösung des Systems fest"
+      "Abmessungen und Befestigungspunkte der Hauptplatine",
+      "Unterstützte CPU-Sockel und Prozessorfamilien",
+      "Zulässige Speichergenerationen und RAM-Taktraten",
+      "Unterstützte PCIe-Generationen und Lane-Anzahlen"
     ],
     "correctAnswer": 0,
     "explanation": "Formfaktoren wie ATX oder Micro-ATX definieren unter anderem Größe, Befestigungspunkte und grundlegende mechanische Eigenschaften eines Mainboards.",
@@ -3431,10 +3431,10 @@ export default [
     "difficulty": "medium",
     "question": "Wozu dienen S.M.A.R.T.-Daten bei HDDs und SSDs?",
     "answers": [
-      "Zur Überwachung verschiedener Zustands- und Fehlerwerte des Laufwerks",
-      "Zur automatischen Verschlüsselung aller Dateien",
-      "Zur Erhöhung der Speicherkapazität",
-      "Zur Einstellung der CPU-Taktfrequenz"
+      "Zustands- und Fehlerindikatoren eines Laufwerks bereitstellen",
+      "Ungenutzte Flash-Blöcke zur Wiederverwendung freigeben",
+      "Dateisystemfehler in Verzeichniseinträgen reparieren",
+      "Eine zweite aktuelle Kopie aller Nutzdaten anlegen"
     ],
     "correctAnswer": 0,
     "explanation": "S.M.A.R.T. stellt Zustands- und Diagnosewerte eines Laufwerks bereit. Auffällige Werte können Hinweise auf mögliche Probleme liefern.",
@@ -3493,15 +3493,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Aussage beschreibt den Unterschied zwischen integrierter und dedizierter Grafik am besten?",
+    "question": "Welche Aussage beschreibt eine typische integrierte GPU im Vergleich zu einer dedizierten Desktop-Grafikkarte?",
     "answers": [
-      "Dedizierte Grafikkarten besitzen typischerweise eigene Grafikressourcen und häufig eigenen Videospeicher",
-      "Integrierte Grafik kann grundsätzlich keine Monitore ansteuern",
-      "Dedizierte Grafik befindet sich immer innerhalb der CPU",
-      "Integrierte Grafik besitzt grundsätzlich mehr Leistung als eine dedizierte Grafikkarte"
+      "Sie ist in den Prozessor integriert und nutzt häufig einen Teil des Systemspeichers.",
+      "Sie befindet sich auf einer separaten Erweiterungskarte und benötigt einen eigenen PCIe-Steckplatz.",
+      "Sie besitzt grundsätzlich einen vom Systemspeicher getrennten VRAM auf einer eigenen Grafikkarte.",
+      "Sie übernimmt nur die Bildausgabe; Grafikberechnungen führt bei ihr ausschließlich die CPU aus."
     ],
     "correctAnswer": 0,
-    "explanation": "Eine dedizierte Grafikkarte ist eine separate Grafikeinheit und verfügt typischerweise über eigenen Videospeicher. Integrierte Grafik ist dagegen in CPU oder Chipsatz integriert und nutzt häufig gemeinsamen Systemspeicher.",
+    "explanation": "Eine integrierte GPU ist bei heutigen Desktop-Systemen häufig Teil des Prozessors und nutzt Systemspeicher. Eine dedizierte Grafikkarte besitzt eine separate GPU und typischerweise eigenen VRAM; auch integrierte GPUs führen Grafikberechnungen aus.",
     "source": "hardware.csv"
   },
   {
@@ -3509,15 +3509,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Ein Gerät besitzt einen USB-C-Anschluss. Welche Aussage ist korrekt?",
+    "question": "Zwei Notebooks besitzen jeweils eine USB-C-Buchse. Welche Aussage lässt sich aus der identischen Buchsenform ableiten?",
     "answers": [
-      "Die Form des Anschlusses allein sagt nicht eindeutig aus, welche Datenrate und Funktionen unterstützt werden",
-      "USB-C unterstützt immer automatisch Thunderbolt",
-      "USB-C bietet grundsätzlich exakt dieselbe Datenrate",
-      "USB-C kann ausschließlich zum Laden verwendet werden"
+      "Die tatsächlich unterstützten Datenraten müssen separat geprüft werden",
+      "Beide Buchsen unterstützen dieselbe maximale Datenrate",
+      "Beide Buchsen unterstützen die Bildausgabe per DisplayPort",
+      "Beide Buchsen unterstützen dieselbe maximale Ladeleistung"
     ],
     "correctAnswer": 0,
-    "explanation": "USB-C beschreibt zunächst den Steckertyp. Unterstützte Datenraten, Ladeleistungen und Funktionen wie DisplayPort oder Thunderbolt hängen vom jeweiligen Gerät und Standard ab.",
+    "explanation": "USB-C bezeichnet die Steckverbindung. Datenrate, Videoausgabe und Ladefunktionen ergeben sich aus der jeweiligen Implementierung.",
     "source": "hardware.csv"
   },
   {
@@ -3525,15 +3525,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Ein PC verfügt über eine CPU mit integrierter Grafikeinheit, aber zusätzlich ist eine dedizierte Grafikkarte eingebaut. Wo sollte der Monitor normalerweise angeschlossen werden, wenn die dedizierte Grafikkarte genutzt werden soll?",
+    "question": "Ein Desktop-PC besitzt eine integrierte GPU und eine separate Grafikkarte. Der Monitor soll sein Videosignal unmittelbar von der separaten Grafikkarte erhalten. Welcher Anschluss ist normalerweise zu verwenden?",
     "answers": [
-      "Am Grafikausgang des Mainboards",
-      "Am Grafikausgang der dedizierten Grafikkarte",
-      "Am Netzteil",
-      "An einem freien USB-Anschluss"
+      "HDMI am Anschlussfeld des Mainboards",
+      "HDMI an der separaten Grafikkarte",
+      "DisplayPort am Anschlussfeld des Mainboards",
+      "DVI am Anschlussfeld des Mainboards"
     ],
     "correctAnswer": 1,
-    "explanation": "Wenn die dedizierte Grafikkarte verwendet werden soll, wird der Monitor normalerweise direkt an deren Grafikausgang angeschlossen.",
+    "explanation": "Für eine direkte Verbindung zur separaten Grafikkarte wird deren Videoausgang verwendet. Mainboard-Ausgänge gehören üblicherweise zur integrierten Grafik.",
     "source": "hardware.csv"
   },
   {
@@ -3541,15 +3541,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Ein Mainboard besitzt einen bestimmten CPU-Sockel. Was muss bei der Auswahl eines neuen Prozessors unbedingt geprüft werden?",
+    "question": "Eine CPU soll auf einem vorhandenen Mainboard eingesetzt werden. Welche Prüfung bestätigt die Unterstützung am zuverlässigsten?",
     "answers": [
-      "Ob Prozessor und Mainboard einen kompatiblen Sockel und Chipsatz besitzen",
-      "Ob die SSD dieselbe Taktfrequenz wie die CPU verwendet",
-      "Ob das Netzteil vom gleichen Hersteller wie das Mainboard stammt",
-      "Ob der Arbeitsspeicher dieselbe Anzahl an Kernen besitzt"
+      "CPU-Supportliste und erforderliche BIOS-/UEFI-Version prüfen",
+      "Die Übereinstimmung der Sockelbezeichnung als Freigabe verwenden",
+      "Die gleiche Leistungsaufnahme wie bei der bisherigen CPU als Freigabe verwenden",
+      "Die Unterstützung derselben RAM-Generation als ausreichenden Nachweis verwenden"
     ],
     "correctAnswer": 0,
-    "explanation": "Ein Prozessor muss mechanisch und elektrisch zum Sockel sowie zur unterstützten Plattform des Mainboards passen.",
+    "explanation": "Ein passender Sockel ist notwendig, aber nicht ausreichend. Die CPU-Supportliste des Mainboardherstellers nennt unterstützte Modelle und gegebenenfalls die erforderliche Firmwareversion.",
     "source": "hardware.csv"
   },
   {
@@ -3559,10 +3559,10 @@ export default [
     "difficulty": "medium",
     "question": "Ein Rechner soll kurze Stromausfälle überbrücken und bei einem längeren Ausfall kontrolliert heruntergefahren werden können. Welche Komponente eignet sich dafür?",
     "answers": [
-      "Ein leistungsstärkerer CPU-Kühler",
-      "Eine USV",
-      "Ein zusätzlicher RAM-Riegel",
-      "Ein USB-Hub"
+      "Eine Steckdosenleiste mit Überspannungsschutz",
+      "Eine ausreichend dimensionierte USV",
+      "Ein PC-Netzteil mit höherer Nennleistung",
+      "Ein Spannungsstabilisator ohne Energiespeicher"
     ],
     "correctAnswer": 1,
     "explanation": "Eine unterbrechungsfreie Stromversorgung kann einen Rechner bei einem Stromausfall für begrenzte Zeit weiter versorgen und ein kontrolliertes Herunterfahren ermöglichen.",
@@ -3591,10 +3591,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Eigenschaft besitzt RAID 5 zusätzlich zur Verteilung der Daten auf mehrere Laufwerke?",
     "answers": [
-      "Es speichert ausschließlich zwei vollständige Kopien aller Daten",
-      "Es benötigt keine zusätzlichen Informationen zur Wiederherstellung",
-      "Es verteilt Paritätsinformationen und kann den Ausfall eines Laufwerks tolerieren",
-      "Es verdoppelt grundsätzlich die Geschwindigkeit jedes einzelnen Laufwerks"
+      "Vollständige Spiegelkopien auf jeweils zwei Laufwerken",
+      "Zwei unabhängige Paritätsinformationen pro Stripe",
+      "Verteilte Parität zur Rekonstruktion bei einem Laufwerksausfall",
+      "Striping über alle Laufwerke ohne zusätzliche Redundanz"
     ],
     "correctAnswer": 2,
     "explanation": "RAID 5 verteilt Daten und Paritätsinformationen über mehrere Laufwerke. Dadurch kann der Verbund typischerweise den Ausfall eines einzelnen Laufwerks verkraften.",
@@ -3607,10 +3607,10 @@ export default [
     "difficulty": "medium",
     "question": "Ein Netzteil liefert dem PC unter einer bestimmten Last 400 W Ausgangsleistung. Was bedeutet ein höherer Wirkungsgrad des Netzteils?",
     "answers": [
-      "Für dieselbe Ausgangsleistung wird weniger elektrische Leistung aus dem Stromnetz aufgenommen",
-      "Der PC erhält automatisch eine höhere CPU-Taktfrequenz",
-      "Das Netzteil kann unabhängig von seiner Nennleistung jede Grafikkarte versorgen",
-      "Die Ausgangsspannung steigt automatisch mit dem Wirkungsgrad"
+      "Für dieselbe Ausgangsleistung wird weniger Leistung aus dem Stromnetz aufgenommen",
+      "Für dieselbe Ausgangsleistung wird mehr Leistung aus dem Stromnetz aufgenommen",
+      "Die Leistungsaufnahme bleibt gleich, aber die Nennleistung steigt",
+      "Die Nennleistung sinkt im gleichen Verhältnis wie die Verlustleistung"
     ],
     "correctAnswer": 0,
     "explanation": "Ein höherer Wirkungsgrad bedeutet geringere Umwandlungsverluste. Für dieselbe nutzbare Ausgangsleistung muss daher weniger Leistung aus dem Stromnetz aufgenommen werden.",
@@ -3621,15 +3621,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Eine Netzwerkkarte unterstützt 2,5 Gbit/s, ist aber mit einem Switch-Port verbunden, der maximal 1 Gbit/s unterstützt. Welche Verbindungsgeschwindigkeit ist normalerweise zu erwarten?",
+    "question": "Eine Netzwerkkarte unterstützt 100 Mbit/s, 1 Gbit/s und 2,5 Gbit/s. Der Switch-Port unterstützt 100 Mbit/s und 1 Gbit/s. Welche höchste Link-Geschwindigkeit handeln beide bei geeigneter Verkabelung aus?",
     "answers": [
-      "2,5 Gbit/s, weil immer das schnellere Gerät bestimmt",
-      "10 Gbit/s durch automatische Bündelung",
+      "100 Mbit/s",
+      "1,75 Gbit/s",
       "1 Gbit/s",
-      "Die Verbindung funktioniert grundsätzlich nicht"
+      "2,5 Gbit/s"
     ],
     "correctAnswer": 2,
-    "explanation": "Bei der automatischen Aushandlung wird eine Geschwindigkeit verwendet, die beide Seiten unterstützen. Ist der Switch auf 1 Gbit/s begrenzt, wird die Verbindung normalerweise mit maximal 1 Gbit/s aufgebaut.",
+    "explanation": "Bei automatischer Aushandlung wird hier die höchste von beiden Seiten unterstützte Geschwindigkeit gewählt: 1 Gbit/s.",
     "source": "hardware.csv"
   },
   {
@@ -3639,10 +3639,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Aufgabe übernimmt UEFI beziehungsweise die System-Firmware beim Start eines PCs?",
     "answers": [
-      "Sie speichert dauerhaft alle persönlichen Dateien des Benutzers",
-      "Sie initialisiert Hardware und startet beziehungsweise übergibt anschließend an den Bootvorgang des Betriebssystems",
-      "Sie ersetzt grundsätzlich das Betriebssystem",
-      "Sie dient ausschließlich zur Steuerung der Netzwerkkarte"
+      "Sie lädt nach dem Kernelstart die Benutzerprofile",
+      "Sie initialisiert Hardware und startet den ausgewählten Bootloader",
+      "Sie verteilt nach der Anmeldung CPU-Zeit an Anwendungen",
+      "Sie verwaltet im laufenden Betrieb die Zugriffsrechte auf Dateien"
     ],
     "correctAnswer": 1,
     "explanation": "UEFI initialisiert und konfiguriert grundlegende Hardware beim Systemstart und startet anschließend den Bootloader beziehungsweise übergibt an den weiteren Bootvorgang.",
@@ -3653,15 +3653,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Ein M.2-Steckplatz eines Mainboards unterstützt laut Handbuch ausschließlich SATA. Was passiert typischerweise, wenn dort eine reine PCIe-NVMe-SSD eingesetzt wird?",
+    "question": "Ein M.2-Slot ist mechanisch passend, führt laut Handbuch aber keine PCIe-Lanes, sondern nur SATA-Signale. Kann eine reine PCIe-NVMe-SSD dort betrieben werden?",
     "answers": [
-      "Die SSD arbeitet automatisch mit SATA-Geschwindigkeit",
-      "Die SSD wird automatisch in eine SATA-SSD umgewandelt",
-      "Die SSD kann in diesem Steckplatz nicht über ihr benötigtes PCIe/NVMe-Protokoll betrieben werden",
-      "Die SSD verdoppelt die Anzahl der verfügbaren PCIe-Lanes"
+      "Ja, mit auf SATA begrenzter Datenrate",
+      "Ja, nach einer Formatierung als GPT-Datenträger",
+      "Nein, dem Slot fehlt die erforderliche PCIe-Anbindung",
+      "Ja, nach Auswahl eines NVMe-Treibers im Betriebssystem"
     ],
     "correctAnswer": 2,
-    "explanation": "M.2 beschreibt die Bauform, aber der Steckplatz muss auch das von der SSD verwendete Protokoll unterstützen. Ein ausschließlich für SATA ausgelegter M.2-Anschluss kann eine reine PCIe-NVMe-SSD nicht entsprechend betreiben.",
+    "explanation": "Eine mechanisch passende Verbindung reicht nicht aus. Die SSD benötigt PCIe-Signale; Formatierung oder Treiber können eine fehlende elektrische Anbindung nicht ersetzen.",
     "source": "hardware.csv"
   },
   {
@@ -3684,32 +3684,32 @@ export default [
     "id": "hardware-031",
     "category": "Hardware",
     "topic": null,
-    "difficulty": "hard",
-    "question": "Ein System besitzt eine PCIe-4.0-x16-Grafikkarte, die elektrisch nur acht Lanes nutzt. Sie wird in einem PCIe-4.0-x16-Steckplatz betrieben. Welche Aussage ist korrekt?",
+    "difficulty": "medium",
+    "question": "Eine Grafikkarte besitzt einen mechanischen x16-Anschluss, ist aber elektrisch mit PCIe 4.0 x8 angebunden. Der Slot unterstützt PCIe 4.0 x16. Welche höchste Link-Konfiguration ist zu erwarten?",
     "answers": [
-      "Die Karte nutzt automatisch 16 Lanes, weil der Steckplatz x16 ist",
-      "Die Karte arbeitet mit maximal acht Lanes, da ihre eigene elektrische Anbindung dies begrenzt",
-      "Die Karte kann in einem x16-Steckplatz nicht betrieben werden",
-      "Die Karte wird automatisch zu PCIe 5.0 hochgestuft"
+      "PCIe 4.0 x16",
+      "PCIe 4.0 x8",
+      "PCIe 3.0 x16",
+      "PCIe 3.0 x8"
     ],
     "correctAnswer": 1,
-    "explanation": "Die physische Länge des Steckplatzes bestimmt nicht automatisch die tatsächlich verwendete Lane-Anzahl. Eine Karte mit elektrischer x8-Anbindung nutzt maximal acht Lanes.",
+    "explanation": "Die Karte begrenzt die Verbindung auf acht Lanes. Die mechanische Länge des Anschlusses erzeugt keine zusätzlichen elektrischen Lanes.",
     "source": "hardware.csv"
   },
   {
     "id": "hardware-032",
     "category": "Hardware",
     "topic": null,
-    "difficulty": "hard",
-    "question": "Ein Mainboard stellt zwei M.2-Steckplätze bereit. Laut Handbuch teilt sich der zweite M.2-Steckplatz PCIe-Lanes mit einem SATA-Controller. Welche Folge kann der Einbau einer NVMe-SSD dort haben?",
+    "difficulty": "medium",
+    "question": "Das Handbuch eines Mainboards nennt: Bei einer PCIe-SSD in M.2_2 sind SATA_5 und SATA_6 deaktiviert. Eine SATA-Festplatte hängt an SATA_5 und wird nach dem SSD-Einbau nicht mehr erkannt. SATA_1 ist frei und bleibt aktiv. Welche Änderung ermöglicht die Nutzung beider Laufwerke?",
     "answers": [
-      "Bestimmte SATA-Anschlüsse können deaktiviert werden",
-      "Die CPU verliert automatisch die Hälfte ihrer Kerne",
-      "Der Arbeitsspeicher wechselt in Single-Channel",
-      "Das Netzteil liefert weniger Spannung"
+      "Die SATA-Festplatte an SATA_1 anschließen.",
+      "Die SATA-Festplatte an SATA_6 anschließen.",
+      "Für SATA_5 eine niedrigere Übertragungsrate einstellen.",
+      "Die Bootpriorität der SATA-Festplatte erhöhen."
     ],
     "correctAnswer": 0,
-    "explanation": "Bei Mainboards werden PCIe-Lanes teilweise zwischen Schnittstellen geteilt. Die Nutzung eines bestimmten M.2-Steckplatzes kann deshalb laut Handbuch einzelne SATA-Ports deaktivieren.",
+    "explanation": "M.2_2 und SATA_5/SATA_6 können laut Handbuch nicht gleichzeitig genutzt werden. SATA_1 bleibt verfügbar; ein Portwechsel beseitigt diesen Anschlusskonflikt, eine geänderte Geschwindigkeit oder Bootpriorität nicht.",
     "source": "hardware.csv"
   },
   {
@@ -3717,31 +3717,31 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "hard",
-    "question": "Ein Rechner besitzt 32 GB RAM. Während einer Anwendung sind 20 GB physischer RAM belegt, gleichzeitig zeigt das Betriebssystem eine Commit-Nutzung von 38 GB. Welche Aussage erklärt dies am besten?",
+    "question": "Ein Windows-Rechner besitzt 32 GB RAM und eine ausreichend große Auslagerungsdatei. Es sind 20 GB physischer RAM belegt, während 38 GB zugesicherter Speicher angezeigt werden. Welche Aussage ist richtig?",
     "answers": [
-      "Commit kann auch Speicher umfassen, der durch Auslagerungsdatei abgesichert wird",
-      "Der Rechner besitzt tatsächlich 38 GB physischen RAM",
-      "Die CPU stellt automatisch zusätzlichen RAM bereit",
-      "Die SSD wurde in echten Arbeitsspeicher umgewandelt"
+      "Zugesicherter Speicher kann durch RAM und Auslagerungsdatei abgesichert sein",
+      "Die 38 GB müssen vollständig gleichzeitig im physischen RAM liegen",
+      "Die Differenz von 18 GB ist genau die aktuelle Belegung der Auslagerungsdatei",
+      "Die Differenz von 6 GB entspricht genau dem Speicher der Grafikkarte"
     ],
     "correctAnswer": 0,
-    "explanation": "Der zugesicherte virtuelle Speicher kann größer als der aktuell belegte physische RAM sein, weil auch Speicherbereiche berücksichtigt werden, die durch die Auslagerungsdatei abgesichert werden können.",
+    "explanation": "Commit und physische RAM-Belegung messen unterschiedliche Größen. Die Auslagerungsdatei erweitert das Commit-Limit; aus der Differenz dieser Anzeigen lässt sich ihre tatsächliche Belegung nicht direkt berechnen.",
     "source": "hardware.csv"
   },
   {
     "id": "hardware-034",
     "category": "Hardware",
     "topic": null,
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Eine Workstation besitzt ein Netzteil mit 850 W Nennleistung und 80-PLUS-Zertifizierung. Welche Aussage zur 850-W-Angabe ist korrekt?",
     "answers": [
-      "Sie beschreibt die maximale elektrische Leistung, die das Netzteil typischerweise an seine Ausgänge liefern kann",
-      "Sie beschreibt immer exakt die Leistungsaufnahme aus der Steckdose",
-      "Sie bedeutet, dass der PC ständig 850 W verbraucht",
-      "Sie ist ausschließlich die maximale Leistung der Grafikkarte"
+      "Die spezifizierte maximale Ausgangsleistung unter den vorgesehenen Betriebsbedingungen",
+      "Die spezifizierte Leistungsaufnahme aus dem Stromnetz bei jeder CPU-Auslastung",
+      "Die an der Steckdose gemessene Spitzenleistung einschließlich Umwandlungsverlusten",
+      "Die Verlustleistung bei Erreichen der höchsten Effizienzklasse"
     ],
     "correctAnswer": 0,
-    "explanation": "Die Nennleistung bezieht sich auf die Ausgangsleistung des Netzteils. Die Leistungsaufnahme aus dem Stromnetz ist aufgrund von Umwandlungsverlusten höher und hängt von Last und Wirkungsgrad ab.",
+    "explanation": "Die Nennleistung gibt die spezifizierte maximale Ausgangsleistung unter den vorgesehenen Bedingungen an. Bei einer gegebenen Last nimmt das Netzteil wegen seiner Verluste mehr Leistung aus dem Stromnetz auf, als es an die Komponenten abgibt.",
     "source": "hardware.csv"
   },
   {
@@ -3751,10 +3751,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Hauptaufgabe hat die CPU?",
     "answers": [
-      "Befehle verarbeiten und Berechnungen bzw. Steuerungsaufgaben ausführen.",
-      "Daten ausschließlich dauerhaft speichern.",
-      "Nur Netzwerkpakete zwischen Subnetzen routen.",
-      "Die Bildschirmauflösung dauerhaft im BIOS speichern."
+      "Maschinenbefehle ausführen und Rechen- sowie Steueroperationen bearbeiten",
+      "Aktuell verwendete Programme und Daten als Arbeitsspeicher bereitstellen.",
+      "Grafikdaten für die Bildausgabe mit spezialisierten parallelen Recheneinheiten verarbeiten.",
+      "Programmdateien und Benutzerdaten dauerhaft auf einem Massenspeicher ablegen."
     ],
     "correctAnswer": 0,
     "explanation": "Die CPU führt Maschinenbefehle aus und koordiniert zentrale Rechen- und Steuerungsaufgaben.",
@@ -3767,10 +3767,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Eigenschaft beschreibt RAM am besten?",
     "answers": [
-      "Schneller flüchtiger Arbeitsspeicher.",
-      "Permanenter Massenspeicher ohne Strombedarf.",
-      "Nur-Lese-Speicher für Netzwerkadressen.",
-      "Externer Speicher ausschließlich für Backups."
+      "Flüchtiger Speicher für aktuell verwendete Programme und Daten",
+      "Nichtflüchtiger Flash-Speicher für installierte Programme und Dateien",
+      "Nichtflüchtiger Speicher für grundlegenden Firmwarecode",
+      "Magnetischer Speicher für große dauerhaft abgelegte Datenmengen"
     ],
     "correctAnswer": 0,
     "explanation": "RAM ist flüchtig: Ohne Strom geht sein Inhalt normalerweise verloren.",
@@ -3781,15 +3781,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Warum kann mehr RAM die Systemleistung verbessern?",
+    "question": "Ein PC wird durch häufiges Auslagern aktiver Programmdaten auf die SSD gebremst. Was kann eine passende RAM-Erweiterung bewirken?",
     "answers": [
-      "Mehr aktive Daten und Programme können im schnellen Arbeitsspeicher gehalten werden.",
-      "Die CPU erhöht dadurch automatisch ihren Basistakt.",
-      "Die Netzwerkkarte erhält dadurch mehr MAC-Adressen.",
-      "Die SSD verdoppelt dadurch ihre physische Kapazität."
+      "Mehr benötigte Daten bleiben im RAM, sodass weniger ausgelagert werden muss",
+      "Die vorhandene SSD bietet danach mehr physische Flash-Kapazität für Auslagerungsdaten",
+      "Die Zugriffszeit bereits im RAM liegender Daten sinkt allein durch die größere Kapazität",
+      "Die Erweiterung erhöht automatisch den Takt aller vorhandenen Speichermodule"
     ],
     "correctAnswer": 0,
-    "explanation": "Wenn weniger ausgelagert werden muss, können Programme schneller auf benötigte Daten zugreifen.",
+    "explanation": "Zusätzlicher RAM kann den beschriebenen Speicherdruck verringern. Er verändert weder die SSD-Schnittstelle noch die physische Ausstattung der CPU.",
     "source": "hardware.csv"
   },
   {
@@ -3799,10 +3799,10 @@ export default [
     "difficulty": "medium",
     "question": "Was bedeutet Dual Channel bei Arbeitsspeicher?",
     "answers": [
-      "Zwei Speicherkanäle können parallel genutzt werden, wodurch die Speicherbandbreite steigen kann.",
-      "Zwei Betriebssysteme verwenden denselben RAM unabhängig voneinander.",
-      "Jedes RAM-Modul besitzt automatisch zwei CPUs.",
-      "RAM wird gleichzeitig als SSD und Cache verwendet."
+      "Zwei Speicherkanäle übertragen parallel und können die Bandbreite erhöhen",
+      "Zwei Module bilden Spiegelkopien zur Korrektur von Speicherfehlern",
+      "Zwei Speicherkanäle halbieren die Zugriffszeit jeder einzelnen Speicherzelle",
+      "Zwei Speicherkanäle verdoppeln die Kapazität jedes einzelnen Moduls"
     ],
     "correctAnswer": 0,
     "explanation": "Dual Channel erhöht potenziell die Speicherbandbreite durch parallele Nutzung zweier Kanäle.",
@@ -3813,15 +3813,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Aussage zu DDR4 und DDR5 ist korrekt?",
+    "question": "Welche Informationen stellt das SPD eines RAM-Moduls der Plattform unter anderem zur Verfügung?",
     "answers": [
-      "Sie sind unterschiedliche RAM-Generationen und mechanisch/elektrisch nicht einfach austauschbar.",
-      "DDR5 ist lediglich ein anderer Name für PCIe 5.0.",
-      "DDR4 kann immer in jedem DDR5-Slot betrieben werden.",
-      "DDR5 bezeichnet ausschließlich Grafikspeicher."
+      "Kenndaten des Moduls und unterstützte Speicherparameter",
+      "Die Zuordnung virtueller Adressen zu physischen RAM-Seiten",
+      "Die zuletzt im Modul gespeicherten Benutzerdokumente",
+      "Die Prüfsummen sämtlicher laufenden Programme"
     ],
     "correctAnswer": 0,
-    "explanation": "Mainboard und CPU müssen die jeweilige Speichergeneration unterstützen.",
+    "explanation": "Serial Presence Detect stellt Moduldaten bereit, die die Firmware zur Speicherkonfiguration verwenden kann. Es speichert nicht den laufenden Inhalt des Arbeitsspeichers.",
     "source": "hardware.csv"
   },
   {
@@ -3831,10 +3831,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Aufgabe hat ein Netzteil im PC?",
     "answers": [
-      "Netzspannung in geeignete Gleichspannungen für die Komponenten umwandeln.",
-      "Netzwerkpakete filtern.",
-      "RAM-Inhalte dauerhaft sichern.",
-      "BIOS-Updates automatisch herunterladen."
+      "Wechselspannung aus dem Stromnetz in geeignete Gleichspannungen umwandeln",
+      "Gleichspannung aus dem Stromnetz in mehrere Wechselspannungen umwandeln",
+      "Die Netzwechselspannung mit unveränderter Spannung im PC verteilen",
+      "Die niedrigen Spannungen der Komponenten auf Netzspannung anheben"
     ],
     "correctAnswer": 0,
     "explanation": "Das PC-Netzteil versorgt Komponenten mit den benötigten Gleichspannungen.",
@@ -3845,31 +3845,31 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Warum sollte ein Netzteil nicht exakt auf die maximale Leistungsaufnahme der Komponenten dimensioniert werden?",
+    "question": "Beim Netzteiltausch sollen vorhandene modulare Kabel weiterverwendet werden. Welche Prüfung ist erforderlich?",
     "answers": [
-      "Reserve für Lastspitzen, Effizienz und spätere Erweiterungen ist sinnvoll.",
-      "Ein PC benötigt immer exakt doppelt so viel Leistung wie berechnet.",
-      "Das Netzteil muss größer sein, damit RAM schneller läuft.",
-      "Unter 100 % Auslastung kann eine CPU nicht starten."
+      "Die Freigabe der Kabel für das konkrete Netzteilmodell prüfen",
+      "Die gleiche Steckerform auf der Netzteilseite als Kompatibilitätsnachweis verwenden",
+      "Die gleiche 80-PLUS-Stufe beider Netzteile als Freigabe verwenden",
+      "Die gleiche Nennleistung beider Netzteile als Freigabe verwenden"
     ],
     "correctAnswer": 0,
-    "explanation": "Eine Leistungsreserve verbessert Planungssicherheit und vermeidet Betrieb am absoluten Limit.",
+    "explanation": "Die Belegung modularer Netzteilanschlüsse ist nicht universell einheitlich. Nur ausdrücklich kompatible Kabel dürfen übernommen werden; falsche Belegung kann Komponenten beschädigen.",
     "source": "hardware.csv"
   },
   {
     "id": "hardware-042",
     "category": "Hardware",
     "topic": null,
-    "difficulty": "hard",
-    "question": "Ein System benötigt unter Last etwa 500 W. Welche Wahl ist technisch am sinnvollsten, wenn rund 20 % Reserve vorgesehen sind?",
+    "difficulty": "medium",
+    "question": "Die Komponenten eines PCs benötigen zusammen 500 W Ausgangsleistung vom Netzteil. Für die Planung werden 20 % auf diesen Wert aufgeschlagen. Welche Nennleistung ergibt die Rechnung?",
     "answers": [
-      "Etwa 600 W oder etwas darüber, abhängig von Qualität und Lastprofil.",
-      "Exakt 500 W, weil Reserve die Effizienz immer verschlechtert.",
-      "250 W, weil das Netzteil Leistung nur bei Bedarf verdoppelt.",
-      "1000 W zwingend, unabhängig von Komponenten und Effizienz."
+      "600 W",
+      "520 W",
+      "625 W",
+      "1000 W"
     ],
     "correctAnswer": 0,
-    "explanation": "500 W × 1,2 = 600 W. In der Praxis werden auch Qualität, Anschlüsse und Lastspitzen berücksichtigt.",
+    "explanation": "Der Aufschlag beträgt 0,20 × 500 W = 100 W; zusammen sind es 600 W. Das ist eine Planungsrechnung, keine vollständige Prüfung von Lastspitzen und Anschlüssen.",
     "source": "hardware.csv"
   },
   {
@@ -3877,15 +3877,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Speicherart ist typischerweise schneller?",
+    "question": "Eine SSD bietet hohe sequenzielle Transferraten, soll aber viele kleine, zufällig verteilte Dateien bedienen. Welche Messwerte sind dafür besonders aussagekräftig?",
     "answers": [
-      "NVMe-SSD über PCIe",
-      "SATA-HDD",
-      "Optische DVD",
-      "USB-2.0-Stick"
+      "Latenz und IOPS bei kleinen zufälligen Zugriffen",
+      "Maximale Transferrate bei großen sequenziellen Dateien",
+      "Nennkapazität und Größe des Laufwerksgehäuses",
+      "Datenrate des Anschlusses ohne Messung des Laufwerks"
     ],
     "correctAnswer": 0,
-    "explanation": "NVMe-SSDs nutzen PCIe und erreichen deutlich höhere Datenraten und geringere Latenzen als HDDs.",
+    "explanation": "Bei kleinen zufälligen Zugriffen sind Antwortzeit und I/O-Operationen pro Sekunde unter passender Last wichtig. Eine hohe sequenzielle Datenrate allein beschreibt diese Leistung nicht.",
     "source": "hardware.csv"
   },
   {
@@ -3893,15 +3893,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Was ist ein wesentlicher Unterschied zwischen SATA-SSD und NVMe-SSD?",
+    "question": "Welche Aussage beschreibt die übliche Anbindung interner SATA- und NVMe-SSDs in einem PC?",
     "answers": [
-      "NVMe nutzt typischerweise PCIe und ein für Flash optimiertes Protokoll, SATA-SSDs nutzen die SATA-Schnittstelle.",
-      "SATA-SSDs sind immer mechanische Festplatten.",
-      "NVMe ist ausschließlich ein Dateisystem.",
-      "SATA ist nur für RAM-Module vorgesehen."
+      "NVMe-SSDs verwenden PCIe; SATA-SSDs verwenden SATA.",
+      "NVMe-SSDs verwenden SATA; SATA-SSDs verwenden PCIe.",
+      "Beide verwenden SATA und unterscheiden sich lediglich durch ihre Firmware.",
+      "Beide verwenden PCIe und unterscheiden sich lediglich durch ihre Gehäuseform."
     ],
     "correctAnswer": 0,
-    "explanation": "NVMe ist ein Protokoll für nichtflüchtigen Speicher, meist über PCIe; SATA ist eine andere Schnittstelle/protokolltechnische Plattform.",
+    "explanation": "Bei internen PC-SSDs arbeitet NVMe über PCIe. SATA-SSDs nutzen eine SATA-Verbindung, häufig mit AHCI. Beide können Daten nichtflüchtig in Flash-Speicher ablegen.",
     "source": "hardware.csv"
   },
   {
@@ -3909,15 +3909,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Was beschreibt M.2 am treffendsten?",
+    "question": "Was bedeutet bei einem M.2-Modul die Größenangabe 2280?",
     "answers": [
-      "Einen Formfaktor bzw. Steckverbinderstandard, über den verschiedene Schnittstellen möglich sind.",
-      "Ein Dateisystem für SSDs.",
-      "Eine RAID-Stufe.",
-      "Eine CPU-Befehlssatzerweiterung."
+      "22 mm Breite und 80 mm Länge",
+      "22 mm Länge und 80 mm Breite",
+      "22 mm Breite und 8,0 mm Länge",
+      "2,2 mm Breite und 80 mm Länge"
     ],
     "correctAnswer": 0,
-    "explanation": "M.2 beschreibt Bauform und Anschluss; M.2-Geräte können je nach Plattform z. B. SATA oder PCIe/NVMe nutzen.",
+    "explanation": "Die Baugrößenangabe 2280 steht für 22 mm Breite und 80 mm Länge. Sie legt weder Speicherkapazität noch Übertragungsprotokoll fest.",
     "source": "hardware.csv"
   },
   {
@@ -3925,15 +3925,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "hard",
-    "question": "Warum ist 'M.2 = NVMe' technisch ungenau?",
+    "question": "Eine M.2-PCIe-4.0-x4-SSD wird in einem kompatiblen M.2-PCIe-3.0-x2-Slot betrieben. Welche Anbindung ist maximal möglich?",
     "answers": [
-      "Weil M.2 ein Formfaktor ist und M.2-Laufwerke auch andere Schnittstellen wie SATA nutzen können.",
-      "Weil NVMe nur für Arbeitsspeicher verwendet wird.",
-      "Weil M.2 ausschließlich WLAN-Karten bezeichnet.",
-      "Weil NVMe ein Dateisystem und M.2 ein Betriebssystem ist."
+      "PCIe 3.0 x2",
+      "PCIe 3.0 x4",
+      "PCIe 4.0 x2",
+      "PCIe 4.0 x4"
     ],
     "correctAnswer": 0,
-    "explanation": "Formfaktor und Protokoll/Schnittstelle sind verschiedene Ebenen.",
+    "explanation": "Die gemeinsam unterstützte Generation und Lane-Anzahl begrenzen den Link auf PCIe 3.0 x2. Bauform und nominelle Fähigkeiten der SSD allein bestimmen die Verbindung nicht.",
     "source": "hardware.csv"
   },
   {
@@ -3941,15 +3941,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat UEFI/BIOS beim Start eines PCs?",
+    "question": "Ein PC erreicht nach dem Einschalten keinen Bootloader. Die DRAM-Diagnose-LED bleibt laut Handbuch dauerhaft an. Welcher Bereich sollte zuerst geprüft werden?",
     "answers": [
-      "Hardware initialisieren und den Bootvorgang vorbereiten.",
-      "Alle Benutzerdateien dauerhaft speichern.",
-      "Nur Netzwerkports freigeben.",
-      "Jede Anwendung des Betriebssystems kompilieren."
+      "RAM-Bestückung und Speicherinitialisierung",
+      "CPU-Stromversorgung und Prozessorinitialisierung",
+      "Grafikkartensitz und Grafikinitialisierung",
+      "Erkennung des Systemlaufwerks und Bootauswahl"
     ],
     "correctAnswer": 0,
-    "explanation": "Firmware initialisiert Hardware, führt grundlegende Prüfungen aus und startet anschließend einen Bootloader.",
+    "explanation": "Die herstellerspezifische DRAM-Anzeige weist hier auf die Speicherinitialisierung hin. Bedeutung und Prüfschritte sind dem Mainboard-Handbuch zu entnehmen.",
     "source": "hardware.csv"
   },
   {
@@ -3959,10 +3959,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist Secure Boot?",
     "answers": [
-      "Eine UEFI-Funktion, die den Start nicht vertrauenswürdiger Boot-Komponenten erschweren soll.",
-      "Eine Funktion, die jede SSD automatisch verschlüsselt.",
-      "Ein RAID-Modus zur Datenspiegelung.",
-      "Eine Firewall-Regel ausschließlich für TCP 443."
+      "UEFI prüft Boot-Komponenten anhand seiner Signatur- und Vertrauensrichtlinien",
+      "UEFI verschlüsselt die Nutzdaten des Systemlaufwerks vor jedem Start",
+      "UEFI vergleicht das Benutzerkennwort mit dem Kennwort des Laufwerks",
+      "UEFI prüft vor dem Start die physische Unversehrtheit aller Komponenten"
     ],
     "correctAnswer": 0,
     "explanation": "Secure Boot prüft kryptografisch signierte Boot-Komponenten gegen hinterlegte Vertrauensanker.",
@@ -3975,10 +3975,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Aufgabe hat TPM in modernen Windows-Systemen typischerweise?",
     "answers": [
-      "Kryptografische Schlüssel und vertrauenswürdige Plattformfunktionen unterstützen.",
-      "Die CPU dauerhaft übertakten.",
-      "Die Netzwerkkarte mit einer öffentlichen IP versehen.",
-      "RAM-Fehler durch Parität ersetzen."
+      "Kryptografische Schlüssel schützen und Plattformmessungen unterstützen",
+      "Den gesamten Inhalt des Arbeitsspeichers dauerhaft verschlüsselt speichern",
+      "Die Zugriffsrechte auf Benutzerdateien unabhängig vom Betriebssystem festlegen",
+      "Den laufenden Netzwerkverkehr anhand von Paketregeln filtern"
     ],
     "correctAnswer": 0,
     "explanation": "Ein TPM unterstützt u. a. sichere Schlüsselablage und Funktionen wie BitLocker.",
@@ -3989,31 +3989,31 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Aussage zu PCIe-Lanes ist korrekt?",
+    "question": "Zwei PCIe-Verbindungen nutzen dieselbe Generation und dieselbe Kodierung. Eine ist x4, die andere x8. Wie unterscheiden sich ihre theoretischen Bandbreiten pro Richtung?",
     "answers": [
-      "Mehr Lanes können eine höhere mögliche Datenbandbreite einer Verbindung bereitstellen.",
-      "Eine x16-Verbindung besitzt immer exakt 16 GB RAM.",
-      "PCIe-Lanes bestimmen ausschließlich die CPU-Kernzahl.",
-      "Eine x4-Verbindung ist mechanisch immer größer als x16."
+      "x8 bietet die doppelte Bandbreite von x4",
+      "x8 bietet dieselbe Bandbreite wie x4",
+      "x8 bietet die vierfache Bandbreite von x4",
+      "x8 bietet die halbe Bandbreite von x4"
     ],
     "correctAnswer": 0,
-    "explanation": "PCIe x1/x4/x8/x16 beschreibt die Anzahl genutzter Datenlanes.",
+    "explanation": "Bei gleicher Generation skaliert die theoretische Bandbreite mit der Zahl der Lanes. Acht statt vier Lanes verdoppeln sie; die praktische Anwendungsleistung muss nicht im selben Verhältnis steigen.",
     "source": "hardware.csv"
   },
   {
     "id": "hardware-051",
     "category": "Hardware",
     "topic": null,
-    "difficulty": "hard",
-    "question": "Warum kann eine PCIe-5.0-x16-Grafikkarte auch in einem PCIe-4.0-x16-Slot funktionieren?",
+    "difficulty": "medium",
+    "question": "Eine passive Adapterkarte ohne PCIe-Switch soll vier NVMe-SSDs an einem x16-Slot betreiben. Laut Adapterhandbuch benötigt jede SSD einen eigenen x4-Link. Welche Plattformfunktion muss dafür unterstützt werden?",
     "answers": [
-      "PCIe ist in der Regel generationsübergreifend abwärtskompatibel, dann aber mit der niedrigeren Link-Geschwindigkeit.",
-      "Die Grafikkarte schaltet automatisch auf SATA um.",
-      "PCIe 5.0 verwendet keine elektrischen Kontakte.",
-      "PCIe-Versionen sind nur Marketingnamen ohne technische Unterschiede."
+      "PCIe-Bifurkation des Slots in x4/x4/x4/x4",
+      "PCIe-Link-Training eines einzigen durchgehenden x16-Links",
+      "PCIe-Resizable-BAR zur Vergrößerung des adressierbaren Gerätebereichs",
+      "PCIe-ASPM zur Anpassung der Energiesparzustände"
     ],
     "correctAnswer": 0,
-    "explanation": "PCIe-Geräte und Slots handeln normalerweise eine gemeinsam unterstützte Generation und Lane-Konfiguration aus.",
+    "explanation": "PCIe-Bifurkation teilt die Lanes eines Slots in mehrere unabhängige Links auf. CPU, Mainboard, Firmware und Slotkonfiguration müssen die vom Adapter benötigte Aufteilung unterstützen.",
     "source": "hardware.csv"
   },
   {
@@ -4023,10 +4023,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist die Hauptaufgabe einer GPU?",
     "answers": [
-      "Grafik- und stark parallelisierbare Berechnungen beschleunigen.",
-      "IP-Adressen vergeben.",
-      "Dateisysteme formatieren.",
-      "BIOS-Passwörter speichern."
+      "Grafikoperationen und geeignete parallele Rechenaufgaben beschleunigen",
+      "Den gesamten seriellen Programmablauf des Betriebssystems übernehmen",
+      "Programmdateien vor jedem Start dauerhaft in Flash-Zellen ablegen",
+      "Die Ausführung aller CPU-Befehle ohne Softwareanpassung beschleunigen"
     ],
     "correctAnswer": 0,
     "explanation": "GPUs sind auf viele parallele Rechenoperationen spezialisiert.",
@@ -4039,13 +4039,13 @@ export default [
     "difficulty": "medium",
     "question": "Warum besitzt eine dedizierte Grafikkarte eigenen VRAM?",
     "answers": [
-      "Damit Grafikdaten und Rechenressourcen schnell lokal verfügbar sind.",
-      "Damit die CPU keinen Arbeitsspeicher mehr benötigt.",
-      "Damit die Netzwerkkarte keine MAC-Adresse braucht.",
-      "Damit UEFI ohne Mainboard starten kann."
+      "Damit Texturen, Bildpuffer und Rechendaten mit hoher Bandbreite verfügbar sind",
+      "Damit Texturen ohne Verwaltung durch Anwendung und Grafiktreiber bereitstehen.",
+      "Damit CPU und GPU sämtliche Speicherzugriffe über denselben System-RAM-Controller ausführen.",
+      "Damit sich der lokale Grafikspeicher allein durch zusätzliche System-RAM-Module erweitern lässt."
     ],
     "correctAnswer": 0,
-    "explanation": "VRAM speichert u. a. Texturen, Framebuffer und Daten für GPU-Berechnungen.",
+    "explanation": "Lokaler VRAM hält unter anderem Texturen, Bildpuffer und Rechendaten nahe an der GPU bereit. Seine hohe Bandbreite unterstützt Grafik- und Rechenaufgaben; er ist kein dauerhafter Dateispeicher und wird durch mehr System-RAM nicht physisch größer.",
     "source": "hardware.csv"
   },
   {
@@ -4055,13 +4055,13 @@ export default [
     "difficulty": "medium",
     "question": "Was ist ein CPU-Kern?",
     "answers": [
-      "Eine eigenständige Ausführungseinheit innerhalb eines Prozessors.",
-      "Ein Steckplatz für RAM.",
-      "Eine Partition auf einer SSD.",
-      "Ein Netzwerkport auf dem Mainboard."
+      "Eine physische Verarbeitungseinheit, die einen Befehlsstrom ausführen kann.",
+      "Ein logischer SMT-Kontext, der einen physischen Kern mitbenutzt",
+      "Ein Cache-Bereich, der bereits berechnete Ergebnisse speichert",
+      "Ein Taktzyklus, in dem ein Maschinenbefehl verarbeitet wird"
     ],
     "correctAnswer": 0,
-    "explanation": "Mehrere Kerne ermöglichen echte parallele Verarbeitung mehrerer Threads.",
+    "explanation": "Ein CPU-Kern besitzt unter anderem Einheiten zum Dekodieren und Ausführen von Maschinenbefehlen. Mehrere Kerne können parallel arbeiten; mehrere SMT-Kontexte innerhalb eines Kerns teilen sich dagegen Ausführungsressourcen.",
     "source": "hardware.csv"
   },
   {
@@ -4069,28 +4069,28 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Was beschreibt ein CPU-Thread im Kontext von SMT/Hyper-Threading?",
+    "question": "Zwei SMT-Threads laufen auf demselben physischen CPU-Kern. Warum kann ihr gemeinsamer Durchsatz geringer sein als der von zwei vergleichbaren physischen Kernen?",
     "answers": [
-      "Einen logischen Ausführungskontext, von denen ein Kern mehrere bereitstellen kann.",
-      "Ein physisches Stromkabel der CPU.",
-      "Einen RAM-Kanal.",
-      "Eine BIOS-Partition."
+      "Sie konkurrieren um gemeinsam genutzte Ausführungsressourcen",
+      "Die Aktivierung zweier SMT-Kontexte halbiert grundsätzlich den Kerntakt.",
+      "SMT-Kontexte müssen abwechselnd ganze Programme bis zum Ende ausführen.",
+      "Jeder SMT-Kontext erhält einen eigenen vollständigen Satz von Ausführungseinheiten."
     ],
     "correctAnswer": 0,
-    "explanation": "SMT stellt pro physischem Kern mehrere logische Prozessoren bereit.",
+    "explanation": "SMT-Kontexte teilen sich Ressourcen eines Kerns. Zusätzliche physische Kerne bringen weitere Ausführungsressourcen mit; der Nutzen hängt deshalb von der Arbeitslast ab.",
     "source": "hardware.csv"
   },
   {
     "id": "hardware-056",
     "category": "Hardware",
     "topic": null,
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Warum ist doppelte Kernzahl nicht automatisch doppelte Anwendungsleistung?",
     "answers": [
-      "Nicht jede Software parallelisiert perfekt und weitere Engpässe können limitieren.",
-      "Zusätzliche Kerne deaktivieren grundsätzlich den CPU-Cache.",
-      "Betriebssysteme können nur einen Kern gleichzeitig verwenden.",
-      "Mehr Kerne halbieren immer den RAM-Takt."
+      "Serielle Programmanteile und andere Engpässe begrenzen die Skalierung",
+      "Die Kernzahl bestimmt unabhängig vom Programm die gesamte Rechenzeit",
+      "Die Kernzahl ersetzt den Einfluss der Speicherbandbreite auf die Laufzeit",
+      "Die Kernzahl legt die Zahl ausführbarer Befehle jedes einzelnen Threads fest"
     ],
     "correctAnswer": 0,
     "explanation": "Skalierung hängt von Parallelisierbarkeit, Synchronisation, Speicherzugriff und anderen Flaschenhälsen ab.",
@@ -4101,15 +4101,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat CPU-Cache?",
+    "question": "Die CPU benötigt einen Datenblock, der nicht im L1-Datencache liegt. Was bedeutet dieser L1-Cache-Miss?",
     "answers": [
-      "Häufig benötigte Daten und Instruktionen sehr schnell nahe an den CPU-Kernen bereitstellen.",
-      "Benutzerdateien dauerhaft archivieren.",
-      "DNS-Anfragen speichern.",
-      "VLAN-Konfigurationen zwischen Switches verteilen."
+      "Der Block muss aus einer weiteren Cache-Ebene oder dem Hauptspeicher geholt werden",
+      "Die CPU legt den angeforderten Wert erst bei einem späteren Schreibzugriff fest.",
+      "Der Block muss direkt aus dem RAM kommen, auch wenn L2 eine gültige Kopie enthält.",
+      "Das Betriebssystem muss den Block aus der Auslagerungsdatei laden, auch wenn er im RAM liegt."
     ],
     "correctAnswer": 0,
-    "explanation": "Cache reduziert die durchschnittliche Wartezeit auf Daten aus dem langsameren Hauptspeicher.",
+    "explanation": "Ein Miss bedeutet zunächst nur, dass die angefragten Daten in dieser Cache-Ebene fehlen. Sie können noch in einer nachgeordneten Cache-Ebene oder im RAM vorhanden sein.",
     "source": "hardware.csv"
   },
   {
@@ -4138,7 +4138,7 @@ export default [
       "Striping ohne Redundanz.",
       "Spiegelung mit vollständiger Redundanz.",
       "Parität mit Ausfalltoleranz für zwei Laufwerke.",
-      "Automatisches Cloud-Backup."
+      "Verkettung ganzer Laufwerke ohne blockweises Striping."
     ],
     "correctAnswer": 0,
     "explanation": "RAID 0 verteilt Daten auf Laufwerke, bietet aber keine Redundanz.",
@@ -4149,22 +4149,22 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Aussage zu RAID und Backup ist korrekt?",
+    "question": "Auf einem RAID-1-Volume wird versehentlich eine Datei gelöscht. Weshalb hilft die Spiegelung allein normalerweise nicht bei der Wiederherstellung?",
     "answers": [
-      "RAID ersetzt kein Backup.",
-      "RAID 1 schützt zuverlässig vor versehentlichem Löschen und Ransomware.",
-      "Jedes RAID speichert automatisch eine Offsite-Kopie.",
-      "Backup ist bei RAID 5 technisch unmöglich."
+      "Die Löschung wird auf beide Spiegelmitglieder angewendet",
+      "Die Spiegelung hält gelöschte Dateien als ältere Version auf dem zweiten Laufwerk",
+      "Das zweite Laufwerk enthält nach jeder Löschung eine unveränderte Offline-Kopie",
+      "Der RAID-Controller verschiebt gelöschte Dateien in einen getrennten Archivbereich"
     ],
     "correctAnswer": 0,
-    "explanation": "RAID erhöht je nach Stufe Verfügbarkeit oder Leistung, schützt aber nicht vor allen Datenverlustursachen.",
+    "explanation": "RAID 1 hält den aktuellen Datenbestand redundant, nicht automatisch frühere Versionen. Für versehentlich gelöschte Dateien sind beispielsweise geeignete Backups oder vorhandene Snapshots nötig.",
     "source": "hardware.csv"
   },
   {
     "id": "hardware-061",
     "category": "Hardware",
     "topic": null,
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Welche Mindestanzahl an Laufwerken benötigt klassisches RAID 5?",
     "answers": [
       "2",
@@ -4181,15 +4181,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "hard",
-    "question": "Welche Kapazität ist bei RAID 5 mit drei gleich großen 2-TB-Laufwerken ungefähr nutzbar?",
+    "question": "Ein klassisches RAID 5 verwendet vier Laufwerke mit 2 TB, 2 TB, 4 TB und 4 TB. Es nutzt pro Laufwerk höchstens die Kapazität des kleinsten Laufwerks. Wie viel ist ohne Verwaltungs- und Dateisystemverluste nutzbar?",
     "answers": [
-      "2 TB",
       "4 TB",
       "6 TB",
-      "8 TB"
+      "8 TB",
+      "10 TB"
     ],
     "correctAnswer": 1,
-    "explanation": "Bei drei gleich großen Laufwerken entspricht die nutzbare Kapazität ungefähr (n−1) × Laufwerksgröße = 4 TB.",
+    "explanation": "Pro Laufwerk sind 2 TB anrechenbar. Bei RAID 5 steht die Kapazität von n−1 Laufwerken zur Verfügung: 3 × 2 TB = 6 TB.",
     "source": "hardware.csv"
   },
   {
@@ -4197,15 +4197,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Hauptfunktion hat eine USV?",
+    "question": "Zwei USVs haben dieselbe maximale Ausgangsleistung in Watt. Was wird zusätzlich benötigt, um ihre Überbrückungszeit bei gleicher Last zu vergleichen?",
     "answers": [
-      "Bei Stromausfall kurzfristig Energie bereitstellen und Systeme geordnet weiterbetreiben bzw. herunterfahren lassen.",
-      "Die CPU dauerhaft übertakten.",
-      "Die Internetbandbreite verdoppeln.",
-      "SSD-Fragmentierung verhindern."
+      "Die Laufzeitkurven für die vorgesehene Last",
+      "Die maximale Scheinleistung in VA",
+      "Die geregelte Ausgangsspannung in Volt",
+      "Die maximale Ausgangsleistung in Watt"
     ],
     "correctAnswer": 0,
-    "explanation": "Eine USV schützt vor Stromausfällen und je nach Typ auch vor weiteren Netzstörungen.",
+    "explanation": "Gleiche maximale Ausgangsleistung bedeutet nicht gleiche gespeicherte Energie oder Laufzeit. Maßgeblich sind unter anderem Batterieausstattung, Zustand und lastabhängige Laufzeitdaten.",
     "source": "hardware.csv"
   },
   {
@@ -4215,10 +4215,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum ist Kühlung für CPU und GPU wichtig?",
     "answers": [
-      "Hohe Temperaturen können zu Drosselung, Instabilität und langfristiger Belastung führen.",
-      "Nur gekühlte Komponenten erhalten eine IP-Adresse.",
-      "Kühlung erhöht automatisch die SSD-Kapazität.",
-      "Ohne Lüfter können Dateisysteme keine Rechte verwalten."
+      "Sie führt Verlustwärme ab und begrenzt dadurch die Bauteiltemperatur",
+      "Sie verringert die elektrische Leistungsaufnahme direkt auf den TDP-Wert",
+      "Sie verhindert Spannungsschwankungen durch eine Regelung der Stromversorgung",
+      "Sie ersetzt die Temperaturüberwachung durch feste Lüfterdrehzahlen"
     ],
     "correctAnswer": 0,
     "explanation": "Kühlsysteme führen Verlustwärme ab und helfen, Komponenten innerhalb zulässiger Temperaturen zu betreiben.",
@@ -4231,10 +4231,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Aufgabe hat Wärmeleitpaste zwischen CPU und Kühler?",
     "answers": [
-      "Mikroskopische Unebenheiten füllen und den Wärmeübergang verbessern.",
-      "Die CPU elektrisch mit Strom versorgen.",
-      "Die BIOS-Konfiguration speichern.",
-      "Die Lüfterdrehzahl per Netzwerk steuern."
+      "Mikroskopische Unebenheiten füllen und isolierende Luftspalte verringern",
+      "Den Abstand zwischen CPU und Kühler möglichst groß halten",
+      "Den Kühler thermisch von der CPU entkoppeln",
+      "Den Anpressdruck der Kühlerbefestigung ersetzen"
     ],
     "correctAnswer": 0,
     "explanation": "Wärmeleitpaste reduziert Luftspalte zwischen Heatspreader und Kühlerboden.",
@@ -4247,10 +4247,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist TDP im Hardwarekontext grob?",
     "answers": [
-      "Ein thermischer Auslegungswert, der bei der Kühlungsplanung hilft.",
-      "Die maximale SSD-Kapazität.",
-      "Die Anzahl der PCIe-Lanes.",
-      "Die garantierte tatsächliche Leistungsaufnahme in jedem Szenario."
+      "Ein thermischer Auslegungswert nach den Vorgaben des CPU-Herstellers",
+      "Eine garantierte Obergrenze jeder kurzzeitigen elektrischen Leistungsspitze",
+      "Die benötigte Nennleistung des Netzteils für den vollständigen PC",
+      "Die aus der Steckdose aufgenommene Leistung im Leerlauf"
     ],
     "correctAnswer": 0,
     "explanation": "TDP ist kein universell identischer Messwert für reale Spitzenaufnahme, sondern primär ein thermischer Planungswert.",
@@ -4260,16 +4260,16 @@ export default [
     "id": "hardware-067",
     "category": "Hardware",
     "topic": null,
-    "difficulty": "medium",
-    "question": "Was bedeutet ECC-RAM?",
+    "difficulty": "hard",
+    "question": "Ein DDR5-Modul wird mit On-Die-ECC beworben. Welche Aussage zu einem vollständigen ECC-Speichersystem ist richtig?",
     "answers": [
-      "Arbeitsspeicher, der bestimmte Speicherfehler erkennen und teilweise korrigieren kann.",
-      "RAM mit integriertem Grafikprozessor.",
-      "RAM, der ausschließlich über PCIe arbeitet.",
-      "Ein Dateisystem für Server."
+      "On-Die-ECC im DRAM ersetzt den ECC-Schutz des Speicherpfads nicht",
+      "On-Die-ECC macht die ECC-Unterstützung des Speichercontrollers überflüssig",
+      "On-Die-ECC bedeutet, dass das Modul grundsätzlich ein Registered DIMM ist",
+      "On-Die-ECC sichert die Datenübertragung zur CPU durch zusätzliche Busleitungen ab"
     ],
     "correctAnswer": 0,
-    "explanation": "ECC wird häufig in Servern und Workstations eingesetzt, wenn Datenintegrität besonders wichtig ist.",
+    "explanation": "On-Die-ECC korrigiert bestimmte Fehler innerhalb des DRAM-Chips. ECC über den Speicherpfad benötigt passende Module und Unterstützung durch Speichercontroller und Plattform.",
     "source": "hardware.csv"
   },
   {
@@ -4277,15 +4277,15 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "hard",
-    "question": "Welche Komponente bestimmt maßgeblich, welche CPU in ein Mainboard passt?",
+    "question": "Ein Mainboard unterstützt eine neue CPU erst ab einer neueren BIOS-Version. Die alte, unterstützte CPU ist noch eingebaut; ein Update ohne startfähige CPU wird nicht unterstützt. Welche Reihenfolge ist sinnvoll?",
     "answers": [
-      "CPU-Sockel und Chipsatz-/Firmware-Unterstützung.",
-      "Die Anzahl der USB-Ports.",
-      "Die Farbe des RAM-Slots.",
-      "Die Größe der SSD-Partition."
+      "Firmware mit der alten CPU nach Herstellervorgabe aktualisieren, dann die CPU tauschen",
+      "Neue CPU einsetzen und das Firmware-Update erst nach deren erfolgreichem Start planen",
+      "Neue CPU einsetzen und fehlende Unterstützung durch ein CMOS-Reset ersetzen",
+      "Neue CPU einsetzen und die CPU-Unterstützung durch einen Betriebssystemtreiber nachrüsten"
     ],
     "correctAnswer": 0,
-    "explanation": "Sockel, Chipsatz und BIOS/UEFI-Unterstützung müssen zur CPU passen.",
+    "explanation": "Mit der noch unterstützten CPU lässt sich die erforderliche Firmware installieren. Ein CMOS-Reset oder Betriebssystemtreiber ersetzt die benötigte CPU-Unterstützung der Firmware nicht.",
     "source": "hardware.csv"
   },
   {
@@ -4293,12 +4293,12 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Aussage zur 80-PLUS-Zertifizierung eines Netzteils ist korrekt?",
+    "question": "Was bestätigt eine 80-PLUS-Zertifizierung eines Netzteils?",
     "answers": [
-      "Sie bezieht sich auf definierte Wirkungsgradanforderungen, nicht direkt auf Gesamtqualität oder maximale Leistung.",
-      "Sie garantiert, dass das Netzteil exakt 80 % seiner Nennleistung liefert.",
-      "Sie beschreibt die Anzahl verfügbarer PCIe-Lanes.",
-      "Sie bedeutet, dass ein Netzteil mindestens 80 Jahre hält."
+      "Erreichen definierter Wirkungsgrade bei festgelegten Prüfbedingungen",
+      "Bereitstellen von 80 Prozent der Nennleistung als dauerhaft nutzbare Leistung",
+      "Nachweis der Lebensdauer sämtlicher Bauteile unter Dauerlast",
+      "Nachweis einer bestimmten Anzahl von Stromanschlüssen für Grafikkarten"
     ],
     "correctAnswer": 0,
     "explanation": "80 PLUS bewertet Wirkungsgradstufen unter festgelegten Lastbedingungen.",
@@ -4309,31 +4309,31 @@ export default [
     "category": "Hardware",
     "topic": null,
     "difficulty": "medium",
-    "question": "Warum ist ein dynamisch wachsendes VHDX in Hyper-V praktisch?",
+    "question": "Welchen Vorteil bietet eine dynamisch erweiterbare VHDX-Datei gegenüber einer sofort vollständig belegten virtuellen Festplatte?",
     "answers": [
-      "Die Datei wächst mit dem tatsächlich benötigten Speicher bis zur Maximalgröße.",
-      "Sie verwendet nie physischen Speicherplatz.",
-      "Sie ist grundsätzlich schneller als jede feste virtuelle Festplatte.",
-      "Sie kann ohne Host-Dateisystem betrieben werden."
+      "Sie belegt anfangs weniger Host-Speicherplatz und wächst bei Bedarf",
+      "Sie reserviert ihre gesamte virtuelle Kapazität sofort im Host-Dateisystem",
+      "Sie erweitert beim Wachsen die physische Kapazität des Host-Laufwerks",
+      "Sie gibt gelöschten Gast-Speicherplatz in jedem Fall sofort an den Host zurück"
     ],
     "correctAnswer": 0,
-    "explanation": "Dynamische virtuelle Datenträger sparen zunächst Speicherplatz und wachsen bei Bedarf.",
+    "explanation": "Bei einer dynamisch erweiterbaren VHDX wird der Host-Speicherplatz bedarfsabhängig belegt. Der Host muss weiteres Wachstum ermöglichen; das Löschen im Gast verkleinert die Datei nicht in jedem Fall unmittelbar.",
     "source": "hardware.csv"
   },
   {
     "id": "hardware-071",
     "category": "Hardware",
     "topic": null,
-    "difficulty": "hard",
-    "question": "Was ist der Unterschied zwischen einem Hyper-V-Checkpoint und einem vollständigen Backup?",
+    "difficulty": "medium",
+    "question": "Eine VM und alle ihre Hyper-V-Checkpoint-Dateien liegen auf demselben physischen Laufwerk. Was fehlt gegenüber einem unabhängig gespeicherten Backup?",
     "answers": [
-      "Ein Checkpoint ist primär ein kurzfristiger VM-Zustandspunkt und ersetzt kein unabhängiges Backup.",
-      "Ein Checkpoint ist immer eine vollständige Offsite-Kopie.",
-      "Ein Backup kann keine VM-Dateien enthalten.",
-      "Checkpoints funktionieren nur bei ausgeschalteten VMs."
+      "Eine wiederherstellbare Kopie bei vollständigem Ausfall dieses Laufwerks",
+      "Die Möglichkeit, einen früheren erfassten VM-Zustand auszuwählen",
+      "Die Möglichkeit, Änderungen an den virtuellen Datenträgern zu erfassen",
+      "Die Möglichkeit, einen Test innerhalb der VM rückgängig zu machen"
     ],
     "correctAnswer": 0,
-    "explanation": "Checkpoints sind nützlich für Tests und Rücksetzpunkte, aber kein Ersatz für eine getrennte Backupstrategie.",
+    "explanation": "Ein Checkpoint hängt von den zugehörigen VM-Dateien ab. Liegen alle auf demselben ausgefallenen Laufwerk, fehlt eine unabhängige Wiederherstellungsquelle.",
     "source": "hardware.csv"
   },
   {
@@ -4343,10 +4343,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist die Aufgabe von Sysprep bei Windows-Images?",
     "answers": [
-      "Eine Windows-Installation für Generalisierung, Imaging und erneute Bereitstellung vorbereiten.",
-      "Die SSD physisch formatieren.",
-      "IPv6 vollständig deaktivieren.",
-      "Eine VM in ein VLAN konvertieren."
+      "Eine Windows-Installation für Generalisierung und erneute Bereitstellung vorbereiten",
+      "Eine vorhandene Windows-Partition als vollständige Image-Datei erfassen",
+      "Eine beschädigte Windows-Komponentenablage aus einer Quelle reparieren",
+      "Ein Windows-Volume in ein anderes Dateisystem konvertieren"
     ],
     "correctAnswer": 0,
     "explanation": "Sysprep kann systemspezifische Informationen generalisieren und eine Installation für Deployment vorbereiten.",
@@ -4356,16 +4356,16 @@ export default [
     "id": "hardware-073",
     "category": "Hardware",
     "topic": null,
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Warum ist es problematisch, viele identische Windows-VMs nur durch simples Kopieren ohne Generalisierung zu verteilen?",
     "answers": [
-      "Systemspezifische Identitäten und Konfigurationen können unerwünscht dupliziert werden.",
-      "Windows erkennt dann grundsätzlich keine CPU mehr.",
-      "Hyper-V erlaubt nur eine VM pro Host.",
-      "Kopierte VMs können keine virtuellen Netzwerkkarten besitzen."
+      "Systemspezifische Informationen werden ohne geeignete Vorbereitung mitkopiert",
+      "Das Kopieren führt zugleich die vollständige Generalisierung der Windows-Installation aus",
+      "Die Vergabe einer neuen VM-Kennung entfernt dabei auch die systemspezifischen Windows-Daten",
+      "Identische virtuelle Hardware macht jede Vorbereitung des Windows-Images überflüssig"
     ],
     "correctAnswer": 0,
-    "explanation": "Für sauberes Deployment wird ein generalisiertes Image bzw. geeigneter Klon-/Deployment-Prozess verwendet.",
+    "explanation": "Beim Bereitstellen eines Windows-Images auf weiteren Rechnern oder VMs müssen installationsspezifische Informationen mit einem unterstützten Verfahren generalisiert werden, beispielsweise mit Sysprep /generalize. Eine neue VM-Kennung allein generalisiert die Windows-Installation im Gast nicht.",
     "source": "hardware.csv"
   },
   {
@@ -4389,15 +4389,15 @@ export default [
     "category": "Hardware",
     "topic": "CPU",
     "difficulty": "medium",
-    "question": "Welche Aufgabe übernimmt die CPU in einem Arbeitsplatzrechner hauptsächlich?",
+    "question": "Ein CPU-Datenblatt nennt einen Basistakt und einen höheren maximalen Turbotakt. Was bedeutet die höhere Angabe?",
     "answers": [
-      "Sie führt Befehle aus und verarbeitet Daten",
-      "Sie speichert Dateien dauerhaft auf Flash-Speicher",
-      "Sie versorgt alle Komponenten direkt mit Netzspannung",
-      "Sie stellt die Bildausgabe ohne weitere Hardware bereit"
+      "Sie ist ein unter bestimmten Betriebsbedingungen erreichbarer Takt",
+      "Sie ist der garantierte Dauertakt aller Kerne bei jeder Last",
+      "Sie ist der externe Takt des angeschlossenen Arbeitsspeichers",
+      "Sie ist ein von Last und Temperatur unabhängiger Mindesttakt im Netzbetrieb"
     ],
     "correctAnswer": 0,
-    "explanation": "Die CPU verarbeitet Programmbefehle und führt Rechen- und Steueroperationen aus.",
+    "explanation": "Der erreichbare Turbotakt hängt unter anderem von aktiven Kernen, Last, Temperatur und Leistungsgrenzen ab. Er ist keine Zusage für dauerhaften All-Core-Betrieb.",
     "source": "hardware.csv"
   },
   {
@@ -4407,10 +4407,10 @@ export default [
     "difficulty": "medium",
     "question": "Was beschreibt die Taktfrequenz eines Prozessors am ehesten?",
     "answers": [
-      "Die maximale Größe des Arbeitsspeichers",
+      "Die Anzahl ausgeführter Maschinenbefehle pro Sekunde",
       "Die Anzahl der Taktzyklen pro Sekunde",
-      "Die Breite des PCIe-Steckplatzes",
-      "Die dauerhafte Schreibrate einer SSD"
+      "Die Anzahl parallel laufender Softwareprozesse",
+      "Die Datenübertragungen des Arbeitsspeichers pro Sekunde"
     ],
     "correctAnswer": 1,
     "explanation": "Die Taktfrequenz wird in Hertz angegeben und beschreibt Taktzyklen pro Sekunde.",
@@ -4423,10 +4423,10 @@ export default [
     "difficulty": "medium",
     "question": "Welchen Vorteil können mehrere CPU-Kerne bieten?",
     "answers": [
-      "Alle Programme benötigen dadurch nur einen Thread",
-      "Der Arbeitsspeicher wird dadurch nicht mehr benötigt",
-      "Mehrere Aufgaben lassen sich parallel bearbeiten",
-      "Die Leistungsaufnahme sinkt grundsätzlich auf null"
+      "Ein einzelner serieller Thread wird automatisch auf alle Kerne verteilt",
+      "Die Taktfrequenz jedes Kerns steigt im Verhältnis zur Kernzahl",
+      "Mehrere ausführungsbereite Threads können gleichzeitig bearbeitet werden",
+      "Die Latenz jedes Speicherzugriffs sinkt im Verhältnis zur Kernzahl"
     ],
     "correctAnswer": 2,
     "explanation": "Mehrere Kerne können verschiedene Threads oder Prozesse gleichzeitig bearbeiten.",
@@ -4436,13 +4436,13 @@ export default [
     "id": "hardware-078",
     "category": "Hardware",
     "topic": "CPU",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Warum lässt sich die Leistung zweier CPUs nicht allein anhand ihrer GHz-Zahl vergleichen?",
     "answers": [
-      "Die GHz-Zahl gilt nur für Festplatten und nicht für Prozessoren",
-      "Jede CPU führt pro Takt immer exakt gleich viele Befehle aus",
-      "Die Taktfrequenz wird ausschließlich durch den Arbeitsspeicher bestimmt",
-      "Architektur, IPC und Kernzahl beeinflussen die Leistung ebenfalls"
+      "Der höchste Turbotakt genügt auch bei unterschiedlichen Architekturen als Vergleich",
+      "Die Kernzahl ersetzt den Einfluss der Leistung pro Takt bei jedem Programm",
+      "Die Nennfrequenz beschreibt bereits Speicherzugriffe und Wartezeiten",
+      "Architektur, Leistung pro Takt und Parallelisierung der Anwendung wirken ebenfalls"
     ],
     "correctAnswer": 3,
     "explanation": "Neben der Frequenz wirken unter anderem Architektur, IPC, Cache und Kernzahl auf die reale Leistung.",
@@ -4453,15 +4453,15 @@ export default [
     "category": "Hardware",
     "topic": "CPU",
     "difficulty": "medium",
-    "question": "Wozu dient der Cache eines Prozessors?",
+    "question": "Welche Beziehung zwischen L1- und L3-Cache ist bei einer typischen Desktop-CPU zu erwarten?",
     "answers": [
-      "Häufig benötigte Daten besonders schnell bereitzuhalten",
-      "Große Benutzerdateien dauerhaft zu archivieren",
-      "Netzwerkadressen für andere Rechner zu vergeben",
-      "Die Ausgangsspannung des Netzteils zu stabilisieren"
+      "L1 hat meist weniger Kapazität und eine geringere Zugriffslatenz.",
+      "L1 hat meist weniger Kapazität und eine höhere Zugriffslatenz.",
+      "L1 hat meist mehr Kapazität und eine geringere Zugriffslatenz.",
+      "L1 hat meist mehr Kapazität und eine höhere Zugriffslatenz."
     ],
     "correctAnswer": 0,
-    "explanation": "CPU-Cache ist kleiner, aber sehr schneller Speicher nahe an den Recheneinheiten.",
+    "explanation": "Kleine L1-Caches liegen besonders nahe an der Ausführung. Größere nachgeordnete Caches können mehr Daten halten, haben aber typischerweise höhere Zugriffslatenzen.",
     "source": "hardware.csv"
   },
   {
@@ -4469,15 +4469,15 @@ export default [
     "category": "Hardware",
     "topic": "CPU",
     "difficulty": "medium",
-    "question": "Was bedeutet SMT bzw. Hyper-Threading vereinfacht?",
+    "question": "Warum läuft ein für x86-64 übersetztes Programm nicht ohne Weiteres nativ auf einer ARM64-CPU?",
     "answers": [
-      "Mehrere Mainboards teilen sich denselben Prozessor",
-      "Ein physischer Kern kann mehrere Threads verwalten",
-      "Der Prozessor arbeitet nur noch mit halbem Takt",
-      "Jeder Thread erhält automatisch einen eigenen CPU-Kern"
+      "Da beide Architekturen 64 Bit verwenden, kann nur das Betriebssystem die native Ausführung verhindern.",
+      "Die Prozessoren verwenden unterschiedliche Maschinenbefehlssätze",
+      "Die Architekturen unterscheiden sich nur in der Byte-Reihenfolge gespeicherter Zahlen.",
+      "Jede der beiden Architekturen benötigt grundsätzlich eine andere Quellprogrammiersprache."
     ],
     "correctAnswer": 1,
-    "explanation": "SMT erlaubt einem physischen Kern, mehrere Ausführungsthreads zu verwalten.",
+    "explanation": "Nativ ausgeführter Maschinencode muss zum Befehlssatz der CPU passen. Eine geeignete Neuübersetzung oder eine unterstützte Emulationsschicht kann nötig sein.",
     "source": "hardware.csv"
   },
   {
@@ -4487,10 +4487,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Aufgabe hat das Mainboard?",
     "answers": [
-      "Es ersetzt den Massenspeicher für Benutzerdaten",
-      "Es erzeugt die Netzspannung für externe Geräte",
-      "Es verbindet und koordiniert die zentralen Hardwarekomponenten",
-      "Es übernimmt ausschließlich die Audioausgabe"
+      "Es speichert die Nutzdaten der Anwendungen in seinem Firmware-Flash",
+      "Es übernimmt die Funktion des Netzteils für die Versorgung aus dem Stromnetz",
+      "Es stellt Sockel, Steckplätze und Verbindungen zwischen Komponenten bereit",
+      "Es führt die Maschinenbefehle der Programme anstelle der CPU aus"
     ],
     "correctAnswer": 2,
     "explanation": "Das Mainboard stellt Sockel, Steckplätze, Anschlüsse und Datenverbindungen zwischen Komponenten bereit.",
@@ -4501,15 +4501,15 @@ export default [
     "category": "Hardware",
     "topic": "Mainboard",
     "difficulty": "medium",
-    "question": "Warum muss der CPU-Sockel zum Prozessor passen?",
+    "question": "Eine CPU soll in einen passenden Sockel eingesetzt werden. Welche Orientierung ist maßgeblich?",
     "answers": [
-      "Nur dadurch erhält die SSD genügend Speicherplatz",
-      "Nur dadurch kann der Monitor die Auflösung erkennen",
-      "Der Sockel bestimmt ausschließlich die Gehäusefarbe",
-      "Mechanische und elektrische Schnittstelle müssen kompatibel sein"
+      "Die Ausrichtung des aufgedruckten Modellnamens zum Gehäuselüfter",
+      "Die Position des benachbarten RAM-Slots unabhängig von der CPU-Markierung",
+      "Die Richtung des später montierten Lüfterkabels",
+      "Die übereinstimmenden Positionsmarkierungen und Kodierungen von CPU und Sockel"
     ],
     "correctAnswer": 3,
-    "explanation": "Eine CPU benötigt einen passenden Sockel und Chipsatz beziehungsweise Firmware-Unterstützung.",
+    "explanation": "Markierungen und mechanische Kodierungen zeigen die vorgesehene Einbaulage. Die CPU wird nach Herstellervorgabe ohne erzwungenes Einsetzen montiert.",
     "source": "hardware.csv"
   },
   {
@@ -4533,28 +4533,28 @@ export default [
     "category": "Hardware",
     "topic": "Mainboard",
     "difficulty": "medium",
-    "question": "Was bedeutet bei PCI Express die Angabe x4 oder x16?",
+    "question": "Was bezeichnet x4 in der Angabe eines ausgehandelten PCIe-Links?",
     "answers": [
-      "Sie beschreibt die Zahl der CPU-Kerne",
-      "Sie beschreibt die Anzahl der nutzbaren Daten-Lanes",
-      "Sie beschreibt die Ausgangsspannung des Netzteils",
-      "Sie beschreibt die Größe eines RAM-Moduls in Gigabyte"
+      "Vier Gigabyte übertragene Daten pro Sekunde",
+      "Vier aktive Daten-Lanes",
+      "Die vierte PCIe-Generation",
+      "Vier gleichzeitig angeschlossene Erweiterungskarten"
     ],
     "correctAnswer": 1,
-    "explanation": "Die Lane-Anzahl beeinflusst die maximal verfügbare PCIe-Bandbreite.",
+    "explanation": "x4 bezeichnet vier Lanes des Links. Die PCIe-Generation wird zusätzlich angegeben und bestimmt mit der Lane-Anzahl die theoretische Bandbreite.",
     "source": "hardware.csv"
   },
   {
     "id": "hardware-085",
     "category": "Hardware",
     "topic": "Mainboard",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Eine PCIe-x16-Karte steckt mechanisch in einem x16-Slot, der elektrisch nur mit x4 angebunden ist. Was ist die wahrscheinlichste Folge?",
     "answers": [
-      "Die Karte erhält automatisch viermal mehr elektrische Leistung",
-      "Der Steckplatz wird dadurch in einen SATA-Anschluss umgewandelt",
-      "Die Karte kann funktionieren, besitzt aber weniger maximale Bandbreite",
-      "Die Karte arbeitet zwingend mit vierfacher Taktfrequenz"
+      "Die mechanische Länge stellt unabhängig von der Verdrahtung 16 Lanes bereit",
+      "Die PCIe-Generation steigt zum Ausgleich der fehlenden Lanes",
+      "Die Karte kann funktionieren, die x4-Anbindung begrenzt aber die Bandbreite",
+      "Die Karte erhält die x16-Bandbreite durch parallele Nutzung des System-RAM"
     ],
     "correctAnswer": 2,
     "explanation": "Mechanische Größe und elektrische Lane-Anbindung können sich unterscheiden; weniger Lanes begrenzen die Bandbreite.",
@@ -4565,15 +4565,15 @@ export default [
     "category": "Hardware",
     "topic": "Arbeitsspeicher",
     "difficulty": "medium",
-    "question": "Welche Eigenschaft unterscheidet RAM grundlegend von einer SSD?",
+    "question": "Welche Aussage über den Refresh herkömmlichen DRAMs ist richtig?",
     "answers": [
-      "RAM speichert Daten dauerhaft über viele Jahre",
-      "RAM verwendet ausschließlich SATA als Schnittstelle",
-      "RAM ist grundsätzlich langsamer als eine Festplatte",
-      "RAM verliert seinen Inhalt normalerweise ohne Strom"
+      "Refresh ist nur für Zellen nötig, deren Inhalt das laufende Programm gerade verändert.",
+      "Refresh überträgt den Inhalt regelmäßig auf einen Datenträger und liest ihn danach zurück.",
+      "Refresh wird nur beim Einschalten durchgeführt; danach hält die Versorgung allein jede Zellladung konstant.",
+      "Refresh frischt die Zellladung regelmäßig auf, auch wenn die gespeicherten Daten unverändert bleiben."
     ],
     "correctAnswer": 3,
-    "explanation": "Arbeitsspeicher ist flüchtig und dient der schnellen temporären Datenhaltung.",
+    "explanation": "DRAM speichert Bits als elektrische Ladung, die nicht unbegrenzt erhalten bleibt. Refresh frischt den Zellinhalt auf, solange der Speicher versorgt wird.",
     "source": "hardware.csv"
   },
   {
@@ -4581,47 +4581,47 @@ export default [
     "category": "Hardware",
     "topic": "Arbeitsspeicher",
     "difficulty": "medium",
-    "question": "Was kann passieren, wenn für laufende Programme zu wenig RAM verfügbar ist?",
+    "question": "Für ein Notebook sind austauschbare DDR4-SO-DIMMs vorgesehen. Welches Merkmal unterscheidet sie von üblichen Desktop-DDR4-UDIMMs?",
     "answers": [
-      "Das System lagert häufiger Daten auf Massenspeicher aus",
-      "Die CPU erhält automatisch zusätzliche physische Kerne",
-      "Der Monitor reduziert dauerhaft seine native Auflösung",
-      "Das Mainboard deaktiviert sämtliche USB-Anschlüsse"
+      "Die kürzere Modulplatine mit einer anderen Kontaktanordnung",
+      "Die identische Modulplatine mit lediglich anders bedrucktem Aufkleber",
+      "Die identische Kontaktanordnung bei ausschließlich geringerer Speicherkapazität",
+      "Die gleiche mechanische Bauform bei grundsätzlich doppelter Datenrate"
     ],
     "correctAnswer": 0,
-    "explanation": "Bei RAM-Mangel kann das Betriebssystem Auslagerungsspeicher verwenden, was meist langsamer ist.",
+    "explanation": "SO-DIMMs sind kompakter als Desktop-DIMMs und benötigen passende Steckplätze. Die gemeinsame DDR-Generation macht die Bauformen nicht austauschbar.",
     "source": "hardware.csv"
   },
   {
     "id": "hardware-088",
     "category": "Hardware",
     "topic": "Arbeitsspeicher",
-    "difficulty": "medium",
-    "question": "Was bedeutet Dual-Channel bei Arbeitsspeicher?",
+    "difficulty": "hard",
+    "question": "Ein DDR4-Speicherkanal überträgt 3200 Millionen Transfers pro Sekunde bei 64 Bit Datenbreite. Welche theoretische Datenrate ergibt sich ohne Zusatzbits und Verwaltungsaufwand?",
     "answers": [
-      "Zwei Betriebssysteme teilen sich ein RAM-Modul",
-      "Zwei Speicherkanäle können parallel genutzt werden",
-      "Jedes Modul besitzt automatisch doppelte Kapazität",
-      "Der RAM arbeitet nur mit zwei verschiedenen Spannungen"
+      "12,8 GB/s",
+      "25,6 GB/s",
+      "51,2 GB/s",
+      "204,8 GB/s"
     ],
     "correctAnswer": 1,
-    "explanation": "Dual-Channel erhöht die mögliche Speicherbandbreite durch parallele Kanäle.",
+    "explanation": "64 Bit entsprechen 8 Byte. 3200 Millionen Transfers pro Sekunde × 8 Byte ergeben 25,6 Milliarden Byte pro Sekunde, also 25,6 GB/s.",
     "source": "hardware.csv"
   },
   {
     "id": "hardware-089",
     "category": "Hardware",
     "topic": "Arbeitsspeicher",
-    "difficulty": "medium",
-    "question": "Welche Konfiguration begünstigt typischerweise Dual-Channel-Betrieb?",
+    "difficulty": "hard",
+    "question": "Ein Mainboard unterstützt laut Handbuch asymmetrischen Dual-Channel-Betrieb: Der gleich große Anteil beider Kanäle arbeitet parallel, der Rest im Single-Channel-Modus. Kanal A enthält 8 GB, Kanal B 16 GB. Wie verteilen sich die 24 GB?",
     "answers": [
-      "Ein einzelnes Modul in einem beliebigen Steckplatz",
-      "Vier unterschiedliche Module mit beliebigen Taktraten",
-      "Zwei passende Module in den vorgesehenen Speicherkanälen",
-      "Ein RAM-Modul zusammen mit einer NVMe-SSD"
+      "8 GB Dual Channel und 16 GB Single Channel",
+      "24 GB Dual Channel und 0 GB Single Channel",
+      "16 GB Dual Channel und 8 GB Single Channel",
+      "0 GB Dual Channel und 24 GB Single Channel"
     ],
     "correctAnswer": 2,
-    "explanation": "Für Dual-Channel werden üblicherweise passende Module in den vom Mainboard vorgesehenen Slots verwendet.",
+    "explanation": "Je 8 GB aus beiden Kanälen bilden zusammen 16 GB im Dual-Channel-Bereich. Die übrigen 8 GB des größeren Moduls arbeiten nach der genannten Regel im Single-Channel-Modus.",
     "source": "hardware.csv"
   },
   {
@@ -4631,10 +4631,10 @@ export default [
     "difficulty": "medium",
     "question": "Was beschreibt die RAM-Kapazität in GB?",
     "answers": [
-      "Wie schnell die CPU ihren Basistakt verändert",
-      "Wie viele Netzwerkgeräte angeschlossen werden dürfen",
-      "Wie hoch die Ausgangsleistung des Netzteils ist",
-      "Wie viele Daten gleichzeitig im Arbeitsspeicher gehalten werden können"
+      "Die Zahl der Datenübertragungen des Moduls pro Sekunde",
+      "Die Wartezeit zwischen Speicherbefehl und Datenbereitstellung",
+      "Die Breite des Datenbusses zwischen Speicher und Controller",
+      "Die Datenmenge, die der Arbeitsspeicher gleichzeitig aufnehmen kann"
     ],
     "correctAnswer": 3,
     "explanation": "Die Kapazität gibt die verfügbare Menge an Arbeitsspeicher an.",
@@ -4645,15 +4645,15 @@ export default [
     "category": "Hardware",
     "topic": "Massenspeicher",
     "difficulty": "medium",
-    "question": "Welcher Vorteil einer SSD gegenüber einer HDD ist typisch?",
+    "question": "Warum sind die Zugriffszeiten einer SSD auf zufällig verteilte Daten typischerweise kürzer als bei einer HDD?",
     "answers": [
-      "Deutlich geringere Zugriffszeiten",
-      "Mechanische Schreibköpfe mit höherer Präzision",
-      "Unbegrenzte Anzahl möglicher Schreibvorgänge",
-      "Immer niedrigere Kosten pro Terabyte"
+      "Es entfallen mechanische Positionierung und Rotationswartezeit",
+      "SSDs speichern zufällig angeforderte Daten grundsätzlich als zusammenhängende Datei.",
+      "Bei SSDs bestimmt allein die maximale Schnittstellenbandbreite die Zugriffszeit.",
+      "SSDs halten den gesamten Inhalt des Laufwerks dauerhaft in einem DRAM-Puffer."
     ],
     "correctAnswer": 0,
-    "explanation": "SSDs haben keine mechanischen Suchbewegungen und bieten daher sehr kurze Zugriffszeiten.",
+    "explanation": "SSDs greifen elektronisch auf Speicherzellen zu. HDDs benötigen bei zufälligen Zugriffen zusätzlich Zeit für die Positionierung der Köpfe und das Vorbeidrehen des Zielsektors.",
     "source": "hardware.csv"
   },
   {
@@ -4677,15 +4677,15 @@ export default [
     "category": "Hardware",
     "topic": "Massenspeicher",
     "difficulty": "medium",
-    "question": "Welche Schnittstelle wird häufig von 2,5-Zoll-SATA-SSDs verwendet?",
+    "question": "Eine 2,5-Zoll-SATA-SSD wird in einem Desktop ohne Backplane eingebaut. Welche beiden Verbindungen benötigt sie üblicherweise?",
     "answers": [
-      "DIMM",
-      "HDMI",
-      "SATA",
-      "RJ45"
+      "Ein SATA-Datenkabel ohne zusätzliche Stromverbindung",
+      "Ein SATA-Stromanschluss ohne Datenverbindung",
+      "Ein SATA-Datenkabel und ein SATA-Stromanschluss",
+      "Ein PCIe-Zusatzstromkabel und ein SATA-Stromanschluss"
     ],
     "correctAnswer": 2,
-    "explanation": "2,5-Zoll-SSDs verwenden häufig SATA für Daten und einen passenden Stromanschluss.",
+    "explanation": "Bei dieser Bauform sind Datenübertragung und Stromversorgung getrennt angeschlossen. Eine Backplane könnte beide Anschlüsse gemeinsam aufnehmen.",
     "source": "hardware.csv"
   },
   {
@@ -4693,15 +4693,15 @@ export default [
     "category": "Hardware",
     "topic": "Massenspeicher",
     "difficulty": "medium",
-    "question": "Was ist ein typischer Vorteil einer NVMe-SSD gegenüber einer SATA-SSD?",
+    "question": "Eine SSD schreibt anfangs sehr schnell, wird bei einem langen Kopiervorgang aber deutlich langsamer. Temperatur und Link-Konfiguration bleiben unauffällig. Welche Erklärung ist mit diesem Befund vereinbar?",
     "answers": [
-      "Sie benötigt zwingend rotierende Magnetscheiben",
-      "Sie arbeitet ausschließlich über einen USB-2.0-Bus",
-      "Sie besitzt grundsätzlich mehr Speicherzellen pro Gigabyte",
-      "Sie kann über PCIe deutlich höhere Datenraten erreichen"
+      "Der PCIe-Link wechselt wegen des größeren Dateiumfangs in eine ältere Generation.",
+      "Die SSD drosselt wegen Erreichens ihrer thermischen Schutzgrenze.",
+      "Das Dateisystem hat seine zulässige Maximalgröße für diese Datei erreicht.",
+      "Weitere Daten werden nach Ausschöpfen des schnellen Puffers langsamer in den NAND-Speicher geschrieben."
     ],
     "correctAnswer": 3,
-    "explanation": "NVMe-SSDs nutzen PCIe und umgehen die Bandbreitengrenzen klassischer SATA-Verbindungen.",
+    "explanation": "Manche SSDs nutzen einen schnellen, begrenzten Schreibpuffer, etwa einen SLC-Cache. Nach dessen Auslastung kann die anhaltende Schreibrate deutlich niedriger sein als die anfängliche Spitzenrate.",
     "source": "hardware.csv"
   },
   {
@@ -4709,15 +4709,15 @@ export default [
     "category": "Hardware",
     "topic": "Massenspeicher",
     "difficulty": "hard",
-    "question": "Warum bedeutet M.2 nicht automatisch NVMe?",
+    "question": "Eine NVMe-SSD auf einem PCIe-Adapter wird vom gestarteten Betriebssystem als Datenlaufwerk erkannt. Warum beweist das noch nicht, dass der PC davon booten kann?",
     "answers": [
-      "M.2 beschreibt die Bauform, während verschiedene Schnittstellen möglich sind",
-      "M.2 bezeichnet ausschließlich ein Dateisystem für SSDs",
-      "M.2 legt nur die Kapazität und nicht die Bauform fest",
-      "M.2 ist ein Protokoll, das ausschließlich HDDs verwenden"
+      "Die Firmware benötigt zusätzlich Unterstützung für den NVMe-Bootpfad",
+      "Die Betriebssystemerkennung beweist bereits jede notwendige Firmwarefunktion",
+      "Der PCIe-Adapter stellt durch seine mechanische Passform automatisch einen Firmware-Bootdienst bereit",
+      "Eine Formatierung des Dateisystems ergänzt die fehlende NVMe-Unterstützung der Firmware"
     ],
     "correctAnswer": 0,
-    "explanation": "M.2 ist ein Formfaktor; M.2-Laufwerke können je nach Gerät beispielsweise SATA oder PCIe/NVMe nutzen.",
+    "explanation": "Ein Betriebssystemtreiber kann ein Laufwerk ansprechen, das die Firmware nicht als Bootgerät unterstützt. Für den Systemstart muss auch die vorgelagerte Bootkette passend unterstützt und eingerichtet sein.",
     "source": "hardware.csv"
   },
   {
@@ -4725,15 +4725,15 @@ export default [
     "category": "Hardware",
     "topic": "RAID",
     "difficulty": "medium",
-    "question": "Welches Ziel hat RAID 1 hauptsächlich?",
+    "question": "Ein RAID 10 besteht aus den Spiegelpaaren A/B und C/D. Laufwerk A ist ausgefallen. Welcher einzelne weitere Laufwerksausfall führt zum Verlust eines vollständigen Spiegelpaares?",
     "answers": [
-      "Kapazität ohne Redundanz maximal zu bündeln",
-      "Daten durch Spiegelung redundant vorzuhalten",
-      "Arbeitsspeicher auf zwei Kanäle aufzuteilen",
-      "Netzwerkpakete auf mehrere Ports zu verteilen"
+      "Laufwerk C",
+      "Laufwerk B",
+      "Laufwerk D",
+      "Keiner dieser einzelnen weiteren Ausfälle"
     ],
     "correctAnswer": 1,
-    "explanation": "RAID 1 speichert identische Daten auf mindestens zwei Laufwerken.",
+    "explanation": "Fällt nach A auch B aus, sind beide Kopien dieses Spiegelpaares verloren. Ein Ausfall in einem anderen Paar kann tolerierbar sein, sofern dessen Gegenstück intakt bleibt.",
     "source": "hardware.csv"
   },
   {
@@ -4741,31 +4741,31 @@ export default [
     "category": "Hardware",
     "topic": "RAID",
     "difficulty": "medium",
-    "question": "Welche Eigenschaft trifft auf RAID 0 zu?",
+    "question": "Welche klassische RAID-Stufe verwendet zwei unabhängige Paritätsinformationen und toleriert damit den Ausfall beliebiger zwei Laufwerke?",
     "answers": [
-      "Spiegelung aller Daten auf jedem Laufwerk",
-      "Toleranz gegen den Ausfall eines beliebigen Laufwerks",
-      "Hohe nutzbare Kapazität ohne Redundanz",
-      "Automatische externe Datensicherung"
+      "RAID 0",
+      "RAID 5",
+      "RAID 6",
+      "RAID 1 mit genau zwei Laufwerken"
     ],
     "correctAnswer": 2,
-    "explanation": "RAID 0 verteilt Daten auf mehrere Laufwerke, bietet aber keine Redundanz.",
+    "explanation": "RAID 6 nutzt doppelte verteilte Parität. Bei intakten übrigen Daten können zwei ausgefallene Laufwerke rekonstruiert werden.",
     "source": "hardware.csv"
   },
   {
     "id": "hardware-098",
     "category": "Hardware",
     "topic": "RAID",
-    "difficulty": "hard",
-    "question": "Warum ersetzt ein RAID keine Datensicherung?",
+    "difficulty": "medium",
+    "question": "Ein RAID 5 meldet nach dem Ausfall eines Laufwerks den Zustand 'degraded'. Die Daten sind noch erreichbar. Welche Aussage trifft zu?",
     "answers": [
-      "Es kann grundsätzlich keine defekten Laufwerke überbrücken",
-      "Es speichert Daten ausschließlich im flüchtigen Arbeitsspeicher",
-      "Es verhindert jede Wiederherstellung nach einem Hardwaredefekt",
-      "Es schützt nicht zuverlässig vor Löschen, Schadsoftware oder Standortverlust"
+      "Die verbleibenden Laufwerke enthalten jetzt vollständige Einzelkopien aller Daten",
+      "Der Verbund besitzt weiterhin Schutz gegen den Ausfall eines weiteren Laufwerks",
+      "Der Zustand bedeutet, dass ein aktuelles externes Backup bereits erstellt wurde",
+      "Die Redundanz ist aufgebraucht; ein weiterer Laufwerksausfall kann zum Datenverlust führen"
     ],
     "correctAnswer": 3,
-    "explanation": "RAID erhöht Verfügbarkeit, schützt aber nicht gegen alle Ursachen von Datenverlust.",
+    "explanation": "RAID 5 kann einen Laufwerksausfall überbrücken. Bis zum erfolgreichen Wiederaufbau fehlt diese Redundanz; Backupstatus und Austausch sind nach Betriebsverfahren zu prüfen.",
     "source": "hardware.csv"
   },
   {
@@ -4773,15 +4773,15 @@ export default [
     "category": "Hardware",
     "topic": "RAID",
     "difficulty": "medium",
-    "question": "Wie viel nutzbare Kapazität bietet RAID 1 mit zwei gleich großen 2-TB-Laufwerken ungefähr?",
+    "question": "Ein klassisches RAID 1 spiegelt eine 2-TB- und eine 4-TB-Festplatte. Es wird nur der auf beiden Laufwerken vorhandene Bereich genutzt. Wie viel ist ohne Verwaltungsverluste nutzbar?",
     "answers": [
       "2 TB",
-      "1 TB",
       "3 TB",
-      "4 TB"
+      "4 TB",
+      "6 TB"
     ],
     "correctAnswer": 0,
-    "explanation": "Durch Spiegelung entspricht die nutzbare Kapazität ungefähr der Kapazität eines Laufwerks.",
+    "explanation": "Der gemeinsame Bereich ist auf die kleinere Festplatte begrenzt. Spiegelung stellt daher 2 TB nutzbare Kapazität bereit; der zusätzliche Bereich der größeren Platte vergrößert diesen Spiegel nicht.",
     "source": "hardware.csv"
   },
   {
@@ -4805,15 +4805,15 @@ export default [
     "category": "Hardware",
     "topic": "Grafik und Display",
     "difficulty": "medium",
-    "question": "Welche Aufgabe übernimmt eine GPU hauptsächlich?",
+    "question": "Eine Anwendung unterstützt für ihre Berechnung wahlweise CPU- oder GPU-Ausführung. Was ist nötig, damit eine geeignete dedizierte GPU diese Berechnung übernimmt?",
     "answers": [
-      "Benutzerdateien dauerhaft auf Magnetplatten zu speichern",
-      "Die Netzspannung in Gleichspannung umzuwandeln",
-      "Grafik- und stark parallelisierbare Berechnungen auszuführen",
-      "IP-Adressen an andere Geräte zu vergeben"
+      "Die Auswahl der GPU allein durch den angeschlossenen Monitor erzwingen",
+      "Die Programmdateien auf einen schnelleren Datenträger kopieren",
+      "Den von Anwendung und Treiber unterstützten GPU-Rechenpfad verwenden",
+      "Den Rechenprozess mit höherer CPU-Priorität ausführen"
     ],
     "correctAnswer": 2,
-    "explanation": "GPUs sind auf Grafikberechnung und viele parallele Rechenoperationen spezialisiert.",
+    "explanation": "Eine vorhandene GPU beschleunigt nicht automatisch jeden Programmcode. Anwendung und Treiber müssen einen geeigneten GPU-Rechenpfad unterstützen und nutzen.",
     "source": "hardware.csv"
   },
   {
@@ -4821,15 +4821,15 @@ export default [
     "category": "Hardware",
     "topic": "Grafik und Display",
     "difficulty": "medium",
-    "question": "Was ist VRAM?",
+    "question": "Eine Grafikaufgabe benötigt mehr lokalen Grafikspeicher, als die dedizierte GPU besitzt. Welche Folge ist je nach Anwendung möglich?",
     "answers": [
-      "Nichtflüchtiger Speicher für UEFI-Einstellungen",
-      "Virtueller Speicher auf der System-SSD",
-      "Arbeitsspeicher ausschließlich für Netzwerkpakete",
-      "Speicher, den die Grafikeinheit für Grafikdaten nutzt"
+      "Die GPU kann bei gleichem Speicherbedarf mit unveränderter Transferlast weiterarbeiten",
+      "Zusätzlicher System-RAM erhöht unmittelbar die lokale VRAM-Kapazität",
+      "Eine höhere Rechentaktrate vergrößert die Zahl lokal speicherbarer Daten",
+      "Auslagerung in Systemspeicher, Leistungseinbußen oder ein Abbruch"
     ],
     "correctAnswer": 3,
-    "explanation": "VRAM hält unter anderem Texturen, Framebuffer und weitere Grafikdaten.",
+    "explanation": "Reicht der lokale Grafikspeicher nicht aus, können zusätzliche Transfers oder Speicherfehler auftreten. Das Verhalten hängt von Anwendung, Treiber und Speicherverwaltung ab.",
     "source": "hardware.csv"
   },
   {
@@ -4853,15 +4853,15 @@ export default [
     "category": "Hardware",
     "topic": "Grafik und Display",
     "difficulty": "medium",
-    "question": "Welche Schnittstelle ist bei PC-Monitoren besonders für hohe Auflösungen und Bildraten verbreitet?",
+    "question": "Mehrere unabhängige Monitorsignale sollen über einen DisplayPort-Ausgang zu einem geeigneten Hub übertragen werden. Welche Funktion ist dafür vorgesehen?",
     "answers": [
-      "Parallelport-Anschluss",
-      "DisplayPort-Anschluss",
-      "PS/2-Anschluss",
-      "SATA-Anschluss"
+      "HDCP",
+      "Multi-Stream Transport (MST)",
+      "Adaptive-Sync",
+      "Display Stream Compression (DSC)"
     ],
     "correctAnswer": 1,
-    "explanation": "DisplayPort ist für moderne Monitore mit hohen Auflösungen und Bildraten weit verbreitet.",
+    "explanation": "MST transportiert mehrere Bildströme über einen DisplayPort-Link. Grafiklösung, Software und Hub müssen die gewünschte Konfiguration unterstützen; die verfügbare Linkbandbreite wird geteilt.",
     "source": "hardware.csv"
   },
   {
@@ -4871,13 +4871,13 @@ export default [
     "difficulty": "medium",
     "question": "Ein Monitor unterstützt 144 Hz, läuft aber nur mit 60 Hz. Was sollte zuerst geprüft werden?",
     "answers": [
-      "Ob die System-SSD im richtigen Dateisystem formatiert wurde",
-      "Ob der Arbeitsspeicher eine gerade Kapazität in GB besitzt",
-      "Einstellung, Kabel und Anschluss auf Unterstützung der gewünschten Bildrate",
-      "Ob der Druckertreiber auf dem neuesten Stand ist"
+      "Prüfen, ob im Grafiktreiber eine Bildratenbegrenzung für Spiele aktiv ist.",
+      "Prüfen, welches Farbprofil dem Monitor zugeordnet ist.",
+      "Anzeigemodus, Grafikausgang und Kabel für die gewünschte Frequenz prüfen",
+      "Prüfen, ob die Anwendung mehr als 60 Bilder pro Sekunde berechnet."
     ],
     "correctAnswer": 2,
-    "explanation": "Bildrate hängt unter anderem von Anzeigeeinstellung, Grafikausgang, Kabel und Monitorfähigkeiten ab.",
+    "explanation": "Für die Bildwiederholfrequenz des Monitors müssen der gewählte Anzeigemodus sowie Monitor, Grafikausgang und Kabel zusammenpassen. Die von einer Anwendung berechnete Bildrate und ein Farbprofil legen die eingestellte Monitorfrequenz nicht fest.",
     "source": "hardware.csv"
   },
   {
@@ -4885,15 +4885,15 @@ export default [
     "category": "Hardware",
     "topic": "Netzteil und Energie",
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat ein PC-Netzteil?",
+    "question": "Das PC-Netzteil liefert unter anderem 12 V. Welche Baugruppe erzeugt daraus auf dem Mainboard die passende niedrige Versorgungsspannung für die CPU?",
     "answers": [
-      "Alle Programmdaten dauerhaft zu speichern",
-      "Die Netzwerkkonfiguration des Betriebssystems zu verwalten",
-      "Die Bildschirmauflösung automatisch festzulegen",
-      "Netzspannung in geeignete Gleichspannungen für Komponenten umzuwandeln"
+      "Der Chipsatz für die SATA-Anschlüsse",
+      "Der Taktgenerator des Mainboards",
+      "Der RTC-Baustein mit seiner Batterie",
+      "Die Spannungswandlerstufe (VRM)"
     ],
     "correctAnswer": 3,
-    "explanation": "Das Netzteil versorgt interne Komponenten mit den benötigten Gleichspannungen.",
+    "explanation": "Die VRM regelt die Versorgung der CPU auf die benötigte Spannung. Das Netzteil und die CPU-Spannungsregelung erfüllen damit unterschiedliche Aufgaben.",
     "source": "hardware.csv"
   },
   {
@@ -4901,15 +4901,15 @@ export default [
     "category": "Hardware",
     "topic": "Netzteil und Energie",
     "difficulty": "medium",
-    "question": "Warum sollte ein Netzteil nicht nur exakt nach der typischen Leistungsaufnahme dimensioniert werden?",
+    "question": "Auf dem Typenschild eines Netzteils ist für den gemeinsamen 12-V-Ausgang ein Grenzwert von 40 A angegeben. Welche maximale Leistung entspricht diesem Wert?",
     "answers": [
-      "Lastspitzen und zukünftige Erweiterungen benötigen Reserve",
-      "Ein Netzteil liefert grundsätzlich immer exakt seine Nennleistung",
-      "Reserve reduziert automatisch die Speicherkapazität des Systems",
-      "Ohne Reserve kann das Betriebssystem keine Updates installieren"
+      "480 W",
+      "40 W",
+      "120 W",
+      "520 W"
     ],
     "correctAnswer": 0,
-    "explanation": "Eine sinnvolle Leistungsreserve berücksichtigt Lastspitzen und Erweiterungen.",
+    "explanation": "Für Gleichspannung gilt P = U × I. Bei 12 V und 40 A ergibt sich 480 W. Weitere Gesamt- oder kombinierte Grenzwerte des Netzteils sind zusätzlich zu beachten.",
     "source": "hardware.csv"
   },
   {
@@ -4917,15 +4917,15 @@ export default [
     "category": "Hardware",
     "topic": "Netzteil und Energie",
     "difficulty": "medium",
-    "question": "Ein System benötigt unter Volllast etwa 400 W. Welche Netzteilwahl ist unter sonst gleichen Bedingungen plausibler?",
+    "question": "Ein PC benötigt laut Planung mindestens 500 W Netzteil-Nennleistung und zwei passende GPU-Stromstecker. Das Budget beträgt 100 €. Welches Angebot erfüllt alle Vorgaben?",
     "answers": [
-      "Ein 250-W-Netzteil mit möglichst vielen Adaptern",
-      "Ein hochwertiges 550-W-Netzteil mit ausreichenden Anschlüssen",
-      "Ein 400-W-Netzteil ohne Leistungsreserve und ohne Zertifizierung",
-      "Ein 2000-W-Netzteil unabhängig von Effizienz und Lastbereich"
+      "450 W, zwei passende GPU-Stecker, 70 €",
+      "550 W, zwei passende GPU-Stecker, 90 €",
+      "550 W, ein passender GPU-Stecker, 80 €",
+      "750 W, zwei passende GPU-Stecker, 130 €"
     ],
     "correctAnswer": 1,
-    "explanation": "Ein moderater Sicherheits- und Erweiterungsspielraum ist sinnvoll; extreme Überdimensionierung ist nicht automatisch besser.",
+    "explanation": "Nur das 550-W-Angebot für 90 € erfüllt Leistung, Anschlusszahl und Budget zugleich. Eine Zertifizierung allein würde fehlende Leistung oder Anschlüsse nicht ersetzen.",
     "source": "hardware.csv"
   },
   {
@@ -4935,10 +4935,10 @@ export default [
     "difficulty": "medium",
     "question": "Was beschreibt der Wirkungsgrad eines Netzteils?",
     "answers": [
-      "Das Verhältnis von RAM-Kapazität zu SSD-Kapazität",
-      "Die Zahl der Lüfter pro installiertem Prozessor",
-      "Das Verhältnis von abgegebener Nutzleistung zu aufgenommener Leistung",
-      "Die Geschwindigkeit der Datenübertragung über PCIe"
+      "Aufgenommene Leistung geteilt durch abgegebene Leistung",
+      "Verlustleistung geteilt durch aufgenommene Leistung",
+      "Abgegebene Leistung geteilt durch aufgenommene Leistung",
+      "Abgegebene Leistung geteilt durch Verlustleistung"
     ],
     "correctAnswer": 2,
     "explanation": "Ein höherer Wirkungsgrad bedeutet geringere Verluste bei gleicher abgegebener Leistung.",
@@ -4951,10 +4951,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Folge hat ein niedrigerer Netzteilwirkungsgrad bei gleicher PC-Last?",
     "answers": [
-      "Die SSD erhält automatisch eine höhere Datenrate",
-      "Die CPU bekommt zusätzliche Prozessorkerne",
-      "Der Monitor erhöht selbstständig die Auflösung",
-      "Mehr elektrische Energie wird als Verlustwärme umgesetzt"
+      "Die Stromaufnahme sinkt bei gleicher abgegebener Leistung",
+      "Die abgegebene Leistung steigt bei unveränderter PC-Last",
+      "Die Verlustleistung sinkt trotz größerer Umwandlungsverluste",
+      "Mehr elektrische Leistung wird im Netzteil als Wärme umgesetzt"
     ],
     "correctAnswer": 3,
     "explanation": "Verlustleistung wird überwiegend als Wärme abgegeben.",
@@ -4965,15 +4965,15 @@ export default [
     "category": "Hardware",
     "topic": "Kühlung",
     "difficulty": "medium",
-    "question": "Warum benötigt eine leistungsfähige CPU einen geeigneten Kühler?",
+    "question": "Was unterscheidet eine passive CPU-Kühlung von einer aktiven Kühlung mit Lüfter?",
     "answers": [
-      "Damit entstehende Wärme zuverlässig abgeführt wird",
-      "Damit die CPU permanent Daten speichern kann",
-      "Damit der Arbeitsspeicher als SSD verwendet wird",
-      "Damit Netzwerkpakete schneller geroutet werden"
+      "Sie führt Wärme ohne einen eigenen angetriebenen Lüfter am Kühlkörper ab",
+      "Sie nutzt einen eigenen Lüfter, der seine Drehzahl unabhängig von der Temperatur hält.",
+      "Sie transportiert Wärme ausschließlich über eine elektrisch angetriebene Flüssigkeitspumpe.",
+      "Sie verwendet einen eigenen Lüfter, der erst ab einer Temperaturschwelle anläuft."
     ],
     "correctAnswer": 0,
-    "explanation": "Ohne ausreichende Kühlung können Temperaturen steigen und Leistung oder Stabilität leiden.",
+    "explanation": "Passive Kühler geben Wärme über ihre Oberfläche ohne eigenen Lüfter ab. Auslegung, Umgebung und gegebenenfalls Gehäuseluftstrom begrenzen die abführbare Wärmeleistung.",
     "source": "hardware.csv"
   },
   {
@@ -4997,31 +4997,31 @@ export default [
     "category": "Hardware",
     "topic": "Kühlung",
     "difficulty": "medium",
-    "question": "Was ist ein typisches Ziel eines sinnvollen Airflows im PC-Gehäuse?",
+    "question": "Ein Tower ist für Lufteinlass vorne und Luftauslass hinten ausgelegt. Welche Lüfteranordnung unterstützt diesen Luftweg?",
     "answers": [
-      "Alle Lüfter gegeneinander in die Mitte blasen lassen",
-      "Warme Luft ausschließlich im Gehäuse zirkulieren lassen",
-      "Kühle Luft zuführen und erwärmte Luft abführen",
-      "Jede Öffnung des Gehäuses vollständig verschließen"
+      "Vorne ausblasend und hinten einblasend",
+      "Vorne einblasend und hinten einblasend",
+      "Vorne einblasend und hinten ausblasend",
+      "Vorne ausblasend und hinten ausblasend"
     ],
     "correctAnswer": 2,
-    "explanation": "Ein gerichteter Luftstrom unterstützt die Wärmeabfuhr.",
+    "explanation": "Die vorgesehene Anordnung führt kühlere Luft vorne zu und erwärmte Luft hinten ab. Andere Gehäuse können andere sinnvolle Luftwege besitzen.",
     "source": "hardware.csv"
   },
   {
     "id": "hardware-114",
     "category": "Hardware",
     "topic": "Kühlung",
-    "difficulty": "hard",
-    "question": "Ein PC wird unter Last laut und die CPU taktet deutlich herunter. Welche Ursache ist besonders plausibel?",
+    "difficulty": "medium",
+    "question": "Unter CPU-Dauerlast fällt der Takt. Die Temperatur bleibt deutlich unter der thermischen Grenze; die Diagnose meldet gleichzeitig ein erreichtes CPU-Leistungslimit. Welche Erklärung passt am besten?",
     "answers": [
-      "Der Monitor verwendet eine zu niedrige Bildwiederholrate",
-      "Die SSD besitzt zu viel freien Speicherplatz",
-      "Das Netzwerkkabel unterstützt eine zu hohe Datenrate",
-      "Die CPU erreicht eine Temperaturgrenze und drosselt"
+      "Die CPU senkt wegen fehlender ausführungsbereiter Arbeit automatisch ihren Takt.",
+      "Die CPU senkt den Takt wegen eines aktivierten festen Frequenzlimits unterhalb des Basistakts.",
+      "Die CPU hat ihre thermische Schutzgrenze erreicht",
+      "Die Leistungsregelung senkt den Takt zur Einhaltung des Leistungslimits"
     ],
     "correctAnswer": 3,
-    "explanation": "Thermal Throttling reduziert Takt und Leistung zum Schutz vor Überhitzung.",
+    "explanation": "Taktbegrenzung kann auch durch elektrische Leistungsgrenzen entstehen. Hier sprechen Temperatur und Diagnose für ein Power-Limit statt für thermische Drosselung.",
     "source": "hardware.csv"
   },
   {
@@ -5031,10 +5031,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum sollte ein Kühlkörper regelmäßig von starkem Staub befreit werden?",
     "answers": [
-      "Staub kann Luftstrom und Wärmeabgabe verschlechtern",
-      "Staub erhöht grundsätzlich die Kapazität des Arbeitsspeichers",
-      "Staub verbessert automatisch den Wirkungsgrad des Netzteils",
-      "Staub vergrößert die maximale PCIe-Bandbreite"
+      "Staub kann den Luftdurchsatz und den Wärmeübergang verschlechtern",
+      "Staub verbessert als zusätzliche Oberflächenschicht die Wärmeabgabe an die Luft.",
+      "Staub verringert den Strömungswiderstand zwischen den Kühlrippen.",
+      "Staub verbessert den thermischen Kontakt zwischen Kühlerboden und Heatspreader."
     ],
     "correctAnswer": 0,
     "explanation": "Staubschichten können Lüfter und Kühlrippen beeinträchtigen.",
@@ -5045,28 +5045,28 @@ export default [
     "category": "Hardware",
     "topic": "Schnittstellen",
     "difficulty": "medium",
-    "question": "Welche Aussage zu USB-C ist korrekt?",
+    "question": "Ein USB-C-Dock verwendet für Bildausgabe DisplayPort Alt Mode, keine USB-Grafiklösung. Das Notebook liefert am angeschlossenen USB-C-Port Daten und Strom, aber kein DisplayPort Alt Mode. Was ist zu erwarten?",
     "answers": [
-      "Jeder USB-C-Port unterstützt automatisch Thunderbolt und Video",
-      "Die Steckerform allein sagt nicht alle unterstützten Funktionen aus",
-      "USB-C bezeichnet ausschließlich eine bestimmte Datenrate",
-      "USB-C kann grundsätzlich keine Stromversorgung übertragen"
+      "Die Bildausgabe funktioniert nach Erhöhung der Ladeleistung",
+      "Über diesen Port erhält das Dock kein benötigtes DisplayPort-Videosignal",
+      "Ein anderes HDMI-Kabel ergänzt die fehlende Videofunktion des Notebook-Ports",
+      "Ein zusätzlicher USB-Hub erzeugt das fehlende DisplayPort-Signal"
     ],
     "correctAnswer": 1,
-    "explanation": "USB-C beschreibt zunächst den Steckertyp; Datenrate, Video und Power Delivery hängen von der Implementierung ab.",
+    "explanation": "Das Dock benötigt in diesem Szenario DisplayPort Alt Mode vom Host. Passende Stecker, USB-Daten und Stromversorgung allein reichen dafür nicht aus.",
     "source": "hardware.csv"
   },
   {
     "id": "hardware-117",
     "category": "Hardware",
     "topic": "Schnittstellen",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Warum kann ein USB-C-Kabel trotz passender Stecker ungeeignet für einen bestimmten Einsatz sein?",
     "answers": [
-      "Jedes USB-C-Kabel besitzt immer exakt dieselben elektrischen Eigenschaften",
-      "USB-C-Kabel können ausschließlich zum Laden und nie für Daten genutzt werden",
-      "Kabel unterscheiden sich bei Datenrate, Stromleistung und unterstützten Modi",
-      "Die Eignung hängt nur von der Länge des Dateinamens ab"
+      "Die Steckerform legt auch die nutzbare Hochgeschwindigkeitsverkabelung fest",
+      "Ein Kabel für hohe Ladeleistung unterstützt damit auch hohe Datenraten",
+      "Kabel unterscheiden sich bei Datenrate, Belastbarkeit und unterstützten Betriebsarten",
+      "Die maximale Datenrate des Hosts gleicht jede Begrenzung des Kabels aus"
     ],
     "correctAnswer": 2,
     "explanation": "Nicht jedes USB-C-Kabel unterstützt dieselben Geschwindigkeiten, Leistungen oder Alt-Modes.",
@@ -5079,10 +5079,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ermöglicht USB Power Delivery?",
     "answers": [
-      "Automatische Spiegelung zweier Festplatten",
-      "Direkte Vergabe von IPv4-Adressen an USB-Geräte",
-      "Verdopplung der Taktfrequenz angeschlossener CPUs",
-      "Aushandlung höherer Lade- und Versorgungsleistungen über USB"
+      "Die Reservierung der gesamten USB-Datenbandbreite für das Laden",
+      "Die Übertragung von DisplayPort-Videosignalen über zusätzliche Leitungen",
+      "Die dauerhafte Bereitstellung der höchsten Spannung ohne Geräteabstimmung",
+      "Die Aushandlung einer von Quelle und Verbraucher unterstützten Stromversorgung"
     ],
     "correctAnswer": 3,
     "explanation": "USB PD erlaubt Geräten, geeignete Spannungs- und Leistungsprofile auszuhandeln.",
@@ -5125,15 +5125,15 @@ export default [
     "category": "Hardware",
     "topic": "Firmware und Boot",
     "difficulty": "medium",
-    "question": "Welche Aufgabe übernimmt UEFI beim Start eines PCs?",
+    "question": "Was bewirkt ein nach Herstellervorgabe ausgeführtes CMOS-Reset typischerweise?",
     "answers": [
-      "Benutzerdateien aus der Cloud synchronisieren",
-      "Anwendungsprogramme dauerhaft im RAM speichern",
-      "Hardware initialisieren und den Start des Betriebssystems vorbereiten",
-      "Netzwerkdrucker automatisch mit Papier versorgen"
+      "Es ersetzt die installierte Firmware durch die ursprüngliche Werksversion",
+      "Es setzt den Inhalt des Systemlaufwerks auf den Auslieferungszustand zurück",
+      "Es setzt Firmware-Konfigurationseinstellungen auf Vorgabewerte zurück",
+      "Es entfernt die auf dem Systemlaufwerk installierten Gerätetreiber"
     ],
     "correctAnswer": 2,
-    "explanation": "UEFI initialisiert Komponenten und startet anschließend den Bootprozess.",
+    "explanation": "Ein CMOS-Reset betrifft Konfigurationseinstellungen. Es ist weder ein Firmware-Downgrade noch ein Löschen der Nutzdaten; danach müssen erforderliche Einstellungen gegebenenfalls erneut gesetzt werden.",
     "source": "hardware.csv"
   },
   {
@@ -5143,13 +5143,13 @@ export default [
     "difficulty": "medium",
     "question": "Wozu dient die Bootreihenfolge im UEFI?",
     "answers": [
-      "Sie bestimmt die Reihenfolge geöffneter Programme im Desktop",
-      "Sie legt die Sortierung der Dateien auf der SSD fest",
-      "Sie steuert die Reihenfolge der Netzwerkpakete im Switch",
-      "Sie legt fest, welche Startmedien zuerst geprüft werden"
+      "Sie legt fest, welche Gerätetreiber der Kernel zuerst lädt",
+      "Sie legt fest, welches Benutzerkonto zuerst angemeldet wird",
+      "Sie legt fest, welche Programme nach der Anmeldung automatisch starten",
+      "Sie legt die Priorität der Firmware-Starteinträge fest"
     ],
     "correctAnswer": 3,
-    "explanation": "Die Bootreihenfolge bestimmt, von welchem Gerät zuerst gestartet werden soll.",
+    "explanation": "Die Firmware versucht die konfigurierten Starteinträge nach ihrer Priorität. Ein Eintrag kann beispielsweise auf den Bootmanager eines Betriebssystems verweisen.",
     "source": "hardware.csv"
   },
   {
@@ -5173,15 +5173,15 @@ export default [
     "category": "Hardware",
     "topic": "Firmware und Boot",
     "difficulty": "medium",
-    "question": "Wofür wird ein TPM häufig eingesetzt?",
+    "question": "Warum sollte ein TPM nicht unvorbereitet gelöscht oder zurückgesetzt werden, wenn darauf geschützte Schlüssel verwendet werden?",
     "answers": [
-      "Zur Erweiterung der Anzahl verfügbarer CPU-Kerne",
-      "Zur sicheren Speicherung kryptografischer Schlüssel und Messwerte",
-      "Zur Erhöhung der maximalen SATA-Datenrate",
-      "Zur Kühlung von Spannungswandlern auf dem Mainboard"
+      "Das Löschen des TPM entfernt zugleich die Verschlüsselung aller betroffenen Laufwerke.",
+      "Der Zugriff auf geschützte Schlüssel kann verloren gehen; Wiederherstellung muss vorbereitet sein",
+      "Die im TPM geschützten Schlüssel werden dabei automatisch in das Benutzerprofil exportiert.",
+      "Nach dem Reset erstellt das TPM dieselben bisherigen Schlüssel ohne Wiederherstellungsinformationen erneut."
     ],
     "correctAnswer": 1,
-    "explanation": "Ein TPM unterstützt hardwaregestützte Sicherheitsfunktionen wie Schlüsselverwaltung und Plattformmessungen.",
+    "explanation": "Das Zurücksetzen kann im TPM geschütztes Schlüsselmaterial unzugänglich machen. Vorher sind Auswirkungen und unabhängige Wiederherstellungsmöglichkeiten nach dem vorgesehenen Verfahren zu klären.",
     "source": "hardware.csv"
   },
   {
@@ -5189,15 +5189,15 @@ export default [
     "category": "Hardware",
     "topic": "Firmware und Boot",
     "difficulty": "medium",
-    "question": "Ein PC startet nach einer Änderung der Bootreihenfolge vom falschen Datenträger. Welche Maßnahme ist naheliegend?",
+    "question": "Nach dem Wiederherstellen der Firmware-Standardwerte wird eine zuvor im UEFI-Modus installierte Systemplatte nicht mehr gestartet. Der Controller erkennt die Platte. Welche Einstellung sollte gezielt geprüft werden?",
     "answers": [
-      "Die Bildschirmauflösung im Betriebssystem reduzieren",
-      "Den Arbeitsspeicher auf Single-Channel umstellen",
-      "Die Priorität der Bootgeräte im UEFI korrigieren",
-      "Die Maus an einen anderen USB-Port anschließen"
+      "Die Einstellung für Netzwerkstart über PXE",
+      "Die Auswahl des primären Grafikausgangs",
+      "Den zur Installation passenden UEFI-/Legacy-Bootmodus",
+      "Die Aktivierung der CPU-Virtualisierung"
     ],
     "correctAnswer": 2,
-    "explanation": "Die Startreihenfolge wird in der Firmwarekonfiguration angepasst.",
+    "explanation": "Der Bootmodus muss zur vorhandenen Installation passen. Eine erkannte Platte ist nicht automatisch im gewählten Firmwaremodus startfähig; weitere Bootfehler müssen gegebenenfalls separat geprüft werden.",
     "source": "hardware.csv"
   },
   {
@@ -5205,15 +5205,15 @@ export default [
     "category": "Hardware",
     "topic": "Peripherie",
     "difficulty": "medium",
-    "question": "Was ist ein Eingabegerät?",
+    "question": "Welches Gerät überträgt beim Digitalisieren eines Papierdokuments die erfassten Bilddaten als Eingabe an den PC?",
     "answers": [
-      "Ein Gerät zur dauerhaften Spannungsversorgung des Mainboards",
-      "Ein Gerät zur Speicherung von Firmware auf dem Prozessor",
-      "Ein Gerät zur Verteilung von Netzwerkadressen",
-      "Ein Gerät zur Übermittlung von Benutzereingaben an den Rechner"
+      "Ein Monitor",
+      "Ein Laserdrucker ohne Scanfunktion",
+      "Ein Lautsprecher",
+      "Ein Scanner"
     ],
     "correctAnswer": 3,
-    "explanation": "Tastaturen, Mäuse, Scanner und ähnliche Geräte liefern Eingaben an ein Computersystem.",
+    "explanation": "Ein Scanner erfasst Informationen aus einem Papierdokument und liefert sie als digitale Eingabedaten an den Rechner.",
     "source": "hardware.csv"
   },
   {
@@ -5253,12 +5253,12 @@ export default [
     "category": "Hardware",
     "topic": "Peripherie",
     "difficulty": "medium",
-    "question": "Für ein Büro mit hohem monatlichem Textdruckvolumen ist welche Eigenschaft besonders wichtig?",
+    "question": "Welche Eigenschaften sind für einen Bürodrucker mit hohem monatlichem Textdruckvolumen besonders wichtig?",
     "answers": [
-      "Maximale Anzahl farbiger Gehäuse-LEDs",
-      "Möglichst kleine Bildschirmdiagonale am Drucker",
-      "Geeignete Druckleistung und wirtschaftliche Seitenkosten",
-      "Eine besonders hohe Maus-Abtastrate"
+      "Hohe Fotoauflösung und randloser Farbdruck",
+      "Großer Farbumfang und Unterstützung dicker Fotopapiere",
+      "Passendes empfohlenes Druckvolumen und geringe Kosten je Textseite",
+      "Viele Papierformate und ein besonders hochauflösendes Vorschaudisplay"
     ],
     "correctAnswer": 2,
     "explanation": "Bei hohem Druckvolumen sind Durchsatz, Verbrauchsmaterial und Seitenkosten entscheidend.",
@@ -5271,10 +5271,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum ist bei Headsets im Büro ein gerichtetes Mikrofon hilfreich?",
     "answers": [
-      "Es erhöht automatisch die Bildschirmauflösung",
-      "Es ersetzt die Netzwerkkarte des Rechners",
-      "Es verdoppelt die verfügbare SSD-Kapazität",
-      "Es kann Umgebungsgeräusche bei Sprachaufnahme reduzieren"
+      "Es verbessert vor allem die Geräuschunterdrückung im Kopfhörerausgang",
+      "Es gleicht vor allem Aussetzer der Netzwerkübertragung aus",
+      "Es erhöht vor allem die Lautstärke der entfernten Gesprächspartner",
+      "Es kann Schall aus unerwünschten Richtungen bei der Aufnahme abschwächen"
     ],
     "correctAnswer": 3,
     "explanation": "Eine gerichtete Aufnahme kann Sprache gegenüber seitlichen Umgebungsgeräuschen hervorheben.",
@@ -5285,15 +5285,15 @@ export default [
     "category": "Hardware",
     "topic": "Netzwerkhardware",
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat ein Switch in einem lokalen Ethernet-Netz?",
+    "question": "Nach welchem Kriterium leitet ein gewöhnlicher Layer-2-Ethernet-Switch einen Unicast-Frame bei bekanntem Zielport weiter?",
     "answers": [
-      "Frames anhand von MAC-Adressen gezielt weiterzuleiten",
-      "Domains automatisch in IP-Adressen umzuwandeln",
-      "Dateien dauerhaft redundant zu speichern",
-      "Netzspannung für alle PCs zu erzeugen"
+      "Nach der Ziel-MAC-Adresse",
+      "Nach dem DNS-Namen des Empfängers",
+      "Nach der TCP-Portnummer des Empfängers",
+      "Nach dem Standardgateway des sendenden PCs"
     ],
     "correctAnswer": 0,
-    "explanation": "Ein Switch lernt MAC-Adressen und leitet Ethernet-Frames zwischen Ports weiter.",
+    "explanation": "Der Switch verwendet seine MAC-Adresstabelle, um den Zielport für eine bekannte Ziel-MAC-Adresse zu bestimmen. Bei unbekannten Zielen oder Broadcasts gelten andere Weiterleitungsregeln.",
     "source": "hardware.csv"
   },
   {
@@ -5301,15 +5301,15 @@ export default [
     "category": "Hardware",
     "topic": "Netzwerkhardware",
     "difficulty": "medium",
-    "question": "Welche Aufgabe übernimmt ein Router typischerweise?",
+    "question": "Welche Kernaufgabe erfüllt ein Router beim IP-Routing?",
     "answers": [
-      "RAM-Module zwischen zwei Mainboards zu synchronisieren",
-      "Pakete zwischen verschiedenen IP-Netzen weiterzuleiten",
-      "Monitorsignale auf mehrere Bildschirme zu duplizieren",
-      "Druckaufträge dauerhaft auf Toner zu speichern"
+      "Domainnamen in zugehörige IP-Adressen auflösen",
+      "Pakete anhand von Routen zwischen IP-Netzen weiterleiten",
+      "Endgeräten freie IP-Adressen per Lease zuweisen",
+      "Ethernet-Frames anhand gelernter MAC-Adressen innerhalb eines LANs vermitteln"
     ],
     "correctAnswer": 1,
-    "explanation": "Router verbinden unterschiedliche IP-Netze und treffen Weiterleitungsentscheidungen.",
+    "explanation": "Beim Routing wird anhand der Ziel-IP-Adresse und der Routingtabelle ein nächster Weg bestimmt. DNS, DHCP und Layer-2-Switching sind andere Funktionen, auch wenn ein Gerät mehrere davon kombiniert.",
     "source": "hardware.csv"
   },
   {
@@ -5319,10 +5319,10 @@ export default [
     "difficulty": "medium",
     "question": "Wozu dient ein Access Point?",
     "answers": [
-      "Er ersetzt die CPU in einem Arbeitsplatzrechner",
-      "Er speichert Benutzerdaten wie eine externe SSD",
-      "Er ermöglicht WLAN-Geräten den Zugang zu einem Netzwerk",
-      "Er wandelt SATA-Laufwerke in Arbeitsspeicher um"
+      "Er übersetzt Domainnamen in zugehörige IP-Adressen",
+      "Er stellt einen Übergang zwischen unterschiedlichen WAN-Zugangsstandards her",
+      "Er stellt drahtlosen Clients den Zugang zum lokalen Netzwerk bereit",
+      "Er vergibt bei jedem Verbindungsaufbau neue MAC-Adressen an die Clients"
     ],
     "correctAnswer": 2,
     "explanation": "Access Points stellen drahtlose Netzwerkanbindung bereit.",
@@ -5348,16 +5348,16 @@ export default [
     "id": "hardware-135",
     "category": "Hardware",
     "topic": "Netzwerkhardware",
-    "difficulty": "hard",
-    "question": "Ein Arbeitsplatz erreicht nur 100 Mbit/s statt 1 Gbit/s. Welche Hardwareprüfung ist sinnvoll?",
+    "difficulty": "medium",
+    "question": "PC und Switch unterstützen 1 Gbit/s und verwenden Auto-Negotiation. Mit Kabel A entsteht ein 100-Mbit/s-Link, mit einem geprüften Kabel B am selben Port ein 1-Gbit/s-Link. Welcher nächste Schritt ist am besten begründet?",
     "answers": [
-      "Kabelkategorie, Adapter, Switch-Port und Aushandlung prüfen",
-      "Monitorhelligkeit und Farbtiefe gemeinsam reduzieren",
-      "SSD-Partition verkleinern und Papierkorb leeren",
-      "CPU-Kühler drehen und Gehäuselüfter deaktivieren"
+      "Kabel A und seine Steckverbindungen auf vollständige Aderpaarverbindung prüfen",
+      "Die Gigabit-Fähigkeit des bereits mit Kabel B getesteten Switch-Ports erneut bestimmen.",
+      "Den erfolgreichen Gigabit-Test der Netzwerkkarte unabhängig von Kabel A wiederholen.",
+      "Die Netzwerkkarte auf 100 Mbit/s fest einstellen und den Kabeltest damit abschließen."
     ],
     "correctAnswer": 0,
-    "explanation": "Die Link-Geschwindigkeit hängt unter anderem von Adapter, Gegenstelle und Verkabelung ab.",
+    "explanation": "Der kontrollierte Kabeltausch grenzt die Ursache auf Kabel A oder dessen Kontakte ein. 1000BASE-T benötigt vier funktionsfähige Aderpaare; ein Leitungsproblem kann einen langsameren Link verursachen.",
     "source": "hardware.csv"
   },
   {
@@ -5367,10 +5367,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Information sollte vor der Auswahl eines Arbeitsplatz-PCs zuerst geklärt werden?",
     "answers": [
-      "Welche Gehäusefarbe im Lager am häufigsten vorhanden ist",
-      "Welche Anwendungen und Anforderungen der Benutzer hat",
-      "Wie viele Dateien sich bereits auf anderen PCs befinden",
-      "Welche Tastatur zufällig am günstigsten angeboten wird"
+      "Welche Hersteller gerade die größte Modellpalette anbieten",
+      "Welche Anwendungen, Arbeitslasten und Randbedingungen erfüllt werden müssen",
+      "Welche Lieferanten die auffälligsten technischen Spitzenwerte bewerben",
+      "Welche Ausstattung am bisherigen Arbeitsplatz am teuersten war"
     ],
     "correctAnswer": 1,
     "explanation": "Die Hardwareauswahl sollte vom tatsächlichen Bedarf und Nutzungsszenario ausgehen.",
@@ -5381,31 +5381,31 @@ export default [
     "category": "Hardware",
     "topic": "Arbeitsplatzplanung",
     "difficulty": "medium",
-    "question": "Ein Mitarbeiter arbeitet hauptsächlich mit Office, Browser und Videokonferenzen. Welche Priorität ist plausibel?",
+    "question": "Ein Büroarbeitsplatz nutzt Office, Browser und Videokonferenzen. Ein Praxistest zeigt, dass die integrierte Grafik die Anzeigeanforderungen erfüllt. Wo ist zusätzliche Ausstattung am ehesten bedarfsgerecht?",
     "answers": [
-      "Mehrere High-End-GPUs unabhängig vom tatsächlichen Bedarf",
-      "Maximale CPU-Kernzahl ohne Rücksicht auf Kosten und Verbrauch",
-      "Ausgewogene Ausstattung statt einer extrem leistungsfähigen High-End-GPU",
-      "Ein RAID-0-Verbund aus vielen Laufwerken nur für Textdokumente"
+      "Bei einer dedizierten Grafikkarte für aufwendige 3D-Modellierung.",
+      "Bei mehreren lokalen Hochleistungslaufwerken für große Videoprojekte.",
+      "Bei ausreichend RAM, geeigneter Peripherie und zuverlässiger Anbindung",
+      "Bei zusätzlichen Spezialkarten für professionelle Videoaufzeichnung."
     ],
     "correctAnswer": 2,
-    "explanation": "Die Ausstattung sollte zum Anwendungsszenario passen und wirtschaftlich dimensioniert sein.",
+    "explanation": "Die nachgewiesenen Anforderungen bestimmen die Ausstattung. Bei bereits ausreichender Grafik sind RAM, Audio-/Videoperipherie und Anbindung sinnvoll nach dem tatsächlichen Bedarf zu planen.",
     "source": "hardware.csv"
   },
   {
     "id": "hardware-138",
     "category": "Hardware",
     "topic": "Arbeitsplatzplanung",
-    "difficulty": "hard",
-    "question": "Für einen CAD-Arbeitsplatz sind mehrere Komponentenangebote verfügbar. Welche Vorgehensweise ist am sinnvollsten?",
+    "difficulty": "medium",
+    "question": "Für eine bestimmte CAD-Anwendung werden zwei kompatible Workstations verglichen. Welche Grundlage erlaubt die belastbarste Leistungsbewertung?",
     "answers": [
-      "Die teuersten Einzelteile unabhängig voneinander auswählen und anschließend kombinieren",
-      "Nur nach dem höchsten Watt-Wert des Netzteils entscheiden",
-      "Ausschließlich das optisch auffälligste Gehäuse als Auswahlkriterium verwenden",
-      "Anforderungen definieren und kompatible Komponenten nach Leistung, Kosten und Support vergleichen"
+      "Ein Vergleich der beworbenen maximalen CPU-Taktraten.",
+      "Ein Vergleich der GPU-Leistung in einem einzelnen Spielebenchmark.",
+      "Ein Vergleich der RAM-Kapazität ohne Messung der CAD-Arbeitsabläufe.",
+      "Repräsentative CAD-Tests sowie die Support- und Freigabelisten des Softwareanbieters"
     ],
     "correctAnswer": 3,
-    "explanation": "Beschaffung sollte Anforderungen, Kompatibilität, Wirtschaftlichkeit und Support berücksichtigen.",
+    "explanation": "CAD-Leistung hängt vom konkreten Programm und Arbeitsablauf ab. Repräsentative Tests und Freigaben sind aussagekräftiger als isolierte Spitzenwerte.",
     "source": "hardware.csv"
   },
   {
@@ -5415,10 +5415,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum sollte bei der Beschaffung auch die Garantie- und Supportdauer berücksichtigt werden?",
     "answers": [
-      "Sie beeinflusst Ausfallrisiko, Serviceaufwand und Folgekosten",
-      "Sie verändert automatisch die CPU-Architektur des Geräts",
-      "Sie bestimmt die maximale Auflösung jedes Monitors",
-      "Sie ersetzt sämtliche Maßnahmen zur Datensicherung"
+      "Sie beeinflusst Serviceaufwand, Wiederherstellungsdauer und Folgekosten",
+      "Sie legt die technische Rechenleistung für die gesamte Nutzungsdauer fest",
+      "Sie bestimmt die Kapazität später einsetzbarer Arbeitsspeichermodule",
+      "Sie verhindert Hardwaredefekte während der zugesagten Servicezeit"
     ],
     "correctAnswer": 0,
     "explanation": "Servicebedingungen sind Teil der Gesamtbetriebskosten und Verfügbarkeit.",
@@ -5431,10 +5431,10 @@ export default [
     "difficulty": "medium",
     "question": "Was bedeutet TCO bei der Bewertung eines Arbeitsplatzsystems?",
     "answers": [
-      "Taktzyklen einer CPU pro Betriebssystem",
-      "Gesamtkosten über Anschaffung und Nutzung hinweg",
-      "Technische Kabellänge eines optischen Anschlusses",
-      "Temperaturgrenze eines Computergehäuses"
+      "Der Anschaffungspreis nach Abzug sämtlicher Rabatte",
+      "Die relevanten Gesamtkosten über Anschaffung und Nutzungsdauer",
+      "Die Summe der Kosten für Strom und Verbrauchsmaterial ohne Anschaffung",
+      "Der Wiederverkaufswert des Systems am Ende der Nutzungsdauer"
     ],
     "correctAnswer": 1,
     "explanation": "Total Cost of Ownership berücksichtigt neben Anschaffung auch laufende und indirekte Kosten.",
@@ -5447,13 +5447,13 @@ export default [
     "difficulty": "medium",
     "question": "Wie sollte die Oberkante eines typischen Büro-Monitors ungefähr positioniert sein?",
     "answers": [
-      "Deutlich oberhalb des Kopfes",
-      "Auf Höhe der Tischkante",
-      "Etwa auf Augenhöhe oder leicht darunter",
-      "Direkt unterhalb der Tastatur"
+      "Mit der Bildschirmmitte auf Augenhöhe, auch wenn die oberste Zeile einen Blick nach oben erfordert.",
+      "Mit der Unterkante auf Augenhöhe und der Bildschirmfläche darüber.",
+      "So, dass die oberste sichtbare Zeile nicht über Augenhöhe liegt und der Blick leicht nach unten fällt.",
+      "Mit einer für alle Beschäftigten identischen Höhe über der Tischplatte."
     ],
     "correctAnswer": 2,
-    "explanation": "Eine eher gerade bis leicht nach unten gerichtete Blicklinie unterstützt ergonomisches Arbeiten.",
+    "explanation": "Als Grundorientierung sollte die oberste sichtbare Bildschirmzeile nicht über Augenhöhe liegen. Höhe, Neigung und Sehabstand werden an die Person angepasst, sodass die Anzeige mit entspannter Kopfhaltung und leicht gesenktem Blick gelesen werden kann.",
     "source": "hardware.csv"
   },
   {
@@ -5463,10 +5463,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum ist ein höhenverstellbarer Monitorständer sinnvoll?",
     "answers": [
-      "Die CPU erhält dadurch eine höhere Taktfrequenz",
-      "Der Monitor benötigt dadurch kein Videosignal mehr",
-      "Die SSD wird dadurch automatisch vor Datenverlust geschützt",
-      "Bildschirmhöhe lässt sich an Benutzer und Sitzposition anpassen"
+      "Er ersetzt die Anpassung von Sitzhöhe und Sitzhaltung",
+      "Er vergrößert die native Auflösung bei unveränderter Bildschirmfläche",
+      "Er passt den Sehabstand unabhängig vom Standort des Monitors an",
+      "Er erlaubt die Anpassung der Bildschirmhöhe an Benutzer und Sitzposition"
     ],
     "correctAnswer": 3,
     "explanation": "Verstellbarkeit erleichtert eine ergonomische Anpassung des Arbeitsplatzes.",
@@ -5477,15 +5477,15 @@ export default [
     "category": "Hardware",
     "topic": "Ergonomie",
     "difficulty": "medium",
-    "question": "Welche Maßnahme kann Blendungen auf einem Monitor reduzieren?",
+    "question": "An einem Büroarbeitsplatz mit Fenstern sollen Blendung und Reflexionen auf dem Bildschirm verringert werden. Welche Grundanordnung ist meist günstig?",
     "answers": [
-      "Monitor sinnvoll zur Fenster- und Lichtquelle ausrichten",
-      "Bildschirm direkt gegenüber einer starken Lichtquelle platzieren",
-      "Helligkeit grundsätzlich immer auf den Maximalwert setzen",
-      "Den Monitor dauerhaft in einem steilen Winkel nach oben kippen"
+      "Die Blickrichtung möglichst parallel zur Fensterfront wählen",
+      "Die Bildschirmfläche direkt zum Fenster ausrichten",
+      "Das Fenster unmittelbar hinter dem Bildschirm im Blickfeld platzieren",
+      "Den Bildschirm ohne Änderung der Position stärker nach oben neigen"
     ],
     "correctAnswer": 0,
-    "explanation": "Günstige Positionierung reduziert Reflexionen und Blendung.",
+    "explanation": "Bei einer Blickrichtung parallel zur Fensterfront fällt Tageslicht seitlich ein. Ergänzend können Blendschutz und angepasste Beleuchtung nötig sein.",
     "source": "hardware.csv"
   },
   {
@@ -5495,10 +5495,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum ist die passende Größe von Tastatur und Maus relevant?",
     "answers": [
-      "Sie bestimmt die maximale Geschwindigkeit des Internetanschlusses",
-      "Sie kann eine natürlichere Hand- und Armhaltung unterstützen",
-      "Sie legt die Kapazität des Arbeitsspeichers fest",
-      "Sie verändert die native Auflösung des Monitors"
+      "Sie ersetzt Pausen durch eine unveränderte Handhaltung",
+      "Sie kann eine entspanntere Haltung und gut erreichbare Bedienung ermöglichen",
+      "Sie legt unabhängig von der Sitzposition die optimale Armhöhe fest",
+      "Sie beseitigt die Wirkung einer ungünstigen Tischhöhe"
     ],
     "correctAnswer": 1,
     "explanation": "Geeignete Eingabegeräte können Belastungen durch ungünstige Haltung reduzieren.",
@@ -5511,10 +5511,10 @@ export default [
     "difficulty": "medium",
     "question": "Ein Nutzer arbeitet viele Stunden täglich an zwei Monitoren. Welche Anordnung ist sinnvoll, wenn beide gleich häufig genutzt werden?",
     "answers": [
-      "Beide Monitore weit seitlich außerhalb des direkten Sichtfelds platzieren",
-      "Einen Monitor direkt hinter dem anderen aufstellen",
-      "Beide Monitore möglichst symmetrisch im zentralen Sichtbereich anordnen",
-      "Die Monitore so hoch montieren, dass der Kopf dauerhaft angehoben wird"
+      "Beide Monitore nebeneinander deutlich rechts von Tastatur und Sitzposition aufstellen.",
+      "Einen Monitor mittig und den zweiten deutlich seitlich davon aufstellen.",
+      "Beide nahe beieinander und möglichst symmetrisch im zentralen Sichtbereich aufstellen",
+      "Beide Monitore übereinander anordnen, mit dem oberen oberhalb der Augenhöhe."
     ],
     "correctAnswer": 2,
     "explanation": "Eine symmetrische Anordnung kann unnötige Kopf- und Rumpfdrehungen reduzieren.",
@@ -5527,10 +5527,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum ist ESD-Schutz beim Arbeiten an PC-Komponenten wichtig?",
     "answers": [
-      "Elektrostatische Entladung erhöht die Kapazität von RAM-Modulen",
-      "Elektrostatische Entladung verbessert den Kontakt von PCIe-Karten",
-      "Elektrostatische Entladung kalibriert automatisch Temperatursensoren",
-      "Elektrostatische Entladung kann empfindliche Bauteile beschädigen"
+      "Entladungen sind erst oberhalb der menschlichen Wahrnehmungsschwelle für Halbleiter relevant.",
+      "Entladungen können Halbleiter nur schädigen, wenn die Baugruppe gerade eingeschaltet ist.",
+      "Entladungen verursachen ausschließlich sofort erkennbare vollständige Bauteilausfälle.",
+      "Entladungen können empfindliche Halbleiter auch ohne spürbaren Schlag schädigen"
     ],
     "correctAnswer": 3,
     "explanation": "Schon kleine elektrostatische Entladungen können Halbleiterbauteile schädigen.",
@@ -5543,10 +5543,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Maßnahme reduziert das ESD-Risiko bei Hardwarearbeiten?",
     "answers": [
-      "Potentialausgleich durch geeignete ESD-Ausrüstung verwenden",
-      "Komponenten auf stark statisch aufladendem Teppich ablegen",
-      "Kontakte von RAM-Modulen möglichst häufig direkt berühren",
-      "Das Netzteil während des Einbaus unter Last betreiben"
+      "Geeignete ESD-Arbeitsfläche und korrekt angeschlossenen Potentialausgleich nutzen",
+      "Ein gewöhnliches Baumwolltuch ohne Potentialausgleich als ESD-Unterlage verwenden",
+      "Eine Kunststofffolie als isolierende Ablage über die Arbeitsfläche legen",
+      "Komponenten allein durch das Ausschalten des PCs vor statischer Aufladung schützen"
     ],
     "correctAnswer": 0,
     "explanation": "ESD-Armband, geeignete Arbeitsfläche und korrekter Potentialausgleich reduzieren elektrostatische Risiken.",
@@ -5562,7 +5562,7 @@ export default [
       "Direkt an den goldfarbenen Kontakten für besseren Halt",
       "An den Kanten, ohne Kontakte und Bauteile unnötig zu berühren",
       "Nur an den Speicherchips mit beiden Händen",
-      "An beliebigen Stellen, solange der PC eingeschaltet bleibt"
+      "An den Kontaktflächen mit einem gewöhnlichen trockenen Tuch"
     ],
     "correctAnswer": 1,
     "explanation": "Das Anfassen an den Kanten schützt Kontakte und Bauteile vor Verschmutzung und ESD-Risiken.",
@@ -5575,10 +5575,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Vorgehensweise ist vor dem Öffnen eines Desktop-PCs sinnvoll?",
     "answers": [
-      "PC unter Volllast weiterlaufen lassen und Lüfter blockieren",
-      "Netzkabel angeschlossen lassen und Komponenten sofort herausziehen",
-      "Gerät herunterfahren, Spannungsversorgung trennen und ESD-Schutz beachten",
-      "Zuerst alle Datenkabel abziehen, während Dateien geschrieben werden"
+      "Das Gerät in den Standby versetzen und anschließend die Module ausbauen",
+      "Das Betriebssystem herunterfahren, den Netzstecker aber eingesteckt lassen und sofort mit dem Ausbau beginnen.",
+      "Das Gerät herunterfahren, die Versorgung trennen und ESD-Schutz beachten",
+      "Das Gerät per Bildschirmsperre sichern und anschließend das Gehäuse öffnen"
     ],
     "correctAnswer": 2,
     "explanation": "Vor Hardwarearbeiten sollten Stromversorgung und elektrostatische Risiken kontrolliert werden.",
@@ -5591,10 +5591,10 @@ export default [
     "difficulty": "medium",
     "question": "Ein PC zeigt nach dem Einschalten kein Bild. Welche Prüfung ist als erster Schritt sinnvoll?",
     "answers": [
-      "Sofort das Betriebssystem vollständig neu installieren",
-      "Alle Benutzerkonten des Rechners löschen",
-      "Die interne SSD ohne weitere Diagnose formatieren",
-      "Stromversorgung, Monitoranschluss und Eingangssignal prüfen"
+      "Das Betriebssystem von einem Installationsmedium neu aufsetzen.",
+      "Den Grafikkartentreiber im abgesicherten Modus neu installieren.",
+      "Die RAM-Timings in der Firmware manuell anpassen.",
+      "Stromversorgung, Kabelverbindung und gewählten Monitoreingang kontrollieren"
     ],
     "correctAnswer": 3,
     "explanation": "Bei 'kein Bild' sollten zunächst einfache physische Ursachen ausgeschlossen werden.",
@@ -5605,31 +5605,31 @@ export default [
     "category": "Hardware",
     "topic": "Fehlersuche",
     "difficulty": "medium",
-    "question": "Ein neu eingebautes RAM-Modul wird nicht erkannt. Was sollte geprüft werden?",
+    "question": "Nach dem Einbau eines zusätzlichen RAM-Moduls zeigt bereits die UEFI-Speicherübersicht unverändert nur die bisherige Kapazität. Welche Prüfung ist am sinnvollsten?",
     "answers": [
-      "Sitz des Moduls, Slotbelegung und unterstützte Speicherspezifikation prüfen",
-      "Monitoranschluss, Bildmodus und unterstützte Bildschirmauflösung prüfen",
-      "Druckerwarteschlange, Treiberstatus und verfügbaren Tonervorrat prüfen",
-      "Browsercache, gespeicherte Webseiten und aktive Erweiterungen prüfen"
+      "Sitz, Bestückungsregeln und Spezifikation des neuen Moduls prüfen",
+      "Die Größe der Windows-Auslagerungsdatei anpassen.",
+      "Die dem Grafikadapter im Betriebssystem zugewiesenen Speicherwerte erhöhen.",
+      "Die maximale Speichernutzung einer einzelnen Anwendung ändern."
     ],
     "correctAnswer": 0,
-    "explanation": "Nicht erkannter RAM kann durch falschen Sitz, Slotwahl oder Inkompatibilität verursacht werden.",
+    "explanation": "Wenn bereits die Firmware das neue Modul nicht erkennt, sind Sitz, unterstützte Spezifikation und Bestückungsregeln vorrangig. Einstellungen der später gestarteten Anwendungen oder der Auslagerungsdatei beheben diese Erkennung nicht.",
     "source": "hardware.csv"
   },
   {
     "id": "hardware-152",
     "category": "Hardware",
     "topic": "Fehlersuche",
-    "difficulty": "hard",
-    "question": "Nach Einbau einer neuen Grafikkarte startet der PC unter Last plötzlich neu. Welche Ursache sollte geprüft werden?",
+    "difficulty": "medium",
+    "question": "Nach dem Einbau einer leistungsstärkeren Grafikkarte startet ein PC unter kombinierter CPU-/GPU-Last neu. Temperaturen sind unauffällig; mit der alten Karte bleibt er stabil. Welcher Bereich sollte gezielt geprüft werden?",
     "answers": [
-      "Ob die Tastatur eine ausreichend hohe Polling-Rate besitzt",
-      "Ob Netzteil, Stromstecker und Leistungsreserve zur Grafikkarte passen",
-      "Ob der Drucker über genügend Papier im Fach verfügt",
-      "Ob die Systemuhr auf die richtige Zeitzone eingestellt ist"
+      "Die Kühlung der CPU anhand von Temperaturgrenzen und Kühlerkontakt",
+      "Netzteilbelastbarkeit, GPU-Stromanschlüsse und Kabelverbindungen",
+      "Die Einstellungen der Energiesparzustände von Monitor und USB-Geräten",
+      "Die Stromversorgung der RTC und den Zustand der Mainboard-Batterie"
     ],
     "correctAnswer": 1,
-    "explanation": "Lastabhängige Neustarts können unter anderem auf Probleme mit Stromversorgung oder Stabilität hinweisen.",
+    "explanation": "Der Zusammenhang mit der neuen Karte und hoher Last macht die Stromversorgung zu einem begründeten Prüfpunkt. Er beweist noch keinen Netzteildefekt; weitere Stabilitätsursachen bleiben möglich.",
     "source": "hardware.csv"
   },
   {
@@ -5637,15 +5637,15 @@ export default [
     "category": "Hardware",
     "topic": "Fehlersuche",
     "difficulty": "medium",
-    "question": "Eine SATA-SSD wird im Betriebssystem nicht angezeigt. Welche Prüfung ist sinnvoll?",
+    "question": "Eine neue SATA-SSD wird im UEFI und in der Windows-Datenträgerverwaltung erkannt, erscheint aber nicht im Explorer. Welche Prüfung ist jetzt am sinnvollsten?",
     "answers": [
-      "Monitoranschluss, Bildwiederholrate und gewählten Eingang überprüfen",
-      "Mauseinstellungen, USB-Abfragerate und Zeigerbeschleunigung überprüfen",
-      "Daten- und Stromanschluss, Firmware-Erkennung und Datenträgerverwaltung prüfen",
-      "CPU-Kühler, Lüfterkurve und Wärmeleitpaste des Prozessors überprüfen"
+      "Prüfen, ob im UEFI der SATA-Port vollständig deaktiviert ist.",
+      "Prüfen, ob die SSD wegen fehlender Stromversorgung gar nicht erkannt werden kann.",
+      "Prüfen, ob ein verwendbares Volume mit Dateisystem und Laufwerksbuchstaben vorhanden ist",
+      "Prüfen, ob die neue Daten-SSD in der Bootreihenfolge vor dem Systemlaufwerk steht."
     ],
     "correctAnswer": 2,
-    "explanation": "Fehlende Laufwerke sollten von der physischen Verbindung über Firmware bis zur Datenträgerverwaltung geprüft werden.",
+    "explanation": "Die Erkennung zeigt, dass die grundlegende Verbindung funktioniert. Im Explorer benötigt ein gewöhnliches Datenlaufwerk ein geeignetes eingebundenes Volume. Vor Initialisierung oder Formatierung sind vorhandene Daten zu berücksichtigen.",
     "source": "hardware.csv"
   },
   {
@@ -5655,10 +5655,10 @@ export default [
     "difficulty": "medium",
     "question": "Ein USB-Gerät funktioniert an einem Port, aber nicht an einem anderen. Was liegt nahe?",
     "answers": [
-      "Das gesamte Betriebssystem muss zwingend neu installiert werden",
-      "Die CPU besitzt grundsätzlich zu wenige Kerne",
-      "Die SSD ist automatisch vollständig verschlüsselt",
-      "Der betroffene Port oder dessen Konfiguration könnte fehlerhaft sein"
+      "Das Gerät ist durch den erfolgreichen Test an einem Port nachweislich an allen Ports unterstützt",
+      "Alle Ports des PCs müssen denselben Controller und dieselben Fähigkeiten besitzen",
+      "Ein passender Stecker belegt identische Strom- und Datenfähigkeiten aller Ports",
+      "Der betroffene Port, seine Eigenschaften oder seine Konfiguration sollten geprüft werden"
     ],
     "correctAnswer": 3,
     "explanation": "Wenn dasselbe Gerät an einem anderen Port funktioniert, sollte der problematische Port gezielt untersucht werden.",
@@ -5671,10 +5671,10 @@ export default [
     "difficulty": "medium",
     "question": "Welcher Vorteil ist für ein Notebook gegenüber einem Desktop-PC typisch?",
     "answers": [
-      "Hohe Mobilität durch integrierten Akku und kompakte Bauform",
-      "Grundsätzlich höhere Aufrüstbarkeit bei allen Komponenten",
-      "Immer deutlich höhere Grafikleistung bei gleichem Preis",
-      "Unbegrenzte Laufzeit ohne externe Energieversorgung"
+      "Display, Eingabe und Akkubetrieb sind in einem mobilen Gerät integriert",
+      "CPU und GPU lassen sich meist wie normale Desktop-Steckkarten tauschen",
+      "Die kompakte Bauform stellt mehr Platz für austauschbare Erweiterungskarten bereit",
+      "Die integrierte Anzeige macht externe Stromversorgung auf längeren Reisen entbehrlich"
     ],
     "correctAnswer": 0,
     "explanation": "Notebooks integrieren Display, Eingabe, Akku und Rechner in einem mobilen Gerät.",
@@ -5685,15 +5685,15 @@ export default [
     "category": "Hardware",
     "topic": "Notebooks",
     "difficulty": "medium",
-    "question": "Warum sollte bei einem mobilen Arbeitsplatz die Akkulaufzeit berücksichtigt werden?",
+    "question": "Zwei Notebooks werden für mobile Arbeit verglichen. Welche Angabe beschreibt die erwartbare Arbeitszeit ohne Netzanschluss am aussagekräftigsten?",
     "answers": [
-      "Sie bestimmt direkt die maximale SSD-Kapazität",
-      "Sie beeinflusst die nutzbare Arbeitszeit ohne Netzanschluss",
-      "Sie legt die Geschwindigkeit des Ethernet-Switches fest",
-      "Sie ersetzt die Angabe zur Bildschirmhelligkeit vollständig"
+      "Die Akkukapazität ohne Berücksichtigung des Verbrauchs",
+      "Die gemessene Laufzeit unter einem vergleichbaren Arbeitsprofil",
+      "Die maximale Nennleistung des mitgelieferten Ladegeräts",
+      "Die höchste kurzzeitig erreichbare CPU-Taktfrequenz"
     ],
     "correctAnswer": 1,
-    "explanation": "Akkulaufzeit ist ein relevantes Auswahlkriterium für mobiles Arbeiten.",
+    "explanation": "Die Laufzeit hängt von nutzbarer Akkuenergie und Verbrauch ab. Vergleichbare Arbeitslast, Displayhelligkeit und Testbedingungen sind deshalb wichtig.",
     "source": "hardware.csv"
   },
   {
@@ -5701,28 +5701,28 @@ export default [
     "category": "Hardware",
     "topic": "Notebooks",
     "difficulty": "medium",
-    "question": "Welche Komponente ist bei vielen modernen Notebooks nur eingeschränkt austauschbar?",
+    "question": "Welche RAM-Ausführung lässt sich nicht durch den üblichen Austausch eines gesteckten Speichermoduls aufrüsten?",
     "answers": [
-      "Internes Display und fest eingebaute Lautsprecher des Geräts",
-      "Externe Maus und externe Tastatur am Arbeitsplatz",
-      "Fest verlöteter Arbeitsspeicher oder andere integrierte Bauteile",
-      "Externer Netzwerk-Switch und angeschlossenes Ethernet-Kabel"
+      "Ein frei zugängliches DDR4-SO-DIMM",
+      "Ein vom Hersteller als austauschbar vorgesehenes DDR5-SO-DIMM",
+      "Direkt auf der Hauptplatine verlötete Speicherchips",
+      "Ein kompatibles DDR4-UDIMM in einem Sockel"
     ],
     "correctAnswer": 2,
-    "explanation": "Bei kompakten Geräten sind RAM, CPU oder Massenspeicher teilweise verlötet oder schwer zugänglich.",
+    "explanation": "Verlötete Speicherchips sind keine steckbaren Aufrüstmodule. Ein üblicher RAM-Tausch setzt einen geeigneten Sockel und die Unterstützung des Geräts voraus.",
     "source": "hardware.csv"
   },
   {
     "id": "hardware-158",
     "category": "Hardware",
     "topic": "Notebooks",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Warum kann ein sehr dünnes Notebook trotz schneller CPU unter Dauerlast langsamer werden?",
     "answers": [
-      "Dünne Geräte unterstützen grundsätzlich keinen Arbeitsspeicher",
-      "Der Akku deaktiviert nach wenigen Minuten alle CPU-Kerne",
-      "Das Display reduziert automatisch die PCIe-Bandbreite",
-      "Begrenzte Kühlung kann zu thermischer Drosselung führen"
+      "Der maximale Turbotakt ist unabhängig von Lastdauer und Kühlung als Dauertakt zugesichert.",
+      "Ein dünneres Gehäuse vergrößert bei gleicher Verlustleistung automatisch die Kühlreserve.",
+      "Die CPU kann ihre Temperatur nur durch vollständiges Abschalten, nicht durch Taktänderung beeinflussen.",
+      "Die kompakte Kühlung kann die dauerhaft abführbare Wärme und damit den Takt begrenzen"
     ],
     "correctAnswer": 3,
     "explanation": "Kompakte Kühlung kann langfristige Leistungsaufnahme und Takt unter hoher Last begrenzen.",
@@ -5735,10 +5735,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Maßnahme kann die Nutzungsdauer eines Arbeitsplatz-PCs verlängern?",
     "answers": [
-      "Aufrüstbare und reparierbare Komponenten berücksichtigen",
-      "Geräte bei jedem kleinen Leistungsproblem vollständig ersetzen",
-      "Ersatzteile grundsätzlich unabhängig von Kompatibilität auswählen",
-      "Wartung und Reinigung dauerhaft vermeiden"
+      "Reparierbarkeit, Aufrüstoptionen und verfügbare Ersatzteile einplanen",
+      "Den höchsten kurzfristigen Turbotakt als Lebensdauernachweis verwenden",
+      "Eine längere Garantie als Ersatz für erforderliche Wartung betrachten",
+      "Die Gehäusegröße als alleinigen Nachweis der Aufrüstbarkeit verwenden"
     ],
     "correctAnswer": 0,
     "explanation": "Aufrüstbarkeit, Ersatzteilversorgung und Wartung können die Lebensdauer verlängern.",
@@ -5751,10 +5751,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum ist Energieeffizienz bei vielen Arbeitsplatzrechnern wirtschaftlich relevant?",
     "answers": [
-      "Effizienz erhöht automatisch die Anzahl der CPU-Kerne",
-      "Stromkosten summieren sich über Gerätezahl und Nutzungsdauer",
-      "Effizienz verdoppelt grundsätzlich die Lebensdauer jeder SSD",
-      "Effizienz ersetzt sämtliche Kosten für Wartung und Support"
+      "Der Wirkungsgrad bestimmt die gesamten Betriebskosten unabhängig von den Nutzungsstunden",
+      "Kleine Verbrauchsunterschiede summieren sich über Gerätezahl und Einsatzdauer",
+      "Die höchste Netzteil-Nennleistung führt zum niedrigsten Stromverbrauch im Büro",
+      "Die einmaligen Anschaffungskosten enthalten bereits den Stromverbrauch der Nutzungsjahre"
     ],
     "correctAnswer": 1,
     "explanation": "Bei vielen Geräten können auch kleine Verbrauchsunterschiede über Jahre relevante Kosten verursachen.",
@@ -5767,10 +5767,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist bei der Entsorgung alter IT-Hardware zu beachten?",
     "answers": [
-      "Datenträger müssen grundsätzlich funktionsfähig weitergegeben werden",
-      "Akkus dürfen immer gemeinsam mit Hausmüll entsorgt werden",
-      "Datenschutz und fachgerechte Entsorgung beziehungsweise Wiederverwertung",
-      "Benutzerdaten müssen vor Weitergabe nicht berücksichtigt werden"
+      "Die Geräte nach Entfernen der Inventaraufkleber ohne Datenprüfung weitergeben",
+      "Die Datenträger wegen des Recyclingprozesses ungeprüft im Gerät belassen",
+      "Datenbehandlung und geeignete Rückgabe- oder Verwertungswege organisieren",
+      "Den Lagerstatus im Inventar ändern und damit die Entsorgung abschließen"
     ],
     "correctAnswer": 2,
     "explanation": "Vor Wiederverwendung oder Entsorgung müssen Daten sicher behandelt und gesetzliche Entsorgungswege beachtet werden.",
@@ -5780,16 +5780,16 @@ export default [
     "id": "hardware-162",
     "category": "Hardware",
     "topic": "Nachhaltigkeit",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Ein alter PC wird ausgemustert, die SSD enthält vertrauliche Daten. Welche Maßnahme ist geeignet?",
     "answers": [
-      "Nur die Dateinamen ändern und den Datenträger anschließend weitergeben",
-      "Den Desktop-Hintergrund entfernen und das Benutzerkonto umbenennen",
-      "Die SSD lediglich vom SATA-Kabel trennen und unverändert verkaufen",
-      "Daten nach festgelegtem Verfahren sicher löschen oder Datenträger fachgerecht vernichten"
+      "Die Partition schnell formatieren und den leeren Explorer als Löschbeleg verwenden",
+      "Das Benutzerkonto entfernen und die verbleibende SSD unverändert weitergeben",
+      "Die Partitionstabelle löschen und damit auch alle Flash-Zellen als gelöscht behandeln",
+      "Ein freigegebenes SSD-Löschverfahren durchführen und prüfen oder den Datenträger fachgerecht vernichten"
     ],
     "correctAnswer": 3,
-    "explanation": "Vertrauliche Daten müssen vor Weitergabe oder Entsorgung zuverlässig unzugänglich gemacht werden.",
+    "explanation": "Dateilöschung, Schnellformatierung oder das Entfernen der Partitionstabelle reichen als Nachweis sicherer Sanitization nicht aus. Für die SSD ist ein geeignetes freigegebenes Verfahren samt Ergebnisprüfung erforderlich; alternativ kommt fachgerechte Vernichtung infrage.",
     "source": "hardware.csv"
   },
   {
@@ -5797,15 +5797,15 @@ export default [
     "category": "Hardware",
     "topic": "Kompatibilität",
     "difficulty": "medium",
-    "question": "Welche Komponenten müssen bei einem PC-Neubau besonders aufeinander abgestimmt sein?",
+    "question": "CPU, Mainboard und RAM eines Neubaus sind kompatibel. Das Gehäuse unterstützt nur Mini-ITX, das ausgewählte Mainboard ist ATX. Welche Schlussfolgerung ist richtig?",
     "answers": [
-      "CPU, Mainboard, RAM, Netzteil und Gehäuse",
-      "Mauspad, Hintergrundbild, Lautstärke und Browserstartseite",
-      "Druckerpapier, Tonerfarbe, Mauszeiger und Benutzername",
-      "E-Mail-Adresse, Dateiname, Zeitzone und Desktop-Icon"
+      "Mainboard und Gehäuse sind mechanisch nicht passend ausgewählt",
+      "Eine passende I/O-Blende macht die unterschiedlichen Board-Abmessungen kompatibel",
+      "Das Weglassen ungenutzter Abstandshalter schafft den fehlenden Innenraum",
+      "Ein Netzteil im ATX-Format bestätigt zugleich die Unterstützung von ATX-Mainboards"
     ],
     "correctAnswer": 0,
-    "explanation": "Zentrale Komponenten müssen mechanisch, elektrisch und funktional kompatibel sein.",
+    "explanation": "Die freigegebenen Mainboard-Formate des Gehäuses begrenzen den Einbau. Elektrische Kompatibilität zwischen CPU und Board beseitigt eine mechanische Unverträglichkeit nicht.",
     "source": "hardware.csv"
   },
   {
@@ -5813,31 +5813,31 @@ export default [
     "category": "Hardware",
     "topic": "Kompatibilität",
     "difficulty": "medium",
-    "question": "Warum muss die Länge einer Grafikkarte mit dem Gehäuse abgeglichen werden?",
+    "question": "Eine Grafikkarte ist 330 mm lang. Das Gehäuse bietet mit montiertem Front-Radiator 310 mm Platz, ohne ihn 350 mm. Was gilt für den Einbau mit unverändert montiertem Radiator?",
     "answers": [
-      "Die Länge bestimmt automatisch die Größe des Arbeitsspeichers",
-      "Die Karte muss mechanisch in den verfügbaren Innenraum passen",
-      "Die Länge verändert die Anzahl der CPU-Kerne",
-      "Die Länge bestimmt die unterstützte Bildschirmauflösung"
+      "Die Karte passt, weil der PCIe-x16-Steckplatz ihre Länge ausgleicht.",
+      "Die Karte passt nicht, weil der verfügbare Freiraum um 20 mm zu kurz ist.",
+      "Die Karte passt, weil ausschließlich der Gehäusewert ohne Radiator maßgeblich ist.",
+      "Die Karte passt, wenn ihre Höhe die zulässige Slotblende nicht überschreitet."
     ],
     "correctAnswer": 1,
-    "explanation": "Große Karten können mit Laufwerkskäfigen, Radiatoren oder Gehäusewänden kollidieren.",
+    "explanation": "Maßgeblich ist der tatsächlich verfügbare Platz mit den eingebauten Komponenten. 330 mm Kartenlänge überschreiten die 310 mm Freiraum um 20 mm.",
     "source": "hardware.csv"
   },
   {
     "id": "hardware-165",
     "category": "Hardware",
     "topic": "Kompatibilität",
-    "difficulty": "hard",
-    "question": "Ein Mainboard besitzt einen M.2-Slot, aber die gewünschte SSD wird nicht erkannt. Welche Ursache ist möglich?",
+    "difficulty": "medium",
+    "question": "Eine elektrisch passende M.2-SSD im Format 22110 soll ein vorhandenes 2280-Modul ersetzen. Welche zusätzliche mechanische Prüfung ist erforderlich?",
     "answers": [
-      "Die SSD ist zu schnell für jedes moderne Betriebssystem",
-      "M.2-Laufwerke benötigen grundsätzlich einen HDMI-Anschluss",
-      "Der Slot unterstützt nicht den benötigten SATA- oder PCIe-Modus",
-      "Der CPU-Kühler verhindert automatisch jede M.2-Erkennung"
+      "Ob die gemeinsame Breite von 22 mm bereits alle mechanischen Anforderungen erfüllt.",
+      "Ob die vorhandene Schraubposition bei 80 mm auch ein 110-mm-Modul sicher befestigt.",
+      "Ob Länge, Freiraum und Befestigung für das längere Modul vorhanden sind",
+      "Ob die elektrische Kontaktierung allein die Fixierung ohne passenden Abstandshalter ersetzt."
     ],
     "correctAnswer": 2,
-    "explanation": "M.2-Slots können sich in unterstützten Protokollen und Lane-Anbindungen unterscheiden.",
+    "explanation": "22110 steht für 22 mm Breite und 110 mm Länge, 2280 für 80 mm Länge. Elektrisch passende Geräte können mechanisch zu lang sein oder keine passende Befestigung finden.",
     "source": "hardware.csv"
   },
   {
@@ -5845,15 +5845,15 @@ export default [
     "category": "Hardware",
     "topic": "Kompatibilität",
     "difficulty": "medium",
-    "question": "Warum sollte die maximale Kühlerhöhe des Gehäuses geprüft werden?",
+    "question": "Ein Gehäuse erlaubt laut Datenblatt CPU-Kühler bis 160 mm. Der gewählte Kühler ist einschließlich Lüfter 168 mm hoch. Welche Bewertung ist korrekt?",
     "answers": [
-      "Ein hoher Kühler reduziert automatisch die SSD-Kapazität",
-      "Die Kühlerhöhe bestimmt die Anzahl der Netzwerkports",
-      "Die Kühlerhöhe legt die DDR-Generation des RAM fest",
-      "Ein zu hoher CPU-Kühler kann mechanisch nicht ins Gehäuse passen"
+      "Die Höhe des Lüfters darf bei der Gehäusegrenze grundsätzlich unberücksichtigt bleiben.",
+      "Die passende Sockelhalterung belegt zugleich ausreichenden Abstand zur Seitenwand.",
+      "Die Angabe von 160 mm bezeichnet den Mindestabstand; höhere Kühler sind dadurch freigegeben.",
+      "Der Kühler überschreitet die freigegebene Höhe und passt so nicht"
     ],
     "correctAnswer": 3,
-    "explanation": "Gehäuse geben einen maximal verfügbaren Raum für CPU-Kühler vor.",
+    "explanation": "168 mm liegen 8 mm über der Gehäusefreigabe. Ein elektrischer oder thermischer Eignungsnachweis ersetzt die mechanische Passform nicht.",
     "source": "hardware.csv"
   },
   {
@@ -5863,10 +5863,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum ist die Anzahl der benötigten Monitoranschlüsse vor dem Kauf wichtig?",
     "answers": [
-      "Grafiklösung oder Dock müssen genügend passende Ausgänge besitzen",
-      "Jeder Monitor benötigt einen eigenen CPU-Kern",
-      "Die Zahl der Monitore bestimmt die SATA-Version der SSD",
-      "Jeder Bildschirm benötigt einen separaten Arbeitsspeicherriegel"
+      "Grafiklösung und gegebenenfalls Dock müssen die gewünschte Display-Konfiguration unterstützen",
+      "Die Anzahl passender Buchsen belegt bereits jede gleichzeitig mögliche Auflösung",
+      "Ein passiver Verteiler erzeugt aus jedem Bildsignal mehrere unabhängige Desktops",
+      "Die Zahl der Monitore legt allein den erforderlichen Grafikspeicher fest"
     ],
     "correctAnswer": 0,
     "explanation": "Die gewünschte Monitoranzahl und Auflösung müssen von den vorhandenen Ausgängen unterstützt werden.",
@@ -5879,10 +5879,10 @@ export default [
     "difficulty": "medium",
     "question": "Was sollte nach dem Aufbau eines neuen Arbeitsplatz-PCs erfolgen?",
     "answers": [
-      "Alle Diagnoseinformationen dauerhaft deaktivieren",
-      "Funktion und vereinbarte Anforderungen systematisch testen",
-      "Die Hardware ohne Test direkt an den Benutzer übergeben",
-      "Die Firmwareeinstellungen grundsätzlich auf Zufallswerte setzen"
+      "Den erfolgreichen ersten Start als vollständigen Abnahmetest dokumentieren",
+      "Die vereinbarten Funktionen und Anforderungen anhand definierter Prüfschritte testen",
+      "Die technischen Datenblätter anstelle von Funktionsprüfungen abhaken",
+      "Die Abnahme auf das Vorhandensein sämtlicher bestellter Verpackungen beschränken"
     ],
     "correctAnswer": 1,
     "explanation": "Ein Abnahmetest prüft, ob das System erwartungsgemäß und entsprechend den Anforderungen funktioniert.",
@@ -5895,10 +5895,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum ist eine Hardwareinventarisierung sinnvoll?",
     "answers": [
-      "Inventarisierung erhöht automatisch die Rechenleistung des Systems",
-      "Inventarisierung ersetzt jede Form von Datensicherung",
-      "Geräte und relevante Komponenten lassen sich nachvollziehbar dokumentieren",
-      "Inventarisierung legt die Bildschirmauflösung der Benutzer fest"
+      "Sie ersetzt die Prüfung des tatsächlichen Hardwarezustands bei einer Störung",
+      "Sie hält automatisch alle Gerätetreiber auf dem aktuellen Stand",
+      "Sie macht Geräte, Konfigurationen und Zuordnungen nachvollziehbar",
+      "Sie weist allein durch Erfassung die ordnungsgemäße Datenlöschung nach"
     ],
     "correctAnswer": 2,
     "explanation": "Inventardaten unterstützen Verwaltung, Support, Austausch und Lizenz- beziehungsweise Lebenszyklusplanung.",
@@ -5911,10 +5911,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Information gehört sinnvoll in eine Arbeitsplatzdokumentation?",
     "answers": [
-      "Nur die Farbe des Mauszeigers und die Position des Papierkorbs",
-      "Nur persönliche Passwörter des Benutzers im Klartext",
-      "Nur die zuletzt besuchte Webseite und Browserchronik",
-      "Gerät, Konfiguration, Serien- oder Inventardaten und durchgeführte Tests"
+      "Die allgemeinen Werbedaten der Baureihe ohne Zuordnung zum konkreten Gerät",
+      "Die ursprüngliche Bestellung ohne die tatsächlich verbaute Konfiguration",
+      "Die geplante Testliste ohne Ergebnisse oder Datum der Durchführung",
+      "Gerätezuordnung, tatsächliche Konfiguration und dokumentierte Prüfergebnisse"
     ],
     "correctAnswer": 3,
     "explanation": "Technische Dokumentation sollte relevante Konfigurationen und Prüfergebnisse nachvollziehbar festhalten.",
@@ -5927,10 +5927,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum ist eine Checkliste bei der Einrichtung vieler ähnlicher Arbeitsplätze hilfreich?",
     "answers": [
-      "Sie verbessert Wiederholbarkeit und reduziert vergessene Prüfschritte",
-      "Sie macht technische Kenntnisse und Funktionsprüfungen vollständig überflüssig",
-      "Sie sorgt unabhängig vom Inhalt automatisch für höhere Hardwareleistung",
-      "Sie ersetzt sämtliche Benutzeranforderungen durch einen festen Standard"
+      "Sie unterstützt einen wiederholbaren Ablauf und macht ausgelassene Schritte sichtbar",
+      "Sie ersetzt die Anpassung an abweichende Benutzeranforderungen",
+      "Sie bestätigt bestandene Tests bereits durch das Vorhandensein der Prüfpunkte",
+      "Sie macht Versionsänderungen des Einrichtungsprozesses entbehrlich"
     ],
     "correctAnswer": 0,
     "explanation": "Checklisten unterstützen konsistente Abläufe und dokumentierbare Qualität.",
@@ -5943,10 +5943,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist ein sinnvoller Bestandteil einer Übergabe an einen Benutzer?",
     "answers": [
-      "Ausschließlich die Verpackung der Hardware ohne weitere Erklärung",
-      "Kurze Einweisung in relevante Funktionen und Besonderheiten",
-      "Weitergabe aller Administratorpasswörter ohne Schutzmaßnahmen",
-      "Verzicht auf jede Dokumentation und Rückfragemöglichkeit"
+      "Die Übergabe auf die technischen Datenblätter der Komponenten beschränken",
+      "Relevante Bedienung erklären und auf Dokumentation sowie Supportweg hinweisen",
+      "Die Einweisung durch einen vollständig protokollierten Leistungstest ersetzen",
+      "Die Benutzeranforderungen erst nach Abschluss der Übergabe erheben"
     ],
     "correctAnswer": 1,
     "explanation": "Eine zielgruppengerechte Einweisung gehört zu einer vollständigen Arbeitsplatzübergabe.",
@@ -5975,10 +5975,10 @@ export default [
     "difficulty": "medium",
     "question": "Welche Aufgabe kann ein Kensington-Schloss erfüllen?",
     "answers": [
-      "Es verschlüsselt automatisch sämtliche Festplattendaten",
-      "Es schützt Netzwerkverkehr durch TLS-Verschlüsselung",
-      "Es ersetzt Benutzerkennwörter im Betriebssystem",
-      "Es erschwert den physischen Diebstahl eines Geräts"
+      "Es verhindert das Auslesen eines ausgebauten unverschlüsselten Datenträgers",
+      "Es erkennt die Manipulation angeschlossener USB-Geräte",
+      "Es sperrt eine offene Benutzersitzung bei Abwesenheit",
+      "Es erschwert das unbefugte Mitnehmen eines physisch befestigten Geräts"
     ],
     "correctAnswer": 3,
     "explanation": "Ein Kensington-Schloss ist eine mechanische Sicherung für Geräte.",
@@ -5991,10 +5991,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum ist ein Sichtschutzfilter in bestimmten Arbeitsumgebungen sinnvoll?",
     "answers": [
-      "Seitliche Einsicht auf vertrauliche Bildschirminhalte wird erschwert",
-      "Der Prozessor wird damit vor thermischer Überlastung geschützt",
-      "Die Netzwerkkarte erhält damit eine höhere Datenrate",
-      "Die SSD wird dadurch vor elektrischen Spannungsspitzen geschützt"
+      "Er erschwert das Lesen des Bildschirms aus seitlichen Blickwinkeln",
+      "Er verhindert Screenshots durch Programme auf dem Rechner",
+      "Er verschlüsselt den Inhalt auf dem Kabel zum Monitor",
+      "Er sperrt den Bildschirm automatisch beim Verlassen des Arbeitsplatzes"
     ],
     "correctAnswer": 0,
     "explanation": "Privacy-Filter reduzieren die Lesbarkeit des Bildschirms aus seitlichen Blickwinkeln.",
@@ -6004,13 +6004,13 @@ export default [
     "id": "hardware-176",
     "category": "Hardware",
     "topic": "IT-Sicherheit",
-    "difficulty": "hard",
-    "question": "Ein Notebook mit vertraulichen Daten wird regelmäßig mobil genutzt. Welche Kombination verbessert den Schutz sinnvoll?",
+    "difficulty": "medium",
+    "question": "Ein mobiles Notebook soll gegen unbefugte Anmeldung, Offline-Auslesen nach Verlust und einfaches Mitnehmen geschützt werden. Welche Kombination adressiert alle drei Ziele?",
     "answers": [
-      "Nur eine hohe Displayhelligkeit und ein großes Netzteil",
-      "Geräteverschlüsselung, starke Anmeldung und physische Zugriffskontrolle",
-      "Nur ein schneller Prozessor und möglichst viel Arbeitsspeicher",
-      "Nur ein größeres Gehäuse und zusätzliche Lüfter"
+      "Starke Anmeldung, aktuelle Sicherheitsupdates und physische Sicherung",
+      "Laufwerksverschlüsselung, starke Anmeldung und angemessene physische Sicherung",
+      "Laufwerksverschlüsselung, Datensicherung und Inventarisierung",
+      "Physische Sicherung, Sichtschutzfilter und regelmäßige Datensicherung"
     ],
     "correctAnswer": 1,
     "explanation": "Schutz mobiler Geräte umfasst technische Authentisierung, Verschlüsselung und physischen Schutz.",
@@ -6101,12 +6101,12 @@ export default [
     "category": "Hardware",
     "topic": "Virtualisierung",
     "difficulty": "medium",
-    "question": "Welche Hardware-Ressource wird einer virtuellen Maschine typischerweise zugewiesen?",
+    "question": "Welche Kombination beschreibt typische einer VM zugewiesene Ressourcen?",
     "answers": [
-      "Nur eine feste Monitorauflösung ohne weitere Ressourcen",
-      "Ausschließlich physische Tastaturkontakte des Hosts",
-      "Nur die Seriennummer des Host-Gehäuses",
-      "Virtuelle CPUs, Arbeitsspeicher und virtueller Massenspeicher"
+      "Ausschließlich ganze physische CPU-Kerne und vollständige physische Laufwerke",
+      "Virtuelle Datenträger, aber keine konfigurierbaren CPU- oder RAM-Ressourcen",
+      "Arbeitsspeicher und virtuelle Prozessoren, jedoch zwingend alle Host-Ressourcen exklusiv",
+      "Virtuelle Prozessoren, Arbeitsspeicher und virtuelle Datenträger"
     ],
     "correctAnswer": 3,
     "explanation": "Virtuelle Maschinen erhalten definierte Anteile beziehungsweise virtuelle Abbildungen von Host-Ressourcen.",
@@ -6117,28 +6117,28 @@ export default [
     "category": "Hardware",
     "topic": "Virtualisierung",
     "difficulty": "medium",
-    "question": "Warum sollte einer VM nicht unnötig viel RAM zugewiesen werden?",
+    "question": "Mehrere VMs verwenden feste RAM-Zuweisungen auf einem Host mit begrenztem Arbeitsspeicher. Warum sollten diese Zuweisungen am Bedarf ausgerichtet sein?",
     "answers": [
-      "Der Host und andere VMs benötigen ebenfalls Arbeitsspeicher",
-      "Mehr RAM verhindert grundsätzlich den Start jeder VM",
-      "RAM-Zuweisung verändert die physische CPU-Sockelgröße",
-      "Zusätzlicher RAM deaktiviert automatisch virtuelle Netzwerkkarten"
+      "Übermäßige Zuweisungen können den Speicher für Host und andere VMs verknappen",
+      "Eine feste Zuweisung vergrößert automatisch die physische RAM-Kapazität",
+      "Nicht benötigter Gast-RAM steht bei fester Zuweisung in jedem Fall sofort allen VMs zur Verfügung",
+      "Der Host benötigt neben dem an VMs zugewiesenen RAM keinen eigenen Arbeitsspeicher"
     ],
     "correctAnswer": 0,
-    "explanation": "Zu großzügige Zuweisung kann Ressourcen des Hosts und anderer VMs einschränken.",
+    "explanation": "Auch der Host und weitere VMs benötigen RAM. Feste Zuweisungen sollten zur Arbeitslast passen; dynamische Speicherverfahren haben zusätzliche, plattformspezifische Regeln.",
     "source": "hardware.csv"
   },
   {
     "id": "hardware-184",
     "category": "Hardware",
     "topic": "Virtualisierung",
-    "difficulty": "hard",
-    "question": "Welche CPU-Funktion kann für Hardwarevirtualisierung erforderlich sein?",
+    "difficulty": "medium",
+    "question": "Welche Erweiterungen unterstützen die hardwaregestützte Virtualisierung der CPU-Ausführung durch einen Hypervisor?",
     "answers": [
-      "Ein integrierter SATA-Controller mit RAID 0",
-      "Unterstützung wie Intel VT-x oder AMD-V",
-      "Ein DisplayPort-Ausgang mit hoher Bildrate",
-      "Ein spezieller USB-A-Port mit Ladefunktion"
+      "Intel VT-d beziehungsweise AMD-Vi für I/O-Virtualisierung",
+      "Intel VT-x beziehungsweise AMD-V für CPU-Virtualisierung",
+      "SMT beziehungsweise Hyper-Threading für logische Prozessoren",
+      "AVX beziehungsweise vergleichbare SIMD-Befehlserweiterungen"
     ],
     "correctAnswer": 1,
     "explanation": "Moderne Hypervisoren nutzen häufig Hardwarevirtualisierungsfunktionen der CPU.",
@@ -6149,15 +6149,15 @@ export default [
     "category": "Hardware",
     "topic": "Virtualisierung",
     "difficulty": "medium",
-    "question": "Was ist ein Vorteil eines Snapshots einer VM?",
+    "question": "Was unterscheidet einen Hyper-V-Produktionsprüfpunkt vom Standardprüfpunkt einer laufenden VM hinsichtlich des Arbeitsspeichers?",
     "answers": [
-      "Die physische SSD erhält dadurch automatisch mehr Kapazität",
-      "Der Host benötigt danach keinen Arbeitsspeicher mehr",
-      "Ein definierter Zustand kann für Tests schnell wiederhergestellt werden",
-      "Der Snapshot ersetzt dauerhaft jede externe Datensicherung"
+      "Beide speichern den laufenden RAM-Zustand in gleicher Weise",
+      "Nur der Produktionsprüfpunkt speichert den laufenden RAM-Zustand",
+      "Der Standardprüfpunkt erfasst den RAM-Zustand, der Produktionsprüfpunkt nicht",
+      "Keine der beiden Prüfpunktarten kann virtuelle Datenträger erfassen"
     ],
     "correctAnswer": 2,
-    "explanation": "Snapshots sind nützlich für kurzfristige Zustandswiederherstellung, ersetzen aber kein vollständiges Backup.",
+    "explanation": "Standardprüfpunkte erfassen unter anderem den Speicherzustand einer laufenden VM. Produktionsprüfpunkte verwenden Konsistenzmechanismen des Gasts und speichern diesen laufenden RAM-Zustand nicht.",
     "source": "hardware.csv"
   },
   {
@@ -6167,10 +6167,10 @@ export default [
     "difficulty": "medium",
     "question": "Was beschreibt ein Bit?",
     "answers": [
-      "Eine Gruppe aus genau zehn Dezimalziffern",
-      "Eine feste Einheit von 1024 Megabyte",
-      "Eine physische Leitung mit acht Kupferadern",
-      "Die kleinste binäre Informationseinheit mit 0 oder 1"
+      "Eine Informationseinheit mit vier möglichen Zuständen",
+      "Eine Gruppe aus acht binären Stellen",
+      "Eine dezimale Ziffer mit zehn möglichen Werten",
+      "Eine binäre Informationseinheit mit zwei möglichen Zuständen"
     ],
     "correctAnswer": 3,
     "explanation": "Ein Bit kann einen von zwei binären Zuständen darstellen.",
@@ -6197,15 +6197,15 @@ export default [
     "category": "Hardware",
     "topic": "Hardware-Grundlagen",
     "difficulty": "medium",
-    "question": "Welche Einheit wird häufig für Datenübertragungsraten verwendet?",
+    "question": "Was bedeutet eine Datenrate von 100 Mbit/s bei dezimalem Präfix, ohne Berücksichtigung von Protokoll-Overhead?",
     "answers": [
-      "Watt pro Stunde",
-      "Bit pro Sekunde",
-      "Volt pro Meter",
-      "Hertz pro Byte"
+      "100 Millionen Byte pro Sekunde",
+      "100 Millionen Bit pro Sekunde",
+      "100 Megabyte gespeicherte Daten insgesamt",
+      "100 Millionen Taktzyklen pro Sekunde"
     ],
     "correctAnswer": 1,
-    "explanation": "Netzwerk- und Schnittstellendatenraten werden häufig in bit/s und Vielfachen davon angegeben.",
+    "explanation": "Mbit/s bezeichnet Millionen Bit pro Sekunde. Byte pro Sekunde, Speicherkapazität und Taktfrequenz sind andere Größen.",
     "source": "hardware.csv"
   },
   {
@@ -6228,16 +6228,16 @@ export default [
     "id": "hardware-190",
     "category": "Hardware",
     "topic": "Hardware-Grundlagen",
-    "difficulty": "hard",
-    "question": "Warum sollte ein Firmware-Update nicht ohne Anlass unterbrochen werden?",
+    "difficulty": "medium",
+    "question": "Warum sollte die Stromversorgung während des Schreibens eines Firmware-Updates nicht unterbrochen werden?",
     "answers": [
-      "Eine Unterbrechung erhöht automatisch die Speicherkapazität",
-      "Das Gerät wechselt danach immer auf eine schnellere Schnittstelle",
-      "Das Update wird ausschließlich im flüchtigen CPU-Cache gespeichert",
-      "Ein unvollständiger Schreibvorgang kann das Gerät unstartbar machen"
+      "Die Unterbrechung erhöht die vorgesehene Spannung der Speicherbausteine",
+      "Die Unterbrechung führt bei jedem Gerät automatisch zur Wiederherstellung der alten Version",
+      "Die Unterbrechung betrifft ausschließlich die gerade geöffneten Benutzerdateien",
+      "Unvollständig geschriebener Firmwarecode kann den nächsten Gerätestart verhindern"
     ],
     "correctAnswer": 3,
-    "explanation": "Wird kritische Firmware unvollständig geschrieben, kann das Gerät nicht mehr korrekt starten.",
+    "explanation": "Wird startrelevanter Firmwarecode unvollständig geschrieben, kann das Gerät nicht mehr regulär starten. Ob ein Wiederherstellungsverfahren verfügbar ist, hängt vom Gerät ab.",
     "source": "hardware.csv"
   },
   {
@@ -6245,15 +6245,15 @@ export default [
     "category": "Hardware",
     "topic": "Beschaffung",
     "difficulty": "medium",
-    "question": "Was ist bei zwei technisch geeigneten Hardwareangeboten zusätzlich zum Kaufpreis sinnvoll zu vergleichen?",
+    "question": "Zwei Angebote nennen denselben Grundpreis für einen PC. Bei Angebot A sind Betriebssystemlizenz und Lieferung enthalten; bei B werden sie zusätzlich berechnet. Wie entsteht eine vergleichbare Preisgrundlage?",
     "answers": [
-      "Garantie, Lieferzeit, Betriebskosten und Support",
-      "Nur die Reihenfolge der Buchstaben im Produktnamen",
-      "Nur die Farbe der Verpackung und Anzahl der Logos",
-      "Nur die Größe des Herstellerfotos im Onlineshop"
+      "Die Kosten derselben benötigten Ausstattung einschließlich Lizenz und Lieferung gegenüberstellen.",
+      "Ausschließlich die beiden identischen Grundpreise gegenüberstellen.",
+      "Bei Angebot B nur die Lieferkosten berücksichtigen und die benötigte Lizenz ausklammern.",
+      "Bei Angebot A die enthaltene Lizenz erneut aufschlagen und bei B den Grundpreis verwenden."
     ],
     "correctAnswer": 0,
-    "explanation": "Eine Beschaffungsentscheidung sollte relevante technische und wirtschaftliche Kriterien berücksichtigen.",
+    "explanation": "Vergleichbar sind die Preise für denselben benötigten Lieferumfang. Enthaltene Leistungen werden nicht doppelt berechnet, erforderliche Zusatzleistungen aber in beiden Angeboten berücksichtigt.",
     "source": "hardware.csv"
   },
   {
@@ -6261,15 +6261,15 @@ export default [
     "category": "Hardware",
     "topic": "Beschaffung",
     "difficulty": "medium",
-    "question": "Warum ist die Lieferzeit bei Hardwarebeschaffung relevant?",
+    "question": "Hardware wird in 8 Kalendertagen geliefert. Danach benötigen Einrichtung und Test zusammen 3 weitere Kalendertage. Der Arbeitsplatz muss in 10 Kalendertagen bereitstehen; parallel kann nichts vorgezogen werden. Welche Aussage trifft zu?",
     "answers": [
-      "Sie bestimmt automatisch die Lebensdauer des Prozessors",
-      "Sie kann den geplanten Bereitstellungstermin beeinflussen",
-      "Sie verändert die Kapazität installierter SSDs",
-      "Sie legt die Anzahl der PCIe-Lanes des Mainboards fest"
+      "Der Termin passt, weil die Lieferung vor dem zehnten Tag erfolgt",
+      "Der Ablauf benötigt 11 Tage und überschreitet den Termin um einen Tag",
+      "Der Ablauf benötigt 8 Tage, weil Einrichtung zur Lieferung zählt",
+      "Der Ablauf benötigt 5 Tage, weil die Einrichtung von der Lieferzeit abgezogen wird"
     ],
     "correctAnswer": 1,
-    "explanation": "Nicht verfügbare Hardware kann Projekt- und Übergabetermine verzögern.",
+    "explanation": "Die aufeinanderfolgenden Schritte benötigen 8 + 3 = 11 Kalendertage. Der Bereitstellungstermin wird um einen Tag überschritten.",
     "source": "hardware.csv"
   },
   {
@@ -6279,10 +6279,10 @@ export default [
     "difficulty": "medium",
     "question": "Was beschreibt eine Mindestanforderung?",
     "answers": [
-      "Ein optionales Merkmal ohne Einfluss auf die Auswahl",
-      "Ein Kriterium, das grundsätzlich nicht geprüft werden darf",
-      "Eine Eigenschaft, die ein Angebot zwingend erfüllen muss",
-      "Eine Eigenschaft, die nur nach dem Kauf definiert wird"
+      "Ein Wunschmerkmal, das bei guter Gesamtbewertung entfallen darf",
+      "Ein Bewertungskriterium, dessen Gewicht erst den Ausschluss bestimmt",
+      "Eine verbindliche Eigenschaft, deren Nichterfüllung das Angebot ausschließt",
+      "Ein optionaler Vorteil, der einen fehlenden Pflichtpunkt ausgleichen kann"
     ],
     "correctAnswer": 2,
     "explanation": "Mindestanforderungen sind Ausschlusskriterien, wenn sie nicht erfüllt werden.",
@@ -6292,13 +6292,13 @@ export default [
     "id": "hardware-194",
     "category": "Hardware",
     "topic": "Beschaffung",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Zwei Geräte erfüllen alle Muss-Kriterien. Gerät A kostet 900 € mit 3 Jahren Vor-Ort-Service, Gerät B 850 € mit 1 Jahr Bring-in-Service. Was ist die beste nächste Vorgehensweise?",
     "answers": [
-      "Gerät B allein wegen des niedrigeren Kaufpreises automatisch wählen",
-      "Gerät A allein wegen des höheren Kaufpreises automatisch wählen",
-      "Beide Geräte verwerfen, weil ihre Preise unterschiedlich sind",
-      "Die relevanten Kosten- und Servicekriterien gewichtet vergleichen"
+      "Den Preisvorteil von 50 € als Nachweis geringerer Gesamtkosten verwenden",
+      "Den längeren Service ohne Betrachtung der betrieblichen Anforderungen als ausschlaggebend werten",
+      "Beide Servicearten wegen gleicher technischer Muss-Kriterien als gleichwertig behandeln",
+      "Preis- und Serviceunterschiede anhand der festgelegten Anforderungen und Gewichtungen bewerten"
     ],
     "correctAnswer": 3,
     "explanation": "Wenn Muss-Kriterien erfüllt sind, sollten weitere gewichtete Kriterien die Entscheidung unterstützen.",
@@ -6311,10 +6311,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist ein Vorteil standardisierter Arbeitsplatz-Hardware im Unternehmen?",
     "answers": [
-      "Support, Ersatzteilhaltung und Rollout können einfacher werden",
-      "Jeder Arbeitsplatz benötigt dadurch automatisch andere Treiber",
-      "Die Geräte dürfen danach nicht mehr inventarisiert werden",
-      "Standardisierung verhindert grundsätzlich jede spätere Aufrüstung"
+      "Gemeinsame Treiber, Ersatzteile und Verfahren können den Betrieb vereinfachen",
+      "Ein Standardmodell erfüllt ohne Prüfung jede fachliche Spezialanforderung",
+      "Eine einheitliche Baureihe benötigt während ihrer Nutzung keine Firmwarepflege",
+      "Die Standardisierung macht eine Anpassung an unterschiedliche Benutzeranforderungen entbehrlich"
     ],
     "correctAnswer": 0,
     "explanation": "Einheitliche Plattformen können Betrieb, Support und Ersatzteilmanagement vereinfachen.",
@@ -6325,15 +6325,15 @@ export default [
     "category": "Hardware",
     "topic": "Praxisfälle",
     "difficulty": "medium",
-    "question": "Ein Mitarbeiter benötigt drei Monitore für Analyseaufgaben. Was muss vor der Beschaffung geprüft werden?",
+    "question": "Ein Dock besitzt drei Videoausgänge. Laut Hersteller unterstützt es an diesem Notebook gleichzeitig höchstens zwei Displays. Reichen die drei Buchsen für drei unabhängige Monitore?",
     "answers": [
-      "Ob das Gehäuse mindestens drei interne SATA-Schächte besitzt",
-      "Ob Grafiklösung, Dock und Anschlüsse drei Displays unterstützen",
-      "Ob der Prozessor exakt drei physische Kerne besitzt",
-      "Ob die Tastatur über drei verschiedene Layouts verfügt"
+      "Ja, die Buchsenanzahl bestimmt die gleichzeitige Displayanzahl",
+      "Nein, die dokumentierte Grenze für diese Kombination beträgt zwei Displays",
+      "Ja, ein passiver Splitter hebt die Grenze auf drei unabhängige Displays an",
+      "Ja, eine niedrigere Desktop-Skalierung hebt die dokumentierte Displaygrenze auf"
     ],
     "correctAnswer": 1,
-    "explanation": "Anzahl, Auflösung und Bildrate der Monitore müssen von der Anzeigehardware unterstützt werden.",
+    "explanation": "Die Zahl physischer Buchsen ist keine Zusage für deren gleichzeitige Nutzung. Maßgeblich sind die freigegebenen Displaykonfigurationen für Notebook, Dock, Auflösungen und Bildraten.",
     "source": "hardware.csv"
   },
   {
@@ -6343,10 +6343,10 @@ export default [
     "difficulty": "medium",
     "question": "Ein Arbeitsplatz soll besonders leise sein. Welche Maßnahme ist sinnvoll?",
     "answers": [
-      "Alle Lüfter entfernen und sämtliche Öffnungen verschließen",
-      "Nur Lüfter mit maximaler Drehzahl unabhängig von Temperatur nutzen",
-      "Effiziente Kühlung mit großen, langsam drehenden Lüftern planen",
-      "Die CPU ohne Kühlkörper betreiben und das Gehäuse offen lassen"
+      "Die Lüfter auf eine feste niedrige Drehzahl einstellen, ohne den Betrieb unter Last zu prüfen.",
+      "Die Auswahl auf einen kleinen Kühlkörper und hohe Lüfterdrehzahl für dieselbe Wärmelast ausrichten.",
+      "Ausreichende Kühlfläche, geeignete Lüfter und eine temperaturabhängige Regelung vorsehen",
+      "Die Lüfterregelung ausschließlich nach der Leerlauftemperatur auslegen."
     ],
     "correctAnswer": 2,
     "explanation": "Große effiziente Kühler können bei gleicher Kühlleistung mit niedrigeren Drehzahlen arbeiten.",
@@ -6356,13 +6356,13 @@ export default [
     "id": "hardware-198",
     "category": "Hardware",
     "topic": "Praxisfälle",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Ein Büro-PC soll fünf Jahre eingesetzt werden. Welche Auswahlstrategie ist sinnvoll?",
     "answers": [
-      "Nur die aktuell billigste Minimalhardware ohne Erweiterungsmöglichkeit wählen",
-      "Ausschließlich die maximale RGB-Beleuchtung als Zukunftssicherheit bewerten",
-      "Kompatibilität mit zukünftigen Peripheriegeräten grundsätzlich ignorieren",
-      "Ausreichende Leistungsreserve, gute Wartbarkeit und verfügbare Schnittstellen berücksichtigen"
+      "Die höchste heutige Benchmarkpunktzahl als alleinigen Nachweis für fünf Jahre Eignung verwenden",
+      "Den niedrigsten Kaufpreis ohne Betrachtung späterer Wartungs- und Erweiterungskosten wählen",
+      "Die Netzteil-Nennleistung als alleinige Reserve für sämtliche zukünftigen Anforderungen nutzen",
+      "Erwartbaren Bedarf, Leistungsreserve, Wartbarkeit und verfügbare Erweiterungen gemeinsam bewerten"
     ],
     "correctAnswer": 3,
     "explanation": "Eine länger geplante Nutzung profitiert von Reserve, Wartbarkeit und passenden Erweiterungsmöglichkeiten.",
@@ -6373,15 +6373,15 @@ export default [
     "category": "Hardware",
     "topic": "Praxisfälle",
     "difficulty": "medium",
-    "question": "Ein Benutzer kopiert regelmäßig sehr große Videodateien. Welche Aufrüstung bringt häufig den größten Vorteil?",
+    "question": "Große Videodateien werden von einer externen SSD über USB 2.0 kopiert. Beide SSDs können wesentlich schneller arbeiten; die Quelle unterstützt auch einen schnelleren USB-Modus. Welche Aufrüstung beseitigt den beschriebenen Schnittstellenengpass?",
     "answers": [
-      "Schneller Massenspeicher und passende schnelle Schnittstellen",
-      "Eine Maus mit höherer Abfragerate",
-      "Ein stärkeres Netzteil ohne Änderung anderer Komponenten",
-      "Eine Tastatur mit zusätzlichen Funktionstasten"
+      "Ein passender schnellerer USB-Port samt geeignetem Kabel",
+      "Eine interne Ziel-SSD mit mehr Kapazität bei unveränderter USB-Verbindung",
+      "Mehr CPU-Kerne bei unveränderter USB-Verbindung",
+      "Eine Grafikkarte mit mehr VRAM bei unveränderter USB-Verbindung"
     ],
     "correctAnswer": 0,
-    "explanation": "Große Dateiübertragungen profitieren von hoher Speicher- und Schnittstellenbandbreite.",
+    "explanation": "Die langsame USB-2.0-Verbindung begrenzt den Transfer. Ein gemeinsam unterstützter schnellerer Übertragungsmodus kann diesen Engpass verringern; anschließend können andere Grenzen maßgeblich werden.",
     "source": "hardware.csv"
   },
   {
@@ -6391,10 +6391,10 @@ export default [
     "difficulty": "medium",
     "question": "Ein PC wird hauptsächlich für Videokonferenzen eingesetzt. Welche Hardware ist besonders relevant?",
     "answers": [
-      "Mehrere High-End-GPUs und ein RAID-0-Verbund aus vier SSDs",
-      "Webcam, Mikrofon, Lautsprecher oder Headset und stabile Netzwerkanbindung",
-      "Eine sehr große HDD ohne Audio- oder Videoeingabegeräte",
-      "Ein besonders leistungsstarkes Netzteil ohne angeschlossene Peripherie"
+      "Hohe Grafikleistung und großer lokaler Massenspeicher",
+      "Geeignete Audio-/Videoperipherie und zuverlässige Netzwerkanbindung",
+      "Hohe Monitorauflösung und besonders große Akkukapazität",
+      "Viele Erweiterungssteckplätze und eine hohe Netzteil-Nennleistung"
     ],
     "correctAnswer": 1,
     "explanation": "Für Videokonferenzen sind geeignete Audio-/Video-Geräte und Netzwerkqualität entscheidend.",

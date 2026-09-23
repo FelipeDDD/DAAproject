@@ -2,6 +2,7 @@
 @import './hud/hud.css';
 
 :root {
+  --app-stylesheet-ready: 1;
   font-family: "Segoe UI Variable","Segoe UI",Inter,system-ui,sans-serif;
   color: #334550;
   background: #f8fafb;
@@ -20,6 +21,11 @@
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
+.app-loading-screen { display:grid; justify-items:center; gap:12px; }
+.app-loading-screen::before { width:18px; height:18px; border:2px solid #eaf4f755; border-top-color:#9bd8e8; border-radius:50%; content:""; animation:app-loading-spin .8s linear infinite; }
+.app-loading-screen[data-error="true"]::before { display:none; }
+@keyframes app-loading-spin { to { transform:rotate(360deg); } }
+@media(prefers-reduced-motion:reduce) { .app-loading-screen::before { animation:none; } }
 #character-menu { padding: 32px 0; text-align: center; }
 #logout-profile-menu { padding:8px 13px; color:#e7f3f6; border:1px solid #4f788b; border-radius:6px; background:#193442; cursor:pointer; font:600 13px/1.2 inherit; }
 .profile-auth { width:min(100%,440px); margin:32px auto; padding:24px; border:1px solid #6f8d9c80; border-radius:12px; color:#eef5f6; background:#102431e8; box-shadow:0 12px 35px #071b2b66; }
@@ -37,12 +43,15 @@
 #profile-auth-message { min-height:20px; margin:14px 0 0; color:#c8dce3; font-size:13px; text-align:center; }
 .character-style-control { display: inline-flex; align-items: center; gap: 10px; margin-top: 10px; color: #526c79; font-size: 13px; }
 .character-style-control select { padding: 7px 10px; border: 1px solid #b6c5ce; border-radius: 5px; background: white; color: #334550; font: inherit; }
-#character-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 28px 0; padding: 16px; border: 1px solid #dce5e9a6; border-radius: 16px; background-image: url('./art/characterSelectionWaves.svg'),linear-gradient(110deg,#edf1f4e8,#dfe7ece8 54%,#e9edf2e8),var(--page-background-image,none); background-position: center; background-size: 100% 100%,cover,cover; box-shadow: 0 10px 30px #071b2b26; }
-.character-card { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 24px 12px; background: #ffffff14; color: #334550; border: 2px solid #7991a373; border-radius: 10px; box-shadow: inset 0 1px #ffffffa6; cursor: pointer; font: inherit; }
+#character-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 28px 0; padding: 12px; border: 1px solid #c5d4e6; border-radius: 20px; background: linear-gradient(180deg,#fff,#f7fbff); box-shadow: 0 12px 34px #071b2b26, inset 0 1px #fff; }
+.character-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; min-width: 0; min-height: 265px; padding: 24px 12px; color: #2d4359; border: 3px solid #a8bbd0; border-radius: 18px; background-color: #dbe8f5; background-image: url('./art/characterSelectionWaves.svg'); background-size: 400% 100%; background-position: 0 50%; box-shadow: inset 0 1px 2px #fff, inset 0 0 0 1px #ffffff99, 0 2px 6px #53708b24; cursor: pointer; font: inherit; transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease; }
+.character-card:nth-child(2) { background-position: 33.333% 50%; }
+.character-card:nth-child(3) { background-position: 66.667% 50%; }
+.character-card:nth-child(4) { background-position: 100% 50%; }
 .character-card img { width: 96px; height: 168px; object-fit: contain; image-rendering: pixelated; }
 .character-card span { font-size: 13px; }
-.character-card.preferred { border-color: #749da8; }
-.character-card:hover:not(:disabled), .character-card:focus-visible { border-color: #246e83; background: #ffffff45; }
+.character-card.preferred { border-color: #749dbb; box-shadow: inset 0 1px 2px #fff, inset 0 0 0 1px #ffffff99, 0 0 0 2px #9dc2e144, 0 3px 12px #527ca344; }
+.character-card:hover:not(:disabled), .character-card:focus-visible { border-color: #5e9bc5; box-shadow: inset 0 1px 2px #fff, inset 0 0 0 1px #ffffff99, 0 0 0 2px #b6ddfa88, 0 5px 16px #568cb655; transform: translateY(-2px); }
 .character-card:disabled { opacity: .55; cursor: not-allowed; }
 #play-toolbar { display:flex; align-items:center; gap:14px; width:min(100%,var(--game-viewport-width),max(320px,calc((100dvh - 225px) * 16 / 9))); margin:0 auto 10px; }
 #change-character,#logout-profile { flex:none; padding:8px 13px; color:#e7f3f6; border:1px solid #4f788b; border-radius:6px; background:linear-gradient(150deg,#213c4a,#102431); box-shadow:0 3px 10px #132e3d33; cursor:pointer; font-family:inherit; font-size:13px; font-weight:650; line-height:1.2; }
@@ -219,7 +228,7 @@ button.inventory-slot:disabled { cursor: wait; opacity: .62; }
 [data-tooltip] { position: relative; }
 [data-tooltip]::after { position: absolute; left: 50%; bottom: calc(100% + 8px); z-index: 20; width: max-content; max-width: 230px; padding: 7px 9px; transform: translate(-50%,4px); color: #eaf7fc; border: 1px solid #527082; border-radius: 6px; background: #08131df5; box-shadow: 0 5px 16px #000a; content: attr(data-tooltip); font: 11px/1.35 system-ui,sans-serif; text-align: left; white-space: pre-line; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .12s,transform .12s; }
 [data-tooltip]:hover::after,[data-tooltip]:focus-visible::after { opacity: 1; visibility: visible; transform: translate(-50%,0); }
-@media(max-width:600px) { #character-list { grid-template-columns: repeat(2,1fr); } }
+@media(max-width:600px) { #character-list { grid-template-columns: repeat(2,minmax(0,1fr)); } .character-card { background-size:200% 100%; background-position:0 50%; } .character-card:nth-child(even) { background-position:100% 50%; } }
 @media(max-width:760px) { #play-toolbar { flex-wrap:wrap; gap:8px 12px; } }
 body { min-height:100vh; margin:0; color:#334550; background-color:var(--page-background-color,#293849); background-image:var(--page-background-image); background-position:center; background-size:cover; background-repeat:no-repeat; background-attachment:fixed; }
 .boss-reward-overlay { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; padding: 24px; color: #fff; background: #07101dcc; backdrop-filter: blur(5px); }

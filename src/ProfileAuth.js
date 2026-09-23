@@ -12,6 +12,9 @@ export class ProfileAuth{
     this.loginTab=document.getElementById('profile-login-tab');
     this.registerTab=document.getElementById('profile-register-tab');
     this.guestButton=document.getElementById('play-as-guest');
+    this.onAuthKey=event=>event.stopPropagation();
+    this.root.addEventListener('keydown',this.onAuthKey);
+    this.root.addEventListener('keyup',this.onAuthKey);
     this.loginTab.addEventListener('click',()=>this.setMode('login'));
     this.registerTab.addEventListener('click',()=>this.setMode('register'));
     this.loginForm.addEventListener('submit',event=>this.submit(event,'login'));
@@ -36,12 +39,13 @@ export class ProfileAuth{
     for(const control of this.root.querySelectorAll('button,input,select'))control.disabled=pending;
   }
 
-  async start(){
+  async start({onReady=()=>{}}={}){
     this.root.hidden=false;
-    if(!this.presence){this.message.textContent='Configure Convex to use profiles.';return;}
+    if(!this.presence){this.message.textContent='Configure Convex to use profiles.';onReady();return;}
     const token=this.storedToken();
-    if(!token)return;
+    if(!token){onReady();return;}
     this.setPending(true);this.message.textContent='Restoring profile…';
+    onReady();
     try{
       const profile=await this.presence.client.action(this.presence.api.profiles.me,{token});
       if(profile){this.accept(profile,token);return;}
@@ -87,5 +91,9 @@ export class ProfileAuth{
     this.message.textContent='Logged out.';this.onLoggedOut();
   }
 
-  destroy(){this.profile=null;this.token=null;}
+  destroy(){
+    this.root.removeEventListener('keydown',this.onAuthKey);
+    this.root.removeEventListener('keyup',this.onAuthKey);
+    this.profile=null;this.token=null;
+  }
 }

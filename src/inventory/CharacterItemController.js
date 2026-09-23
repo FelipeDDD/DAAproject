@@ -3,6 +3,7 @@ import { CHARACTER_ITEM_IDS,characterItemDefinition,normalizeCharacterItem } fro
 import { CharacterItemClient } from './CharacterItemClient.js';
 
 export const LUNG_CRUSHER_PICKUP_OFFSET=Object.freeze({x:128,y:0});
+const LUNG_CRUSHER_PICKUP_ENABLED=false;
 const PICKUP_DISTANCE=34;
 const TRANSFORM_ANIMATION='michael-lung-crusher-transform-v3';
 const TRANSFORMATION_DISPLAY_SIZE=67;
@@ -23,17 +24,17 @@ export class CharacterItemController {
     this.revision=(this.revision??0)+1;
     this.items=(rows??[]).map(row=>normalizeCharacterItem(row,this.characterId)).filter(Boolean);this.onItemsChange(this.items);
     const item=this.lungCrusher;if(applyVisual)this.onVisualChange(item?.active?item.itemId:null,{instant:true});
-    if(this.pickup)this.pickup.setVisible(this.characterId==='michael'&&!item);
+    if(this.pickup)this.pickup.setVisible(LUNG_CRUSHER_PICKUP_ENABLED&&this.characterId==='michael'&&!item);
   }
   createPickup(transition){
-    if(this.scene.mapKey!=='school'||!transition)return;
+    if(!LUNG_CRUSHER_PICKUP_ENABLED||this.scene.mapKey!=='school'||!transition)return;
     const x=transition.x+LUNG_CRUSHER_PICKUP_OFFSET.x,y=transition.y+LUNG_CRUSHER_PICKUP_OFFSET.y;
     this.pickup=this.scene.add.sprite(x,y,'michael-lung-transform',6).setOrigin(.5,1).setDisplaySize(50,50).setDepth(y+1);
     this.pickup.setVisible(this.characterId==='michael'&&!this.lungCrusher);
     this.pickupPosition={x,y};
   }
   updatePrompt(){
-    if(!this.pickup?.visible||this.characterId!=='michael')return false;
+    if(!LUNG_CRUSHER_PICKUP_ENABLED||!this.pickup?.visible||this.characterId!=='michael')return false;
     return Phaser.Math.Distance.Between(this.scene.player.body.center.x,this.scene.player.body.center.y,this.pickupPosition.x,this.pickupPosition.y)<=PICKUP_DISTANCE;
   }
   async collect(){

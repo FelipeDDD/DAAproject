@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
 import { gameConfig } from './game/config.js';
-import './style.css';
 import { closePresence, getPresence } from './multiplayer/client.js';
 import { CharacterMenu } from './CharacterMenu.js';
 import { DisplaySettingsController } from './ui/displaySettings.js';
@@ -34,7 +33,19 @@ const auth=new ProfileAuth(presence,{
   onGuest(guest){menu.setGuestIdentity(guest);menu.show();},
   onLoggedOut(){menu.hide();},
 });
-void auth.start();
+function releaseInitialLoading(){
+  const stylesheetReady=getComputedStyle(document.documentElement)
+    .getPropertyValue('--app-stylesheet-ready').trim()==='1';
+  if(window.appStylesheetFailed||!stylesheetReady){window.showBootstrapError();return;}
+  document.getElementById('app-loading').hidden=true;
+  document.documentElement.classList.remove('app-loading');
+  document.querySelector('main')?.setAttribute('aria-busy','false');
+}
+void auth.start({onReady:releaseInitialLoading}).catch(()=>{
+  auth.setPending(false);
+  auth.message.textContent='Profile access could not be initialized. You can retry or play as guest.';
+  releaseInitialLoading();
+});
 
 function releaseCurrentCharacter(){
   return presence?.release()??Promise.resolve({released:false});

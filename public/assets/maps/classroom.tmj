@@ -7312,17 +7312,17 @@
                          "name":"interactionRadius",
                          "type":"float",
                          "value":40
-                        },
+                        }, 
                         {
                          "name":"label",
                          "type":"string",
                          "value":"Office"
-                        },
+                        }, 
                         {
                          "name":"locked",
                          "type":"bool",
                          "value":true
-                        },
+                        }, 
                         {
                          "name":"targetMap",
                          "type":"string",
@@ -7332,7 +7332,7 @@
                          "name":"targetSpawn",
                          "type":"string",
                          "value":"office2-spawn"
-                        },
+                        }, 
                         {
                          "name":"transition",
                          "type":"bool",
@@ -7344,6 +7344,45 @@
                  "width":0,
                  "x":142.363636363636,
                  "y":370
+                }, 
+                {
+                 "height":0,
+                 "id":503,
+                 "name":"school-corridor-spawn2",
+                 "opacity":1,
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"targetMap",
+                         "type":"string",
+                         "value":"office3"
+                        },
+                        {
+                         "name":"targetSpawn",
+                         "type":"string",
+                         "value":"office3-spawn"
+                        },
+                        {
+                         "name":"interactionRadius",
+                         "type":"float",
+                         "value":40
+                        },
+                        {
+                         "name":"label",
+                         "type":"string",
+                         "value":"Office 3"
+                        },
+                        {
+                         "name":"transition",
+                         "type":"bool",
+                         "value":true
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":47.3333333333333,
+                 "y":269.666666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -8581,7 +8620,7 @@
                  "width":0,
                  "x":718.545454545455,
                  "y":655.636363636364
-                },
+                }, 
                 {
                  "height":0,
                  "id":499,
@@ -8594,7 +8633,7 @@
                  "width":0,
                  "x":143.5,
                  "y":430.25
-                },
+                }, 
                 {
                  "height":0,
                  "id":500,
@@ -8615,7 +8654,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":501,
+ "nextobjectid":504,
  "orientation":"orthogonal",
  "properties":[
         {

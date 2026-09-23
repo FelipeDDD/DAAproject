@@ -1,6 +1,11 @@
 import { appendChatMessageText } from './chat/renderMessageText.js';
 import { CHAT_PEEK_MESSAGE_COUNT,ChatVisibility,loadChatPinned,saveChatPinned } from './chat/ChatVisibility.js';
 
+function profileAuthOpen(){
+  const panel=document.getElementById('profile-auth');
+  return Boolean(panel&&!panel.hidden);
+}
+
 // DOM chat; scene lifecycle owns the subscription and keyboard handlers.
 export class RoomChat {
   constructor(scene,presence) {
@@ -31,6 +36,7 @@ export class RoomChat {
       }
     };
     this.key=event=>{
+      if(profileAuthOpen())return;
       if(this.scene.terminal?.active)return;
       if(this.closed)return;
       if(this.visibility.state==='active'){
@@ -50,7 +56,7 @@ export class RoomChat {
         event.preventDefault();event.stopImmediatePropagation();this.openInput();
       }
     };
-    this.keyUp=event=>{if(this.visibility.state==='active')event.stopImmediatePropagation();};
+    this.keyUp=event=>{if(!profileAuthOpen()&&this.visibility.state==='active')event.stopImmediatePropagation();};
     this.input.addEventListener('focus',this.focus);this.input.addEventListener('blur',this.blur);
     window.addEventListener('keydown',this.key,true);window.addEventListener('keyup',this.keyUp,true);
     this.unsubscribe=presence.client.onUpdate(presence.api.messages.inRoom,{room:this.room},rows=>{
@@ -113,7 +119,7 @@ export class RoomChat {
     // browsers move focus again when the chat input becomes display:none.
     const afterEvent=globalThis.requestAnimationFrame??queueMicrotask;
     afterEvent(()=>{
-      if(this.closed||this.isInputActive||this.scene.terminal?.active)return;
+      if(this.closed||this.isInputActive||this.scene.terminal?.active||profileAuthOpen())return;
       const active=document.activeElement;
       if(active===document.body||active===this.input||active===this.pinButton||!active)
         document.getElementById('game')?.focus({preventScroll:true});

@@ -1,14 +1,31 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="app-loading">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="only light" />
     <meta name="theme-color" content="#f8fafb" />
+    <link rel="stylesheet" href="/src/style.css" onerror="window.appStylesheetFailed = true" />
+    <style>
+      html.app-loading body > main { visibility: hidden; }
+      #app-loading { position: fixed; inset: 0; z-index: 20000; display: grid; place-items: center; padding: 24px; color: #eaf4f7; background: #0b1821; font: 600 15px/1.4 "Segoe UI", system-ui, sans-serif; letter-spacing: .04em; }
+      #app-loading[hidden] { display: none; }
+      #app-loading[data-error="true"] { color: #ffe1dc; background: #201416; text-align: center; }
+    </style>
+    <script>
+      window.showBootstrapError = () => {
+        if (!document.documentElement.classList.contains('app-loading')) return;
+        const loading = document.getElementById('app-loading');
+        if (loading) { loading.textContent = 'The app could not finish starting. Reload the page to try again.'; loading.dataset.error = 'true'; }
+      };
+      window.addEventListener('error', window.showBootstrapError);
+      window.addEventListener('unhandledrejection', window.showBootstrapError);
+    </script>
     <title>DAAproject — IT Classroom</title>
   </head>
   <body>
-    <main>
+    <div id="app-loading" class="app-loading-screen" role="status" aria-live="polite">Loading classroom…</div>
+    <main aria-busy="true">
       <header>
         <div>
           <p class="eyebrow">DAAPROJECT</p>
@@ -266,8 +283,8 @@
         </section>
       </section>
       </section>
-      <noscript>Enable JavaScript to explore the school.</noscript>
     </main>
-    <script type="module" src="/src/main.js"></script>
+    <noscript><style>html.app-loading body > main { visibility: visible; } #app-loading { display: none; }</style><p>Enable JavaScript to explore the school.</p></noscript>
+    <script type="module" src="/src/main.js" onerror="window.showBootstrapError()"></script>
   </body>
 </html>

@@ -1,24 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 380" preserveAspectRatio="none" aria-hidden="true">
   <defs>
-    <linearGradient id="upper" x2="1" y2="0">
-      <stop stop-color="#aabac7"/>
-      <stop offset=".52" stop-color="#d4dce5"/>
-      <stop offset="1" stop-color="#b8c4d5"/>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#f6faff"/>
+      <stop offset=".38" stop-color="#dfebf8"/>
+      <stop offset="1" stop-color="#c7d8ea"/>
     </linearGradient>
-    <linearGradient id="middle" x2="1" y2=".18">
-      <stop stop-color="#bcc9d0"/>
-      <stop offset=".5" stop-color="#aebfcf"/>
-      <stop offset="1" stop-color="#c7bed1"/>
+    <linearGradient id="ribbon" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#fff" stop-opacity=".73"/>
+      <stop offset=".48" stop-color="#f7fbff" stop-opacity=".38"/>
+      <stop offset="1" stop-color="#bfd4eb" stop-opacity=".08"/>
     </linearGradient>
-    <linearGradient id="lower" x2="1" y2="0">
-      <stop stop-color="#a9bdc9"/>
-      <stop offset=".48" stop-color="#c7d5dc"/>
-      <stop offset="1" stop-color="#aab8c8"/>
-    </linearGradient>
+    <radialGradient id="light">
+      <stop stop-color="#fff" stop-opacity=".8"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
   </defs>
-  <path d="M0 63 C160 20 280 132 454 91 S770 37 920 92 S1090 118 1200 73 L1200 167 C1040 207 979 106 816 138 S534 214 366 149 S103 187 0 144 Z" fill="url(#upper)" opacity=".55"/>
-  <path d="M0 181 C180 98 310 213 477 165 S727 121 889 179 S1072 207 1200 139 L1200 275 C1043 332 941 215 780 249 S525 292 352 240 S150 299 0 251 Z" fill="url(#middle)" opacity=".49"/>
-  <path d="M0 284 C166 217 311 326 473 271 S710 249 864 287 S1080 266 1200 229 L1200 380 H0 Z" fill="url(#lower)" opacity=".58"/>
-  <path d="M0 181 C180 98 310 213 477 165 S727 121 889 179 S1072 207 1200 139" fill="none" stroke="#fff" stroke-opacity=".34" stroke-width="3"/>
-  <path d="M0 284 C166 217 311 326 473 271 S710 249 864 287 S1080 266 1200 229" fill="none" stroke="#fff" stroke-opacity=".29" stroke-width="3"/>
+  <rect width="1200" height="380" fill="url(#sky)"/>
+  <path d="M0 80 C190 62 240 114 390 113 S636 66 796 92 S1018 149 1200 95" fill="none" stroke="#fff" stroke-opacity=".32" stroke-width="1.5"/>
+  <path d="M0 160 C140 119 202 99 327 134 S548 227 717 182 S972 123 1200 176 L1200 244 C993 183 896 182 735 218 S506 236 342 171 S133 163 0 207 Z" fill="url(#ribbon)"/>
+  <path d="M0 183 C142 144 210 121 334 153 S555 223 720 191 S973 150 1200 191" fill="none" stroke="#fff" stroke-opacity=".84" stroke-width="2.4"/>
+  <path d="M0 216 C154 186 232 155 347 188 S532 245 707 218 S960 179 1200 214" fill="none" stroke="#f9fdff" stroke-opacity=".52" stroke-width="1.4"/>
+  <path d="M0 262 C158 206 252 222 381 255 S552 277 707 247 S969 212 1200 249" fill="none" stroke="#fff" stroke-opacity=".34" stroke-width="1.2"/>
+  <path d="M0 307 C168 276 254 266 391 284 S600 314 734 285 S960 272 1200 300" fill="none" stroke="#f6fbff" stroke-opacity=".32" stroke-width="1"/>
+  <path d="M0 284 H1200 M0 322 H1200" stroke="#fff" stroke-opacity=".12"/>
+  <circle cx="256" cy="155" r="31" fill="url(#light)"/><circle cx="793" cy="194" r="22" fill="url(#light)"/><circle cx="1059" cy="104" r="25" fill="url(#light)"/>
+  <g fill="#fff" opacity=".58"><circle cx="258" cy="155" r="2.8"/><circle cx="794" cy="194" r="1.7"/><circle cx="1059" cy="104" r="2"/><circle cx="80" cy="273" r="1.4"/><circle cx="483" cy="132" r="1.2"/><circle cx="956" cy="292" r="1.4"/></g>
 </svg>

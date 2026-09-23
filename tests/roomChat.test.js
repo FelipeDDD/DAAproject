@@ -20,8 +20,9 @@ class FakeElement {
 }
 
 function setup(){
-  const nodes=new Map(['room-chat','chat-messages','chat-input','chat-status','chat-pin','game']
+  const nodes=new Map(['room-chat','chat-messages','chat-input','chat-status','chat-pin','game','profile-auth']
     .map(id=>[id,new FakeElement(id)]));
+  nodes.get('profile-auth').hidden=true;
   const listeners=new Map(),sent=[];
   const documentRef={getElementById:id=>nodes.get(id),createElement:tag=>new FakeElement(tag),
     createTextNode:text=>({textContent:text}),activeElement:null};
@@ -91,6 +92,23 @@ test('lost input focus cannot leak E to a nearby interaction or prevent Enter an
     h.listeners.get('keydown')(h.event('Escape'));
     assert.equal(chat.visibility.state,'hidden');
     assert.equal(h.scene.input.keyboard.enabled,true);
+    chat.close();
+  }finally{h.restore();}
+});
+
+test('an open profile form receives E and WASD even if chat had been active',()=>{
+  const h=setup();
+  try{
+    const chat=new RoomChat(h.scene,h.presence);
+    h.listeners.get('keydown')(h.event('Enter'));
+    h.nodes.get('profile-auth').hidden=false;
+    for(const key of ['e','w','a','s','d']){
+      const typed=h.event(key,h.nodes.get('profile-auth'));
+      h.listeners.get('keydown')(typed);
+      h.listeners.get('keyup')(typed);
+      assert.equal(typed.prevented,undefined);
+      assert.equal(typed.stopped,undefined);
+    }
     chat.close();
   }finally{h.restore();}
 });

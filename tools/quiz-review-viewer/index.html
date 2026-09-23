@@ -42,8 +42,8 @@
           <div class="review-progress" id="review-progress">0 / 0 revisados</div>
         </div>
 
-        <details class="filters-panel" open>
-          <summary>Filtros e busca</summary>
+        <details class="filters-panel">
+          <summary>Filtros e busca <span id="filter-count" class="filter-count" aria-live="polite"></span></summary>
           <div class="filters-grid">
             <label class="wide">Buscar
               <input id="filter-search" type="search" placeholder="ID, pergunta, resposta ou explicação">
@@ -88,10 +88,8 @@
             <label>Estado pessoal
               <select id="filter-personal">
                 <option value="">Todos</option>
-                <option value="unchecked">Não verificado</option>
-                <option value="agree">Concordo</option>
-                <option value="question">Tenho dúvida</option>
-                <option value="review">Revisar</option>
+                <option value="unchecked">Não revisadas</option>
+                <option value="reviewed">Revisadas</option>
               </select>
             </label>
             <label class="check-label"><input id="filter-addition" type="checkbox"> Apenas questões com candidata nova</label>
@@ -99,15 +97,8 @@
             <label class="check-label"><input id="hide-identical" type="checkbox"> Ocultar campos idênticos</label>
             <button id="clear-filters" class="button secondary" type="button">Limpar filtros</button>
           </div>
-          <p id="filter-count" class="filter-count" aria-live="polite"></p>
         </details>
       </div>
-
-      <section aria-labelledby="summary-title">
-        <h2 id="summary-title" class="section-title">Resumo</h2>
-        <div id="summary-cards" class="summary-cards"></div>
-        <div id="analysis-panels" class="analysis-grid"></div>
-      </section>
 
       <div class="review-layout">
         <aside class="id-sidebar" aria-label="Perguntas filtradas">
@@ -125,32 +116,39 @@
             <button id="next-question" class="button secondary" type="button">Próxima →</button>
           </div>
 
+          <div class="sequential-tools">
+            <label class="check-label"><input id="auto-advance" type="checkbox" checked> Avançar automaticamente após decidir</label>
+            <button id="undo-decision" class="button secondary" type="button" disabled>Desfazer última decisão</button>
+            <details class="shortcut-help"><summary>Atalhos de teclado</summary><p id="shortcut-legend">Selecione uma questão para ver os atalhos.</p></details>
+          </div>
+
           <div id="status-strip" class="status-strip"></div>
           <div id="comparison" class="comparison-grid"></div>
-          <div id="review-details" class="details-grid"></div>
 
           <section class="personal-panel" aria-labelledby="personal-title">
             <div>
               <h3 id="personal-title">Minha revisão local</h3>
-              <p>Salva apenas neste navegador para este relatório.</p>
+              <p>Decisões salvas automaticamente neste navegador. O filtro inicial mostra só as pendentes.</p>
             </div>
-            <fieldset id="personal-state">
-              <legend>Estado</legend>
-              <label><input type="radio" name="personal-state" value="unchecked"> Não verificado</label>
-              <label><input type="radio" name="personal-state" value="agree"> Concordo</label>
-              <label><input type="radio" name="personal-state" value="question"> Tenho dúvida</label>
-              <label><input type="radio" name="personal-state" value="review"> Revisar</label>
-            </fieldset>
-            <label>Notas
+            <div id="personal-state" class="personal-state" aria-live="polite"></div>
+            <label>Observação para ajuste ou revisão
               <textarea id="personal-note" rows="5" placeholder="Escreva uma observação pessoal"></textarea>
             </label>
             <div class="personal-actions">
+              <button id="request-adjustment" class="button secondary" type="button">Pedir ajuste</button>
+              <button id="decide-later" class="button secondary" type="button">Decidir depois</button>
               <button id="clear-note" class="button secondary" type="button">Limpar nota</button>
-              <button id="export-notes" class="button" type="button">Exportar notas JSON</button>
+              <button id="export-notes" class="button" type="button">Exportar decisões JSON</button>
+              <label class="file-button secondary">Importar decisões JSON<input id="import-decisions" type="file" accept=".json,application/json"></label>
             </div>
           </section>
+          <div id="review-details" class="details-grid"></div>
         </section>
       </div>
+      <details class="report-summary"><summary>Resumo e contagens do relatório</summary>
+        <div id="summary-cards" class="summary-cards"></div>
+        <div id="analysis-panels" class="analysis-grid"></div>
+      </details>
     </section>
   </main>
 
