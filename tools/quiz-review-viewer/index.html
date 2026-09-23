@@ -1,0 +1,160 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Quiz Review Viewer</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">Ferramenta local</p>
+      <h1>Quiz Review Viewer</h1>
+      <p class="subtitle">Compare o relatório inicial e a validação sem enviar arquivos ou dados para fora do navegador.</p>
+    </div>
+    <div class="local-badge" role="status">Somente local · sem uploads</div>
+  </header>
+
+  <main>
+    <section class="import-panel" aria-labelledby="import-title">
+      <div>
+        <h2 id="import-title">Abrir relatórios JSON</h2>
+        <p>Selecione o relatório de estado e, opcionalmente, o relatório de validação. A ordem dos arquivos não importa.</p>
+      </div>
+      <label class="file-button">
+        <span>Selecionar arquivos</span>
+        <input id="file-input" type="file" accept=".json,application/json" multiple>
+      </label>
+      <button id="clear-report" class="button secondary" type="button" hidden>Fechar relatório</button>
+      <div id="file-status" class="file-status" aria-live="polite">Nenhum relatório carregado.</div>
+      <div id="error-box" class="error-box" role="alert" hidden></div>
+    </section>
+
+    <section id="workspace" hidden>
+      <div class="sticky-tools">
+        <div class="report-heading">
+          <div>
+            <p class="eyebrow" id="report-source">Relatório</p>
+            <h2 id="report-title">Categoria</h2>
+          </div>
+          <div class="review-progress" id="review-progress">0 / 0 revisados</div>
+        </div>
+
+        <details class="filters-panel" open>
+          <summary>Filtros e busca</summary>
+          <div class="filters-grid">
+            <label class="wide">Buscar
+              <input id="filter-search" type="search" placeholder="ID, pergunta, resposta ou explicação">
+            </label>
+            <label>Status inicial
+              <select id="filter-status"><option value="">Todos</option></select>
+            </label>
+            <label>Veredito
+              <select id="filter-verdict"><option value="">Todos</option></select>
+            </label>
+            <label>Batch
+              <select id="filter-batch"><option value="">Todos</option></select>
+            </label>
+            <label>Dificuldade original
+              <select id="filter-original-difficulty"><option value="">Todas</option></select>
+            </label>
+            <label>Dificuldade final
+              <select id="filter-final-difficulty"><option value="">Todas</option></select>
+            </label>
+            <label>Problema / tag
+              <select id="filter-issue"><option value="">Todos</option></select>
+            </label>
+            <label>Mudança de dificuldade
+              <select id="filter-direction">
+                <option value="">Todas</option>
+                <option value="increased">Aumentou</option>
+                <option value="decreased">Diminuiu</option>
+                <option value="changed">Qualquer mudança</option>
+              </select>
+            </label>
+            <label>Campos alterados
+              <select id="filter-changed-field">
+                <option value="">Todos</option>
+                <option value="any">Algum campo</option>
+                <option value="question">Pergunta</option>
+                <option value="answers">Respostas</option>
+                <option value="correctAnswer">Resposta correta</option>
+                <option value="explanation">Explicação</option>
+                <option value="difficulty">Dificuldade</option>
+              </select>
+            </label>
+            <label>Estado pessoal
+              <select id="filter-personal">
+                <option value="">Todos</option>
+                <option value="unchecked">Não verificado</option>
+                <option value="agree">Concordo</option>
+                <option value="question">Tenho dúvida</option>
+                <option value="review">Revisar</option>
+              </select>
+            </label>
+            <label class="check-label"><input id="filter-addition" type="checkbox"> Apenas questões com candidata nova</label>
+            <label class="check-label"><input id="filter-repetition" type="checkbox"> Apenas substituições por repetição</label>
+            <label class="check-label"><input id="hide-identical" type="checkbox"> Ocultar campos idênticos</label>
+            <button id="clear-filters" class="button secondary" type="button">Limpar filtros</button>
+          </div>
+          <p id="filter-count" class="filter-count" aria-live="polite"></p>
+        </details>
+      </div>
+
+      <section aria-labelledby="summary-title">
+        <h2 id="summary-title" class="section-title">Resumo</h2>
+        <div id="summary-cards" class="summary-cards"></div>
+        <div id="analysis-panels" class="analysis-grid"></div>
+      </section>
+
+      <div class="review-layout">
+        <aside class="id-sidebar" aria-label="Perguntas filtradas">
+          <div class="sidebar-title">IDs</div>
+          <div id="id-list" class="id-list"></div>
+        </aside>
+
+        <section class="question-review" aria-labelledby="question-title">
+          <div class="question-nav">
+            <button id="previous-question" class="button secondary" type="button">← Anterior</button>
+            <div>
+              <h2 id="question-title">Selecione uma pergunta</h2>
+              <p id="question-position"></p>
+            </div>
+            <button id="next-question" class="button secondary" type="button">Próxima →</button>
+          </div>
+
+          <div id="status-strip" class="status-strip"></div>
+          <div id="comparison" class="comparison-grid"></div>
+          <div id="review-details" class="details-grid"></div>
+
+          <section class="personal-panel" aria-labelledby="personal-title">
+            <div>
+              <h3 id="personal-title">Minha revisão local</h3>
+              <p>Salva apenas neste navegador para este relatório.</p>
+            </div>
+            <fieldset id="personal-state">
+              <legend>Estado</legend>
+              <label><input type="radio" name="personal-state" value="unchecked"> Não verificado</label>
+              <label><input type="radio" name="personal-state" value="agree"> Concordo</label>
+              <label><input type="radio" name="personal-state" value="question"> Tenho dúvida</label>
+              <label><input type="radio" name="personal-state" value="review"> Revisar</label>
+            </fieldset>
+            <label>Notas
+              <textarea id="personal-note" rows="5" placeholder="Escreva uma observação pessoal"></textarea>
+            </label>
+            <div class="personal-actions">
+              <button id="clear-note" class="button secondary" type="button">Limpar nota</button>
+              <button id="export-notes" class="button" type="button">Exportar notas JSON</button>
+            </div>
+          </section>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer>Os arquivos são lidos com a API local do navegador. Nenhum conteúdo é enviado pela rede.</footer>
+  <script src="./app.js"></script>
+</body>
+</html>
