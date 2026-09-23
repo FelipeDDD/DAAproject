@@ -41,7 +41,11 @@ export class Presence {
   async send(now = Date.now()) {
     const active = this.active;
     if (!active || this.busy) return;
-    const state = { ...this.identity, room: active.room, ...active.snapshot() };
+    const snapshot=active.snapshot();
+    const state = {
+      playerId:this.identity.playerId,characterId:this.identity.characterId,
+      name:this.identity.name,sessionId:this.identity.sessionId,room:active.room,...snapshot,
+    };
     const serialized = JSON.stringify(state);
     const stateChanged = serialized !== active.previous;
     if (!stateChanged && now - active.sentAt < PRESENCE_HEARTBEAT_MS) return;

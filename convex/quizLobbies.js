@@ -30,6 +30,12 @@ async function activeParticipants(ctx, lobby) {
   return lobby.participants.filter(id => active.has(id));
 }
 
+async function persistentParticipants(ctx,room,participantIds){
+  const players=await ctx.db.query('players').withIndex('by_room',q=>q.eq('room',room)).collect();
+  return players.filter(player=>player.profileId&&participantIds.includes(player.characterId))
+    .map(player=>player.characterId);
+}
+
 function questionIdsFor(lobby) {
   return lobby.questionIds?.length?lobby.questionIds:QUIZ_QUESTIONS.map(question=>question.id);
 }
@@ -200,14 +206,15 @@ export const start = mutation({
     if (participants.length < 2) throw new Error('At least 2 players are required.');
     const settings=settingsFor(lobby);
     const startedAt=Date.now();
-    const recentHistories=await recentHistoriesFor(ctx,participants);
+    const persistentIds=await persistentParticipants(ctx,lobby.room,participants);
+    const recentHistories=await recentHistoriesFor(ctx,persistentIds);
     const selectedIds=selectQuizQuestionIds({
       ...settings,recentHistories,seed:`${lobby._id}:${startedAt}`,
     });
     if(!selectedIds.length)throw new Error('No questions match these settings.');
     const questions=materializeQuizQuestions(selectedIds);
     const questionIds=questions.map(question=>question.id);
-    await rememberQuestions(ctx,participants,questionIds.slice(0,1),startedAt);
+    await rememberQuestions(ctx,persistentIds,questionIds.slice(0,1),startedAt);
     await ctx.db.patch(lobby._id,{
       participants,status:'starting',questionIndex:0,questionIds,questions,
       questionDeadline:Date.now()+QUIZ_QUESTION_DURATION_MS,
@@ -220,7 +227,7 @@ export const start = mutation({
 export const answer = mutation({
   args: { room:v.string(), characterId:v.string(), sessionId:v.string(), answerIndex:v.number() },
   handler: async (ctx,args) => {
-    await playerFor(ctx,args.characterId,args.sessionId,args.room);
+    const player=await playerFor(ctx,args.characterId,args.sessionId,args.room);
     const lobby=await ctx.db.query('quizLobbies').withIndex('by_room',q=>q.eq('room',args.room)).unique();
     const question=lobby&&questionFor(lobby);
     if(!lobby||lobby.status!=='starting'||!question||!lobby.participants.includes(args.characterId))
@@ -232,7 +239,7 @@ export const answer = mutation({
       q.eq('lobbyId',lobby._id).eq('questionId',question.id).eq('characterId',args.characterId)).unique();
     if(existing){
       if(existing.answerIndex!==args.answerIndex)throw new Error('This player has already answered.');
-      await recordQuizAttempt(ctx,{
+      if(player.profileId)await recordQuizAttempt(ctx,{
         attemptKey:`multiplayer:${lobby._id}:${question.id}:${args.characterId}`,
         characterId:args.characterId,questionId:question.id,category:question.category,
         topic:question.topic??null,difficulty:question.difficulty,mode:'multiplayer',
@@ -245,7 +252,7 @@ export const answer = mutation({
       lobbyId:lobby._id,room:args.room,questionId:question.id,
       characterId:args.characterId,answerIndex:args.answerIndex,createdAt:answeredAt,
     });
-    await recordQuizAttempt(ctx,{
+    if(player.profileId)await recordQuizAttempt(ctx,{
       attemptKey:`multiplayer:${lobby._id}:${question.id}:${args.characterId}`,
       characterId:args.characterId,questionId:question.id,category:question.category,
       topic:question.topic??null,difficulty:question.difficulty,mode:'multiplayer',
@@ -263,7 +270,7 @@ export const finishTimedQuestion = mutation({
     answerIndex:v.optional(v.number()),
   },
   handler:async(ctx,args)=>{
-    await playerFor(ctx,args.characterId,args.sessionId,args.room);
+    const player=await playerFor(ctx,args.characterId,args.sessionId,args.room);
     const lobby=await ctx.db.query('quizLobbies').withIndex('by_room',q=>q.eq('room',args.room)).unique();
     const question=lobby&&questionFor(lobby);
     if(!lobby||lobby.status!=='starting'||!question||!lobby.participants.includes(args.characterId))
@@ -280,7 +287,7 @@ export const finishTimedQuestion = mutation({
       });
       existing=await ctx.db.get(answerId);
     }
-    await recordQuizAttempt(ctx,{
+    if(player.profileId)await recordQuizAttempt(ctx,{
       attemptKey:`multiplayer:${lobby._id}:${question.id}:${args.characterId}`,
       characterId:args.characterId,questionId:question.id,category:question.category,
       topic:question.topic??null,difficulty:question.difficulty,mode:'multiplayer',
@@ -310,7 +317,8 @@ export const nextQuestion = mutation({
     const questionCount=lobby.questions?.length??questionIdsFor(lobby).length;
     if(nextIndex<questionCount){
       const nextQuestionId=lobby.questions?.[nextIndex]?.id??questionIdsFor(lobby)[nextIndex];
-      await rememberQuestions(ctx,participants,[nextQuestionId]);
+      const persistentIds=await persistentParticipants(ctx,lobby.room,participants);
+      await rememberQuestions(ctx,persistentIds,[nextQuestionId]);
     }
     await ctx.db.patch(lobby._id,nextIndex>=questionCount
       ? {status:'finished',questionIndex:nextIndex}

@@ -6,7 +6,7 @@ import {
 } from './quizQuestions.js';
 import { recentHistoriesFor, rememberQuestions } from './quizHistory.js';
 import { questionTemplateId } from './quizSelection.js';
-import { requireActivePlayer } from './playerSessions.js';
+import { requireAuthenticatedPlayer } from './playerSessions.js';
 
 export const options = query({
   args: {},
@@ -23,7 +23,7 @@ export const start = mutation({
     count: v.union(v.number(), v.null()),
   },
   handler: async (ctx, args) => {
-    await requireActivePlayer(ctx, args.characterId, args.sessionId);
+    await requireAuthenticatedPlayer(ctx, args.characterId, args.sessionId);
     const settings=validateQuizSettings(args);
     const [recentHistory] = await recentHistoriesFor(ctx, [args.characterId]);
     const questionIds = selectQuizQuestionIds({
@@ -50,7 +50,7 @@ export const start = mutation({
 export const markViewed = mutation({
   args: { characterId: v.string(), sessionId: v.string(), questionId: v.string() },
   handler: async (ctx, args) => {
-    await requireActivePlayer(ctx, args.characterId, args.sessionId);
+    await requireAuthenticatedPlayer(ctx, args.characterId, args.sessionId);
     const questionId = questionTemplateId(args.questionId);
     if (!QUIZ_QUESTIONS.some(question => question.id === questionId)) throw new Error('Unknown quiz question.');
     await rememberQuestions(ctx, [args.characterId], [questionId]);

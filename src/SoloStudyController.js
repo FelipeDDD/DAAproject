@@ -10,6 +10,7 @@ import {
   IT_CHALLENGE_DURATION_MS,IT_CHALLENGE_FEEDBACK_DELAY_MS,IT_CHALLENGE_POINTS,
   IT_CHALLENGE_QUESTION_TIMEOUT_MS,IT_CHALLENGE_RULES_VERSION,IT_CHALLENGE_VARIANT,
 } from './quiz/itChallengeRules.js';
+import { hasProfileSession } from './ProfileSessionClient.js';
 
 export const SOLO_STUDY_PROMPT=Object.freeze({text:'[E] Study',offsetX:0,offsetY:-70});
 
@@ -71,7 +72,10 @@ export class SoloStudyController {
 
     this.onStart=()=>void this.start();this.onConfirm=()=>this.confirm();this.onSkip=()=>this.skipChallenge();
     this.onNext=()=>void this.next();this.onAgain=()=>this.playAgain();this.onClose=()=>this.closePanel();
-    this.onStatistics=()=>void this.statistics.open();this.onLeaderboard=()=>void this.openLeaderboard();
+    this.onStatistics=()=>{
+      if(!hasProfileSession(this.presence)){this.status.textContent='Sign in to view saved statistics.';this.render();return;}
+      void this.statistics.open();
+    };this.onLeaderboard=()=>void this.openLeaderboard();
     this.onCloseLeaderboard=()=>this.closeLeaderboard();
     this.onSettingsChange=()=>{this.settings=readQuizSettingsControls(this,this.options);this.render();};
     this.onModeChange=()=>{this.mode=this.modeSelect.value;this.completionResult=null;this.render();};
@@ -132,6 +136,10 @@ export class SoloStudyController {
 
   async startStudyFromTerminal(settings) {
     if(this.pending)return this.terminalStudyState();
+    if(!hasProfileSession(this.presence)){
+      this.status.textContent='Sign in to use Study Mode. Guest progress is not saved.';
+      return this.terminalStudyState();
+    }
     await this.statisticsPending;
     this.resetRun();this.mode='study';this.pending=true;
     this.status.textContent='Preparing questions…';this.render();
@@ -197,6 +205,10 @@ export class SoloStudyController {
 
   async startChallengeFromTerminal() {
     if(this.pending)return this.terminalChallengeState();
+    if(!hasProfileSession(this.presence)){
+      this.status.textContent='Sign in to start IT Challenge. Guest scores are not saved.';
+      return this.terminalChallengeState();
+    }
     await this.statisticsPending;
     this.resetRun();this.mode='challenge';this.pending=true;
     this.status.textContent='Preparing challenge…';this.render();
@@ -286,6 +298,9 @@ export class SoloStudyController {
 
   async start() {
     if(this.pending)return;
+    if(!hasProfileSession(this.presence)){
+      this.status.textContent='Sign in to start a persistent solo mode.';this.render();return;
+    }
     this.mode=this.modeSelect.value;this.pending=true;this.status.textContent='Preparing questions…';this.render();
     try{
       const {characterId,sessionId}=this.presence.identity;
@@ -504,7 +519,8 @@ export class SoloStudyController {
     if(this.leaderboardOpen)return;
     this.renderMode();
     if(!this.session){renderQuizSettingsControls(this,this.options,this.settings,!this.pending);this.settingFields.hidden=this.mode==='challenge';}
-    this.startButton.disabled=this.pending;
+    this.startButton.disabled=this.pending||!hasProfileSession(this.presence);
+    this.statisticsButton.disabled=!hasProfileSession(this.presence);
     if(this.session?.complete){renderQuizMedia(this.media,null);this.renderResults();}
     else this.renderQuestion();
   }

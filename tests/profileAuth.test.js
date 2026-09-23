@@ -45,3 +45,18 @@ test('restoring a valid token skips credentials and invalid logout removes the l
     assert.deepEqual(calls.map(call=>call.fn),['me','logout','logged-out']);
   }finally{globalThis.localStorage=oldStorage;}
 });
+
+test('guest mode creates only a temporary client identity and exits without a backend logout',async()=>{
+  let guest;
+  let actions=0;
+  const auth=Object.assign(Object.create(ProfileAuth.prototype),{
+    presence:{profileSessionToken:null,client:{action:async()=>{actions+=1;}},api:{profiles:{logout:'logout'}}},
+    pending:false,root:{hidden:false},message:{textContent:''},onGuest:value=>{guest=value;},
+    clearToken(){},setMode(){},onLoggedOut(){},
+  });
+  auth.playAsGuest();
+  assert.equal(auth.mode,'guest');assert.equal(auth.root.hidden,true);
+  assert.equal(guest.kind,'guest');assert.match(guest.guestId,/^guest-/);
+  assert.equal(auth.profile,null);assert.equal(auth.token,null);
+  await auth.logout();assert.equal(actions,0);assert.equal(auth.mode,null);
+});

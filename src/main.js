@@ -20,6 +20,7 @@ const backgroundSettings=new BackgroundSettingsController(
   document.getElementById('background-toggle'),document.getElementById('background-options'));
 const menu=new CharacterMenu(presence,()=>{
   gameArea.hidden=false;changeButton.hidden=false;logoutButton.hidden=false;gameHud.setVisible(true);
+  logoutButton.textContent=presence?.identity?.kind==='guest'?'Exit guest session':'Logout';
   if(!game)game=new Phaser.Game(gameConfig);
   else if(pausedScene){
     const scene=pausedScene;pausedScene=null;
@@ -30,6 +31,7 @@ const menu=new CharacterMenu(presence,()=>{
 });
 const auth=new ProfileAuth(presence,{
   onAuthenticated(profile,token){menu.setAuthentication(profile,token);menu.show();},
+  onGuest(guest){menu.setGuestIdentity(guest);menu.show();},
   onLoggedOut(){menu.hide();},
 });
 void auth.start();

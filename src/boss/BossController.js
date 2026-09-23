@@ -40,6 +40,7 @@ import {
 } from './BossRewards.js';
 import { ArenaHudOverlay } from './ArenaHudOverlay.js';
 import { allPlayerAttackVisuals,playerAttackSpawn,playerAttackVisual } from './PlayerAttackVisuals.js';
+import { hasProfileSession } from '../ProfileSessionClient.js';
 
 const BOSS_PROJECTILE_TEXTURE='arena-boss-projectile';
 export const BOSS_SINGLE_PROJECTILE_TEXTURE='director-paper-projectile';
@@ -115,7 +116,7 @@ export class BossController {
     this.areaGraphic=null;this.areaTween=null;this.areaTarget=null;
     this.deathTween=null;this.loot=null;this.lootTween=null;this.lootPrompt=null;
     this.victoryId=newVictoryId();this.victoryPromise=null;this.rewardOpened=false;this.pendingRewardResult=null;
-    this.progressClient=scene.presence?new BossProgressClient(scene.presence):null;
+    this.progressClient=hasProfileSession(scene.presence)?new BossProgressClient(scene.presence):null;
     this.rewardOverlay=new BossRewardOverlay({getCharacterId:()=>scene.presence?.identity?.characterId,
       onChoose:rewardId=>this.chooseReward(rewardId),onClose:()=>this.finishReward()});
     this.interactRequested=false;
@@ -581,11 +582,12 @@ export class BossController {
 
   finishBossDeath(){
     if(this.destroyed||this.suspended||!this.model.finishDying())return false;
-    const drop={x:this.sprite.x,y:this.sprite.y};
     this.sprite.setVisible(false);this.hud.hideBoss();this.hud.showNotice('BOSS DEFEATED','victory');
     this.defeatTimer=this.scene.time.delayedCall(2200,()=>this.hud?.hideNotice());
     this.scene.unlockBossExit?.();
-    this.spawnLoot(drop);this.recordVictory();
+    if(this.progressClient){
+      this.spawnLoot({x:this.sprite.x,y:this.sprite.y});this.recordVictory();
+    }
     return true;
   }
 
@@ -788,6 +790,7 @@ export class BossController {
 
   reset(){
     if(this.destroyed)return;
+    this.progressClient=hasProfileSession(this.scene.presence)?new BossProgressClient(this.scene.presence):null;
     this.suspended=false;this.clearProjectiles();
     this.cancelMovement();
     this.model.reset(this.scene.time.now);this.phaseState.reset();this.encounter.reset();this.tutorialState.reset();this.playerCombat.reset();

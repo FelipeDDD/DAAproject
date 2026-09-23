@@ -1,18 +1,22 @@
+import { createGuestIdentity } from './playerIdentity.js';
+
 export const PROFILE_TOKEN_STORAGE_KEY='daa.profile.session';
 
 export class ProfileAuth{
-  constructor(presence,{onAuthenticated=()=>{},onLoggedOut=()=>{}}={}){
-    Object.assign(this,{presence,onAuthenticated,onLoggedOut});
+  constructor(presence,{onAuthenticated=()=>{},onGuest=()=>{},onLoggedOut=()=>{}}={}){
+    Object.assign(this,{presence,onAuthenticated,onGuest,onLoggedOut});
     this.root=document.getElementById('profile-auth');
     this.message=document.getElementById('profile-auth-message');
     this.loginForm=document.getElementById('profile-login-form');
     this.registerForm=document.getElementById('profile-register-form');
     this.loginTab=document.getElementById('profile-login-tab');
     this.registerTab=document.getElementById('profile-register-tab');
+    this.guestButton=document.getElementById('play-as-guest');
     this.loginTab.addEventListener('click',()=>this.setMode('login'));
     this.registerTab.addEventListener('click',()=>this.setMode('register'));
     this.loginForm.addEventListener('submit',event=>this.submit(event,'login'));
     this.registerForm.addEventListener('submit',event=>this.submit(event,'register'));
+    this.guestButton.addEventListener('click',()=>this.playAsGuest());
   }
 
   storedToken(){try{return localStorage.getItem(PROFILE_TOKEN_STORAGE_KEY);}catch{return null;}}
@@ -66,13 +70,19 @@ export class ProfileAuth{
   }
 
   accept(profile,token){
-    this.profile=profile;this.token=token;this.root.hidden=true;this.onAuthenticated(profile,token);
+    this.mode='profile';this.profile=profile;this.token=token;this.root.hidden=true;this.onAuthenticated(profile,token);
+  }
+
+  playAsGuest(){
+    if(this.pending||!this.presence)return;
+    this.mode='guest';this.profile=null;this.token=null;this.root.hidden=true;
+    this.onGuest(createGuestIdentity());
   }
 
   async logout(){
-    const token=this.token??this.storedToken();
+    const token=this.mode==='profile'?(this.token??this.storedToken()):null;
     if(token&&this.presence)await this.presence.client.action(this.presence.api.profiles.logout,{token});
-    this.profile=null;this.token=null;if(this.presence)this.presence.profileSessionToken=null;
+    this.mode=null;this.profile=null;this.token=null;if(this.presence)this.presence.profileSessionToken=null;
     this.clearToken();this.root.hidden=false;this.setMode('login');
     this.message.textContent='Logged out.';this.onLoggedOut();
   }

@@ -8,3 +8,9 @@ export async function requireActivePlayer(ctx, characterId, sessionId, room) {
   }
   return player;
 }
+
+export async function requireAuthenticatedPlayer(ctx,characterId,sessionId,room){
+  const player=await requireActivePlayer(ctx,characterId,sessionId,room);
+  if(!player.profileId)throw new Error('PROFILE_REQUIRED');
+  return player;
+}

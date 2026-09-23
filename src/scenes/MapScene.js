@@ -38,6 +38,7 @@ import { InventoryHotbar } from '../inventory/InventoryHotbar.js';
 import { CharacterItemController } from '../inventory/CharacterItemController.js';
 import { WorldPrompt,centeredMessageViewport } from '../ui/WorldPrompt.js';
 import { getGameHud } from '../hud/GameHudController.js';
+import { hasProfileSession } from '../ProfileSessionClient.js';
 import '../terminal/terminal.css';
 
 function readTileset(xml, firstgid) {
@@ -180,9 +181,6 @@ export class MapScene extends Phaser.Scene {
     this.cameras.main.startFollow(this.player, true, 1, 1);
     if(targetZoom!==CAMERA_ZOOM.default)this.cameras.main.zoomTo(targetZoom,CAMERA_ZOOM_TRANSITION_MS,'Sine.easeOut');
     this.enter(destination);
-    this.wardrobe=this.presence&&this.wardrobeDefinitions.length
-      ?new WardrobeController(this,this.presence,this.wardrobeDefinitions):null;
-    void this.wardrobe?.restore();
 
     const stop = () => { this.input.keyboard.resetKeys(); this.player.setVelocity(0, 0); };
     const wake = (_systems, arrival) => this.enter(arrival);
@@ -225,6 +223,9 @@ export class MapScene extends Phaser.Scene {
       const spawn = resolveSpawn(this.source, destination);
       this.player.body.reset(spawn.x, spawn.y);
       this.presence = getPresence();
+      this.wardrobe?.destroy();
+      this.wardrobe=hasProfileSession(this.presence)&&this.wardrobeDefinitions.length
+        ?new WardrobeController(this,this.presence,this.wardrobeDefinitions):null;
       this.appearanceRestoreToken=Symbol('appearance');
       const character=characterById(this.presence?.identity?.characterId);
       this.equippedSkin='classic';
@@ -235,18 +236,19 @@ export class MapScene extends Phaser.Scene {
         activeCharacterItem:this.activeCharacterItem,
       }), rows => this.remotes.receive(rows));
       this.devTools?.destroy();
-      this.devTools=shouldShowBossDevTools(import.meta.env)&&this.presence?new BossDevTools(this,this.presence):null;
+      this.devTools=shouldShowBossDevTools(import.meta.env)&&hasProfileSession(this.presence)
+        ?new BossDevTools(this,this.presence):null;
       this.doorSync?.close();
       this.doorSync = this.presence ? new DoorSync(this.presence,this.mapKey,this.doors,()=>this.player.body) : null;
       this.chat?.close();
       this.chat=this.presence ? new RoomChat(this,this.presence) : null;
       this.inventoryHotbar?.destroy();
       this.characterItems?.destroy();
-      this.characterItems=this.presence?new CharacterItemController(this,this.presence,{
+      this.characterItems=hasProfileSession(this.presence)?new CharacterItemController(this,this.presence,{
         onVisualChange:(itemId,options)=>this.setActiveCharacterItem(itemId,options),
         onItemsChange:items=>this.inventoryHotbar?.setCharacterItems(items),
       }):null;
-      this.inventoryHotbar=this.presence?new InventoryHotbar(this.presence,{
+      this.inventoryHotbar=hasProfileSession(this.presence)?new InventoryHotbar(this.presence,{
         onToggleItem:item=>this.characterItems?.toggle(item),
       }):null;
       void this.inventoryHotbar?.refresh();
@@ -265,7 +267,7 @@ export class MapScene extends Phaser.Scene {
       this.doorMessage = '';
       this.nearbyDoor = null;
       document.querySelector('h1').textContent = propertiesOf(this.source).label ?? this.mapKey;
-      void this.restoreEquippedSkin(this.appearanceRestoreToken);
+      if(hasProfileSession(this.presence))void this.restoreEquippedSkin(this.appearanceRestoreToken);
       void this.wardrobe?.restore();
     } catch (error) {
       this.doorMessage = error.message;
@@ -290,7 +292,7 @@ export class MapScene extends Phaser.Scene {
   }
 
   async restoreEquippedSkin(token=this.appearanceRestoreToken){
-    if(!this.presence)return this.equippedSkin;
+    if(!hasProfileSession(this.presence))return this.equippedSkin;
     try{
       const progress=normalizeBossProgress(await new BossProgressClient(this.presence).getProgress(),
         this.presence.identity.characterId);

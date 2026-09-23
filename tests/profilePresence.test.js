@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { getFunctionName } from 'convex/server';
-import { availability,claim,cleanup,release } from '../convex/players.js';
+import { availability,claim,claimGuest,cleanup,release,update } from '../convex/players.js';
 import * as store from '../convex/profileStore.js';
 import { claimCharacter,login,logout,me,register } from '../convex/profiles.js';
+import { requireAuthenticatedPlayer } from '../convex/playerSessions.js';
 
 function memoryContext(){
   const tables={
@@ -173,6 +174,42 @@ test('explicit presence release updates availability without deleting profile or
   await release._handler(ctx,{characterId:'felipe',sessionId:'presence-session-123456'});
   assert.equal((await availability._handler(ctx)).find(row=>row.characterId==='felipe').active,false);
   assert.equal(ctx.tables.profiles.length,1);assert.equal(ctx.tables.profileSessions.length,1);
+});
+
+test('guest presence uses a temporary identity without creating a profile',async()=>{
+  const ctx=memoryContext();
+  const result=await claimGuest._handler(ctx,{
+    guestId:'guest-temporary-identity-123456',characterId:'felipe',sessionId:'guest-presence-session-123456',
+  });
+  assert.equal(result.ok,true);
+  assert.equal(ctx.tables.profiles.length,0);assert.equal(ctx.tables.profileSessions.length,0);
+  assert.equal(ctx.tables.players[0].identityKind,'guest');
+  assert.equal(ctx.tables.players[0].guestId,'guest-temporary-identity-123456');
+  await update._handler(ctx,{
+    playerId:'felipe',characterId:'felipe',sessionId:'guest-presence-session-123456',name:'Forged',
+    room:'school',x:12,y:34,direction:'right',activeCharacterItem:null,profileId:'forged-profile',
+  });
+  assert.equal(ctx.tables.players[0].profileId,undefined);
+  assert.equal(ctx.tables.players[0].name,'Felipe');
+});
+
+test('guest character changes release the old reservation immediately',async()=>{
+  const ctx=memoryContext();const guestId='guest-temporary-identity-123456',sessionId='guest-presence-session-123456';
+  await claimGuest._handler(ctx,{guestId,characterId:'felipe',sessionId});
+  await release._handler(ctx,{characterId:'felipe',sessionId});
+  await claimGuest._handler(ctx,{guestId,characterId:'sarina',sessionId});
+  assert.deepEqual(ctx.tables.players.map(row=>row.characterId),['sarina']);
+  assert.equal((await availability._handler(ctx)).find(row=>row.characterId==='felipe').active,false);
+});
+
+test('guest presence cannot authorize persistent profile operations',async()=>{
+  const ctx=memoryContext();
+  await claimGuest._handler(ctx,{
+    guestId:'guest-temporary-identity-123456',characterId:'michael',sessionId:'guest-presence-session-123456',
+  });
+  await assert.rejects(requireAuthenticatedPlayer(
+    ctx,'michael','guest-presence-session-123456','selection',
+  ),/PROFILE_REQUIRED/);
 });
 
 test('full logout removes both presence and authenticated session but retains profile',async()=>{

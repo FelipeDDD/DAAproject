@@ -1,19 +1,9 @@
 import { CHARACTERS, CHARACTER_STORAGE_KEY } from './characters.js';
 import { characterVisual } from './characterVisuals.js';
 import { isPresenceActive } from './multiplayer/presencePolicy.js';
+import { createSessionId } from './playerIdentity.js';
 
-export function createCharacterSessionId(cryptoApi=globalThis.crypto) {
-  if (typeof cryptoApi?.randomUUID === 'function') return cryptoApi.randomUUID();
-  if (typeof cryptoApi?.getRandomValues === 'function') {
-    const bytes=cryptoApi.getRandomValues(new Uint8Array(16));
-    bytes[6]=(bytes[6]&0x0f)|0x40;bytes[8]=(bytes[8]&0x3f)|0x80;
-    const hex=Array.from(bytes,byte=>byte.toString(16).padStart(2,'0')).join('');
-    return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`;
-  }
-  // Session ownership is also checked by Convex; this fallback only supplies
-  // a sufficiently unique identifier for older/insecure browser contexts.
-  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`;
-}
+export const createCharacterSessionId=createSessionId;
 
 export class CharacterMenu {
   constructor(presence,onChoose) {
@@ -75,20 +65,33 @@ export class CharacterMenu {
     }
   }
   setAuthentication(profile,token){
-    this.profile=profile;this.authToken=token;
+    this.mode='profile';this.profile=profile;this.authToken=token;this.guest=null;
     this.presence.profileSessionToken=token;
     for(const {c,button}of this.cards)button.classList.toggle('preferred',c.id===profile.selectedCharacterId);
+    document.getElementById('logout-profile-menu').textContent='Logout profile';
+  }
+  setGuestIdentity(guest){
+    this.mode='guest';this.profile=null;this.authToken=null;this.guest=guest;
+    this.presence.profileSessionToken=null;
+    document.getElementById('logout-profile-menu').textContent='Exit guest session';
   }
   async choose(c){
-    if(this.pending||!this.authToken)return;
+    if(this.pending||(!this.authToken&&!this.guest))return;
     this.pending=true;this.render();this.message.textContent='Claiming character…';
     try{
-      const result=await this.presence.client.action(this.presence.api.profiles.claimCharacter,{
-        token:this.authToken,characterId:c.id,presenceSessionId:this.sessionId,
-      });
+      const result=this.mode==='guest'
+        ?await this.presence.client.mutation(this.presence.api.players.claimGuest,{
+          guestId:this.guest.guestId,characterId:c.id,sessionId:this.sessionId,
+        })
+        :await this.presence.client.action(this.presence.api.profiles.claimCharacter,{
+          token:this.authToken,characterId:c.id,presenceSessionId:this.sessionId,
+        });
       if(!result.ok){this.message.textContent='Another session just selected this character.';return;}
-      this.profile=result.profile;
-      this.presence.identity={playerId:c.id,characterId:c.id,name:c.name,sessionId:this.sessionId,profileId:result.profile.profileId};
+      if(result.profile)this.profile=result.profile;
+      this.presence.identity={
+        kind:this.mode,playerId:c.id,characterId:c.id,name:c.name,sessionId:this.sessionId,
+        ...(this.mode==='guest'?{guestId:this.guest.guestId}:{profileId:result.profile.profileId}),
+      };
       try{localStorage.setItem(CHARACTER_STORAGE_KEY,c.id);}catch{}
       // Keep the claim alive while Phaser loads its maps and sprites.
       this.presence.enter('selection',()=>({x:0,y:0,direction:'down',activeCharacterItem:null}),()=>{});

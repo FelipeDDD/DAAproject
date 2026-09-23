@@ -30,6 +30,10 @@
 .profile-auth-form { display:grid; gap:13px; text-align:left; }
 .profile-auth-form label { display:grid; gap:5px; font-size:13px; font-weight:650; }
 .profile-auth-form input,.profile-auth-form select { width:100%; padding:9px 10px; color:#edf6f8; border:1px solid #557786; border-radius:5px; background:#0b1b25; font:inherit; }
+.profile-guest-option { display:grid; gap:7px; margin-top:18px; padding-top:16px; border-top:1px solid #55778680; text-align:center; }
+.profile-guest-option>span,.profile-guest-option>small { color:#a9c0ca; font-size:12px; }
+.profile-guest-option button { padding:10px 12px; color:#edf7f8; border:1px solid #71bed1; border-radius:6px; background:#245063; font:inherit; font-weight:700; cursor:pointer; }
+.profile-guest-option button:hover,.profile-guest-option button:focus-visible { background:#2c647a; }
 #profile-auth-message { min-height:20px; margin:14px 0 0; color:#c8dce3; font-size:13px; text-align:center; }
 .character-style-control { display: inline-flex; align-items: center; gap: 10px; margin-top: 10px; color: #526c79; font-size: 13px; }
 .character-style-control select { padding: 7px 10px; border: 1px solid #b6c5ce; border-radius: 5px; background: white; color: #334550; font: inherit; }

@@ -9,7 +9,7 @@ import {
 } from '../src/quiz/itChallengeRules.js';
 import { materializeQuizQuestions,selectQuizQuestionIds } from './quizQuestions.js';
 import { recentHistoriesFor,rememberQuestions } from './quizHistory.js';
-import { requireActivePlayer } from './playerSessions.js';
+import { requireAuthenticatedPlayer } from './playerSessions.js';
 import { recordQuizAttempt,recordQuizSkip } from './quizStatisticsStore.js';
 import { isNewPersonalBest,itChallengeAccuracy,scoreItChallengeOutcomes } from './itChallengeScoring.js';
 
@@ -27,7 +27,7 @@ async function currentBest(ctx,characterId){
 export const start=mutation({
   args:{characterId:v.string(),sessionId:v.string()},
   handler:async(ctx,args)=>{
-    await requireActivePlayer(ctx,args.characterId,args.sessionId);
+    await requireAuthenticatedPlayer(ctx,args.characterId,args.sessionId);
     const [recentHistory]=await recentHistoriesFor(ctx,[args.characterId]);
     const questionIds=selectQuizQuestionIds({
       categories:IT_CHALLENGE_CATEGORIES,count:null,recentHistories:[recentHistory],
@@ -58,7 +58,7 @@ export const finish=mutation({
     outcomes:v.array(outcomeValidator),lastViewedQuestionIndex:v.number(),
   },
   handler:async(ctx,args)=>{
-    await requireActivePlayer(ctx,args.characterId,args.sessionId);
+    await requireAuthenticatedPlayer(ctx,args.characterId,args.sessionId);
     const run=await ctx.db.get(args.runId);
     if(!run||run.characterId!==args.characterId||run.sessionId!==args.sessionId)
       throw new Error('IT Challenge session unavailable.');

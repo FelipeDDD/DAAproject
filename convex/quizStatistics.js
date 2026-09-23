@@ -1,6 +1,6 @@
 import { mutationGeneric as mutation,queryGeneric as query } from 'convex/server';
 import { v } from 'convex/values';
-import { requireActivePlayer } from './playerSessions.js';
+import { requireAuthenticatedPlayer } from './playerSessions.js';
 import { buildQuizStatisticsSummary } from './quizStatisticsModel.js';
 import { recordQuizAttempt } from './quizStatisticsStore.js';
 
@@ -12,7 +12,7 @@ export const recordSoloAnswer=mutation({
     questionIndex:v.number(),answerIndex:v.optional(v.number()),
   },
   handler:async(ctx,args)=>{
-    await requireActivePlayer(ctx,args.characterId,args.sessionId);
+    await requireAuthenticatedPlayer(ctx,args.characterId,args.sessionId);
     const run=await ctx.db.get(args.runId);
     if(!run||run.characterId!==args.characterId||run.sessionId!==args.sessionId)
       throw new Error('Solo quiz session unavailable.');
@@ -34,7 +34,7 @@ export const recordSoloAnswer=mutation({
 export const summary=query({
   args:{characterId:v.string(),sessionId:v.string(),mode:v.optional(modeValidator)},
   handler:async(ctx,args)=>{
-    await requireActivePlayer(ctx,args.characterId,args.sessionId);
+    await requireAuthenticatedPlayer(ctx,args.characterId,args.sessionId);
     const rows=await ctx.db.query('quizPerformance')
       .withIndex('by_character',q=>q.eq('characterId',args.characterId)).collect();
     return buildQuizStatisticsSummary(rows,{mode:args.mode??null});

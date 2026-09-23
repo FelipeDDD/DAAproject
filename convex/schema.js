@@ -112,6 +112,8 @@ export default defineSchema({
   players: defineTable({
     playerId: v.string(), name: v.string(), room: v.string(),
     profileId:v.optional(v.id('profiles')),
+    guestId:v.optional(v.string()),
+    identityKind:v.optional(v.union(v.literal('profile'),v.literal('guest'))),
     characterId: v.optional(v.string()), sessionId: v.optional(v.string()),
     x: v.number(), y: v.number(), direction: v.string(),
     equippedSkin:v.optional(v.union(v.literal('classic'),v.literal('remastered'))),

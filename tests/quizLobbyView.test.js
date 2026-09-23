@@ -16,12 +16,31 @@ test('character selection sends a valid presence snapshot before the map loads',
   let snapshot;
   const menu=Object.assign(Object.create(CharacterMenu.prototype),{
     sessionId:'session-123456789',render(){},message:{textContent:''},root:{hidden:false},
-    authToken:'profile-token',presence:{api:{profiles:{claimCharacter:'claim'}},client:{action:async()=>({ok:true,profile:{profileId:'profile-id'}})},enter:(room,getState)=>{
+    mode:'profile',authToken:'profile-token',presence:{api:{profiles:{claimCharacter:'claim'}},client:{action:async()=>({ok:true,profile:{profileId:'profile-id'}})},enter:(room,getState)=>{
       assert.equal(room,'selection');snapshot=getState();
     }},onChoose(){},
   });
   await menu.choose({id:'felipe',name:'Felipe'});
   assert.deepEqual(snapshot,{x:0,y:0,direction:'down',activeCharacterItem:null});
+  assert.equal(menu.presence.identity.kind,'profile');
+});
+
+test('guest character selection claims presence without a profile action',async()=>{
+  let claimArgs;
+  const menu=Object.assign(Object.create(CharacterMenu.prototype),{
+    mode:'guest',guest:{guestId:'guest-temporary-identity-123456'},sessionId:'session-123456789',
+    render(){},message:{textContent:''},root:{hidden:false},
+    presence:{api:{players:{claimGuest:'claim-guest'}},client:{
+      mutation:async(_fn,args)=>{claimArgs=args;return {ok:true};},
+      action:async()=>assert.fail('guest selection must not use a profile action'),
+    },enter(){}},onChoose(){},
+  });
+  await menu.choose({id:'sarina',name:'Sarina'});
+  assert.deepEqual(claimArgs,{
+    guestId:'guest-temporary-identity-123456',characterId:'sarina',sessionId:'session-123456789',
+  });
+  assert.equal(menu.presence.identity.kind,'guest');
+  assert.equal(menu.presence.identity.profileId,undefined);
 });
 
 test('start button follows the current host and lobby status',()=>{

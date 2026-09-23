@@ -1,7 +1,8 @@
 # DAAproject — escola e pátio
 
 JavaScript, Phaser e Vite. Os mapas, posições e colisões vêm do Tiled.
-Presença, posição, portas e chat por sala via Convex, sem login.
+Presença, posição, portas e chat por sala via Convex. O acesso aceita profile
+autenticado ou uma sessão temporária de convidado.
 
 ## Convenção de idiomas
 
@@ -60,6 +61,21 @@ Na primeira execução, `convex dev` configura o backend de desenvolvimento e gr
 `VITE_CONVEX_URL` em `.env.local`. Este projeto já está configurado para Convex
 local em `http://127.0.0.1:3210`, sem conta. Reinicie o Vite ao mudar essa variável.
 A seleção exige o Convex disponível para confirmar que o personagem está livre.
+
+### Login opcional
+
+A tela inicial oferece **Login**, **Create profile** e **Play as Guest**. Profiles
+usam `profileSessions` e conservam boss progress, rewards, inventário, Study e IT
+Challenge. Guest cria somente uma identidade aleatória temporária em `players`:
+ele pode escolher personagem, circular pelos mapas, conversar, usar emotes, portas
+e participar do quiz multiplayer, mas suas respostas não alimentam histórico ou
+estatísticas persistentes. Study, IT Challenge, inventário, guarda-roupa e rewards
+ficam indisponíveis até fazer login; a luta do boss continua jogável localmente.
+
+Trocar personagem libera imediatamente a presença atual nos dois modos. Para um
+profile, o token autenticado continua válido e o progresso permanece no mesmo
+`profileId`. Guest não cria linhas em `profiles` ou `profileSessions`; fechar a aba
+ou sair libera a presença, com o timeout existente apenas como fallback.
 
 ## Deploy manual: Vercel + Convex
 

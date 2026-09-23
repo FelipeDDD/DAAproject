@@ -32,9 +32,27 @@ export const claim = internalMutation({
     for(const row of await ctx.db.query('players').collect())
       if((row.profileId===profile._id||row.sessionId===sessionId)&&row._id!==old?._id)await ctx.db.delete(row._id);
     await ctx.db.patch(profile._id,{selectedCharacterId:c.id,updatedAt:now});
-    const state={profileId:profile._id,playerId:c.id,characterId:c.id,name:c.name,sessionId,room:'selection',x:0,y:0,direction:'down',equippedSkin:'classic',activeCharacterItem:null,lastSeen:now};
-    if(old)await ctx.db.patch(old._id,state);else await ctx.db.insert('players',state);
+    const state={profileId:profile._id,identityKind:'profile',playerId:c.id,characterId:c.id,name:c.name,sessionId,room:'selection',x:0,y:0,direction:'down',equippedSkin:'classic',activeCharacterItem:null,lastSeen:now};
+    if(old)await ctx.db.patch(old._id,{...state,guestId:undefined});else await ctx.db.insert('players',state);
     return {ok:true,profile:publicProfile({...profile,selectedCharacterId:c.id,updatedAt:now})};
+  },
+});
+
+export const claimGuest = mutation({
+  args:{guestId:v.string(),characterId:v.string(),sessionId:v.string()},
+  handler:async(ctx,{guestId,characterId,sessionId})=>{
+    const c=characterById(characterId);
+    if(!c||guestId.length<22||guestId.length>120||sessionId.length<16||sessionId.length>100)
+      throw new Error('Invalid guest/session');
+    const old=await ctx.db.query('players').withIndex('by_player',q=>q.eq('playerId',characterId)).unique();
+    if(old&&old.guestId!==guestId&&old.sessionId!==sessionId&&isPresenceActive(old.lastSeen))return {ok:false};
+    const now=Date.now();
+    for(const row of await ctx.db.query('players').collect())
+      if((row.guestId===guestId||row.sessionId===sessionId)&&row._id!==old?._id)await ctx.db.delete(row._id);
+    const state={guestId,identityKind:'guest',playerId:c.id,characterId:c.id,name:c.name,
+      sessionId,room:'selection',x:0,y:0,direction:'down',equippedSkin:'classic',activeCharacterItem:null,lastSeen:now};
+    if(old)await ctx.db.patch(old._id,{...state,profileId:undefined});else await ctx.db.insert('players',state);
+    return {ok:true};
   },
 });
 
@@ -51,13 +69,12 @@ export const release = mutation({
 export const inRoom = query({
   args: { room: v.string() },
   handler: async (ctx, { room }) => (await ctx.db.query('players').withIndex('by_room', q => q.eq('room', room)).collect())
-    .map(({sessionId,...publicState})=>publicState),
+    .map(({sessionId,guestId,...publicState})=>publicState),
 });
 
 export const update = mutation({
   args: {
     playerId: v.string(), name: v.string(), room: v.string(),
-    profileId:v.optional(v.id('profiles')),
     characterId: v.string(), sessionId: v.string(),
     x: v.number(), y: v.number(), direction: v.string(),
     equippedSkin:v.optional(v.union(v.literal('classic'),v.literal('remastered'))),
@@ -72,7 +89,11 @@ export const update = mutation({
       throw new Error('Invalid active character item');
     const existing = await ctx.db.query('players').withIndex('by_player', q => q.eq('playerId', args.playerId)).unique();
     if(!ownsCharacterSession(existing,args.characterId,args.sessionId)||args.characterId!==args.playerId)throw new Error('CHARACTER_SESSION_LOST');
-    const state = { ...args, name:characterById(args.characterId).name, lastSeen: Date.now() };
+    const state = {
+      room:args.room,x:args.x,y:args.y,direction:args.direction,
+      equippedSkin:args.equippedSkin,activeCharacterItem:args.activeCharacterItem,
+      name:characterById(args.characterId).name,lastSeen:Date.now(),
+    };
     await ctx.db.patch(existing._id, state);
   },
 });
