@@ -78,6 +78,28 @@ test('a stationary player sends a lightweight heartbeat instead of full position
   assert.deepEqual(calls,[{fn:'heartbeat',args:{characterId:'me',sessionId:'session-123456789'}}]);
 });
 
+test('a failed presence request waits before retrying instead of flooding Convex',async()=>{
+  let calls=0;
+  const presence=stationaryPresence(async()=>{calls++;throw new Error('Temporary network failure');});
+  presence.fail=()=>{};
+  await presence.send(Date.now());
+  for(let attempt=0;attempt<80;attempt++)await presence.send(Date.now());
+  assert.equal(calls,1);
+  await presence.send(presence.active.retryAt);
+  assert.equal(calls,2);
+});
+
+test('a lost character session stops sending presence requests',async()=>{
+  let calls=0;
+  const presence=stationaryPresence(async()=>{calls++;throw new Error('CHARACTER_SESSION_LOST');});
+  presence.active.receive=()=>{};
+  presence.reportedError=true;
+  await presence.send(Date.now());
+  assert.equal(presence.active,null);
+  await presence.send(Date.now()+PRESENCE_HEARTBEAT_MS);
+  assert.equal(calls,1);
+});
+
 test('explicit release waits for an in-flight presence update before deleting the session',async()=>{
   const calls=[];let finishUpdate;
   const updateFinished=new Promise(resolve=>{finishUpdate=resolve;});

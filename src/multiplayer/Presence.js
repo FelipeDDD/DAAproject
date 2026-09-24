@@ -40,7 +40,7 @@ export class Presence {
 
   async send(now = Date.now()) {
     const active = this.active;
-    if (!active || this.busy) return;
+    if (!active || this.busy || now < (active.retryAt ?? 0)) return;
     const snapshot=active.snapshot();
     const state = {
       playerId:this.identity.playerId,characterId:this.identity.characterId,
@@ -61,8 +61,14 @@ export class Presence {
       await request;
       active.previous = serialized;
       active.sentAt = now;
+      active.retryAt = 0;
       if (this.active === active) this.status('Online');
-    } catch (error) { this.fail(error); }
+    } catch (error) {
+      if (this.active === active) {
+        active.retryAt = Date.now() + PRESENCE_HEARTBEAT_MS;
+        this.fail(error);
+      }
+    }
     finally { this.pendingSend=null;this.busy = false; }
   }
 
