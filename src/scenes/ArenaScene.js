@@ -1,6 +1,6 @@
 import { MapScene } from './MapScene.js';
 import {
-  BossController,BOSS_HOMING_PROJECTILE_TEXTURE,BOSS_SINGLE_PROJECTILE_TEXTURE,
+  BossController,BOSS_AREA_TEXTURE,BOSS_HOMING_PROJECTILE_TEXTURE,BOSS_SINGLE_PROJECTILE_TEXTURE,
 } from '../boss/BossController.js';
 import {
   BOSS_SINGLE_PROJECTILE_FRAME_SIZE,
@@ -20,6 +20,7 @@ export class ArenaScene extends MapScene {
 
   preload(){
     super.preload();
+    this.load.image(BOSS_AREA_TEXTURE,`${import.meta.env.BASE_URL}assets/boss/attack-area.png`);
     for(const visual of allPlayerAttackVisuals()){
       this.load.image(visual.texture,`${import.meta.env.BASE_URL}${visual.asset}`);
     }

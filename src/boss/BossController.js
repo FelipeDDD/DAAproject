@@ -13,6 +13,7 @@ import {
 } from './BossAttackPattern.js';
 import {
   BOSS_ACTIVATION_RANGE,BOSS_AREA_DAMAGE,BOSS_AREA_IMPACT_MS,BOSS_AREA_RADIUS,BOSS_ATTACK_COOLDOWN_MS,
+  BOSS_AREA_IMPACT_FRAME_RATE,BOSS_AREA_TELEGRAPH_FRAME_RATE,BOSS_AREA_VISUAL_SCALE,
   BOSS_ATTACK_TUTORIAL_DELAY_MS,BOSS_ATTACK_TUTORIAL_MS,BOSS_DEFEAT_SPRITE_SCALE,
   BOSS_ATTACK_STATE_MS,BOSS_FIGHT_START_DELAY_MS,
   BOSS_FAN_PROJECTILE_BODY_HEIGHT,BOSS_FAN_PROJECTILE_BODY_OFFSET_X,BOSS_FAN_PROJECTILE_BODY_OFFSET_Y,
@@ -43,6 +44,9 @@ import { allPlayerAttackVisuals,playerAttackSpawn,playerAttackVisual } from './P
 import { hasProfileSession } from '../ProfileSessionClient.js';
 
 const BOSS_PROJECTILE_TEXTURE='arena-boss-projectile';
+export const BOSS_AREA_TEXTURE='director-area-attack';
+const BOSS_AREA_TELEGRAPH_ANIMATION='director-area-telegraph';
+const BOSS_AREA_IMPACT_ANIMATION='director-area-impact';
 export const BOSS_SINGLE_PROJECTILE_TEXTURE='director-paper-projectile';
 const BOSS_SINGLE_PROJECTILE_ANIMATION='director-paper-projectile-fly';
 export const BOSS_HOMING_PROJECTILE_TEXTURE='director-paper-homing';
@@ -50,6 +54,24 @@ const BOSS_HOMING_PROJECTILE_ANIMATION='director-paper-homing-fly';
 const PLAYER_PROJECTILE_TEXTURE='arena-player-projectile';
 
 function createTextures(scene){
+  if(scene.textures.exists(BOSS_AREA_TEXTURE)){
+    const texture=scene.textures.get(BOSS_AREA_TEXTURE);
+    const source=texture.getSourceImage();
+    for(let index=0;index<7;index++){
+      const column=index%4,row=Math.floor(index/4);
+      const x=Math.round(column*source.width/4),y=Math.round(row*source.height/2);
+      const width=Math.round((column+1)*source.width/4)-x;
+      const height=Math.round((row+1)*source.height/2)-y;
+      if(!texture.has(`area-${index}`))texture.add(`area-${index}`,0,x,y,width,height);
+    }
+    for(const [key,start,end,frameRate] of [
+      [BOSS_AREA_TELEGRAPH_ANIMATION,0,3,BOSS_AREA_TELEGRAPH_FRAME_RATE],
+      [BOSS_AREA_IMPACT_ANIMATION,4,6,BOSS_AREA_IMPACT_FRAME_RATE],
+    ])if(!scene.anims.exists(key))scene.anims.create({
+      key,frames:Array.from({length:end-start+1},(_,index)=>({key:BOSS_AREA_TEXTURE,frame:`area-${start+index}`})),
+      frameRate,repeat:0,
+    });
+  }
   for(const [key,color,radius] of [[BOSS_PROJECTILE_TEXTURE,0xff5a36,7],[PLAYER_PROJECTILE_TEXTURE,0x55dff7,5]]){
     if(scene.textures.exists(key))continue;
     const graphics=scene.add.graphics();
@@ -119,9 +141,13 @@ export class BossController {
     this.progressClient=hasProfileSession(scene.presence)?new BossProgressClient(scene.presence):null;
     this.rewardOverlay=new BossRewardOverlay({getCharacterId:()=>scene.presence?.identity?.characterId,
       onChoose:rewardId=>this.chooseReward(rewardId),onClose:()=>this.finishReward()});
-    this.interactRequested=false;
+    this.interactRequested=false;this.mouseAttackRequested=false;
     this.handleInteract=event=>{if(!event.repeat)this.interactRequested=true;};
+    this.handlePointerDown=pointer=>{
+      if(pointer.button===0&&pointer.event?.target===scene.game.canvas)this.mouseAttackRequested=true;
+    };
     scene.input.keyboard.on('keydown-E',this.handleInteract);
+    scene.input.on('pointerdown',this.handlePointerDown);
     createTextures(scene);
     const spawn=resolveSpawn(scene.source,{targetSpawn:'boss-spawn'});
     this.home={x:spawn.x,y:spawn.y};
@@ -399,25 +425,22 @@ export class BossController {
   beginAreaTelegraph(position){
     this.clearAreaVisual();
     this.areaTarget=new AreaAttackTarget(position,BOSS_AREA_RADIUS);
-    this.areaGraphic=this.scene.add.graphics().setPosition(position.x,position.y).setDepth(position.y-1);
-    this.areaGraphic.fillStyle(0xff2f45,.22).fillCircle(0,0,BOSS_AREA_RADIUS)
-      .lineStyle(4,0xff5368,.95).strokeCircle(0,0,BOSS_AREA_RADIUS)
-      .lineStyle(2,0xffd166,.9).strokeCircle(0,0,BOSS_AREA_RADIUS-8);
+    this.areaGraphic=this.scene.add.sprite(position.x,position.y,BOSS_AREA_TEXTURE,'area-0')
+      .setScale(BOSS_AREA_VISUAL_SCALE).setAlpha(.72).setDepth(position.y-1);
+    this.areaGraphic.play(BOSS_AREA_TELEGRAPH_ANIMATION);
     this.areaTween=this.scene.tweens.add({
-      targets:this.areaGraphic,scaleX:1.07,scaleY:1.07,alpha:.65,
-      duration:225,yoyo:true,repeat:-1,
+      targets:this.areaGraphic,alpha:1,duration:200,yoyo:true,repeat:-1,
     });
   }
 
   showAreaImpact(){
     const graphic=this.areaGraphic;
     if(!graphic)return;
-    this.areaTween?.stop();
-    graphic.setScale(1).setAlpha(1).clear()
-      .fillStyle(0xffe0a3,.7).fillCircle(0,0,BOSS_AREA_RADIUS)
-      .lineStyle(5,0xffffff,1).strokeCircle(0,0,BOSS_AREA_RADIUS);
+    this.areaTween?.stop();this.areaTween=null;
+    graphic.setAlpha(1).setScale(BOSS_AREA_VISUAL_SCALE).play(BOSS_AREA_IMPACT_ANIMATION);
     this.areaTween=this.scene.tweens.add({
-      targets:graphic,scaleX:1.35,scaleY:1.35,alpha:0,duration:BOSS_AREA_IMPACT_MS,
+      targets:graphic,scaleX:BOSS_AREA_VISUAL_SCALE*1.08,scaleY:BOSS_AREA_VISUAL_SCALE*1.08,
+      alpha:0,duration:BOSS_AREA_IMPACT_MS,
       onComplete:()=>{
         if(this.areaGraphic===graphic){graphic.destroy();this.areaGraphic=null;this.areaTarget=null;}
         this.areaTween=null;
@@ -743,6 +766,7 @@ export class BossController {
 
   update(time,delta=0){
     if(this.destroyed||this.suspended)return;
+    const mouseAttackRequested=this.mouseAttackRequested;this.mouseAttackRequested=false;
     this.scene.player?.updateCombatHudPosition();
     const requested=this.interactRequested;this.interactRequested=false;
     this.interactRequested=requested;
@@ -760,7 +784,7 @@ export class BossController {
       &&this.startScriptedHoming(time);
     if(!phaseTransitionStarted&&!scriptedAttackStarted&&this.model.state!==BOSS_STATES.PHASE_TRANSITION)this.startMovement(time);
     if(!this.gameplayBlocked()){
-      if(Object.values(this.attackKeys).some(key=>Phaser.Input.Keyboard.JustDown(key))){
+      if(Object.values(this.attackKeys).some(key=>Phaser.Input.Keyboard.JustDown(key))||mouseAttackRequested){
         this.hideAttackTutorial();this.firePlayerProjectile(time);
       }
       if(!this.moveDueAt&&this.model.state!==BOSS_STATES.MOVING&&this.model.state!==BOSS_STATES.PHASE_TRANSITION){
@@ -775,7 +799,8 @@ export class BossController {
 
   suspend(){
     if(this.destroyed)return;
-    this.suspended=true;this.cancelPendingAttack();this.cancelMovement();this.clearProjectiles();
+    this.suspended=true;this.mouseAttackRequested=false;
+    this.cancelPendingAttack();this.cancelMovement();this.clearProjectiles();
     this.clearPhaseTransition();
     this.scene.tweens.killTweensOf(this.sprite);this.deathTween?.stop();this.deathTween=null;
     for(const timer of [this.playerTintTimer,this.bossTintTimer,this.defeatTimer,this.speechTimer,this.tutorialTimer])timer?.remove(false);
@@ -821,6 +846,7 @@ export class BossController {
     this.suspend();
     this.destroyed=true;
     this.scene.input.keyboard.off('keydown-E',this.handleInteract);
+    this.scene.input.off('pointerdown',this.handlePointerDown);
     for(const collider of this.colliders)collider?.destroy();
     this.bossProjectiles?.clear(true,true);this.playerProjectiles?.clear(true,true);
     this.scene.player?.setCombatHudVisible(false);
