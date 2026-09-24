@@ -95,11 +95,13 @@ test('corridor and office2 transitions point to each other through registered sc
   assert.equal(propertiesOf(maps.office2).defaultSpawn,'office2-spawn');
 });
 
-test('arena exit returns automatically to secret path behind the gate',()=>{
-  const exit=readMapTransitions(maps.arena).find(item=>item.id==='secret-path-exit');
-  assert.ok(exit);assert.equal(exit.auto,true);assert.equal(exit.targetMap,'secret-path');
+test('arena exit returns automatically to school behind the gate',()=>{
+  const exit=readMapTransitions(maps.arena).find(item=>item.id==='school-exit');
+  assert.ok(exit);assert.equal(exit.auto,true);assert.equal(exit.targetMap,'school');
   assert.equal(exit.targetSpawn,'arena-return');
-  assert.deepEqual(resolveSpawn(maps['secret-path'],exit),{x:1316,y:961.333});
+  const spawn=resolveSpawn(maps.school,exit);
+  assert.deepEqual(spawn,{x:880,y:725.333333333333});
+  assert.ok(!collisionAreas(objectsIn(maps.school,'Collision')).some(area=>overlaps(feet(spawn.x,spawn.y),area)));
   const gate=objectsIn(maps.arena,'Collision').find(item=>item.name==='gate');
   assert.ok(gate);assert.ok(gate.x<exit.x);assert.ok(gate.x+gate.width<exit.x);
 });

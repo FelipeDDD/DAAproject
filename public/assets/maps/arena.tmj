@@ -1273,7 +1273,7 @@
                 {
                  "height":0,
                    "id":137,
-                   "name":"secret-path-exit",
+                   "name":"school-exit",
                  "opacity":1,
                  "point":true,
                  "properties":[
@@ -1290,12 +1290,12 @@
                         {
                            "name":"label",
                            "type":"string",
-                           "value":"Secret Path"
+                           "value":"School"
                           },
                           {
                            "name":"targetMap",
                            "type":"string",
-                           "value":"secret-path"
+                           "value":"school"
                           },
                           {
                            "name":"targetSpawn",
