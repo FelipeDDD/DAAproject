@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
   OFFICE3_MONITOR, OFFICE3_STREAK_TARGET, chooseOffice3Question,
-  nextStreak, passwordIsCorrect,
+  OFFICE3_PASSWORD_DENIED_MS, nextStreak, passwordIsCorrect,
 } from '../src/office3/office3Puzzle.js';
 import { OFFICE3_MONITOR_STATUS, office3PaperPlacement } from '../src/art/office3PaperHighlight.js';
 import { CHARACTER_ITEM_IDS, canCharacterOwnItem, normalizeCharacterItem } from '../src/inventory/characterItems.js';
@@ -18,6 +18,9 @@ test('monitor puzzle uses its existing green light and only accepts the negative
   assert.equal(passwordIsCorrect('488'), true);
   assert.equal(passwordIsCorrect('-488'), false); // The minus sign is fixed in the UI.
   assert.equal(passwordIsCorrect('487'), false);
+  assert.equal(passwordIsCorrect('48'), false);
+  assert.equal(passwordIsCorrect(''), false);
+  assert.ok(OFFICE3_PASSWORD_DENIED_MS > 1000);
 });
 
 test('small paper and inspection use the moved Notes marker', () => {

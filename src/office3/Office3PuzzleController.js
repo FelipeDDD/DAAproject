@@ -5,7 +5,7 @@ import { WorldPrompt } from '../ui/WorldPrompt.js';
 import { renderQuizMedia } from '../QuizMedia.js';
 import { office3PaperPlacement } from '../art/office3PaperHighlight.js';
 import {
-  OFFICE3_FEEDBACK_MS, OFFICE3_MONITOR, OFFICE3_STREAK_TARGET,
+  OFFICE3_FEEDBACK_MS, OFFICE3_PASSWORD_DENIED_MS, OFFICE3_MONITOR, OFFICE3_STREAK_TARGET,
   chooseOffice3Question, nextStreak, passwordIsCorrect,
 } from './office3Puzzle.js';
 import './office3Puzzle.css';
@@ -150,7 +150,7 @@ export class Office3PuzzleController {
     form.append(label, submit);
     form.addEventListener('submit', event => {
       event.preventDefault();
-      if (this.busy || input.value.length !== 3) return;
+      if (this.busy) return;
       this.busy = true;
       const correct = passwordIsCorrect(input.value);
       input.disabled = true;
@@ -166,7 +166,7 @@ export class Office3PuzzleController {
         this.busy = false;
         if (correct) this.startQuiz();
         else { input.value = ''; input.disabled = false; submit.disabled = false; input.focus(); }
-      }, OFFICE3_FEEDBACK_MS);
+      }, correct ? OFFICE3_FEEDBACK_MS : OFFICE3_PASSWORD_DENIED_MS);
     });
     const close = element('button', 'office3-puzzle-close', '×');
     close.type = 'button';

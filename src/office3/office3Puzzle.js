@@ -4,6 +4,7 @@ import { OFFICE3_MONITOR_STATUS } from '../art/office3PaperHighlight.js';
 export const OFFICE3_PASSWORD_DIGITS = '488';
 export const OFFICE3_STREAK_TARGET = 5;
 export const OFFICE3_FEEDBACK_MS = 1000;
+export const OFFICE3_PASSWORD_DENIED_MS = 2200;
 export const OFFICE3_MONITOR = Object.freeze({
   ...OFFICE3_MONITOR_STATUS, interactionY: OFFICE3_MONITOR_STATUS.y + 28, radius: 55,
 });
