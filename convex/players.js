@@ -78,7 +78,7 @@ export const update = mutation({
     characterId: v.string(), sessionId: v.string(),
     x: v.number(), y: v.number(), direction: v.string(),
     equippedSkin:v.optional(v.union(v.literal('classic'),v.literal('remastered'))),
-    activeCharacterItem:v.union(v.literal('lung_crusher_3000'),v.null()),
+    activeCharacterItem:v.optional(v.union(v.literal('lung_crusher_3000'),v.null())),
   },
   handler: async (ctx, args) => {
     if (!Number.isFinite(args.x) || !Number.isFinite(args.y) ||
@@ -91,7 +91,7 @@ export const update = mutation({
     if(!ownsCharacterSession(existing,args.characterId,args.sessionId)||args.characterId!==args.playerId)throw new Error('CHARACTER_SESSION_LOST');
     const state = {
       room:args.room,x:args.x,y:args.y,direction:args.direction,
-      equippedSkin:args.equippedSkin,activeCharacterItem:args.activeCharacterItem,
+      equippedSkin:args.equippedSkin,activeCharacterItem:args.activeCharacterItem??null,
       name:characterById(args.characterId).name,lastSeen:Date.now(),
     };
     await ctx.db.patch(existing._id, state);

@@ -117,7 +117,7 @@ export default defineSchema({
     characterId: v.optional(v.string()), sessionId: v.optional(v.string()),
     x: v.number(), y: v.number(), direction: v.string(),
     equippedSkin:v.optional(v.union(v.literal('classic'),v.literal('remastered'))),
-    activeCharacterItem:v.union(v.literal('lung_crusher_3000'),v.null()),lastSeen: v.number(),
+    activeCharacterItem:v.optional(v.union(v.literal('lung_crusher_3000'),v.null())),lastSeen: v.number(),
   }).index('by_player', ['playerId']).index('by_room', ['room']).index('by_lastSeen', ['lastSeen']),
   bossProgress: defineTable({
     profileId:v.optional(v.id('profiles')),characterId:v.optional(v.string()),bossId:v.string(),wins:v.number(),defeated:v.boolean(),

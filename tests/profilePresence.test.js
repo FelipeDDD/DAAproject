@@ -215,6 +215,19 @@ test('guest presence uses a temporary identity without creating a profile',async
   assert.equal(ctx.tables.players[0].name,'Felipe');
 });
 
+test('legacy presence without an active item remains compatible during deployment',async()=>{
+  const ctx=memoryContext();
+  await claimGuest._handler(ctx,{
+    guestId:'guest-temporary-identity-123456',characterId:'felipe',sessionId:'guest-presence-session-123456',
+  });
+  delete ctx.tables.players[0].activeCharacterItem;
+  await update._handler(ctx,{
+    playerId:'felipe',characterId:'felipe',sessionId:'guest-presence-session-123456',name:'Felipe',
+    room:'school',x:12,y:34,direction:'right',
+  });
+  assert.equal(ctx.tables.players[0].activeCharacterItem,null);
+});
+
 test('guest character changes release the old reservation immediately',async()=>{
   const ctx=memoryContext();const guestId='guest-temporary-identity-123456',sessionId='guest-presence-session-123456';
   await claimGuest._handler(ctx,{guestId,characterId:'felipe',sessionId});
