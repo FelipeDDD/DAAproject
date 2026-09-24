@@ -38,6 +38,7 @@ export class RoomChat {
     this.key=event=>{
       if(profileAuthOpen())return;
       if(this.scene.terminal?.active)return;
+      if(this.scene.puzzleTerminal?.active)return;
       if(this.closed)return;
       if(this.visibility.state==='active'){
         // The panel stays in control even if the browser briefly moves focus away

@@ -16,6 +16,7 @@ export class EmoteBar {
     this.onSettings=()=>this.picker.hidden?this.openPicker(this.editingSlot):this.closePicker();
     this.onChoice=event=>{const button=event.target.closest('button[data-emote-choice]');if(button)this.choose(button.dataset.emoteChoice);};
     this.onKey=event=>{
+      if(document.querySelector('[data-block-game-shortcuts]:not([hidden])'))return;
       if(event.target.closest?.('[data-calculator-widget]'))return;
       const slot=shortcutSlot(event);if(slot>=0){event.preventDefault();this.activate(slot);}
     };

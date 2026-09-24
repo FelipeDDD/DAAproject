@@ -1,7 +1,12 @@
-export const CHARACTER_ITEM_IDS=Object.freeze({LUNG_CRUSHER_3000:'lung_crusher_3000'});
+export const CHARACTER_ITEM_IDS=Object.freeze({LUNG_CRUSHER_3000:'lung_crusher_3000',OFFICE2_KEY:'office2_key'});
 export const CHARACTER_ITEM_COOLDOWN_MS=10_000;
 
 export const CHARACTER_ITEMS=Object.freeze({
+  [CHARACTER_ITEM_IDS.OFFICE2_KEY]:Object.freeze({
+    itemId:CHARACTER_ITEM_IDS.OFFICE2_KEY,type:'key',quantity:1,
+    name:'Office 2 Key',description:"Opens the Director's office.",
+    icon:'assets/items/key-office.png',useBehavior:'presentation',
+  }),
   [CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000]:Object.freeze({
     itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000,type:'character_item',quantity:1,
     allowedCharacter:'michael',name:'Lung Crusher 3000',
@@ -13,7 +18,8 @@ export const CHARACTER_ITEMS=Object.freeze({
 
 export function characterItemDefinition(itemId){return CHARACTER_ITEMS[itemId]??null;}
 export function canCharacterOwnItem(characterId,itemId){
-  const item=characterItemDefinition(itemId);return Boolean(item&&item.allowedCharacter===characterId);
+  const item=characterItemDefinition(itemId);
+  return Boolean(item&&(item.allowedCharacter===undefined||item.allowedCharacter===characterId));
 }
 export function normalizeCharacterItem(row,currentCharacterId=row?.characterId){
   const item=characterItemDefinition(row?.itemId);

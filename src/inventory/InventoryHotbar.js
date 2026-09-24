@@ -43,6 +43,7 @@ export class InventoryHotbar {
     try{await this.onToggleItem(item);}catch(error){console.warn('Inventory activation:',error);}
   }
   handleHotkey(event){
+    if(document.querySelector('[data-block-game-shortcuts]:not([hidden])'))return;
     if(event.defaultPrevented)return;
     const index=inventoryShortcutSlot(event);if(index<0)return;
     const item=this.slots[index];if(!item||itemCooldownRemaining(item)>0)return;

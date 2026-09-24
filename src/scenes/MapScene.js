@@ -28,7 +28,7 @@ import {
   readTerminalComputers,nearbyTerminalComputer,terminalPromptPosition,TERMINAL_PROMPT,
 } from '../maps/terminalComputers.js';
 import { TerminalOverlayController } from '../terminal/TerminalOverlayController.js';
-import { nearbyMapTransition,readMapTransitions } from '../maps/transitions.js';
+import { isMapTransitionLocked,nearbyMapTransition,readMapTransitions } from '../maps/transitions.js';
 import { readWardrobes } from '../maps/wardrobes.js';
 import { WardrobeController } from '../WardrobeController.js';
 import { BossProgressClient } from '../boss/BossProgressClient.js';
@@ -253,7 +253,7 @@ export class MapScene extends Phaser.Scene {
       }):null;
       void this.inventoryHotbar?.refresh();
       void this.characterItems?.restore();
-      this.characterItems?.createPickup(this.mapTransitions.find(transition=>transition.targetMap==='arena'));
+      this.characterItems?.createPickup(objectsIn(this.source,'Spawns').find(object=>object.name==='arena'));
       this.quiz?.close();
       this.quiz=this.presence ? new QuizLobby(this,this.presence,this.quizSeats) : null;
       this.soloStudy?.close();
@@ -331,13 +331,14 @@ export class MapScene extends Phaser.Scene {
   }
 
   update(_time, delta) {
-    if(this.terminal?.active||this.chat?.isInputActive||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active||this.characterItems?.transforming)this.player.setVelocity(0,0);
+    if(this.terminal?.active||this.puzzleTerminal?.active||this.chat?.isInputActive||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active||this.characterItems?.transforming)this.player.setVelocity(0,0);
     else this.player.update();
-    if(this.terminal?.active||this.chat?.isInputActive||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active||this.characterItems?.transforming)this.hint.hidden=true;
+    if(this.terminal?.active||this.puzzleTerminal?.active||this.chat?.isInputActive||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active||this.characterItems?.transforming)this.hint.hidden=true;
     this.remotes.update(delta);
     this.emoteRenderer?.update();
     if(this.doorSync)for(const door of this.doors)door.updateBlocker(this.player.body);
     if(this.terminal?.active){this.terminalPrompt.setVisible(false);this.hint.textContent='Terminal · Esc: back to classroom';return;}
+    if(this.puzzleTerminal?.active){this.terminalPrompt.setVisible(false);return;}
     if(this.chat?.isInputActive){this.terminalPrompt.setVisible(false);this.quiz?.updateSeatPrompt(false);this.soloStudy?.updateSeatPrompt(false);return;}
     const interact = Phaser.Input.Keyboard.JustDown(this.interactKey);
     const escape = Phaser.Input.Keyboard.JustDown(this.escapeKey);
@@ -401,7 +402,7 @@ export class MapScene extends Phaser.Scene {
       void this.terminal.open(computer);
       return;
     }
-    if(mapTransition?.locked){
+    if(isMapTransitionLocked(mapTransition,this.characterItems?.items)){
       if(this.lockedTransitionId!==mapTransition.id)this.doorMessage='';
       this.lockedTransitionId=mapTransition.id;
       if(interact){

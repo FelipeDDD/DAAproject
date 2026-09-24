@@ -1272,8 +1272,8 @@
                 },
                 {
                  "height":0,
-                 "id":137,
-                 "name":"school-exit",
+                   "id":137,
+                   "name":"secret-path-exit",
                  "opacity":1,
                  "point":true,
                  "properties":[
@@ -1288,19 +1288,19 @@
                          "value":24
                         },
                         {
-                         "name":"label",
-                         "type":"string",
-                         "value":"Schule"
-                        },
-                        {
-                         "name":"targetMap",
-                         "type":"string",
-                         "value":"school"
-                        },
-                        {
-                         "name":"targetSpawn",
-                         "type":"string",
-                         "value":"arena-return"
+                           "name":"label",
+                           "type":"string",
+                           "value":"Secret Path"
+                          },
+                          {
+                           "name":"targetMap",
+                           "type":"string",
+                           "value":"secret-path"
+                          },
+                          {
+                           "name":"targetSpawn",
+                           "type":"string",
+                           "value":"arena-return"
                         },
                         {
                          "name":"transition",

@@ -7251,8 +7251,8 @@
                 }, 
                 {
                  "height":0,
-                 "id":493,
-                 "name":"arena",
+                   "id":493,
+                   "name":"arena",
                  "opacity":1,
                  "point":true,
                  "properties":[
@@ -7277,10 +7277,10 @@
                          "value":"arena-spawn"
                         }, 
                         {
-                         "name":"transition",
-                         "type":"bool",
-                         "value":true
-                        }],
+                           "name":"transition",
+                           "type":"bool",
+                           "value":false
+                          }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -7353,25 +7353,25 @@
                  "point":true,
                  "properties":[
                         {
-                         "name":"targetMap",
-                         "type":"string",
-                         "value":"office3"
-                        },
-                        {
-                         "name":"targetSpawn",
-                         "type":"string",
-                         "value":"office3-spawn"
-                        },
-                        {
                          "name":"interactionRadius",
                          "type":"float",
                          "value":40
-                        },
+                        }, 
                         {
                          "name":"label",
                          "type":"string",
                          "value":"Office 3"
-                        },
+                        }, 
+                        {
+                         "name":"targetMap",
+                         "type":"string",
+                         "value":"office3"
+                        }, 
+                        {
+                         "name":"targetSpawn",
+                         "type":"string",
+                         "value":"office3-spawn"
+                        }, 
                         {
                          "name":"transition",
                          "type":"bool",
@@ -8646,6 +8646,25 @@
                  "width":0,
                  "x":163,
                  "y":325.75
+                }, 
+                {
+                 "height":0,
+                 "id":504,
+                 "name":"office3-door",
+                 "opacity":1,
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"replaceWith",
+                         "type":"string",
+                         "value":"door1"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":47,
+                 "y":242.333333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -8654,7 +8673,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":504,
+ "nextobjectid":505,
  "orientation":"orthogonal",
  "properties":[
         {

@@ -8,7 +8,7 @@ import { collisionAreas } from '../src/maps/collision.js';
 import { readMapTransitions } from '../src/maps/transitions.js';
 
 const load = (name) => JSON.parse(readFileSync(new URL(`../public/assets/maps/${name}.tmj`, import.meta.url)));
-const maps = { school: load('classroom'), outside: load('outside'), arena: load('arena'), office2: load('office2') };
+const maps = { school: load('classroom'), outside: load('outside'), arena: load('arena'), office2: load('office2'), office3: load('office3'), 'secret-path': load('secret-path') };
 const overlaps = (a,b) => a.x < b.x+b.width && a.x+a.width > b.x && a.y < b.y+b.height && a.y+a.height > b.y;
 const feet = (x,y) => ({x:x-10*PLAYER_SCALE,y:y-12*PLAYER_SCALE,width:20*PLAYER_SCALE,height:12*PLAYER_SCALE});
 
@@ -52,7 +52,8 @@ test('no artless keyboards remain in Entities; directional notes were preserved'
 
 test('all transition targets resolve to free spawns in registered maps', () => {
   for(const [key,map] of Object.entries(maps)) {
-    for(const door of readDoors(map).filter(d=>d.transition)) {
+    const newTransitions=['secret-path','arena'].includes(key)?readMapTransitions(map):[];
+    for(const door of [...readDoors(map).filter(d=>d.transition),...newTransitions]) {
       const target=maps[door.targetMap];
       assert.ok(target, `Unknown destination ${door.targetMap}`);
       const spawn=resolveSpawn(target,door), body=feet(spawn.x,spawn.y);
@@ -67,8 +68,10 @@ test('all transition targets resolve to free spawns in registered maps', () => {
   assert.equal(entry.targetSpawn,'mainEntrance');
 });
 
-test('classroom arena marker links to the authored arena spawn',()=>{
-  const transition=readMapTransitions(maps.school).find(item=>item.id==='arena');
+test('arena entrance is at the end of secret path, not in the classroom',()=>{
+  assert.ok(!readMapTransitions(maps.school).some(item=>item.targetMap==='arena'));
+  assert.ok(objectsIn(maps.school,'Spawns').some(item=>item.name==='arena'));
+  const transition=readMapTransitions(maps['secret-path']).find(item=>item.id==='arena-entrance');
   assert.ok(transition);
   assert.equal(transition.targetMap,'arena');
   assert.equal(transition.targetSpawn,'arena-spawn');
@@ -92,13 +95,29 @@ test('corridor and office2 transitions point to each other through registered sc
   assert.equal(propertiesOf(maps.office2).defaultSpawn,'office2-spawn');
 });
 
-test('arena exit returns automatically to the authored classroom spawn behind the gate',()=>{
-  const exit=readMapTransitions(maps.arena).find(item=>item.id==='school-exit');
-  assert.ok(exit);assert.equal(exit.auto,true);assert.equal(exit.targetMap,'school');
+test('arena exit returns automatically to secret path behind the gate',()=>{
+  const exit=readMapTransitions(maps.arena).find(item=>item.id==='secret-path-exit');
+  assert.ok(exit);assert.equal(exit.auto,true);assert.equal(exit.targetMap,'secret-path');
   assert.equal(exit.targetSpawn,'arena-return');
-  assert.deepEqual(resolveSpawn(maps.school,exit),{x:880,y:725.333333333333});
+  assert.deepEqual(resolveSpawn(maps['secret-path'],exit),{x:1316,y:961.333});
   const gate=objectsIn(maps.arena,'Collision').find(item=>item.name==='gate');
   assert.ok(gate);assert.ok(gate.x<exit.x);assert.ok(gate.x+gate.width<exit.x);
+});
+
+test('office2 trapdoor and secret path use the Tiled markers for both directions',()=>{
+  const marker=objectsIn(maps.office2,'Notes').find(item=>item.name==='office2-trapdoor');
+  assert.ok(marker);
+  const returnSpawn=resolveSpawn(maps.office2,{targetSpawn:'office2-trapdoor-return'});
+  assert.deepEqual(returnSpawn,{x:marker.x+marker.width/2,y:marker.y+marker.height/2});
+  const pathEntrance=resolveSpawn(maps['secret-path'],{targetSpawn:'secret-path-spawn'});
+  const pathExit=readMapTransitions(maps['secret-path']).find(item=>item.id==='secret-path-spawn');
+  assert.ok(pathExit);
+  assert.deepEqual({x:pathExit.x,y:pathExit.y},pathEntrance);
+  assert.equal(pathExit.targetMap,'office2');
+  assert.equal(pathExit.targetSpawn,'office2-trapdoor-return');
+  const image=maps['secret-path'].layers.find(layer=>layer.type==='imagelayer');
+  assert.equal(image.image,'secret-path.png');
+  assert.equal(objectsIn(maps['secret-path'],'Collision').length,47);
 });
 
 test('arena image and authored collision are usable by the shared map scene',()=>{

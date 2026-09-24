@@ -1,0 +1,58 @@
+.office3-puzzle-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(4, 10, 15, .66);
+}
+
+.office3-puzzle-panel {
+  position: relative;
+  width: min(100%, 400px);
+  max-height: min(85vh, 740px);
+  overflow: auto;
+  padding: 26px;
+  border: 1px solid #468f65;
+  border-radius: 10px;
+  color: #d8f7df;
+  background: #0a1511;
+  box-shadow: 0 18px 60px #0009, 0 0 22px #55e68425;
+  font: 16px/1.4 ui-monospace, Consolas, monospace;
+}
+
+.office3-puzzle-panel.quiz { width: min(100%, 680px); }
+.office3-puzzle-panel.paper { width: min(100%, 520px); padding: 15px; border-color: #ad8d44; background: #161411; }
+.office3-paper-image { display: block; max-width: 100%; max-height: min(76vh, 680px); margin: auto; object-fit: contain; }
+.office3-puzzle-panel h2 { margin: 0 30px 18px 0; color: #8af5a7; font: 700 19px/1.3 ui-monospace, Consolas, monospace; letter-spacing: .04em; }
+.office3-puzzle-close { position: absolute; top: 10px; right: 12px; border: 0; color: #d8f7df; background: transparent; font: 24px/1 sans-serif; cursor: pointer; }
+.office3-password-form { display: flex; align-items: end; gap: 12px; flex-wrap: wrap; }
+.office3-password-form label { display: flex; align-items: center; gap: 8px; }
+.office3-password-prefix { color: #8af5a7; font-size: 22px; font-weight: 700; }
+.office3-password-input { width: 77px; padding: 8px; border: 1px solid #56856b; border-radius: 4px; color: #d8f7df; background: #11251a; font: inherit; letter-spacing: .2em; -webkit-text-security: disc; }
+.office3-puzzle-panel button:not(.office3-puzzle-close) { padding: 9px 14px; border: 1px solid #4c9d6b; border-radius: 5px; color: #d8f7df; background: #173925; font: inherit; cursor: pointer; }
+.office3-puzzle-panel button:not(.office3-puzzle-close):hover:not(:disabled),
+.office3-puzzle-panel button:not(.office3-puzzle-close):focus-visible { background: #215333; outline: 2px solid #8af5a7; }
+.office3-puzzle-panel button:disabled { opacity: .62; cursor: default; }
+.office3-puzzle-instructions { color: #b9dec5; }
+.office3-puzzle-progress { margin: 0 0 14px; color: #8af5a7; font-size: 20px; font-weight: 700; }
+.office3-puzzle-question { font-size: 18px; line-height: 1.5; }
+.office3-puzzle-media { max-height: 220px; overflow: auto; margin-bottom: 12px; }
+.office3-puzzle-media img { display: block; max-width: 100%; max-height: 210px; object-fit: contain; }
+.office3-puzzle-media table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.office3-puzzle-media th, .office3-puzzle-media td { padding: 5px 8px; border: 1px solid #56856b; text-align: left; }
+.office3-puzzle-media pre { overflow: auto; padding: 10px; background: #09100d; }
+.office3-puzzle-choices { display: grid; gap: 9px; }
+.office3-puzzle-choices button { text-align: left; overflow-wrap: anywhere; }
+.office3-puzzle-feedback { min-height: 1.5em; margin: 15px 0 0; font-weight: 700; }
+.office3-puzzle-feedback[data-result='correct'] { color: #8af5a7; }
+.office3-puzzle-feedback[data-result='wrong'] { color: #ff9292; animation: office3-denied .25s ease-in-out 2; }
+.office3-puzzle-success { color: #8af5a7; font-size: 18px; }
+.office3-puzzle-panel.reward { text-align: center; transform: translateY(16px); }
+.office3-puzzle-panel.reward h2 { margin-right: 0; }
+.office3-reward-key { display: block; width: min(150px, 52vw); aspect-ratio: 1; margin: 4px auto 18px; object-fit: cover; object-position: 61% center; clip-path: inset(0 7%); filter: drop-shadow(0 7px 16px #0009); }
+.office3-terminal-prompt { color: #eaffee; border-color: #61bf78; background: #10291acc; }
+.office3-paper-prompt { color: #fff6db; border-color: #d7b65d; background: #312714dd; }
+@keyframes office3-denied { 50% { transform: translateX(3px); } }
+@media (prefers-reduced-motion: reduce) { .office3-puzzle-feedback[data-result='wrong'] { animation: none; } }

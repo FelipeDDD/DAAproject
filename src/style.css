@@ -224,6 +224,7 @@ button.inventory-slot.active { border-color: #e1b45c; box-shadow: inset 0 0 12px
 button.inventory-slot:disabled { cursor: wait; opacity: .62; }
 .inventory-slot.empty { opacity: .55; }
 .inventory-slot img { width: 38px; height: 38px; object-fit: contain; filter: drop-shadow(0 2px 3px #0009); }
+.inventory-slot[data-item-id='office2_key'] img { object-fit: cover; object-position: 61% center; clip-path: inset(0 7%); }
 .inventory-quantity { position: absolute; right: 3px; bottom: 2px; color: #fff; font-size: 10px; font-weight: 800; text-shadow: 0 1px 3px #000; }
 [data-tooltip] { position: relative; }
 [data-tooltip]::after { position: absolute; left: 50%; bottom: calc(100% + 8px); z-index: 20; width: max-content; max-width: 230px; padding: 7px 9px; transform: translate(-50%,4px); color: #eaf7fc; border: 1px solid #527082; border-radius: 6px; background: #08131df5; box-shadow: 0 5px 16px #000a; content: attr(data-tooltip); font: 11px/1.35 system-ui,sans-serif; text-align: left; white-space: pre-line; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .12s,transform .12s; }
@@ -244,6 +245,7 @@ body { min-height:100vh; margin:0; color:#334550; background-color:var(--page-ba
 .boss-reward-card span { line-height: 1.5; }
 .boss-reward-presentation .boss-reward-panel { width: min(900px,94vw); max-height: 94vh; overflow: hidden; animation: boss-reward-enter .45s ease-out both; }
 .boss-reward-presentation img { display: block; width: min(70vw,620px); height: min(65vh,650px); margin: 0 auto 12px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(0 0 25px #ffd56d); animation: boss-reward-pulse 1.4s ease-in-out infinite alternate; }
+.boss-reward-presentation.item[data-item-id='office2_key'] img { width: min(260px,60vw); height: min(260px,60vw); object-fit: cover; object-position: 61% center; clip-path: inset(0 7%); }
 .boss-reward-presentation.skin img { width: min(45vw,360px); }
 .boss-reward-presentation small { color: #ffd36b; font-weight: 900; letter-spacing: .28em; }
 .boss-reward-panel>button { min-width: 150px; padding: 10px 18px; color: #18202a; border: 0; border-radius: 7px; background: #ffe09a; cursor: pointer; font: inherit; font-weight: 800; }

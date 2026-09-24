@@ -47,7 +47,7 @@ export class ArenaScene extends MapScene {
     super.create(destination);
     this.gate=new ArenaGateController(this);
     this.retryOverlay=new ArenaRetryOverlay(this,{delayMs:BOSS_RETRY_DELAY_MS,
-      onRetry:()=>this.retryBossFight(),onReturn:()=>this.returnToClassroom()});
+      onRetry:()=>this.retryBossFight(),onReturn:()=>this.returnToSecretPath()});
     this.boss=new BossController(this);
     this.crosshair=new ArenaCrosshair(this);
     this.events.on('sleep',this.handleBossSleep,this);
@@ -74,7 +74,7 @@ export class ArenaScene extends MapScene {
     this.gate?.reset();this.boss?.reset();
   }
 
-  returnToClassroom(){this.travelTo({targetMap:'school',targetSpawn:'arena-return'});}
+  returnToSecretPath(){this.travelTo({targetMap:'secret-path',targetSpawn:'arena-return'});}
 
   update(time,delta){
     super.update(time,delta);

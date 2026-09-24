@@ -1,4 +1,11 @@
 import { objectsIn,propertiesOf } from './tiledObjects.js';
+import { CHARACTER_ITEM_IDS } from '../inventory/characterItems.js';
+
+export function isMapTransitionLocked(transition,items=[]){
+  if(!transition?.locked)return false;
+  return !(transition.targetMap==='office2'&&items.some(item=>
+    item.itemId===CHARACTER_ITEM_IDS.OFFICE2_KEY&&item.compatible!==false));
+}
 
 // A transition point can live beside the destination spawn markers in Tiled.
 // Coordinates stay in the map; code only supplies interaction behavior.

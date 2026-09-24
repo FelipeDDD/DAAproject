@@ -1,6 +1,6 @@
 import { MapScene } from './MapScene.js';
 import { drawClassroomDesks } from '../art/classroomDesks.js';
-import { drawOfficeDoor } from '../art/officeDoor.js';
+import { drawOfficeDoor,drawOffice3Door } from '../art/officeDoor.js';
 import { registerSecretaryFrames,SecretaryNpc } from '../npc/SecretaryNpc.js';
 
 export class SchoolScene extends MapScene {
@@ -12,6 +12,8 @@ export class SchoolScene extends MapScene {
       `${import.meta.env.BASE_URL}assets/furniture/mesas-transparent.png`);
     this.load.image('office-door',
       `${import.meta.env.BASE_URL}assets/doors/door-office2.png`);
+    this.load.image('office3-door',
+      `${import.meta.env.BASE_URL}assets/doors/door1.png`);
     this.load.image('school-secretary',
       `${import.meta.env.BASE_URL}assets/npc/secretary.png`);
   }
@@ -20,6 +22,7 @@ export class SchoolScene extends MapScene {
     super.create(destination);
     drawClassroomDesks(this, this.source);
     drawOfficeDoor(this, this.source);
+    drawOffice3Door(this, this.source);
     const office=this.mapTransitions.find(item=>item.targetMap==='office2');
     if(office){
       registerSecretaryFrames(this);

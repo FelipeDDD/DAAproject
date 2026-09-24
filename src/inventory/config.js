@@ -48,6 +48,7 @@ export function inventorySlots(items,count=INVENTORY_SLOT_COUNT){
 }
 
 export function inventoryItemUseBehavior(item){
+  if(item?.useBehavior==='none')return null;
   if(item?.useBehavior==='functional'||item?.activatable)return 'functional';
   return item?.useBehavior==='presentation'||item?.presentationImage||item?.icon?'presentation':null;
 }

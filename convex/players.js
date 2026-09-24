@@ -83,7 +83,7 @@ export const update = mutation({
   handler: async (ctx, args) => {
     if (!Number.isFinite(args.x) || !Number.isFinite(args.y) ||
         args.playerId.length > 100 || args.name.length > 40 ||
-        !['school', 'outside', 'arena', 'selection'].includes(args.room) ||
+        !['school', 'outside', 'arena', 'office2', 'office3', 'secret-path', 'selection'].includes(args.room) ||
         !['up', 'down', 'left', 'right'].includes(args.direction)) throw new Error('Invalid player state');
     if(args.activeCharacterItem&&!canCharacterOwnItem(args.characterId,args.activeCharacterItem))
       throw new Error('Invalid active character item');

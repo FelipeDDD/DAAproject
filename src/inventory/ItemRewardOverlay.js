@@ -13,7 +13,8 @@ export class ItemRewardOverlay {
     this.onClick=()=>this.dismiss();document.addEventListener('keydown',this.onKey);this.root.addEventListener('click',this.onClick);document.body.append(this.root);
   }
   show(item){
-    this.close(true);this.state.begin();const panel=document.createElement('div');panel.className='boss-reward-panel';
+    this.close(true);this.state.begin();this.root.dataset.itemId=item.itemId;
+    const panel=document.createElement('div');panel.className='boss-reward-panel';
     const eyebrow=document.createElement('small');eyebrow.textContent='NEW ITEM';
     const image=document.createElement('img');image.className='boss-reward-image';image.src=publicAsset(inventoryPresentationAsset(item));image.alt=item.name;
     const title=document.createElement('h2');title.textContent=item.name;const description=document.createElement('p');description.textContent=item.description;

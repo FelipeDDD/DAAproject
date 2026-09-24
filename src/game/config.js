@@ -4,6 +4,7 @@ import { OutsideScene } from '../scenes/OutsideScene.js';
 import { ArenaScene } from '../scenes/ArenaScene.js';
 import { Office2Scene } from '../scenes/Office2Scene.js';
 import { Office3Scene } from '../scenes/Office3Scene.js';
+import { SecretPathScene } from '../scenes/SecretPathScene.js';
 import { GAME_LOGICAL_SIZE } from '../ui/displaySettings.js';
 
 export const gameConfig = {
@@ -23,5 +24,5 @@ export const gameConfig = {
     default: 'arcade',
     arcade: { gravity: { x: 0, y: 0 }, debug: false },
   },
-  scene: [SchoolScene, OutsideScene, ArenaScene, Office2Scene, Office3Scene],
+  scene: [SchoolScene, OutsideScene, ArenaScene, Office2Scene, Office3Scene, SecretPathScene],
 };

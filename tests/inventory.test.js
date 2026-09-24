@@ -50,6 +50,8 @@ test('badge metadata provides its key type, icon and tooltip copy',()=>{
   assert.equal(badge.type,'key');assert.equal(badge.quantity,1);
   assert.match(badge.icon,/school-key\.png$/);assert.equal(badge.name,'Director Access Badge');
   assert.equal(badge.description,'Opens restricted school areas.');
+  assert.equal(inventoryItemUseBehavior(badge),'presentation');
+  assert.equal(inventoryItemUseBehavior(ITEM_CATALOG[CHARACTER_ITEM_IDS.OFFICE2_KEY]),'presentation');
 });
 
 test('Lung Crusher uses its centered square hotbar icon',()=>{
