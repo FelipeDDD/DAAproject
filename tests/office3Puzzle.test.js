@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import STATIC_QUIZ_QUESTIONS from '../convex/quizStaticQuestions.generated.js';
 import {
   OFFICE3_MONITOR, OFFICE3_STREAK_TARGET, chooseOffice3Question,
   OFFICE3_PASSWORD_DENIED_MS, nextStreak, passwordIsCorrect,
@@ -53,6 +54,26 @@ test('quiz pulls four-answer questions from the existing bank without repeating 
   assert.notEqual(second.id, first.id);
   assert.equal(first.answers.length, 4);
   assert.ok(first.correctAnswer >= 0 && first.correctAnswer < 4);
+});
+
+test('terminal shuffles each question while preserving its correct answer and source data', () => {
+  const source = STATIC_QUIZ_QUESTIONS[0];
+  const originalAnswers = [...source.answers];
+  const orders = new Set();
+  for (let seed = 0; seed < 10; seed++) {
+    let selection = true;
+    const question = chooseOffice3Question([], () => {
+      if (selection) { selection = false; return 0; }
+      return seed / 10;
+    });
+    assert.equal(question.id, source.id);
+    assert.equal(question.answers.length, 4);
+    assert.deepEqual([...question.answers].sort(), [...originalAnswers].sort());
+    assert.equal(question.answers[question.correctAnswer], originalAnswers[source.correctAnswer]);
+    orders.add(question.answers.join('|'));
+  }
+  assert.ok(orders.size > 1);
+  assert.deepEqual(source.answers, originalAnswers);
 });
 
 test('the persistent office key occupies one inventory slot and unlocks only office2', () => {

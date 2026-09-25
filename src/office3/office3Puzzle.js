@@ -1,4 +1,5 @@
 import STATIC_QUIZ_QUESTIONS from '../../convex/quizStaticQuestions.generated.js';
+import { shuffleConcreteAnswers } from '../../convex/quizQuestions.js';
 import { OFFICE3_MONITOR_STATUS } from '../art/office3PaperHighlight.js';
 
 export const OFFICE3_PASSWORD_DIGITS = '488';
@@ -26,5 +27,5 @@ export function chooseOffice3Question(previousIds = [], random = Math.random) {
     Array.isArray(question.answers) && question.answers.length === 4 &&
     Number.isInteger(question.correctAnswer) && question.correctAnswer >= 0 && question.correctAnswer < 4);
   if (!pool.length) throw new Error('No quiz questions are available.');
-  return pool[Math.floor(random() * pool.length)];
+  return shuffleConcreteAnswers(pool[Math.floor(random() * pool.length)], random);
 }
