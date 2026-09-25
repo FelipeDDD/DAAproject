@@ -48,17 +48,21 @@ export function walkFrames(direction,visual){
 export function animationKey(visual,type,direction){return `${visual.sprite}-${type}-${direction}`;}
 
 export function preloadCharacterTextures(scene,characters,baseUrl){
+  const queued=new Set();
   for(const character of characters){
-    if(!scene.textures.exists(character.sprite))scene.load.svg(character.sprite,`${baseUrl}${character.asset}`);
-    if(character.newVisual&&!scene.textures.exists(character.newVisual.sprite))scene.load.spritesheet(
+    if(!queued.has(character.sprite)&&!scene.textures.exists(character.sprite))scene.load.svg(character.sprite,`${baseUrl}${character.asset}`);
+    queued.add(character.sprite);
+    if(character.newVisual&&!queued.has(character.newVisual.sprite)&&!scene.textures.exists(character.newVisual.sprite))scene.load.spritesheet(
       character.newVisual.sprite,`${baseUrl}${character.newVisual.asset}`,
       {frameWidth:NEW_CHARACTER_FRAME.width,frameHeight:NEW_CHARACTER_FRAME.height},
     );
-    if(character.lungCrusherVisual&&!scene.textures.exists(character.lungCrusherVisual.sprite))scene.load.spritesheet(
+    if(character.newVisual)queued.add(character.newVisual.sprite);
+    if(character.lungCrusherVisual&&!queued.has(character.lungCrusherVisual.sprite)&&!scene.textures.exists(character.lungCrusherVisual.sprite))scene.load.spritesheet(
       character.lungCrusherVisual.sprite,`${baseUrl}${character.lungCrusherVisual.asset}`,
       {frameWidth:character.lungCrusherVisual.frameWidth??NEW_CHARACTER_FRAME.width,
         frameHeight:character.lungCrusherVisual.frameHeight??NEW_CHARACTER_FRAME.height},
     );
+    if(character.lungCrusherVisual)queued.add(character.lungCrusherVisual.sprite);
   }
 }
 

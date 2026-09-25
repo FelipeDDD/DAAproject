@@ -1,4 +1,4 @@
-import { CHARACTERS } from './characters.js';
+import { CHARACTERS,baseCharacterId } from './characters.js';
 import { distanceToSeat, QUIZ_SEAT_DISTANCE } from './maps/quizSeats.js';
 import { renderQuizMedia } from './QuizMedia.js';
 import { remainingQuizSeconds } from './quizTimer.js';
@@ -22,7 +22,7 @@ export class QuizLobby {
       selectedAnswer:null,confirmedAnswer:null,pendingAnswer:false,pendingNext:false,answerError:'',
       pendingSettings:false,settingsError:'',
     });
-    this.seat=seats.find(seat=>seat.characterId===presence.identity.characterId);
+    this.seat=seats.find(seat=>seat.characterId===baseCharacterId(presence.identity.characterId));
     this.root=document.getElementById('quiz-lobby');
     this.list=document.getElementById('quiz-participants');
     this.status=document.getElementById('quiz-status');
@@ -102,7 +102,9 @@ export class QuizLobby {
       else{this.scene.player.facing=seat.direction;this.scene.player.setFlipX(seat.direction==='left');}
       this.scene.player.setVelocity(0,0);this.root.hidden=false;this.render();
     }catch(error){
-      this.status.textContent=error.message.includes('already started')?'The lobby has already started.':'Could not sit down. Move closer to your chair.';
+      this.status.textContent=error.message.includes('already started')?'The lobby has already started.'
+        :error.message.includes('already occupied')?'This quiz chair is already occupied.'
+          :'Could not sit down. Move closer to your chair.';
     }finally{this.pending=false;this.render();}
   }
 

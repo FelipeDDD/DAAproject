@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { CHARACTERS } from '../src/characters.js';
+import { CHARACTERS,baseCharacterId } from '../src/characters.js';
 import {
   NEW_CHARACTER_FRAME,characterVisual,footBodyForVisual,idleFrame,normalizeCharacterStyle,
-  saveCharacterStyle,updateCharacterVisual,visualStyleForActiveItem,visualStyleForEquippedSkin,walkFrames,
+  preloadCharacterTextures,saveCharacterStyle,updateCharacterVisual,visualStyleForActiveItem,
+  visualStyleForEquippedSkin,walkFrames,
 } from '../src/characterVisuals.js';
 
 const michael=CHARACTERS.find(character=>character.id==='michael');
@@ -26,8 +27,25 @@ test('new style applies to all four character test spritesheets',()=>{
   assert.equal(normalizeCharacterStyle('unknown'),'old');
 });
 
-test('each fixed character owns a distinct Remastered preview asset',()=>{
-  assert.equal(new Set(CHARACTERS.map(character=>character.newVisual.previewAsset)).size,CHARACTERS.length);
+test('ten selectable slots keep unique identities while reusing the four existing visuals',()=>{
+  assert.equal(CHARACTERS.length,10);
+  assert.equal(new Set(CHARACTERS.map(character=>character.id)).size,10);
+  assert.equal(new Set(CHARACTERS.map(character=>character.newVisual.previewAsset)).size,4);
+  for(const character of CHARACTERS){
+    const original=CHARACTERS.find(item=>item.id===baseCharacterId(character.id));
+    assert.equal(character.sprite,original.sprite);
+    assert.equal(character.newVisual.previewAsset,original.newVisual.previewAsset);
+  }
+});
+
+test('shared visuals are queued once when all ten slots preload',()=>{
+  const loaded=[];
+  const scene={textures:{exists:()=>false},load:{
+    svg:key=>loaded.push(key),spritesheet:key=>loaded.push(key),
+  }};
+  preloadCharacterTextures(scene,CHARACTERS,'/');
+  assert.equal(loaded.length,new Set(loaded).size);
+  assert.equal(loaded.length,9); // Four classic, four Remastered, one Michael item sheet.
 });
 
 test('style preference persists with a safe old-style fallback',()=>{

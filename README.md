@@ -130,23 +130,28 @@ retornar, reaparece. E altera o estado compartilhado da porta pelo Convex.
 - `src/multiplayer/RemotePlayers.js`: sprite remoto e suavização de aproximadamente 100 ms.
 - `src/scenes/MapScene.js`: associa a cena ativa à room, sem mudar os dados do Tiled.
 
-`characterId` (também usado como `playerId`) é fixo: michael, jassine, sarina ou felipe.
+`characterId` (também usado como `playerId`) identifica uma das dez vagas. As quatro
+vagas originais mantêm os IDs michael, jassine, sarina e felipe; outras seis reutilizam
+as mesmas artes com IDs próprios e sufixos `-2` ou `-3`. Assim, dez sessões podem
+estar no jogo ao mesmo tempo sem misturar presença ou respostas. O quiz multiplayer
+continua limitado a quatro participantes e usa as quatro cadeiras existentes.
 O identificador legado `jassine` é exibido ao jogador com o nome correto **Yassin**.
 A escolha fica em `localStorage['daa-character-id']` como preferência destacada no menu.
 Cada carregamento cria um `sessionId` em memória para reservar o personagem;
 nem duplicar uma aba permite usar a mesma vaga simultaneamente.
 Presenças sem heartbeat somem da tela após 60 segundos e são removidas do backend
-após aproximadamente 60–65 segundos (limpeza a cada 5 s). O heartbeat continua
+na limpeza seguinte (a cada minuto). O heartbeat continua
 quando a aba está em background; blur e `visibilitychange` não liberam a reserva.
-Não há colisão entre jogadores nem autenticação.
+Não há colisão entre jogadores. Perfis autenticados e convidados podem reservar vagas.
 O backend local atende o teste no mesmo computador; jogar entre computadores
 exige configurar um deployment Convex acessível a todos.
 
 Referência da integração: [cliente JavaScript do Convex](https://docs.convex.dev/client/javascript/overview).
 
-## Seleção dos quatro personagens
+## Seleção dos personagens
 
 `src/characters.js` define ordem, id, nome, chave de textura e caminho dos sprites.
+As dez vagas compartilham as quatro aparências existentes, sem novos assets.
 Os SVGs em `public/assets/characters/` usam 32×56 px e preservam a hitbox dos pés.
 `scripts/character-art.mjs` gera apenas esses placeholders; troque os SVGs depois
 para melhorar a arte. Michael tem silhueta mais alta/magra e cigarro; Yassin,

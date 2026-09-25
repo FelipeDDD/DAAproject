@@ -1,3 +1,5 @@
+import { baseCharacterId } from '../characters.js';
+
 export const CHARACTER_ITEM_IDS=Object.freeze({LUNG_CRUSHER_3000:'lung_crusher_3000',OFFICE2_KEY:'office2_key'});
 export const CHARACTER_ITEM_COOLDOWN_MS=10_000;
 
@@ -19,7 +21,7 @@ export const CHARACTER_ITEMS=Object.freeze({
 export function characterItemDefinition(itemId){return CHARACTER_ITEMS[itemId]??null;}
 export function canCharacterOwnItem(characterId,itemId){
   const item=characterItemDefinition(itemId);
-  return Boolean(item&&(item.allowedCharacter===undefined||item.allowedCharacter===characterId));
+  return Boolean(item&&(item.allowedCharacter===undefined||item.allowedCharacter===baseCharacterId(characterId)));
 }
 export function normalizeCharacterItem(row,currentCharacterId=row?.characterId){
   const item=characterItemDefinition(row?.itemId);

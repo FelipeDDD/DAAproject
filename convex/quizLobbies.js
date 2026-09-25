@@ -1,5 +1,6 @@
 import { queryGeneric as query, mutationGeneric as mutation, internalMutationGeneric as internalMutation } from 'convex/server';
 import { v } from 'convex/values';
+import { baseCharacterId } from '../src/characters.js';
 import seatsByRoom from './quizSeatDefinitions.js';
 import {
   QUESTIONS_PER_QUIZ,QUIZ_QUESTIONS,
@@ -128,7 +129,7 @@ export const join = mutation({
   args: { room:v.string(), characterId:v.string(), sessionId:v.string() },
   handler: async (ctx,args) => {
     const player = await playerFor(ctx,args.characterId,args.sessionId,args.room);
-    const seat = seatsByRoom[args.room]?.find(s => s.characterId === args.characterId);
+    const seat = seatsByRoom[args.room]?.find(s => s.characterId === baseCharacterId(args.characterId));
     if (!seat) throw new Error('This character has no quiz chair in this room.');
     const body={x:player.x-10*PLAYER_SCALE,right:player.x+10*PLAYER_SCALE,y:player.y-12*PLAYER_SCALE,bottom:player.y};
     const dx=Math.max(seat.x-body.right,body.x-seat.x-seat.width,0);
@@ -140,6 +141,9 @@ export const join = mutation({
       participants=await activeParticipants(ctx,lobby);
       if (!participants.length) { await deleteLobby(ctx,lobby); lobby=null; }
       else if (lobby.status !== 'lobby') throw new Error('The lobby has already started.');
+      else if(participants.some(id=>id!==args.characterId
+        &&baseCharacterId(id)===baseCharacterId(args.characterId)))
+        throw new Error('This quiz chair is already occupied.');
     }
     if (!lobby) {
       await ctx.db.insert('quizLobbies',{

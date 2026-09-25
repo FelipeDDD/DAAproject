@@ -9,6 +9,7 @@ import { get as getBossProgress } from '../convex/bossProgress.js';
 import { forProfile as getCharacterItems } from '../convex/characterItems.js';
 import { normalizeBossProgress } from '../src/boss/BossRewards.js';
 import { inventoryItemsFromSources,inventorySlots } from '../src/inventory/config.js';
+import { CHARACTERS } from '../src/characters.js';
 
 function memoryContext(){
   const tables={
@@ -213,6 +214,28 @@ test('guest presence uses a temporary identity without creating a profile',async
   });
   assert.equal(ctx.tables.players[0].profileId,undefined);
   assert.equal(ctx.tables.players[0].name,'Felipe');
+});
+
+test('ten guests can occupy distinct slots even when character art is shared',async()=>{
+  const ctx=memoryContext();
+  for(const [index,character] of CHARACTERS.entries()){
+    const result=await claimGuest._handler(ctx,{
+      guestId:`guest-temporary-identity-${index.toString().padStart(6,'0')}`,
+      characterId:character.id,sessionId:`guest-presence-session-${index.toString().padStart(6,'0')}`,
+    });
+    assert.equal(result.ok,true);
+  }
+  assert.equal(ctx.tables.players.length,10);
+  assert.equal((await availability._handler(ctx)).filter(row=>row.active).length,10);
+  assert.equal((await claimGuest._handler(ctx,{
+    guestId:'guest-temporary-identity-999999',characterId:'michael-2',
+    sessionId:'guest-presence-session-999999',
+  })).ok,false);
+  await update._handler(ctx,{
+    playerId:'michael-2',characterId:'michael-2',sessionId:'guest-presence-session-000004',
+    name:'Forged',room:'school',x:12,y:34,direction:'right',activeCharacterItem:null,
+  });
+  assert.equal(ctx.tables.players.find(row=>row.characterId==='michael-2').name,'Michael 2');
 });
 
 test('legacy presence without an active item remains compatible during deployment',async()=>{

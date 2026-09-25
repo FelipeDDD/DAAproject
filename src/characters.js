@@ -1,5 +1,5 @@
 // Menu order, names and replaceable sprite assets. All sprites use a 32 x 56 canvas.
-export const CHARACTERS = [
+const ORIGINAL_CHARACTERS = [
   {
     id: 'michael', name: 'Michael', sprite: 'character-michael', asset: 'assets/characters/michael.svg',
     newVisual:{sprite:'character-michael-new',asset:'assets/characters/michael-new.png',previewAsset:'assets/characters/michael-new-preview.png',
@@ -23,6 +23,17 @@ export const CHARACTERS = [
     newVisual:{sprite:'character-felipe-new',asset:'assets/characters/felipe-new.png',previewAsset:'assets/characters/felipe-new-preview.png'},
   },
 ];
+// Extra player slots reuse the existing art while keeping session and quiz IDs distinct.
+export const CHARACTERS = [
+  ...ORIGINAL_CHARACTERS,
+  ...ORIGINAL_CHARACTERS.map(character=>({
+    ...character,id:`${character.id}-2`,name:`${character.name} 2`,baseCharacterId:character.id,
+  })),
+  ...ORIGINAL_CHARACTERS.slice(0,2).map(character=>({
+    ...character,id:`${character.id}-3`,name:`${character.name} 3`,baseCharacterId:character.id,
+  })),
+];
 export const CHARACTER_STORAGE_KEY = 'daa-character-id';
 export const CHARACTER_STYLE_STORAGE_KEY = 'daa-character-style';
 export const characterById = id => CHARACTERS.find(c => c.id === id);
+export const baseCharacterId = id => characterById(id)?.baseCharacterId??id;

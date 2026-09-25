@@ -1,3 +1,5 @@
+import { baseCharacterId } from '../characters.js';
+
 // Source sheets have six 362px columns with generous transparent padding.
 // Phaser crops the same central strip from each column; the original PNGs stay untouched.
 export const PLAYER_ATTACK_VISUALS=Object.freeze({
@@ -61,6 +63,7 @@ export function allPlayerAttackVisuals(){
 }
 
 export function playerAttackVisual(characterId,random=Math.random){
+  characterId=baseCharacterId(characterId);
   const variants=PLAYER_ATTACK_VARIANTS[characterId];
   if(variants?.length)return variants[Math.min(variants.length-1,Math.floor(Math.max(0,random())*variants.length))];
   return PLAYER_ATTACK_VISUALS[characterId]??null;
