@@ -15,7 +15,8 @@ export const send = mutation({
     if(!text||text.length>200)throw new Error('Messages must contain between 1 and 200 characters.');
     const player=await ctx.db.query('players').withIndex('by_player',q=>q.eq('playerId',args.characterId)).unique();
     if(!ownsCharacterSession(player,args.characterId,args.sessionId)||!isPresenceActive(player.lastSeen)||
-       player.room!==args.room||!['school','outside','arena'].includes(args.room))throw new Error('Invalid session or room.');
+       player.room!==args.room||!['school','outside','arena','office2','office3','secret-path'].includes(args.room))
+      throw new Error('Invalid session or room.');
     await ctx.db.insert('messages',{room:player.room,characterId:player.characterId,
       characterName:player.name,text,createdAt:Date.now()});
   },

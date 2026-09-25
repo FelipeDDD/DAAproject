@@ -24,11 +24,16 @@ test('chat rejects another room, another session and expired presence',async()=>
     const ctx=context(override);await assert.rejects(send._handler(ctx,args),/Invalid session/);assert.equal(ctx.inserted.length,0);
   }
 });
-test('chat accepts arena messages for an active character in the arena',async()=>{
-  const ctx=context({room:'arena'});
-  await send._handler(ctx,{...args,room:'arena',text:'Arena message'});
-  assert.equal(ctx.inserted[0].room,'arena');
-  assert.equal(ctx.inserted[0].text,'Arena message');
+test('chat accepts messages in every playable room for an active character',async()=>{
+  for(const room of ['school','outside','arena','office2','office3','secret-path']){
+    const ctx=context({room});
+    await send._handler(ctx,{...args,room,text:'Room message'});
+    assert.equal(ctx.inserted[0].room,room);
+    assert.equal(ctx.inserted[0].text,'Room message');
+  }
+  await assert.rejects(send._handler(context({room:'selection'}),{
+    ...args,room:'selection',text:'Not in the game yet',
+  }),/Invalid session or room/);
 });
 
 function renderMessage(text){
