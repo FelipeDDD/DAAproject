@@ -27,28 +27,35 @@ export class CharacterMenu {
     });
     this.renderPreviews();
     this.message.textContent=presence?'Checking availability…':'Configure Convex to choose a character.';
-    if(presence){
-      const receiveRows=rows=>{
-        if(this.closed)return;
-        clearTimeout(this.connectionTimer);
-        this.rows=rows;this.ready=true;this.connectionFailed=false;this.render();
-        if(!this.pending)this.message.textContent='Choose an available character.';
-      };
-      const showConnectionError=()=>{
-        if(this.closed||this.ready)return;
-        this.connectionFailed=true;
-        this.message.textContent='Convex is unavailable. Run “npm.cmd run convex” in another terminal; this screen will reconnect automatically.';
-        this.render();
-      };
-      this.unsubscribe=presence.client.onUpdate(
-        presence.api.players.availability,
-        {},
-        receiveRows,
-        showConnectionError,
-      );
-      this.connectionTimer=setTimeout(showConnectionError,5000);
-    }
-    this.timer=setInterval(()=>this.render(),500);this.render();
+    this.render();
+  }
+  subscribeAvailability(){
+    if(!this.presence||this.unsubscribe||this.closed)return;
+    const presence=this.presence;
+    const subscription=Symbol('availability');this.availabilitySubscription=subscription;
+    this.ready=false;this.connectionFailed=false;this.rows=[];
+    this.message.textContent='Checking availability…';
+    const receiveRows=rows=>{
+      if(this.closed||this.root.hidden||this.availabilitySubscription!==subscription)return;
+      clearTimeout(this.connectionTimer);
+      this.rows=rows;this.ready=true;this.connectionFailed=false;this.render();
+      if(!this.pending)this.message.textContent='Choose an available character.';
+    };
+    const showConnectionError=()=>{
+      if(this.closed||this.root.hidden||this.availabilitySubscription!==subscription||this.ready)return;
+      this.connectionFailed=true;
+      this.message.textContent='Convex is unavailable. Run “npm.cmd run convex” in another terminal; this screen will reconnect automatically.';
+      this.render();
+    };
+    this.unsubscribe=presence.client.onUpdate(
+      presence.api.players.availability,
+      {},
+      receiveRows,
+      showConnectionError,
+    );
+    this.connectionTimer=setTimeout(showConnectionError,5000);
+    this.timer=setInterval(()=>this.render(),500);
+    this.render();
   }
   render(){
     for(const {c,button,state}of this.cards){
@@ -95,14 +102,19 @@ export class CharacterMenu {
       try{localStorage.setItem(CHARACTER_STORAGE_KEY,c.id);}catch{}
       // Keep the claim alive while Phaser loads its maps and sprites.
       this.presence.enter('selection',()=>({x:0,y:0,direction:'down',activeCharacterItem:null}),()=>{});
-      this.root.hidden=true;
+      this.hide();
       this.onChoose(c);
     }catch(error){this.message.textContent='Could not join. Check the connection and try again.';console.warn(error);}
     finally{this.pending=false;this.render();}
   }
-  show(){this.root.hidden=false;this.render();}
-  hide(){this.root.hidden=true;}
+  show(){if(this.closed)return;this.root.hidden=false;this.subscribeAvailability();this.render();}
+  hide(){
+    this.root.hidden=true;clearInterval(this.timer);this.timer=null;
+    clearTimeout(this.connectionTimer);this.connectionTimer=null;
+    this.availabilitySubscription=null;
+    this.unsubscribe?.();this.unsubscribe=null;
+  }
   close(){
-    this.closed=true;clearInterval(this.timer);clearTimeout(this.connectionTimer);this.unsubscribe?.();
+    this.closed=true;this.hide();
   }
 }

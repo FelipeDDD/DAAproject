@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { CharacterMenu,createCharacterSessionId } from '../src/CharacterMenu.js';
-import { QuizLobby, shouldConfirmQuizLeave, shouldShowStartButton } from '../src/QuizLobby.js';
+import { QuizLobby, QUIZ_TIMEOUT_MAX_ATTEMPTS,quizTimeoutRetryDelay,shouldConfirmQuizLeave,shouldShowStartButton } from '../src/QuizLobby.js';
 import { readQuizSettingsControls,topicsForQuizCategory } from '../src/quiz/QuizSettingsControls.js';
 
 test('character session id works without crypto.randomUUID',()=>{
@@ -41,6 +41,56 @@ test('guest character selection claims presence without a profile action',async(
   });
   assert.equal(menu.presence.identity.kind,'guest');
   assert.equal(menu.presence.identity.profileId,undefined);
+});
+
+test('character availability subscribes only while the menu is visible',()=>{
+  let subscriptions=0,unsubscriptions=0;
+  const callbacks=[];
+  const menu=Object.assign(Object.create(CharacterMenu.prototype),{
+    root:{hidden:true},message:{textContent:''},cards:[],render(){},closed:false,
+    presence:{api:{players:{availability:'availability'}},client:{onUpdate(_fn,_args,callback){
+      subscriptions++;callbacks.push(callback);return()=>{unsubscriptions++;};
+    }}},
+  });
+  try{
+    menu.show();assert.equal(subscriptions,1);
+    menu.show();assert.equal(subscriptions,1);
+    menu.hide();assert.equal(unsubscriptions,1);
+    menu.show();assert.equal(subscriptions,2);
+    callbacks[0]([{characterId:'felipe',active:true}]);
+    assert.deepEqual(menu.rows,[]);
+    callbacks[1]([{characterId:'felipe',active:true}]);
+    assert.equal(menu.rows.length,1);
+  }finally{menu.close();}
+  assert.equal(unsubscriptions,2);
+});
+
+test('quiz timeout retries back off and stop until the player retries explicitly',async()=>{
+  let calls=0;
+  const quiz=Object.assign(Object.create(QuizLobby.prototype),{
+    seated:true,room:'school',lobby:{question:{id:'question-1'}},render(){},
+    presence:{identity:{characterId:'felipe',sessionId:'session-123456789'},
+      api:{quizLobbies:{finishTimedQuestion:'finish'}},client:{async mutation(){calls++;throw new Error('persistent failure');}}},
+    questionHasExpired(){return true;},
+  });
+  for(let attempt=1;attempt<=QUIZ_TIMEOUT_MAX_ATTEMPTS;attempt++){
+    const before=Date.now();
+    await quiz.finishTimedQuestion();
+    if(attempt===QUIZ_TIMEOUT_MAX_ATTEMPTS)assert.equal(quiz.timerRetryAt,Infinity);
+    else{
+      const delay=quizTimeoutRetryDelay(attempt);
+      assert.ok(quiz.timerRetryAt>=before+delay&&quiz.timerRetryAt<=Date.now()+delay);
+    }
+  }
+  assert.equal(calls,QUIZ_TIMEOUT_MAX_ATTEMPTS);
+  assert.match(quiz.answerError,/Retry with the button/);
+  quiz.timerElement={hidden:false,textContent:'',dateTime:'',classList:{toggle(){}}};
+  quiz.lobby={...quiz.lobby,status:'starting',questionDeadline:0,allAnswered:false};
+  for(let i=0;i<20;i++)quiz.updateTimer();
+  assert.equal(calls,QUIZ_TIMEOUT_MAX_ATTEMPTS);
+  quiz.retryTimedQuestion();
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(calls,QUIZ_TIMEOUT_MAX_ATTEMPTS+1);
 });
 
 test('start button follows the current host and lobby status',()=>{

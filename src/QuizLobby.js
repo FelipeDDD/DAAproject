@@ -8,6 +8,8 @@ import { WorldPrompt } from './ui/WorldPrompt.js';
 
 // World-space tuning for the prompt, anchored to the fixed Tiled seat position.
 export const QUIZ_SEAT_PROMPT = Object.freeze({text:'[E] Sit',offsetX:0,offsetY:-70});
+export const QUIZ_TIMEOUT_MAX_ATTEMPTS=4;
+export const quizTimeoutRetryDelay=attempt=>1000*2**Math.max(0,attempt-1);
 
 export function shouldShowStartButton(lobby,characterId){
   return lobby?.status==='lobby'&&lobby.hostCharacterId===characterId;
@@ -52,7 +54,8 @@ export class QuizLobby {
     this.onNext=()=>this.nextQuestion();
     this.onLeave=()=>this.leave();
     this.onCancelLeave=()=>this.cancelLeave();
-    this.onConfirm=()=>this.confirmAnswer();
+    this.onConfirm=()=>this.timerRetryCount>=QUIZ_TIMEOUT_MAX_ATTEMPTS&&this.questionHasExpired()
+      ?this.retryTimedQuestion():this.confirmAnswer();
     this.onSettingsChange=()=>this.updateSettings();
     this.onAlternative=event=>{
       const button=event.target.closest('button[data-answer-index]');
@@ -203,20 +206,32 @@ export class QuizLobby {
   async finishTimedQuestion(){
     const questionId=this.lobby?.question?.id;
     if(!questionId||this.finishingTimedQuestion)return;
-    this.finishingTimedQuestion=true;this.answerError='';this.render();
+    this.finishingTimedQuestion=true;this.timerRetryCount=(this.timerRetryCount??0)+1;
+    this.answerError='';this.render();
     try{
       const {characterId,sessionId}=this.presence.identity;
       const args={room:this.room,characterId,sessionId};
       if(Number.isInteger(this.selectedAnswer))args.answerIndex=this.selectedAnswer;
       const result=await this.presence.client.mutation(this.presence.api.quizLobbies.finishTimedQuestion,args);
+      if(this.closed||!this.seated||this.lobby?.question?.id!==questionId)return;
       if(Number.isInteger(result.answerIndex)){
         this.confirmedAnswer=result.answerIndex;this.selectedAnswer=result.answerIndex;
       }
       this.timerRetryAt=Infinity;
+      this.timerRetryCount=0;
     }catch{
-      this.answerError='Could not finish the question. Retrying…';
-      this.timerRetryAt=Date.now()+1000;
+      if(this.closed||!this.seated||this.lobby?.question?.id!==questionId)return;
+      const exhausted=this.timerRetryCount>=QUIZ_TIMEOUT_MAX_ATTEMPTS;
+      this.answerError=exhausted?'Could not finish the question. Retry with the button below.'
+        :'Could not finish the question. Retrying…';
+      this.timerRetryAt=exhausted?Infinity:Date.now()+quizTimeoutRetryDelay(this.timerRetryCount);
     }finally{this.finishingTimedQuestion=false;this.render();}
+  }
+
+  retryTimedQuestion(){
+    if(this.finishingTimedQuestion||!this.questionHasExpired())return;
+    this.timerRetryCount=0;this.timerRetryAt=0;
+    void this.finishTimedQuestion();
   }
 
   async nextQuestion(){
@@ -241,7 +256,7 @@ export class QuizLobby {
   resetQuestionState(){
     this.renderedQuestionId=null;this.selectedAnswer=null;this.confirmedAnswer=null;
     this.pendingAnswer=false;this.pendingNext=false;this.finishingTimedQuestion=false;
-    this.timerRetryAt=0;this.answerError='';
+    this.timerRetryAt=0;this.timerRetryCount=0;this.answerError='';
   }
 
   renderQuestion(question){
@@ -271,9 +286,12 @@ export class QuizLobby {
       button.setAttribute('aria-pressed',String(selected));
       button.disabled=this.confirmedAnswer!==null||this.pendingAnswer||expired||revealed;
     }
-    this.confirmButton.hidden=revealed||expired;
-    this.confirmButton.disabled=this.selectedAnswer===null||this.confirmedAnswer!==null||this.pendingAnswer||expired;
-    this.confirmButton.textContent=this.pendingAnswer?'Sending…':this.confirmedAnswer!==null?'Answer confirmed':'Confirm answer';
+    const retryTimeout=expired&&this.timerRetryCount>=QUIZ_TIMEOUT_MAX_ATTEMPTS;
+    this.confirmButton.hidden=revealed||(expired&&!retryTimeout);
+    this.confirmButton.disabled=retryTimeout?this.finishingTimedQuestion
+      :this.selectedAnswer===null||this.confirmedAnswer!==null||this.pendingAnswer||expired;
+    this.confirmButton.textContent=retryTimeout?'Retry saving question'
+      :this.pendingAnswer?'Sending…':this.confirmedAnswer!==null?'Answer confirmed':'Confirm answer';
   }
 
   renderResults(){

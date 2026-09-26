@@ -5,6 +5,7 @@ import { interpolate } from '../src/multiplayer/RemotePlayers.js';
 import {
   isPresenceActive,
   PRESENCE_HEARTBEAT_MS,
+  PRESENCE_POSITION_THRESHOLD_PX,
   PRESENCE_SYNC_INTERVAL_MS,
   PRESENCE_TIMEOUT_MS,
 } from '../src/multiplayer/presencePolicy.js';
@@ -58,7 +59,7 @@ test('network latency never queues a position per frame, and stationary heartbea
     finish(); await Promise.resolve();
     await presence.send();
     assert.equal(count,1);
-    assert.equal(1000/PRESENCE_SYNC_INTERVAL_MS,8);
+    assert.equal(1000/PRESENCE_SYNC_INTERVAL_MS,5);
   } finally { presence.leave(); }
 });
 
@@ -66,9 +67,32 @@ function stationaryPresence(mutation) {
   const identity={playerId:'me',characterId:'me',name:'Me',sessionId:'session-123456789'};
   const state={...identity,room:'school',x:10,y:20,direction:'down'};
   const presence=new Presence({mutation},{players:{update:'update',heartbeat:'heartbeat'}},identity);
-  presence.active={room:'school',snapshot:()=>({x:10,y:20,direction:'down'}),previous:JSON.stringify(state),sentAt:0};
+  presence.active={room:'school',snapshot:()=>({x:10,y:20,direction:'down'}),
+    previous:JSON.stringify(state),previousState:state,sentAt:0};
   return presence;
 }
+
+test('tiny movement accumulates from the last sent position and direction changes still send',async()=>{
+  const calls=[];let x=10,direction='down';
+  const presence=stationaryPresence(async(fn,args)=>calls.push({fn,args}));
+  presence.active.snapshot=()=>({x,y:20,direction});
+  x+=PRESENCE_POSITION_THRESHOLD_PX/4;
+  await presence.send(200);
+  x+=PRESENCE_POSITION_THRESHOLD_PX/4;
+  await presence.send(400);
+  assert.equal(calls.length,0);
+  x+=PRESENCE_POSITION_THRESHOLD_PX/2;
+  await presence.send(600);
+  assert.equal(calls.length,1);
+  assert.equal(calls[0].fn,'update');
+  assert.equal(calls[0].args.x,x);
+  direction='left';
+  await presence.send(800);
+  assert.equal(calls[1].args.direction,'left');
+  x+=0.1;
+  await presence.send(PRESENCE_HEARTBEAT_MS+800);
+  assert.equal(calls[2].fn,'heartbeat');
+});
 
 test('a stationary player sends a lightweight heartbeat instead of full position state',async()=>{
   const calls=[];const presence=stationaryPresence(async(fn,args)=>calls.push({fn,args}));

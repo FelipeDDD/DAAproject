@@ -1,11 +1,12 @@
 import {
   isPresenceActive,
   PRESENCE_HEARTBEAT_MS,
+  PRESENCE_POSITION_THRESHOLD_PX,
   PRESENCE_SYNC_INTERVAL_MS,
   PRESENCE_TIMEOUT_MS,
 } from './presencePolicy.js';
 
-export { PRESENCE_HEARTBEAT_MS, PRESENCE_SYNC_INTERVAL_MS, PRESENCE_TIMEOUT_MS };
+export { PRESENCE_HEARTBEAT_MS, PRESENCE_POSITION_THRESHOLD_PX, PRESENCE_SYNC_INTERVAL_MS, PRESENCE_TIMEOUT_MS };
 
 export class Presence {
   constructor(client, api, identity, status = () => {}) {
@@ -46,8 +47,10 @@ export class Presence {
       playerId:this.identity.playerId,characterId:this.identity.characterId,
       name:this.identity.name,sessionId:this.identity.sessionId,room:active.room,...snapshot,
     };
-    const serialized = JSON.stringify(state);
-    const stateChanged = serialized !== active.previous;
+    const serialized=JSON.stringify(state);
+    const previousState=active.previousState;
+    const moved=!previousState||Math.hypot(state.x-previousState.x,state.y-previousState.y)>=PRESENCE_POSITION_THRESHOLD_PX;
+    const stateChanged=moved||JSON.stringify({...state,x:previousState.x,y:previousState.y})!==active.previous;
     if (!stateChanged && now - active.sentAt < PRESENCE_HEARTBEAT_MS) return;
     this.busy = true;
     try {
@@ -60,6 +63,7 @@ export class Presence {
       this.pendingSend=request;
       await request;
       active.previous = serialized;
+      active.previousState = state;
       active.sentAt = now;
       active.retryAt = 0;
       if (this.active === active) this.status('Online');
