@@ -6408,9 +6408,9 @@ export default [
     "question": "Welche Aufgabe übernimmt ein Router hauptsächlich?",
     "answers": [
       "Er verbindet unterschiedliche IP-Netze und leitet Pakete zwischen ihnen weiter",
-      "Er speichert dauerhaft alle Dateien der Clients",
-      "Er ersetzt den Arbeitsspeicher der Endgeräte",
-      "Er verteilt ausschließlich MAC-Adressen"
+      "Er vermittelt Ethernet-Frames innerhalb eines VLANs anhand der Ziel-MAC-Adresse.",
+      "Er weist Clients zeitlich begrenzte IP-Konfigurationen zu.",
+      "Er beantwortet Anfragen zur Auflösung von DNS-Namen."
     ],
     "correctAnswer": 0,
     "explanation": "Ein Router arbeitet zwischen unterschiedlichen IP-Netzen und entscheidet anhand seiner Routinginformationen, wohin Pakete weitergeleitet werden.",
@@ -6440,9 +6440,9 @@ export default [
     "question": "Wozu dient die Subnetzmaske beziehungsweise Präfixlänge bei IPv4?",
     "answers": [
       "Sie trennt den Netzanteil vom Hostanteil einer IP-Adresse",
-      "Sie verschlüsselt IP-Pakete automatisch",
-      "Sie bestimmt die MAC-Adresse des Hosts",
-      "Sie gibt ausschließlich die maximale Kabelstrecke an"
+      "Sie legt unabhängig von der IP-Adresse die Adresse des Standardgateways fest.",
+      "Sie legt fest, welcher TCP-Port für Verbindungen ins Zielnetz verwendet wird.",
+      "Sie bestimmt unabhängig von der IP-Adresse die Adresse des DNS-Servers."
     ],
     "correctAnswer": 0,
     "explanation": "Die Subnetzmaske beziehungsweise Präfixlänge legt fest, welcher Teil einer IP-Adresse das Netz und welcher Teil den Host beschreibt.",
@@ -6456,9 +6456,9 @@ export default [
     "question": "Welche Aufgabe hat DHCP in einem typischen LAN?",
     "answers": [
       "Es kann Clients automatisch Netzwerkkonfigurationen wie IP-Adresse, Subnetzmaske und Gateway zuweisen",
-      "Es verschlüsselt automatisch den gesamten Netzwerkverkehr",
-      "Es ersetzt DNS vollständig",
-      "Es speichert Webseiten lokal auf jedem Client"
+      "Es ordnet angefragten Hostnamen die zugehörigen DNS-Ressourceneinträge zu.",
+      "Es übersetzt private Quelladressen und Ports am Übergang ins Internet.",
+      "Es ermittelt die Ziel-MAC-Adresse für eine bekannte lokale IPv4-Adresse."
     ],
     "correctAnswer": 0,
     "explanation": "DHCP automatisiert die Vergabe wichtiger Netzwerkeinstellungen und reduziert dadurch den manuellen Konfigurationsaufwand.",
@@ -6472,9 +6472,9 @@ export default [
     "question": "Welche Aufgabe übernimmt DNS hauptsächlich?",
     "answers": [
       "Es löst Namen wie server.example in IP-Adressen auf",
-      "Es vergibt MAC-Adressen an Switches",
-      "Es misst die elektrische Leistung eines Routers",
-      "Es komprimiert Ethernet-Frames"
+      "Es verteilt IPv4-Adressen und weitere Konfigurationswerte als zeitlich begrenzte Leases.",
+      "Es ermittelt zu einer lokalen IPv4-Adresse die Ethernet-MAC-Adresse.",
+      "Es wählt für jedes IP-Paket den nächsten Router aus."
     ],
     "correctAnswer": 0,
     "explanation": "DNS ordnet menschenlesbare Namen den zugehörigen IP-Adressen beziehungsweise anderen DNS-Ressourceneinträgen zu.",
@@ -6504,9 +6504,9 @@ export default [
     "question": "Welche Aussage beschreibt ARP in einem IPv4-LAN am besten?",
     "answers": [
       "ARP ermittelt zu einer bekannten IPv4-Adresse die zugehörige MAC-Adresse im lokalen Netz",
-      "ARP vergibt automatisch IP-Adressen",
-      "ARP verschlüsselt Daten zwischen zwei Routern",
-      "ARP ersetzt TCP bei Dateiübertragungen"
+      "ARP ermittelt die IPv4-Adresse zu einem DNS-Hostnamen.",
+      "ARP weist einem neuen Client eine freie IPv4-Adresse als Lease zu.",
+      "ARP bestimmt die IP-Adresse des Routers für ein entferntes Zielnetz."
     ],
     "correctAnswer": 0,
     "explanation": "ARP wird im lokalen IPv4-Netz verwendet, um die MAC-Adresse zu einer bekannten IP-Adresse zu ermitteln.",
@@ -6517,15 +6517,15 @@ export default [
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Eigenschaft unterscheidet TCP typischerweise von UDP?",
+    "question": "Welche Eigenschaft stellt TCP selbst bereit, die UDP selbst nicht bereitstellt?",
     "answers": [
-      "TCP stellt unter anderem eine verbindungsorientierte und zuverlässige Übertragung bereit",
-      "UDP garantiert immer die Reihenfolge aller Pakete",
-      "TCP funktioniert nur innerhalb eines lokalen Netzes",
-      "UDP benötigt grundsätzlich mehr Overhead als TCP"
+      "Einen geordneten, zuverlässigen Bytestrom zwischen den Endpunkten.",
+      "Die Erhaltung von Nachrichtengrenzen durch einzelne Datagramme.",
+      "Die Übertragung ohne vorherigen Verbindungsaufbau.",
+      "Einen festen Transportheader von nur acht Byte."
     ],
     "correctAnswer": 0,
-    "explanation": "TCP verwendet unter anderem Verbindungsaufbau, Bestätigungen und Reihenfolgenkontrolle. UDP arbeitet verbindungslos und mit geringerem Protokollaufwand.",
+    "explanation": "TCP ordnet empfangene Daten und wiederholt bei Bedarf Übertragungen innerhalb einer Verbindung. UDP bietet Datagramme ohne eigene Zustell- oder Reihenfolgegarantie; Anwendungen können zusätzliche Verfahren implementieren.",
     "source": "netzwerk.csv"
   },
   {
@@ -6533,12 +6533,12 @@ export default [
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
-    "question": "Ein Unternehmen möchte mehrere logische Netze über dieselbe physische Switch-Infrastruktur trennen. Welche Technik eignet sich dafür?",
+    "question": "Mehrere Gruppen von Switch-Ports sollen auf derselben Infrastruktur getrennte Layer-2-Broadcast-Domänen bilden. Welche Technik ist dafür vorgesehen?",
     "answers": [
       "VLAN",
-      "NAT",
-      "RAID",
-      "S.M.A.R.T."
+      "Link Aggregation",
+      "Port Mirroring",
+      "Network Address Translation"
     ],
     "correctAnswer": 0,
     "explanation": "VLANs ermöglichen die logische Trennung von Broadcast-Domänen auf gemeinsam genutzter Switch-Hardware.",
@@ -6580,45 +6580,45 @@ export default [
     "id": "netzwerk-012",
     "category": "Netzwerk",
     "topic": null,
-    "difficulty": "hard",
-    "question": "Ein Client erhält per DHCP eine Adresse, kann aber nur Geräte im eigenen Subnetz erreichen. DNS-Auflösung funktioniert ebenfalls. Welche fehlerhafte Einstellung ist am wahrscheinlichsten?",
+    "difficulty": "medium",
+    "question": "Ein DHCP-Client erreicht Geräte und den DNS-Server im eigenen IPv4-Subnetz. Ziele in anderen Netzen sind nicht erreichbar; dafür sind keine spezifischen Routen eingerichtet. Welcher Eintrag sollte zuerst geprüft werden?",
     "answers": [
-      "Das Standardgateway fehlt oder ist falsch konfiguriert",
-      "Die MAC-Adresse des Clients ist zu lang",
-      "Der Switch verwendet Ethernet",
-      "Der DNS-Server antwortet zu schnell"
+      "Das konfigurierte Standardgateway.",
+      "Der konfigurierte DNS-Suchsuffix.",
+      "Die lokale Zuordnung des eigenen Hostnamens.",
+      "Der für die Namensauflösung verwendete DNS-Cache."
     ],
     "correctAnswer": 0,
-    "explanation": "Wenn lokale Kommunikation und DNS funktionieren, aber andere Netze nicht erreichbar sind, ist ein fehlendes oder falsches Standardgateway ein naheliegender Fehler.",
+    "explanation": "Für entfernte Netze wird hier die Standardroute benötigt. Ein fehlendes oder falsches Gateway ist ein begründeter Prüfpunkt; auch Routing- oder Filterprobleme können die Erreichbarkeit verhindern.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-013",
     "category": "Netzwerk",
     "topic": null,
-    "difficulty": "hard",
-    "question": "Warum kann NAT dazu führen, dass mehrere private IPv4-Hosts eine einzige öffentliche IPv4-Adresse gemeinsam verwenden?",
+    "difficulty": "medium",
+    "question": "Zwei private IPv4-Clients verbinden sich gleichzeitig mit derselben Server-IP und demselben TCP-Zielport. Beide nutzen per PAT dieselbe öffentliche IPv4-Adresse. Wie werden ihre Verbindungen dort unterschieden?",
     "answers": [
-      "Der Router verändert Adressinformationen und kann Verbindungen zusätzlich über Portnummern zuordnen",
-      "Alle internen Hosts erhalten dieselbe MAC-Adresse",
-      "Private IPv4-Adressen werden automatisch zu IPv6-Adressen",
-      "Der Switch speichert für jeden Host eine öffentliche IP-Adresse"
+      "Durch unterschiedliche übersetzte TCP-Quellports.",
+      "Durch denselben TCP-Quellport bei unveränderten übrigen Verbindungsdaten.",
+      "Durch die privaten Quell-IP-Adressen als zusätzliche Felder im TCP-Header.",
+      "Durch abwechselnde Nutzung derselben Verbindung ohne getrennte Zuordnung."
     ],
     "correctAnswer": 0,
-    "explanation": "Bei NAT beziehungsweise PAT übersetzt der Router interne Adressen in eine öffentliche Adresse und unterscheidet parallele Verbindungen typischerweise über Transportprotokoll und Portinformationen.",
+    "explanation": "Für diese Verbindungen müssen sich die externen Quellports unterscheiden. Die PAT-Tabelle ordnet die Rückpakete den internen IP-Adressen und Ports zu.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-014",
     "category": "Netzwerk",
     "topic": null,
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Zwei Switches sind mit einer Verbindung gekoppelt, über die mehrere VLANs transportiert werden sollen. Welche Konfiguration ist dafür typischerweise erforderlich?",
     "answers": [
       "Ein Trunk-Link mit VLAN-Kennzeichnung, zum Beispiel nach IEEE 802.1Q",
       "Ein ausschließlich ungetaggter Access-Port für genau ein VLAN",
-      "Eine RAID-5-Konfiguration auf beiden Switches",
-      "Ein DHCP-Relay ohne VLAN-Konfiguration"
+      "Eine Link-Aggregation ohne Konfiguration der benötigten VLANs.",
+      "Eine Portspiegelung des Verkehrs auf den zweiten Switch."
     ],
     "correctAnswer": 0,
     "explanation": "Ein Trunk transportiert Verkehr mehrerer VLANs über eine gemeinsame Verbindung. IEEE 802.1Q kennzeichnet Frames dabei mit VLAN-Informationen.",
@@ -6629,12 +6629,12 @@ export default [
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat ein Switch in einem Ethernet-Netzwerk hauptsächlich?",
+    "question": "Welche Hauptaufgabe erfüllt ein gewöhnlicher Layer-2-Switch in einem Ethernet-Netz?",
     "answers": [
       "Er leitet Frames anhand von MAC-Adressen gezielt an passende Ports weiter",
-      "Er vergibt automatisch öffentliche IP-Adressen",
-      "Er ersetzt grundsätzlich den Router zum Internet",
-      "Er wandelt jede IPv4-Adresse automatisch in IPv6 um"
+      "Er verteilt IP-Adressen mit zeitlich begrenzten Leases.",
+      "Er wählt Routen zwischen unterschiedlichen IP-Subnetzen anhand der Ziel-IP-Adresse.",
+      "Er beantwortet DNS-Abfragen aus einer Zone oder einem Resolvercache."
     ],
     "correctAnswer": 0,
     "explanation": "Ein Switch lernt MAC-Adressen an seinen Ports und leitet Ethernet-Frames gezielt innerhalb des lokalen Netzes weiter.",
@@ -6661,12 +6661,12 @@ export default [
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welches Protokoll wird typischerweise zum Senden und Weiterleiten von E-Mails verwendet?",
+    "question": "Welches Protokoll dient typischerweise der Übertragung von E-Mails zwischen Mailservern?",
     "answers": [
       "IMAP",
       "SMTP",
       "POP3",
-      "ARP"
+      "HTTP"
     ],
     "correctAnswer": 1,
     "explanation": "SMTP ist das Anwendungsprotokoll zum Senden und Weiterleiten von E-Mails.",
@@ -6679,13 +6679,13 @@ export default [
     "difficulty": "medium",
     "question": "Welcher Unterschied zwischen IMAP und POP3 ist für mehrere Endgeräte besonders wichtig?",
     "answers": [
-      "IMAP synchronisiert den Zustand der Mailbox auf dem Server, POP3 lädt Nachrichten typischerweise zum Client herunter.",
-      "POP3 synchronisiert Ordner und Zustände serverseitig, IMAP arbeitet nur lokal.",
-      "IMAP wird nur zum Senden, POP3 nur zum Verschlüsseln von E-Mails verwendet.",
-      "POP3 verwendet IP-Adressen, IMAP ausschließlich MAC-Adressen."
+      "IMAP verwaltet Ordner und Zustände auf dem Server; POP3 bietet dafür keine vergleichbare Ordnersynchronisation.",
+      "POP3 synchronisiert serverseitige Ordner und Lesemarkierungen; IMAP bietet nur den Download einzelner Nachrichten.",
+      "IMAP verwaltet nur ausgehende Nachrichten; POP3 synchronisiert die empfangenen Nachrichten zwischen Geräten.",
+      "Beide Protokolle gleichen Ordner und Lesemarkierungen auf mehreren Geräten auf dieselbe Weise ab."
     ],
     "correctAnswer": 0,
-    "explanation": "IMAP eignet sich besonders für mehrere Endgeräte, weil Nachrichten und Ordner auf dem Server verwaltet und synchronisiert werden.",
+    "explanation": "IMAP ermöglicht serverseitige Mailordner und Statusinformationen. POP3 dient primär dem Abruf von Nachrichten und bietet keine entsprechende Synchronisation von Ordnern und Lesestatus.",
     "source": "netzwerk.csv"
   },
   {
@@ -6701,7 +6701,7 @@ export default [
       "443"
     ],
     "correctAnswer": 3,
-    "explanation": "HTTPS verwendet standardmäßig TCP-Port 443.",
+    "explanation": "HTTPS verwendet standardmäßig Port 443. HTTP/1.1 und HTTP/2 nutzen dafür üblicherweise TLS über TCP; HTTP/3 verwendet QUIC über UDP.",
     "source": "netzwerk.csv"
   },
   {
@@ -6760,9 +6760,9 @@ export default [
     "question": "Warum kann derselbe Portnummernwert sowohl bei TCP als auch bei UDP existieren?",
     "answers": [
       "TCP und UDP besitzen getrennte Portnummernräume.",
-      "UDP verwendet Ports nur als Kommentar ohne technische Bedeutung.",
-      "TCP-Portnummern werden automatisch in UDP-Portnummern umgerechnet.",
-      "Nur Ports oberhalb von 49151 dürfen in beiden Protokollen vorkommen."
+      "Ein Dienst muss bei TCP und UDP zwingend dieselbe Portnummer verwenden.",
+      "Ein belegter TCP-Port blockiert automatisch dieselbe Portnummer für UDP.",
+      "Die Portnummer allein legt eindeutig fest, ob TCP oder UDP verwendet wird."
     ],
     "correctAnswer": 0,
     "explanation": "TCP und UDP sind unterschiedliche Transportprotokolle und verwalten ihre Portnummern jeweils separat.",
@@ -6776,9 +6776,9 @@ export default [
     "question": "Ein Client verbindet sich von 192.168.5.20:53142 mit einem HTTPS-Server auf 203.0.113.10:443. Wofür steht 53142?",
     "answers": [
       "Für die dynamische Quellportnummer des Clients.",
-      "Für die MAC-Adresse des Clients.",
-      "Für den Standardport von HTTPS.",
-      "Für die VLAN-ID des Clients."
+      "Für die Quellportnummer des Servers in diesem Verbindungsaufbau.",
+      "Für die Zielportnummer des HTTPS-Dienstes auf dem Server.",
+      "Für eine allgemein reservierte Standardportnummer des HTTPS-Protokolls."
     ],
     "correctAnswer": 0,
     "explanation": "Der Client verwendet üblicherweise eine dynamische bzw. ephemere Quellportnummer, während der Server auf dem bekannten Zielport 443 lauscht.",
@@ -6789,15 +6789,15 @@ export default [
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Aussage beschreibt den Unterschied zwischen IP-Adresse und Port am besten?",
+    "question": "Welche Zuordnung beschreibt Ziel-IP-Adresse und TCP-Zielport bei einer Verbindung zu einem Server?",
     "answers": [
-      "Die IP-Adresse adressiert den Host bzw. das Netz, der Port den Prozess bzw. Dienst.",
-      "Die IP-Adresse adressiert nur Anwendungen, der Port nur Router.",
-      "Die IP-Adresse ist nur für Layer 2, der Port nur für Layer 3 relevant.",
-      "IP-Adresse und Port erfüllen dieselbe Aufgabe auf unterschiedlichen Betriebssystemen."
+      "Ziel-IP: adressiertes System; Zielport: angesprochener Dienst auf diesem System.",
+      "Ziel-IP: angesprochener Dienst; Zielport: adressiertes System.",
+      "Ziel-IP: nächster Router; Zielport: physischer Anschluss am Switch.",
+      "Ziel-IP: sendendes System; Zielport: Quellport des Clients."
     ],
     "correctAnswer": 0,
-    "explanation": "Die IP-Adresse gehört zur Vermittlungsschicht, Ports gehören zu TCP/UDP auf der Transportschicht.",
+    "explanation": "Die IP-Adresse adressiert den Netzwerkendpunkt. Der TCP-Zielport ermöglicht dort die Zuordnung zum angesprochenen Dienst.",
     "source": "netzwerk.csv"
   },
   {
@@ -6867,17 +6867,17 @@ export default [
   {
     "id": "netzwerk-030",
     "category": "Netzwerk",
-    "topic": null,
+    "topic": "Routing",
     "difficulty": "medium",
-    "question": "Welche Zuordnung ist korrekt?",
+    "question": "Ein Router hat passende Routen für 10.0.0.0/8, 10.20.0.0/16, 10.20.30.0/24 sowie eine Standardroute. Welche Route wählt er für 10.20.30.40 nach Longest Prefix Match?",
     "answers": [
-      "Router – Layer 3 – IP-Adresse",
-      "Router – Layer 2 – Portnummer",
-      "Router – Layer 4 – MAC-Adresse",
-      "Router – Layer 7 – VLAN-ID"
+      "10.20.30.0/24",
+      "10.20.0.0/16",
+      "10.0.0.0/8",
+      "0.0.0.0/0"
     ],
     "correctAnswer": 0,
-    "explanation": "Router arbeiten primär auf Layer 3 und treffen Weiterleitungsentscheidungen anhand von IP-Netzen.",
+    "explanation": "Bei der Zielsuche wird die passende Route mit dem längsten Präfix verwendet. Hier stimmt das /24-Präfix am spezifischsten mit dem Ziel überein.",
     "source": "netzwerk.csv"
   },
   {
@@ -6890,7 +6890,7 @@ export default [
       "ARP",
       "ICMPv4",
       "TCP",
-      "SMTP"
+      "UDP"
     ],
     "correctAnswer": 1,
     "explanation": "ping verwendet ICMP Echo Request und Echo Reply.",
@@ -6901,15 +6901,15 @@ export default [
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche ICMP -Nachricht ist für tracert/traceroute besonders wichtig?",
+    "question": "Welche ICMPv4-Nachricht meldet bei traceroute typischerweise, dass die TTL eines Pakets unterwegs abgelaufen ist?",
     "answers": [
-      "Echo Redirect",
       "Time Exceeded",
-      "Port Accepted",
-      "Route Confirmed"
+      "Destination Unreachable",
+      "Echo Reply",
+      "Redirect"
     ],
-    "correctAnswer": 1,
-    "explanation": "Router senden typischerweise ICMP Time Exceeded, wenn der TTL-Wert eines Pakets auf 0 fällt.",
+    "correctAnswer": 0,
+    "explanation": "Ein Router verwirft ein Paket, dessen TTL beim Weiterleiten abläuft, und kann ICMP Time Exceeded zurücksenden. Aus solchen Antworten lassen sich Zwischenstationen erkennen.",
     "source": "netzwerk.csv"
   },
   {
@@ -6920,9 +6920,9 @@ export default [
     "question": "Welche Aufgabe hat das TTL-Feld in IPv4?",
     "answers": [
       "Es begrenzt, wie viele Router ein Paket durchlaufen kann.",
-      "Es legt die TCP-Zielportnummer fest.",
-      "Es speichert die MAC-Adresse des Absenders.",
-      "Es bestimmt die maximale Größe eines Ethernet-Frames."
+      "Es gibt die verbleibende Nutzdatenlänge des IP-Pakets an.",
+      "Es enthält die Routingkosten bis zum Zielnetz.",
+      "Es legt die Prioritätsklasse des IP-Pakets fest."
     ],
     "correctAnswer": 0,
     "explanation": "Jeder Router reduziert TTL. Bei 0 wird das Paket verworfen, damit es nicht endlos im Netz zirkuliert.",
@@ -6932,16 +6932,16 @@ export default [
     "id": "netzwerk-034",
     "category": "Netzwerk",
     "topic": null,
-    "difficulty": "hard",
-    "question": "Warum kann tracert die einzelnen Router auf dem Weg zum Ziel sichtbar machen?",
+    "difficulty": "medium",
+    "question": "Wie ermittelt traceroute Zwischenstationen auf einem IP-Pfad?",
     "answers": [
-      "Es sendet Pakete mit schrittweise erhöhtem TTL und wertet Time-Exceeded-Antworten aus.",
-      "Es liest die vollständige Routingtabelle jedes Routers per SNMP aus.",
-      "Es fordert von jedem Switch dessen MAC-Adresstabelle an.",
-      "Es setzt die Zielportnummer bei jedem Paket auf die Nummer des nächsten Routers."
+      "Es erhöht TTL beziehungsweise Hop Limit der Proben schrittweise und wertet ICMP-Antworten aus.",
+      "Es fragt die vollständige Routingtabelle ausschließlich beim Zielhost ab.",
+      "Es liest die MAC-Tabellen aller Switches entlang des Pfads aus.",
+      "Es bestimmt Routeradressen aus den Quellports der Zielanwendung."
     ],
     "correctAnswer": 0,
-    "explanation": "Mit TTL 1, 2, 3 usw. erreicht jedes Paket einen Hop weiter, bevor ein Router es verwirft und eine ICMP-Antwort zurücksendet.",
+    "explanation": "Zwischenrouter können beim Ablauf von TTL oder Hop Limit eine ICMP-Fehlermeldung senden. Fehlende Antworten sind möglich, etwa durch Filterung oder Ratenbegrenzung.",
     "source": "netzwerk.csv"
   },
   {
@@ -6949,15 +6949,15 @@ export default [
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
-    "question": "Was bedeutet APIPA unter Windows?",
+    "question": "Ein Windows-Client erhält keine DHCPv4-Konfiguration und verwendet APIPA. Aus welchem Bereich stammt seine automatisch gewählte Link-Local-Adresse?",
     "answers": [
-      "Automatische Vergabe einer 169.254.x.x-Adresse, wenn kein DHCP erreicht wird.",
-      "Automatische Vergabe einer öffentlichen IPv4-Adresse durch DNS.",
-      "Automatische Zuordnung einer MAC-Adresse zu einer VLAN-ID.",
-      "Automatische Verschlüsselung aller Pakete im lokalen Netz."
+      "169.254.0.0/16",
+      "127.0.0.0/8",
+      "172.16.0.0/12",
+      "224.0.0.0/4"
     ],
     "correctAnswer": 0,
-    "explanation": "Wenn DHCP nicht erreichbar ist, kann Windows sich selbst eine Link-Local-Adresse aus 169.254.0.0/16 geben.",
+    "explanation": "APIPA verwendet IPv4-Link-Local-Adressen aus 169.254.0.0/16, wenn keine passende DHCP-Konfiguration verfügbar ist. Damit ist Kommunikation auf dem lokalen Link möglich, aber kein reguläres Routing ins Internet.",
     "source": "netzwerk.csv"
   },
   {
@@ -6979,17 +6979,17 @@ export default [
   {
     "id": "netzwerk-037",
     "category": "Netzwerk",
-    "topic": null,
+    "topic": "DHCP",
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat DHCP?",
+    "question": "Welche Reihenfolge beschreibt einen typischen erfolgreichen erstmaligen DHCPv4-Lease-Bezug?",
     "answers": [
-      "Netzwerkparameter wie IP-Adresse, Maske, Gateway und DNS automatisch verteilen.",
-      "Domainnamen in MAC-Adressen umwandeln.",
-      "E-Mails zwischen Mailservern weiterleiten.",
-      "Ethernet-Frames anhand von Ports verschlüsseln."
+      "DHCPDISCOVER → DHCPOFFER → DHCPREQUEST → DHCPACK",
+      "DHCPREQUEST → DHCPDISCOVER → DHCPACK → DHCPOFFER",
+      "DHCPOFFER → DHCPACK → DHCPDISCOVER → DHCPREQUEST",
+      "DHCPDISCOVER → DHCPREQUEST → DHCPOFFER → DHCPACK"
     ],
     "correctAnswer": 0,
-    "explanation": "DHCP automatisiert die Netzwerkkonfiguration von Clients.",
+    "explanation": "Der Client sucht Server, erhält Angebote, fordert eine angebotene Konfiguration an und erhält die Bestätigung. Eine Verlängerung kann anders ablaufen.",
     "source": "netzwerk.csv"
   },
   {
@@ -6997,7 +6997,7 @@ export default [
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche UDP-Ports werden typischerweise von DHCP verwendet?",
+    "question": "Welche UDP-Ports nutzt DHCPv4 für Server und Client?",
     "answers": [
       "53 und 54",
       "67 und 68",
@@ -7011,17 +7011,17 @@ export default [
   {
     "id": "netzwerk-039",
     "category": "Netzwerk",
-    "topic": null,
+    "topic": "DNS",
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat DNS?",
+    "question": "Welcher DNS-Ressourceneintrag ordnet einem Hostnamen eine IPv6-Adresse zu?",
     "answers": [
-      "Namen in IP-Adressen und weitere DNS-Daten auflösen.",
-      "MAC-Adressen in TCP-Ports umwandeln.",
-      "IP-Adressen automatisch an Clients vergeben.",
-      "Pakete zwischen verschiedenen Subnetzen routen."
+      "AAAA",
+      "A",
+      "MX",
+      "PTR"
     ],
     "correctAnswer": 0,
-    "explanation": "DNS stellt Namensauflösung und weitere verteilte Namensinformationen bereit.",
+    "explanation": "AAAA enthält eine IPv6-Adresse. A enthält eine IPv4-Adresse, MX nennt Mailserver und PTR wird unter anderem für Rückwärtsauflösung verwendet.",
     "source": "netzwerk.csv"
   },
   {
@@ -7029,15 +7029,15 @@ export default [
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
-    "question": "Warum verwendet DNS neben UDP auch TCP?",
+    "question": "Ein DNS-Client erhält über UDP eine Antwort mit gesetztem TC-Bit. Wie kann er die vollständige Antwort regulär erneut anfordern?",
     "answers": [
-      "Bestimmte DNS-Vorgänge oder größere Antworten benötigen TCP.",
-      "UDP ist nur für IPv6 erlaubt.",
-      "TCP wird ausschließlich für lokale Hosts ohne Router verwendet.",
-      "TCP ist erforderlich, sobald eine DNS-Anfrage Port 53 erreicht."
+      "Er wiederholt die Anfrage über TCP.",
+      "Er verwendet die abgeschnittene Antwort als vollständigen Datensatz.",
+      "Er behandelt das TC-Bit als Nachweis, dass der angefragte Name nicht existiert.",
+      "Er fragt denselben Namen mit einem anderen Record-Typ ab, um den ursprünglichen Datensatz unverändert zu erhalten."
     ],
     "correctAnswer": 0,
-    "explanation": "DNS nutzt häufig UDP für normale Abfragen, kann aber z. B. bei bestimmten größeren Antworten oder Zonentransfers TCP verwenden.",
+    "explanation": "TC kennzeichnet eine abgeschnittene DNS-Antwort. Die Wiederholung über TCP ermöglicht die vollständige Übertragung; DNS unterstützt beide Transportprotokolle.",
     "source": "netzwerk.csv"
   },
   {
@@ -7045,15 +7045,15 @@ export default [
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat ARP in einem IPv4-LAN?",
+    "question": "Ein Ethernet-Host benötigt die MAC-Adresse einer lokalen IPv4-Zieladresse und hat keinen passenden ARP-Eintrag. An welche Ethernet-Zieladresse sendet er die gewöhnliche ARP-Anfrage?",
     "answers": [
-      "Zu einer IPv4-Adresse die passende MAC-Adresse im lokalen Netz ermitteln.",
-      "Zu einer MAC-Adresse den passenden TCP-Port bestimmen.",
-      "Eine öffentliche IPv4-Adresse in eine private übersetzen.",
-      "Den schnellsten Router im Internet auswählen."
+      "An ff:ff:ff:ff:ff:ff als Broadcast.",
+      "An die eigene MAC-Adresse als Unicast.",
+      "An die MAC-Adresse des DNS-Servers als Unicast.",
+      "An die MAC-Adresse des Standardgateways als Unicast."
     ],
     "correctAnswer": 0,
-    "explanation": "ARP verbindet im lokalen IPv4-Netz die logische IPv4-Adressierung mit der MAC-Adressierung von Ethernet.",
+    "explanation": "Die Broadcast-Anfrage erreicht die Teilnehmer des lokalen Broadcast-Bereichs. Der gesuchte Teilnehmer kann mit seiner MAC-Adresse antworten.",
     "source": "netzwerk.csv"
   },
   {
@@ -7061,31 +7061,31 @@ export default [
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
-    "question": "Ein Host möchte ein Ziel in derselben IPv4-Subnetz erreichen. Was benötigt er vor dem Senden eines Ethernet-Frames typischerweise?",
+    "question": "Zwei Hosts liegen im selben IPv4-Subnetz auf einem gemeinsamen Ethernet-Link. Welche Ziel-MAC verwendet der sendende Host für einen Unicast an den anderen?",
     "answers": [
       "Die MAC-Adresse des Zielhosts.",
+      "Die MAC-Adresse des Standardgateways.",
       "Die MAC-Adresse des DNS-Servers.",
-      "Den TCP-Port des Switches.",
-      "Die öffentliche IP-Adresse des Routers."
+      "Die eigene MAC-Adresse."
     ],
     "correctAnswer": 0,
-    "explanation": "Bei einem lokalen Ziel wird der Frame direkt an die MAC-Adresse des Zielhosts adressiert.",
+    "explanation": "Bei einem direkt erreichbaren Ziel wird dessen MAC-Adresse verwendet. Falls sie noch nicht im Cache steht, kann ARP sie ermitteln.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-043",
     "category": "Netzwerk",
     "topic": null,
-    "difficulty": "hard",
-    "question": "Ein Host sendet an ein Ziel außerhalb seiner eigenen Subnetzmaske. Welche MAC-Adresse verwendet er typischerweise als Ethernet-Ziel?",
+    "difficulty": "medium",
+    "question": "Ein IPv4-Host sendet einen Unicast an ein entferntes Netz. Die passende Route führt über das lokale Standardgateway. Welche Ziel-MAC-Adresse verwendet der erste Ethernet-Frame?",
     "answers": [
-      "Die MAC-Adresse des Default Gateways.",
-      "Die MAC-Adresse des entfernten Zielhosts über das Internet.",
-      "Die MAC-Adresse des DNS-Servers.",
-      "Eine zufällig erzeugte MAC-Adresse."
+      "Die MAC-Adresse des Standardgateways.",
+      "Die MAC-Adresse des entfernten Zielhosts.",
+      "Die MAC-Adresse des lokalen DNS-Servers.",
+      "Die MAC-Adresse des sendenden Hosts."
     ],
     "correctAnswer": 0,
-    "explanation": "Für entfernte Netze wird der Frame lokal an den nächsten Router bzw. das Default Gateway gesendet.",
+    "explanation": "Die Ziel-IP-Adresse bleibt die des entfernten Hosts. Auf dem ersten Ethernet-Link ist das Gateway der nächste Hop und damit das MAC-Ziel.",
     "source": "netzwerk.csv"
   },
   {
@@ -7093,15 +7093,15 @@ export default [
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
-    "question": "Was beschreibt ein Default Gateway?",
+    "question": "Wann verwendet ein IPv4-Host eine vorhandene Standardroute?",
     "answers": [
-      "Den Router, an den ein Host Pakete für nicht lokal erreichbare Netze sendet.",
-      "Den DHCP-Server, der immer die erste freie Adresse vergibt.",
-      "Den DNS-Server, der unbekannte Namen verwirft.",
-      "Den Switch-Port mit der niedrigsten Nummer."
+      "Wenn keine spezifischere passende Route für das Ziel vorhanden ist.",
+      "Wenn die Standardroute als erster Eintrag in der angezeigten Tabelle steht.",
+      "Wenn ihre Metrik niedriger als die einer spezifischeren passenden Route ist.",
+      "Immer wenn das Ziel nicht lokal ist, auch bei einer passenden spezifischeren Route."
     ],
     "correctAnswer": 0,
-    "explanation": "Das Default Gateway ist der Standard-Nächste-Hop für Ziele außerhalb der lokalen Subnetze.",
+    "explanation": "Die Standardroute deckt Ziele ab, für die keine spezifischere passende Route gewählt wird. Sie verweist häufig auf einen Router im lokalen Netz.",
     "source": "netzwerk.csv"
   },
   {
@@ -7157,7 +7157,7 @@ export default [
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
-    "question": "Wie groß ist die Blockgröße im letzten Oktett bei einer /27-Subnetz innerhalb eines /24-Netzes?",
+    "question": "Wie groß ist die Blockgröße im letzten Oktett bei einem /27-Subnetz?",
     "answers": [
       "16",
       "32",
@@ -7205,7 +7205,7 @@ export default [
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
-    "question": "Wie viele nutzbare Hostadressen hat eine klassische /26-Subnetz?",
+    "question": "Wie viele nutzbare Hostadressen hat ein klassisches IPv4-/26-Subnetz?",
     "answers": [
       "30",
       "62",
@@ -7213,15 +7213,15 @@ export default [
       "126"
     ],
     "correctAnswer": 1,
-    "explanation": "Eine /26 enthält 64 Adressen. Klassisch sind Netzadresse und Broadcast nicht als Hostadressen nutzbar, also 62.",
+    "explanation": "Ein IPv4-/26-Subnetz enthält 64 Adressen. Im klassischen Subnetzmodell sind Netz- und Broadcastadresse nicht für Hosts nutzbar; es bleiben 62 Hostadressen.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-052",
     "category": "Netzwerk",
     "topic": null,
-    "difficulty": "hard",
-    "question": "Eine /24 wird vollständig in /28-Netze zerlegt. Wie viele /28-Subnetze entstehen?",
+    "difficulty": "medium",
+    "question": "Ein IPv4-/24-Netz wird vollständig in /28-Netze zerlegt. Wie viele /28-Subnetze entstehen?",
     "answers": [
       "4",
       "8",
@@ -7236,23 +7236,23 @@ export default [
     "id": "netzwerk-053",
     "category": "Netzwerk",
     "topic": null,
-    "difficulty": "hard",
-    "question": "Welche Aussage beschreibt VLSM korrekt?",
+    "difficulty": "medium",
+    "question": "Was ermöglicht VLSM bei der Planung von IPv4-Subnetzen?",
     "answers": [
-      "Unterschiedlich große Subnetze können innerhalb eines größeren Adressblocks geplant werden.",
-      "Alle Subnetze eines Adressblocks müssen zwingend dieselbe Maske besitzen.",
-      "VLSM bedeutet, dass ein Host gleichzeitig mehrere MAC-Adressen braucht.",
-      "VLSM ist eine Methode zur automatischen Portvergabe bei TCP."
+      "Unterschiedliche Präfixlängen innerhalb eines größeren Adressblocks.",
+      "Eine einzige feste Präfixlänge für alle Teilnetze eines Adressblocks.",
+      "Überlappende Hostbereiche ohne zusätzliche Trennung der Netze.",
+      "Eine identische Broadcastadresse für alle geplanten Teilnetze."
     ],
     "correctAnswer": 0,
-    "explanation": "VLSM erlaubt unterschiedliche Präfixlängen und damit unterschiedlich große Subnetze innerhalb eines Adressplans.",
+    "explanation": "Mit Variable Length Subnet Masking werden unterschiedlich große, nicht überlappende Subnetze an den jeweiligen Adressbedarf angepasst.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-054",
     "category": "Netzwerk",
     "topic": null,
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Ein Host hat 192.168.30.150/26. Welches Ziel betrachtet er als lokal?",
     "answers": [
       "192.168.30.20",
@@ -7269,15 +7269,15 @@ export default [
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "hard",
-    "question": "PC-A ist 10.0.0.20/24, PC-B ist 10.0.0.130/25. Ohne Router: Warum kann die Kommunikation asymmetrisch problematisch werden?",
+    "question": "PC-A hat 10.0.0.20/24 und PC-B 10.0.0.130/25 auf demselben Ethernet-Link. Es gibt keine weiteren Routen und keinen Router. Warum können ihre lokalen Erreichbarkeitsentscheidungen voneinander abweichen?",
     "answers": [
-      "A kann B als lokal betrachten, während B A als außerhalb seines /25-Netzes betrachtet.",
-      "B verwendet automatisch TCP, A dagegen UDP.",
-      "A und B besitzen zwingend dieselbe MAC-Adresse.",
-      "Ein /24-Host darf grundsätzlich keine /25-Adresse ansprechen."
+      "A betrachtet B als lokal, B betrachtet A als entfernt.",
+      "Beide betrachten den jeweils anderen als direkt lokal erreichbar.",
+      "A betrachtet B als entfernt, während B A als lokal betrachtet.",
+      "Beide betrachten den jeweils anderen als außerhalb ihres lokalen Netzes."
     ],
     "correctAnswer": 0,
-    "explanation": "Unterschiedliche überlappende Masken können dazu führen, dass Hosts den jeweils anderen unterschiedlich als lokal oder entfernt einstufen.",
+    "explanation": "A verwendet 10.0.0.0/24 und betrachtet .130 als lokal. B verwendet 10.0.0.128/25; .20 liegt außerhalb dieses Netzes. Ohne passende Route unterscheiden sich ihre Entscheidungen über den nächsten Hop.",
     "source": "netzwerk.csv"
   },
   {
@@ -7367,10 +7367,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist der Hauptunterschied zwischen einem Hub und einem Switch?",
     "answers": [
-      "Ein Hub wiederholt Signale an alle Ports, ein Switch leitet Frames gezielt anhand gelernter MAC-Adressen weiter.",
-      "Ein Hub routet IP-Pakete, ein Switch vergibt IP-Adressen.",
-      "Ein Switch arbeitet ausschließlich mit DNS-Namen, ein Hub mit Ports.",
-      "Ein Hub unterstützt VLANs, ein Switch grundsätzlich nicht."
+      "Ein Hub wiederholt Signale an die anderen Ports; ein Switch kann bekannte Unicast-Ziele gezielt weiterleiten.",
+      "Ein Hub lernt Quell-MAC-Adressen; ein Switch wiederholt jedes Signal unverändert.",
+      "Ein Hub trennt die Kollisionsdomänen seiner Ports; ein Switch fasst sie zu einer gemeinsamen zusammen.",
+      "Ein Hub und ein Switch leiten jeden Unicast unabhängig von der Zieladresse an alle anderen Ports weiter."
     ],
     "correctAnswer": 0,
     "explanation": "Hubs arbeiten als einfache Wiederholer, Switches lernen MAC-Adressen und trennen Kollisionsdomänen.",
@@ -7400,9 +7400,9 @@ export default [
     "question": "Wozu dient CSMA/CD in klassischem gemeinsam genutztem Ethernet?",
     "answers": [
       "Kollisionen erkennen und nach einem Verfahren erneut senden.",
-      "IP-Adressen dynamisch verteilen.",
-      "DNS-Namen verschlüsseln.",
-      "VLAN-Tags zu entfernen."
+      "Feste Zeitschlitze zentral an alle sendebereiten Stationen verteilen.",
+      "Das Senderecht mit einem umlaufenden Token weiterreichen.",
+      "Für jede Station dauerhaft eine eigene Frequenz reservieren."
     ],
     "correctAnswer": 0,
     "explanation": "CSMA/CD regelt den Zugriff auf ein gemeinsam genutztes Ethernet-Medium und das Verhalten nach Kollisionen.",
@@ -7416,9 +7416,9 @@ export default [
     "question": "Warum spielt CSMA/CD in modernen Full-Duplex-Switch-Netzen praktisch keine Rolle mehr?",
     "answers": [
       "Weil Punkt-zu-Punkt-Full-Duplex-Verbindungen keine klassischen Ethernet-Kollisionen erzeugen.",
-      "Weil IPv6 CSMA/CD ersetzt hat.",
-      "Weil Router jede Kollision automatisch korrigieren.",
-      "Weil moderne Switches ausschließlich UDP verwenden."
+      "Weil Full-Duplex-Ethernet vor jedem Frame ein Token vom Switch anfordert.",
+      "Weil Full-Duplex-Ethernet Kollisionen ausschließlich durch zufällige Wartezeiten vermeidet.",
+      "Weil Full-Duplex-Ethernet beide Richtungen in feste, abwechselnde Zeitschlitze aufteilt."
     ],
     "correctAnswer": 0,
     "explanation": "Bei Full-Duplex sendet und empfängt jede Verbindung gleichzeitig ohne gemeinsames Kollisionsmedium.",
@@ -7429,60 +7429,60 @@ export default [
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Information lernt ein Layer-2-Switch?",
+    "question": "Ein Switch empfängt an Port 3 einen Frame mit Quell-MAC A und Ziel-MAC B. Welchen dynamischen Eintrag kann er daraus unmittelbar lernen?",
     "answers": [
-      "Welche MAC-Adresse über welchen Port erreichbar ist.",
-      "Welcher DNS-Name zu welchem TCP-Port gehört.",
-      "Welche Anwendung welchen Benutzer angemeldet hat.",
-      "Welche öffentliche IP-Adresse hinter einem NAT liegt."
+      "MAC A ist über Port 3 erreichbar.",
+      "MAC B ist über Port 3 erreichbar.",
+      "MAC A ist über den Port des Standardgateways erreichbar.",
+      "MAC B ist über jeden Port des VLANs erreichbar."
     ],
     "correctAnswer": 0,
-    "explanation": "Ein Switch baut aus empfangenen Frames eine MAC-Adresstabelle auf.",
+    "explanation": "Der Switch lernt aus Quell-MAC, Eingangsport und VLAN. Die Ziel-MAC dient anschließend zur Weiterleitungsentscheidung.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-066",
     "category": "Netzwerk",
     "topic": null,
-    "difficulty": "hard",
-    "question": "Ein Switch kennt die Ziel-MAC-Adresse eines Frames noch nicht. Was macht er typischerweise?",
+    "difficulty": "medium",
+    "question": "Ein Switch empfängt einen Unicast-Frame an Port 3. Die Ziel-MAC ist im selben VLAN ebenfalls an Port 3 gelernt. Wie behandelt ein gewöhnlicher Layer-2-Switch diesen Frame?",
     "answers": [
-      "Er flutet den Frame über die relevanten Ports außer dem Eingangsport.",
-      "Er sendet den Frame automatisch zum DNS-Server.",
-      "Er verwirft jeden unbekannten Unicast-Frame sofort.",
-      "Er ändert die Ziel-MAC-Adresse auf Broadcast und sendet nur zum Router."
+      "Er leitet ihn nicht über einen anderen Port weiter.",
+      "Er flutet ihn über alle anderen Ports des VLANs.",
+      "Er sendet ihn unverändert über Port 3 zurück.",
+      "Er ersetzt die Zieladresse durch die MAC-Adresse des Routers."
     ],
     "correctAnswer": 0,
-    "explanation": "Unknown Unicast wird typischerweise innerhalb des VLANs geflutet, bis der Switch die Adresse lernt.",
+    "explanation": "Der Zielteilnehmer liegt nach der Tabelle am selben Port wie die Quelle. Eine zusätzliche Weiterleitung durch den Switch ist deshalb nicht erforderlich.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-067",
     "category": "Netzwerk",
-    "topic": null,
+    "topic": "VLAN",
     "difficulty": "medium",
-    "question": "Was bewirkt ein VLAN auf einem Switch?",
+    "question": "Ein Switch erhält einen Ethernet-Broadcast an einem Access-Port in VLAN 10. Welche weiteren Ports erhalten ihn bei normaler VLAN-Weiterleitung?",
     "answers": [
-      "Es trennt eine physische Switch-Infrastruktur in logische Layer-2-Broadcast-Domänen.",
-      "Es erhöht automatisch die Anzahl verfügbarer TCP-Ports.",
-      "Es wandelt IPv4-Adressen in IPv6-Adressen um.",
-      "Es ersetzt die Subnetzmaske auf allen Clients."
+      "Die dafür weiterleitenden Ports von VLAN 10.",
+      "Alle weiterleitenden Ports unabhängig von ihrer VLAN-Zugehörigkeit.",
+      "Nur die Ports mit einem bereits gelernten Unicast-Eintrag für den Absender.",
+      "Nur einen beliebigen Access-Port desselben VLANs."
     ],
     "correctAnswer": 0,
-    "explanation": "VLANs schaffen getrennte logische Layer-2-Netze auf derselben physischen Infrastruktur.",
+    "explanation": "Ethernet-Broadcasts bleiben innerhalb der jeweiligen VLAN-Broadcast-Domäne. Auf einem passenden Trunk kann der Frame ebenfalls transportiert werden.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-068",
     "category": "Netzwerk",
     "topic": null,
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Welche Aussage zu VLAN und Subnetz ist am treffendsten?",
     "answers": [
       "VLAN und IP-Subnetz sind unterschiedliche Konzepte, werden in der Praxis aber häufig einander zugeordnet.",
-      "Ein VLAN ist exakt dasselbe wie eine Subnetzmaske.",
-      "Jedes VLAN muss zwingend mehrere IP-Subnetze enthalten.",
-      "Subnetze funktionieren nur, wenn VLAN-IDs mit der Netzadresse identisch sind."
+      "Ein VLAN und ein IP-Subnetz bezeichnen beide ausschließlich eine Layer-3-Routingtabelle.",
+      "Zwei IP-Subnetze auf demselben ungetrennten Ethernet-LAN bilden automatisch zwei VLANs.",
+      "Ein VLAN-Tag ersetzt die IP-Präfixlänge bei der Entscheidung, ob ein Ziel lokal liegt."
     ],
     "correctAnswer": 0,
     "explanation": "VLAN ist Layer 2, IP-Subnetting Layer 3. In typischen Designs wird oft ein Subnetz pro VLAN verwendet.",
@@ -7493,15 +7493,15 @@ export default [
     "category": "Netzwerk",
     "topic": null,
     "difficulty": "medium",
-    "question": "Was bedeutet MTU im Ethernet-Kontext typischerweise?",
+    "question": "Was bedeutet eine IP-MTU von 1500 Byte auf einer Ethernet-Schnittstelle?",
     "answers": [
-      "Maximale Nutzlastgröße eines Layer-3-Pakets, die ohne Fragmentierung in einen Frame passt.",
-      "Maximale Anzahl MAC-Adressen pro Switch.",
-      "Maximale Zahl von TCP-Ports pro Anwendung.",
-      "Mindestzeit eines TTL-Wertes."
+      "Ein vollständiges IP-Paket einschließlich IP-Header darf dort bis zu 1500 Byte groß sein.",
+      "Allein die TCP-Nutzdaten dürfen dort stets 1500 Byte groß sein.",
+      "Der gesamte Ethernet-Frame einschließlich Ethernet-Header und FCS ist auf 1500 Byte begrenzt.",
+      "Jedes IP-Paket muss dort mindestens 1500 Byte groß sein."
     ],
     "correctAnswer": 0,
-    "explanation": "Bei klassischem Ethernet ist eine MTU von 1500 Byte für die IP-Nutzlast üblich.",
+    "explanation": "Die IP-MTU begrenzt das vollständige IP-Paket, das der Link transportiert. Ethernet-Header und FCS zählen nicht zu diesen 1500 Byte.",
     "source": "netzwerk.csv"
   },
   {
@@ -7513,8 +7513,8 @@ export default [
     "answers": [
       "Fehler bei der Übertragung erkennen.",
       "Fehler automatisch durch erneutes Senden korrigieren.",
-      "Den Ziel-TCP-Port festlegen.",
-      "Die IP-Adresse des Gateways speichern."
+      "Mehrfach empfangene Frames anhand ihrer Reihenfolge aussortieren.",
+      "Verlorene Frames anhand fortlaufender Sequenznummern identifizieren."
     ],
     "correctAnswer": 0,
     "explanation": "FCS dient der Fehlererkennung auf Frame-Ebene, nicht der automatischen Fehlerkorrektur.",
@@ -7540,64 +7540,64 @@ export default [
     "id": "netzwerk-072",
     "category": "Netzwerk",
     "topic": null,
-    "difficulty": "hard",
-    "question": "Ein Paket erreicht den richtigen Host, aber dort lauscht kein Prozess auf dem angesprochenen TCP-Port. Welche Ebene hat damit bereits korrekt funktioniert?",
+    "difficulty": "medium",
+    "question": "Ein TCP-Segment ist nachweislich am vorgesehenen Zielhost angekommen. Dort lauscht kein Dienst auf dem Zielport. Welche Funktion hat für dieses Segment bereits funktioniert?",
     "answers": [
-      "Die IP-Zustellung zum Host hat funktioniert; das Problem liegt beim Transport/Prozess-Ziel.",
-      "Die MAC-Adresse des entfernten Internethosts muss falsch sein.",
-      "DNS muss zwingend ausgefallen sein.",
-      "Die Subnetzmaske kann nicht korrekt gewesen sein."
+      "Die IP-Zustellung zum Zielhost.",
+      "Der erfolgreiche TCP-Verbindungsaufbau.",
+      "Die Annahme der Daten durch den Zieldienst.",
+      "Die Verarbeitung der Anwendungsanfrage."
     ],
     "correctAnswer": 0,
-    "explanation": "Wenn das Paket den Host erreicht, hat die Layer-3-Zustellung grundsätzlich funktioniert. Die Portzuordnung betrifft Layer 4 und den Zielprozess.",
+    "explanation": "Die nachgewiesene Ankunft bestätigt die IP-Zustellung dieses Segments. Sie beweist weder einen erfolgreichen TCP-Verbindungsaufbau noch einen laufenden Anwendungsdienst.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-073",
     "category": "Netzwerk",
     "topic": null,
-    "difficulty": "hard",
-    "question": "Welches Beispiel zeigt korrekt eine vollständige Identifikation einer TCP-Verbindung?",
+    "difficulty": "medium",
+    "question": "Welche vier Angaben unterscheiden TCP-Verbindungen innerhalb eines gewöhnlichen IP-Netzwerkstacks?",
     "answers": [
-      "Quell-IP, Quellport, Ziel-IP, Zielport und Transportprotokoll.",
-      "Nur Ziel-IP und MAC-Adresse.",
-      "Nur Quellport und DNS-Name.",
-      "VLAN-ID, TTL und Gateway-MAC ohne Ports."
+      "Quell-IP-Adresse, Quellport, Ziel-IP-Adresse und Zielport.",
+      "Quell-IP-Adresse, Ziel-IP-Adresse, TTL und Paketlänge.",
+      "Quellport, Zielport, Sequenznummer und Bestätigungsnummer.",
+      "Quell-MAC-Adresse, Ziel-MAC-Adresse, VLAN-ID und EtherType."
     ],
     "correctAnswer": 0,
-    "explanation": "TCP-Verbindungen werden durch die Kombination aus Quell-/Ziel-IP, Quell-/Zielport und Protokoll eindeutig beschrieben.",
+    "explanation": "Eine TCP-Verbindung wird durch das Paar ihrer Socket-Endpunkte identifiziert. Bei protokollübergreifender Betrachtung gehört zusätzlich die Unterscheidung TCP oder UDP zum üblichen Fünfertupel.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-074",
     "category": "Netzwerk",
-    "topic": null,
+    "topic": "HTTP/HTTPS",
     "difficulty": "medium",
-    "question": "Warum muss ein Webserver nicht ausschließlich auf Port 443 betrieben werden?",
+    "question": "Ein HTTPS-Dienst lauscht auf Port 8443 statt auf 443. Welche URL adressiert diesen Dienst ausdrücklich?",
     "answers": [
-      "Port 443 ist der Standard für HTTPS, technisch kann der Dienst auch auf einem anderen freien Port lauschen.",
-      "HTTPS bestimmt seinen Port ausschließlich aus der MAC-Adresse.",
-      "TCP erlaubt keine fest definierten Standardports.",
-      "Jeder Server darf nur Ports oberhalb 49151 verwenden."
+      "https://example.com:8443/",
+      "https://example.com/8443",
+      "https://8443.example.com/",
+      "https://example.com/?port=8443"
     ],
     "correctAnswer": 0,
-    "explanation": "Standardports dienen der Konvention und Interoperabilität; technisch kann ein Dienst auf einem anderen Port laufen.",
+    "explanation": "Eine ausdrücklich angegebene Portnummer steht hinter dem Hostnamen, getrennt durch einen Doppelpunkt. Ein Pfad, eine Subdomain oder ein Abfrageparameter ändert den Verbindungsport nicht.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-075",
     "category": "Netzwerk",
     "topic": null,
-    "difficulty": "hard",
-    "question": "Welche Aussage beschreibt Encapsulation korrekt?",
+    "difficulty": "medium",
+    "question": "Welche Reihenfolge beschreibt die Kapselung von Anwendungsdaten beim Versand über TCP, IPv4 und Ethernet?",
     "answers": [
-      "Jede Netzwerkschicht ergänzt eigene Steuerinformationen um die Nutzdaten der höheren Schicht.",
-      "Alle Schichten ersetzen denselben Header nacheinander vollständig.",
-      "Nur Layer 7 besitzt Header, alle unteren Schichten übertragen reine Nutzdaten.",
-      "Encapsulation bedeutet ausschließlich Verschlüsselung durch HTTPS."
+      "Anwendungsdaten → TCP-Segment → IPv4-Paket → Ethernet-Frame.",
+      "Anwendungsdaten → IPv4-Paket → TCP-Segment → Ethernet-Frame.",
+      "Anwendungsdaten → Ethernet-Frame → IPv4-Paket → TCP-Segment.",
+      "Anwendungsdaten → TCP-Segment → Ethernet-Frame → IPv4-Paket."
     ],
     "correctAnswer": 0,
-    "explanation": "Beim Kapseln werden z. B. Anwendungsdaten in TCP/UDP, dann IP und schließlich Ethernet eingebettet.",
+    "explanation": "TCP-Daten werden im IP-Paket transportiert, das wiederum in einem Ethernet-Frame liegt. Die beteiligten Protokolle ergänzen ihre jeweiligen Steuerinformationen.",
     "source": "netzwerk.csv"
   },
   {
@@ -7607,10 +7607,10 @@ export default [
     "difficulty": "medium",
     "question": "Was beschreibt eine Netzwerktopologie?",
     "answers": [
-      "Nur die IP-Adressen aller Geräte",
+      "Die Regeln zur Vergabe von IP-Adressen und Präfixen.",
       "Wie Geräte verbunden sind und wie Daten übertragen werden",
-      "Nur die verwendeten Betriebssysteme",
-      "Nur die Kabellänge eines Netzwerks"
+      "Die Zuordnung von Nutzern zu Berechtigungsgruppen.",
+      "Die Auswahl von Protokollen für einzelne Anwendungsdienste."
     ],
     "correctAnswer": 1,
     "explanation": "Eine Netzwerktopologie beschreibt die Verbindung der Geräte und den Weg der Datenübertragung.",
@@ -7621,15 +7621,15 @@ export default [
     "category": "Netzwerk",
     "topic": "Topologien",
     "difficulty": "medium",
-    "question": "Was beschreibt die physikalische Topologie eines Netzwerks?",
+    "question": "Was beschreibt die physische Topologie eines Netzwerks?",
     "answers": [
-      "Wie die Kabel tatsächlich verlegt sind",
-      "Wie Daten logisch von A nach B reisen",
-      "Welche Ports ein Server verwendet",
-      "Welche IP-Adresse ein Router besitzt"
+      "Die tatsächlichen Geräte und die physischen Verbindungen zwischen ihnen.",
+      "Die IP-Präfixe und die Regeln zur Weiterleitung zwischen ihnen.",
+      "Die Zugriffsrechte der Benutzer auf gemeinsame Ressourcen.",
+      "Die Zuordnung von Anwendungsdiensten zu Transportports."
     ],
     "correctAnswer": 0,
-    "explanation": "Die physikalische Topologie beschreibt die tatsächlich sichtbare Verkabelung.",
+    "explanation": "Die physische Topologie beschreibt den realen Aufbau der Verbindungen. Der logische Kommunikationsweg kann davon abweichen.",
     "source": "netzwerk.csv"
   },
   {
@@ -7637,15 +7637,15 @@ export default [
     "category": "Netzwerk",
     "topic": "Topologien",
     "difficulty": "medium",
-    "question": "Was beschreibt die logische Topologie?",
+    "question": "Mehrere Rechner sind sternförmig an einen klassischen Ethernet-Hub angeschlossen. Wie lässt sich ihre gemeinsame Nutzung des Mediums logisch beschreiben?",
     "answers": [
-      "Die Position der Geräte im Raum",
-      "Die Kabelfarbe",
-      "Den digitalen Weg der Daten",
-      "Die Größe des Serverraums"
+      "Als gemeinsames Medium, das funktional einem Bus entspricht.",
+      "Als getrennte Punkt-zu-Punkt-Verbindungen mit unabhängiger Full-Duplex-Nutzung.",
+      "Als Ring mit fest weitergereichtem Senderecht.",
+      "Als vollständiges Mesh mit einer eigenen Verbindung für jedes Rechnerpaar."
     ],
-    "correctAnswer": 2,
-    "explanation": "Die logische Topologie beschreibt, wie Daten von A nach B gelangen.",
+    "correctAnswer": 0,
+    "explanation": "Der Hub wiederholt Signale auf dem gemeinsamen Medium. Deshalb unterscheidet sich die physische Sternverkabelung vom logischen gemeinsamen Bus.",
     "source": "netzwerk.csv"
   },
   {
@@ -7688,9 +7688,9 @@ export default [
     "question": "Welcher Nachteil ist typisch für die Sterntopologie?",
     "answers": [
       "Der zentrale Verteiler kann ein Single Point of Failure sein",
-      "Es gibt keine Erweiterungsmöglichkeit",
-      "Jedes Gerät benötigt zwingend zwei Netzwerkkarten",
-      "Es gibt keine eigene Bandbreite zum Verteiler"
+      "Jede zusätzliche Station benötigt eine direkte Leitung zu allen vorhandenen Stationen.",
+      "Alle Stationen müssen an den beiden Enden einer gemeinsamen Leitung abgeschlossen werden.",
+      "Der Ausfall eines Endgeräts unterbricht grundsätzlich den Datenweg zwischen allen anderen Endgeräten."
     ],
     "correctAnswer": 0,
     "explanation": "Fällt der zentrale Switch aus, kann die gesamte Sternstruktur ausfallen.",
@@ -7701,15 +7701,15 @@ export default [
     "category": "Netzwerk",
     "topic": "Topologien",
     "difficulty": "medium",
-    "question": "Welcher Vorteil passt zur Sterntopologie?",
+    "question": "Warum lassen sich Fehler einzelner Anschlussleitungen in einer einfachen Sterntopologie häufig gut eingrenzen?",
     "answers": [
-      "Sehr geringer Kabelaufwand",
-      "Leichte Fehlersuche",
-      "Keine zentrale Komponente",
-      "Keine Installationskosten"
+      "Weil jede Anschlussleitung sämtliche Teilnehmer gemeinsam trägt.",
+      "Weil sich jede Anschlussleitung einem bestimmten Endgerät zuordnen lässt.",
+      "Weil die Leitungen ohne Zuordnung zu Switch-Ports arbeiten.",
+      "Weil Fehler an einer Anschlussleitung auf allen anderen Leitungen identisch auftreten."
     ],
     "correctAnswer": 1,
-    "explanation": "Die getrennten Leitungen machen Fehler meist leichter lokalisierbar.",
+    "explanation": "Getrennte Anschlussleitungen und zugehörige Switch-Ports helfen dabei, einen Fehler einem einzelnen Anschluss zuzuordnen.",
     "source": "netzwerk.csv"
   },
   {
@@ -7721,8 +7721,8 @@ export default [
     "answers": [
       "Alle Geräte hängen an einer gemeinsamen Bus-Leitung",
       "Alle Geräte sind mit einem zentralen Switch verbunden",
-      "Jedes Gerät besitzt zwei redundante Verbindungen",
-      "Es gibt immer einen Server in der Mitte"
+      "Jedes Gerät hat eine direkte Verbindung zu jedem anderen Gerät.",
+      "Jedes Gerät verbindet sich mit genau zwei Nachbarn zu einem geschlossenen Ring."
     ],
     "correctAnswer": 0,
     "explanation": "Bei der Bustopologie teilen sich die Geräte ein gemeinsames Hauptkabel.",
@@ -7733,12 +7733,12 @@ export default [
     "category": "Netzwerk",
     "topic": "Topologien",
     "difficulty": "medium",
-    "question": "Welche Aufgabe haben Terminatoren bei einer klassischen Bustopologie?",
+    "question": "Welche Aufgabe haben Abschlusswiderstände an den beiden Enden eines klassischen Koaxial-Ethernet-Busses?",
     "answers": [
-      "Sie vergeben IP-Adressen",
+      "Sie verstärken abgeschwächte Signale vor der Rückübertragung.",
       "Sie verhindern Signalreflexionen an den Kabelenden",
-      "Sie verschlüsseln Daten",
-      "Sie ersetzen einen Switch"
+      "Sie erzeugen ein gemeinsames Taktsignal für die angeschlossenen Stationen.",
+      "Sie teilen das gemeinsame Kabel in getrennte Kollisionsdomänen."
     ],
     "correctAnswer": 1,
     "explanation": "Terminatoren an beiden Enden verhindern, dass Signale zurückreflektiert werden.",
@@ -7749,15 +7749,15 @@ export default [
     "category": "Netzwerk",
     "topic": "Topologien",
     "difficulty": "medium",
-    "question": "Welcher Vorteil ist typisch für die Bustopologie?",
+    "question": "Geräte stehen entlang einer geraden Strecke. Welchen Verkabelungsvorteil kann ein gemeinsamer Bus gegenüber einzelnen Leitungen zu einem entfernten Zentralverteiler haben?",
     "answers": [
-      "Extrem hohe Ausfallsicherheit",
-      "Geringer Kabelaufwand",
-      "Volle Redundanz",
-      "Leichte Fehlersuche bei Kabelbruch"
+      "Es kann insgesamt weniger Kabel erforderlich sein.",
+      "Für jedes Gerätepaar steht automatisch eine eigene Leitung bereit.",
+      "Ein Kabelbruch kann stets über eine zweite Busleitung umgangen werden.",
+      "Jeder Teilnehmer erhält durch die Busform eine unabhängige Full-Duplex-Strecke."
     ],
-    "correctAnswer": 1,
-    "explanation": "Die Busstruktur benötigt vergleichsweise wenig Kabel.",
+    "correctAnswer": 0,
+    "explanation": "Ein gemeinsamer Bus kann bei geeigneter Anordnung Kabel sparen. Daraus folgen weder unabhängige Verbindungen noch automatische Redundanz.",
     "source": "netzwerk.csv"
   },
   {
@@ -7765,15 +7765,15 @@ export default [
     "category": "Netzwerk",
     "topic": "Topologien",
     "difficulty": "medium",
-    "question": "Was ist ein typischer Nachteil der Bustopologie?",
+    "question": "Welche Einschränkung hat ein klassischer gemeinsam genutzter Half-Duplex-Ethernet-Bus bei hoher Sendelast?",
     "answers": [
-      "Hoher Verkabelungsaufwand",
-      "Kollisionsgefahr und Geschwindigkeitsverlust",
-      "Jedes Gerät benötigt einen eigenen Switch",
-      "Keine Geräte können hinzugefügt werden"
+      "Kollisionen und erneute Sendeversuche können den nutzbaren Durchsatz verringern.",
+      "Jeder Teilnehmer erhält unabhängig von den anderen die volle Buskapazität.",
+      "Ein zentrales Token garantiert jedem Teilnehmer eine feste Sendezeit.",
+      "Gleichzeitiges Senden verschiedener Teilnehmer wird auf getrennte Leitungen verteilt."
     ],
-    "correctAnswer": 1,
-    "explanation": "Da sich Geräte ein Medium teilen, können Kollisionen und Leistungsprobleme auftreten.",
+    "correctAnswer": 0,
+    "explanation": "Alle Teilnehmer teilen sich das Medium. CSMA/CD behandelt Kollisionen durch Abbruch und erneuten Versuch nach einer Wartezeit.",
     "source": "netzwerk.csv"
   },
   {
@@ -7781,15 +7781,15 @@ export default [
     "category": "Netzwerk",
     "topic": "Topologien",
     "difficulty": "medium",
-    "question": "Was beschreibt eine Ringtopologie am besten?",
+    "question": "Welche Beschreibung passt zu einer einfachen Ringtopologie mit mindestens vier Teilnehmern?",
     "answers": [
-      "Alle Geräte sind kreisförmig miteinander verbunden",
-      "Alle Geräte verbinden sich nur mit einem Server",
-      "Alle Geräte teilen sich einen Terminator",
-      "Nur zwei Geräte sind direkt verbunden"
+      "Die Teilnehmer sind zu einer geschlossenen Kette mit jeweils zwei Nachbarn verbunden.",
+      "Alle Teilnehmer besitzen jeweils eine Verbindung zu einem zentralen Verteiler.",
+      "Alle Teilnehmer hängen an einer gemeinsamen linearen Leitung.",
+      "Jeder Teilnehmer ist direkt mit jedem anderen Teilnehmer verbunden."
     ],
     "correctAnswer": 0,
-    "explanation": "Bei der Ringtopologie bilden die Teilnehmer einen Ring.",
+    "explanation": "Bei einer einfachen Ringtopologie besitzt jeder Teilnehmer zwei Nachbarn. Die Verbindungen bilden einen geschlossenen Ring, unabhängig von der räumlichen Anordnung.",
     "source": "netzwerk.csv"
   },
   {
@@ -7812,16 +7812,16 @@ export default [
     "id": "netzwerk-090",
     "category": "Netzwerk",
     "topic": "Topologien",
-    "difficulty": "hard",
-    "question": "Was passiert bei einer Baumtopologie, wenn ein Verteiler in einem Unterbaum ausfällt?",
+    "difficulty": "medium",
+    "question": "Ein Verteiler verbindet einen Unterbaum ohne redundanten Uplink mit dem übrigen Netz. Was kann sein vollständiger Ausfall bewirken?",
     "answers": [
-      "Nur ein einzelnes Endgerät ist betroffen",
-      "Der von diesem Verteiler abhängige Unterbaum kann unerreichbar werden",
-      "Das gesamte Internet fällt aus",
-      "Die IP-Adressen werden automatisch geändert"
+      "Die über ihn angebundenen Geräte verlieren den Zugang zum übrigen Netz.",
+      "Nur das zuletzt sendende Endgerät verliert den Zugang zum übrigen Netz.",
+      "Alle anderen Unterbäume verlieren unabhängig von ihrem Weg ebenfalls den Zugang.",
+      "Die nachgeordneten Geräte wechseln ohne weitere Verbindung automatisch zu einem anderen Verteiler."
     ],
-    "correctAnswer": 1,
-    "explanation": "Der Ausfall eines Verteilers betrifft typischerweise den daran hängenden Unterbaum.",
+    "correctAnswer": 0,
+    "explanation": "Ohne alternativen Weg hängt der Zugang dieses Unterbaums vom betroffenen Verteiler ab. Welche lokalen Verbindungen erhalten bleiben, hängt vom konkreten Aufbau ab.",
     "source": "netzwerk.csv"
   },
   {
@@ -7834,7 +7834,7 @@ export default [
       "Eine direkte Verbindung zwischen exakt zwei Geräten",
       "Ein Ring aus zwei Switches und mehreren Clients",
       "Ein Bus mit zwei Terminatoren",
-      "Ein vollständig vermaschtes Netz"
+      "Ein vollständig vermaschtes Netz aus fünf Geräten."
     ],
     "correctAnswer": 0,
     "explanation": "Punkt-zu-Punkt bedeutet eine direkte Verbindung zwischen genau zwei Partnern.",
@@ -7845,15 +7845,15 @@ export default [
     "category": "Netzwerk",
     "topic": "Topologien",
     "difficulty": "medium",
-    "question": "Welcher Nachteil ist typisch für Punkt-zu-Punkt?",
+    "question": "Sechs Geräte sollen mit je einer eigenen bidirektionalen Punkt-zu-Punkt-Verbindung pro Gerätepaar vollständig vermascht werden. Wie viele Verbindungen sind erforderlich?",
     "answers": [
-      "Keine Skalierbarkeit",
-      "Keine Geschwindigkeit",
-      "Hoher Verwaltungsaufwand durch viele Server",
-      "Immer hohe Kollisionsgefahr"
+      "15",
+      "6",
+      "12",
+      "30"
     ],
     "correctAnswer": 0,
-    "explanation": "Die direkte Verbindung ist einfach und schnell, aber nicht für große Netze skalierbar.",
+    "explanation": "Jedes der sechs Geräte benötigt Verbindungen zu fünf anderen. Da jede Verbindung zwei Geräte verbindet, zählt man 6 × 5 / 2 = 15.",
     "source": "netzwerk.csv"
   },
   {
@@ -7861,11 +7861,11 @@ export default [
     "category": "Netzwerk",
     "topic": "Topologien",
     "difficulty": "medium",
-    "question": "Wann spricht man von einem vollständig vermaschten Netz (Full Mesh)?",
+    "question": "Woran erkennt man ein vollständig vermaschtes Netz aus mindestens drei Teilnehmern?",
     "answers": [
       "Wenn jedes Gerät mit genau einem Switch verbunden ist",
       "Wenn jeder Teilnehmer direkt mit jedem anderen verbunden ist",
-      "Wenn nur zwei Geräte verbunden sind",
+      "Wenn nur benachbarte Teilnehmer einer offenen Kette direkt miteinander verbunden sind.",
       "Wenn alle Geräte ein gemeinsames Kabel verwenden"
     ],
     "correctAnswer": 1,
@@ -7877,15 +7877,15 @@ export default [
     "category": "Netzwerk",
     "topic": "Topologien",
     "difficulty": "medium",
-    "question": "Welcher Vorteil passt besonders zu einer Mesh-Topologie?",
+    "question": "Welchen Vorteil kann ein vermaschtes Netz bei Ausfall einer einzelnen Verbindung bieten?",
     "answers": [
-      "Extrem hohe Ausfallsicherheit",
-      "Minimaler Verkabelungsaufwand",
-      "Sehr einfacher Aufbau",
-      "Keine alternativen Datenwege"
+      "Ein geeigneter Routing- oder Weiterleitungsmechanismus kann einen verbleibenden Alternativweg nutzen.",
+      "Der Ausfall wird durch die Vermaschung automatisch zu zusätzlicher Bandbreite.",
+      "Alle Verbindungen können ohne gemeinsames Weiterleitungsverfahren gleichzeitig denselben Frame vervielfachen.",
+      "Ein defekter Endpunkt bleibt allein durch zusätzliche Leitungen zwischen anderen Geräten erreichbar."
     ],
     "correctAnswer": 0,
-    "explanation": "Mesh bietet mehrere mögliche Wege und dadurch hohe Ausfallsicherheit.",
+    "explanation": "Vermaschung kann alternative Wege bereitstellen. Die tatsächliche Ausfallsicherheit hängt auch von Protokollen, Konfiguration und unabhängigen Komponenten ab.",
     "source": "netzwerk.csv"
   },
   {
@@ -7925,7 +7925,7 @@ export default [
     "category": "Netzwerk",
     "topic": "Netzwerkarten",
     "difficulty": "medium",
-    "question": "Welche Netzwerkart beschreibt ein Netz über eine Stadt oder Region?",
+    "question": "Welche Netzwerkart beschreibt typischerweise ein Netz im Gebiet einer Stadt oder eines Ballungsraums?",
     "answers": [
       "PAN",
       "LAN",
@@ -7933,7 +7933,7 @@ export default [
       "GAN"
     ],
     "correctAnswer": 2,
-    "explanation": "MAN steht für Metropolitan Area Network.",
+    "explanation": "MAN steht für Metropolitan Area Network und bezeichnet typischerweise ein Netz im metropolitanen Gebiet.",
     "source": "netzwerk.csv"
   },
   {
@@ -7973,15 +7973,15 @@ export default [
     "category": "Netzwerk",
     "topic": "Netzwerkarchitektur",
     "difficulty": "medium",
-    "question": "Was kennzeichnet ein Peer-to-Peer-Netzwerk (P2P)?",
+    "question": "Welche Rollen können Teilnehmer in einer Peer-to-Peer-Anwendung übernehmen?",
     "answers": [
-      "Es gibt zwingend einen zentralen Server",
-      "Alle Teilnehmer sind grundsätzlich gleichberechtigt",
-      "Nur ein Client darf Ressourcen anbieten",
-      "Es funktioniert nur mit WLAN"
+      "Sie können sowohl Ressourcen anbieten als auch Ressourcen anderer Teilnehmer nutzen.",
+      "Sie dürfen ausschließlich Ressourcen eines dauerhaft festgelegten Zentralservers nutzen.",
+      "Sie können Ressourcen anbieten, aber niemals selbst Ressourcen anfordern.",
+      "Ein Teilnehmer darf nur Ressourcen anbieten, solange er selbst keine fremden Ressourcen nutzt."
     ],
-    "correctAnswer": 1,
-    "explanation": "P2P verzichtet auf eine zentrale Steuereinheit; Teilnehmer können gleichberechtigt Ressourcen anbieten.",
+    "correctAnswer": 0,
+    "explanation": "Peers können Anbieter und Nutzer sein. Einzelne P2P-Systeme verwenden trotzdem zusätzliche zentrale Dienste, etwa für die Suche nach Teilnehmern.",
     "source": "netzwerk.csv"
   },
   {
@@ -7989,15 +7989,15 @@ export default [
     "category": "Netzwerk",
     "topic": "Netzwerkarchitektur",
     "difficulty": "medium",
-    "question": "Welcher Vorteil kann ein Peer-to-Peer-Netzwerk bieten?",
+    "question": "Eine P2P-Anwendung hält dieselbe Datei bei mehreren unabhängig erreichbaren Peers bereit; die Suche hängt nicht von einem einzelnen Server ab. Welcher Vorteil ergibt sich daraus?",
     "answers": [
-      "Kein Single Point of Failure",
-      "Zentrale und einfache Verwaltung",
-      "Keine Sicherheitsrisiken",
-      "Nur ein Gerät muss laufen"
+      "Die Datei kann beim Ausfall eines einzelnen Anbieters weiterhin verfügbar sein.",
+      "Jeder Peer muss nur noch einen festen Teil der Datei dauerhaft speichern.",
+      "Die Dateiübertragung benötigt keine Authentisierung oder Zugriffsregeln mehr.",
+      "Alle Peers erhalten automatisch dieselbe verfügbare Übertragungsrate."
     ],
     "correctAnswer": 0,
-    "explanation": "P2P besitzt nicht zwingend einen einzelnen zentralen Ausfallpunkt.",
+    "explanation": "Mehrere erreichbare Kopien verringern die Abhängigkeit von einem einzelnen Anbieter. Sicherheit, Leistung und andere Ausfallpunkte müssen weiterhin berücksichtigt werden.",
     "source": "netzwerk.csv"
   },
   {
@@ -8005,15 +8005,15 @@ export default [
     "category": "Netzwerk",
     "topic": "Netzwerkarchitektur",
     "difficulty": "medium",
-    "question": "Welcher Nachteil passt zu P2P?",
+    "question": "In einem kleinen P2P-Dateifreigabenetz verwaltet jeder Nutzer seine Freigaberechte selbst. Welche organisatorische Schwierigkeit entsteht daraus?",
     "answers": [
-      "Schwierige Verwaltung",
-      "Zwingend sehr hohe Serverkosten",
-      "Keine Skalierbarkeit",
-      "Nur ein Gerät kann Daten senden"
+      "Einheitliche Zugriffsregeln müssen auf mehreren unabhängigen Geräten abgestimmt werden.",
+      "Alle Freigaben können ausschließlich an einem zentralen Server geändert werden.",
+      "Eine lokal geänderte Freigaberegel wird ohne Abstimmung automatisch auf allen PCs wirksam.",
+      "Das Entfernen eines Benutzers an einem PC entzieht automatisch dessen Rechte auf allen anderen PCs."
     ],
     "correctAnswer": 0,
-    "explanation": "Die dezentrale Struktur kann Verwaltung und Sicherheit erschweren.",
+    "explanation": "Dezentral verwaltete Freigaben können uneinheitliche Rechte und zusätzlichen Abstimmungsaufwand verursachen. Das ist eine Verwaltungsfrage, keine feste Begrenzung der Teilnehmerzahl.",
     "source": "netzwerk.csv"
   },
   {
@@ -8023,10 +8023,10 @@ export default [
     "difficulty": "medium",
     "question": "Was ist die Grundidee eines Client-Server-Netzwerks?",
     "answers": [
-      "Clients stellen immer alle Dienste bereit",
+      "Clients bieten die Dienste an, während Server ausschließlich als anfragende Nutzer auftreten.",
       "Server bieten Dienste und Ressourcen an, die Clients nutzen",
-      "Alle Geräte sind ohne Rollen gleichberechtigt",
-      "Es gibt keine zentrale Ressource"
+      "Jeder Teilnehmer muss denselben Dienst gleichzeitig anbieten und nutzen.",
+      "Ein Rechner ist unabhängig vom angesprochenen Dienst für seine gesamte Laufzeit ausschließlich Client oder Server."
     ],
     "correctAnswer": 1,
     "explanation": "Im Client-Server-Modell stellen Server Dienste/Ressourcen bereit und Clients greifen darauf zu.",
@@ -8035,17 +8035,17 @@ export default [
   {
     "id": "netzwerk-105",
     "category": "Netzwerk",
-    "topic": "Netzwerkarchitektur",
-    "difficulty": "hard",
-    "question": "Welche Aussage unterscheidet Client-Server am besten von P2P?",
+    "topic": "Client-Server",
+    "difficulty": "medium",
+    "question": "Ein Webserver beantwortet Browseranfragen und fragt selbst einen Datenbankdienst ab. Welche Rollen übernimmt er dabei?",
     "answers": [
-      "Client-Server kennt getrennte Rollen für Anbieter und Nutzer von Diensten",
-      "P2P benötigt zwingend einen Hauptserver",
-      "Client-Server funktioniert nur in WANs",
-      "P2P besitzt niemals Sicherheitsrisiken"
+      "Gegenüber dem Browser Server, gegenüber der Datenbank Client.",
+      "Gegenüber dem Browser Client, gegenüber der Datenbank Server.",
+      "In beiden Beziehungen ausschließlich Server.",
+      "In beiden Beziehungen ausschließlich Client."
     ],
     "correctAnswer": 0,
-    "explanation": "Client-Server trennt typischerweise Server- und Clientrollen, während P2P dezentraler und gleichberechtigter ist.",
+    "explanation": "Client und Server beschreiben Rollen in einer konkreten Dienstbeziehung. Ein System kann in verschiedenen Beziehungen unterschiedliche Rollen übernehmen.",
     "source": "netzwerk.csv"
   },
   {
@@ -8055,10 +8055,10 @@ export default [
     "difficulty": "medium",
     "question": "Was bedeutet bei 192.168.10.15/24 die Angabe /24?",
     "answers": [
-      "24 Geräte sind erlaubt",
+      "Die ersten 24 Bit bilden den Hostanteil.",
       "Die ersten 24 Bit gehören zum Netzpräfix",
       "Die letzten 24 Bit gehören zum Host",
-      "Port 24 wird verwendet"
+      "Das gesamte IPv4-Adressformat besteht aus 24 Bit."
     ],
     "correctAnswer": 1,
     "explanation": "/24 bezeichnet die Länge des Netzpräfixes in Bit.",
@@ -8117,12 +8117,12 @@ export default [
     "category": "Netzwerk",
     "topic": "IPv4",
     "difficulty": "medium",
-    "question": "Wozu dient eine Broadcastadresse?",
+    "question": "Wofür ist eine Broadcastadresse im jeweiligen lokalen Broadcast-Bereich vorgesehen?",
     "answers": [
       "Um genau einen einzelnen Host anzusprechen",
       "Um alle Geräte im jeweiligen Netzwerksegment anzusprechen",
-      "Um eine Domain in eine IP zu übersetzen",
-      "Um Ports zu verschlüsseln"
+      "Um nur Teilnehmer einer ausdrücklich gewählten Multicast-Gruppe anzusprechen.",
+      "Ein durch Routing ausgewähltes Mitglied einer Anycast-Gruppe anzusprechen."
     ],
     "correctAnswer": 1,
     "explanation": "Broadcast ist für Nachrichten an alle Teilnehmer des jeweiligen Netzes vorgesehen.",
@@ -8164,7 +8164,7 @@ export default [
     "id": "netzwerk-113",
     "category": "Netzwerk",
     "topic": "IPv4",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Welche Binärdarstellung entspricht dem Dezimalwert 192 in einem Oktett?",
     "answers": [
       "10000000",
@@ -8181,15 +8181,15 @@ export default [
     "category": "Netzwerk",
     "topic": "Subnetting",
     "difficulty": "medium",
-    "question": "Was ist die Grundidee von Subnetting?",
+    "question": "Was ist die Grundidee des IPv4-Subnettings?",
     "answers": [
-      "Ein großes Netzwerk in mehrere kleinere Unternetze aufzuteilen",
-      "Alle Geräte in ein einziges großes Broadcastnetz zu legen",
-      "DNS durch IP-Adressen zu ersetzen",
-      "Nur WLAN-Geräte zu verbinden"
+      "Einen IP-Adressblock in kleinere Teilnetze mit längeren Präfixen aufzuteilen.",
+      "Mehrere Teilnetze durch ein kürzeres gemeinsames Präfix zusammenzufassen.",
+      "Private Quelladressen beim Weiterleiten durch öffentliche Adressen zu ersetzen.",
+      "Hostnamen in numerische Zieladressen aufzulösen."
     ],
     "correctAnswer": 0,
-    "explanation": "Subnetting teilt ein größeres Netzwerk in kleinere eigenständige Teilnetze.",
+    "explanation": "Subnetting unterteilt einen Adressblock mithilfe längerer Präfixe. Getrennte Layer-2-Broadcast-Domänen erfordern zusätzlich einen entsprechenden Netzaufbau, etwa VLANs.",
     "source": "netzwerk.csv"
   },
   {
@@ -8197,15 +8197,15 @@ export default [
     "category": "Netzwerk",
     "topic": "CSMA",
     "difficulty": "medium",
-    "question": "Welches Zugriffsverfahren wird typischerweise bei WLAN verwendet?",
+    "question": "Welches Verfahren nutzt WLAN beim klassischen Zugriff konkurrierender Stationen auf das Funkmedium?",
     "answers": [
       "CSMA/CD",
       "CSMA/CA",
-      "ARP",
-      "NAT"
+      "Token Passing",
+      "Feste Zeitschlitzvergabe"
     ],
     "correctAnswer": 1,
-    "explanation": "CSMA/CA steht für Collision Avoidance und wird dort WLAN zugeordnet.",
+    "explanation": "Der klassische konkurrenzbasierte WLAN-Zugriff verwendet CSMA/CA. Er kombiniert die Beurteilung des Mediums mit Warteverfahren, um gleichzeitige Sendeversuche zu reduzieren.",
     "source": "netzwerk.csv"
   },
   {
@@ -8213,15 +8213,15 @@ export default [
     "category": "Netzwerk",
     "topic": "CSMA",
     "difficulty": "medium",
-    "question": "Was versucht CSMA/CA zu tun?",
+    "question": "Wozu dient der zufällige Backoff beim konkurrenzbasierten WLAN-Zugriff mit CSMA/CA?",
     "answers": [
-      "Kollisionen erst nachträglich erkennen",
-      "Vor dem Senden prüfen, ob das Medium frei ist",
-      "IP-Adressen automatisch vergeben",
-      "Pakete zu verschlüsseln"
+      "Er verteilt konkurrierende Sendeversuche zeitlich, um gleichzeitige Starts seltener zu machen.",
+      "Er vergibt jeder Station dauerhaft dieselbe feste Sendezeit.",
+      "Er beseitigt Übertragungsfehler durch nachträgliche Änderung des empfangenen Frames.",
+      "Er synchronisiert die Sendestarts aller wartenden Stationen auf denselben Zeitpunkt."
     ],
-    "correctAnswer": 1,
-    "explanation": "CSMA/CA versucht Kollisionen vorab zu vermeiden.",
+    "correctAnswer": 0,
+    "explanation": "Zufällige Wartezeiten reduzieren die Wahrscheinlichkeit gleichzeitiger Sendeversuche. Kollisionen und andere Übertragungsfehler werden dadurch nicht ausgeschlossen.",
     "source": "netzwerk.csv"
   },
   {
@@ -8229,15 +8229,15 @@ export default [
     "category": "Netzwerk",
     "topic": "CSMA",
     "difficulty": "medium",
-    "question": "Welches Zugriffsverfahren wird klassisch mit kabelgebundenem Ethernet verbunden?",
+    "question": "Welches Zugriffsverfahren nutzt klassisches gemeinsam genutztes Half-Duplex-Ethernet?",
     "answers": [
       "CSMA/CA",
       "CSMA/CD",
-      "DNS",
-      "DHCP"
+      "Token Passing",
+      "Fest zugeteilte Zeitschlitze"
     ],
     "correctAnswer": 1,
-    "explanation": "CSMA/CD steht für Collision Detection und wird kabelgebundenen Netzen zugeordnet.",
+    "explanation": "CSMA/CD wurde für gemeinsam genutztes Half-Duplex-Ethernet entwickelt. Full-Duplex-Ethernet verwendet dieses Kollisionsverfahren nicht.",
     "source": "netzwerk.csv"
   },
   {
@@ -8248,12 +8248,12 @@ export default [
     "question": "Was macht CSMA/CD bei einer Kollision?",
     "answers": [
       "Es erkennt die Kollision während der Übertragung und stoppt",
-      "Es verschlüsselt das Paket neu",
-      "Es ändert die IP-Adresse",
-      "Es startet DNS neu"
+      "Es setzt die Übertragung mit höherer Sendeleistung bis zum Frame-Ende fort.",
+      "Es überlässt dem Empfänger allein die Auswahl des erfolgreich gesendeten Frames.",
+      "Es wiederholt den vollständigen Frame grundsätzlich sofort ohne Backoff."
     ],
     "correctAnswer": 0,
-    "explanation": "Collision Detection erkennt eine Kollision während der Übertragung und bricht die Sendung ab.",
+    "explanation": "Nach Erkennung einer Kollision wird ein Jam-Signal gesendet und der Sendeversuch abgebrochen. Ein weiterer Versuch erfolgt nach dem vorgesehenen Backoff-Verfahren.",
     "source": "netzwerk.csv"
   },
   {
@@ -8264,9 +8264,9 @@ export default [
     "question": "Wozu dient das OSI-Modell hauptsächlich?",
     "answers": [
       "Als Referenzmodell für Kommunikation zwischen technischen Systemen",
-      "Zur Vergabe von IP-Adressen",
-      "Zum Speichern von Dateien",
-      "Zum Entwerfen von Webseiten"
+      "Als verbindliche Festlegung einer einzigen Hardware für alle Netzwerke.",
+      "Als konkretes Routingprotokoll für den Austausch von Internet-Routen.",
+      "Als Ersatz für die tatsächlich implementierten Übertragungsprotokolle."
     ],
     "correctAnswer": 0,
     "explanation": "Das OSI-Modell ist ein Referenzmodell für die Kommunikation zwischen technischen Systemen.",
@@ -8325,7 +8325,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI",
     "difficulty": "medium",
-    "question": "Welche OSI-Schichten gelten als transportorientiert?",
+    "question": "Welche OSI-Schichten bilden die untere Gruppe von der Bitübertragung bis einschließlich zur Transportschicht?",
     "answers": [
       "1 bis 4",
       "4 bis 7",
@@ -8333,7 +8333,7 @@ export default [
       "2 bis 6"
     ],
     "correctAnswer": 0,
-    "explanation": "Schichten 4 bis 1 werden als transportorientiert bezeichnet.",
+    "explanation": "Zur unteren Gruppe gehören Bitübertragung, Sicherung, Vermittlung und Transport, also die Schichten 1 bis 4.",
     "source": "netzwerk.csv"
   },
   {
@@ -8341,12 +8341,12 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI",
     "difficulty": "medium",
-    "question": "In welcher Richtung durchlaufen Daten beim Senden das OSI-Modell?",
+    "question": "In welcher Richtung verarbeitet ein sendendes Endsystem eine Anwendungsnachricht im OSI-Modell?",
     "answers": [
       "Von Schicht 1 nach 7",
       "Von Schicht 7 nach 1",
-      "Nur Schicht 4",
-      "Zufällig"
+      "Von Schicht 7 direkt zu Schicht 1 unter Auslassung der Zwischenschichten.",
+      "Von Schicht 4 zu Schicht 7 und anschließend direkt zu Schicht 1."
     ],
     "correctAnswer": 1,
     "explanation": "Beim Senden werden die Schichten von oben nach unten durchlaufen.",
@@ -8387,49 +8387,49 @@ export default [
   {
     "id": "netzwerk-129",
     "category": "Netzwerk",
-    "topic": "OSI",
+    "topic": "Ethernet",
     "difficulty": "medium",
-    "question": "Welche OSI-Schicht arbeitet mit MAC-Adressen im lokalen Netz?",
+    "question": "Woran erkennt ein Empfänger bei einem Ethernet-II-Frame, welches Protokoll unmittelbar in dessen Nutzlast folgt?",
     "answers": [
-      "Schicht 1",
-      "Schicht 2",
-      "Schicht 4",
-      "Schicht 7"
+      "Am EtherType-Feld.",
+      "An der Quell-MAC-Adresse.",
+      "An der Frame Check Sequence.",
+      "An der Präambel."
     ],
-    "correctAnswer": 1,
-    "explanation": "Schicht 2 Sicherung wird mit MAC-Adressen und lokalem Netz verbunden.",
+    "correctAnswer": 0,
+    "explanation": "Das EtherType-Feld kennzeichnet das unmittelbar transportierte Protokoll, etwa IPv4 oder IPv6. Es identifiziert nicht den Anwendungsdienst.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-130",
     "category": "Netzwerk",
-    "topic": "OSI",
+    "topic": "Routing",
     "difficulty": "medium",
-    "question": "Welche OSI-Schicht wird mit IP-Adressen und Routing verbunden?",
+    "question": "Ein Router leitet ein IPv4-Paket ohne NAT zum nächsten Ethernet-Netz weiter. Welche Aussage zur Zieladressierung ist richtig?",
     "answers": [
-      "Schicht 2",
-      "Schicht 3",
-      "Schicht 5",
-      "Schicht 6"
+      "Die Ziel-IP bleibt erhalten; der neue Ethernet-Frame erhält die MAC-Adresse des nächsten Hops.",
+      "Die Ziel-IP wird grundsätzlich durch die IP-Adresse des Routers ersetzt.",
+      "Ziel-IP und Ziel-MAC des ersten Frames bleiben auf allen Ethernet-Links unverändert.",
+      "Die Ziel-IP bleibt erhalten; als Ziel-MAC wird auf jedem Link die MAC des Absenders verwendet."
     ],
-    "correctAnswer": 1,
-    "explanation": "Schicht 3 Vermittlung behandelt IP und Routing.",
+    "correctAnswer": 0,
+    "explanation": "Routing verändert ohne NAT nicht die Ziel-IP. Die Link-Layer-Adressierung wird für den jeweiligen nächsten Link neu gebildet.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-131",
     "category": "Netzwerk",
-    "topic": "OSI",
+    "topic": "TCP",
     "difficulty": "medium",
-    "question": "Welche OSI-Schicht wird mit TCP/UDP verbunden?",
+    "question": "Welche Reihenfolge beschreibt den üblichen Aufbau einer TCP-Verbindung ohne gleichzeitigen Verbindungsstart beider Seiten?",
     "answers": [
-      "Schicht 2",
-      "Schicht 3",
-      "Schicht 4",
-      "Schicht 7"
+      "SYN → SYN/ACK → ACK",
+      "ACK → SYN → FIN",
+      "SYN → FIN → ACK",
+      "SYN/ACK → ACK → SYN"
     ],
-    "correctAnswer": 2,
-    "explanation": "TCP/UDP werden der Transportschicht 4 zugeordnet.",
+    "correctAnswer": 0,
+    "explanation": "Der initiierende Endpunkt sendet SYN. Die Gegenseite bestätigt mit SYN/ACK; das folgende ACK bestätigt deren Sequenznummer.",
     "source": "netzwerk.csv"
   },
   {
@@ -8437,7 +8437,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI",
     "difficulty": "medium",
-    "question": "Welche OSI-Schicht hält Sitzungen bzw. Verbindungen aufrecht?",
+    "question": "Welche OSI-Schicht ist im Referenzmodell für Dialogsteuerung und Synchronisationspunkte zwischen kommunizierenden Anwendungen vorgesehen?",
     "answers": [
       "Schicht 2",
       "Schicht 4",
@@ -8445,7 +8445,7 @@ export default [
       "Schicht 7"
     ],
     "correctAnswer": 2,
-    "explanation": "Schicht 5 ist die Sitzungsschicht.",
+    "explanation": "Die Sitzungsschicht ist Schicht 5. Zu ihren Modellfunktionen gehören Dialogsteuerung und Synchronisation; eine TCP-Verbindung ist dagegen eine Transportverbindung.",
     "source": "netzwerk.csv"
   },
   {
@@ -8453,7 +8453,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI",
     "difficulty": "medium",
-    "question": "Welche OSI-Schicht ist für Formatierung, Übersetzung und Darstellung zuständig?",
+    "question": "Welche OSI-Schicht befasst sich im Referenzmodell mit der gemeinsamen Darstellung und Umwandlung von Datenformaten?",
     "answers": [
       "Schicht 3",
       "Schicht 5",
@@ -8461,7 +8461,7 @@ export default [
       "Schicht 7"
     ],
     "correctAnswer": 2,
-    "explanation": "Schicht 6 ist die Darstellungsschicht.",
+    "explanation": "Die Darstellungsschicht ist Schicht 6. Sie behandelt die Repräsentation der ausgetauschten Daten, nicht die grafische Anzeige auf einem Bildschirm.",
     "source": "netzwerk.csv"
   },
   {
@@ -8484,16 +8484,16 @@ export default [
     "id": "netzwerk-135",
     "category": "Netzwerk",
     "topic": "OSI",
-    "difficulty": "hard",
-    "question": "Welche systematische Vorgehensweise eignet sich zur Fehlersuche anhand des OSI-Modells?",
+    "difficulty": "medium",
+    "question": "Eine Technikerin wählt für die Fehlersuche ausdrücklich die Bottom-up-Strategie des OSI-Modells. Womit beginnt sie?",
     "answers": [
-      "Von oben nach unten, beginnend mit der Anwendung",
-      "Von unten nach oben, beginnend mit Kabel/WLAN",
-      "Nur Schicht 7 prüfen",
-      "Zuerst immer DNS löschen"
+      "Mit dem physischen Link, etwa Kabel, Signal oder Funkverbindung.",
+      "Mit der Bedeutung des HTTP-Statuscodes der Anwendung.",
+      "Mit der Darstellung empfangener Textzeichen.",
+      "Mit den serverseitigen Berechtigungen eines Anwendungsordners."
     ],
-    "correctAnswer": 1,
-    "explanation": "Die Fehlersuche erfolgt von unten nach oben: zuerst physische Verbindung, dann Netz, Verbindung und zuletzt Anwendung.",
+    "correctAnswer": 0,
+    "explanation": "Bottom-up beginnt bei den unteren Schichten. Je nach Fehlerbild können auch Top-down oder andere systematische Strategien sinnvoll sein.",
     "source": "netzwerk.csv"
   },
   {
@@ -8504,9 +8504,9 @@ export default [
     "question": "Was ist ein Protokoll im Netzwerk-Kontext?",
     "answers": [
       "Ein vereinbarter Satz von Regeln für die Kommunikation",
-      "Eine physische Netzwerkkarte",
-      "Eine IP-Adresse",
-      "Ein Dateiformat"
+      "Eine Aufzeichnung bereits stattgefundener Netzwerkereignisse.",
+      "Eine Liste der aktuell konfigurierten IP-Adressen.",
+      "Die physische Verbindung zwischen zwei Netzwerkkarten."
     ],
     "correctAnswer": 0,
     "explanation": "Ein Protokoll legt Regeln wie Reihenfolge, Format und Antworten fest.",
@@ -8537,8 +8537,8 @@ export default [
     "answers": [
       "Request vom Client, Response vom Server",
       "Response vom Client, Request vom Server",
-      "Nur Broadcasts",
-      "Nur verschlüsselte UDP-Pakete"
+      "Request und Response ausschließlich vom Client",
+      "Request und Response ausschließlich vom Server"
     ],
     "correctAnswer": 0,
     "explanation": "HTTP folgt typischerweise dem Anfrage-Antwort-Prinzip.",
@@ -8553,7 +8553,7 @@ export default [
     "answers": [
       "Not Found",
       "OK",
-      "Busy",
+      "Forbidden",
       "Timeout"
     ],
     "correctAnswer": 1,
@@ -8573,7 +8573,7 @@ export default [
       "Request Timeout"
     ],
     "correctAnswer": 1,
-    "explanation": "404 bedeutet, dass die angeforderte Ressource nicht gefunden wurde.",
+    "explanation": "404 Not Found bedeutet, dass der Server keine aktuelle Darstellung der Zielressource gefunden hat oder ihre Existenz nicht offenlegen will. Der Code beschreibt keine Unterbrechung der Netzwerkverbindung.",
     "source": "netzwerk.csv"
   },
   {
@@ -8581,15 +8581,15 @@ export default [
     "category": "Netzwerk",
     "topic": "HTTP-HTTPS",
     "difficulty": "medium",
-    "question": "Was ist der zentrale Sicherheitsnachteil von normalem HTTP?",
+    "question": "Welche Aussage gilt für HTTP ohne TLS oder einen anderen geschützten Transport?",
     "answers": [
-      "Es funktioniert nur offline",
+      "Die TCP-Prüfsumme verhindert das gezielte Mitlesen und Verändern der Inhalte.",
       "Daten werden unverschlüsselt als Klartext übertragen",
-      "Es unterstützt keine Webseiten",
-      "Es benötigt keinen Server"
+      "Ein Passwort bei der Anmeldung verschlüsselt automatisch die HTTP-Verbindung.",
+      "Nur Anmeldedaten sind ungeschützt; alle übrigen Inhalte werden automatisch verschlüsselt."
     ],
     "correctAnswer": 1,
-    "explanation": "Normales HTTP schützt den Inhalt nicht durch Verschlüsselung.",
+    "explanation": "HTTP allein bietet keinen kryptografischen Vertraulichkeits- oder Integritätsschutz. Ein Angreifer auf dem Übertragungsweg kann ungeschützte Inhalte mitlesen oder verändern.",
     "source": "netzwerk.csv"
   },
   {
@@ -8600,9 +8600,9 @@ export default [
     "question": "Was ist HTTPS vereinfacht gesagt?",
     "answers": [
       "HTTP mit verschlüsselter Übertragung",
-      "HTTP ohne Server",
-      "DNS über WLAN",
-      "FTP mit Port 53"
+      "HTTP mit Verschlüsselung nur des URL-Pfads",
+      "HTTP mit Verschlüsselung nur der DNS-Abfrage",
+      "HTTP mit Schutz allein durch die Portnummer 443"
     ],
     "correctAnswer": 0,
     "explanation": "HTTPS schützt die HTTP-Kommunikation durch Verschlüsselung, typischerweise TLS.",
@@ -8615,10 +8615,10 @@ export default [
     "difficulty": "medium",
     "question": "Welches Protokoll gilt als moderner Nachfolger von SSL?",
     "answers": [
-      "FTP",
+      "SSH",
       "TLS",
-      "SMTP",
-      "POP3"
+      "IPsec",
+      "S/MIME"
     ],
     "correctAnswer": 1,
     "explanation": "TLS ist der moderne Nachfolger von SSL.",
@@ -8627,65 +8627,65 @@ export default [
   {
     "id": "netzwerk-144",
     "category": "Netzwerk",
-    "topic": "HTTP-HTTPS",
-    "difficulty": "hard",
-    "question": "Welche Aussage zu SSL/TLS ist korrekt?",
+    "topic": "TLS",
+    "difficulty": "medium",
+    "question": "Was schützt Anwendungsdaten einer TLS-Verbindung vor unbemerkter Manipulation während der Übertragung?",
     "answers": [
-      "SSL ist moderner als TLS",
-      "TLS dient der sicheren Verschlüsselung im Internet",
-      "TLS ersetzt DNS",
-      "SSL/TLS sind reine Bildformate"
+      "Die kryptografische Integritätsprüfung der geschützten Daten.",
+      "Die Gültigkeitsdauer des Serverzertifikats allein.",
+      "Die gewöhnliche TCP-Prüfsumme allein.",
+      "Eine Verschlüsselung ohne kryptografischen Manipulationsschutz."
     ],
-    "correctAnswer": 1,
-    "explanation": "TLS dient der verschlüsselten Datenübertragung; SSL wird als veraltet beschrieben.",
+    "correctAnswer": 0,
+    "explanation": "TLS schützt reguläre Anwendungsdaten kryptografisch vor unbemerkter Manipulation. Dieser Schutz ersetzt weder die Prüfung der Serveridentität noch die Sicherheit der Endsysteme.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-145",
     "category": "Netzwerk",
-    "topic": "E-Mail-Protokolle",
+    "topic": "E-Mail",
     "difficulty": "medium",
-    "question": "Welches Protokoll dient primär zum Senden und Weiterleiten von E-Mails?",
+    "question": "Welcher TCP-Zielport ist für SMTP-Übertragung zwischen Mailservern standardmäßig vorgesehen?",
     "answers": [
-      "SMTP",
-      "IMAP",
-      "POP3",
-      "DNS"
+      "25",
+      "110",
+      "143",
+      "587"
     ],
     "correctAnswer": 0,
-    "explanation": "SMTP ist das Standardprotokoll zum Senden und Weiterleiten von E-Mails.",
+    "explanation": "Port 25 dient dem SMTP-Transport zwischen Mailservern. Port 587 ist für Message Submission vorgesehen; 110 und 143 gehören zu POP3 und IMAP.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-146",
     "category": "Netzwerk",
-    "topic": "E-Mail-Protokolle",
+    "topic": "E-Mail",
     "difficulty": "medium",
-    "question": "Welche Aufgabe übernimmt SMTP NICHT?",
+    "question": "Ein SMTP-Server bestätigt nach dem vollständigen Nachrichteninhalt die Annahme mit 250. Was folgt daraus?",
     "answers": [
-      "E-Mails versenden",
-      "E-Mails zwischen Mailservern weiterleiten",
-      "E-Mails abrufen",
-      "Mit einem Mailserver kommunizieren"
+      "Er hat die Verantwortung für Zustellung oder Weiterleitung übernommen.",
+      "Der Empfänger hat die Nachricht bereits gelesen.",
+      "Die Nachricht wurde auf allen Geräten des Empfängers synchronisiert.",
+      "Die Nachricht liegt bereits im endgültigen Postfach des Empfängers."
     ],
-    "correctAnswer": 2,
-    "explanation": "SMTP dient dem Versand, nicht dem Abruf von E-Mails.",
+    "correctAnswer": 0,
+    "explanation": "Die SMTP-Annahme bestätigt die Übernahme durch diesen Server. Sie beweist weder das Lesen der Nachricht noch den Abschluss aller nachfolgenden Zustellschritte.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-147",
     "category": "Netzwerk",
-    "topic": "E-Mail-Protokolle",
+    "topic": "E-Mail",
     "difficulty": "medium",
-    "question": "Welches Protokoll eignet sich besonders für dieselbe Mailbox auf Smartphone, Tablet und Laptop?",
+    "question": "Ein IMAP-Mailprogramm soll bereits gelesene Nachrichten ohne Netzwerkverbindung anzeigen. Welche Voraussetzung ist dafür auf dem Gerät erforderlich?",
     "answers": [
-      "IMAP",
-      "POP3",
-      "FTP",
-      "HTTP"
+      "Die benötigten Nachrichten müssen zuvor lokal zwischengespeichert worden sein.",
+      "Die Nachrichten müssen zuvor ausschließlich auf dem Server gespeichert worden sein.",
+      "Es genügt, wenn die Ordnerliste zuvor lokal zwischengespeichert wurde.",
+      "Die Nachrichten müssen nur als gelesen auf dem Server markiert sein; eine lokale Kopie ist unnötig."
     ],
     "correctAnswer": 0,
-    "explanation": "IMAP hält die Mails auf dem Server und synchronisiert Zustände zwischen Geräten.",
+    "explanation": "IMAP greift auf eine serverseitige Mailbox zu. Offlinezugriff setzt geeignete lokale Kopien voraus und hängt von der Cache-Konfiguration des Mailprogramms ab.",
     "source": "netzwerk.csv"
   },
   {
@@ -8693,38 +8693,38 @@ export default [
     "category": "Netzwerk",
     "topic": "E-Mail-Protokolle",
     "difficulty": "medium",
-    "question": "Wo bleiben E-Mails bei IMAP typischerweise gespeichert?",
+    "question": "Welche Aussage beschreibt die Speicherung bei einer typischen IMAP-Nutzung am besten?",
     "answers": [
-      "Nur lokal auf einem Gerät",
-      "Auf dem Server",
-      "Nur im Router",
-      "Im DNS-Cache"
+      "Die Mailbox liegt auf dem Server; Clients können zusätzlich lokale Kopien halten.",
+      "Die Mailbox liegt ausschließlich auf dem zuletzt verbundenen Client.",
+      "Jede Nachricht wird beim ersten Abruf zwingend vom Server gelöscht.",
+      "Jeder Client benötigt ein getrenntes Postfach ohne gemeinsamen serverseitigen Zustand."
     ],
-    "correctAnswer": 1,
-    "explanation": "Bei IMAP bleiben die E-Mails auf dem Server.",
+    "correctAnswer": 0,
+    "explanation": "IMAP verwaltet Nachrichten und Zustände in serverseitigen Mailboxen. Lokale Caches sind zusätzlich möglich und keine zwingend unabhängige Sicherung.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-149",
     "category": "Netzwerk",
-    "topic": "E-Mail-Protokolle",
+    "topic": "E-Mail",
     "difficulty": "medium",
-    "question": "Welche Aussage beschreibt POP3 am besten?",
+    "question": "Welche Aussage über den Nachrichtenabruf mit POP3 ist korrekt?",
     "answers": [
-      "Mails werden typischerweise heruntergeladen und danach vom Server entfernt",
-      "Mails bleiben immer synchron auf mehreren Geräten",
-      "Es sendet ausschließlich E-Mails",
-      "Es verschlüsselt Webseiten"
+      "Der Abruf einer Nachricht allein löscht sie noch nicht vom Server.",
+      "Jede erfolgreich abgerufene Nachricht wird sofort zwingend gelöscht.",
+      "POP3 gleicht serverseitige Unterordner und Lesestatus wie IMAP ab.",
+      "POP3 ersetzt SMTP beim Versand an fremde Mailserver."
     ],
     "correctAnswer": 0,
-    "explanation": "POP3 wird als Abrufverfahren beschrieben, bei dem Mails lokal gespeichert und vom Server entfernt werden können.",
+    "explanation": "RETR ruft eine Nachricht ab. Eine Löschung erfordert einen eigenen Löschauftrag und dessen Umsetzung beim vorgesehenen Sitzungsabschluss.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-150",
     "category": "Netzwerk",
     "topic": "E-Mail-Protokolle",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Eine Nutzerin liest eine Mail auf dem Handy und sie erscheint auch auf dem Laptop als gelesen. Welches Protokoll passt am besten?",
     "answers": [
       "SMTP",
@@ -8757,15 +8757,15 @@ export default [
     "category": "Netzwerk",
     "topic": "FTP-SFTP",
     "difficulty": "medium",
-    "question": "Was ist der wesentliche Sicherheitsnachteil von normalem FTP?",
+    "question": "Welches Sicherheitsproblem hat klassisches FTP ohne TLS oder einen anderen geschützten Transport?",
     "answers": [
-      "Es kann keine Dateien übertragen",
+      "Es verhindert die Prüfung von Benutzername und Passwort auf dem Server.",
       "Daten und Passwörter können unverschlüsselt übertragen werden",
-      "Es funktioniert nur lokal",
-      "Es benötigt keinen Server"
+      "Es verschlüsselt zwar Dateinamen, lässt aber nur die Dateigröße ungeschützt.",
+      "Es schützt Zugangsdaten allein durch die Nutzung einer separaten Datenverbindung."
     ],
     "correctAnswer": 1,
-    "explanation": "Normales FTP wird als unsicher beschrieben, da Inhalte und Zugangsdaten im Klartext übertragen werden können.",
+    "explanation": "Klassisches FTP bietet selbst keine Verschlüsselung für Zugangsdaten und Dateiinhalt. Ein Angreifer auf dem Übertragungsweg kann diese Daten bei ungeschütztem Transport mitlesen.",
     "source": "netzwerk.csv"
   },
   {
@@ -8776,9 +8776,9 @@ export default [
     "question": "Was ist SFTP?",
     "answers": [
       "Eine sichere, verschlüsselte Dateiübertragung über SSH",
-      "Ein DNS-Server",
-      "Ein E-Mail-Protokoll",
-      "Ein Webbrowser"
+      "FTP, dessen Steuer- und Datenverbindungen ausschließlich durch TLS geschützt werden.",
+      "Eine HTTP-Erweiterung für Dateioperationen über Webressourcen.",
+      "Ein Protokoll zur gemeinsamen Nutzung von Dateien und Druckern in Windows-Netzen."
     ],
     "correctAnswer": 0,
     "explanation": "SFTP verwendet SSH für eine verschlüsselte Dateiübertragung.",
@@ -8787,17 +8787,17 @@ export default [
   {
     "id": "netzwerk-154",
     "category": "Netzwerk",
-    "topic": "FTP-SFTP",
-    "difficulty": "hard",
-    "question": "Welche Kombination ist korrekt?",
+    "topic": "Dateiübertragung",
+    "difficulty": "medium",
+    "question": "Welche Zuordnung unterscheidet FTPS und SFTP korrekt?",
     "answers": [
-      "FTP = verschlüsselt, SFTP = Klartext",
-      "FTP = Klartext, SFTP = verschlüsselt",
-      "FTP = DNS, SFTP = SMTP",
-      "Beide sind ausschließlich E-Mail-Protokolle"
+      "FTPS erweitert FTP um TLS; SFTP verwendet üblicherweise SSH.",
+      "FTPS verwendet SSH; SFTP erweitert FTP um TLS.",
+      "FTPS und SFTP sind zwei Namen für dasselbe Protokoll auf Port 21.",
+      "FTPS und SFTP verwenden dieselben FTP-Kommandos und unterscheiden sich nur durch ihre Portnummer."
     ],
-    "correctAnswer": 1,
-    "explanation": "FTP überträgt Daten typischerweise unverschlüsselt, während SFTP eine verschlüsselte Verbindung nutzt.",
+    "correctAnswer": 0,
+    "explanation": "FTPS und SFTP sind unterschiedliche Protokolle und nicht ohne Weiteres austauschbar. Ein Client muss das vom Server angebotene Verfahren unterstützen.",
     "source": "netzwerk.csv"
   },
   {
@@ -8805,15 +8805,15 @@ export default [
     "category": "Netzwerk",
     "topic": "DNS",
     "difficulty": "medium",
-    "question": "Welche Hauptaufgabe hat DNS?",
+    "question": "Welcher DNS-Record nennt die für den E-Mail-Empfang einer Domain vorgesehenen Mailserver?",
     "answers": [
-      "Namensauflösung von Domains zu IP-Adressen",
-      "Vergabe von MAC-Adressen",
-      "Verschlüsselung von Dateien",
-      "Übertragung von E-Mails"
+      "MX",
+      "AAAA",
+      "CNAME",
+      "PTR"
     ],
     "correctAnswer": 0,
-    "explanation": "DNS übersetzt lesbare Namen in IP-Adressen.",
+    "explanation": "MX-Einträge nennen Mailserver und eine Präferenz für deren Auswahl. Die Adressen der Servernamen werden anschließend gesondert aufgelöst.",
     "source": "netzwerk.csv"
   },
   {
@@ -8821,15 +8821,15 @@ export default [
     "category": "Netzwerk",
     "topic": "DNS",
     "difficulty": "medium",
-    "question": "Welcher anschauliche Vergleich beschreibt die Aufgabe von DNS?",
+    "question": "Wozu dient ein DNS-CNAME-Record?",
     "answers": [
-      "Telefonbuch des Internets",
-      "Briefkasten",
-      "Pizzabote",
-      "Netzwerkkabel"
+      "Er verweist von einem Aliasnamen auf einen anderen Domainnamen.",
+      "Er speichert unmittelbar eine IPv4-Adresse zu einem Hostnamen.",
+      "Er legt die bevorzugten Mailserver einer Domain fest.",
+      "Er ordnet einer IP-Adresse einen Namen in einer Reverse-Zone zu."
     ],
     "correctAnswer": 0,
-    "explanation": "DNS wird als Telefonbuch bzw. Dolmetscher des Internets beschrieben.",
+    "explanation": "CNAME beschreibt einen Alias. Zur Ermittlung der Zieladresse muss der kanonische Zielname weiter aufgelöst werden.",
     "source": "netzwerk.csv"
   },
   {
@@ -8837,79 +8837,79 @@ export default [
     "category": "Netzwerk",
     "topic": "DNS",
     "difficulty": "medium",
-    "question": "Welcher Standard-Port wird für DNS verwendet?",
+    "question": "Was begrenzt der TTL-Wert eines gewöhnlich gecachten DNS-Ressourceneintrags?",
     "answers": [
-      "21",
-      "25",
-      "53",
-      "443"
+      "Wie lange der Eintrag regulär im Cache weiterverwendet werden darf.",
+      "Wie viele Router eine DNS-Anfrage passieren darf.",
+      "Wie lange eine TCP-Verbindung zum DNS-Server offen bleiben muss.",
+      "Wie viele alternative DNS-Server gleichzeitig befragt werden dürfen."
     ],
-    "correctAnswer": 2,
-    "explanation": "DNS verwendet standardmäßig Port 53.",
+    "correctAnswer": 0,
+    "explanation": "Die DNS-TTL ist eine Zeitangabe für die reguläre Cache-Nutzung. Sie ist nicht die Hop-Begrenzung eines IP-Pakets.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-158",
     "category": "Netzwerk",
-    "topic": "DNS",
+    "topic": "DNS-Diagnose",
     "difficulty": "medium",
-    "question": "Welcher Befehl kann zur DNS-Analyse verwendet werden?",
+    "question": "Welche Einstellung fragt im interaktiven Windows-nslookup anschließend gezielt Mail-Exchanger-Einträge ab?",
     "answers": [
-      "nslookup",
-      "format",
-      "mkdir",
-      "taskkill"
+      "set type=MX",
+      "set type=A",
+      "set type=PTR",
+      "set type=NS"
     ],
     "correctAnswer": 0,
-    "explanation": "nslookup wird zur Namensauflösung bzw. DNS-Analyse verwendet.",
+    "explanation": "Mit set type=MX wird der Typ folgender DNS-Abfragen auf MX gesetzt. Anschließend kann die zu untersuchende Domain eingegeben werden.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-159",
     "category": "Netzwerk",
     "topic": "DNS",
-    "difficulty": "hard",
-    "question": "Welche Aussage über DNS ist korrekt?",
+    "difficulty": "medium",
+    "question": "Was zeichnet einen für eine DNS-Zone autoritativen Nameserver aus?",
     "answers": [
-      "DNS sagt einem Webserver, welche Webseite er ausliefern soll",
-      "DNS hilft dem Computer, die IP-Adresse zu einem Namen zu finden",
-      "DNS verschlüsselt HTTP automatisch",
-      "DNS ersetzt Routing"
+      "Er beantwortet Anfragen für diese Zone aus deren maßgeblichem Datenbestand.",
+      "Er speichert ausschließlich zufällig zuvor abgefragte fremde Antworten im Cache.",
+      "Er leitet alle Anfragen für seine Zone an einen vorgeschalteten Resolver weiter.",
+      "Er muss jede Frage zur eigenen Zone zunächst an einen Root-Server weiterreichen."
     ],
-    "correctAnswer": 1,
-    "explanation": "DNS dient der Namensauflösung und nicht der Steuerung der Anwendung.",
+    "correctAnswer": 0,
+    "explanation": "Ein autoritativer Server ist für die Daten seiner Zone zuständig. Ein rekursiver Resolver beschafft Antworten für Clients und kann sie zwischenspeichern.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-160",
     "category": "Netzwerk",
-    "topic": "DNS",
+    "topic": "Netzwerkdiagnose",
     "difficulty": "medium",
-    "question": "Welcher Windows-Befehl zeigt die Route beziehungsweise die Hops zu einem Ziel?",
+    "question": "traceroute liefert Antworten mehrerer Router auf dem Weg zu einem Ziel. Was lässt sich daraus über den Rückweg der Antwortpakete sicher ableiten?",
     "answers": [
-      "tracert",
-      "nslookup",
-      "echo",
-      "cls"
+      "Er muss nicht dieselben Router in umgekehrter Reihenfolge durchlaufen.",
+      "Er ist immer exakt die Umkehrung des angezeigten Hinwegs.",
+      "Er durchläuft genauso viele Router wie der angezeigte Hinweg.",
+      "Er lässt sich aus der Laufzeit jeder Antwort eindeutig bestimmen."
     ],
     "correctAnswer": 0,
-    "explanation": "tracert zeigt die Stationen/Hops auf dem Weg zum Ziel.",
+    "explanation": "IP-Routen können richtungsabhängig sein und sich ändern. Die beobachteten Antworten beweisen daher keinen symmetrischen Rückweg.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-161",
     "category": "Netzwerk",
-    "topic": "OSI Schicht 6",
+    "topic": "Datendarstellung",
     "difficulty": "medium",
-    "question": "Was ist die Hauptaufgabe der Darstellungsschicht (Schicht 6)?",
+    "question": "Ein 16-Bit-Feld hat den Wert 0x1234 und wird in Network Byte Order, also Big Endian, übertragen. Welche Bytefolge steht auf dem Netz?",
     "answers": [
-      "Daten passend, lesbar und sicher darstellen",
-      "IP-Routen auswählen",
-      "MAC-Adressen vergeben",
-      "Kabelsignale erzeugen"
+      "0x12, 0x34",
+      "0x34, 0x12",
+      "0x01, 0x23",
+      "0x21, 0x43"
     ],
     "correctAnswer": 0,
-    "explanation": "Schicht 6 kümmert sich um Darstellung, Formatumwandlung, Verschlüsselung und Kompression.",
+    "explanation": "Bei Big Endian steht das höchstwertige Byte zuerst. Eine einheitliche Byteordnung verhindert, dass verschiedene Rechner denselben Feldinhalt unterschiedlich interpretieren.",
     "source": "netzwerk.csv"
   },
   {
@@ -8933,15 +8933,15 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 6",
     "difficulty": "medium",
-    "question": "Welches Beispiel gehört zur Zeichencodierung und damit zur Darstellungsschicht?",
+    "question": "Welches der folgenden Verfahren ist eine Zeichencodierung für Unicode?",
     "answers": [
       "UTF-8",
-      "IP",
-      "MAC",
-      "TCP"
+      "Base64",
+      "AES",
+      "SHA-256"
     ],
     "correctAnswer": 0,
-    "explanation": "UTF-8 ist eine Zeichencodierung und wird der Darstellungsebene zugeordnet.",
+    "explanation": "UTF-8 codiert Unicode-Zeichen in Bytefolgen. Base64 stellt Binärdaten als Text dar; AES ist ein Verschlüsselungsverfahren und SHA-256 eine Hashfunktion.",
     "source": "netzwerk.csv"
   },
   {
@@ -8949,7 +8949,7 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 6",
     "difficulty": "medium",
-    "question": "Welche Gruppe besteht aus Datenformaten beziehungsweise Standards und nicht aus Netzwerkprotokollen?",
+    "question": "Welche Gruppe enthält ausschließlich Datenformate beziehungsweise Zeichencodierungen?",
     "answers": [
       "JPEG, PNG, UTF-8, JSON, gzip",
       "HTTP, SMTP, DNS, FTP",
@@ -8957,7 +8957,7 @@ export default [
       "SIP, RPC, NetBIOS, PPTP"
     ],
     "correctAnswer": 0,
-    "explanation": "JPEG/PNG/UTF-8/JSON/gzip werden als Formate bzw. Standards genannt.",
+    "explanation": "JPEG und PNG beschreiben Bildformate, UTF-8 eine Zeichencodierung, JSON ein Datenaustauschformat und gzip ein komprimiertes Datenformat.",
     "source": "netzwerk.csv"
   },
   {
@@ -8968,9 +8968,9 @@ export default [
     "question": "Was ist ASCII?",
     "answers": [
       "Eine Zeichencodierung für Buchstaben, Zahlen und Zeichen",
-      "Ein Routingprotokoll",
-      "Ein Dateitransferprotokoll",
-      "Eine Netzwerktopologie"
+      "Ein Verfahren zur verlustfreien Dateikompression",
+      "Ein Verfahren zur Darstellung beliebiger Binärdaten als druckbaren Text",
+      "Ein Verfahren zur kryptografischen Integritätsprüfung"
     ],
     "correctAnswer": 0,
     "explanation": "ASCII codiert Zeichen als Zahlenwerte.",
@@ -8999,10 +8999,10 @@ export default [
     "difficulty": "medium",
     "question": "Warum reicht ASCII für moderne internationale Texte nicht aus?",
     "answers": [
-      "Es unterstützt nur englische Grundzeichen und zu wenige Zeichen",
-      "Es ist verschlüsselt",
-      "Es funktioniert nur im WLAN",
-      "Es ist ein Bildformat"
+      "Sein begrenzter Zeichenvorrat enthält viele Zeichen anderer Schriftsysteme nicht.",
+      "Seine Codes ändern ihre Bedeutung je nach eingestellter Sprache.",
+      "Es benötigt für jedes Zeichen mindestens vier Bytes.",
+      "Es kann auf Rechnern mit unterschiedlicher Byteordnung nicht ausgetauscht werden."
     ],
     "correctAnswer": 0,
     "explanation": "ASCII hat zu wenige Zeichenplätze für Umlaute, viele Schriftsysteme und Emojis.",
@@ -9011,97 +9011,97 @@ export default [
   {
     "id": "netzwerk-168",
     "category": "Netzwerk",
-    "topic": "OSI Schicht 6",
+    "topic": "Zeichencodierung",
     "difficulty": "medium",
-    "question": "Welche Codierung unterstützt internationale Zeichen umfassend?",
+    "question": "Wie werden die Zeichen des ursprünglichen 7-Bit-ASCII-Bereichs in UTF-8 codiert?",
     "answers": [
-      "UTF-8",
-      "ASCII-7",
-      "POP3",
-      "FTP"
+      "Mit denselben einzelnen Bytewerten wie in ASCII.",
+      "Immer mit zwei Bytes in umgekehrter Reihenfolge.",
+      "Immer mit vier Bytes pro Zeichen.",
+      "Innerhalb des ASCII-Bereichs wahlweise mit einem bis vier Bytes pro Zeichen."
     ],
     "correctAnswer": 0,
-    "explanation": "UTF-8 unterstützt eine sehr große Zahl internationaler Zeichen.",
+    "explanation": "Die ASCII-Zeichen U+0000 bis U+007F behalten in UTF-8 ihre Bytewerte. Zeichen außerhalb dieses Bereichs benötigen mehrere Bytes.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-169",
     "category": "Netzwerk",
-    "topic": "OSI Schicht 6",
-    "difficulty": "hard",
-    "question": "Eine Webseite zeigt 'Ã¤' statt 'ä'. Welche OSI-Schicht ist bei einem Darstellungs- oder Codierungsproblem am ehesten betroffen?",
+    "topic": "Zeichencodierung",
+    "difficulty": "medium",
+    "question": "Ein korrekt als UTF-8 gespeichertes ä erscheint nach dem Decodieren als Ã¤. Welche Ursache passt besonders gut?",
     "answers": [
-      "Schicht 2",
-      "Schicht 3",
-      "Schicht 6",
-      "Schicht 7"
+      "Die UTF-8-Bytes wurden als Windows-1252 interpretiert.",
+      "Die UTF-8-Bytes wurden korrekt nach UTF-8 decodiert.",
+      "Die verwendete Schriftart besitzt lediglich keine Glyphe für ä.",
+      "Eine korrekt rückgängig gemachte verlustfreie Kompression hat die Zeichen verändert."
     ],
-    "correctAnswer": 2,
-    "explanation": "Ein fehlerhaft dargestelltes Zeichen deutet auf ein Encoding-/Darstellungsproblem in Schicht 6.",
+    "correctAnswer": 0,
+    "explanation": "Das UTF-8-Bytepaar für ä wird bei falscher Interpretation als Windows-1252 zu zwei anderen Zeichen. Sender und Empfänger müssen dieselbe passende Zeichencodierung verwenden.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-170",
     "category": "Netzwerk",
-    "topic": "OSI Schicht 6",
-    "difficulty": "hard",
-    "question": "Welcher OSI-Schicht lässt sich ERR_ENCODING_UNSUPPORTED am ehesten zuordnen?",
+    "topic": "HTTP",
+    "difficulty": "medium",
+    "question": "Ein HTTP-Server sendet unkomprimierten Text, setzt aber Content-Encoding: gzip. Warum kann der Client den Inhalt nicht korrekt verarbeiten?",
     "answers": [
-      "Schicht 4",
-      "Schicht 5",
-      "Schicht 6",
-      "Schicht 7"
+      "Er versucht aufgrund des Headers eine gzip-Dekompression auf ungeeigneten Daten.",
+      "Er behandelt gzip als Zeichencodierung und vertauscht deshalb Groß- und Kleinbuchstaben.",
+      "Er kann den falschen Header immer allein anhand des MIME-Typs automatisch korrigieren.",
+      "Er entfernt nur den gzip-Header aus dem Text, ohne eine Dekompression zu versuchen."
     ],
-    "correctAnswer": 2,
-    "explanation": "Der Fehler betrifft Zeichencodierung oder Kompression und wird Schicht 6 zugeordnet.",
+    "correctAnswer": 0,
+    "explanation": "Content-Encoding muss zu den tatsächlich angewendeten Inhaltscodierungen passen. Ein falscher Header kann zur fehlgeschlagenen Dekompression führen.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-171",
     "category": "Netzwerk",
-    "topic": "OSI Schicht 6",
-    "difficulty": "hard",
-    "question": "Welcher OSI-Schicht lässt sich ERR_SSL_PROTOCOL_ERROR in diesem Schichtenmodell am ehesten zuordnen?",
+    "topic": "TLS",
+    "difficulty": "medium",
+    "question": "TCP zu einem HTTPS-Server funktioniert. Der Server erlaubt nur TLS 1.3, der Client unterstützt höchstens TLS 1.2. Was verhindert hier den erfolgreichen TLS-Aufbau?",
     "answers": [
-      "Schicht 1",
-      "Schicht 3",
-      "Schicht 6",
-      "Schicht 7"
+      "Es gibt keine gemeinsam unterstützte zulässige TLS-Version.",
+      "Die DNS-Antwort enthält zwingend eine falsche IPv4-Adresse.",
+      "Der TCP-Dreiwege-Handshake muss daher noch unvollständig sein.",
+      "Der HTTP-Statuscode 404 blockiert die Auswahl der TLS-Version."
     ],
-    "correctAnswer": 2,
-    "explanation": "Ein SSL/TLS-Handshake- beziehungsweise Protokollfehler wird hier der Darstellungsschicht zugeordnet.",
+    "correctAnswer": 0,
+    "explanation": "Client und Server müssen eine zulässige gemeinsame TLS-Version unterstützen. Eine bereits bestehende TCP-Verbindung löst diese Protokollinkompatibilität nicht.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-172",
     "category": "Netzwerk",
-    "topic": "OSI Schicht 6",
+    "topic": "Datendarstellung",
     "difficulty": "medium",
-    "question": "Welche Merkhilfe unterscheidet Schicht 7 von Schicht 6?",
+    "question": "Ein API-Zugangswert wird nur mit Base64 codiert und ohne weiteren Schutz übertragen. Welche Aussage ist richtig?",
     "answers": [
-      "Schicht 7: WAS wird gesendet? Schicht 6: WIE sieht es aus?",
-      "Schicht 7: Welche MAC? Schicht 6: Welche IP?",
-      "Schicht 7: Welche Route? Schicht 6: Welche Leitung?",
-      "Schicht 7: Welches Kabel? Schicht 6: Welcher Switch?"
+      "Die Codierung lässt sich ohne geheimen Schlüssel rückgängig machen.",
+      "Base64 schützt den Wert mit einem geheimen symmetrischen Schlüssel.",
+      "Base64 beweist die Identität des Empfängers durch ein Zertifikat.",
+      "Base64 verhindert unbemerkte Manipulation durch eine digitale Signatur."
     ],
     "correctAnswer": 0,
-    "explanation": "Schicht 7 behandelt, WAS gesendet wird, während Schicht 6 beschreibt, WIE die Daten dargestellt werden.",
+    "explanation": "Base64 ist eine reversible Darstellung von Bytes als Text und keine Verschlüsselung. Vertrauliche Werte benötigen einen geeigneten geschützten Transport.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-173",
     "category": "Netzwerk",
-    "topic": "OSI Schicht 5",
+    "topic": "Anwendungssitzungen",
     "difficulty": "medium",
-    "question": "Was ist die Hauptaufgabe der Sitzungsschicht (Schicht 5)?",
+    "question": "Eine Webanwendung erkennt eine angemeldete Sitzung anhand eines gültigen Sitzungstokens. Kann sie diese Sitzung nach dem Aufbau einer neuen TCP-Verbindung weiter zuordnen?",
     "answers": [
-      "Sitzungen zwischen Geräten aufbauen, aufrechterhalten und beenden",
-      "IP-Adressen vergeben",
-      "Kabelsignale übertragen",
-      "Dateiformate konvertieren"
+      "Ja, wenn der Client das weiterhin gültige Token erneut mitsendet.",
+      "Nein, eine Anwendungssitzung ist immer genau eine TCP-Verbindung.",
+      "Nur wenn der neue TCP-Quellport dem vorherigen entspricht.",
+      "Nein, ein neuer TLS-Handshake macht das Sitzungstoken automatisch ungültig."
     ],
     "correctAnswer": 0,
-    "explanation": "Schicht 5 steuert Sitzungen bzw. logische Verbindungen zwischen Geräten.",
+    "explanation": "Eine Anwendungssitzung kann unabhängig von einer einzelnen Transportverbindung verwaltet werden. Entscheidend sind die Sitzungsregeln der Anwendung und das gültige Token.",
     "source": "netzwerk.csv"
   },
   {
@@ -9109,15 +9109,15 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 5",
     "difficulty": "medium",
-    "question": "Welche Aufgabe gehört zur Sitzungsschicht?",
+    "question": "Zwei Anwendungen sollen in einer OSI-Sitzung geregelt abwechselnd senden. Welche Sitzungsfunktion passt dazu?",
     "answers": [
       "Dialogsteuerung",
-      "Routing",
-      "MAC-Adressierung",
-      "Bitübertragung"
+      "Wahl des nächsten IP-Routers",
+      "Zuordnung einer Ziel-MAC-Adresse",
+      "Erkennung des elektrischen Signals"
     ],
     "correctAnswer": 0,
-    "explanation": "Die Sitzungsschicht regelt unter anderem, wer wann kommuniziert.",
+    "explanation": "Die Dialogsteuerung kann im OSI-Sitzungsmodell die Reihenfolge beziehungsweise das Senderecht der Kommunikationspartner koordinieren.",
     "source": "netzwerk.csv"
   },
   {
@@ -9128,12 +9128,12 @@ export default [
     "question": "Wozu dienen Checkpoints in der Sitzungsschicht?",
     "answers": [
       "Nach einer Unterbrechung an einem definierten Punkt fortsetzen zu können",
-      "IP-Adressen zu speichern",
-      "Ports zu verschlüsseln",
-      "MAC-Adressen zu ersetzen"
+      "Eine Unterbrechung durch zusätzliche Prüfsummen vollständig zu verhindern",
+      "Den gesamten Übertragungsfortschritt nach jeder Nachricht zu verwerfen",
+      "Die Zustellung aller künftigen Daten ohne weitere Bestätigung zu garantieren"
     ],
     "correctAnswer": 0,
-    "explanation": "Checkpoints erleichtern die Wiederaufnahme nach Verbindungsabbrüchen.",
+    "explanation": "Vereinbarte Synchronisationspunkte erlauben im OSI-Sitzungsmodell eine koordinierte Wiederaufnahme. Das setzt Unterstützung und passenden Zustand auf den beteiligten Seiten voraus.",
     "source": "netzwerk.csv"
   },
   {
@@ -9141,15 +9141,15 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 5",
     "difficulty": "medium",
-    "question": "Welcher Merksatz beschreibt die Aufgabe von OSI-Schicht 5?",
+    "question": "Welche Aufgabe wird der Sitzungsschicht (Schicht 5) im OSI-Modell zugeordnet?",
     "answers": [
-      "Wir treffen uns, bleiben verbunden und verabschieden uns",
-      "Wir routen, bis wir das Ziel finden",
-      "Wir übersetzen jedes Zeichen",
-      "Wir senden nur Broadcasts"
+      "Aufbau, Steuerung und Beendigung von Sitzungen zwischen Anwendungen",
+      "Weiterleitung von Paketen zwischen unterschiedlichen IP-Netzen",
+      "Vermittlung von Ethernet-Frames anhand von MAC-Adressen",
+      "Übertragung einzelner Bits über ein physisches Medium"
     ],
     "correctAnswer": 0,
-    "explanation": "Der Merksatz beschreibt Aufbau, Aufrechterhaltung und Ende einer Sitzung.",
+    "explanation": "Die Sitzungsschicht koordiniert den Aufbau, die Steuerung und die Beendigung von Sitzungen beziehungsweise Dialogen zwischen Anwendungen.",
     "source": "netzwerk.csv"
   },
   {
@@ -9157,15 +9157,15 @@ export default [
     "category": "Netzwerk",
     "topic": "OSI Schicht 5",
     "difficulty": "medium",
-    "question": "Welche Technologie hilft Geräten im lokalen Netz, sich über Namen zu finden und Sitzungen aufzubauen?",
+    "question": "Welche ältere Dienstschnittstelle umfasst Namens-, Datagramm- und Sitzungsdienste und ist aus klassischen Windows-Netzen bekannt?",
     "answers": [
       "NetBIOS",
-      "FTP",
-      "SMTP",
-      "HTTPS"
+      "DNS",
+      "mDNS",
+      "SMB"
     ],
     "correctAnswer": 0,
-    "explanation": "NetBIOS übernimmt unter anderem Namensauflösung und Sitzungsverwaltung im lokalen Netz.",
+    "explanation": "NetBIOS stellt unter anderem Namens- und Sitzungsdienste bereit. NetBIOS over TCP/IP bildet diese Dienste auf IP-Netze ab; moderne Kommunikation setzt NetBIOS nicht generell voraus.",
     "source": "netzwerk.csv"
   },
   {
@@ -9192,9 +9192,9 @@ export default [
     "question": "Was ermöglicht RPC vereinfacht?",
     "answers": [
       "Eine Funktion auf einem entfernten Rechner auszuführen",
-      "Eine Domain in eine IP umzuwandeln",
-      "E-Mails zu synchronisieren",
-      "Eine Datei als JPEG zu komprimieren"
+      "Eine lokale Funktion innerhalb desselben Prozesses aufzurufen",
+      "Den Code vom Server zu laden und ausschließlich lokal auszuführen",
+      "Dateien eines entfernten Rechners als lokales Laufwerk einzubinden"
     ],
     "correctAnswer": 0,
     "explanation": "RPC erlaubt den Aufruf von Funktionen auf entfernten Systemen.",
@@ -9225,8 +9225,8 @@ export default [
     "answers": [
       "Verbindungsaufbau, Steuerung und Beenden eines Gesprächs",
       "Übertragung der eigentlichen Sprachdaten",
-      "DNS-Auflösung",
-      "Dateikompression"
+      "Codierung und Decodierung der Sprachsamples.",
+      "Ausgleich schwankender Ankunftszeiten durch einen Audiopuffer."
     ],
     "correctAnswer": 0,
     "explanation": "SIP signalisiert und steuert Sitzungen; die eigentlichen Sprachdaten sind nicht seine Hauptaufgabe.",
@@ -9239,13 +9239,13 @@ export default [
     "difficulty": "medium",
     "question": "Was bedeutet SIP-Status 180 Ringing?",
     "answers": [
-      "Gespräch beendet",
-      "Verbindung wird aufgebaut, es klingelt",
-      "Nummer existiert nicht",
-      "Gegenstelle ist besetzt"
+      "Die Gegenstelle hat den bereits angenommenen Anruf beendet.",
+      "Die Gegenstelle alarmiert den Benutzer; der Anruf ist noch nicht angenommen.",
+      "Die Gegenstelle meldet, dass das angeforderte Ziel nicht existiert.",
+      "Die Gegenstelle lehnt den Anruf wegen eines Besetztzustands ab."
     ],
     "correctAnswer": 1,
-    "explanation": "180 Ringing bedeutet, dass die Gegenstelle klingelt.",
+    "explanation": "180 Ringing ist eine vorläufige SIP-Antwort. Sie signalisiert das Anrufen beziehungsweise Alarmieren des Benutzers, aber noch keine erfolgreiche Annahme des Gesprächs.",
     "source": "netzwerk.csv"
   },
   {
@@ -9258,7 +9258,7 @@ export default [
       "Gespräch angenommen",
       "Nummer unbekannt",
       "Gegenstelle ist besetzt",
-      "TLS-Fehler"
+      "Anruf dauerhaft umgeleitet"
     ],
     "correctAnswer": 2,
     "explanation": "486 Busy Here signalisiert eine besetzte Gegenstelle.",
@@ -9268,16 +9268,16 @@ export default [
     "id": "netzwerk-184",
     "category": "Netzwerk",
     "topic": "OSI Schicht 5",
-    "difficulty": "hard",
-    "question": "Welche Aussage zu SIP-Statuscodes ist korrekt?",
+    "difficulty": "medium",
+    "question": "Welcher OSI-Schicht wird SIP als Signalisierungsprotokoll zugeordnet?",
     "answers": [
-      "Sie gehören trotz Sitzungssteuerung zur Anwendungsebene",
-      "Sie gehören immer zu Schicht 1",
-      "Sie sind keine Statuscodes",
-      "Sie ersetzen HTTP vollständig"
+      "Anwendungsschicht 7",
+      "Sitzungsschicht 5",
+      "Transportschicht 4",
+      "Vermittlungsschicht 3"
     ],
     "correctAnswer": 0,
-    "explanation": "SIP-Statuscodes gehören zur Anwendungsebene, auch wenn SIP Sitzungen steuert.",
+    "explanation": "SIP ist ein Anwendungsprotokoll zur Signalisierung. Der Begriff Session im Protokollnamen bestimmt nicht seine OSI-Zuordnung.",
     "source": "netzwerk.csv"
   },
   {
@@ -9288,9 +9288,9 @@ export default [
     "question": "Wofür wurde PPTP verwendet?",
     "answers": [
       "Für VPN-Tunneling",
-      "Für E-Mail-Synchronisation",
-      "Für DNS",
-      "Für Bildkompression"
+      "Für dynamischen Routenaustausch",
+      "Für automatische IPv4-Konfiguration",
+      "Für Ethernet-Link-Aggregation"
     ],
     "correctAnswer": 0,
     "explanation": "PPTP ist ein älteres VPN-Tunneling-Protokoll.",
@@ -9303,68 +9303,68 @@ export default [
     "difficulty": "medium",
     "question": "Wie wird PPTP aus heutiger Sicherheitssicht bewertet?",
     "answers": [
-      "Modern und empfohlen",
-      "Veraltet und mit Sicherheitslücken",
-      "Nur für WLAN geeignet",
-      "Standard für Webseiten"
+      "Als zeitgemäße erste Wahl für neue sichere VPN-Installationen.",
+      "Als veraltetes Verfahren mit bekannten Sicherheitsproblemen.",
+      "Als sicher, sobald MS-CHAPv2 ohne weitere Änderungen aktiviert ist.",
+      "Als unabhängig vom Authentisierungsverfahren gleichwertig mit aktuellen VPN-Verfahren."
     ],
     "correctAnswer": 1,
-    "explanation": "PPTP wird als veraltet und sicherheitsproblematisch beschrieben.",
+    "explanation": "PPTP gilt als veraltet und sicherheitsproblematisch. Für neue Installationen sollte ein zeitgemäßes, sicher konfiguriertes VPN-Verfahren gewählt werden.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-187",
     "category": "Netzwerk",
-    "topic": "OSI Schicht 5",
-    "difficulty": "hard",
-    "question": "Welcher OSI-Schicht wird ECONNRESET (Connection Reset by Peer) in diesem Schichtenmodell zugeordnet?",
+    "topic": "TCP-Diagnose",
+    "difficulty": "medium",
+    "question": "Eine Anwendung meldet Connection reset by peer. Im Mitschnitt ist ein TCP-Segment mit gesetztem RST-Flag zu sehen. Auf welcher Ebene wirkt dieser Reset unmittelbar?",
     "answers": [
-      "Schicht 2",
-      "Schicht 3",
-      "Schicht 5",
-      "Schicht 7"
+      "Auf der Transportschicht durch TCP.",
+      "Auf der Sicherungsschicht durch Ethernet.",
+      "Auf der Vermittlungsschicht durch IP.",
+      "Auf der Anwendungsschicht durch einen HTTP-Statuscode."
     ],
-    "correctAnswer": 2,
-    "explanation": "ECONNRESET wird als abrupter Sitzungsabbruch und damit als Schicht-5-Problem eingeordnet.",
+    "correctAnswer": 0,
+    "explanation": "TCP-RST beendet beziehungsweise verweigert eine Transportverbindung abrupt. Die auslösende Ursache kann in Anwendung, System oder Netzwerk liegen; die Fehlermeldung allein lokalisiert diese Ursache nicht.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-188",
     "category": "Netzwerk",
-    "topic": "OSI Schicht 5",
-    "difficulty": "hard",
-    "question": "Welcher OSI-Schicht wird HTTP 408 Request Timeout in diesem Schichtenmodell zugeordnet?",
+    "topic": "HTTP",
+    "difficulty": "medium",
+    "question": "Was bedeutet eine HTTP-Antwort mit Status 408 Request Timeout?",
     "answers": [
-      "Schicht 1",
-      "Schicht 4",
-      "Schicht 5",
-      "Schicht 7"
+      "Der Server hat innerhalb seiner Wartezeit keine vollständige Anfrage erhalten.",
+      "Der Client hat innerhalb seiner Wartezeit keine DNS-Antwort erhalten.",
+      "Der Server hat innerhalb seiner Wartezeit keinen TCP-SYN empfangen.",
+      "Der Browser hat nach dem Anzeigen der Seite seine Anmeldung regulär beendet."
     ],
-    "correctAnswer": 2,
-    "explanation": "HTTP 408 wird hier als abgelaufene Sitzung in Schicht 5 eingeordnet.",
+    "correctAnswer": 0,
+    "explanation": "408 ist ein HTTP-Status auf Anwendungsebene. Er beschreibt die serverseitige Wartezeit auf eine vollständige Anfrage und ist kein allgemeiner Nachweis einer abgelaufenen Anmeldung.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-189",
     "category": "Netzwerk",
     "topic": "HTTP-Diagnose",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Die DNS-Auflösung und der TCP-Verbindungsaufbau zu einem Webserver funktionieren. Der Server antwortet auf die Anfrage mit HTTP 404. Welche Schlussfolgerung ist korrekt?",
     "answers": [
-      "Die angeforderte Ressource wurde auf Anwendungsebene nicht gefunden.",
+      "HTTP-Ressourcenpfad und Serverkonfiguration sind sinnvolle Prüfpunkte.",
       "Die DNS-Auflösung des Servernamens ist fehlgeschlagen.",
       "Der TCP-Verbindungsaufbau zum Webserver wurde blockiert.",
       "Die physische Netzwerkverbindung zum Client ist unterbrochen."
     ],
     "correctAnswer": 0,
-    "explanation": "Eine HTTP-404-Antwort zeigt, dass die Anfrage den Webserver erreicht hat, die angeforderte Ressource dort jedoch nicht gefunden wurde.",
+    "explanation": "Die empfangene HTTP-Antwort belegt für diesen Austausch funktionierende Kommunikation bis zur Anwendung. 404 bezeichnet eine nicht gefundene oder nicht offengelegte Ressource; die Ursache kann etwa im Pfad oder in der Serverkonfiguration liegen.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-190",
     "category": "Netzwerk",
     "topic": "OSI Szenarien",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Ein WLAN-Signal ist so schwach, dass Bits fehlerhaft ankommen. Welche Schicht ist am ehesten betroffen?",
     "answers": [
       "Schicht 1 Bitübertragung",
@@ -9379,73 +9379,73 @@ export default [
   {
     "id": "netzwerk-191",
     "category": "Netzwerk",
-    "topic": "OSI Szenarien",
-    "difficulty": "hard",
-    "question": "Ein Router sucht den besten Weg zu einem Zielnetz. Welche Schicht ist gemeint?",
+    "topic": "Routing",
+    "difficulty": "medium",
+    "question": "Welches IPv4-Präfix bezeichnet die Standardroute?",
     "answers": [
-      "Schicht 2",
-      "Schicht 3",
-      "Schicht 5",
-      "Schicht 7"
+      "0.0.0.0/0",
+      "0.0.0.0/32",
+      "127.0.0.0/8",
+      "255.255.255.255/32"
     ],
-    "correctAnswer": 1,
-    "explanation": "Routing gehört zur Vermittlungsschicht 3.",
+    "correctAnswer": 0,
+    "explanation": "Ein Präfix der Länge 0 passt zu jeder IPv4-Zieladresse. Es wird verwendet, wenn keine spezifischere passende Route ausgewählt wird.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-192",
     "category": "Netzwerk",
-    "topic": "OSI Szenarien",
-    "difficulty": "hard",
-    "question": "Eine Datei wird vor dem Versand gezippt und verschlüsselt. Welche Schicht passt am besten?",
+    "topic": "TLS",
+    "difficulty": "medium",
+    "question": "Ein Reverse Proxy beendet die HTTPS-Verbindung des Browsers und leitet die Anfrage per unverschlüsseltem HTTP zum Backend weiter. Welcher Abschnitt ist durch diese HTTPS-Verbindung geschützt?",
     "answers": [
-      "Schicht 1",
-      "Schicht 4",
-      "Schicht 6",
-      "Schicht 7"
+      "Der Abschnitt zwischen Browser und Reverse Proxy.",
+      "Die gesamte Strecke einschließlich des unverschlüsselten Backend-Abschnitts.",
+      "Ausschließlich der Abschnitt zwischen Reverse Proxy und Backend.",
+      "Beide Abschnitte, sofern der Proxy dieselbe HTTP-Anfrage unverändert weiterleitet."
     ],
-    "correctAnswer": 2,
-    "explanation": "Kompression und Verschlüsselung werden der Darstellungsschicht 6 zugeordnet.",
+    "correctAnswer": 0,
+    "explanation": "Die TLS-Verbindung endet am Proxy. Für den Backend-Abschnitt ist bei Bedarf ein eigener Schutz erforderlich.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-193",
     "category": "Netzwerk",
-    "topic": "OSI Szenarien",
-    "difficulty": "hard",
-    "question": "TCP bestätigt die vollständige Ankunft von Paketen. Welche Schicht ist gemeint?",
+    "topic": "TCP",
+    "difficulty": "medium",
+    "question": "Ein TCP-Empfänger hat lückenlos die Datenbytes mit Sequenznummern 1000 bis einschließlich 1499 empfangen. Welche nächste erwartete Sequenznummer bestätigt er, wenn keine SYN- oder FIN-Flags beteiligt sind?",
     "answers": [
-      "Schicht 2",
-      "Schicht 4",
-      "Schicht 5",
-      "Schicht 7"
+      "1500",
+      "1499",
+      "500",
+      "1000"
     ],
-    "correctAnswer": 1,
-    "explanation": "TCP gehört zur Transportschicht 4.",
+    "correctAnswer": 0,
+    "explanation": "Die kumulative Bestätigung nennt die nächste erwartete Sequenznummer. Nach den 500 Bytes von 1000 bis 1499 ist das 1500.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-194",
     "category": "Netzwerk",
-    "topic": "OSI Szenarien",
-    "difficulty": "hard",
-    "question": "Ein Webserver ist erreichbar, antwortet aber mit 404 Not Found. Welche OSI-Schicht ist betroffen?",
+    "topic": "HTTP",
+    "difficulty": "medium",
+    "question": "Ein HTTP-Server hat eine Anfrage verstanden, verweigert aber ihre Ausführung. Welcher Statuscode beschreibt dies grundsätzlich?",
     "answers": [
-      "Schicht 3",
-      "Schicht 5",
-      "Schicht 6",
-      "Schicht 7"
+      "403 Forbidden",
+      "404 Not Found",
+      "200 OK",
+      "301 Moved Permanently"
     ],
-    "correctAnswer": 3,
-    "explanation": "404 ist ein Anwendungsfehler: Die Verbindung funktioniert, aber die Ressource existiert nicht.",
+    "correctAnswer": 0,
+    "explanation": "403 bedeutet, dass der Server die verstandene Anfrage nicht ausführen will. Ein erneuter Versuch mit unveränderten Angaben muss daher nicht helfen.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-195",
     "category": "Netzwerk",
     "topic": "OSI Szenarien",
-    "difficulty": "hard",
-    "question": "Ein Webserver-Skript stürzt ab und liefert 500 Internal Server Error. Welche Schicht ist betroffen?",
+    "difficulty": "medium",
+    "question": "Ein Webserver meldet nach einem unerwarteten Fehler HTTP 500 Internal Server Error. Auf welcher Ebene wird dieser Statuscode ausgetauscht?",
     "answers": [
       "Schicht 1",
       "Schicht 4",
@@ -9453,30 +9453,30 @@ export default [
       "Schicht 7"
     ],
     "correctAnswer": 3,
-    "explanation": "500 Internal Server Error wird als Fehler der Anwendungsschicht eingeordnet.",
+    "explanation": "HTTP-Statuscodes gehören zur Anwendungsebene. 500 meldet eine unerwartete serverseitige Bedingung, die die Bearbeitung verhindert; die konkrete Ursache muss weiter untersucht werden.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-196",
     "category": "Netzwerk",
-    "topic": "OSI Szenarien",
-    "difficulty": "hard",
-    "question": "Eine Kundin möchte E-Mails auf Handy, Tablet und Laptop synchron halten. Was empfiehlst du?",
+    "topic": "E-Mail-Protokolle",
+    "difficulty": "medium",
+    "question": "Welche Abfolge beschreibt den üblichen Weg einer E-Mail vom Absender bis zum Empfänger?",
     "answers": [
-      "POP3",
-      "IMAP",
-      "FTP",
-      "PPTP"
+      "SMTP-Submission vom Client, SMTP zwischen Mailservern, Abruf oder Synchronisation per IMAP",
+      "IMAP vom Absenderclient, DNS zwischen Mailservern, Versand per FTP",
+      "POP3 vom Absenderclient, HTTP zwischen Mailservern, Synchronisation per SMTP",
+      "FTP vom Absenderclient, IMAP zwischen Mailservern, Zustellung per DNS"
     ],
-    "correctAnswer": 1,
-    "explanation": "IMAP ist für synchronisierte Mailboxen auf mehreren Geräten geeignet.",
+    "correctAnswer": 0,
+    "explanation": "Der Absenderclient übergibt die Nachricht per SMTP-Submission an seinen Mailserver. Zwischen Mailservern wird ebenfalls SMTP verwendet. Der Empfänger greift beispielsweise per IMAP auf seine Mailbox zu.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-197",
     "category": "Netzwerk",
     "topic": "OSI Szenarien",
-    "difficulty": "hard",
+    "difficulty": "medium",
     "question": "Du möchtest ein Firmenlogo verschlüsselt auf einen Webserver übertragen. Welches Protokoll passt?",
     "answers": [
       "FTP",
@@ -9491,97 +9491,97 @@ export default [
   {
     "id": "netzwerk-198",
     "category": "Netzwerk",
-    "topic": "OSI Szenarien",
-    "difficulty": "hard",
-    "question": "Ein PC soll herausfinden, welche IP-Adresse hinter daa.de steckt. Welcher Dienst ist zuständig?",
+    "topic": "DNS",
+    "difficulty": "medium",
+    "question": "Welcher DNS-Record wird in einer Reverse-DNS-Zone verwendet, um einer IP-Adresse einen Namen zuzuordnen?",
     "answers": [
-      "SMTP",
-      "DNS",
-      "FTP",
-      "SIP"
+      "PTR",
+      "MX",
+      "AAAA",
+      "CNAME"
     ],
-    "correctAnswer": 1,
-    "explanation": "DNS löst Domainnamen in IP-Adressen auf.",
+    "correctAnswer": 0,
+    "explanation": "PTR-Einträge dienen unter anderem der Rückwärtsauflösung. Vorwärts- und Rückwärtsdaten werden getrennt gepflegt und müssen nicht automatisch übereinstimmen.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-199",
     "category": "Netzwerk",
-    "topic": "OSI Szenarien",
-    "difficulty": "hard",
-    "question": "Welche Abfolge beschreibt das Versenden einer E-Mail durch die OSI-Schichten korrekt?",
+    "topic": "HTTP/3",
+    "difficulty": "medium",
+    "question": "Welcher Transport wird für HTTP/3 verwendet?",
     "answers": [
-      "SMTP → UTF-8/TLS → Sitzung → TCP → IP → MAC/Frames → Signale",
-      "DNS → FTP → POP3 → SIP → JPEG → MAC → Strom",
-      "TCP → SMTP → IP → HTTPS → WLAN → ASCII → DNS",
-      "MAC → IP → TCP → Sitzung → TLS → SMTP → Signale"
+      "QUIC über UDP.",
+      "TLS über TCP.",
+      "SCTP über IP.",
+      "DTLS direkt über UDP."
     ],
     "correctAnswer": 0,
-    "explanation": "Von oben nach unten folgen Anwendung/SMTP, Darstellung/UTF-8-TLS, Sitzung, Transport/TCP, Vermittlung/IP, Sicherung/MAC und Bitübertragung.",
+    "explanation": "HTTP/3 verwendet QUIC als Transport. QUIC nutzt UDP und integriert den TLS-Handshake; daraus folgt nicht, dass HTTPS grundsätzlich auf TCP beschränkt ist.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-200",
     "category": "Netzwerk",
-    "topic": "OSI Szenarien",
-    "difficulty": "hard",
-    "question": "Was passiert laut OSI-Modell beim Empfangen einer Nachricht?",
+    "topic": "MTU/MSS",
+    "difficulty": "medium",
+    "question": "Eine IPv4-Verbindung hat eine Pfad-MTU von 1500 Byte. IPv4- und TCP-Header sind jeweils 20 Byte lang, ohne Optionen. Wie viele TCP-Nutzdaten passen ohne Fragmentierung in ein solches Paket?",
     "answers": [
-      "Die Daten durchlaufen die Schichten von 1 nach 7",
-      "Die Daten durchlaufen die Schichten von 7 nach 1",
-      "Nur Schicht 4 und 7 werden verwendet",
-      "Die Reihenfolge ist beliebig"
+      "1460 Byte",
+      "1480 Byte",
+      "1500 Byte",
+      "1540 Byte"
     ],
     "correctAnswer": 0,
-    "explanation": "Beim Empfangen werden die Daten von unten nach oben verarbeitet.",
+    "explanation": "Von der IP-MTU werden beide Header abgezogen: 1500 − 20 − 20 = 1460 Byte. Zusätzliche Header oder Optionen können die verfügbare Nutzlast weiter verringern.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-201",
     "category": "Netzwerk",
-    "topic": "Protokolle",
-    "difficulty": "hard",
-    "question": "Welche Zuordnung ist vollständig korrekt?",
+    "topic": "Firewall",
+    "difficulty": "medium",
+    "question": "Ein Client öffnet eine erlaubte TCP-Verbindung von Port 53000 zu einem HTTPS-Server auf Port 443. Was nutzt eine zustandsbehaftete Firewall zur Zuordnung der Antwort zu dieser Verbindung?",
     "answers": [
-      "SMTP=Senden, IMAP=Synchronisieren/Abrufen, DNS=Namensauflösung, SFTP=verschlüsselte Dateiübertragung",
-      "SMTP=DNS, IMAP=Routing, DNS=Dateiübertragung, SFTP=E-Mail",
-      "SMTP=Kompression, IMAP=Verschlüsselung, DNS=VoIP, SFTP=Broadcast",
-      "SMTP=MAC, IMAP=TCP, DNS=JPEG, SFTP=ASCII"
+      "Den gespeicherten TCP-Verbindungszustand und die passenden Endpunkte in Gegenrichtung.",
+      "Nur die Tatsache, dass der Antwort-Zielport ebenfalls 443 ist.",
+      "Nur die Quell-IP-Adresse unabhängig von Ziel, Ports und Verbindungszustand.",
+      "Nur die vorherige DNS-Antwort unabhängig von den TCP-Endpunkten."
     ],
     "correctAnswer": 0,
-    "explanation": "Die vier Protokolle/Dienste erfüllen genau diese Aufgaben.",
+    "explanation": "Die Antwort kommt typischerweise von Serverport 443 an Clientport 53000. Eine Stateful Firewall kann sie anhand der gespeicherten Verbindung und ihrer Regeln zuordnen.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-202",
     "category": "Netzwerk",
-    "topic": "Protokolle",
-    "difficulty": "hard",
-    "question": "Welche Aussage ist falsch?",
+    "topic": "E-Mail-Diagnose",
+    "difficulty": "medium",
+    "question": "Ein Mailserver weist neue eingehende Nachrichten ausdrücklich wegen eines ausgeschöpften Postfachkontingents ab. Welche Maßnahme adressiert diese Ursache?",
     "answers": [
-      "SMTP dient dem Senden von E-Mails",
-      "IMAP eignet sich für mehrere synchronisierte Geräte",
-      "DNS löst Namen in IP-Adressen auf",
-      "POP3 ist für Live-Synchronisation mehrerer Geräte optimiert"
+      "Speicherplatz im betroffenen Postfach freigeben oder dessen Kontingent erhöhen.",
+      "Nur den lokalen Mailcache löschen, ohne serverseitige Nachrichten zu entfernen.",
+      "Nur den betroffenen IMAP-Ordner im Client ausblenden.",
+      "Nur die SMTP-Portnummer im Client ändern, ohne den Speicherbedarf zu verringern."
     ],
-    "correctAnswer": 3,
-    "explanation": "IMAP unterstützt die Synchronisation über mehrere Geräte; POP3 ist dafür ungeeignet.",
+    "correctAnswer": 0,
+    "explanation": "Das Kontingent begrenzt den verfügbaren serverseitigen Postfachspeicher. Die bestätigte Ursache wird durch Freigabe von Speicher oder eine zulässige Quotenänderung behoben.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-203",
     "category": "Netzwerk",
-    "topic": "Protokolle",
-    "difficulty": "hard",
-    "question": "Welche Aussage über HTTP und HTTPS ist korrekt?",
+    "topic": "TLS",
+    "difficulty": "medium",
+    "question": "Ein Browser verbindet sich mit https://shop.example.com. Die Zertifikatskette ist vertrauenswürdig und zeitlich gültig, das Zertifikat gilt aber ausschließlich für mail.example.com. Was ist das Problem?",
     "answers": [
-      "HTTP ist Klartext; HTTPS schützt die Übertragung durch TLS",
-      "HTTPS ist unverschlüsselt, HTTP verschlüsselt",
-      "HTTP dient nur E-Mail",
-      "HTTPS ersetzt DNS"
+      "Die bestätigte Serveridentität passt nicht zum angefragten Hostnamen.",
+      "Die Vertrauenskette muss allein deshalb kryptografisch ungültig sein.",
+      "Der Browser muss wegen der gleichen Hauptdomain jeden Subdomainnamen akzeptieren.",
+      "Die Gültigkeitsdauer ersetzt die Prüfung des Hostnamens vollständig."
     ],
     "correctAnswer": 0,
-    "explanation": "HTTP wird als unverschlüsselt beschrieben, HTTPS nutzt Verschlüsselung.",
+    "explanation": "Zur Serverauthentisierung muss der angefragte Name zu einer zulässigen Identität des Zertifikats passen. Eine vertrauenswürdige Signatur und gültige Zeitspanne allein reichen nicht.",
     "source": "netzwerk.csv"
   },
   {
@@ -9603,81 +9603,81 @@ export default [
   {
     "id": "netzwerk-205",
     "category": "Netzwerk",
-    "topic": "Topologien",
-    "difficulty": "hard",
-    "question": "Ein Netz soll trotz Ausfall einzelner Verbindungen alternative Wege bieten. Welche Topologie passt am besten?",
+    "topic": "Spanning Tree",
+    "difficulty": "medium",
+    "question": "Drei Layer-2-Switches sind innerhalb desselben VLANs zu einem Dreieck verbunden. Welche Aufgabe erfüllt ein korrekt arbeitendes Spanning Tree Protocol?",
     "answers": [
-      "Bus",
-      "Ring",
-      "Mesh",
-      "Punkt-zu-Punkt"
+      "Es bildet durch geeignete Portzustände eine schleifenfreie aktive Weiterleitungsstruktur.",
+      "Es verteilt jeden Broadcast gleichzeitig über alle Verbindungen des Dreiecks.",
+      "Es ersetzt die VLAN-Trennung durch eine gemeinsame dynamische Routingtabelle.",
+      "Es verwendet alle redundanten Links wie einen automatisch gebündelten Kanal."
     ],
-    "correctAnswer": 2,
-    "explanation": "Mesh bietet mehrere mögliche Wege und hohe Ausfallsicherheit.",
+    "correctAnswer": 0,
+    "explanation": "STP hält eine schleifenfreie aktive Layer-2-Struktur aufrecht. Bei Änderungen können andere Verbindungen für die Weiterleitung nutzbar werden.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-206",
     "category": "Netzwerk",
-    "topic": "Topologien",
-    "difficulty": "hard",
-    "question": "Ein günstiges Alt-Netz verwendet ein gemeinsames Hauptkabel und Terminatoren an beiden Enden. Welche Topologie ist das?",
+    "topic": "Spanning Tree",
+    "difficulty": "medium",
+    "question": "Welche Bridge wird in einer gemeinsamen STP-Instanz als Root Bridge gewählt?",
     "answers": [
-      "Stern",
-      "Bus",
-      "Baum",
-      "Mesh"
+      "Die Bridge mit der niedrigsten Bridge-ID.",
+      "Die Bridge mit der höchsten Bridge-ID.",
+      "Die Bridge mit den meisten belegten Access-Ports.",
+      "Die Bridge mit der zuletzt gelernten MAC-Adresse."
     ],
-    "correctAnswer": 1,
-    "explanation": "Gemeinsames Hauptkabel mit Terminatoren ist typisch für Bus.",
+    "correctAnswer": 0,
+    "explanation": "Die Root-Wahl basiert auf der Bridge-ID, die unter anderem Priorität und MAC-Adresse enthält. Die niedrigste ID gewinnt.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-207",
     "category": "Netzwerk",
-    "topic": "Netzwerkarchitektur",
-    "difficulty": "hard",
-    "question": "Welche Architektur passt zu einer kleinen Gruppe gleichberechtigter PCs, die direkt Ressourcen miteinander teilen, ohne zentralen Server?",
+    "topic": "Netzarchitekturen",
+    "difficulty": "medium",
+    "question": "Mehrere PCs sind sternförmig an einen Switch angeschlossen und tauschen Dateien über eine P2P-Anwendung aus. Welche Aussage ist korrekt?",
     "answers": [
-      "Client-Server",
-      "Peer-to-Peer",
-      "WAN",
-      "Full Mesh zwingend"
+      "Physische Sterntopologie und P2P-Anwendungsarchitektur lassen sich kombinieren.",
+      "P2P erfordert eine direkte physische Leitung zwischen jedem PC-Paar.",
+      "Eine Sterntopologie zwingt jede Anwendung zum Client-Server-Modell.",
+      "P2P erfordert eine gemeinsame koaxiale Busleitung."
     ],
-    "correctAnswer": 1,
-    "explanation": "P2P verzichtet auf eine zentrale Serverrolle und ermöglicht direkte Ressourcenteilung.",
+    "correctAnswer": 0,
+    "explanation": "Physische Topologie und Dienstarchitektur beschreiben unterschiedliche Aspekte. Gleichberechtigte Peers können über ein geswitchtes Sternnetz kommunizieren.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-208",
     "category": "Netzwerk",
-    "topic": "Netzwerkarchitektur",
-    "difficulty": "hard",
-    "question": "Ein zentraler Server stellt Dateien und Dienste bereit, mehrere Arbeitsplätze greifen darauf zu. Welche Architektur liegt vor?",
+    "topic": "Client-Server",
+    "difficulty": "medium",
+    "question": "Zwei Server bieten denselben Dienst hinter einem Load Balancer an. Einer beantwortet dessen Anwendungs-Health-Check nicht mehr. Wozu dient dieser Check?",
     "answers": [
-      "Peer-to-Peer",
-      "Client-Server",
-      "Bus",
-      "PAN"
+      "Der Load Balancer kann neue Anfragen auf geeignete Server beschränken.",
+      "Der Load Balancer kann laufende Transaktionen ohne weiteren Zustand vollständig rekonstruieren.",
+      "Der Load Balancer kann damit alle Datenänderungen zwischen den Servern replizieren.",
+      "Der Load Balancer kann dadurch auf Wiederholungen fehlgeschlagener Anfragen verzichten."
     ],
-    "correctAnswer": 1,
-    "explanation": "Das ist das klassische Client-Server-Prinzip.",
+    "correctAnswer": 0,
+    "explanation": "Health-Checks helfen, nicht funktionsfähige Dienstinstanzen aus der Verteilung zu nehmen. Sie ersetzen keine Replikation oder abgestimmte Anwendungsarchitektur.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-209",
     "category": "Netzwerk",
-    "topic": "Anwendungsschicht",
+    "topic": "HTTP",
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat die Anwendungsschicht im OSI-Modell?",
+    "question": "Mehrere HTTP/1.1-Websites verwenden dieselbe Server-IP und denselben Port. Welches Request-Feld nennt den gewünschten Hostnamen?",
     "answers": [
-      "Sie stellt Netzwerkdienste für Anwendungen bereit",
-      "Sie überträgt elektrische Signale",
-      "Sie berechnet Routingtabellen",
-      "Sie verwaltet MAC-Adressen"
+      "Host",
+      "Content-Length",
+      "Content-Encoding",
+      "User-Agent"
     ],
     "correctAnswer": 0,
-    "explanation": "Schicht 7 bildet die Schnittstelle zwischen Anwendungen und Netzwerkdiensten.",
+    "explanation": "Das Host-Feld nennt die Ziel-Authority und ermöglicht die Zuordnung zum gewünschten virtuellen Host. Es ist keine DNS-Abfrage.",
     "source": "netzwerk.csv"
   },
   {
@@ -9685,15 +9685,15 @@ export default [
     "category": "Netzwerk",
     "topic": "Anwendungsschicht",
     "difficulty": "medium",
-    "question": "Welche Aussage zur Anwendungsschicht ist richtig?",
+    "question": "Ein Browser lädt eine Seite über HTTP/1.1, TLS und TCP. Welche Aussage beschreibt das Zusammenspiel mit den Protokollebenen?",
     "answers": [
-      "Chrome selbst ist die Anwendungsschicht",
-      "Die Schicht stellt Regeln und Netzwerkdienste für Programme bereit",
-      "Sie ist ausschließlich für Kabel zuständig",
-      "Sie vergibt IP-Adressen"
+      "Der Browser nutzt Anwendungsprotokolle und darunterliegende Netzwerkfunktionen.",
+      "Der gesamte Browser einschließlich Grafikdarstellung entspricht genau einer OSI-Schicht.",
+      "Jede verwendete OSI-Schicht muss in einem separaten Programm ausgeführt werden.",
+      "Die HTTP-Implementierung übernimmt unmittelbar die elektrische Signalerzeugung am Kabel."
     ],
-    "correctAnswer": 1,
-    "explanation": "Nicht die App selbst ist die Schicht, sondern die Netzwerkfunktionen und Regeln, die sie nutzt.",
+    "correctAnswer": 0,
+    "explanation": "OSI-Schichten ordnen Kommunikationsaufgaben. Sie sind keine starre Aufteilung ganzer Programme oder Prozesse.",
     "source": "netzwerk.csv"
   },
   {
@@ -9715,65 +9715,65 @@ export default [
   {
     "id": "netzwerk-212",
     "category": "Netzwerk",
-    "topic": "Anwendungsschicht",
+    "topic": "HTTP",
     "difficulty": "medium",
-    "question": "Ein Browser fordert eine Webseite mit GET an. Welche Schicht steht dabei im Vordergrund?",
+    "question": "Welche Anforderung entspricht der vorgesehenen Semantik von HTTP GET?",
     "answers": [
-      "Schicht 2",
-      "Schicht 4",
-      "Schicht 6",
-      "Schicht 7"
+      "Eine Darstellung der Zielressource abrufen.",
+      "Eine Ressource durch den mitgesendeten Inhalt ersetzen.",
+      "Die Zielressource ausdrücklich löschen.",
+      "Eine neue Serverkonfiguration zwingend speichern."
     ],
-    "correctAnswer": 3,
-    "explanation": "HTTP-GET gehört zur Anwendungsschicht.",
+    "correctAnswer": 0,
+    "explanation": "GET dient dem Abruf und ist als sichere Methode definiert: Der Client fordert keine Zustandsänderung an. Protokollierung oder andere Nebenwirkungen können trotzdem auftreten.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-213",
     "category": "Netzwerk",
-    "topic": "Anwendungsschicht",
+    "topic": "HTTP",
     "difficulty": "medium",
-    "question": "Was beschreibt Schicht 7 am besten?",
+    "question": "Wozu dient das HTTP-Feld Content-Type bei einer Antwort mit Nachrichteninhalt?",
     "answers": [
-      "WAS eine Anwendung über das Netzwerk anfordert oder sendet",
-      "WIE Bits elektrisch übertragen werden",
-      "WELCHE MAC-Adresse ein Switch lernt",
-      "WIE ein Kabel verlegt ist"
+      "Es beschreibt den Medientyp der übertragenen Darstellung.",
+      "Es nennt die auf den Inhalt angewendete Kompression.",
+      "Es gibt die Länge der übertragenen Darstellung in Bytes an.",
+      "Es legt die Zeit fest, bis zu der ein Cache die Antwort verwenden darf."
     ],
     "correctAnswer": 0,
-    "explanation": "Als Merkhilfe beschreibt Schicht 7, WAS gesendet wird.",
+    "explanation": "Content-Type beschreibt den Medientyp, etwa text/html oder application/json. Content-Encoding beschreibt dagegen eine angewendete Inhaltscodierung wie gzip.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-214",
     "category": "Netzwerk",
-    "topic": "Anwendungsschicht",
-    "difficulty": "hard",
-    "question": "Ein Webserver liefert '404 Not Found', obwohl Netzwerk und Verschlüsselung funktionieren. Welche Schicht ist betroffen?",
+    "topic": "HTTP",
+    "difficulty": "medium",
+    "question": "Ein HTTP-Server antwortet mit 301 Moved Permanently und einem Location-Feld. Was teilt er damit mit?",
     "answers": [
-      "Schicht 3",
-      "Schicht 5",
-      "Schicht 6",
-      "Schicht 7"
+      "Die Ressource hat dauerhaft eine andere URI, die im Location-Feld genannt wird.",
+      "Die Ressource hat nur vorübergehend eine andere URI, die nicht gespeichert werden sollte.",
+      "Die Anfrage wurde wegen fehlender Berechtigung abgewiesen.",
+      "Die Ressource ist unverändert verfügbar, der Client soll nur seine lokale Kopie verwenden."
     ],
-    "correctAnswer": 3,
-    "explanation": "404 ist ein Fehler auf Anwendungsebene.",
+    "correctAnswer": 0,
+    "explanation": "301 signalisiert eine dauerhafte neue URI. Ein Client kann unter Berücksichtigung seiner Regeln der angegebenen Zieladresse folgen.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-215",
     "category": "Netzwerk",
-    "topic": "Anwendungsschicht",
-    "difficulty": "hard",
-    "question": "Ein PHP-Skript stürzt ab und der Server antwortet mit 500 Internal Server Error. Welche Schicht passt?",
+    "topic": "HTTP",
+    "difficulty": "medium",
+    "question": "Ein HTTP-Reverse-Proxy erhält vom angesprochenen Upstream eine ungültige Antwort. Welcher Status beschreibt dieses Gateway-Problem?",
     "answers": [
-      "Schicht 1",
-      "Schicht 4",
-      "Schicht 6",
-      "Schicht 7"
+      "502 Bad Gateway",
+      "504 Gateway Timeout",
+      "503 Service Unavailable",
+      "403 Forbidden"
     ],
-    "correctAnswer": 3,
-    "explanation": "Der Fehler liegt in der Anwendung bzw. im Webserver-Programm.",
+    "correctAnswer": 0,
+    "explanation": "502 meldet eine ungültige Antwort vom Upstream. 504 bezeichnet dagegen das Ausbleiben einer rechtzeitigen Upstream-Antwort.",
     "source": "netzwerk.csv"
   },
   {
@@ -9795,209 +9795,209 @@ export default [
   {
     "id": "netzwerk-217",
     "category": "Netzwerk",
-    "topic": "Anwendungsschicht",
+    "topic": "HTTP",
     "difficulty": "medium",
-    "question": "Was passiert bei HTTP nach einer Client-Anfrage normalerweise?",
+    "question": "Welche Eigenschaft unterscheidet eine reguläre Antwort auf HTTP HEAD von einer entsprechenden Antwort auf GET?",
     "answers": [
-      "Der Server sendet eine Response",
-      "Der Router vergibt eine neue MAC-Adresse",
-      "Der Client sendet automatisch SMTP",
-      "Der Switch führt DNS aus"
+      "Die HEAD-Antwort enthält keinen Nachrichteninhalt.",
+      "Die HEAD-Antwort enthält keinen Statuscode.",
+      "Die HEAD-Antwort darf keine Metadaten der Ressource enthalten.",
+      "Die HEAD-Antwort muss die Ressource auf dem Server verändern."
     ],
     "correctAnswer": 0,
-    "explanation": "HTTP folgt dem Request-Response-Prinzip.",
+    "explanation": "HEAD fordert die Antwortmetadaten ähnlich wie GET an, aber ohne den Nachrichteninhalt.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-218",
     "category": "Netzwerk",
-    "topic": "Anwendungsschicht",
-    "difficulty": "hard",
-    "question": "Welche Aussage ist FALSCH?",
+    "topic": "HTTP",
+    "difficulty": "medium",
+    "question": "HTTP wird als zustandsloses Protokoll beschrieben. Wie kann eine Webanwendung trotzdem mehrere Anfragen derselben Anmeldung zuordnen?",
     "answers": [
-      "Schicht 7 stellt Netzwerkdienste für Software bereit",
-      "HTTP gehört zur Anwendungsschicht",
-      "404 kann auf Schicht 7 auftreten",
-      "Schicht 7 überträgt Bits als Funkwellen"
+      "Sie verwendet zusätzliche Anwendungsmechanismen wie ein Sitzungstoken.",
+      "Sie setzt voraus, dass HTTP jede Anmeldung ohne Kennung dauerhaft wiedererkennt.",
+      "Sie verwendet ausschließlich die aktuelle TCP-Portnummer als dauerhafte Benutzerkennung.",
+      "Sie behandelt jede neue TLS-Verbindung automatisch als Anmeldung desselben Benutzers."
     ],
-    "correctAnswer": 3,
-    "explanation": "Bits als Funkwellen gehören zur Bitübertragungsschicht 1.",
+    "correctAnswer": 0,
+    "explanation": "HTTP definiert nicht automatisch eine dauerhafte Benutzersitzung. Anwendungen ergänzen eigene Zustands- und Identifikationsmechanismen.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-219",
     "category": "Netzwerk",
-    "topic": "Anwendungsschicht",
+    "topic": "TLS",
     "difficulty": "medium",
-    "question": "Welche Frage hilft beim Erkennen von Schicht 7?",
+    "question": "Wozu dient Server Name Indication (SNI) im TLS-Handshake?",
     "answers": [
-      "Was wird gesendet?",
-      "Wie sieht das Datenformat aus?",
-      "Welches Kabel wird verwendet?",
-      "Welche MAC-Adresse ist lokal?"
+      "Der Client nennt den gewünschten Servernamen zur Auswahl der TLS-Konfiguration.",
+      "Der Client bestätigt damit bereits die Vertrauenswürdigkeit des Serverzertifikats.",
+      "Der Server übermittelt damit bereits den vollständigen HTTP-Antwortinhalt.",
+      "Der Client wählt damit die IPv4-Adresse durch eine DNS-Abfrage aus."
     ],
     "correctAnswer": 0,
-    "explanation": "Für Schicht 7 hilft die Frage: WAS wird gesendet?",
+    "explanation": "SNI kann bei mehreren virtuellen Hosts helfen, früh die passende TLS-Konfiguration beziehungsweise das Zertifikat auszuwählen.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-220",
     "category": "Netzwerk",
-    "topic": "Protokolle",
+    "topic": "TCP",
     "difficulty": "medium",
-    "question": "Was ist ein Netzwerkprotokoll?",
+    "question": "Eine Anwendung sendet zwei Nachrichten nacheinander über dieselbe TCP-Verbindung. Welche Aussage zu einem Leseaufruf beim Empfänger ist richtig?",
     "answers": [
-      "Eine vereinbarte Regel für Kommunikation zwischen Geräten",
-      "Ein physisches Netzwerkkabel",
-      "Eine Subnetzmaske",
-      "Ein Dateisystem"
+      "Er kann Teile einer Nachricht oder Daten mehrerer Nachrichten liefern.",
+      "Er liefert grundsätzlich genau eine vollständige gesendete Nachricht.",
+      "Er liefert grundsätzlich genau ein ursprüngliches TCP-Segment.",
+      "Er erhält die ursprünglichen Nachrichtengrenzen automatisch durch das PSH-Flag."
     ],
     "correctAnswer": 0,
-    "explanation": "Protokolle definieren Regeln wie Reihenfolge, Format und Antworten.",
+    "explanation": "TCP stellt einen Bytestrom bereit und erhält keine Anwendungsnachrichtengrenzen. Die Anwendung braucht ein Framing, etwa Längenfelder oder Trennzeichen.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-221",
     "category": "Netzwerk",
-    "topic": "Protokolle",
+    "topic": "E-Mail",
     "difficulty": "medium",
-    "question": "Welches Protokoll ist für das Senden von E-Mails zuständig?",
+    "question": "Welcher TCP-Port ist standardmäßig für SMTP Message Submission durch einen Mailclient vorgesehen, wobei TLS per STARTTLS ausgehandelt werden kann?",
     "answers": [
-      "SMTP",
-      "IMAP",
-      "DNS",
-      "SIP"
+      "587",
+      "25",
+      "143",
+      "993"
     ],
     "correctAnswer": 0,
-    "explanation": "SMTP dient dem Senden und Weiterleiten von E-Mails.",
+    "explanation": "Port 587 ist für Message Submission vorgesehen. Port 25 dient dem Server-zu-Server-Transport; Submission mit implizitem TLS verwendet üblicherweise 465.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-222",
     "category": "Netzwerk",
-    "topic": "Protokolle",
+    "topic": "IMAP",
     "difficulty": "medium",
-    "question": "Welches Protokoll ist für synchronisierten E-Mail-Abruf auf mehreren Geräten geeignet?",
+    "question": "Welcher TCP-Port ist standardmäßig für IMAP mit implizitem TLS vorgesehen?",
     "answers": [
-      "POP3",
-      "IMAP",
-      "FTP",
-      "HTTP"
+      "993",
+      "143",
+      "995",
+      "465"
     ],
-    "correctAnswer": 1,
-    "explanation": "IMAP hält die Mailbox auf dem Server synchron.",
+    "correctAnswer": 0,
+    "explanation": "Bei IMAP mit implizitem TLS beginnt unmittelbar nach dem TCP-Aufbau der TLS-Handshake. Der Standardport ist 993.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-223",
     "category": "Netzwerk",
-    "topic": "Protokolle",
+    "topic": "DNSSEC",
     "difficulty": "medium",
-    "question": "Welches Protokoll löst Domainnamen in IP-Adressen auf?",
+    "question": "Was kann ein validierender Resolver mit DNSSEC für korrekt signierte und vertrauenswürdig verknüpfte DNS-Daten prüfen?",
     "answers": [
-      "SFTP",
-      "SMTP",
-      "DNS",
-      "RPC"
+      "Authentizität des Ursprungs und Integrität der DNS-Daten.",
+      "Vertraulichkeit sämtlicher DNS-Anfragen auf dem Übertragungsweg.",
+      "Vertrauenswürdigkeit der Inhalte der dadurch gefundenen Website.",
+      "Berechtigung des abfragenden Benutzers zum Lesen der Website."
     ],
-    "correctAnswer": 2,
-    "explanation": "DNS führt die Namensauflösung durch.",
+    "correctAnswer": 0,
+    "explanation": "DNSSEC ermöglicht kryptografische Datenvalidierung über eine Vertrauenskette. Es verschlüsselt die DNS-Abfrage nicht und bewertet keinen Website-Inhalt.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-224",
     "category": "Netzwerk",
-    "topic": "Protokolle",
+    "topic": "SFTP-Diagnose",
     "difficulty": "medium",
-    "question": "Welches Protokoll eignet sich für verschlüsselte Dateiübertragung?",
+    "question": "Eine SFTP-Verbindung ist authentisiert. Das Auflisten eines Verzeichnisses funktioniert, das Hochladen meldet Permission denied. Was sollte gezielt geprüft werden?",
     "answers": [
-      "FTP",
-      "SFTP",
-      "POP3",
-      "SIP"
+      "Die Schreibberechtigung des Kontos für das Zielverzeichnis.",
+      "Ausschließlich die Auflösung des bereits verbundenen Servernamens.",
+      "Die unterstützten SSH-Versionen vor dem bereits abgeschlossenen Handshake.",
+      "Die Erreichbarkeit des bereits erfolgreich verwendeten TCP-Ports."
     ],
-    "correctAnswer": 1,
-    "explanation": "SFTP überträgt Dateien verschlüsselt über SSH.",
+    "correctAnswer": 0,
+    "explanation": "Authentisierung und Autorisierung sind verschieden. Lesezugriff kann funktionieren, während Schreibrechte oder serverseitige Einschränkungen den Upload verhindern.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-225",
     "category": "Netzwerk",
-    "topic": "Protokolle",
+    "topic": "VoIP-Diagnose",
     "difficulty": "medium",
-    "question": "Welches Protokoll wird für den Aufbau und die Steuerung von VoIP-Sitzungen verwendet?",
+    "question": "Ein VoIP-Anruf wird per SIP aufgebaut, aber es ist keine Sprache hörbar. Welche zusätzliche Prüfung ist sinnvoll?",
     "answers": [
-      "SIP",
-      "DNS",
-      "FTP",
-      "IMAP"
+      "Den ausgehandelten RTP-Pfad einschließlich Filter- und NAT-Regeln prüfen.",
+      "Aus dem SIP-Aufbau folgern, dass auch der Medienpfad funktionieren muss.",
+      "Sämtliche Sprachdaten ausschließlich in SIP-Statusantworten suchen.",
+      "Eine erneute SIP-Registrierung als vollständigen Audiotest betrachten."
     ],
     "correctAnswer": 0,
-    "explanation": "SIP steuert Aufbau, Verwaltung und Ende von VoIP-Sitzungen.",
+    "explanation": "Signalisierung und Medien können unterschiedliche Ports und Wege nutzen. Ein SIP-Aufbau beweist keine funktionierende RTP-Übertragung.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-226",
     "category": "Netzwerk",
-    "topic": "Protokolle",
-    "difficulty": "hard",
-    "question": "Welche Zuordnung ist korrekt?",
+    "topic": "E-Mail/MIME",
+    "difficulty": "medium",
+    "question": "Wozu dient eine MIME-Nachricht mit Content-Type: multipart/mixed?",
     "answers": [
-      "SMTP = Senden, IMAP = Synchronisieren, DNS = Namensauflösung, SFTP = sichere Dateiübertragung",
-      "SMTP = Routing, IMAP = Verschlüsselung, DNS = E-Mail, SFTP = VoIP",
-      "SMTP = Namensauflösung, IMAP = Routing, DNS = Dateiübertragung, SFTP = Mailversand",
-      "SMTP = MAC, IMAP = IP, DNS = TCP, SFTP = UDP"
+      "Sie fasst mehrere Inhaltsteile wie Text und Dateianhänge zusammen.",
+      "Sie nennt ausschließlich gleichwertige Darstellungen desselben Inhalts.",
+      "Sie verschlüsselt sämtliche Inhaltsteile automatisch Ende zu Ende.",
+      "Sie legt die SMTP-Relay-Server und deren Reihenfolge fest."
     ],
     "correctAnswer": 0,
-    "explanation": "Diese Zuordnung entspricht den üblichen Aufgaben der genannten Protokolle.",
+    "explanation": "multipart/mixed ermöglicht mehrere Teile mit jeweils eigenen Inhaltsangaben. Es ist keine automatische Verschlüsselung; alternative Darstellungen haben einen anderen Multipart-Subtyp.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-227",
     "category": "Netzwerk",
-    "topic": "Protokolle",
-    "difficulty": "hard",
-    "question": "Welche Aussage ist FALSCH?",
+    "topic": "SMTP",
+    "difficulty": "medium",
+    "question": "Welche Angabe legt in einer SMTP-Transaktion die tatsächlichen Envelope-Empfänger fest?",
     "answers": [
-      "FTP kann Dateien übertragen",
-      "SFTP verschlüsselt die Dateiübertragung",
-      "DNS dient der Namensauflösung",
-      "SMTP ist für den synchronen E-Mail-Abruf gedacht"
+      "Die angenommenen RCPT-TO-Kommandos.",
+      "Ausschließlich das sichtbare To-Feld im Nachrichteninhalt.",
+      "Ausschließlich das Reply-To-Feld der Nachricht.",
+      "Ausschließlich das im Mailprogramm angezeigte From-Feld."
     ],
-    "correctAnswer": 3,
-    "explanation": "SMTP dient dem Versand, nicht dem synchronen Abruf.",
+    "correctAnswer": 0,
+    "explanation": "SMTP transportiert Empfänger im Envelope unabhängig von den sichtbaren Inhalts-Headern. So kann eine Bcc-Zustellung erfolgen, ohne den Empfänger im sichtbaren To-Feld zu nennen.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-228",
     "category": "Netzwerk",
-    "topic": "Protokolle",
-    "difficulty": "hard",
-    "question": "Ein Nutzer öffnet Online-Banking mit Schloss-Symbol im Browser. Welche Kombination passt am besten?",
+    "topic": "TLS",
+    "difficulty": "medium",
+    "question": "Eine Website wird mit einer gültig authentisierten HTTPS-Verbindung geladen. Welche Schlussfolgerung ist trotzdem nicht gerechtfertigt?",
     "answers": [
-      "HTTP ohne Verschlüsselung",
-      "HTTPS mit TLS",
-      "POP3 mit DNS",
-      "FTP mit SIP"
+      "Der Betreiber ist vertrauenswürdig und seine Angebote sind frei von Betrug.",
+      "Die Verbindung schützt die übertragenen Anwendungsdaten.",
+      "Die geprüfte Zertifikatsidentität passt zum angefragten Hostnamen.",
+      "Die geschützten Daten werden unterwegs auf unbemerkte Veränderung geprüft."
     ],
-    "correctAnswer": 1,
-    "explanation": "HTTPS nutzt TLS zur verschlüsselten Übertragung.",
+    "correctAnswer": 0,
+    "explanation": "HTTPS schützt die Verbindung und authentisiert den angesprochenen Host im Rahmen der Zertifikatsprüfung. Auch betrügerische Websites können gültige Zertifikate besitzen.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-229",
     "category": "Netzwerk",
-    "topic": "Subnetting",
+    "topic": "VLSM",
     "difficulty": "medium",
-    "question": "Was bedeutet Subnetting?",
+    "question": "Ein IPv4-/24-Block soll Teilnetze für 60, 28 und 12 nutzbare Hosts bereitstellen. Welche Präfixfolge erfüllt die Anforderungen jeweils mit dem kleinsten klassischen Subnetz?",
     "answers": [
-      "Ein großes Netz in kleinere Teilnetze aufteilen",
-      "Mehrere Domains zusammenführen",
-      "Eine IP-Adresse verschlüsseln",
-      "Alle Broadcasts zusammenlegen"
+      "/26, /27 und /28",
+      "/27, /28 und /29",
+      "/25, /26 und /27",
+      "/26, /28 und /28"
     ],
     "correctAnswer": 0,
-    "explanation": "Subnetting segmentiert ein größeres Netzwerk in kleinere Unternetze.",
+    "explanation": "Die klassischen Hostkapazitäten sind 62, 30 und 14. Diese Blöcke lassen sich passend ausgerichtet und ohne Überlappung in einem /24 unterbringen.",
     "source": "netzwerk.csv"
   },
   {
@@ -10005,15 +10005,15 @@ export default [
     "category": "Netzwerk",
     "topic": "Subnetting",
     "difficulty": "medium",
-    "question": "Welcher Vorteil kann durch Subnetting entstehen?",
+    "question": "Zwei unterschiedliche IPv4-Subnetze sind auf demselben ungetrennten Ethernet-VLAN konfiguriert. Was gilt für einen gewöhnlichen Ethernet-Broadcast ohne zusätzliche Filter?",
     "answers": [
-      "Weniger Broadcast- und Datenverkehr pro Teilnetz",
-      "Mehr Kollisionen",
-      "Keine IP-Adressen mehr nötig",
-      "Alle Geräte sehen mehr fremden Verkehr"
+      "Er kann Teilnehmer beider IP-Subnetze innerhalb dieses VLANs erreichen.",
+      "Er bleibt allein aufgrund der IP-Präfixe auf eines der Subnetze beschränkt.",
+      "Er muss vor der Zustellung an jeden Teilnehmer vom Standardgateway geroutet werden.",
+      "Er wird nur von Teilnehmern empfangen, deren Standardgateway im ersten IP-Subnetz liegt."
     ],
     "correctAnswer": 0,
-    "explanation": "Kleinere Segmente können Verkehr und Datenstau reduzieren.",
+    "explanation": "IP-Subnetting allein trennt keine Ethernet-Broadcast-Domäne. Ob der empfangene Inhalt anschließend auf IP-Ebene verarbeitet wird, ist eine weitere Frage.",
     "source": "netzwerk.csv"
   },
   {
@@ -10021,111 +10021,111 @@ export default [
     "category": "Netzwerk",
     "topic": "Subnetting",
     "difficulty": "medium",
-    "question": "Welchen Sicherheitsvorteil kann die Segmentierung eines Netzwerks bieten?",
+    "question": "Ein Gastnetz und ein internes Netz liegen in getrennten VLANs und werden geroutet. Wie lässt sich der Zugriff der Gäste auf interne Server gezielt beschränken?",
     "answers": [
-      "Netzbereiche lassen sich voneinander trennen",
-      "Jeder Host kann automatisch alles mitlesen",
-      "Passwörter werden automatisch verschlüsselt",
-      "Firewalls werden überflüssig"
+      "Durch geeignete Firewall- oder ACL-Regeln am kontrollierten Übergang.",
+      "Allein durch unterschiedliche IP-Präfixe bei uneingeschränkt erlaubtem Routing.",
+      "Allein durch unterschiedliche Namen der beiden WLAN-SSIDs.",
+      "Allein durch kürzere DHCP-Lease-Zeiten im Gastnetz."
     ],
     "correctAnswer": 0,
-    "explanation": "Segmentierung kann verhindern, dass Geräte fremden Datenverkehr einfach mitverfolgen.",
+    "explanation": "Trennung schafft kontrollierbare Übergänge. Die gewünschte Zugriffspolitik muss dort mit passenden Regeln durchgesetzt werden.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-232",
     "category": "Netzwerk",
-    "topic": "Subnetting",
+    "topic": "IPv6",
     "difficulty": "medium",
-    "question": "Welche Angabe beschreibt die Länge des Netzanteils einer IPv4-Adresse?",
+    "question": "Wie lang ist eine vollständige IPv6-Adresse?",
     "answers": [
-      "Prefix wie /24",
-      "MAC-Adresse",
-      "Portnummer",
-      "DNS-Name"
+      "128 Bit",
+      "32 Bit",
+      "48 Bit",
+      "64 Bit"
     ],
     "correctAnswer": 0,
-    "explanation": "Die Präfixlänge gibt die Zahl der Netzbits an.",
+    "explanation": "Eine IPv6-Adresse umfasst 128 Bit. Eine Präfixlänge wie /64 bezeichnet nur den Präfixanteil, nicht die Gesamtlänge der Adresse.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-233",
     "category": "Netzwerk",
-    "topic": "Subnetting",
+    "topic": "IPv6",
     "difficulty": "medium",
-    "question": "Welche Subnetzmaske gehört zu /24?",
+    "question": "Warum darf die Nullgruppen-Abkürzung :: in einer einzelnen IPv6-Adresse höchstens einmal vorkommen?",
     "answers": [
-      "255.0.0.0",
-      "255.255.0.0",
-      "255.255.255.0",
-      "255.255.255.254"
+      "Sonst wäre die Verteilung der ausgelassenen Nullgruppen nicht eindeutig.",
+      "Weil :: stets genau eine Nullgruppe ersetzt und längere Folgen nicht darstellen kann.",
+      "Weil IPv6-Adressen höchstens eine Nullgruppe enthalten dürfen.",
+      "Weil jede Abkürzung automatisch eine neue Präfixlänge festlegt."
     ],
-    "correctAnswer": 2,
-    "explanation": "/24 entspricht 24 gesetzten Netzbits und damit 255.255.255.0.",
+    "correctAnswer": 0,
+    "explanation": ":: ersetzt eine zusammenhängende Folge von Nullgruppen. Zwei solche Stellen ließen nicht eindeutig erkennen, wie viele Gruppen jeweils fehlen.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-234",
     "category": "Netzwerk",
-    "topic": "Subnetting",
-    "difficulty": "hard",
-    "question": "Im Netz 192.168.10.0/24: Welche Adresse ist die Broadcastadresse?",
+    "topic": "IPv6",
+    "difficulty": "medium",
+    "question": "Welche Aussage über Broadcast bei IPv6 ist korrekt?",
     "answers": [
-      "192.168.10.0",
-      "192.168.10.1",
-      "192.168.10.254",
-      "192.168.10.255"
+      "IPv6 hat keine Broadcastadressen; entsprechende Gruppenfunktionen nutzen Multicast.",
+      "IPv6 verwendet ::1 als Broadcastadresse für den gesamten Link.",
+      "IPv6 verwendet die höchste Adresse jedes /64-Präfixes als Broadcast.",
+      "IPv6 verwendet eine Adresse aus 128 gesetzten Bits als universellen Broadcast."
     ],
-    "correctAnswer": 3,
-    "explanation": "Bei diesem /24-Netz ist .255 die Broadcastadresse.",
+    "correctAnswer": 0,
+    "explanation": "IPv6 ersetzt Broadcastfunktionen durch geeignete Multicastgruppen. ::1 ist Loopback und keine Gruppenadresse.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-235",
     "category": "Netzwerk",
-    "topic": "Subnetting",
-    "difficulty": "hard",
-    "question": "Im Netz 192.168.10.0/24: Welche Adresse ist die Netzadresse?",
+    "topic": "IPv6",
+    "difficulty": "medium",
+    "question": "Über welche regulären Nachrichten lernt ein IPv6-Host automatisch verfügbare Standardrouter auf seinem Link?",
     "answers": [
-      "192.168.10.0",
-      "192.168.10.1",
-      "192.168.10.128",
-      "192.168.10.255"
+      "ICMPv6 Router Advertisements.",
+      "ICMPv6 Neighbor Advertisements ohne Router Advertisement.",
+      "DHCPv6-Reply-Nachrichten zur reinen Adressvergabe.",
+      "ICMPv6 Echo Replies des nächstgelegenen Hosts."
     ],
     "correctAnswer": 0,
-    "explanation": "Die Adresse mit allen Hostbits 0 ist die Netzadresse.",
+    "explanation": "Router Advertisements können einen Router mit entsprechender Lebensdauer als Standardrouter bekannt machen. DHCPv6 allein liefert im üblichen Verfahren keinen Standardgateway-Eintrag.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-236",
     "category": "Netzwerk",
-    "topic": "Subnetting",
-    "difficulty": "hard",
-    "question": "Welche Aussage zu /24 ist richtig?",
+    "topic": "IPv6",
+    "difficulty": "medium",
+    "question": "Welche der folgenden IPv6-Adressen ist eine Link-Local-Unicast-Adresse?",
     "answers": [
-      "24 Bit gehören zum Netzanteil",
-      "24 Hosts sind maximal erlaubt",
-      "24 Bit gehören ausschließlich zum Hostanteil",
-      "Port 24 wird reserviert"
+      "fe80::1234",
+      "2001:db8::1234",
+      "ff02::1",
+      "::1"
     ],
     "correctAnswer": 0,
-    "explanation": "Die Präfixlänge /24 bezeichnet 24 Netzbits.",
+    "explanation": "fe80::1234 liegt im Link-Local-Bereich. ff02::1 ist Multicast, ::1 Loopback und 2001:db8::/32 ist für Dokumentationsbeispiele vorgesehen.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-237",
     "category": "Netzwerk",
-    "topic": "Subnetting",
-    "difficulty": "hard",
-    "question": "Warum teilt man große Netze häufig in kleinere Subnetze?",
+    "topic": "DHCP",
+    "difficulty": "medium",
+    "question": "Ein DHCPv4-Server steht in einem anderen IP-Subnetz als die Clients. Welche Funktion ermöglicht die reguläre Vermittlung ihrer anfänglichen DHCP-Broadcasts zum Server?",
     "answers": [
-      "Um Struktur, Performance und Trennung zu verbessern",
-      "Um DNS abzuschaffen",
-      "Um MAC-Adressen zu ersetzen",
-      "Damit alle Hosts dieselbe Broadcastadresse weltweit verwenden"
+      "Ein passend konfigurierter DHCP-Relay-Agent.",
+      "Eine DHCP-Reservierung ohne Relay-Agent",
+      "Eine längere DHCP-Lease-Dauer ohne Relay-Agent",
+      "Gewöhnliches IP-Routing ohne Relay-Agent"
     ],
     "correctAnswer": 0,
-    "explanation": "Subnetting verbessert Strukturierung, reduziert unnötigen Verkehr und ermöglicht Trennung.",
+    "explanation": "Ein Relay vermittelt DHCP-Nachrichten zwischen Clientnetz und Server. Router leiten lokale DHCP-Broadcasts nicht einfach wie gewöhnlichen Unicast weiter.",
     "source": "netzwerk.csv"
   },
   {
@@ -10163,17 +10163,17 @@ export default [
   {
     "id": "netzwerk-240",
     "category": "Netzwerk",
-    "topic": "CSMA",
+    "topic": "WLAN",
     "difficulty": "medium",
-    "question": "Was macht CSMA/CA vor dem Senden?",
+    "question": "Zwei WLAN-Stationen erreichen denselben Access Point, können sich gegenseitig aber nicht hören. Warum können ihre Übertragungen dennoch kollidieren?",
     "answers": [
-      "Es prüft, ob das Medium frei ist",
-      "Es ändert die IP-Adresse",
-      "Es verschlüsselt das Paket",
-      "Es setzt den DNS-Cache zurück"
+      "Beide können das Medium lokal für frei halten und gleichzeitig zum Access Point senden.",
+      "Der Access Point kann aufgrund derselben SSID keine Frames verschiedener Sender unterscheiden.",
+      "Das Abhören prüft nur die Auslastung des IP-Routers, nicht das lokale Funkmedium.",
+      "Die gegenseitige Funkabschattung sorgt zwangsläufig für identische Backoff-Werte."
     ],
     "correctAnswer": 0,
-    "explanation": "CSMA/CA versucht eine Kollision vorab zu vermeiden.",
+    "explanation": "Beim Hidden-Node-Problem erkennen Stationen die Übertragungen der jeweils anderen nicht. Ihre Signale können sich trotzdem am gemeinsamen Empfänger überlagern.",
     "source": "netzwerk.csv"
   },
   {
@@ -10184,9 +10184,9 @@ export default [
     "question": "Nach einer erkannten Kollision sendet eine Ethernet-Station ein Jam-Signal und bricht die Übertragung ab. Was bestimmt, wann sie erneut sendet?",
     "answers": [
       "Eine zufällige Backoff-Zeit",
-      "Eine neue IP-Adresse",
-      "Eine Bestätigung des DNS-Servers",
-      "Ein Wechsel der MAC-Adresse"
+      "Ein für alle beteiligten Stationen identischer fester Soforttermin.",
+      "Eine anhand der Quell-MAC dauerhaft festgelegte Wartezeit.",
+      "Ein vom Empfänger nach jeder Kollision zugewiesener exklusiver Zeitschlitz."
     ],
     "correctAnswer": 0,
     "explanation": "CSMA/CD verwendet vor dem erneuten Sendeversuch eine zufällige Wartezeit. Der binäre exponentielle Backoff vergrößert nach weiteren Kollisionen den möglichen Wartebereich.",
@@ -10195,65 +10195,65 @@ export default [
   {
     "id": "netzwerk-242",
     "category": "Netzwerk",
-    "topic": "CSMA",
+    "topic": "WLAN",
     "difficulty": "medium",
-    "question": "Welches Zugriffsverfahren wird WLAN zugeordnet?",
+    "question": "Welche optionale WLAN-Funktion kann die Auswirkungen versteckter Stationen auf längere Datenübertragungen verringern?",
     "answers": [
-      "CSMA/CA",
-      "CSMA/CD",
-      "POP3",
-      "ARP"
+      "Ein RTS/CTS-Austausch vor der Datenübertragung.",
+      "Das Abschalten der physikalischen Trägerprüfung.",
+      "Das Verbergen des SSID-Namens in regulären Beacons.",
+      "Eine identische feste Backoff-Zeit für alle Stationen."
     ],
     "correctAnswer": 0,
-    "explanation": "WLAN verwendet Collision Avoidance, also CSMA/CA.",
+    "explanation": "RTS/CTS kann das Medium über kurze Kontrollframes reservieren und Hidden-Node-Konflikte verringern. Das Verfahren verursacht Zusatzaufwand und beseitigt nicht jede Störung.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-243",
     "category": "Netzwerk",
-    "topic": "CSMA",
+    "topic": "Link Aggregation",
     "difficulty": "medium",
-    "question": "Welches Zugriffsverfahren wird klassisch kabelgebundenem Ethernet zugeordnet?",
+    "question": "Zwei 1-Gbit/s-Links bilden ein Aggregat. Jeder Datenfluss wird per Hash vollständig einem Mitgliedslink zugeordnet. Welche Aussage zu einem einzelnen großen Datenfluss ist richtig?",
     "answers": [
-      "CSMA/CA",
-      "CSMA/CD",
-      "SIP",
-      "DNS"
+      "Er bleibt auf die Kapazität seines ausgewählten 1-Gbit/s-Links begrenzt.",
+      "Er nutzt automatisch beide Links gleichzeitig mit insgesamt 2 Gbit/s.",
+      "Er wechselt für jedes Byte abwechselnd zwischen beiden Links.",
+      "Er muss auf beiden Links vollständig doppelt übertragen werden."
     ],
-    "correctAnswer": 1,
-    "explanation": "Klassisches kabelgebundenes Ethernet verwendet Collision Detection, also CSMA/CD.",
+    "correctAnswer": 0,
+    "explanation": "Bei einer Zuordnung pro Datenfluss nutzt ein einzelner Flow nur einen Mitgliedslink. Mehrere geeignet verteilte Flows können zusammen die Kapazität mehrerer Links nutzen.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-244",
     "category": "Netzwerk",
-    "topic": "CSMA",
-    "difficulty": "hard",
-    "question": "Warum ist 'erst lauschen, dann senden' typisch für CSMA/CA?",
+    "topic": "WLAN",
+    "difficulty": "medium",
+    "question": "Nach einem WLAN-Unicast bleibt die erwartete Empfangsbestätigung aus. Was lässt sich daraus sicher schließen?",
     "answers": [
-      "Weil Kollisionen möglichst vor dem Senden vermieden werden sollen",
-      "Weil IP-Adressen überprüft werden",
-      "Weil DNS langsamer ist",
-      "Weil jedes Paket verschlüsselt werden muss"
+      "Die erfolgreiche Übertragung wurde dem Sender nicht bestätigt.",
+      "Es hat mit Sicherheit eine Kollision mit genau einer anderen Station stattgefunden.",
+      "Der Empfänger hat den Datenframe mit Sicherheit nie erhalten.",
+      "Die IP-Adresse des Empfängers ist mit Sicherheit falsch."
     ],
     "correctAnswer": 0,
-    "explanation": "Collision Avoidance versucht Konflikte vorab zu vermeiden.",
+    "explanation": "Datenframe oder ACK können verloren gegangen sein, etwa durch Störungen. Ein fehlendes ACK beweist daher weder eine bestimmte Ursache noch das sichere Ausbleiben des Datenempfangs.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-245",
     "category": "Netzwerk",
     "topic": "CSMA",
-    "difficulty": "hard",
-    "question": "Welche Aussage beschreibt den Unterschied am besten?",
+    "difficulty": "medium",
+    "question": "Worin unterscheiden sich CSMA/CA und CSMA/CD?",
     "answers": [
       "CA versucht Kollisionen zu vermeiden, CD erkennt sie während der Übertragung",
-      "CA arbeitet nur mit E-Mail, CD nur mit Webseiten",
-      "CA vergibt IPs, CD vergibt MACs",
-      "Beide sind identisch"
+      "CA erkennt Kollisionen sicher während des eigenen Sendens; CD arbeitet nur mit vorab verteilten Tokens.",
+      "CA und CD vermeiden jede Kollision allein durch das Abhören eines freien Mediums.",
+      "CA und CD beginnen jeden Sendeversuch ohne vorherige Prüfung des gemeinsam genutzten Mediums."
     ],
     "correctAnswer": 0,
-    "explanation": "Das ist der zentrale Unterschied zwischen Avoidance und Detection.",
+    "explanation": "Beide prüfen das gemeinsam genutzte Medium. CSMA/CA versucht Kollisionen durch abgestimmtes Warten zu vermeiden; CSMA/CD erkennt sie während des Sendens und bricht die Übertragung ab.",
     "source": "netzwerk.csv"
   },
   {
@@ -10275,33 +10275,33 @@ export default [
   {
     "id": "netzwerk-247",
     "category": "Netzwerk",
-    "topic": "FTP-SFTP",
+    "topic": "FTP",
     "difficulty": "medium",
-    "question": "Welche Aufgabe erfüllt FTP?",
+    "question": "Welche Aussage über klassisches FTP ist korrekt?",
     "answers": [
-      "Dateien zwischen Client und Server übertragen",
-      "Domains auflösen",
-      "E-Mails synchronisieren",
-      "VoIP-Sitzungen starten"
+      "Steuerkommandos und Dateidaten werden über getrennte TCP-Verbindungen übertragen.",
+      "Steuerkommandos und Dateidaten verwenden grundsätzlich dieselbe TCP-Verbindung.",
+      "Der Steuerkanal wird vor jedem Datenkanal zwingend dauerhaft geschlossen.",
+      "Der Datenkanal muss bei aktivem und passivem FTP stets denselben Server-Zielport verwenden."
     ],
     "correctAnswer": 0,
-    "explanation": "FTP dient dem Upload und Download von Dateien.",
+    "explanation": "FTP trennt den Steuerkanal vom Datenkanal. Deshalb kann eine Anmeldung funktionieren, obwohl eine Datenverbindung durch Netz- oder Filterkonfiguration scheitert.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-248",
     "category": "Netzwerk",
-    "topic": "FTP-SFTP",
+    "topic": "FTP",
     "difficulty": "medium",
-    "question": "Was ist das zentrale Sicherheitsproblem von normalem FTP?",
+    "question": "Wer baut bei passivem FTP die TCP-Datenverbindung auf?",
     "answers": [
-      "Daten und Passwörter können unverschlüsselt übertragen werden",
-      "Es kann keine Ordner übertragen",
-      "Es funktioniert nur auf einem PC",
-      "Es hat keine Serverunterstützung"
+      "Der Client verbindet sich mit dem vom Server angekündigten Datenport.",
+      "Der Server verbindet sich mit einem vom Client angekündigten Datenport.",
+      "Der Server verbindet sich immer von seinem Steuerport mit dem Client-Steuerport.",
+      "Client und Server verwenden die bestehende Steuerverbindung ohne separaten Datenkanal."
     ],
     "correctAnswer": 0,
-    "explanation": "Normales FTP überträgt Informationen typischerweise unverschlüsselt.",
+    "explanation": "Im passiven Modus stellt der Server einen Datenport bereit, zu dem der Client eine Verbindung aufbaut. Passende Server- und Firewallkonfiguration bleibt erforderlich.",
     "source": "netzwerk.csv"
   },
   {
@@ -10323,49 +10323,49 @@ export default [
   {
     "id": "netzwerk-250",
     "category": "Netzwerk",
-    "topic": "FTP-SFTP",
+    "topic": "SFTP",
     "difficulty": "medium",
-    "question": "Was macht SFTP sicherer als klassisches FTP?",
+    "question": "Ein Client unterstützt ausschließlich klassisches FTP. Kann er allein durch Wahl von Port 22 mit einem gewöhnlichen SFTP-Dienst kommunizieren?",
     "answers": [
-      "Es nutzt einen verschlüsselten SSH-Tunnel",
-      "Es verwendet ausschließlich Broadcasts",
-      "Es ersetzt IP-Adressen",
-      "Es nutzt POP3"
+      "Nein, er benötigt Unterstützung für SFTP über SSH.",
+      "Ja, die Portnummer übersetzt FTP-Kommandos automatisch in SFTP.",
+      "Ja, SFTP akzeptiert neben seinen eigenen Nachrichten unveränderte FTP-Kommandos.",
+      "Ja, sofern der FTP-Client lediglich TLS auf seinem Steuerkanal unterstützt."
     ],
     "correctAnswer": 0,
-    "explanation": "SFTP schützt die Übertragung durch SSH-Verschlüsselung.",
+    "explanation": "SFTP ist ein eigenes Dateiübertragungsprotokoll über SSH. Ein Wechsel des Ports macht einen reinen FTP-Client nicht zu einem SFTP-Client.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-251",
     "category": "Netzwerk",
-    "topic": "FTP-SFTP",
-    "difficulty": "hard",
-    "question": "Du lädst Firmen-Dokumente über ein öffentliches WLAN auf einen Server. Welche Variante ist sinnvoller?",
+    "topic": "SFTP",
+    "difficulty": "medium",
+    "question": "Eine Datei wird per SFTP sicher zu einem Server übertragen. Was folgt daraus über ihre Speicherung auf dem Server?",
     "answers": [
-      "FTP",
-      "SFTP",
-      "POP3",
-      "HTTP ohne TLS"
+      "Die Übertragung allein garantiert keine verschlüsselte Speicherung auf dem Server.",
+      "Die Datei ist auf dem Server automatisch mit dem SSH-Hostschlüssel verschlüsselt.",
+      "Auch ein berechtigter Serverprozess kann die gespeicherte Datei danach nicht mehr lesen.",
+      "Die gespeicherte Datei bleibt genau so lange verschlüsselt, wie die SSH-Verbindung besteht."
     ],
-    "correctAnswer": 1,
-    "explanation": "SFTP ist für verschlüsselte Dateiübertragung geeignet.",
+    "correctAnswer": 0,
+    "explanation": "SFTP schützt den Transport. Verschlüsselung im Ruhezustand, Dateiberechtigungen und Backups müssen auf dem Zielsystem gesondert geregelt werden.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-252",
     "category": "Netzwerk",
     "topic": "FTP-SFTP",
-    "difficulty": "hard",
-    "question": "Welche Aussage ist korrekt?",
+    "difficulty": "medium",
+    "question": "Welche Aussage vergleicht klassisches FTP ohne TLS mit SFTP korrekt?",
     "answers": [
-      "FTP und SFTP sind identisch verschlüsselt",
-      "FTP ist typischerweise Klartext, SFTP verschlüsselt",
-      "SFTP ist ein Mailprotokoll",
-      "FTP ist ein DNS-Dienst"
+      "Beide übertragen Zugangsdaten und Dateiinhalte ohne Verschlüsselung.",
+      "FTP bietet dabei keinen Verschlüsselungsschutz; SFTP schützt die Übertragung über SSH.",
+      "FTP verschlüsselt nur die Zugangsdaten; SFTP verschlüsselt nur die Dateiinhalte.",
+      "FTP schützt die Übertragung über SSH; SFTP benötigt dafür TLS."
     ],
     "correctAnswer": 1,
-    "explanation": "Der wesentliche Sicherheitsunterschied liegt in der verschlüsselten Übertragung durch SFTP.",
+    "explanation": "Klassisches FTP ohne TLS schützt Zugangsdaten und Dateiinhalt nicht durch Verschlüsselung. SFTP verwendet SSH für eine geschützte Dateiübertragung. FTP mit TLS wird als FTPS bezeichnet und ist ein anderes Verfahren.",
     "source": "netzwerk.csv"
   },
   {
@@ -10387,49 +10387,49 @@ export default [
   {
     "id": "netzwerk-255",
     "category": "Netzwerk",
-    "topic": "Netzwerkarten",
+    "topic": "Inter-VLAN-Routing",
     "difficulty": "medium",
-    "question": "Ein Bürogebäude mit PCs und Druckern bildet typischerweise welches Netz?",
+    "question": "Ein PC und ein Netzwerkdrucker liegen in unterschiedlichen VLANs und unterschiedlichen IPv4-Subnetzen. Welche Voraussetzung ist für regulären IP-Zugriff zwischen ihnen erforderlich?",
     "answers": [
-      "PAN",
-      "LAN",
-      "MAN",
-      "GAN"
+      "Passendes Layer-3-Routing und erlaubter Verkehr zwischen den Netzen.",
+      "Nur eine zusätzliche Layer-2-Trunk-Verbindung ohne Routing zwischen den Subnetzen.",
+      "Nur eine identische TCP-Portnummer auf PC und Drucker ohne passenden Routingpfad.",
+      "Nur einen statischen ARP-Eintrag für den Drucker ohne passende Route."
     ],
-    "correctAnswer": 1,
-    "explanation": "Ein Gebäude gehört typischerweise zu einem LAN.",
+    "correctAnswer": 0,
+    "explanation": "Verschiedene VLANs sind getrennte Layer-2-Domänen. Zwischen unterschiedlichen IP-Subnetzen benötigt der Zugriff einen passenden Routingpfad und zulässige Zugriffsregeln.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-256",
     "category": "Netzwerk",
-    "topic": "Netzwerkarten",
+    "topic": "Netzwerkleistung",
     "difficulty": "medium",
-    "question": "Ein Netz verbindet mehrere Standorte innerhalb einer Stadt. Welche Kategorie passt?",
+    "question": "Eine kleine Testnachricht benötigt 3 ms zum Ziel, ihre Antwort 5 ms zurück. Verarbeitung und weitere Wartezeiten seien vernachlässigbar. Wie groß ist die Round-Trip Time?",
     "answers": [
-      "PAN",
-      "LAN",
-      "MAN",
-      "GAN"
+      "8 ms",
+      "3 ms",
+      "4 ms",
+      "5 ms"
     ],
-    "correctAnswer": 2,
-    "explanation": "MAN deckt eine Stadt oder Region ab.",
+    "correctAnswer": 0,
+    "explanation": "Die RTT umfasst Hin- und Rückweg: 3 ms + 5 ms = 8 ms. Die beiden Richtungen müssen nicht dieselbe Verzögerung haben.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-257",
     "category": "Netzwerk",
-    "topic": "Netzwerkarten",
+    "topic": "VPN/Routing",
     "difficulty": "medium",
-    "question": "Mehrere Firmenstandorte in unterschiedlichen Bundesländern werden verbunden. Welche Kategorie passt am besten?",
+    "question": "Zwei Standorte verwenden beide 192.168.1.0/24 und sollen per Site-to-Site-VPN verbunden werden. Warum ist das bei gewöhnlichem Routing problematisch?",
     "answers": [
-      "PAN",
-      "LAN",
-      "WAN",
-      "Bluetooth"
+      "Lokale und entfernte Ziele können dieselben IPv4-Adressen besitzen.",
+      "Gleiche Präfixe ermöglichen automatisch eine eindeutige Unterscheidung zwischen lokalem und entferntem Ziel.",
+      "Private Adressen dürfen grundsätzlich nicht durch ein Site-to-Site-VPN transportiert werden.",
+      "Der VPN-Tunnel kann nur Netze mit unterschiedlich langen Präfixen verbinden."
     ],
-    "correctAnswer": 2,
-    "explanation": "WAN verbindet große geografische Entfernungen.",
+    "correctAnswer": 0,
+    "explanation": "Überlappende Adressräume verhindern eine eindeutige gewöhnliche Zielzuordnung. Häufig wird eine Seite umadressiert; speziell geplante Übersetzung kann eine Alternative sein.",
     "source": "netzwerk.csv"
   },
   {
@@ -10451,33 +10451,33 @@ export default [
   {
     "id": "netzwerk-259",
     "category": "Netzwerk",
-    "topic": "Netzwerkarten",
-    "difficulty": "hard",
-    "question": "Welcher Unterschied zwischen LAN und MAN ist am treffendsten?",
+    "topic": "Netzwerkleistung",
+    "difficulty": "medium",
+    "question": "Eine Datenübertragung durchläuft nacheinander Links mit 1 Gbit/s, 100 Mbit/s und 1 Gbit/s. Ohne Parallelwege und ohne sonstige Begrenzungen: Welche obere Grenze setzt der langsamste Link dem dauerhaften Durchsatz?",
     "answers": [
-      "LAN ist lokal begrenzt, MAN erstreckt sich über Stadt/Region",
-      "LAN ist immer drahtlos, MAN immer kabelgebunden",
-      "LAN hat keine IP-Adressen",
-      "MAN benötigt keine Router"
+      "100 Mbit/s",
+      "1 Gbit/s",
+      "2,1 Gbit/s",
+      "700 Mbit/s"
     ],
     "correctAnswer": 0,
-    "explanation": "Der wesentliche Unterschied ist die räumliche Ausdehnung.",
+    "explanation": "Ein durchgängiger Datenstrom muss jeden Link passieren. Der 100-Mbit/s-Link ist der Engpass; Protokollaufwand kann den Nutzdatendurchsatz weiter reduzieren.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-260",
     "category": "Netzwerk",
-    "topic": "Netzwerkarten",
-    "difficulty": "hard",
-    "question": "Welche Aussage ist FALSCH?",
+    "topic": "Netzwerkleistung",
+    "difficulty": "medium",
+    "question": "Was bezeichnet Jitter bei der Übertragung von Echtzeit-Audiodaten?",
     "answers": [
-      "PAN umfasst die direkte persönliche Umgebung",
-      "LAN kann ein Firmengelände abdecken",
-      "MAN kann eine Stadt verbinden",
-      "WAN ist kleiner als PAN"
+      "Schwankungen der Paketlaufzeiten beziehungsweise Ankunftsabstände.",
+      "Die mittlere konstante Verzögerung aller Pakete ohne zeitliche Schwankung.",
+      "Den Anteil vollständig verlorener Pakete an allen gesendeten Paketen.",
+      "Die maximal verfügbare Datenrate für den Audiostrom."
     ],
-    "correctAnswer": 3,
-    "explanation": "WAN deckt wesentlich größere Entfernungen als PAN ab.",
+    "correctAnswer": 0,
+    "explanation": "Zeitliche Schwankungen können die gleichmäßige Wiedergabe stören. Ein Jitterpuffer kann sie teilweise ausgleichen, erhöht dabei aber die Wiedergabeverzögerung.",
     "source": "netzwerk.csv"
   },
   {
@@ -10501,15 +10501,15 @@ export default [
     "category": "Netzwerk",
     "topic": "DNS",
     "difficulty": "medium",
-    "question": "Was liefert DNS typischerweise zu 'www.beispiel.de'?",
+    "question": "Eine DNS-Antwort ohne CNAME-Weiterleitung meldet für den abgefragten Namen NXDOMAIN. Was bedeutet dieser Status?",
     "answers": [
-      "Eine passende IP-Adresse",
-      "Eine MAC-Adresse des lokalen Switches",
-      "Ein Dateiformat",
-      "Eine Portfreigabe"
+      "Der angefragte Name existiert laut dieser DNS-Antwort nicht.",
+      "Der Name existiert, hat aber lediglich keinen AAAA-Eintrag.",
+      "Der DNS-Server hat überhaupt keine Antwort gesendet.",
+      "Die Antwort wurde ausschließlich wegen ihrer Größe über TCP übertragen."
     ],
     "correctAnswer": 0,
-    "explanation": "DNS übersetzt Namen in IP-Adressen.",
+    "explanation": "NXDOMAIN ist eine negative Antwort über die Existenz des Namens. Das Fehlen nur eines Record-Typs bei existierendem Namen ist davon zu unterscheiden.",
     "source": "netzwerk.csv"
   },
   {
@@ -10531,81 +10531,81 @@ export default [
   {
     "id": "netzwerk-264",
     "category": "Netzwerk",
-    "topic": "DNS",
-    "difficulty": "hard",
-    "question": "Was macht 'nslookup www.google.de'?",
+    "topic": "DNS-Diagnose",
+    "difficulty": "medium",
+    "question": "Was bewirkt unter Windows der Befehl nslookup example.com 192.0.2.53?",
     "answers": [
-      "Fragt DNS-Informationen bzw. die IP zum Namen ab",
-      "Löscht die Netzwerkkarte",
-      "Startet einen FTP-Upload",
-      "Zeigt nur MAC-Adressen"
+      "Er fragt example.com gezielt beim DNS-Server 192.0.2.53 ab.",
+      "Er trägt 192.0.2.53 dauerhaft als IP-Adresse von example.com in die Hosts-Datei ein.",
+      "Er ändert den DNS-Server aller Netzwerkadapter dauerhaft auf 192.0.2.53.",
+      "Er fragt den Namen von 192.0.2.53 ab und verwendet example.com dafür als DNS-Server."
     ],
     "correctAnswer": 0,
-    "explanation": "nslookup wird zur DNS-/Namensauflösungsanalyse verwendet.",
+    "explanation": "Das zweite Argument bezeichnet den für diese Abfrage verwendeten DNS-Server. Der Befehl ändert dadurch nicht die dauerhafte Adapterkonfiguration.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-265",
     "category": "Netzwerk",
-    "topic": "DNS",
-    "difficulty": "hard",
-    "question": "Was zeigt 'tracert' primär?",
+    "topic": "MTU-Diagnose",
+    "difficulty": "medium",
+    "question": "Ein Router kann ein IPv4-Unicast-Paket wegen einer kleineren Ausgangs-MTU nicht weiterleiten; DF ist gesetzt. Welche reguläre Reaktion unterstützt die Path MTU Discovery?",
     "answers": [
-      "Die Zwischenstationen/Hops zum Ziel",
-      "Die IMAP-Mailbox",
-      "Die CPU-Auslastung",
-      "Die Subnetzmaske eines fremden Servers automatisch"
+      "Paket verwerfen und ICMP Destination Unreachable mit Fragmentation Needed zurückmelden.",
+      "Das Paket trotz gesetztem DF fragmentieren und die Fragmente weiterleiten.",
+      "Das DF-Bit löschen und das Paket ohne Größenprüfung unverändert weiterleiten.",
+      "ICMP Time Exceeded zurückmelden, obwohl die TTL nicht abgelaufen ist."
     ],
     "correctAnswer": 0,
-    "explanation": "tracert zeigt den Weg über mehrere Stationen zum Ziel.",
+    "explanation": "Bei gesetztem DF darf der Router das Paket nicht fragmentieren. Die ICMP-Meldung informiert den Absender über das Größenproblem und kann die Anpassung der Paketgröße ermöglichen.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-266",
     "category": "Netzwerk",
-    "topic": "DNS",
-    "difficulty": "hard",
-    "question": "Welche Aussage ist FALSCH?",
+    "topic": "DNS/HTTP",
+    "difficulty": "medium",
+    "question": "Ein Browser öffnet https://example.com/docs/start.html. Welcher Teil wird für eine gewöhnliche DNS-Adressabfrage des Zielhosts verwendet?",
     "answers": [
-      "DNS hilft bei der Namensauflösung",
-      "DNS verwendet standardmäßig Port 53",
-      "DNS sagt dem Webserver direkt, welche Datei er ausliefern soll",
-      "nslookup kann DNS-Antworten prüfen"
+      "example.com",
+      "https://example.com/docs/start.html",
+      "/docs/start.html",
+      "https"
     ],
-    "correctAnswer": 2,
-    "explanation": "DNS findet Adressen; es steuert nicht die Webanwendung.",
+    "correctAnswer": 0,
+    "explanation": "Die DNS-Adressauflösung betrifft den Hostnamen. Der Pfad wird anschließend im HTTP-Austausch verwendet; das URL-Schema bestimmt unter anderem das Zugriffsverfahren.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-267",
     "category": "Netzwerk",
-    "topic": "E-Mail-Protokolle",
+    "topic": "SMTP",
     "difficulty": "medium",
-    "question": "Welches Protokoll würdest du zum Versenden einer E-Mail verwenden?",
+    "question": "Ein SMTP-Server weist einen Zustellversuch mit einem 4xx-Status vorübergehend zurück. Welche Behandlung passt grundsätzlich dazu?",
     "answers": [
-      "SMTP",
-      "IMAP",
-      "POP3",
-      "DNS"
+      "Ein späterer erneuter Zustellversuch nach den Regeln der Warteschlange.",
+      "Die Nachricht als erfolgreich zugestellt und gelesen markieren.",
+      "Unbegrenzt und ohne Wartezeit erneut senden, bis irgendeine Antwort eintrifft.",
+      "Den Fehler grundsätzlich wie eine endgültige 5xx-Ablehnung behandeln."
     ],
     "correctAnswer": 0,
-    "explanation": "SMTP dient dem Versand.",
+    "explanation": "4xx steht für einen vorübergehenden negativen Abschluss. Ein sendender Mailserver kann nach angemessener Wartezeit erneut versuchen; dauerhaft erfolglose Zustellung muss schließlich gemeldet werden.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-268",
     "category": "Netzwerk",
-    "topic": "E-Mail-Protokolle",
+    "topic": "IMAP",
     "difficulty": "medium",
-    "question": "Welches Protokoll lässt E-Mails auf dem Server und synchronisiert mehrere Geräte?",
+    "question": "Ein Client legt per IMAP eine Nachricht im Ordner Gesendet ab. Was beweist dieser Vorgang allein über die Zustellung an die Empfänger?",
     "answers": [
-      "SMTP",
-      "IMAP",
-      "POP3",
-      "FTP"
+      "Er beweist keine Zustellung; das Speichern einer Kopie ist vom Versand getrennt.",
+      "Er beweist, dass alle Empfänger die Nachricht bereits gelesen haben.",
+      "Er beweist, dass der SMTP-Server die Nachricht zum Versand angenommen hat.",
+      "Er beweist, dass die Nachricht bereits in allen Empfängerpostfächern liegt."
     ],
-    "correctAnswer": 1,
-    "explanation": "IMAP hält den Zustand der Mailbox serverseitig synchron.",
+    "correctAnswer": 0,
+    "explanation": "IMAP kann eine Kopie in einem Serverordner speichern. Daraus folgt keine SMTP-Annahme oder Zustellung; dafür müssen die Ergebnisse des Versandvorgangs geprüft werden.",
     "source": "netzwerk.csv"
   },
   {
@@ -10627,49 +10627,305 @@ export default [
   {
     "id": "netzwerk-270",
     "category": "Netzwerk",
-    "topic": "E-Mail-Protokolle",
-    "difficulty": "hard",
-    "question": "Du liest eine Mail auf dem Handy; am Laptop ist sie sofort ebenfalls als gelesen markiert. Warum?",
+    "topic": "IMAP",
+    "difficulty": "medium",
+    "question": "Ein IMAP-Client blendet als gelöscht markierte Nachrichten aus. Warum kann der belegte Speicherplatz auf dem Server trotzdem unverändert bleiben?",
     "answers": [
-      "Weil IMAP synchronisiert",
-      "Weil SMTP synchronisiert",
-      "Weil POP3 broadcastet",
-      "Weil DNS den Status speichert"
+      "Die Löschmarkierung allein entfernt die Nachrichten noch nicht aus dem Postfach.",
+      "Der Speicher wird erst durch das Leeren des lokalen Client-Caches freigegeben.",
+      "IMAP schreibt nach jeder Löschmarkierung eine feste Wartezeit von 24 Stunden vor.",
+      "Der Server benötigt zusätzlich eine SMTP-Bestätigung für jede gelöschte Nachricht."
     ],
     "correctAnswer": 0,
-    "explanation": "IMAP synchronisiert Änderungen über mehrere Geräte.",
+    "explanation": "Als gelöscht markierte IMAP-Nachrichten können weiterhin im Postfach liegen. Erst ihre Entfernung, etwa durch EXPUNGE, beseitigt sie aus diesem Postfach; die Oberfläche kann Markierung und Entfernung getrennt ausführen.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-271",
     "category": "Netzwerk",
-    "topic": "E-Mail-Protokolle",
-    "difficulty": "hard",
-    "question": "Welche Aussage ist korrekt?",
+    "topic": "E-Mail-Diagnose",
+    "difficulty": "medium",
+    "question": "Ein Mailclient ruft Nachrichten erfolgreich per IMAP ab. Beim SMTP-Versand erreicht er den Submission-Server, der die Anmeldung ausdrücklich ablehnt. Was sollte zuerst geprüft werden?",
     "answers": [
-      "SMTP sendet, IMAP und POP3 dienen dem Abruf",
-      "IMAP sendet, SMTP löst Namen auf",
-      "POP3 verschlüsselt Webseiten",
-      "DNS synchronisiert E-Mails"
+      "Die SMTP-Anmeldeangaben und die Berechtigung zur Message Submission.",
+      "Ausschließlich die Abonnementliste der bereits lesbaren IMAP-Ordner.",
+      "Ausschließlich die DNS-Auflösung, obwohl die Ablehnung vom gewünschten SMTP-Server stammt.",
+      "Die Möglichkeit, unveränderte SMTP-Kommandos an den IMAP-Abrufport zu schicken."
     ],
     "correctAnswer": 0,
-    "explanation": "SMTP ist für Versand, IMAP/POP3 für Abruf.",
+    "explanation": "Abruf und Submission sind getrennte Dienste und können unterschiedliche Einstellungen verlangen. Die konkrete Ablehnung weist auf die SMTP-Authentisierung beziehungsweise deren Zulässigkeit hin.",
     "source": "netzwerk.csv"
   },
   {
     "id": "netzwerk-272",
     "category": "Netzwerk",
-    "topic": "E-Mail-Protokolle",
-    "difficulty": "hard",
-    "question": "Für eine Nutzerin mit Handy, Tablet und Laptop: Welche Empfehlung passt am besten?",
+    "topic": "IMAP",
+    "difficulty": "medium",
+    "question": "Wozu dient der IMAP-Befehl IDLE bei einer bestehenden unterstützten Verbindung?",
     "answers": [
-      "IMAP, weil die Mailbox synchron bleibt",
-      "POP3, weil jede Mail nur auf einem Gerät liegen soll",
-      "FTP, weil es E-Mails sortiert",
-      "DNS, weil es gelesen/ungelesen synchronisiert"
+      "Er ermöglicht dem Server, Änderungen mitzuteilen, ohne ständig neue Polling-Kommandos zu benötigen.",
+      "Er veranlasst den Server, die TCP-Verbindung für jede Änderung neu zum Client aufzubauen.",
+      "Er aktiviert regelmäßige vollständige Downloads aller Nachrichten unabhängig von Änderungen.",
+      "Er ersetzt die serverseitigen Zustandsmeldungen durch lokale Cache-Prüfungen ohne Serverkontakt."
     ],
     "correctAnswer": 0,
-    "explanation": "Für mehrere Geräte ist IMAP die passende Wahl.",
+    "explanation": "Im IDLE-Modus kann der Server dem verbundenen Client etwa Mailboxänderungen melden. Das garantiert keine sofortige Synchronisation eines ausgeschalteten oder getrennten Geräts.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-273",
+    "category": "Netzwerk",
+    "topic": null,
+    "difficulty": "medium",
+    "question": "Ein IPv4-Host soll ein Ziel außerhalb seines lokalen Subnetzes erreichen. Eine spezifische Route ist nicht eingerichtet. Welche Gateway-Angabe benötigt seine Standardroute?",
+    "answers": [
+      "Die Adresse eines erreichbaren Routers im lokalen Netz.",
+      "Die Adresse des für Namensauflösung verwendeten DNS-Servers.",
+      "Die Adresse des für die Adressvergabe verwendeten DHCP-Servers.",
+      "Die Broadcastadresse des lokalen Subnetzes."
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die Standardroute führt über einen erreichbaren nächsten Router. DNS- und DHCP-Server haben andere Aufgaben; die Broadcastadresse ist kein geeigneter nächster Hop.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-274",
+    "category": "Netzwerk",
+    "topic": null,
+    "difficulty": "medium",
+    "question": "Ein Layer-2-Switch erhält einen Unicast-Frame mit noch unbekannter Ziel-MAC-Adresse. Wie behandelt er ihn im normalen Weiterleitungsbetrieb?",
+    "answers": [
+      "Er flutet ihn über die weiterleitenden Ports desselben VLANs außer dem Eingangsport.",
+      "Er lernt die Ziel-MAC-Adresse am Eingangsport und sendet ihn dorthin zurück.",
+      "Er puffert ihn grundsätzlich, bis die Zieladresse durch einen späteren Quellframe gelernt wird.",
+      "Er ersetzt die Ziel-MAC-Adresse durch die MAC-Adresse des Standardgateways."
+    ],
+    "correctAnswer": 0,
+    "explanation": "Unbekannter Unicast wird normalerweise innerhalb des VLANs geflutet. Ein Switch lernt MAC-Adressen anhand der Quelladresse empfangener Frames und ihres Eingangsports.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-275",
+    "category": "Netzwerk",
+    "topic": null,
+    "difficulty": "medium",
+    "question": "Wie können mehrere private IPv4-Clients bei NAPT/PAT gleichzeitig TCP-Verbindungen über dieselbe öffentliche IPv4-Adresse nutzen?",
+    "answers": [
+      "Die Übersetzungstabelle ordnet interne Verbindungen unterschiedlichen externen Quellports zu.",
+      "Der Router setzt alle internen und externen TCP-Quellports auf denselben festen Wert.",
+      "Die Clients müssen dieselbe private IPv4-Adresse und dieselbe MAC-Adresse verwenden.",
+      "Die Zuordnung erfolgt ausschließlich über den DNS-Namen des entfernten Servers."
+    ],
+    "correctAnswer": 0,
+    "explanation": "NAPT/PAT übersetzt Adressen und Transportportnummern. Zusammen mit dem Protokoll und den beteiligten Endpunkten ermöglichen Tabelleneinträge die Zuordnung des Rückverkehrs.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-276",
+    "category": "Netzwerk",
+    "topic": "Switching",
+    "difficulty": "medium",
+    "question": "Ein dynamischer MAC-Eintrag wurde auf einem Switch durch Aging entfernt. Ein Unicast-Frame für diese MAC kommt an, bevor die Adresse erneut gelernt wurde. Was geschieht im normalen Betrieb?",
+    "answers": [
+      "Der Frame wird innerhalb seines VLANs über die anderen weiterleitenden Ports geflutet.",
+      "Der Frame wird weiterhin ausschließlich über den früher gespeicherten Port gesendet.",
+      "Der Frame wird grundsätzlich bis zum nächsten Frame des Zielgeräts gepuffert.",
+      "Der Frame wird wegen des abgelaufenen MAC-Eintrags grundsätzlich verworfen."
+    ],
+    "correctAnswer": 0,
+    "explanation": "Nach Ablauf des dynamischen Eintrags ist das Ziel unbekannt. Normales Unknown-Unicast-Flooding gilt, bis ein neuer Quellframe die Zuordnung wieder lernen lässt.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-277",
+    "category": "Netzwerk",
+    "topic": null,
+    "difficulty": "medium",
+    "question": "Zwei Hosts besitzen gültige IPv4-Link-Local-Adressen 169.254.44.18/16 und 169.254.60.20/16 auf demselben Ethernet-Link. Es gibt keine Filter. Welche Kommunikation ist damit möglich?",
+    "answers": [
+      "Die Hosts können direkt miteinander über diesen Link kommunizieren.",
+      "Die Hosts benötigen für ihre direkte Kommunikation zwingend ein Standardgateway.",
+      "Die Hosts erreichen damit über gewöhnliches IP-Routing beliebige Internetziele.",
+      "Die Hosts benötigen wegen der unterschiedlichen dritten Oktette einen Router."
+    ],
+    "correctAnswer": 0,
+    "explanation": "Beide Adressen gehören zum selben Link-Local-Präfix. Direkte Kommunikation auf dem Link ist möglich; Router leiten IPv4-Link-Local-Verkehr nicht regulär in andere Links weiter.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-278",
+    "category": "Netzwerk",
+    "topic": null,
+    "difficulty": "medium",
+    "question": "Ein IPv4-Subnetz benötigt mindestens 100 nutzbare Hostadressen. Welches Präfix liefert im klassischen Modell mit Netz- und Broadcastadresse das kleinste passende Subnetz?",
+    "answers": [
+      "/25",
+      "/26",
+      "/27",
+      "/24"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ein /25 hat 128 Adressen und klassisch 126 nutzbare Hostadressen. Ein /26 bietet nur 62; ein /24 wäre größer als erforderlich.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-279",
+    "category": "Netzwerk",
+    "topic": "CIDR",
+    "difficulty": "hard",
+    "question": "Welches einzelne IPv4-Präfix fasst 192.168.50.0/26 und 192.168.50.64/26 exakt zusammen, ohne weitere Adressen einzuschließen?",
+    "answers": [
+      "192.168.50.0/25",
+      "192.168.50.0/24",
+      "192.168.50.128/25",
+      "192.168.50.0/27"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die beiden angrenzenden /26-Blöcke decken .0 bis .127 ab. Dieser korrekt ausgerichtete Bereich entspricht 192.168.50.0/25.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-280",
+    "category": "Netzwerk",
+    "topic": "IPv6",
+    "difficulty": "medium",
+    "question": "Welche IPv6-Adresse bezeichnet die Loopback-Schnittstelle des eigenen Hosts?",
+    "answers": [
+      "::1",
+      "::",
+      "fe80::1",
+      "ff02::1"
+    ],
+    "correctAnswer": 0,
+    "explanation": "::1 ist die IPv6-Loopbackadresse. :: ist die unspezifizierte Adresse, fe80::1 liegt im Link-Local-Bereich und ff02::1 adressiert alle Knoten auf dem lokalen Link.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-281",
+    "category": "Netzwerk",
+    "topic": "IPv4",
+    "difficulty": "hard",
+    "question": "Ein Host verwendet 192.168.10.70/26. Welche der folgenden Adressen ist als Routeradresse seines lokalen Standardgateways geeignet?",
+    "answers": [
+      "192.168.10.65",
+      "192.168.10.64",
+      "192.168.10.127",
+      "192.168.10.129"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Das Subnetz reicht von .64 bis .127; normale Hostadressen liegen zwischen .65 und .126. .64 ist Netzadresse, .127 Broadcast und .129 liegt im nächsten Subnetz.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-282",
+    "category": "Netzwerk",
+    "topic": "Kapselung",
+    "difficulty": "medium",
+    "question": "Ein Endsystem empfängt über Ethernet ein IPv4-Paket mit einem TCP-Segment. Was übergibt IPv4 nach seiner Verarbeitung an TCP?",
+    "answers": [
+      "Das im IPv4-Paket enthaltene TCP-Segment.",
+      "Den vollständigen Ethernet-Frame einschließlich FCS.",
+      "Nur die Anwendungsdaten ohne TCP-Header",
+      "Das vollständige IPv4-Paket einschließlich IP-Header"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Beim Entkapseln verarbeitet jede beteiligte Protokollinstanz ihre Steuerinformationen und übergibt die passende Nutzlast an das nächste Protokoll.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-283",
+    "category": "Netzwerk",
+    "topic": "Datendarstellung",
+    "difficulty": "medium",
+    "question": "Welches Ziel unterscheidet verlustfreie Kompression von Verschlüsselung?",
+    "answers": [
+      "Kompression reduziert bei geeigneten Daten die Größe, ohne die Information zu verlieren.",
+      "Kompression macht Daten ohne geheimen Schlüssel grundsätzlich unlesbar.",
+      "Kompression bestätigt die Identität des Kommunikationspartners.",
+      "Kompression verhindert gezielte Änderungen durch einen Angreifer."
+    ],
+    "correctAnswer": 0,
+    "explanation": "Verlustfreie Kompression ermöglicht die Wiederherstellung der Originaldaten und kann Übertragungsvolumen sparen. Sie bietet allein keine Vertraulichkeit, Authentizität oder Manipulationssicherheit.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-284",
+    "category": "Netzwerk",
+    "topic": "Verteilte Anwendungen",
+    "difficulty": "hard",
+    "question": "Eine Buchungs-API kann bei jedem Aufruf eine neue Buchung erzeugen. Der Client sendet eine Anfrage, erhält jedoch keine Antwort. Warum ist ein sofortiges Wiederholen riskant?",
+    "answers": [
+      "Die erste Buchung kann bereits erfolgt sein, obwohl die Antwort verloren ging.",
+      "Eine fehlende Antwort beweist, dass der Server die Anfrage nicht verarbeitet hat.",
+      "Eine neue Verbindung macht die vorherige Buchung automatisch ungültig.",
+      "Der Server erkennt wiederholte Aufträge auch ohne eindeutige Kennung immer automatisch."
+    ],
+    "correctAnswer": 0,
+    "explanation": "Eine fehlende Antwort beweist nicht, dass die Anfrage nicht verarbeitet wurde. Eine Wiederholung kann deshalb eine zweite Buchung erzeugen. Eindeutige Auftragskennungen oder eine idempotente Verarbeitung können solche Doppelbuchungen verhindern.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-285",
+    "category": "Netzwerk",
+    "topic": "SSH/SFTP",
+    "difficulty": "medium",
+    "question": "Ein SFTP-Client meldet bei einem bekannten Server einen unerwartet geänderten SSH-Hostschlüssel. Welche Reaktion ist sinnvoll?",
+    "answers": [
+      "Den neuen Fingerabdruck über einen unabhängigen vertrauenswürdigen Weg prüfen.",
+      "Den neuen Schlüssel ungeprüft akzeptieren, weil SFTP immer den richtigen Server erreicht.",
+      "Die Hostschlüsselprüfung dauerhaft deaktivieren und erneut verbinden.",
+      "Nur das Benutzerpasswort ändern und den neuen Schlüssel automatisch übernehmen."
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die Änderung kann berechtigt sein, aber auch auf eine falsche Gegenstelle hinweisen. Die Hostschlüsselprüfung authentisiert den Server und sollte unabhängig verifiziert werden.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-286",
+    "category": "Netzwerk",
+    "topic": "FTPS",
+    "difficulty": "medium",
+    "question": "Ein FTPS-Steuerkanal ist durch TLS geschützt. Was gilt für die separate Datenverbindung?",
+    "answers": [
+      "Ihre TLS-Absicherung muss ebenfalls ausgehandelt werden.",
+      "Sie ist allein durch den geschützten Steuerkanal automatisch verschlüsselt.",
+      "Sie übernimmt den Steuerkanal ohne eigenen Verbindungsaufbau.",
+      "Sie bleibt bei FTPS grundsätzlich unverschlüsselt."
+    ],
+    "correctAnswer": 0,
+    "explanation": "FTPS behandelt den Schutz von Steuer- und Datenkanal getrennt. Für verschlüsselte Dateiübertragungen muss auch der Datenkanal geschützt sein, beispielsweise nach Aushandlung von PROT P.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-287",
+    "category": "Netzwerk",
+    "topic": "DNS",
+    "difficulty": "medium",
+    "question": "Ein autoritativer DNS-A-Eintrag wurde geändert. Ein Resolver hat noch den früheren Wert mit verbleibender TTL im Cache. Warum kann ein Client vorübergehend noch die alte Adresse erhalten?",
+    "answers": [
+      "Der Resolver darf den noch gültigen gecachten Wert regulär weiterverwenden.",
+      "Ein autoritativer A-Eintrag darf nach seiner ersten Nutzung grundsätzlich nicht mehr geändert werden.",
+      "Eine neue Adresse wird erst wirksam, wenn zusätzlich der MX-Eintrag geändert wurde.",
+      "Eine Adressänderung setzt die TTL sämtlicher bereits gecachter Einträge automatisch auf null."
+    ],
+    "correctAnswer": 0,
+    "explanation": "Änderungen autoritativer Daten löschen entfernte Caches nicht automatisch. Vorhandene Einträge können bis zum Ablauf ihrer Cache-Gültigkeit weiterwirken.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-288",
+    "category": "Netzwerk",
+    "topic": "POP3",
+    "difficulty": "medium",
+    "question": "Ein POP3-Client hat Nachrichten zum Löschen markiert. Was löst im normalen Ablauf ihre Löschung aus?",
+    "answers": [
+      "Das reguläre Beenden der Abrufsitzung mit QUIT.",
+      "Bereits das vorherige Herunterladen der Nachrichten mit RETR.",
+      "Allein das Setzen der Löschmarkierung, unabhängig vom Sitzungsabschluss.",
+      "Ein unerwarteter Verbindungsabbruch vor dem regulären Abschluss."
+    ],
+    "correctAnswer": 0,
+    "explanation": "POP3 markiert Nachrichten zunächst zur Löschung. Bei regulärem Abschluss der Abrufsitzung mit QUIT verarbeitet der Server die Löschaufträge. Ein vorheriger Verbindungsabbruch führt nicht zu dieser regulären Löschverarbeitung.",
     "source": "netzwerk.csv"
   },
   {
