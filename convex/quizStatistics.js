@@ -1,6 +1,6 @@
 import { mutationGeneric as mutation,queryGeneric as query } from 'convex/server';
 import { v } from 'convex/values';
-import { requireAuthenticatedPlayer } from './playerSessions.js';
+import { requireAuthenticatedPlayer, refreshTerminalLease } from './playerSessions.js';
 import { buildQuizStatisticsSummary } from './quizStatisticsModel.js';
 import { recordQuizAttempt } from './quizStatisticsStore.js';
 
@@ -12,7 +12,7 @@ export const recordSoloAnswer=mutation({
     questionIndex:v.number(),answerIndex:v.optional(v.number()),
   },
   handler:async(ctx,args)=>{
-    await requireAuthenticatedPlayer(ctx,args.characterId,args.sessionId);
+    const player = await requireAuthenticatedPlayer(ctx,args.characterId,args.sessionId);
     const run=await ctx.db.get(args.runId);
     if(!run||run.characterId!==args.characterId||run.sessionId!==args.sessionId)
       throw new Error('Solo quiz session unavailable.');
@@ -21,13 +21,14 @@ export const recordSoloAnswer=mutation({
     const question=run.questions[args.questionIndex];
     if(args.answerIndex!==undefined&&(!Number.isInteger(args.answerIndex)
       ||args.answerIndex<0||args.answerIndex>=question.answerCount))throw new Error('Invalid answer.');
-    return recordQuizAttempt(ctx,{
+    const result = await recordQuizAttempt(ctx,{
       attemptKey:`solo:${run._id}:${args.questionIndex}:${args.characterId}`,
       characterId:args.characterId,questionId:question.id,category:question.category,
       topic:question.topic,difficulty:question.difficulty,mode:run.mode,
       correct:args.answerIndex!==undefined&&args.answerIndex===question.correctAnswer,
       answeredAt:Date.now(),
     });
+    return { ...result, terminalLease: await refreshTerminalLease(ctx, player, args.characterId, args.sessionId) };
   },
 });
 

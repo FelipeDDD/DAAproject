@@ -11,8 +11,9 @@ import { PLAYER_SCALE } from '../src/game/settings.js';
 import {
   QUIZ_QUESTION_DURATION_MS,quizQuestionComplete,quizQuestionExpired,shouldEndQuizForParticipants,
 } from '../src/quizTimer.js';
-import { isPresenceActive } from '../src/multiplayer/presencePolicy.js';
+import { isPlayerActive } from '../src/multiplayer/presencePolicy.js';
 import { recordQuizAttempt } from './quizStatisticsStore.js';
+import { ensureQuizCleanupWorker,stopQuizCleanupWorkerIfEmpty,runQuizCleanupWorker } from './quizCleanupWorker.js';
 
 const DEFAULT_SETTINGS=Object.freeze({category:null,topic:null,difficulty:null,count:QUESTIONS_PER_QUIZ});
 
@@ -21,13 +22,13 @@ function settingsFor(lobby){return {...DEFAULT_SETTINGS,...(lobby.settings??{})}
 async function playerFor(ctx, characterId, sessionId, room) {
   const player = await ctx.db.query('players').withIndex('by_player', q => q.eq('playerId', characterId)).unique();
   if (!player || player.characterId !== characterId || player.sessionId !== sessionId ||
-      player.room !== room || !isPresenceActive(player.lastSeen)) throw new Error('Invalid session or room.');
+      player.room !== room || !isPlayerActive(player)) throw new Error('Invalid session or room.');
   return player;
 }
 
 async function activeParticipants(ctx, lobby) {
   const players = await ctx.db.query('players').withIndex('by_room', q => q.eq('room', lobby.room)).collect();
-  const active = new Set(players.filter(p => isPresenceActive(p.lastSeen)).map(p => p.characterId));
+  const active = new Set(players.filter(p => isPlayerActive(p)).map(p => p.characterId));
   return lobby.participants.filter(id => active.has(id));
 }
 
@@ -67,6 +68,7 @@ async function deleteLobby(ctx,lobby) {
   for(const answer of await ctx.db.query('quizAnswers').withIndex('by_lobby',q=>q.eq('lobbyId',lobby._id)).collect())
     await ctx.db.delete(answer._id);
   await ctx.db.delete(lobby._id);
+  await stopQuizCleanupWorkerIfEmpty(ctx);
 }
 
 async function scoreIfComplete(ctx,lobby,participants) {
@@ -155,6 +157,7 @@ export const join = mutation({
       if (participants.length > 4) throw new Error('Lobby is full.');
       await ctx.db.patch(lobby._id,{participants,hostCharacterId:participants.includes(lobby.hostCharacterId)?lobby.hostCharacterId:participants[0]});
     }
+    await ensureQuizCleanupWorker(ctx);
     return {seatX:seat.seatX,seatY:seat.seatY,direction:seat.direction};
   },
 });
@@ -330,9 +333,7 @@ export const nextQuestion = mutation({
   },
 });
 
-export const cleanup = internalMutation({
-  args:{},
-  handler:async ctx=>{
+async function recoverQuizLobbies(ctx){
     for(const lobby of await ctx.db.query('quizLobbies').collect()) {
       const participants=await activeParticipants(ctx,lobby);
       if(!participants.length){await deleteLobby(ctx,lobby);continue;}
@@ -349,5 +350,9 @@ export const cleanup = internalMutation({
       }
       if(currentLobby.status==='starting')await scoreIfComplete(ctx,currentLobby,participants);
     }
-  },
+}
+
+export const cleanup = internalMutation({
+  args:{generation:v.optional(v.number())},
+  handler:async(ctx,{generation})=>runQuizCleanupWorker(ctx,generation,recoverQuizLobbies),
 });

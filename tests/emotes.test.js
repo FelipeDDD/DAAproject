@@ -59,13 +59,43 @@ test('changing room clears old emotes and only accepts events from the active ro
   state.enter('outside');assert.deepEqual(state.active(now),[]);
 });
 
-test('emote duration starts on receipt even when the server clock is behind the browser',()=>{
-  const state=new EmoteState(2500),receivedAt=10_000;
+test('fresh emote is shown for the remainder of its original createdAt lifetime',()=>{
+  const state=new EmoteState(2500),createdAt=10_000;
   state.enter('school');state.receive([
-    {characterId:'michael',room:'school',emote:'😂',createdAt:receivedAt-6000},
-  ],receivedAt);
-  assert.equal(state.active(receivedAt+2499).length,1);
-  assert.equal(state.active(receivedAt+2500).length,0);
+    {characterId:'michael',room:'school',emote:'😂',createdAt},
+  ],createdAt+500);
+  assert.equal(state.active(createdAt+2499).length,1);
+  assert.equal(state.active(createdAt+2500).length,0);
+});
+
+test('expired subscription events are ignored on receive and direct show',()=>{
+  const state=new EmoteState(2500),now=10_000;
+  state.enter('school');state.receive([
+    {characterId:'michael',room:'school',emote:'😂',createdAt:now-2500},
+  ],now);
+  state.show({characterId:'michael',room:'school',emote:'😂',createdAt:now-2501},now);
+  assert.deepEqual(state.active(now),[]);
+});
+
+test('receiving the same event again never restarts its lifetime',()=>{
+  const state=new EmoteState(2500),createdAt=10_000;
+  const event={characterId:'michael',room:'school',emote:'😂',createdAt};
+  state.enter('school');state.receive([event],createdAt+100);
+  state.receive([event],createdAt+2000);
+  assert.equal(state.active(createdAt+2499).length,1);
+  state.receive([event],createdAt+2500);
+  assert.deepEqual(state.active(createdAt+2500),[]);
+});
+
+test('new emote from the same character replaces the older event',()=>{
+  const state=new EmoteState(2500),createdAt=10_000;
+  state.enter('school');
+  state.receive([{characterId:'michael',room:'school',emote:'😂',createdAt}],createdAt);
+  const replacement={characterId:'michael',room:'school',emote:'👍',createdAt:createdAt+1000};
+  state.receive([replacement],createdAt+1000);
+  assert.deepEqual(state.active(createdAt+1000),[replacement]);
+  assert.deepEqual(state.active(createdAt+3499),[replacement]);
+  assert.deepEqual(state.active(createdAt+3500),[]);
 });
 
 function backendContext({existing=null}={}) {

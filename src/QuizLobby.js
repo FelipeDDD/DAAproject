@@ -71,13 +71,27 @@ export class QuizLobby {
       select.addEventListener('change',this.onSettingsChange);
     this.timerInterval=setInterval(()=>this.updateTimer(),250);
 
-    const {characterId}=presence.identity;
-    this.unsubscribe=presence.client.onUpdate(presence.api.quizLobbies.current,{room:this.room,characterId},lobby=>{
-      if(this.closed)return;
+    this.subscribeCurrent();
+  }
+
+  subscribeCurrent(){
+    if(this.closed||this.currentSuspended||this.unsubscribe)return false;
+    const {characterId}=this.presence.identity;
+    this.unsubscribe=this.presence.client.onUpdate(this.presence.api.quizLobbies.current,{room:this.room,characterId},lobby=>{
+      if(this.closed||this.currentSuspended)return;
       this.lobby=lobby;
       if(this.seated&&!lobby?.participants.includes(characterId))this.standLocally();
       this.render();
-    },error=>presence.fail(error));
+    },error=>this.presence.fail(error));
+    return true;
+  }
+  suspendCurrent(){
+    if(this.closed||this.seated||this.currentSuspended)return false;
+    this.currentSuspended=true;this.unsubscribe?.();this.unsubscribe=null;return true;
+  }
+  resumeCurrent(){
+    if(this.closed||!this.currentSuspended)return false;
+    this.currentSuspended=false;this.subscribeCurrent();return true;
   }
 
   nearbySeat(){return this.seat&&distanceToSeat(this.seat,this.scene.player.body)<=QUIZ_SEAT_DISTANCE?this.seat:null;}
@@ -190,6 +204,10 @@ export class QuizLobby {
 
   questionHasExpired(){return remainingQuizSeconds(this.lobby?.questionDeadline)===0;}
 
+  isActiveParticipant(){
+    return !this.closed&&this.seated&&Boolean(this.lobby?.participants?.includes(this.presence.identity.characterId));
+  }
+
   updateTimer(){
     const playing=this.lobby?.status==='starting'&&this.lobby?.question;
     const seconds=playing?remainingQuizSeconds(this.lobby.questionDeadline):null;
@@ -199,13 +217,13 @@ export class QuizLobby {
     this.timerElement.textContent=this.lobby.allAnswered&&!expired?'Completed':`${seconds}s`;
     this.timerElement.dateTime=`PT${seconds}S`;
     this.timerElement.classList.toggle('urgent',!this.lobby.allAnswered&&seconds<=5);
-    if(expired&&!this.lobby.allAnswered&&!this.finishingTimedQuestion&&
+    if(this.isActiveParticipant()&&expired&&!this.lobby.allAnswered&&!this.finishingTimedQuestion&&
       Date.now()>=(this.timerRetryAt??0))this.finishTimedQuestion();
   }
 
   async finishTimedQuestion(){
     const questionId=this.lobby?.question?.id;
-    if(!questionId||this.finishingTimedQuestion)return;
+    if(!this.isActiveParticipant()||this.lobby?.status!=='starting'||!questionId||this.finishingTimedQuestion)return;
     this.finishingTimedQuestion=true;this.timerRetryCount=(this.timerRetryCount??0)+1;
     this.answerError='';this.render();
     try{
@@ -229,7 +247,7 @@ export class QuizLobby {
   }
 
   retryTimedQuestion(){
-    if(this.finishingTimedQuestion||!this.questionHasExpired())return;
+    if(!this.isActiveParticipant()||this.finishingTimedQuestion||!this.questionHasExpired())return;
     this.timerRetryCount=0;this.timerRetryAt=0;
     void this.finishTimedQuestion();
   }

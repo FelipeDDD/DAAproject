@@ -4,17 +4,16 @@ export class EmoteState {
   constructor(duration=EMOTE_DURATION_MS){this.duration=duration;this.room=null;this.events=new Map();}
   enter(room){this.room=room;this.events.clear();}
   receive(rows,now=Date.now()) {
-    const previous=this.events;
     this.events.clear();
-    for(const row of rows)if(row.room===this.room){
-      const existing=previous.get(row.characterId);
-      const displayedAt=existing?.createdAt===row.createdAt?existing.displayedAt:now;
-      this.events.set(row.characterId,{...row,displayedAt});
-    }
+    for(const row of rows)if(row.room===this.room&&Number.isFinite(row.createdAt)&&
+      now-row.createdAt<this.duration)this.events.set(row.characterId,row);
   }
-  show(event,now=Date.now()){if(event.room===this.room)this.events.set(event.characterId,{...event,displayedAt:now});}
+  show(event,now=Date.now()){
+    if(event.room!==this.room||!Number.isFinite(event.createdAt)||now-event.createdAt>=this.duration)return;
+    this.events.set(event.characterId,event);
+  }
   active(now=Date.now()) {
-    for(const [id,event] of this.events)if(now-(event.displayedAt??event.createdAt)>=this.duration)this.events.delete(id);
+    for(const [id,event] of this.events)if(now-event.createdAt>=this.duration)this.events.delete(id);
     return [...this.events.values()];
   }
   clear(){this.events.clear();this.room=null;}

@@ -2,6 +2,9 @@ import { defineSchema, defineTable } from 'convex/server';
 import { v } from 'convex/values';
 
 export default defineSchema({
+  quizCleanupWorker: defineTable({
+    key:v.string(),generation:v.number(),jobId:v.optional(v.id('_scheduled_functions')),
+  }).index('by_key',['key']),
   quizLobbies: defineTable({
     room:v.string(), hostCharacterId:v.string(), status:v.union(v.literal('lobby'),v.literal('starting'),v.literal('finished')),
     participants:v.array(v.string()), createdAt:v.number(),
@@ -110,6 +113,8 @@ export default defineSchema({
     blockedUntil:v.number(),updatedAt:v.number(),
   }).index('by_login_key',['loginKey']).index('by_updated_at',['updatedAt']),
   players: defineTable({
+    presenceMode:v.optional(v.union(v.literal('playing'),v.literal('terminal'))),
+    terminalLeaseExpiresAt:v.optional(v.number()),
     playerId: v.string(), name: v.string(), room: v.string(),
     profileId:v.optional(v.id('profiles')),
     guestId:v.optional(v.string()),
@@ -118,7 +123,8 @@ export default defineSchema({
     x: v.number(), y: v.number(), direction: v.string(),
     equippedSkin:v.optional(v.union(v.literal('classic'),v.literal('remastered'))),
     activeCharacterItem:v.optional(v.union(v.literal('lung_crusher_3000'),v.null())),lastSeen: v.number(),
-  }).index('by_player', ['playerId']).index('by_room', ['room']).index('by_lastSeen', ['lastSeen']),
+  }).index('by_player', ['playerId']).index('by_room', ['room']).index('by_lastSeen', ['lastSeen'])
+    .index('by_presenceMode_lease',['presenceMode','terminalLeaseExpiresAt']),
   bossProgress: defineTable({
     profileId:v.optional(v.id('profiles')),characterId:v.optional(v.string()),bossId:v.string(),wins:v.number(),defeated:v.boolean(),
     rewards:v.array(v.string()),equippedSkin:v.optional(v.union(v.literal('classic'),v.literal('remastered'))),updatedAt:v.number(),

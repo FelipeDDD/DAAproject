@@ -1,14 +1,15 @@
 import { characterById } from '../characters.js';
 import { applyCharacterVisual,updateCharacterVisual,visualStyleForActiveItem } from '../characterVisuals.js';
-
-export function interpolate(current, target, delta) {
-  return current + (target - current) * (1 - Math.exp(-Math.max(0, delta) / 100));
-}
+import { RemoteSnapshotBuffer } from './remoteMovement.js';
 
 export class RemotePlayers {
-  constructor(scene) { this.scene = scene; this.players = new Map(); }
+  constructor(scene, { clock = () => performance.now(), ...bufferOptions } = {}) {
+    this.scene = scene; this.players = new Map();
+    this.clock = clock; this.bufferOptions = bufferOptions;
+  }
 
   receive(rows) {
+    const arrivalAt = this.clock();
     const present = new Set(rows.map(p => p.playerId));
     for (const [id, remote] of this.players) if (!present.has(id)) {
       remote.sprite.destroy(); remote.label.destroy(); this.players.delete(id);
@@ -21,25 +22,29 @@ export class RemotePlayers {
         const style=visualStyleForActiveItem(row.activeCharacterItem,row.equippedSkin);
         const visual=applyCharacterVisual(sprite,character,style);
         const label = this.scene.add.text(row.x, row.y, row.name, { fontSize: '10px', color: '#152c42', backgroundColor: '#ffffffcc' }).setOrigin(0.5, 1);
-        remote = { sprite,label,visual,character,style };
+        remote = { sprite,label,visual,character,style,buffer:new RemoteSnapshotBuffer(this.bufferOptions) };
         this.players.set(row.playerId, remote);
       }
-      const style=visualStyleForActiveItem(row.activeCharacterItem,row.equippedSkin);
-      if(remote.style!==style){remote.visual=applyCharacterVisual(remote.sprite,remote.character,style);remote.style=style;}
-      remote.target = row;
+      const { teleport } = remote.buffer.push(row, arrivalAt);
+      remote.presenceMode=row.presenceMode??'playing';
+      remote.terminalLeaseExpiresAt=row.terminalLeaseExpiresAt;
+      if (teleport) remote.sprite.setPosition(row.x, row.y);
       remote.label.setText(row.name);
     }
   }
 
-  update(delta) {
-    for (const { sprite, label, target, visual } of this.players.values()) {
-      // Snap teleports; smooth ordinary network samples. No remote physics body.
-      const snap = Math.hypot(target.x - sprite.x, target.y - sprite.y) > 160;
-      const moving=Math.hypot(target.x-sprite.x,target.y-sprite.y)>.6;
-      sprite.setPosition(snap ? target.x : interpolate(sprite.x, target.x, delta), snap ? target.y : interpolate(sprite.y, target.y, delta));
-      updateCharacterVisual(sprite,visual,target.direction,moving);
+  update() {
+    const now = this.clock();
+    for (const remote of this.players.values()) {
+      const { sprite, label } = remote;
+      const target = remote.buffer.sample(now);
+      if (!target) continue;
+      const style=visualStyleForActiveItem(target.activeCharacterItem,target.equippedSkin);
+      if(remote.style!==style){remote.visual=applyCharacterVisual(sprite,remote.character,style);remote.style=style;}
+      sprite.setPosition(target.x, target.y);
+      updateCharacterVisual(sprite,remote.visual,target.direction,target.moving);
       sprite.setDepth(sprite.y);
-      label.setPosition(sprite.x,sprite.y-visual.labelOffset).setDepth(sprite.y+1);
+      label.setPosition(sprite.x,sprite.y-remote.visual.labelOffset).setDepth(sprite.y+1);
     }
   }
 }

@@ -88,6 +88,7 @@ function harness(t, reducedMotion = false) {
     getViewMatrix() { return { transformPoint: (x, y) => ({ x: (x - this.scrollX) * this.zoom, y: (y - this.scrollY) * this.zoom }) }; },
   };
   const scene = { cameras: { main: camera }, player,
+    presence:{active:{},async enterTerminal(){},async exitTerminal(){}},
     game: { canvas: { getBoundingClientRect: () => ({ left: 10, top: 20, width: 960, height: 640 }) } },
     scale: { gameSize: { width: 960, height: 640 } },
     input: { keyboard: { enabled: true, resetKeys() {} } },
@@ -104,10 +105,12 @@ test('opening locks immediately, uses monitor origin, delays content, closes and
   for (let i = 0; i < 3; i++) {
     const opening = controller.open(h.computer);
     assert.equal(controller.isTransitioning, true);
-    assert.equal(h.scene.input.keyboard.enabled, false);
-    assert.equal(h.game.inert, true);
+    assert.equal(h.scene.input.keyboard.enabled, true);
+    assert.equal(h.game.inert, false);
     await controller.open(h.computer); // Double E must do nothing.
     await opening;
+    assert.equal(h.scene.input.keyboard.enabled, false);
+    assert.equal(h.game.inert, true);
     assert.equal(controller.isOpen, true);
     assert.equal(controller.frame.inert, false);
     assert.ok(h.camera.zoom > 2.6);

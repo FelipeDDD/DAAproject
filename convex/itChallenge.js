@@ -9,7 +9,7 @@ import {
 } from '../src/quiz/itChallengeRules.js';
 import { materializeQuizQuestions,selectQuizQuestionIds } from './quizQuestions.js';
 import { recentHistoriesFor,rememberQuestions } from './quizHistory.js';
-import { requireAuthenticatedPlayer } from './playerSessions.js';
+import { requireAuthenticatedPlayer, refreshTerminalLease } from './playerSessions.js';
 import { recordQuizAttempt,recordQuizSkip } from './quizStatisticsStore.js';
 import { isNewPersonalBest,itChallengeAccuracy,scoreItChallengeOutcomes } from './itChallengeScoring.js';
 
@@ -27,7 +27,7 @@ async function currentBest(ctx,characterId){
 export const start=mutation({
   args:{characterId:v.string(),sessionId:v.string()},
   handler:async(ctx,args)=>{
-    await requireAuthenticatedPlayer(ctx,args.characterId,args.sessionId);
+    const player = await requireAuthenticatedPlayer(ctx,args.characterId,args.sessionId);
     const [recentHistory]=await recentHistoriesFor(ctx,[args.characterId]);
     const questionIds=selectQuizQuestionIds({
       categories:IT_CHALLENGE_CATEGORIES,count:null,recentHistories:[recentHistory],
@@ -48,7 +48,7 @@ export const start=mutation({
       })),
     });
     await rememberQuestions(ctx,[args.characterId],[questions[0].id]);
-    return {runId,questions,durationMs:IT_CHALLENGE_DURATION_MS};
+    return {runId,questions,durationMs:IT_CHALLENGE_DURATION_MS,terminalLease: await refreshTerminalLease(ctx, player, args.characterId, args.sessionId)};
   },
 });
 
@@ -58,13 +58,13 @@ export const finish=mutation({
     outcomes:v.array(outcomeValidator),lastViewedQuestionIndex:v.number(),
   },
   handler:async(ctx,args)=>{
-    await requireAuthenticatedPlayer(ctx,args.characterId,args.sessionId);
+    const player = await requireAuthenticatedPlayer(ctx,args.characterId,args.sessionId);
     const run=await ctx.db.get(args.runId);
     if(!run||run.characterId!==args.characterId||run.sessionId!==args.sessionId)
       throw new Error('IT Challenge session unavailable.');
     if(run.rulesKey!==itChallengeRulesKey())throw new Error('IT Challenge rules have changed. Start a new run.');
     if(run.finishedAt){
-      return {result:run.result,newPersonalBest:run.wasPersonalBest??false,personalBest:await currentBest(ctx,args.characterId)};
+      return {result:run.result,newPersonalBest:run.wasPersonalBest??false,personalBest:await currentBest(ctx,args.characterId),terminalLease: await refreshTerminalLease(ctx, player, args.characterId, args.sessionId)};
     }
     const {result,records}=scoreItChallengeOutcomes(run.questions,args.outcomes,args.lastViewedQuestionIndex);
     for(const {question,outcome,correct} of records){
@@ -95,7 +95,7 @@ export const finish=mutation({
       else await ctx.db.insert('itChallengeHighScores',highScore);
     }
     await ctx.db.patch(run._id,{finishedAt:achievedAt,result,wasPersonalBest:newPersonalBest});
-    return {result,newPersonalBest,personalBest:await currentBest(ctx,args.characterId)};
+    return {result,newPersonalBest,personalBest:await currentBest(ctx,args.characterId),terminalLease: await refreshTerminalLease(ctx, player, args.characterId, args.sessionId)};
   },
 });
 

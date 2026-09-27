@@ -1,15 +1,35 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Presence } from '../src/multiplayer/Presence.js';
-import { interpolate } from '../src/multiplayer/RemotePlayers.js';
 import {
   isPresenceActive,
   PRESENCE_HEARTBEAT_MS,
   PRESENCE_POSITION_THRESHOLD_PX,
   PRESENCE_SYNC_INTERVAL_MS,
   PRESENCE_TIMEOUT_MS,
+  TERMINAL_PRESENCE_HEARTBEAT_MS,
 } from '../src/multiplayer/presencePolicy.js';
 import { cleanup, heartbeat, update } from '../convex/players.js';
+
+for(const operation of ['heartbeat','update']){
+  test(`${operation} rejects expired reservations even while their rows remain`,async t=>{
+    const lastSeen=1_000_000;let now=lastSeen+PRESENCE_TIMEOUT_MS-1,patches=0;
+    t.mock.method(Date,'now',()=>now);
+    const row={_id:'player',playerId:'felipe',characterId:'felipe',sessionId:'session-123456789',lastSeen};
+    const ctx={db:{query:()=>({withIndex:()=>({unique:async()=>row})}),patch:async()=>{patches++;}}};
+    const args=operation==='heartbeat'
+      ? {characterId:row.characterId,sessionId:row.sessionId}
+      : {playerId:row.playerId,characterId:row.characterId,sessionId:row.sessionId,
+        name:'Felipe',room:'school',x:1,y:2,direction:'down'};
+    const handler=operation==='heartbeat'?heartbeat:update;
+    await handler._handler(ctx,args);assert.equal(patches,1);
+    // The stub retains the original lastSeen so the exact expiry boundary is exercised.
+    for(now=lastSeen+PRESENCE_TIMEOUT_MS;now<=lastSeen+PRESENCE_TIMEOUT_MS+1;now++){
+      await assert.rejects(handler._handler(ctx,args),/CHARACTER_SESSION_LOST/);
+    }
+    assert.equal(patches,1);assert.equal(row.lastSeen,lastSeen);
+  });
+}
 
 test('room subscription filters self and stale players; old callbacks cannot repopulate a new room', async () => {
   const callbacks=[],calls=[];
@@ -50,6 +70,12 @@ test('remote visibility uses server heartbeat time when the local computer clock
 
 test('network latency never queues a position per frame, and stationary heartbeats are reduced', async () => {
   let finish, count=0;
+  const originalSetInterval=globalThis.setInterval;
+  let scheduledInterval;
+  globalThis.setInterval=(callback,interval)=>{
+    scheduledInterval=interval;
+    return originalSetInterval(callback,interval);
+  };
   const client={onUpdate:()=>()=>{},mutation:()=>{count++;return new Promise(r=>finish=r);}};
   const presence=new Presence(client,{players:{}},{playerId:'me',name:'Me'});
   try {
@@ -59,8 +85,8 @@ test('network latency never queues a position per frame, and stationary heartbea
     finish(); await Promise.resolve();
     await presence.send();
     assert.equal(count,1);
-    assert.equal(1000/PRESENCE_SYNC_INTERVAL_MS,5);
-  } finally { presence.leave(); }
+    assert.equal(scheduledInterval,PRESENCE_SYNC_INTERVAL_MS);
+  } finally { presence.leave();globalThis.setInterval=originalSetInterval; }
 });
 
 function stationaryPresence(mutation) {
@@ -100,6 +126,64 @@ test('a stationary player sends a lightweight heartbeat instead of full position
   assert.equal(calls.length,0);
   await presence.send(PRESENCE_HEARTBEAT_MS);
   assert.deepEqual(calls,[{fn:'heartbeat',args:{characterId:'me',sessionId:'session-123456789'}}]);
+});
+
+test('normal and terminal presence modes use 10s and 20s heartbeats without restarting timers or subscriptions',async()=>{
+  const calls=[];let intervalCount=0,subscriptionCount=0,intervalCallback;
+  const realInterval=globalThis.setInterval;
+  globalThis.setInterval=(callback,interval)=>{intervalCount++;intervalCallback=callback;assert.equal(interval,PRESENCE_SYNC_INTERVAL_MS);return {id:intervalCount};};
+  const client={
+    onUpdate(){subscriptionCount++;return ()=>{};},
+    async mutation(fn,args){calls.push({fn,args});},
+  };
+  const presence=new Presence(client,{players:{inRoom:'inRoom',update:'update',heartbeat:'heartbeat'}},
+    {playerId:'me',characterId:'me',name:'Me',sessionId:'session-123456789'});
+  try{
+    presence.enter('school',()=>({x:10,y:20,direction:'down'}),()=>{});
+    await new Promise(resolve=>setImmediate(resolve));
+    const active=presence.active,subscription=presence.unsubscribe;
+    const timer=presence.timer;
+    assert.equal(active.nextHeartbeatAt,active.sentAt+PRESENCE_HEARTBEAT_MS);
+    await presence.send(active.nextHeartbeatAt-1);assert.equal(calls.length,1);
+    await presence.send(active.nextHeartbeatAt);assert.equal(calls.at(-1).fn,'heartbeat');
+
+    const terminalStart=active.sentAt;
+    assert.equal(presence.setTerminalMode(true,terminalStart),true);
+    assert.equal(presence.heartbeatIntervalMs,TERMINAL_PRESENCE_HEARTBEAT_MS);
+    await presence.send(terminalStart+TERMINAL_PRESENCE_HEARTBEAT_MS-1);
+    assert.equal(calls.length,2);
+    await presence.send(terminalStart+TERMINAL_PRESENCE_HEARTBEAT_MS);
+    assert.equal(calls.at(-1).fn,'heartbeat');
+    assert.equal(presence.setTerminalMode(true,Date.now()),false);
+
+    const closeTime=active.sentAt+100;
+    assert.equal(presence.setTerminalMode(false,closeTime),true);
+    assert.equal(presence.heartbeatIntervalMs,PRESENCE_HEARTBEAT_MS);
+    await presence.send(closeTime+PRESENCE_HEARTBEAT_MS-1);assert.equal(calls.length,3);
+    await presence.send(closeTime+PRESENCE_HEARTBEAT_MS);assert.equal(calls.at(-1).fn,'heartbeat');
+    for(let cycle=0;cycle<5;cycle++){
+      presence.setTerminalMode(true,closeTime+cycle*100);
+      presence.setTerminalMode(false,closeTime+cycle*100+1);
+    }
+    assert.equal(intervalCount,1);assert.equal(subscriptionCount,1);
+    assert.equal(presence.timer,timer);assert.equal(presence.unsubscribe,subscription);
+    assert.equal(typeof intervalCallback,'function');
+  }finally{presence.leave();globalThis.setInterval=realInterval;}
+});
+
+test('movement still sends updates in normal and terminal modes; terminal state-only changes use heartbeat',async()=>{
+  const calls=[];let x=10,direction='down';
+  const presence=stationaryPresence(async(fn,args)=>calls.push({fn,args}));
+  presence.active.snapshot=()=>({x,y:20,direction});
+  x+=PRESENCE_POSITION_THRESHOLD_PX;
+  await presence.send(100);assert.equal(calls[0].fn,'update');
+  presence.setTerminalMode(true,200);
+  x+=PRESENCE_POSITION_THRESHOLD_PX;
+  await presence.send(300);assert.equal(calls[1].fn,'update');
+  direction='left';
+  await presence.send(400);assert.equal(calls.length,2);
+  await presence.send(presence.active.nextHeartbeatAt);
+  assert.equal(calls[2].fn,'heartbeat');
 });
 
 test('a failed presence request waits before retrying instead of flooding Convex',async()=>{
@@ -158,8 +242,10 @@ test('cleanup removes a session that has missed the configured timeout',async()=
   const deleted=[];let cutoff;
   const stale={_id:'stale-player',lastSeen:Date.now()-PRESENCE_TIMEOUT_MS-1};
   const ctx={db:{
-    query:()=>({withIndex:(_name,build)=>{
-      build({lt:(_field,value)=>{cutoff=value;return {};}});return {take:async()=>[stale]};
+    query:()=>({withIndex:(name,build)=>{
+      if(name==='by_presenceMode_lease')return {take:async()=>[]};
+      build({lte:(_field,value)=>{cutoff=value;return {};}});
+      return {filter:()=>({take:async()=>[stale]})};
     }}),
     delete:async id=>deleted.push(id),
   }};
@@ -185,13 +271,6 @@ test('presence rejects an exclusive visual item for any character other than its
     playerId:'sarina',characterId:'sarina',sessionId:current.sessionId,name:'Sarina',room:'school',x:1,y:2,direction:'down',
     activeCharacterItem:'lung_crusher_3000',
   }),/Invalid active character item/);
-});
-
-test('remote smoothing converges without overshoot and is independent of frame rate', () => {
-  const once=interpolate(0,100,100);
-  const twice=interpolate(interpolate(0,100,50),100,50);
-  assert.ok(once>0&&once<100);
-  assert.ok(Math.abs(once-twice)<1e-9);
 });
 
 test('cached remote expires even without a further realtime callback', () => {

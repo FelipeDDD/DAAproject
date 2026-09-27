@@ -3,6 +3,36 @@ import assert from 'node:assert/strict';
 import { CharacterMenu,createCharacterSessionId } from '../src/CharacterMenu.js';
 import { QuizLobby, QUIZ_TIMEOUT_MAX_ATTEMPTS,quizTimeoutRetryDelay,shouldConfirmQuizLeave,shouldShowStartButton } from '../src/QuizLobby.js';
 import { readQuizSettingsControls,topicsForQuizCategory } from '../src/quiz/QuizSettingsControls.js';
+import { PRESENCE_TIMEOUT_MS } from '../src/multiplayer/presencePolicy.js';
+
+test('menu expires cached active reservations locally without new Convex calls',t=>{
+  const lastSeen=1_000_000;let now=lastSeen+PRESENCE_TIMEOUT_MS-1,tick,receive,subscriptions=0;
+  t.mock.method(Date,'now',()=>now);
+  t.mock.method(globalThis,'setInterval',(callback,delay)=>{
+    assert.equal(delay,500);tick=callback;return undefined;
+  });
+  const button={},state={};
+  const menu=Object.assign(Object.create(CharacterMenu.prototype),{
+    root:{hidden:true},message:{textContent:''},cards:[{c:{id:'felipe'},button,state}],closed:false,
+    presence:{api:{players:{availability:'availability'}},client:{
+      onUpdate(_fn,_args,callback){subscriptions++;receive=callback;return()=>{};},
+      mutation(){assert.fail('local expiry must not send mutations');},
+      query(){assert.fail('local expiry must not poll');},
+    }},
+  });
+  try{
+    menu.show();receive([{characterId:'felipe',active:true,lastSeen}]);
+    assert.equal(button.disabled,true);assert.equal(state.textContent,'In use');
+    now=lastSeen+PRESENCE_TIMEOUT_MS;tick();
+    assert.equal(button.disabled,false);assert.equal(state.textContent,'Available');
+    assert.equal(menu.rows[0].active,true); // No server callback or cleanup changed the row.
+    for(let i=0;i<10;i++)tick();
+    assert.equal(subscriptions,1);
+    // A fresh heartbeat makes the card busy again through the existing subscription.
+    receive([{characterId:'felipe',active:true,lastSeen:now}]);
+    assert.equal(button.disabled,true);
+  }finally{menu.close();}
+});
 
 test('character session id works without crypto.randomUUID',()=>{
   let value=0;
@@ -65,10 +95,53 @@ test('character availability subscribes only while the menu is visible',()=>{
   assert.equal(unsubscriptions,2);
 });
 
+function expiredQuizClient({seated=true,participants=['felipe']}={}){
+  const calls=[];
+  const quiz=Object.assign(Object.create(QuizLobby.prototype),{
+    seated,room:'school',selectedAnswer:2,render(){},
+    lobby:{status:'starting',participants,question:{id:'expired-question'},questionDeadline:0,allAnswered:false},
+    timerElement:{classList:{toggle(){}}},
+    presence:{identity:{characterId:'felipe',sessionId:'session-123456789'},
+      api:{quizLobbies:{finishTimedQuestion:'finish'}},
+      client:{async mutation(name,args){calls.push({name,args});return {answerIndex:args.answerIndex};}}},
+  });
+  return {quiz,calls};
+}
+
+test('unseated or nonparticipant clients never finalize expired multiplayer questions',async()=>{
+  for(const options of [{seated:false},{participants:['michael']}]){
+    const {quiz,calls}=expiredQuizClient(options);
+    for(let tick=0;tick<40;tick++)quiz.updateTimer();
+    await quiz.finishTimedQuestion();quiz.retryTimedQuestion();
+    assert.equal(calls.length,0);
+    assert.equal(quiz.timerRetryCount,undefined);
+  }
+});
+
+test('seated participant finalizes timeout with the selected answer and does not repeat success',async()=>{
+  const {quiz,calls}=expiredQuizClient();
+  quiz.updateTimer();await new Promise(resolve=>setImmediate(resolve));
+  assert.deepEqual(calls,[{name:'finish',args:{room:'school',characterId:'felipe',sessionId:'session-123456789',answerIndex:2}}]);
+  assert.equal(quiz.confirmedAnswer,2);
+  for(let tick=0;tick<40;tick++)quiz.updateTimer();
+  assert.equal(calls.length,1);
+});
+
+test('participant timeout timer respects retry backoff',async()=>{
+  const {quiz,calls}=expiredQuizClient();
+  quiz.presence.client.mutation=async()=>{calls.push('attempt');throw new Error('temporary failure');};
+  quiz.updateTimer();await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(calls.length,1);assert.ok(quiz.timerRetryAt>Date.now());
+  for(let tick=0;tick<40;tick++)quiz.updateTimer();
+  assert.equal(calls.length,1);
+  quiz.timerRetryAt=0;quiz.updateTimer();await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(calls.length,2);
+});
+
 test('quiz timeout retries back off and stop until the player retries explicitly',async()=>{
   let calls=0;
   const quiz=Object.assign(Object.create(QuizLobby.prototype),{
-    seated:true,room:'school',lobby:{question:{id:'question-1'}},render(){},
+    seated:true,room:'school',lobby:{status:'starting',participants:['felipe'],question:{id:'question-1'}},render(){},
     presence:{identity:{characterId:'felipe',sessionId:'session-123456789'},
       api:{quizLobbies:{finishTimedQuestion:'finish'}},client:{async mutation(){calls++;throw new Error('persistent failure');}}},
     questionHasExpired(){return true;},

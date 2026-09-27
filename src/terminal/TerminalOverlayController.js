@@ -9,6 +9,8 @@ export class TerminalOverlayController {
     this.isOpen = false;
     this.isTransitioning = false;
     this.animations = new Set();
+    this.terminalSubscriptionsSuspended = false;
+    this.doorSyncSuspended = false;
     this.root = document.createElement('div');
     this.root.className = 'terminal-overlay';
     this.root.hidden = true;
@@ -68,7 +70,38 @@ export class TerminalOverlayController {
   }
 
   get active() { return this.isOpen || this.isTransitioning; }
+
+  suspendTerminalSubscriptions(){
+    if(this.terminalSubscriptionsSuspended)return;
+    this.scene.emoteSync?.suspend?.();this.scene.quiz?.suspendCurrent?.();
+    this.doorSyncSuspended=this.scene.doorSync?.suspend?.()??false;
+    this.terminalSubscriptionsSuspended=true;
+  }
+  async resumeTerminalSubscriptions(){
+    if(!this.terminalSubscriptionsSuspended)return;
+    if(this.doorSyncSuspended&&this.scene.doorSync){
+      await this.scene.doorSync.resume();
+      this.doorSyncSuspended=false;
+    }
+    this.scene.emoteSync?.resume?.();this.scene.quiz?.resumeCurrent?.();
+    this.terminalSubscriptionsSuspended=false;
+  }
   duration(ms) { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : ms; }
+
+  async enterTerminalMode(){
+    if(this.scene.quiz?.seated)return false;
+    await this.scene.presence.enterTerminal();
+    if(this.scene.quiz?.seated){
+      await this.scene.presence.exitTerminal();
+      return false;
+    }
+    this.suspendTerminalSubscriptions();
+    return true;
+  }
+  async exitTerminalMode(){
+    await this.scene.presence.exitTerminal();
+    if(!this.disposed)await this.resumeTerminalSubscriptions();
+  }
 
   focusContent() {
     if (!this.active || this.disposed) return false;
@@ -79,11 +112,12 @@ export class TerminalOverlayController {
 
   databaseBridge() {
     if(!this.databaseBridgePromise)this.databaseBridgePromise=import('./TerminalQuestionDatabaseBridge.js')
-      .then(({TerminalQuestionDatabaseBridge})=>{
+      .then(async ({TerminalQuestionDatabaseBridge})=>{
         const bridge=new TerminalQuestionDatabaseBridge({frame:this.frame});
+        await bridge.ready;
         if(this.disposed)bridge.destroy();
         return bridge;
-      });
+      }).catch(error=>{this.databaseBridgePromise=null;throw error;});
     return this.databaseBridgePromise;
   }
 
@@ -136,6 +170,21 @@ export class TerminalOverlayController {
   async open(computer) {
     if (this.active || this.disposed) return;
     this.isTransitioning = true;
+    this.phase='entering';
+    this.scene.player.setVelocity(0,0);
+    try{
+      const entered=await this.enterTerminalMode();
+      if(!entered){
+        this.isTransitioning=false;this.phase='closed';
+        if(this.scene.hint)this.scene.hint.textContent='Leave the multiplayer quiz before using this terminal.';
+        return;
+      }
+    }catch(error){
+      this.isTransitioning=false;this.closeRequested=false;
+      if(!this.disposed&&this.scene.hint)this.scene.hint.textContent=`Could not open terminal: ${error.message}`;
+      return;
+    }
+    if(this.disposed){await this.scene.presence.exitTerminal().catch(()=>{});return;}
     this.computer = computer;
     const { scene } = this, camera = scene.cameras.main;
     this.saved = {
@@ -196,6 +245,15 @@ export class TerminalOverlayController {
       return;
     }
     this.isTransitioning = true;
+    this.phase='exiting';
+    try{
+      await this.exitTerminalMode();
+    }catch(error){
+      this.isTransitioning=false;
+      if(!this.disposed)this.phase='open';
+      return;
+    }
+    if(this.disposed)return;
     void this.studyBridge?.reset();
     void this.challengeBridge?.reset();
     this.phase = 'hide-content';
@@ -216,16 +274,22 @@ export class TerminalOverlayController {
     this.phase = 'restore';
     this.surface.style.opacity = '0';
     await this.moveCamera({ scrollX: this.saved.scrollX, scrollY: this.saved.scrollY, zoom: this.saved.zoom });
-    if (!this.disposed) this.restore();
+    if (!this.disposed) await this.restore();
   }
 
-  restore() {
+  async restore() {
+    try{await this.scene.presence?.exitTerminal();}
+    catch(error){this.restoreVisual(false);throw error;}
+    this.restoreVisual(Boolean(this.scene.presence?.active));
+  }
+
+  restoreVisual(resume=true) {
     if (this.saved) {
       const s = this.saved, camera = this.scene.cameras.main;
       if (s.follow) camera.startFollow(s.follow, s.roundPixels, s.lerpX, s.lerpY, s.offsetX, s.offsetY);
       camera.setZoom(s.zoom).setScroll(s.scrollX, s.scrollY);
       this.scene.input.keyboard.resetKeys();
-      this.scene.input.keyboard.enabled = s.keyboardEnabled;
+      this.scene.input.keyboard.enabled = resume&&s.keyboardEnabled;
       this.background?.forEach(({ element, inert }) => { element.inert = inert; });
     }
     this.saved = null;
@@ -236,6 +300,7 @@ export class TerminalOverlayController {
   }
 
   destroy() {
+    if(this.disposed)return;
     this.disposed = true;
     this.cameraTween?.stop();
     this.finishCamera?.();
@@ -244,7 +309,7 @@ export class TerminalOverlayController {
     this.challengeBridge?.destroy();
     void this.databaseBridgePromise?.then(bridge=>bridge.destroy());
     void this.leaderboardBridgePromise?.then(bridge=>bridge.destroy());
-    this.restore();
+    void this.restore().catch(()=>{});
     window.removeEventListener('message', this.onMessage);
     window.removeEventListener('keydown', this.onKey, true);
     window.removeEventListener('keyup', this.onKey, true);

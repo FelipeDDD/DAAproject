@@ -1,9 +1,7 @@
-import STATIC_QUIZ_QUESTIONS from '../../convex/quizStaticQuestions.generated.js';
-import { GENERATED_QUIZ_QUESTIONS } from '../../convex/quizGeneratedQuestions.js';
-import { materializeQuizQuestion } from '../../convex/quizQuestions.js';
 import {
   createQuizReviewRecords,filterQuizReviewRecords,regenerateQuizRecord,
 } from '../quiz-database/model.js';
+import { loadQuizBank,materializeQuizBankQuestion } from '../quiz/quizBank.js';
 
 const REQUEST_TYPE='daa-terminal-database-request';
 const STATE_TYPE='daa-terminal-database-state';
@@ -46,9 +44,18 @@ function detailItem(record){
 export class TerminalQuestionDatabaseBridge {
   constructor({frame,origin=location.origin,records}={}){
     this.frame=frame;this.origin=origin;this.disposed=false;
-    this.records=records??createQuizReviewRecords(
-      STATIC_QUIZ_QUESTIONS,GENERATED_QUIZ_QUESTIONS,materializeQuizQuestion,
-    );
+    this.records=records??[];
+    if(records)this.ready=Promise.resolve();
+    else this.ready=loadQuizBank().then(({staticQuestions,generatedQuestions})=>{
+      if(!this.disposed){
+        this.records=createQuizReviewRecords(staticQuestions,generatedQuestions,materializeQuizBankQuestion);
+        this.buildOptions();
+      }
+    });
+    this.buildOptions();
+  }
+
+  buildOptions(){
     const categories=unique(this.records.map(record=>record.template.category));
     this.options={
       categories,difficulties:unique(this.records.map(record=>record.template.difficulty)),

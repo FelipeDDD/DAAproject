@@ -18,7 +18,7 @@
     "sync:quiz": "node scripts/sync-quiz-data.mjs",
     "predev": "node scripts/sync-quiz-data.mjs",
     "dev": "vite",
-    "convex": "convex dev --local-backend-version precompiled-2026-09-11-157eb19",
+    "convex": "convex dev --local-backend-version precompiled-2026-09-21-0cf49cb",
     "preconvex": "node scripts/sync-quiz-data.mjs && node scripts/sync-door-definitions.mjs",
     "prebuild": "node scripts/sync-quiz-data.mjs && node scripts/sync-door-definitions.mjs",
     "build": "vite build",

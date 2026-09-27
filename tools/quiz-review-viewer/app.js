@@ -194,7 +194,8 @@ function personal(id) {
   const p=app.personal[id]||((id.startsWith("existing:")&&app.personal[id.slice(9)])||{});
   const legacy={agree:"ACCEPT_RECOMMENDATION",review:"NEEDS_ADJUSTMENT",question:"UNSURE"}[p.state];
   return {decision:DECISIONS.has(p.decision)?p.decision:(legacy||null),note:typeof (p.notes??p.note)==="string"?(p.notes??p.note):"",
-    reviewedAt:p.reviewedAt||p.reviewed_at||null,alsoAddVersion:p.alsoAddVersion||p.also_add_version||null};
+    reviewedAt:p.reviewedAt||p.reviewed_at||null,alsoAddVersion:p.alsoAddVersion||p.also_add_version||null,
+    acceptedVersion:p.acceptedVersion||p.accepted_version||null};
 }
 function savePersonal(id,patch) {
   if (!id) return;
@@ -391,19 +392,23 @@ function versions(r){
   if(verdict==="KEEP_AND_ADD")return [
     {key:"original",title:"Original preservada",q:r.original,note:"A candidata adicional tem decisão própria",assessment:finalAssessment},
     ...(TRACKED.some((field)=>changed(r.original,r.proposal,field))?
-      [{key:"proposal",title:"Primeira proposta",q:r.proposal,note:"Não escolhida na validação; pode ser adicionada separadamente",base:r.original}]:[])
+      [{key:"proposal",title:"Primeira proposta",q:r.proposal,note:"Proposta intermediária; pode ser escolhida ou adicionada junto à original",base:r.original}]:[])
   ];
   if(verdict==="REVISE_AND_ADD")return [
     {key:"original",title:"Original",q:r.original,note:"Conteúdo atual no banco"},
+    ...(TRACKED.some((field)=>changed(r.original,r.proposal,field))?
+      [{key:"proposal",title:"Primeira proposta",q:r.proposal,note:"Proposta intermediária do primeiro relatório",base:r.original}]:[]),
     {key:"revised",title:"Revisão da questão existente",q:r.final,note:"A candidata adicional tem decisão própria",assessment:finalAssessment,base:r.original}
   ];
   if(verdict==="REVISE_ORIGINAL")return [
     {key:"original",title:"Original",q:r.original,note:"Conteúdo atual no banco"},
+    ...(TRACKED.some((field)=>changed(r.original,r.proposal,field))?
+      [{key:"proposal",title:"Primeira proposta",q:r.proposal,note:"Proposta intermediária do primeiro relatório",base:r.original}]:[]),
     {key:"revised",title:"Versão revisada",q:r.final,note:"REVISE_ORIGINAL · substitui a versão existente",assessment:finalAssessment,base:r.original}
   ];
   const out=[
     {key:"original",title:"Original",q:r.original,note:"Conteúdo no início da revisão"},
-    {key:"proposal",title:"Primeira proposta",q:r.proposal,note:r.state.status==="PASS"?"PASS · sem reescrita proposta":"Proposta do primeiro relatório",base:r.original}
+    {key:"proposal",title:"Primeira proposta",q:r.proposal,note:r.state.status==="PASS"?"PASS · sem reescrita proposta":"Proposta intermediária do primeiro relatório",base:r.original}
   ];
   if(app.validation)out.push({key:"final",title:"Final validado",q:r.final,note:r.validation?r.validation.verdict+" · resultado recomendado":r.state.status==="PASS"?"PASS · segunda validação não necessária":"Sem segunda validação",assessment:r.validation?finalAssessment:null,base:r.proposal});
   return out;
@@ -436,8 +441,8 @@ function cardActions(r,v){
   if(r.itemType==="new_question")options=[
     {decision:"APPROVE_NEW",label:"Adicionar esta pergunta"},{decision:"REJECT_NEW",label:"Não adicionar"}];
   else if(v.key==="original")options=[{decision:"KEEP_CURRENT",label:"Manter esta versão"}];
-  else if(["final","revised"].includes(v.key)||v.key==="proposal"&&!app.validation)
-    options.push({decision:"ACCEPT_RECOMMENDATION",label:"Usar esta versão"});
+  else if(["proposal","final","revised"].includes(v.key))
+    options.push({decision:"ACCEPT_RECOMMENDATION",acceptedVersion:v.key,label:"Usar esta versão"});
   if(r.itemType==="existing_change"&&v.key!=="original"&&
     TRACKED.some((field)=>changed(r.original,v.q,field))&&
     (v.key!=="proposal"||!app.validation||r.validation?.verdict==="KEEP_AND_ADD"))
@@ -445,17 +450,24 @@ function cardActions(r,v){
   if(!options.length)return null;
   for(const option of options){
     const chosen=p.decision===option.decision&&
-      (v.key==="original"||p.alsoAddVersion===(option.addVersion||null));
+      (option.decision==="ACCEPT_RECOMMENDATION"
+        ?(p.acceptedVersion||recommendedVersion(r))===option.acceptedVersion
+        :v.key==="original"||p.alsoAddVersion===(option.addVersion||null));
     const button=node("button",option.label,"button card-decision"+(chosen?" chosen":""));
     button.type="button";button.setAttribute("aria-pressed",String(chosen));
-    button.addEventListener("click",()=>decide(option.decision,{addVersion:option.addVersion||null}));actions.append(button);
+    button.addEventListener("click",()=>decide(option.decision,{addVersion:option.addVersion||null,acceptedVersion:option.acceptedVersion||null}));actions.append(button);
   }
   if(r.itemType==="new_question"&&p.decision==="REJECT_NEW")actions.prepend(node("span","Não adicionada","rejected-seal"));
   else if(r.itemType==="existing_change"&&v.key==="original"&&p.decision==="KEEP_CURRENT"||
-    p.decision==="ACCEPT_RECOMMENDATION"&&options.some((option)=>option.decision==="ACCEPT_RECOMMENDATION")||
+    options.some((option)=>option.decision==="ACCEPT_RECOMMENDATION"&&p.decision===option.decision&&
+      (p.acceptedVersion||recommendedVersion(r))===option.acceptedVersion)||
     p.alsoAddVersion===v.key&&p.decision==="KEEP_CURRENT"||
     r.itemType==="new_question"&&p.decision==="APPROVE_NEW")actions.prepend(node("span","Selecionada","selected-seal"));
   return actions;
+}
+function recommendedVersion(r){
+  const keys=versions(r).map((v)=>v.key);
+  return ["final","revised","proposal"].find((key)=>keys.includes(key))||null;
 }
 function addedVersionLabel(version){return {proposal:"a primeira proposta",revised:"a versão revisada",final:"a versão final"}[version]||version;}
 function versionCard(r,v,vs,hide){
@@ -534,7 +546,9 @@ function renderDetails(r){
 function renderPersonal(r){
   const p=personal(r.key),field=$("personal-state");
   const labels=Object.fromEntries(r.itemType==="new_question"?NEW_DECISIONS:EXISTING_DECISIONS);
-  field.replaceChildren(node("strong","Decisão: "+(p.alsoAddVersion?"Manter original + adicionar "+addedVersionLabel(p.alsoAddVersion):labels[p.decision]||"pendente")));
+  const decisionLabel=p.alsoAddVersion?"Manter original + adicionar "+addedVersionLabel(p.alsoAddVersion):
+    p.decision==="ACCEPT_RECOMMENDATION"&&p.acceptedVersion?"Usar "+addedVersionLabel(p.acceptedVersion):labels[p.decision]||"pendente";
+  field.replaceChildren(node("strong","Decisão: "+decisionLabel));
   $("request-adjustment").classList.toggle("chosen",p.decision==="NEEDS_ADJUSTMENT");
   $("decide-later").classList.toggle("chosen",p.decision==="UNSURE");
   $("personal-note").value=p.note;
@@ -572,7 +586,8 @@ function renderSelected(){
     badge("Status inicial",r.state.status||"NEW_QUESTION",cssStatus(r.state.status)),
     badge("Veredito",r.validation?r.validation.verdict||"não informado":r.state.status==="PASS"?"não necessário":"ausente",cssStatus(r.validation&&r.validation.verdict)),
     badge("Batch",r.validation?validationBatch(r.validation):(r.state.batch||"(vazio)"),"neutral"),
-    badge("Minha decisão",personal(r.key).alsoAddVersion?"Manter + adicionar "+addedVersionLabel(personal(r.key).alsoAddVersion):personal(r.key).decision||"pendente","neutral"));
+    badge("Minha decisão",personal(r.key).alsoAddVersion?"Manter + adicionar "+addedVersionLabel(personal(r.key).alsoAddVersion):
+      personal(r.key).decision==="ACCEPT_RECOMMENDATION"&&personal(r.key).acceptedVersion?"Usar "+addedVersionLabel(personal(r.key).acceptedVersion):personal(r.key).decision||"pendente","neutral"));
   const vs=versions(r),box=$("comparison");box.className="comparison-grid"+(vs.length===1?" single-column":vs.length===2?" two-columns":"");box.replaceChildren();
   vs.forEach((v)=>box.append(versionCard(r,v,vs,$("hide-identical").checked)));
   renderDetails(r);renderPersonal(r);
@@ -592,12 +607,13 @@ function move(offset){
   const target=i<0?(offset>0?(app.selected?nextFilteredAfter(app.selected)||app.filtered[0]:app.filtered[0]):null):app.filtered[i+offset];
   if(target)select(target.key);
 }
-function decide(value,{addVersion=null}={}){
+function decide(value,{addVersion=null,acceptedVersion=null}={}){
   const record=app.records.find((r)=>r.key===app.selected);
   if(!record)return;
   const choices=record.itemType==="new_question"?NEW_DECISIONS:EXISTING_DECISIONS;
   if(!choices.some(([decision])=>decision===value))return;
   if(addVersion&&!(value==="KEEP_CURRENT"&&versions(record).some((v)=>v.key===addVersion&&v.key!=="original")))return;
+  if(acceptedVersion&&!(value==="ACCEPT_RECOMMENDATION"&&versions(record).some((v)=>v.key===acceptedVersion&&v.key!=="original")))return;
   if(value==="NEEDS_ADJUSTMENT"&&!personal(record.key).note.trim()){
     $("personal-note").focus();showError("Escreva uma observação antes de pedir ajuste.");return;
   }
@@ -605,7 +621,7 @@ function decide(value,{addVersion=null}={}){
   const before=Object.hasOwn(app.personal,record.key)?structuredClone(app.personal[record.key]):null;
   const previousFiltered=app.filtered.map((r)=>r.key),previousIndex=previousFiltered.indexOf(record.key);
   app.history.push({key:record.key,before});
-  savePersonal(record.key,{decision:value,alsoAddVersion:addVersion,reviewedAt:new Date().toISOString()});
+  savePersonal(record.key,{decision:value,alsoAddVersion:addVersion,acceptedVersion:value==="ACCEPT_RECOMMENDATION"?acceptedVersion:null,reviewedAt:new Date().toISOString()});
   const shouldAdvance=$("auto-advance").checked&&value!=="UNSURE";
   applyFilters({keepSelected:true});
   if(shouldAdvance){
@@ -638,6 +654,7 @@ function decisionsPayload(){
       {candidate_key:r.candidateKey,...(r.idForExport?{id:r.idForExport}:{})}),
       source_id:r.sourceId||null,decision:p.decision,
       ...(r.itemType==="existing_change"&&p.alsoAddVersion?{also_add_version:p.alsoAddVersion}:{}),
+      ...(r.itemType==="existing_change"&&p.decision==="ACCEPT_RECOMMENDATION"&&p.acceptedVersion?{accepted_version:p.acceptedVersion}:{}),
       ...(r.itemType==="new_question"?{addition_decision:p.decision}:{}),
       notes:p.note,reviewed_at:p.reviewedAt,
       dataset_sha256:r.state.dataset_sha256||r.validation&&r.validation.dataset_sha256||datasetSha,
@@ -671,13 +688,16 @@ async function importDecisions(file){
       const allowed=record&&(record.itemType==="new_question"?NEW_DECISIONS:EXISTING_DECISIONS).some(([value])=>value===decision);
       const addVersion=record?.itemType==="existing_change"&&decision==="KEEP_CURRENT"&&
         versions(record).some((v)=>v.key===row.also_add_version&&v.key!=="original")?row.also_add_version:null;
+      const acceptedVersion=record?.itemType==="existing_change"&&decision==="ACCEPT_RECOMMENDATION"&&
+        versions(record).some((v)=>v.key===row.accepted_version&&v.key!=="original")?row.accepted_version:null;
       if(!record||record.itemType!==row.item_type||decision&&!allowed||
         row.also_add_version&&!addVersion||
+        row.accepted_version&&!acceptedVersion||
         row.dataset_sha256&&current.dataset_sha256&&row.dataset_sha256!==current.dataset_sha256||
         row.source_sha256&&current.source_sha256&&row.source_sha256!==current.source_sha256){skipped++;continue;}
       const saved=personal(id);
       if(saved.decision||saved.note){skipped++;continue;}
-      app.personal[id]={decision,alsoAddVersion:addVersion,note:typeof row.notes==="string"?row.notes:"",reviewedAt:row.reviewed_at||null};
+      app.personal[id]={decision,alsoAddVersion:addVersion,acceptedVersion,note:typeof row.notes==="string"?row.notes:"",reviewedAt:row.reviewed_at||null};
       imported++;
     }
     persistPersonal();renderSummary();updateProgress();applyFilters({keepSelected:true});

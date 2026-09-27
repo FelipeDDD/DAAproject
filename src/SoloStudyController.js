@@ -20,6 +20,20 @@ function clockText(milliseconds){
 }
 
 export class SoloStudyController {
+  async terminalMutation(name, args) {
+    try {
+      const result = await this.presence.client.mutation(name, args);
+      const lease = result?.terminalLease;
+      if (lease && this.presence.terminalLease
+        && lease.terminalLeaseExpiresAt >= this.presence.terminalLease.terminalLeaseExpiresAt)
+        this.presence.terminalLease = { ...lease, clockOffset: Date.now() - lease.serverNow };
+      return result;
+    } catch (error) {
+      if (String(error).includes('CHARACTER_SESSION_LOST')) this.presence.fail(error);
+      throw error;
+    }
+  }
+
   constructor(scene,presence,seats) {
     Object.assign(this,{
       scene,presence,seats,active:false,pending:false,session:null,options:DEFAULT_QUIZ_OPTIONS,
@@ -145,7 +159,7 @@ export class SoloStudyController {
     this.status.textContent='Preparing questions…';this.render();
     try{
       const {characterId,sessionId}=this.presence.identity;
-      const result=await this.presence.client.mutation(this.presence.api.soloStudy.start,{
+      const result=await this.terminalMutation(this.presence.api.soloStudy.start,{
         characterId,sessionId,mode:'study',...settings,
       });
       this.settings=result.settings;this.session=createSoloSession('study',result.questions);this.runId=result.runId;
@@ -214,7 +228,7 @@ export class SoloStudyController {
     this.status.textContent='Preparing challenge…';this.render();
     try{
       const {characterId,sessionId}=this.presence.identity;
-      const result=await this.presence.client.mutation(this.presence.api.itChallenge.start,{characterId,sessionId});
+      const result=await this.terminalMutation(this.presence.api.itChallenge.start,{characterId,sessionId});
       this.session=createSoloSession('challenge',result.questions);this.runId=result.runId;
       this.status.textContent='';
     }catch(error){
@@ -305,11 +319,11 @@ export class SoloStudyController {
     try{
       const {characterId,sessionId}=this.presence.identity;
       if(this.mode==='challenge'){
-        const result=await this.presence.client.mutation(this.presence.api.itChallenge.start,{characterId,sessionId});
+        const result=await this.terminalMutation(this.presence.api.itChallenge.start,{characterId,sessionId});
         this.session=createSoloSession('challenge',result.questions);this.runId=result.runId;
       }else{
         const settings=readQuizSettingsControls(this,this.options);this.settings=settings;
-        const result=await this.presence.client.mutation(this.presence.api.soloStudy.start,{
+        const result=await this.terminalMutation(this.presence.api.soloStudy.start,{
           characterId,sessionId,mode:'study',...settings,
         });
         this.session=createSoloSession('study',result.questions);this.runId=result.runId;
@@ -350,7 +364,7 @@ export class SoloStudyController {
     if(!this.session?.next())return;
     if(!this.session.complete){
       const {characterId,sessionId}=this.presence.identity;
-      this.presence.client.mutation(this.presence.api.soloStudy.markViewed,{
+      this.terminalMutation(this.presence.api.soloStudy.markViewed,{
         characterId,sessionId,questionId:this.session.question.id,
       }).catch(()=>{this.status.textContent='Progress continues, but recent-question history could not be updated.';this.render();});
     }
@@ -360,7 +374,7 @@ export class SoloStudyController {
   markChallengeQuestionViewed(){
     if(!this.session?.question)return;
     const {characterId,sessionId}=this.presence.identity;
-    this.presence.client.mutation(this.presence.api.soloStudy.markViewed,{
+    this.terminalMutation(this.presence.api.soloStudy.markViewed,{
       characterId,sessionId,questionId:this.session.question.id,
     }).catch(()=>{});
   }
@@ -368,7 +382,7 @@ export class SoloStudyController {
   recordCurrentAnswer(result){
     if(!this.runId||this.session?.mode!=='study')return;
     const {characterId,sessionId}=this.presence.identity;
-    this.statisticsPending=this.presence.client.mutation(this.presence.api.quizStatistics.recordSoloAnswer,{
+    this.statisticsPending=this.terminalMutation(this.presence.api.quizStatistics.recordSoloAnswer,{
       characterId,sessionId,runId:this.runId,questionIndex:this.session.index,
       ...(result.answerIndex===null?{}:{answerIndex:result.answerIndex}),
     }).catch(()=>{this.status.textContent='Answer saved locally, but statistics could not be updated.';this.render();});
@@ -409,7 +423,7 @@ export class SoloStudyController {
     this.finishingChallenge=true;this.status.textContent='Saving result…';this.render();
     try{
       const {characterId,sessionId}=this.presence.identity;
-      const response=await this.presence.client.mutation(this.presence.api.itChallenge.finish,{
+      const response=await this.terminalMutation(this.presence.api.itChallenge.finish,{
         characterId,sessionId,runId:this.runId,outcomes:this.session.submission(),
         lastViewedQuestionIndex:this.session.index,
       });

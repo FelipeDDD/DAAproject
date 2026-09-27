@@ -740,3 +740,21 @@ de conversão: ela exige que `profile.profileName` seja exatamente o antigo
 `characterId`, recusa conflitos com dados já pertencentes ao profile e nunca roda
 automaticamente. Execute-a somente como operação administrativa depois de revisar
 o profile e os registros; nenhuma migração remota faz parte do fluxo de login.
+
+## Movimento remoto: interpolação visual
+
+`src/multiplayer/remoteMovement.js` mantém um buffer de até 32 snapshots por
+jogador remoto. `REMOTE_INTERPOLATION_DELAY_MS` segue por padrão
+`PRESENCE_SYNC_INTERVAL_MS`, em `src/multiplayer/presencePolicy.js`: testar 150,
+180 ou 200 ms também ajusta o atraso visual. O atraso pode ser configurado
+independentemente na constante de interpolação.
+
+Posição, direção e aparência seguem a mesma linha do tempo atrasada. A posição
+é interpolada linearmente entre horários de chegada locais; `lastSeen` serve
+apenas para rejeitar mensagens antigas. Entregas com posição, direção, skin,
+item ativo e estado de movimento iguais não criam snapshots, mesmo após um
+heartbeat. Sem uma próxima amostra, o jogador remoto para na última posição;
+não há extrapolação. Saltos acima de 160 px limpam o buffer e aparecem
+imediatamente. Nada disso altera o movimento local ou cria chamadas ao Convex.
+
+Testes focados: `node --test tests/remoteMovement.test.js tests/presence.test.js`.

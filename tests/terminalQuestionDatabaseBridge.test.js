@@ -45,8 +45,8 @@ test('terminal Question Database detail preserves correctAnswer, optional topic 
   assert.equal(detail.answers.length,4);assert.equal(detail.explanation,'Explain hardware-001');
 });
 
-test('terminal Question Database bridge exposes the current complete bank without mocks',()=>{
-  const h=harness();h.bridge.handle(h.event('list',{filters:{},offset:0,limit:1}));
+test('terminal Question Database bridge exposes the current complete bank without mocks',async()=>{
+  const h=harness();await h.bridge.ready;h.bridge.handle(h.event('list',{filters:{},offset:0,limit:1}));
   const state=h.messages[0].message.state;
   assert.ok(state.bankTotal>=700);assert.equal(state.items.length,1);
   assert.ok(state.options.categories.includes('Hardware'));

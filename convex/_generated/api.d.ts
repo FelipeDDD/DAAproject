@@ -22,6 +22,7 @@ import type * as players from "../players.js";
 import type * as profileDataMigration from "../profileDataMigration.js";
 import type * as profileStore from "../profileStore.js";
 import type * as profiles from "../profiles.js";
+import type * as quizCleanupWorker from "../quizCleanupWorker.js";
 import type * as quizGeneratedQuestions from "../quizGeneratedQuestions.js";
 import type * as quizHistory from "../quizHistory.js";
 import type * as quizLobbies from "../quizLobbies.js";
@@ -54,6 +55,7 @@ declare const fullApi: ApiFromModules<{
   profileDataMigration: typeof profileDataMigration;
   profileStore: typeof profileStore;
   profiles: typeof profiles;
+  quizCleanupWorker: typeof quizCleanupWorker;
   quizGeneratedQuestions: typeof quizGeneratedQuestions;
   quizHistory: typeof quizHistory;
   quizLobbies: typeof quizLobbies;

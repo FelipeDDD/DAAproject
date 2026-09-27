@@ -1,5 +1,3 @@
-import STATIC_QUIZ_QUESTIONS from '../../convex/quizStaticQuestions.generated.js';
-import { shuffleConcreteAnswers } from '../../convex/quizQuestions.js';
 import { OFFICE3_MONITOR_STATUS } from '../art/office3PaperHighlight.js';
 
 export const OFFICE3_PASSWORD_DIGITS = '488';
@@ -18,14 +16,20 @@ export function nextStreak(count, correct) {
   return correct ? Math.min(OFFICE3_STREAK_TARGET, count + 1) : 0;
 }
 
-export function chooseOffice3Question(previousIds = [], random = Math.random) {
-  const available = STATIC_QUIZ_QUESTIONS.filter(question =>
+export function chooseOffice3Question(questionBank,previousIds = [], random = Math.random) {
+  const available = questionBank.filter(question =>
     Array.isArray(question.answers) && question.answers.length === 4 &&
     Number.isInteger(question.correctAnswer) && question.correctAnswer >= 0 &&
     question.correctAnswer < 4 && !previousIds.includes(question.id));
-  const pool = available.length ? available : STATIC_QUIZ_QUESTIONS.filter(question =>
+  const pool = available.length ? available : questionBank.filter(question =>
     Array.isArray(question.answers) && question.answers.length === 4 &&
     Number.isInteger(question.correctAnswer) && question.correctAnswer >= 0 && question.correctAnswer < 4);
   if (!pool.length) throw new Error('No quiz questions are available.');
-  return shuffleConcreteAnswers(pool[Math.floor(random() * pool.length)], random);
+  const question=pool[Math.floor(random()*pool.length)];
+  const tagged=question.answers.map((answer,index)=>({answer,isCorrect:index===question.correctAnswer}));
+  for(let index=tagged.length-1;index>0;index--){
+    const target=Math.floor(random()*(index+1));
+    [tagged[index],tagged[target]]=[tagged[target],tagged[index]];
+  }
+  return {...question,answers:tagged.map(item=>item.answer),correctAnswer:tagged.findIndex(item=>item.isCorrect)};
 }

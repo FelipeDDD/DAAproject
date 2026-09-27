@@ -12,6 +12,18 @@ const maps = { school: load('classroom'), outside: load('outside'), arena: load(
 const overlaps = (a,b) => a.x < b.x+b.width && a.x+a.width > b.x && a.y < b.y+b.height && a.y+a.height > b.y;
 const feet = (x,y) => ({x:x-10*PLAYER_SCALE,y:y-12*PLAYER_SCALE,width:20*PLAYER_SCALE,height:12*PLAYER_SCALE});
 
+test('corridor bathroom walls and main-exit walls retain continuous collision',()=>{
+  const areas=collisionAreas(objectsIn(maps.school,'Collision'));
+  const solid=(x,y)=>areas.some(r=>x>=r.x&&x<r.x+r.width&&y>=r.y&&y<r.y+r.height);
+  for(const x of [272,464])for(let y=8;y<224;y+=16)
+    assert.ok(solid(x,y),`Missing bathroom side wall at ${x},${y}`);
+  for(let x=296;x<384;x+=16)assert.ok(solid(x,112),`Missing bathroom partition at ${x}`);
+  for(let x=8;x<576;x+=16){
+    if(x>=352&&x<416)assert.ok(!solid(x,400),`Main exit blocked at ${x}`);
+    else assert.ok(solid(x,400),`Missing corridor exit wall at ${x}`);
+  }
+});
+
 test('interior doors meet solid jambs on both sides and the obsolete corridor door is removed', () => {
   const doors=readDoors(maps.school), walls=objectsIn(maps.school,'Collision');
   assert.ok(!doors.some(d=>d.id==='classroom-exit'));

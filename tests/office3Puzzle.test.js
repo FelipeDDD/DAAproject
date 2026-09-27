@@ -49,8 +49,8 @@ test('five correct answers in sequence unlock; any error resets to zero', () => 
 });
 
 test('quiz pulls four-answer questions from the existing bank without repeating the previous ID', () => {
-  const first = chooseOffice3Question([], () => 0);
-  const second = chooseOffice3Question([first.id], () => 0);
+  const first = chooseOffice3Question(STATIC_QUIZ_QUESTIONS,[], () => 0);
+  const second = chooseOffice3Question(STATIC_QUIZ_QUESTIONS,[first.id], () => 0);
   assert.notEqual(second.id, first.id);
   assert.equal(first.answers.length, 4);
   assert.ok(first.correctAnswer >= 0 && first.correctAnswer < 4);
@@ -62,7 +62,7 @@ test('terminal shuffles each question while preserving its correct answer and so
   const orders = new Set();
   for (let seed = 0; seed < 10; seed++) {
     let selection = true;
-    const question = chooseOffice3Question([], () => {
+    const question = chooseOffice3Question(STATIC_QUIZ_QUESTIONS,[], () => {
       if (selection) { selection = false; return 0; }
       return seed / 10;
     });

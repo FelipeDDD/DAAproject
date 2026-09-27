@@ -4,6 +4,7 @@ import { hasProfileSession } from '../ProfileSessionClient.js';
 import { WorldPrompt } from '../ui/WorldPrompt.js';
 import { renderQuizMedia } from '../QuizMedia.js';
 import { office3PaperPlacement } from '../art/office3PaperHighlight.js';
+import { loadOffice3Questions } from '../quiz/quizBank.js';
 import {
   OFFICE3_FEEDBACK_MS, OFFICE3_PASSWORD_DENIED_MS, OFFICE3_MONITOR, OFFICE3_STREAK_TARGET,
   chooseOffice3Question, nextStreak, passwordIsCorrect,
@@ -176,15 +177,34 @@ export class Office3PuzzleController {
     input.focus();
   }
 
-  startQuiz() {
+  async startQuiz() {
+    if(this.busy)return false;
+    this.busy=true;
     this.streak = 0;
     this.usedIds = [];
-    this.showQuestion();
+    this.panel.replaceChildren(element('h2','','OFFICE TERMINAL'),element('p','','Loading questions...'));
+    try{
+      const staticQuestions=await loadOffice3Questions();
+      if(!this.active)return false;
+      this.questionBank=staticQuestions;
+      this.showQuestion();
+      return true;
+    }catch(error){
+      if(!this.active)return false;
+      this.panel.replaceChildren(element('h2','','OFFICE TERMINAL'),
+        element('p','','Questions could not be loaded. Check your connection and try again.'));
+      const retry=element('button','','Retry');retry.type='button';
+      retry.addEventListener('click',()=>{retry.disabled=true;void this.startQuiz();});
+      const close=element('button','office3-puzzle-close','×');close.type='button';
+      close.setAttribute('aria-label','Close terminal');close.addEventListener('click',()=>this.close());
+      this.panel.prepend(close,retry);
+      return false;
+    }finally{if(this.active)this.busy=false;}
   }
 
   showQuestion() {
     if (!this.active) return;
-    this.question = chooseOffice3Question(this.usedIds);
+    this.question = chooseOffice3Question(this.questionBank,this.usedIds);
     this.usedIds.push(this.question.id);
     this.panel.replaceChildren();
     this.panel.classList.add('quiz');

@@ -10,6 +10,86 @@ import { forProfile as getCharacterItems } from '../convex/characterItems.js';
 import { normalizeBossProgress } from '../src/boss/BossRewards.js';
 import { inventoryItemsFromSources,inventorySlots } from '../src/inventory/config.js';
 import { CHARACTERS } from '../src/characters.js';
+import { PRESENCE_TIMEOUT_MS,isPlayerActive } from '../src/multiplayer/presencePolicy.js';
+import { heartbeat } from '../convex/players.js';
+
+test('shared expiry handles legacy, playing and terminal rows at exact boundaries',()=>{
+  for(const presenceMode of [undefined,'playing']){
+    assert.equal(isPlayerActive({presenceMode,lastSeen:1},60_000),true);
+    assert.equal(isPlayerActive({presenceMode,lastSeen:1},60_001),false);
+  }
+  assert.equal(isPlayerActive({presenceMode:'terminal',lastSeen:0,terminalLeaseExpiresAt:600_000},599_999),true);
+  assert.equal(isPlayerActive({presenceMode:'terminal',lastSeen:599_999,terminalLeaseExpiresAt:600_000},600_000),false);
+  assert.equal(isPlayerActive({presenceMode:'terminal',lastSeen:599_999},600_000),false);
+});
+
+test('terminal expiry governs availability, reclaim, cleanup and rejected updates',async t=>{
+  let now=100_000;t.mock.method(Date,'now',()=>now);
+  const ctx=memoryContext();
+  const guest={guestId:'guest-original-identity-123456',characterId:'felipe',sessionId:'original-session-123456'};
+  await claimGuest._handler(ctx,guest);
+  const row=ctx.tables.players[0];Object.assign(row,{presenceMode:'terminal',lastSeen:0,terminalLeaseExpiresAt:200_000});
+  const other={...guest,guestId:'guest-other-identity-123456',sessionId:'replacement-session-123456'};
+  assert.equal((await availability._handler(ctx,{})).find(r=>r.characterId==='felipe').active,true);
+  assert.equal((await claimGuest._handler(ctx,other)).ok,false);
+  await cleanup._handler(ctx);assert.equal(ctx.tables.players.length,1);
+  await assert.rejects(requireAuthenticatedPlayer(ctx,row.characterId,row.sessionId),/PROFILE_REQUIRED/);
+  now=200_000;
+  assert.equal((await availability._handler(ctx,{})).find(r=>r.characterId==='felipe').active,false);
+  await assert.rejects(heartbeat._handler(ctx,{characterId:row.characterId,sessionId:row.sessionId}),/CHARACTER_SESSION_LOST/);
+  await assert.rejects(update._handler(ctx,{playerId:'felipe',characterId:'felipe',sessionId:row.sessionId,name:'Felipe',room:'school',x:1,y:2,direction:'down'}),/CHARACTER_SESSION_LOST/);
+  assert.equal(row.lastSeen,0);assert.equal(row.terminalLeaseExpiresAt,200_000);
+  assert.equal((await claimGuest._handler(ctx,other)).ok,true);
+  assert.equal(row.presenceMode,'playing');assert.equal(row.terminalLeaseExpiresAt,undefined);
+  Object.assign(row,{presenceMode:'terminal',lastSeen:now,terminalLeaseExpiresAt:now});
+  await cleanup._handler(ctx);assert.equal(ctx.tables.players.length,0);
+});
+
+test('profile claims respect terminal lease expiry and clear the reclaimed lease',async()=>{
+  const ctx=memoryContext(),registered=await createAccount(ctx);
+  const guest={guestId:'terminal-guest-identity-123456',characterId:'felipe',sessionId:'terminal-session-123456789'};
+  await claimGuest._handler(ctx,guest);
+  const row=ctx.tables.players[0];Object.assign(row,{presenceMode:'terminal',lastSeen:0,terminalLeaseExpiresAt:Date.now()+60_000});
+  const args={token:registered.token,characterId:'felipe',presenceSessionId:'profile-session-123456789'};
+  assert.equal((await claimCharacter._handler(actionContext(ctx),args)).ok,false);
+  row.terminalLeaseExpiresAt=Date.now();
+  assert.equal((await claimCharacter._handler(actionContext(ctx),args)).ok,true);
+  assert.equal(row.presenceMode,'playing');assert.equal(row.terminalLeaseExpiresAt,undefined);
+});
+
+test('profile and guest claims reclaim stale rows without cleanup',async()=>{
+  const ctx=memoryContext();const registered=await createAccount(ctx);
+  const guest={guestId:'guest-temporary-identity-123456',characterId:'felipe',sessionId:'guest-session-123456789'};
+  await claimGuest._handler(ctx,guest);
+  const row=ctx.tables.players[0],rowId=row._id;
+  const profileClaim={token:registered.token,characterId:'felipe',presenceSessionId:'profile-session-123456789'};
+  assert.equal((await claimCharacter._handler(actionContext(ctx),profileClaim)).ok,false);
+  row.lastSeen=Date.now()-PRESENCE_TIMEOUT_MS;
+  assert.equal((await claimCharacter._handler(actionContext(ctx),profileClaim)).ok,true);
+  assert.equal(ctx.tables.players.length,1);assert.equal(row._id,rowId);
+  assert.equal(row.sessionId,profileClaim.presenceSessionId);
+  assert.equal((await claimGuest._handler(ctx,guest)).ok,false);
+  row.lastSeen=Date.now()-PRESENCE_TIMEOUT_MS;
+  assert.equal((await claimGuest._handler(ctx,guest)).ok,true);
+  assert.equal(ctx.tables.players.length,1);assert.equal(row._id,rowId);
+  assert.equal(row.sessionId,guest.sessionId);
+});
+
+test('same-owner takeover is preserved and delayed release cannot delete the new reservation',async()=>{
+  const ctx=memoryContext();const registered=await createAccount(ctx);
+  const initial={token:registered.token,characterId:'felipe',presenceSessionId:'profile-session-123456789'};
+  await claimCharacter._handler(actionContext(ctx),initial);
+  const replacement={...initial,presenceSessionId:'profile-session-987654321'};
+  assert.equal((await claimCharacter._handler(actionContext(ctx),replacement)).ok,true);
+  assert.deepEqual(await release._handler(ctx,{characterId:'felipe',sessionId:initial.presenceSessionId}),{released:false});
+  assert.equal(ctx.tables.players[0].sessionId,replacement.presenceSessionId);
+  assert.deepEqual(await release._handler(ctx,{characterId:'felipe',sessionId:replacement.presenceSessionId}),{released:true});
+  const guest={guestId:'guest-temporary-identity-123456',characterId:'felipe',sessionId:'guest-session-123456789'};
+  await claimGuest._handler(ctx,guest);
+  assert.equal((await claimGuest._handler(ctx,{...guest,sessionId:'guest-session-987654321'})).ok,true);
+  assert.deepEqual(await release._handler(ctx,{characterId:'felipe',sessionId:guest.sessionId}),{released:false});
+  assert.equal(ctx.tables.players.length,1);
+});
 
 function memoryContext(){
   const tables={
@@ -19,15 +99,18 @@ function memoryContext(){
   const query=table=>({
     collect:async()=>[...tables[table]],
     withIndex:(_name,build)=>{
-      let operation='eq',field,value;
+      const conditions=[];
       const queryBuilder={
-        eq(candidate,nextValue){operation='eq';field=candidate;value=nextValue;return queryBuilder;},
-        lt(candidate,nextValue){operation='lt';field=candidate;value=nextValue;return queryBuilder;},
+        eq(field,value){conditions.push(row=>row[field]===value);return queryBuilder;},
+        lt(field,value){conditions.push(row=>row[field]<value);return queryBuilder;},
+        lte(field,value){conditions.push(row=>row[field]===undefined||row[field]<=value);return queryBuilder;},
       };
       build(queryBuilder);
-      const matching=()=>tables[table].filter(row=>operation==='lt'?row[field]<value:row[field]===value);
-      return {unique:async()=>matching()[0]??null,first:async()=>matching()[0]??null,
+      const matching=()=>tables[table].filter(row=>conditions.every(condition=>condition(row)));
+      const result={unique:async()=>matching()[0]??null,first:async()=>matching()[0]??null,
         collect:async()=>matching(),take:async count=>matching().slice(0,count)};
+      result.filter=buildFilter=>{conditions.push(buildFilter({field:key=>key,neq:(key,value)=>row=>row[key]!==value}));return result;};
+      return result;
     },
   });
   const db={query,

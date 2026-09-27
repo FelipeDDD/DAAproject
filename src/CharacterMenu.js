@@ -1,6 +1,6 @@
 import { CHARACTERS, CHARACTER_STORAGE_KEY } from './characters.js';
 import { characterVisual } from './characterVisuals.js';
-import { isPresenceActive } from './multiplayer/presencePolicy.js';
+import { isPlayerActive } from './multiplayer/presencePolicy.js';
 import { createSessionId } from './playerIdentity.js';
 
 export const createCharacterSessionId=createSessionId;
@@ -59,7 +59,7 @@ export class CharacterMenu {
   }
   render(){
     for(const {c,button,state}of this.cards){
-      const busy=this.rows.some(r=>r.characterId===c.id&&(r.active??isPresenceActive(r.lastSeen)));
+      const busy=this.rows.some(r=>r.characterId===c.id&&isPlayerActive(r));
       button.disabled=!this.ready||this.pending||busy;
       state.textContent=busy?'In use':this.ready?'Available':this.connectionFailed?'Offline':'Loading…';
     }
