@@ -14,7 +14,7 @@ test('all CSV questions load with unique IDs, source files and quoted code intac
   const result = loadStaticQuizQuestions(path.join(root, 'quiz-data'));
   assert.deepEqual(result.errors, []);
   assert.equal(result.files.length, 6);
-  assert.equal(result.questions.length, 920);
+  assert.equal(result.questions.length, 936);
   assert.equal(new Set(result.questions.map(({ id }) => id)).size, result.questions.length);
 
   const code = result.questions.find(({ id }) => id === 'Programmierung-011');
