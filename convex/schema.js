@@ -113,7 +113,8 @@ export default defineSchema({
     blockedUntil:v.number(),updatedAt:v.number(),
   }).index('by_login_key',['loginKey']).index('by_updated_at',['updatedAt']),
   players: defineTable({
-    presenceMode:v.optional(v.union(v.literal('playing'),v.literal('terminal'))),
+    presenceMode:v.optional(v.union(v.literal('playing'),v.literal('stationary'),v.literal('terminal'))),
+    stationaryLeaseExpiresAt:v.optional(v.number()),
     terminalLeaseExpiresAt:v.optional(v.number()),
     playerId: v.string(), name: v.string(), room: v.string(),
     profileId:v.optional(v.id('profiles')),
@@ -121,10 +122,12 @@ export default defineSchema({
     identityKind:v.optional(v.union(v.literal('profile'),v.literal('guest'))),
     characterId: v.optional(v.string()), sessionId: v.optional(v.string()),
     x: v.number(), y: v.number(), direction: v.string(),
+    moving:v.optional(v.boolean()),velocityX:v.optional(v.number()),velocityY:v.optional(v.number()),
     equippedSkin:v.optional(v.union(v.literal('classic'),v.literal('remastered'))),
     activeCharacterItem:v.optional(v.union(v.literal('lung_crusher_3000'),v.null())),lastSeen: v.number(),
   }).index('by_player', ['playerId']).index('by_room', ['room']).index('by_lastSeen', ['lastSeen'])
-    .index('by_presenceMode_lease',['presenceMode','terminalLeaseExpiresAt']),
+    .index('by_presenceMode_lease',['presenceMode','terminalLeaseExpiresAt'])
+    .index('by_presenceMode_stationaryLease',['presenceMode','stationaryLeaseExpiresAt']),
   bossProgress: defineTable({
     profileId:v.optional(v.id('profiles')),characterId:v.optional(v.string()),bossId:v.string(),wins:v.number(),defeated:v.boolean(),
     rewards:v.array(v.string()),equippedSkin:v.optional(v.union(v.literal('classic'),v.literal('remastered'))),updatedAt:v.number(),

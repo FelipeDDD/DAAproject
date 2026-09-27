@@ -229,10 +229,10 @@ test('explicit release waits for an in-flight presence update before deleting th
   assert.equal(presence.identity,null);
 });
 
-test('a simulated background tab remains active while heartbeats continue',async()=>{
+test('a simulated background tab remains active through playing heartbeats before stationary dwell',async()=>{
   let serverLastSeen=0;
   const presence=stationaryPresence(async(fn)=>{assert.equal(fn,'heartbeat');serverLastSeen=presence.active.sentAt+PRESENCE_HEARTBEAT_MS;});
-  for(let now=PRESENCE_HEARTBEAT_MS;now<=PRESENCE_TIMEOUT_MS*2;now+=PRESENCE_HEARTBEAT_MS){
+  for(let now=PRESENCE_HEARTBEAT_MS;now<=PRESENCE_HEARTBEAT_MS*2;now+=PRESENCE_HEARTBEAT_MS){
     await presence.send(now);serverLastSeen=now;
     assert.equal(isPresenceActive(serverLastSeen,now+PRESENCE_HEARTBEAT_MS),true);
   }
@@ -243,7 +243,7 @@ test('cleanup removes a session that has missed the configured timeout',async()=
   const stale={_id:'stale-player',lastSeen:Date.now()-PRESENCE_TIMEOUT_MS-1};
   const ctx={db:{
     query:()=>({withIndex:(name,build)=>{
-      if(name==='by_presenceMode_lease')return {take:async()=>[]};
+      if(name==='by_presenceMode_lease'||name==='by_presenceMode_stationaryLease')return {take:async()=>[]};
       build({lte:(_field,value)=>{cutoff=value;return {};}});
       return {filter:()=>({take:async()=>[stale]})};
     }}),
@@ -282,4 +282,18 @@ test('cached remote expires even without a further realtime callback', () => {
   presence.active=active;
   presence.deliver(active);
   assert.deepEqual(rows,[]);
+});
+
+test('stationary remote remains visible until lease expiry without another callback',t=>{
+  let now=100_000,receive,visible;
+  t.mock.method(Date,'now',()=>now);
+  const presence=new Presence({onUpdate(_fn,_args,callback){receive=callback;return()=>{};},mutation:async()=>{}},
+    {players:{}},{playerId:'self'});
+  try{
+    presence.enter('school',()=>({x:0,y:0,direction:'down'}),rows=>visible=rows);
+    receive([{playerId:'remote',room:'school',presenceMode:'stationary',lastSeen:0,stationaryLeaseExpiresAt:200_000}]);
+    assert.equal(visible.length,1);
+    now=200_000;presence.deliver(presence.active);
+    assert.deepEqual(visible,[]);
+  }finally{presence.leave();}
 });

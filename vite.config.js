@@ -7,6 +7,8 @@ export default defineConfig({
     },
   },
   server: {
+    // Temporary Quick Tunnel testing; opt in only in the Vite terminal.
+    allowedHosts: process.env.VITE_QUICK_TUNNEL === 'true' ? ['.trycloudflare.com'] : [],
     watch: {
       // Tiled locks this file while the editor is open. Watching it can crash
       // Vite on Windows with EBUSY, even though it is not part of the game.

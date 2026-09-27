@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { RemoteSnapshotBuffer, REMOTE_INTERPOLATION_DELAY_MS } from '../src/multiplayer/remoteMovement.js';
-import { PRESENCE_SYNC_INTERVAL_MS } from '../src/multiplayer/presencePolicy.js';
+import { ADAPTIVE_MOVEMENT, ADAPTIVE_CRUISE_INTERVAL_MS, PRESENCE_SYNC_INTERVAL_MS } from '../src/multiplayer/presencePolicy.js';
 import { RemotePlayers } from '../src/multiplayer/RemotePlayers.js';
 
 const row = (x, direction = 'right', extra = {}) => ({
@@ -10,10 +10,10 @@ const row = (x, direction = 'right', extra = {}) => ({
 });
 
 test('default visual delay follows the configured presence interval', () => {
-  assert.equal(REMOTE_INTERPOLATION_DELAY_MS, PRESENCE_SYNC_INTERVAL_MS);
+  assert.equal(REMOTE_INTERPOLATION_DELAY_MS, ADAPTIVE_MOVEMENT ? ADAPTIVE_CRUISE_INTERVAL_MS : PRESENCE_SYNC_INTERVAL_MS);
 });
 
-for (const interval of [150, 180, 200]) {
+for (const interval of [150, 180, 200, 300]) {
   test(`${interval} ms samples render constant speed without catch-up pulsing`, () => {
     const buffer = new RemoteSnapshotBuffer({ delayMs: interval });
     for (let n = 0; n <= 4; n++) buffer.push(row(144 * n * interval / 1000), n * interval);

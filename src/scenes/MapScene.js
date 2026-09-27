@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { resolvedMovementState } from '../multiplayer/movementState.js';
 import { CAMERA_ZOOM,CAMERA_ZOOM_TRANSITION_MS,cameraZoomForMap } from '../game/settings.js';
 import { Player } from '../entities/Player.js';
 import { Door } from '../entities/Door.js';
@@ -331,6 +332,8 @@ export class MapScene extends Phaser.Scene {
   }
 
   update(_time, delta) {
+    // Previous physics step displacement includes wall/collision resolution.
+    this.presence?.observeMovement(resolvedMovementState(this.player.body));
     if(this.terminal?.active||this.puzzleTerminal?.active||this.chat?.isInputActive||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active||this.characterItems?.transforming)this.player.setVelocity(0,0);
     else this.player.update();
     if(this.terminal?.active||this.puzzleTerminal?.active||this.chat?.isInputActive||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active||this.characterItems?.transforming)this.hint.hidden=true;

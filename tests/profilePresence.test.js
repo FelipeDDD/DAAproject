@@ -23,6 +23,53 @@ test('shared expiry handles legacy, playing and terminal rows at exact boundarie
   assert.equal(isPlayerActive({presenceMode:'terminal',lastSeen:599_999},600_000),false);
 });
 
+test('stationary expiry uses only a finite lease deadline, independent of lastSeen',()=>{
+  for(const stationaryLeaseExpiresAt of [undefined,NaN,Infinity,-Infinity,100_000]){
+    assert.equal(isPlayerActive({presenceMode:'stationary',lastSeen:100_000,stationaryLeaseExpiresAt},100_000),false);
+  }
+  assert.equal(isPlayerActive({presenceMode:'stationary',lastSeen:0,stationaryLeaseExpiresAt:100_001},100_000),true);
+});
+
+test('stationary availability, validation, GC and guest reclaim share the lease boundary',async t=>{
+  let now=100_000;t.mock.method(Date,'now',()=>now);
+  const ctx=memoryContext();
+  const original={guestId:'guest-original-identity-123456',characterId:'felipe',sessionId:'original-session-123456'};
+  await claimGuest._handler(ctx,original);
+  const row=ctx.tables.players[0];Object.assign(row,{presenceMode:'stationary',lastSeen:0,stationaryLeaseExpiresAt:200_000});
+  const replacement={...original,guestId:'guest-other-identity-123456',sessionId:'replacement-session-123456'};
+  const available=(await availability._handler(ctx)).find(r=>r.characterId==='felipe');
+  assert.equal(available.active,true);assert.equal(available.stationaryLeaseExpiresAt,200_000);
+  assert.equal((await claimGuest._handler(ctx,replacement)).ok,false);
+  await cleanup._handler(ctx);assert.equal(ctx.tables.players.length,1);
+  await assert.rejects(requireAuthenticatedPlayer(ctx,row.characterId,row.sessionId),/PROFILE_REQUIRED/);
+  const args={playerId:'felipe',characterId:'felipe',sessionId:row.sessionId,name:'Felipe',room:'school',x:1,y:2,direction:'down'};
+  await heartbeat._handler(ctx,original);
+  assert.equal(row.presenceMode,'stationary');assert.equal(row.stationaryLeaseExpiresAt,200_000);
+  now=200_000;
+  assert.equal((await availability._handler(ctx)).find(r=>r.characterId==='felipe').active,false);
+  await assert.rejects(heartbeat._handler(ctx,original),/CHARACTER_SESSION_LOST/);
+  await assert.rejects(update._handler(ctx,args),/CHARACTER_SESSION_LOST/);
+  assert.equal(row.lastSeen,0);assert.equal(row.stationaryLeaseExpiresAt,200_000);
+  assert.equal((await claimGuest._handler(ctx,replacement)).ok,true);
+  assert.equal(row.presenceMode,'playing');assert.equal(row.stationaryLeaseExpiresAt,undefined);
+  await assert.rejects(heartbeat._handler(ctx,original),/CHARACTER_SESSION_LOST/);
+  assert.deepEqual(await release._handler(ctx,original),{released:false});
+  Object.assign(row,{presenceMode:'stationary',lastSeen:now,stationaryLeaseExpiresAt:now});
+  await cleanup._handler(ctx);assert.equal(ctx.tables.players.length,0);
+});
+
+test('profile claim clears stale stationary and terminal lease fields',async()=>{
+  const ctx=memoryContext(),registered=await createAccount(ctx);
+  await claimGuest._handler(ctx,{guestId:'stationary-guest-identity-123456',characterId:'felipe',sessionId:'stationary-session-123456789'});
+  const row=ctx.tables.players[0];
+  Object.assign(row,{presenceMode:'stationary',lastSeen:0,stationaryLeaseExpiresAt:Date.now()+60_000,terminalLeaseExpiresAt:Date.now()+60_000});
+  const args={token:registered.token,characterId:'felipe',presenceSessionId:'profile-session-123456789'};
+  assert.equal((await claimCharacter._handler(actionContext(ctx),args)).ok,false);
+  row.stationaryLeaseExpiresAt=Date.now();
+  assert.equal((await claimCharacter._handler(actionContext(ctx),args)).ok,true);
+  assert.equal(row.presenceMode,'playing');assert.equal(row.stationaryLeaseExpiresAt,undefined);assert.equal(row.terminalLeaseExpiresAt,undefined);
+});
+
 test('terminal expiry governs availability, reclaim, cleanup and rejected updates',async t=>{
   let now=100_000;t.mock.method(Date,'now',()=>now);
   const ctx=memoryContext();
@@ -109,7 +156,8 @@ function memoryContext(){
       const matching=()=>tables[table].filter(row=>conditions.every(condition=>condition(row)));
       const result={unique:async()=>matching()[0]??null,first:async()=>matching()[0]??null,
         collect:async()=>matching(),take:async count=>matching().slice(0,count)};
-      result.filter=buildFilter=>{conditions.push(buildFilter({field:key=>key,neq:(key,value)=>row=>row[key]!==value}));return result;};
+      result.filter=buildFilter=>{conditions.push(buildFilter({field:key=>key,neq:(key,value)=>row=>row[key]!==value,
+        and:(...predicates)=>row=>predicates.every(predicate=>predicate(row))}));return result;};
       return result;
     },
   });

@@ -42,6 +42,17 @@ test('character session id works without crypto.randomUUID',()=>{
   assert.ok(createCharacterSessionId(null).length>=16);
 });
 
+test('menu locally expires stationary reservations using the lease, not cached active or lastSeen',t=>{
+  let now=100_000;t.mock.method(Date,'now',()=>now);
+  const button={},state={};
+  const menu=Object.assign(Object.create(CharacterMenu.prototype),{
+    ready:true,cards:[{c:{id:'felipe'},button,state}],
+    rows:[{characterId:'felipe',active:true,presenceMode:'stationary',lastSeen:0,stationaryLeaseExpiresAt:200_000}],
+  });
+  menu.render();assert.equal(button.disabled,true);assert.equal(state.textContent,'In use');
+  now=200_000;menu.render();assert.equal(button.disabled,false);assert.equal(state.textContent,'Available');
+});
+
 test('character selection sends a valid presence snapshot before the map loads',async()=>{
   let snapshot;
   const menu=Object.assign(Object.create(CharacterMenu.prototype),{

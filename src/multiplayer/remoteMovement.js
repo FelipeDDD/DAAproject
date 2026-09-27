@@ -1,7 +1,7 @@
-import { PRESENCE_SYNC_INTERVAL_MS } from './presencePolicy.js';
+import { ADAPTIVE_MOVEMENT, ADAPTIVE_CRUISE_INTERVAL_MS, PRESENCE_SYNC_INTERVAL_MS } from './presencePolicy.js';
 
 // Client rendering delay follows the send interval; it can be tuned independently.
-export const REMOTE_INTERPOLATION_DELAY_MS = PRESENCE_SYNC_INTERVAL_MS;
+export const REMOTE_INTERPOLATION_DELAY_MS = ADAPTIVE_MOVEMENT ? ADAPTIVE_CRUISE_INTERVAL_MS : PRESENCE_SYNC_INTERVAL_MS;
 export const REMOTE_TELEPORT_THRESHOLD_PX = 160;
 export const REMOTE_MAX_SNAPSHOTS = 32;
 
@@ -24,7 +24,7 @@ export class RemoteSnapshotBuffer {
     // new movement samples. Server timestamps are only used to reject stale rows;
     // rendering uses a monotonic local clock, without assuming synchronized clocks.
     const signature = JSON.stringify([row.x, row.y, row.direction,
-      row.equippedSkin, row.activeCharacterItem, row.moving]);
+      row.equippedSkin, row.activeCharacterItem, row.moving, row.velocityX, row.velocityY]);
     if (signature === this.lastSignature) return { accepted: false, teleport: false };
     const previous = this.latest;
     const distance = previous ? Math.hypot(row.x - previous.x, row.y - previous.y) : 0;
@@ -32,7 +32,9 @@ export class RemoteSnapshotBuffer {
     const snapshot = {
       x: row.x, y: row.y, direction: row.direction || 'down',
       equippedSkin: row.equippedSkin, activeCharacterItem: row.activeCharacterItem,
+      velocityX: row.velocityX, velocityY: row.velocityY,
       moving: typeof row.moving === 'boolean' ? row.moving : distance > 0,
+      explicitMoving: typeof row.moving === 'boolean',
       sampleAt, arrivalAt: previous && !teleport ? Math.max(arrivalAt, previous.arrivalAt + .001) : arrivalAt,
     };
     if (teleport) this.snapshots.length = 0;
@@ -58,7 +60,7 @@ export class RemoteSnapshotBuffer {
       y: before.y + (after.y - before.y) * fraction,
       // Walking matches the segment actually being rendered. Facing and skin/item
       // animations switch when the delayed timeline reaches their sample.
-      moving: Math.hypot(after.x - before.x, after.y - before.y) > .001,
+      moving: (!before.explicitMoving || before.moving) && Math.hypot(after.x - before.x, after.y - before.y) > .001,
     };
   }
 }
