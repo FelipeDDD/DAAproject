@@ -20,8 +20,11 @@ export class RoomChat {
     this.status.textContent='Loading messages…';
     this.visibility=new ChatVisibility(state=>this.renderState(state),{pinned:loadChatPinned()});
     this.pinButton.addEventListener('click',this.onPin=()=>{
+      const wasActive=this.isInputActive;
       const pinned=saveChatPinned(!this.visibility.pinned);
-      this.visibility.pin(pinned);this.renderPin();
+      this.visibility.pin(pinned);
+      if(!pinned&&wasActive){this.unfocus();this.blur();}
+      this.renderPin();
     });
     this.renderPin();this.renderState(this.visibility.state);
     this.focus=()=>{
@@ -92,7 +95,7 @@ export class RoomChat {
     const rows=this.visibility?.state==='active'?this.rows:this.rows.slice(-CHAT_PEEK_MESSAGE_COUNT);
     this.list.replaceChildren(...rows.map(row=>{
       const line=document.createElement('li'),name=document.createElement('strong');
-      name.textContent=`${row.characterName}: `;
+      name.textContent=`${(row.displayName??row.characterName)}: `;
       line.append(name);appendChatMessageText(line,row.text);return line;
     }));
   }
@@ -137,7 +140,7 @@ export class RoomChat {
     const {characterId,sessionId}=this.presence.identity;
     this.input.value='';this.finishInput('peek');
     try{
-      await this.presence.client.mutation(this.presence.api.messages.send,{room:this.room,characterId,sessionId,text});
+      await this.presence.client.mutation(this.presence.api.messages.send,{room:this.room,playerId:this.presence.identity.playerId,characterId,sessionId,text});
     }catch(error){
       if(!this.closed){
         this.sendError=true;

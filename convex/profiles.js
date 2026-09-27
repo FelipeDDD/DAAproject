@@ -5,6 +5,7 @@ import { v } from 'convex/values';
 import { createHash,randomBytes,scrypt as scryptCallback,timingSafeEqual } from 'node:crypto';
 import { promisify } from 'node:util';
 import { PROFILE_SESSION_DURATION_MS } from '../src/authPolicy.js';
+import { normalizeDisplayName } from '../src/displayName.js';
 
 const scrypt=promisify(scryptCallback);
 const PASSWORD_VERSION=1;
@@ -17,11 +18,10 @@ const DUMMY_PASSWORD_HASH='scrypt$v1$16384$8$1$cmF0ZS1saW1pdC1kdW1teQ$Xq49wVcfEd
 export function normalizeProfileName(value){return value.trim().toLowerCase();}
 
 function validateProfileName(value){
-  const displayName=value.trim();
   const profileName=normalizeProfileName(value);
   if(profileName.length<PROFILE_NAME_MIN||profileName.length>PROFILE_NAME_MAX||!/^[a-z0-9._-]+$/.test(profileName))
     throw new Error('INVALID_PROFILE_NAME');
-  return {profileName,displayName};
+  return profileName;
 }
 
 function validatePassword(password){
@@ -50,24 +50,36 @@ export async function verifyPassword(password,encoded){
 function sessionResult(profile,token,expiresAt){return {profile,token,expiresAt};}
 
 export const register=action({
-  args:{profileName:v.string(),password:v.string(),selectedCharacterId:v.string()},
+  args:{profileName:v.string(),displayName:v.optional(v.string()),password:v.string(),selectedCharacterId:v.optional(v.string())},
   handler:async(ctx,args)=>{
-    const name=validateProfileName(args.profileName);validatePassword(args.password);
+    const profileName=validateProfileName(args.profileName);
+    const displayName=normalizeDisplayName(args.displayName);
+    validatePassword(args.password);
     const passwordHashValue=await passwordHash(args.password);
     const token=sessionToken(),now=Date.now(),expiresAt=now+PROFILE_SESSION_DURATION_MS;
     const registration=await ctx.runMutation(anyApi.profileStore.register,{
-      ...name,passwordHash:passwordHashValue,passwordVersion:PASSWORD_VERSION,
-      selectedCharacterId:args.selectedCharacterId,tokenHash:tokenHash(token),now,expiresAt,
+      profileName,displayName,passwordHash:passwordHashValue,passwordVersion:PASSWORD_VERSION,
+      selectedCharacterId:args.selectedCharacterId??'felipe',tokenHash:tokenHash(token),now,expiresAt,
     });
     if(registration.status!=='created')throw new Error('PROFILE_EXISTS');
     return sessionResult(registration.profile,token,expiresAt);
   },
 });
 
+export const setDisplayName=action({
+  args:{token:v.string(),displayName:v.string()},
+  handler:async(ctx,{token,displayName})=>{
+    if(token.length<32||token.length>100)throw new Error('SESSION_INVALID');
+    return ctx.runMutation(anyApi.profileStore.setDisplayName,{
+      tokenHash:tokenHash(token),displayName:normalizeDisplayName(displayName),now:Date.now(),
+    });
+  },
+});
+
 export const login=action({
   args:{profileName:v.string(),password:v.string()},
   handler:async(ctx,args)=>{
-    const {profileName}=validateProfileName(args.profileName);validatePassword(args.password);
+    const profileName=validateProfileName(args.profileName);validatePassword(args.password);
     const key=loginKey(profileName),now=Date.now();
     const attempt=await ctx.runMutation(anyApi.profileStore.beginLogin,{loginKey:key,now});
     if(!attempt.allowed)throw new Error('INVALID_CREDENTIALS');
@@ -99,8 +111,12 @@ export const logout=action({
 });
 
 export const claimCharacter=action({
-  args:{token:v.string(),characterId:v.string(),presenceSessionId:v.string()},
-  handler:async(ctx,args)=>ctx.runMutation(anyApi.players.claim,{
-    tokenHash:tokenHash(args.token),characterId:args.characterId,sessionId:args.presenceSessionId,
-  }),
+  args:{token:v.string(),characterBaseId:v.optional(v.string()),characterId:v.optional(v.string()),presenceSessionId:v.string()},
+  handler:async(ctx,args)=>{
+    const selected=args.characterBaseId??args.characterId;
+    if(!selected||(args.characterBaseId&&args.characterId&&args.characterId!==args.characterBaseId))throw new Error('Invalid character base');
+    return ctx.runMutation(anyApi.players.claim,{
+      tokenHash:tokenHash(args.token),characterBaseId:selected,sessionId:args.presenceSessionId,
+    });
+  },
 });

@@ -7,9 +7,8 @@ export function readQuizSeats(source) {
     .filter(object => (object.class || object.type) === 'quizSeat')
     .map(object => {
       const props = propertiesOf(object);
-      if (!props.characterId) throw new Error(`Cadeira ${object.name}: informe characterId.`);
       return {
-        id: String(object.id), characterId: props.characterId,
+        id: String(object.id), seatId: String(props.seatId??object.id),
         x: object.x, y: object.y - object.height, width: object.width, height: object.height,
         seatX: props.seatX ?? object.x + object.width / 2,
         seatY: props.seatY ?? object.y,

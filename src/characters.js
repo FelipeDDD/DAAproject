@@ -23,17 +23,14 @@ const ORIGINAL_CHARACTERS = [
     newVisual:{sprite:'character-felipe-new',asset:'assets/characters/felipe-new.png',previewAsset:'assets/characters/felipe-new-preview.png'},
   },
 ];
-// Extra player slots reuse the existing art while keeping session and quiz IDs distinct.
-export const CHARACTERS = [
-  ...ORIGINAL_CHARACTERS,
-  ...ORIGINAL_CHARACTERS.map(character=>({
-    ...character,id:`${character.id}-2`,name:`${character.name} 2`,baseCharacterId:character.id,
-  })),
-  ...ORIGINAL_CHARACTERS.slice(0,2).map(character=>({
-    ...character,id:`${character.id}-3`,name:`${character.name} 3`,baseCharacterId:character.id,
-  })),
-];
+export const CHARACTERS = ORIGINAL_CHARACTERS;
 export const CHARACTER_STORAGE_KEY = 'daa-character-id';
 export const CHARACTER_STYLE_STORAGE_KEY = 'daa-character-style';
-export const characterById = id => CHARACTERS.find(c => c.id === id);
-export const baseCharacterId = id => characterById(id)?.baseCharacterId??id;
+export const baseCharacterId = id => {
+  if(ORIGINAL_CHARACTERS.some(character=>character.id===id))return id;
+  const legacyBase=typeof id==='string'?id.replace(/-(?:2|3)$/,''):id;
+  return ORIGINAL_CHARACTERS.some(character=>character.id===legacyBase)?legacyBase:id;
+};
+export const characterById = id => ORIGINAL_CHARACTERS.find(c => c.id === baseCharacterId(id));
+export const characterBaseIdFor = player => player?.characterBaseId
+  ?? baseCharacterId(player?.characterId ?? player?.playerId);

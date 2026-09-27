@@ -62,13 +62,12 @@
         <form id="profile-register-form" class="profile-auth-form" hidden>
           <label>Profile name <input id="profile-register-name" name="profileName" required minlength="3" maxlength="32" autocomplete="username"></label>
           <label>Password <input id="profile-register-password" name="password" type="password" required minlength="8" maxlength="128" autocomplete="new-password"></label>
-          <label>Starting character
-            <select id="profile-register-character" name="selectedCharacterId">
-              <option value="felipe">Felipe</option><option value="michael">Michael</option>
-              <option value="sarina">Sarina</option><option value="jassine">Yassin</option>
-            </select>
-          </label>
+          <label>Display name <input id="profile-register-display-name" name="displayName" required maxlength="32" autocomplete="nickname"></label>
           <button type="submit">Create</button>
+        </form>
+        <form id="profile-display-name-form" class="profile-auth-form" hidden>
+          <label>Display name <input id="profile-display-name" name="displayName" required maxlength="32" autocomplete="nickname"></label>
+          <button type="submit">Continue</button>
         </form>
         <div class="profile-guest-option">
           <span>or</span>

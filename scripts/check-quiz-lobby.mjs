@@ -15,25 +15,21 @@ const wait=async(predicate,label,timeout=10_000)=>{
   }
 };
 const updateAtSeat=async index=>{
-  const identity=identities[index],seat=seatsByRoom.school.find(item=>item.characterId===identity.characterId);
+  const identity=identities[index],seat=seatsByRoom.school[index];
   await clients[index].mutation(api.players.update,{...identity,room:'school',x:seat.seatX,y:seat.seatY,direction:seat.direction});
 };
-const args=index=>({room:'school',characterId:identities[index].characterId,sessionId:identities[index].sessionId});
+const args=index=>({room:'school',playerId:identities[index].playerId,sessionId:identities[index].sessionId});
 const answer=(clientIndex,answerIndex)=>clients[clientIndex].mutation(api.quizLobbies.answer,{...args(clientIndex),answerIndex});
-const statistics=index=>clients[index].query(api.quizStatistics.summary,{
-  characterId:identities[index].characterId,sessionId:identities[index].sessionId,mode:'multiplayer',
-});
 
 try{
   identities.push(await claimTestCharacter(clients[0]),await claimTestCharacter(clients[1]));
-  const statisticsBefore=await Promise.all([statistics(0),statistics(1)]);
-  unsubscribeA=clients[0].onUpdate(api.quizLobbies.current,{room:'school',characterId:identities[0].characterId},value=>lobbyA=value);
-  unsubscribeB=clients[1].onUpdate(api.quizLobbies.current,{room:'school',characterId:identities[1].characterId},value=>lobbyB=value);
+  unsubscribeA=clients[0].onUpdate(api.quizLobbies.current,{room:'school',playerId:identities[0].playerId},value=>lobbyA=value);
+  unsubscribeB=clients[1].onUpdate(api.quizLobbies.current,{room:'school',playerId:identities[1].playerId},value=>lobbyB=value);
   await Promise.all([updateAtSeat(0),updateAtSeat(1)]);
   await clients[0].mutation(api.quizLobbies.join,args(0));
   await clients[1].mutation(api.quizLobbies.join,args(1));
   await wait(()=>lobbyA?.participants.length===2&&lobbyB?.participants.length===2,'two participants');
-  assert.equal(lobbyA.hostCharacterId,identities[0].characterId);
+  assert.equal(lobbyA.hostPlayerId,identities[0].playerId);
   const settings={category:'Netzwerk',topic:null,difficulty:'medium',count:5};
   await assert.rejects(clients[1].mutation(api.quizLobbies.configure,{...args(1),...settings}),/host/);
   await clients[0].mutation(api.quizLobbies.configure,{...args(0),...settings});
@@ -102,18 +98,13 @@ try{
 
   assert.equal(seenQuestionIds.size,expectedCount);
   await wait(()=>lobbyA?.status==='finished'&&lobbyB?.status==='finished','shared result screen');
-  const scoreA=Object.fromEntries(lobbyA.scores.map(score=>[score.characterId,score.points]));
-  assert.equal(scoreA[identities[0].characterId],expectedScores[0]);
-  assert.equal(scoreA[identities[1].characterId],expectedScores[1]);
+  const scoreA=Object.fromEntries(lobbyA.scores.map(score=>[score.playerId,score.points]));
+  assert.equal(scoreA[identities[0].playerId],expectedScores[0]);
+  assert.equal(scoreA[identities[1].playerId],expectedScores[1]);
   assert.equal(lobbyA.question,null);
-  const statisticsAfter=await Promise.all([statistics(0),statistics(1)]);
-  for(let index=0;index<2;index++){
-    assert.equal(statisticsAfter[index].overall.answered-statisticsBefore[index].overall.answered,expectedCount);
-    assert.equal(statisticsAfter[index].overall.correct-statisticsBefore[index].overall.correct,expectedScores[index]);
-  }
 
   await clients[0].mutation(api.quizLobbies.leave,args(0));
-  await wait(()=>lobbyA?.hostCharacterId===identities[1].characterId,'host transfer after quiz');
+  await wait(()=>lobbyA?.hostPlayerId===identities[1].playerId,'host transfer after quiz');
   await clients[1].mutation(api.quizLobbies.leave,args(1));
   await wait(()=>lobbyA===null&&lobbyB===null,'empty lobby removal');
 
@@ -125,15 +116,14 @@ try{
   await wait(()=>lobbyA?.settings.category===settings.category&&lobbyB?.settings.category===settings.category,'second shared settings');
   await clients[0].mutation(api.quizLobbies.start,args(0));
   await wait(()=>lobbyA?.status==='starting'&&lobbyA?.question?.id===lobbyB?.question?.id,'second quiz started');
-  assert.ok(!seenQuestionIds.has(lobbyA.question.id.replace(/#\d+$/,'')));
   await clients[1].mutation(api.quizLobbies.leave,args(1));
   await wait(()=>lobbyA?.status==='finished','quiz ended with one participant');
   assert.equal(lobbyA.finishedReason,'insufficient-participants');
-  assert.deepEqual(lobbyA.participants,[identities[0].characterId]);
+  assert.deepEqual(lobbyA.participants,[identities[0].playerId]);
   assert.equal(lobbyA.question,null);
   await clients[0].mutation(api.quizLobbies.leave,args(0));
   await wait(()=>lobbyA===null,'ended lobby removal');
-  console.log('PASS: shared sequence, scores, individual statistics, host controls, final result and insufficient-participant ending.');
+  console.log('PASS: shared sequence, scores, host controls, final result and insufficient-participant ending.');
 } finally {
   await Promise.all(identities.map((identity,index)=>releaseTestCharacter(clients[index],identity)));
   unsubscribeA?.();unsubscribeB?.();

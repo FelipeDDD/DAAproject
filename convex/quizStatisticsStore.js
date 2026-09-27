@@ -1,6 +1,7 @@
 import { applyAttemptToBucket,normalizeStatisticsQuestionId } from './quizStatisticsModel.js';
 
 export async function recordQuizAttempt(ctx,attempt){
+  if(!attempt.profileId)throw new Error('PROFILE_REQUIRED');
   const existing=await ctx.db.query('quizAttempts')
     .withIndex('by_attempt_key',q=>q.eq('attemptKey',attempt.attemptKey)).unique();
   if(existing)return {created:false,attemptId:existing._id};
@@ -11,8 +12,8 @@ export async function recordQuizAttempt(ctx,attempt){
     outcome:attempt.correct?'correct':'wrong',
   };
   const attemptId=await ctx.db.insert('quizAttempts',normalized);
-  const bucket=await ctx.db.query('quizPerformance').withIndex('by_character_bucket',q=>q
-    .eq('characterId',normalized.characterId)
+  const bucket=await ctx.db.query('quizPerformance').withIndex('by_profile_bucket',q=>q
+    .eq('profileId',normalized.profileId)
     .eq('category',normalized.category)
     .eq('topic',normalized.topic)
     .eq('difficulty',normalized.difficulty)
@@ -20,13 +21,14 @@ export async function recordQuizAttempt(ctx,attempt){
   const totals=applyAttemptToBucket(bucket,normalized);
   if(bucket)await ctx.db.patch(bucket._id,{...totals,updatedAt:normalized.answeredAt});
   else await ctx.db.insert('quizPerformance',{
-    characterId:normalized.characterId,category:normalized.category,topic:normalized.topic,
+    profileId:normalized.profileId,category:normalized.category,topic:normalized.topic,
     difficulty:normalized.difficulty,mode:normalized.mode,...totals,updatedAt:normalized.answeredAt,
   });
   return {created:true,attemptId};
 }
 
 export async function recordQuizSkip(ctx,skip){
+  if(!skip.profileId)throw new Error('PROFILE_REQUIRED');
   const existing=await ctx.db.query('quizAttempts')
     .withIndex('by_attempt_key',q=>q.eq('attemptKey',skip.attemptKey)).unique();
   if(existing)return {created:false,attemptId:existing._id};
@@ -34,8 +36,8 @@ export async function recordQuizSkip(ctx,skip){
     ...skip,questionId:normalizeStatisticsQuestionId(skip.questionId),topic:skip.topic??null,
   };
   const attemptId=await ctx.db.insert('quizAttempts',normalized);
-  const bucket=await ctx.db.query('quizPerformance').withIndex('by_character_bucket',q=>q
-    .eq('characterId',normalized.characterId)
+  const bucket=await ctx.db.query('quizPerformance').withIndex('by_profile_bucket',q=>q
+    .eq('profileId',normalized.profileId)
     .eq('category',normalized.category)
     .eq('topic',normalized.topic)
     .eq('difficulty',normalized.difficulty)
@@ -45,7 +47,7 @@ export async function recordQuizSkip(ctx,skip){
   const timeoutSkip=(bucket?.timeoutSkip??0)+(normalized.outcome==='timeoutSkip'?1:0);
   if(bucket)await ctx.db.patch(bucket._id,{skipped,manualSkip,timeoutSkip,updatedAt:normalized.answeredAt});
   else await ctx.db.insert('quizPerformance',{
-    characterId:normalized.characterId,category:normalized.category,topic:normalized.topic,
+    profileId:normalized.profileId,category:normalized.category,topic:normalized.topic,
     difficulty:normalized.difficulty,mode:normalized.mode,correct:0,wrong:0,answered:0,
     skipped,manualSkip,timeoutSkip,updatedAt:normalized.answeredAt,
   });

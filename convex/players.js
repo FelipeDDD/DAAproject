@@ -1,70 +1,89 @@
+import { findSessionPlayer } from './playerSessions.js';
 import { queryGeneric as query, mutationGeneric as mutation, internalMutationGeneric as internalMutation } from 'convex/server';
 import { v } from 'convex/values';
-import { CHARACTERS, characterById } from '../src/characters.js';
+import { baseCharacterId, characterBaseIdFor, characterById } from '../src/characters.js';
 import {
   isPlayerActive,
   ownsCharacterSession,
+  ownsPlayerSession,
   PRESENCE_TIMEOUT_MS,
   TERMINAL_LEASE_MS,
   STATIONARY_LEASE_MS,
 } from '../src/multiplayer/presencePolicy.js';
 import { canCharacterOwnItem } from '../src/inventory/characterItems.js';
 import { publicProfile,requireSession } from './profileStore.js';
+import { MAX_PLAYER_CAPACITY } from '../src/multiplayer/playerCapacity.js';
+import { normalizeDisplayName } from '../src/displayName.js';
 
 export const availability = query({
   args: {},
   handler: async ctx => {
     const rows = await ctx.db.query('players').collect();
-    return CHARACTERS.map(c => {
-      const presence=rows.find(player=>player.characterId===c.id);
-      return {characterId:c.id,active:isPlayerActive(presence),lastSeen:presence?.lastSeen??0,
-        presenceMode:presence?.presenceMode??'playing',stationaryLeaseExpiresAt:presence?.stationaryLeaseExpiresAt,
-        terminalLeaseExpiresAt:presence?.terminalLeaseExpiresAt};
-    });
+    return {maxPlayers:MAX_PLAYER_CAPACITY,players:rows.map(({sessionId,guestId,...player})=>({
+      ...player,characterBaseId:characterBaseIdFor(player),
+    }))};
   },
 });
 
+function selectedCharacter(characterBaseId,characterId){
+  const selected=characterBaseId??characterId;
+  if(characterBaseId!==undefined&&characterId!==undefined&&baseCharacterId(characterId)!==characterBaseId)
+    throw new Error('Invalid character base');
+  const character=characterById(selected);
+  if(!character)return null;
+  return character;
+}
+
 export const claim = internalMutation({
-  args: { tokenHash:v.string(),characterId:v.string(),sessionId:v.string() },
-  handler: async (ctx,{tokenHash,characterId,sessionId}) => {
-    const c=characterById(characterId);
+  args: { tokenHash:v.string(),characterBaseId:v.optional(v.string()),characterId:v.optional(v.string()),sessionId:v.string() },
+  handler: async (ctx,{tokenHash,characterBaseId,characterId,sessionId}) => {
+    const c=selectedCharacter(characterBaseId,characterId);
     if(!c||sessionId.length<16||sessionId.length>100)throw new Error('Invalid character/session');
     const {profile}=await requireSession(ctx,tokenHash);
-    const old=await ctx.db.query('players').withIndex('by_player',q=>q.eq('playerId',characterId)).unique();
-    if(old&&old.profileId!==profile._id&&old.sessionId!==sessionId&&isPlayerActive(old))return {ok:false};
+    const displayName=normalizeDisplayName(profile.displayName);
+    const rows=await ctx.db.query('players').collect();
+    const existing=rows.filter(row=>row.profileId===profile._id||row.sessionId===sessionId);
+    if(rows.filter(row=>isPlayerActive(row)).length-existing.filter(row=>isPlayerActive(row)).length>=MAX_PLAYER_CAPACITY)
+      return {ok:false,reason:'full'};
     const now=Date.now();
-    for(const row of await ctx.db.query('players').collect())
-      if((row.profileId===profile._id||row.sessionId===sessionId)&&row._id!==old?._id)await ctx.db.delete(row._id);
+    for(const row of existing)await ctx.db.delete(row._id);
     await ctx.db.patch(profile._id,{selectedCharacterId:c.id,updatedAt:now});
-    const state={profileId:profile._id,identityKind:'profile',playerId:c.id,characterId:c.id,name:c.name,sessionId,room:'selection',x:0,y:0,direction:'down',equippedSkin:'classic',activeCharacterItem:null,moving:undefined,velocityX:undefined,velocityY:undefined,lastSeen:now};
-    if(old)await ctx.db.patch(old._id,{...state,guestId:undefined,presenceMode:'playing',stationaryLeaseExpiresAt:undefined,terminalLeaseExpiresAt:undefined});else await ctx.db.insert('players',state);
-    return {ok:true,profile:publicProfile({...profile,selectedCharacterId:c.id,updatedAt:now})};
+    const state={profileId:profile._id,identityKind:'profile',playerId:'pending',characterId:c.id,
+      characterBaseId:baseCharacterId(c.id),name:displayName,displayName,sessionId,room:'selection',x:0,y:0,direction:'down',presenceMode:'playing',
+      equippedSkin:'classic',activeCharacterItem:null,moving:undefined,velocityX:undefined,velocityY:undefined,lastSeen:now};
+    // A fresh Convex document ID is the independent live identity; never an authorization token.
+    const playerId=await ctx.db.insert('players',state);
+    await ctx.db.patch(playerId,{playerId});
+    return {ok:true,playerId,profile:publicProfile({...profile,selectedCharacterId:c.id,updatedAt:now})};
   },
 });
 
 export const claimGuest = mutation({
-  args:{guestId:v.string(),characterId:v.string(),sessionId:v.string()},
-  handler:async(ctx,{guestId,characterId,sessionId})=>{
-    const c=characterById(characterId);
+  args:{guestId:v.string(),characterBaseId:v.optional(v.string()),characterId:v.optional(v.string()),sessionId:v.string()},
+  handler:async(ctx,{guestId,characterBaseId,characterId,sessionId})=>{
+    const c=selectedCharacter(characterBaseId,characterId);
     if(!c||guestId.length<22||guestId.length>120||sessionId.length<16||sessionId.length>100)
       throw new Error('Invalid guest/session');
-    const old=await ctx.db.query('players').withIndex('by_player',q=>q.eq('playerId',characterId)).unique();
-    if(old&&old.guestId!==guestId&&old.sessionId!==sessionId&&isPlayerActive(old))return {ok:false};
+    const rows=await ctx.db.query('players').collect();
+    const existing=rows.filter(row=>row.guestId===guestId||row.sessionId===sessionId);
+    if(rows.filter(row=>isPlayerActive(row)).length-existing.filter(row=>isPlayerActive(row)).length>=MAX_PLAYER_CAPACITY)
+      return {ok:false,reason:'full'};
     const now=Date.now();
-    for(const row of await ctx.db.query('players').collect())
-      if((row.guestId===guestId||row.sessionId===sessionId)&&row._id!==old?._id)await ctx.db.delete(row._id);
-    const state={guestId,identityKind:'guest',playerId:c.id,characterId:c.id,name:c.name,
-      sessionId,room:'selection',x:0,y:0,direction:'down',equippedSkin:'classic',activeCharacterItem:null,moving:undefined,velocityX:undefined,velocityY:undefined,lastSeen:now};
-    if(old)await ctx.db.patch(old._id,{...state,profileId:undefined,presenceMode:'playing',stationaryLeaseExpiresAt:undefined,terminalLeaseExpiresAt:undefined});else await ctx.db.insert('players',state);
-    return {ok:true};
+    for(const row of existing)await ctx.db.delete(row._id);
+    const state={guestId,identityKind:'guest',playerId:'pending',characterId:c.id,characterBaseId:baseCharacterId(c.id),name:c.name,displayName:c.name,
+      sessionId,room:'selection',x:0,y:0,direction:'down',presenceMode:'playing',equippedSkin:'classic',activeCharacterItem:null,moving:undefined,velocityX:undefined,velocityY:undefined,lastSeen:now};
+    // A fresh Convex document ID is the independent live identity; never an authorization token.
+    const playerId=await ctx.db.insert('players',state);
+    await ctx.db.patch(playerId,{playerId});
+    return {ok:true,playerId};
   },
 });
 
 export const release = mutation({
-  args:{characterId:v.string(),sessionId:v.string()},
-  handler:async(ctx,{characterId,sessionId})=>{
-    const row=await ctx.db.query('players').withIndex('by_player',q=>q.eq('playerId',characterId)).unique();
-    const released=row?.sessionId===sessionId;
+  args:{playerId:v.optional(v.string()),characterId:v.string(),sessionId:v.string()},
+  handler:async(ctx,{playerId,characterId,sessionId})=>{
+    const row=await findSessionPlayer(ctx,characterId,playerId);
+    const released=ownsCharacterSession(row,characterId,sessionId)&&(playerId===undefined||ownsPlayerSession(row,playerId,sessionId));
     if(released)await ctx.db.delete(row._id);
     return {released};
   },
@@ -73,15 +92,15 @@ export const release = mutation({
 export const inRoom = query({
   args: { room: v.string() },
   handler: async (ctx, { room }) => (await ctx.db.query('players').withIndex('by_room', q => q.eq('room', room)).collect())
-    .map(({sessionId,guestId,...publicState})=>publicState),
+    .map(({sessionId,guestId,...publicState})=>({...publicState,characterBaseId:characterBaseIdFor(publicState)})),
 });
 
 export const enterStationary = mutation({
-  args:{characterId:v.string(),sessionId:v.string()},
-  handler:async(ctx,{characterId,sessionId})=>{
-    const player=await ctx.db.query('players').withIndex('by_player',q=>q.eq('playerId',characterId)).unique();
+  args:{playerId:v.optional(v.string()),characterId:v.string(),sessionId:v.string()},
+  handler:async(ctx,{playerId,characterId,sessionId})=>{
+    const player=await findSessionPlayer(ctx,characterId,playerId);
     const now=Date.now();
-    if(!ownsCharacterSession(player,characterId,sessionId)||!isPlayerActive(player,now))throw new Error('CHARACTER_SESSION_LOST');
+    if(!ownsCharacterSession(player,characterId,sessionId)||(playerId!==undefined&&!ownsPlayerSession(player,playerId,sessionId))||!isPlayerActive(player,now))throw new Error('CHARACTER_SESSION_LOST');
     if(player.presenceMode&&player.presenceMode!=='playing')throw new Error('PLAYER_NOT_PLAYING');
     const stationaryLeaseExpiresAt=now+STATIONARY_LEASE_MS;
     await ctx.db.patch(player._id,{presenceMode:'stationary',stationaryLeaseExpiresAt,terminalLeaseExpiresAt:undefined});
@@ -90,11 +109,11 @@ export const enterStationary = mutation({
 });
 
 export const renewStationary = mutation({
-  args:{characterId:v.string(),sessionId:v.string()},
-  handler:async(ctx,{characterId,sessionId})=>{
-    const player=await ctx.db.query('players').withIndex('by_player',q=>q.eq('playerId',characterId)).unique();
+  args:{playerId:v.optional(v.string()),characterId:v.string(),sessionId:v.string()},
+  handler:async(ctx,{playerId,characterId,sessionId})=>{
+    const player=await findSessionPlayer(ctx,characterId,playerId);
     const now=Date.now();
-    if(!ownsCharacterSession(player,characterId,sessionId)||player.presenceMode!=='stationary'||!isPlayerActive(player,now))
+    if(!ownsCharacterSession(player,characterId,sessionId)||(playerId!==undefined&&!ownsPlayerSession(player,playerId,sessionId))||player.presenceMode!=='stationary'||!isPlayerActive(player,now))
       throw new Error('CHARACTER_SESSION_LOST');
     const stationaryLeaseExpiresAt=now+STATIONARY_LEASE_MS;
     await ctx.db.patch(player._id,{stationaryLeaseExpiresAt});
@@ -103,11 +122,11 @@ export const renewStationary = mutation({
 });
 
 export const enterTerminal = mutation({
-  args:{characterId:v.string(),sessionId:v.string()},
-  handler:async(ctx,{characterId,sessionId})=>{
-    const player=await ctx.db.query('players').withIndex('by_player',q=>q.eq('playerId',characterId)).unique();
+  args:{playerId:v.optional(v.string()),characterId:v.string(),sessionId:v.string()},
+  handler:async(ctx,{playerId,characterId,sessionId})=>{
+    const player=await findSessionPlayer(ctx,characterId,playerId);
     const now=Date.now();
-    if(!ownsCharacterSession(player,characterId,sessionId)||!isPlayerActive(player,now))throw new Error('CHARACTER_SESSION_LOST');
+    if(!ownsCharacterSession(player,characterId,sessionId)||(playerId!==undefined&&!ownsPlayerSession(player,playerId,sessionId))||!isPlayerActive(player,now))throw new Error('CHARACTER_SESSION_LOST');
     if(player.presenceMode==='terminal')throw new Error('TERMINAL_ALREADY_ACTIVE');
     const terminalLeaseExpiresAt=now+TERMINAL_LEASE_MS;
     await ctx.db.patch(player._id,{presenceMode:'terminal',terminalLeaseExpiresAt,stationaryLeaseExpiresAt:undefined});
@@ -116,11 +135,11 @@ export const enterTerminal = mutation({
 });
 
 export const exitTerminal = mutation({
-  args:{characterId:v.string(),sessionId:v.string()},
-  handler:async(ctx,{characterId,sessionId})=>{
-    const player=await ctx.db.query('players').withIndex('by_player',q=>q.eq('playerId',characterId)).unique();
+  args:{playerId:v.optional(v.string()),characterId:v.string(),sessionId:v.string()},
+  handler:async(ctx,{playerId,characterId,sessionId})=>{
+    const player=await findSessionPlayer(ctx,characterId,playerId);
     const now=Date.now();
-    if(!ownsCharacterSession(player,characterId,sessionId)||player.presenceMode!=='terminal'||!isPlayerActive(player,now))throw new Error('CHARACTER_SESSION_LOST');
+    if(!ownsCharacterSession(player,characterId,sessionId)||(playerId!==undefined&&!ownsPlayerSession(player,playerId,sessionId))||player.presenceMode!=='terminal'||!isPlayerActive(player,now))throw new Error('CHARACTER_SESSION_LOST');
     await ctx.db.patch(player._id,{presenceMode:'playing',terminalLeaseExpiresAt:undefined,stationaryLeaseExpiresAt:undefined,lastSeen:now});
     return {ok:true,presenceMode:'playing',lastSeen:now};
   },
@@ -128,7 +147,7 @@ export const exitTerminal = mutation({
 
 export const update = mutation({
   args: {
-    playerId: v.string(), name: v.string(), room: v.string(),
+    playerId: v.string(), name: v.optional(v.string()),displayName:v.optional(v.string()), room: v.string(),
     characterId: v.string(), sessionId: v.string(),
     x: v.number(), y: v.number(), direction: v.string(),
     moving:v.optional(v.boolean()),velocityX:v.optional(v.number()),velocityY:v.optional(v.number()),
@@ -139,20 +158,23 @@ export const update = mutation({
     if (!Number.isFinite(args.x) || !Number.isFinite(args.y) ||
         (args.velocityX !== undefined && !Number.isFinite(args.velocityX)) ||
         (args.velocityY !== undefined && !Number.isFinite(args.velocityY)) ||
-        args.playerId.length > 100 || args.name.length > 40 ||
+        args.playerId.length > 100 || (args.name!==undefined&&args.name.length > 40) ||
+        (args.displayName!==undefined&&args.displayName.length>32) ||
         !['school', 'outside', 'arena', 'office2', 'office3', 'secret-path', 'selection'].includes(args.room) ||
         !['up', 'down', 'left', 'right'].includes(args.direction)) throw new Error('Invalid player state');
-    if(args.activeCharacterItem&&!canCharacterOwnItem(args.characterId,args.activeCharacterItem))
+    if(args.activeCharacterItem&&!canCharacterOwnItem(baseCharacterId(args.characterId),args.activeCharacterItem))
       throw new Error('Invalid active character item');
     const existing = await ctx.db.query('players').withIndex('by_player', q => q.eq('playerId', args.playerId)).unique();
-    if(!ownsCharacterSession(existing,args.characterId,args.sessionId)||args.characterId!==args.playerId
+    if(!ownsCharacterSession(existing,args.characterId,args.sessionId)||!ownsPlayerSession(existing,args.playerId,args.sessionId)
       ||!isPlayerActive(existing))throw new Error('CHARACTER_SESSION_LOST');
     if(existing.presenceMode==='terminal')return;
     const state = {
       room:args.room,x:args.x,y:args.y,direction:args.direction,
+      characterBaseId:baseCharacterId(args.characterId),
       moving:args.moving,velocityX:args.velocityX,velocityY:args.velocityY,
       equippedSkin:args.equippedSkin,activeCharacterItem:args.activeCharacterItem??null,
-      name:characterById(args.characterId).name,lastSeen:Date.now(),
+      name:existing.displayName??existing.name,
+      displayName:existing.displayName??existing.name,lastSeen:Date.now(),
       presenceMode:'playing',stationaryLeaseExpiresAt:undefined,
     };
     await ctx.db.patch(existing._id, state);
@@ -160,10 +182,10 @@ export const update = mutation({
 });
 
 export const heartbeat = mutation({
-  args: { characterId:v.string(), sessionId:v.string() },
-  handler: async (ctx, {characterId,sessionId}) => {
-    const existing=await ctx.db.query('players').withIndex('by_player',q=>q.eq('playerId',characterId)).unique();
-    if(!ownsCharacterSession(existing,characterId,sessionId)||!isPlayerActive(existing))throw new Error('CHARACTER_SESSION_LOST');
+  args: { playerId:v.optional(v.string()), characterId:v.string(), sessionId:v.string() },
+  handler: async (ctx, {playerId,characterId,sessionId}) => {
+    const existing=await findSessionPlayer(ctx,characterId,playerId);
+    if(!ownsCharacterSession(existing,characterId,sessionId)||(playerId!==undefined&&!ownsPlayerSession(existing,playerId,sessionId))||!isPlayerActive(existing))throw new Error('CHARACTER_SESSION_LOST');
     if(existing.presenceMode==='terminal'||existing.presenceMode==='stationary')return;
     await ctx.db.patch(existing._id,{lastSeen:Date.now()});
   },

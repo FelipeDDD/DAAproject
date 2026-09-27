@@ -125,7 +125,7 @@ test('a stationary player sends a lightweight heartbeat instead of full position
   await presence.send(PRESENCE_HEARTBEAT_MS-1);
   assert.equal(calls.length,0);
   await presence.send(PRESENCE_HEARTBEAT_MS);
-  assert.deepEqual(calls,[{fn:'heartbeat',args:{characterId:'me',sessionId:'session-123456789'}}]);
+  assert.deepEqual(calls,[{fn:'heartbeat',args:{playerId:'me',characterId:'me',sessionId:'session-123456789'}}]);
 });
 
 test('normal and terminal presence modes use 10s and 20s heartbeats without restarting timers or subscriptions',async()=>{

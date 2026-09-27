@@ -25,6 +25,12 @@ export class ChatVisibility {
   activity(){if(this.state!=='active')this.change('peek');}
   open(){this.change('active');}
   close(){this.change(this.pinned?'peek':'hidden');}
-  pin(pinned){this.pinned=Boolean(pinned);this.change(this.pinned?(this.state==='active'?'active':'peek'):this.state);}
+  pin(pinned){
+    this.pinned=Boolean(pinned);
+    const nextState=this.pinned
+      ?(this.state==='active'?'active':'peek')
+      :(this.state==='active'?'peek':this.state);
+    this.change(nextState);
+  }
   destroy(){if(this.timer!==null)this.clearTimer(this.timer);this.timer=null;}
 }

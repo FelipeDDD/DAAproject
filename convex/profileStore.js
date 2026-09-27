@@ -4,6 +4,7 @@ import {
 } from 'convex/server';
 import { v } from 'convex/values';
 import { characterById } from '../src/characters.js';
+import { normalizeDisplayName } from '../src/displayName.js';
 import {
   LOGIN_ATTEMPT_RETENTION_MS,LOGIN_ATTEMPT_WINDOW_MS,LOGIN_BLOCK_DURATION_MS,
   LOGIN_MAX_FAILURES,PROFILE_SESSION_DURATION_MS,
@@ -12,10 +13,12 @@ import {
 export { PROFILE_SESSION_DURATION_MS };
 
 export function publicProfile(profile){
+  let displayName;
+  try{displayName=normalizeDisplayName(profile.displayName);}catch{}
   return {
     profileId:profile._id,
     profileName:profile.profileName,
-    displayName:profile.displayName,
+    ...(displayName?{displayName}:{}),
     selectedCharacterId:profile.selectedCharacterId,
     createdAt:profile.createdAt,
     updatedAt:profile.updatedAt,
@@ -55,8 +58,6 @@ async function legacyProfileHasPersistentData(ctx,profile){
   const characterId=profile.selectedCharacterId;
   const checks=[
     ['bossProgress','by_character_boss'],['characterItems','by_character'],
-    ['quizPerformance','by_character'],['itChallengeHighScores','by_character_rules'],
-    ['quizQuestionHistory','by_character'],['quizAttempts','by_character_time'],
   ];
   for(const [table,index]of checks){
     const records=await ctx.db.query(table).withIndex(index,query=>query.eq('characterId',characterId)).collect();
@@ -145,6 +146,16 @@ export const completeLogin=internalMutation({
     ).unique();
     if(attempt)await ctx.db.delete(attempt._id);
     return publicProfile(profile);
+  },
+});
+
+export const setDisplayName=internalMutation({
+  args:{tokenHash:v.string(),displayName:v.string(),now:v.number()},
+  handler:async(ctx,args)=>{
+    const {profile}=await requireSession(ctx,args.tokenHash,args.now);
+    const displayName=normalizeDisplayName(args.displayName);
+    await ctx.db.patch(profile._id,{displayName,updatedAt:args.now});
+    return publicProfile({...profile,displayName,updatedAt:args.now});
   },
 });
 

@@ -14,12 +14,12 @@ export function shouldEndQuizForParticipants(status, participantCount) {
 }
 
 export function quizQuestionComplete(
-  participants, answeredCharacterIds, deadline, timedOutCharacterIds=[], now=Date.now(),
+  participants, answeredPlayerIds, deadline, timedOutPlayerIds=[], now=Date.now(),
 ) {
   if (!participants.length) return false;
-  const answered=new Set(answeredCharacterIds);
-  if (participants.every(characterId=>answered.has(characterId))) return true;
+  const answered=new Set(answeredPlayerIds);
+  if (participants.every(playerId=>answered.has(playerId))) return true;
   if (!quizQuestionExpired(deadline,now)) return false;
-  const resolved=new Set([...answered,...timedOutCharacterIds]);
-  return participants.every(characterId=>resolved.has(characterId));
+  const resolved=new Set([...answered,...timedOutPlayerIds]);
+  return participants.every(playerId=>resolved.has(playerId));
 }

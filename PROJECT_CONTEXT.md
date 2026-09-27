@@ -36,7 +36,43 @@ Local Convex config/database/storage are under `.convex/local/default/`, especia
 
 `convex/bossProgress.js` enables boss Dev Tools when the deployment has `DEV_TOOLS_ENABLED=true` (or its configured Convex URL is loopback). Set the flag only on a local/test deployment. Never enable it on production. The flag is stored per Convex deployment, not in Vite's `.env.local`.
 
+## Live identity (character separation)
+
+- profileId: persistent account; playerId: independent live presence ID (fresh Convex document ID on every claim); sessionId: ownership generation; characterBaseId: class/art; transitional characterId: selected base ID for compatibility, not a unique slot.
+- Presence lifecycle, quiz seating, chat and emotes use playerId + sessionId. Room changes retain playerId. Claims enforce the configurable online player capacity, not per-base occupancy.
+- Legacy rows remain usable; omitted playerId on legacy Presence mutations resolves only legacy IDs, never a new claim. Study/Challenge validate playerId + sessionId and can retain characterId compatibility arguments without using them as persistent ownership.
+
+## Character identity phase 3
+
+- profileId = persistent account; playerId = unique live presence; sessionId = ownership generation; characterBaseId = class/art; characterId = a compatibility field, never a live quiz/emote key.
+- Multiplayer quiz participants, host, answers, scores and timeouts use playerId. Quiz chairs are generic authored seats. Emote rows/state/rendering use playerId; a new claim cannot inherit a prior emote. Chat stores authorPlayerId and a displayName snapshot alongside legacy attribution.
+- Development gameplay/statistics data is disposable until profile-owned architecture is finalized. Do not auto-reset. A later manual one-time reset may clear quizLobbies, quizAnswers, quizCleanupWorker (including its scheduled job), emoteEvents, quizPerformance, quizAttempts, quizQuestionHistory, soloQuizRuns, itChallengeRuns and itChallengeHighScores. Old quiz lobbies without hostPlayerId are intentionally not loaded by the new UI and require that reset.
+- At this phase the menu still used exclusive synthetic slots; that temporary behavior was removed in character phase 5 below.
+
+## Character identity phase 4
+
+- Quiz attempts, aggregate performance, question history, Solo Study runs, IT Challenge runs and high scores are written/read by `profileId`. Active Study/Challenge calls authenticate `playerId + sessionId`; runs also bind to that live session. Changing base preserves profile statistics/history/high scores. Guest quiz participation stays live-only; guest Study/Challenge still require sign-in and write no persistent rows.
+- `bossProgress`, victory receipts and `characterItems` remain profile-owned. New boss/reward rows do not write a legacy slot ID; new item rows record only optional `characterBaseId` attribution. Item compatibility uses the selected base. There is still only one profile-wide active item state per item, not a per-base equipped loadout; do not build loadouts during slot migration.
+- Legacy quiz/statistics development rows without `profileId` are deliberately not migrated or read. Before pushing this schema to a development deployment that contains old data, back it up and plan a **local/dev-only** manual reset of `quizPerformance`, `quizAttempts`, `quizQuestionHistory`, `soloQuizRuns`, `itChallengeRuns` and `itChallengeHighScores`. Do not reset production or `.convex/local/default/` automatically. Optional schema owner fields temporarily permit old rows to coexist until the manual cleanup; new writes require `profileId`.
+- Safe manual reset procedure, if needed later: verify `.env.local` names the local deployment and loopback URL; run `npx convex export --deployment local --path phase4-before-reset.zip` to back up data; open `npx convex dashboard --deployment local` and remove rows only from those six tables. Verify the dashboard target says local before deleting anything. Keep the export outside Git. Never run the reset against production.
+- Before character phase 5, `characterId` was still treated as a transitional exclusive slot. No persistent quiz/statistics owner is a character slot.
+
+## Character identity phase 5: duplicate bases and generic quiz seats
+
+- CharacterMenu lists only the four real bases (`michael`, `jassine`, `sarina`, `felipe`). `felipe-2`/`michael-2` synthetic options are removed. `baseCharacterId()` still resolves legacy synthetic IDs for old rows/art compatibility.
+- Multiple live players may select the same base. Claim APIs prefer `characterBaseId`; `characterId` is still accepted as a compatibility alias. Each claim creates its own playerId and sessionId; the transitional `characterId` field on new player rows equals the selected base and is not exclusive. `players.availability` returns a player roster plus the independent max capacity. `MAX_PLAYER_CAPACITY` in `src/multiplayer/playerCapacity.js` defaults to 10; backend claims are authoritative and count active players, not bases.
+- Quiz chairs are generic stable `seatId`s from Tiled. Runtime seat parsing ignores any old authored character/class custom property; generated `quizSeatDefinitions.js` contains only generic seat IDs and coordinates. Lobby `seatAssignments` maps `{playerId, seatId}`; same-base players can join but cannot occupy the same seat. Current classroom capacity is limited by its four authored chairs.
+- Stale player sessions are removed from the reactive current-lobby seat assignment view. Quiz participants, answers, scores and emotes continue to key by playerId; class attribution remains characterBaseId.
+- Remaining `characterId` usage is compatibility/session validation and the selected base field carried by existing APIs, plus legacy profile-data migration/indexes. It no longer enforces online exclusivity. Old Tiled chair metadata can remain in the map source because runtime ignores it; the generated definitions are generic.
+
+## Profile display names
+
+- Profiles use persistent `displayName` (trimmed, 1–32 characters, non-unique). Registration asks for it before character-base selection. Legacy profiles missing a valid value are prompted after login; the session-authenticated `profiles.setDisplayName` action saves it. Profile schema keeps `displayName` optional only for this onboarding compatibility.
+- CharacterMenu continues to show base/class names. Claimed player rows snapshot the profile display name; `players.name` remains a transitional visible-name alias, not class identity. Remote overhead labels, chat attribution and quiz participant labels prefer `displayName`. Chat `characterName` remains the separate class/base label for legacy history and class attribution. Guests keep the selected character's name as their display name.
+
 ## Recent multiplayer / Convex optimizations
+
+- Player identity phase 1 (historical): presence rows gained optional `characterBaseId`; phase 2 separated `playerId`, and phase 5 removed exclusive synthetic slot selection. Legacy rows derive the base from `characterId`.
 
 - Stationary lease phase 2: after 20 seconds without a meaningful position/room/direction/appearance change, Presence sends one `players.enterStationary`. Only acknowledgement suppresses normal heartbeats; the 200 ms timer/subscriptions remain. Lease lasts 5 minutes with no renewal yet, so idle expiry requires character selection. The next meaningful `players.update` atomically returns an unexpired stationary session to playing and clears its lease, including room changes. Terminal entry replaces the stationary lease; terminal exit stays playing. Pending requests are serialized and failed entry uses existing retry/session-loss handling.
 - Stationary lease phase 3: `players.renewStationary` verifies matching session, stationary mode and unexpired lease, then renews from server time to +5 minutes without changing `lastSeen` or player visuals. Presence schedules renewal at expiry minus 60 seconds (about every 4 minutes); one request can run at a time. Transient failure retries after at most 30 seconds, but no later than 5 seconds before expiry. Movement and terminal entry are serialized behind renewal and their authoritative mutations set the final mode; expired leases trigger session recovery. No polling or scheduled job was added.

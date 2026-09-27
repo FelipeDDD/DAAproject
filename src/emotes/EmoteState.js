@@ -6,11 +6,11 @@ export class EmoteState {
   receive(rows,now=Date.now()) {
     this.events.clear();
     for(const row of rows)if(row.room===this.room&&Number.isFinite(row.createdAt)&&
-      now-row.createdAt<this.duration)this.events.set(row.characterId,row);
+      now-row.createdAt<this.duration)this.events.set(row.playerId,row);
   }
   show(event,now=Date.now()){
     if(event.room!==this.room||!Number.isFinite(event.createdAt)||now-event.createdAt>=this.duration)return;
-    this.events.set(event.characterId,event);
+    this.events.set(event.playerId,event);
   }
   active(now=Date.now()) {
     for(const [id,event] of this.events)if(now-event.createdAt>=this.duration)this.events.delete(id);

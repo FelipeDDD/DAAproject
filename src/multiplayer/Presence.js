@@ -45,8 +45,8 @@ export class Presence {
     if(!this.active)throw new Error('CHARACTER_SESSION_LOST');
     this.terminalTransition=true;
     try{
-      const {characterId,sessionId}=this.identity;
-      const lease=await this.client.mutation(this.api.players.enterTerminal,{characterId,sessionId});
+      const {playerId,characterId,sessionId}=this.identity;
+      const lease=await this.client.mutation(this.api.players.enterTerminal,{playerId,characterId,sessionId});
       this.terminalLease={...lease,clockOffset:Date.now()-lease.serverNow};
       this.stationaryLease=null;
       this.setTerminalMode(true);
@@ -61,8 +61,8 @@ export class Presence {
     if(this.terminalTransition)throw new Error('Terminal transition in progress');
     this.terminalTransition=true;
     try{
-      const {characterId,sessionId}=this.identity;
-      const result=await this.client.mutation(this.api.players.exitTerminal,{characterId,sessionId});
+      const {playerId,characterId,sessionId}=this.identity;
+      const result=await this.client.mutation(this.api.players.exitTerminal,{playerId,characterId,sessionId});
       this.terminalLease=null;this.setTerminalMode(false);
       if(this.active)this.active.idleSince=Date.now();
       await this.resumeRoom();
@@ -155,7 +155,9 @@ export class Presence {
     const snapshot=active.snapshot();
     const state = {
       playerId:this.identity.playerId,characterId:this.identity.characterId,
-      name:this.identity.name,sessionId:this.identity.sessionId,room:active.room,...snapshot,
+      name:this.identity.displayName??this.identity.name,
+      displayName:this.identity.displayName??this.identity.name,
+      sessionId:this.identity.sessionId,room:active.room,...snapshot,
       ...(this.adaptiveMovement ? active.movement : {}),
     };
     if (!this.adaptiveMovement) {
@@ -186,12 +188,12 @@ export class Presence {
     try {
       const request=enterStationary||renewStationary
         ? this.client.mutation(this.api.players[renewStationary?'renewStationary':'enterStationary'],{
-          characterId:this.identity.characterId,sessionId:this.identity.sessionId,
+          playerId:this.identity.playerId,characterId:this.identity.characterId,sessionId:this.identity.sessionId,
         })
         : shouldUpdate
         ? this.client.mutation(this.api.players.update,state)
         : this.client.mutation(this.api.players.heartbeat,{
-        characterId: this.identity.characterId,
+        playerId: this.identity.playerId, characterId: this.identity.characterId,
         sessionId: this.identity.sessionId,
       });
       this.pendingSend=request;
@@ -262,7 +264,7 @@ export class Presence {
     if(!identity?.characterId||!identity?.sessionId)return {released:false};
     try{await this.pendingSend;}catch{}
     const result=await this.client.mutation(this.api.players.release,{
-      characterId:identity.characterId,sessionId:identity.sessionId,
+      playerId:identity.playerId,characterId:identity.characterId,sessionId:identity.sessionId,
     });
     if(this.identity===identity)this.identity=null;
     return result;

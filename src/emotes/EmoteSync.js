@@ -28,8 +28,8 @@ export class EmoteSync {
     if(this.closed||this.suspended||this.pending||!AVAILABLE_EMOTES.includes(emote)||!cooldownReady(this.lastSentAt,now))return false;
     this.pending=true;this.lastSentAt=now;
     try{
-      const {characterId,sessionId}=this.presence.identity;
-      const event=await this.presence.client.mutation(this.presence.api.emotes.send,{room:this.room,characterId,sessionId,emote});
+      const {playerId,sessionId}=this.presence.identity;
+      const event=await this.presence.client.mutation(this.presence.api.emotes.send,{room:this.room,playerId,sessionId,emote});
       if(!this.closed&&!this.suspended)this.renderer.show(event);return true;
     }catch(error){
       if(String(error).includes('EMOTE_COOLDOWN'))return false;

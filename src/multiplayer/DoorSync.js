@@ -50,7 +50,7 @@ export class DoorSync {
     this.pending.add(door.id);
     try {
       await this.presence.client.mutation(this.presence.api.doors.setOpen,{
-        room:this.room,doorId:door.id,playerId:this.presence.identity.playerId,open:!door.open,
+        room:this.room,doorId:door.id,playerId:this.presence.identity.playerId,sessionId:this.presence.identity.sessionId,open:!door.open,
       });
       return '';
     } catch(error){return error.message.includes('Doorway occupied')?'Doorway occupied.':'Could not update the door. Move closer and try again.';}

@@ -10,7 +10,7 @@ const unsub=b.onUpdate(api.doors.inRoom,{room:'school'},s=>states=s);
 const wait=async(fn,timeout=10_000)=>{const end=Date.now()+timeout;while(!fn()){if(Date.now()>end)throw new Error('Timed out');await new Promise(r=>setTimeout(r,100));}};
 const send=(x,y)=>a.mutation(api.players.update,{...identity,room:'school',x,y,direction:'up'});
 try {
-  identity=await claimTestCharacter(a);playerId=identity.playerId;args.playerId=playerId;
+  identity=await claimTestCharacter(a);playerId=identity.playerId;args.playerId=playerId;args.sessionId=identity.sessionId;
   await wait(()=>states.length);
   original=states.find(d=>d.doorId===args.doorId).open;
   await send(400,280);

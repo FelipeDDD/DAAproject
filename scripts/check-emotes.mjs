@@ -11,7 +11,7 @@ const wait=async(predicate,label)=>{const until=Date.now()+10_000;while(!predica
 let identity,events=[],unsubscribe;
 try{
   identity=await claimTestCharacter(sender);
-  const auth={characterId:identity.characterId,sessionId:identity.sessionId};
+  const auth={playerId:identity.playerId,sessionId:identity.sessionId};
   await sender.mutation(api.players.update,{...identity,room:'school',x:800,y:750,direction:'down'});
   unsubscribe=viewer.onUpdate(api.emotes.inRoom,{room:'school'},rows=>events=rows);
   await new Promise(resolve=>setTimeout(resolve,1100));

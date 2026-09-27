@@ -126,3 +126,35 @@ test('RemotePlayers renders from the buffer, snaps teleports and removes departe
   assert.equal(remote.sprite.destroyed, true);
   assert.equal(remote.label.destroyed, true);
 });
+
+test('RemotePlayers selects sprite art from characterBaseId with a legacy slot fallback',()=>{
+  const object=(x,y)=>({x,y,anims:{stop(){},play(){}},setOrigin(){return this;},setTexture(key){this.texture=key;return this;},
+    setScale(){return this;},setFlipX(){return this;},setText(){return this;},setDepth(){return this;},
+    setPosition(x,y){this.x=x;this.y=y;return this;},destroy(){}});
+  const remotes=new RemotePlayers({add:{sprite:object,text:object}},{clock:()=>0});
+  remotes.receive([row(0,'down',{playerId:'independent-live-id',characterId:'michael-2',characterBaseId:'michael'})]);
+  const explicit=remotes.players.get('independent-live-id');
+  assert.equal(explicit.character.id,'michael');
+  assert.equal(explicit.sprite.texture,'character-michael');
+  remotes.receive([row(0,'down',{playerId:'michael-3',characterId:'michael-3'})]);
+  const legacy=remotes.players.get('michael-3');
+  assert.equal(legacy.character.id,'michael');
+  assert.equal(legacy.sprite.texture,'character-michael');
+});
+
+test('same-base players stay distinct and remote labels use profile displayName',()=>{
+  const object=(x,y)=>({x,y,anims:{stop(){},play(){}},setOrigin(){return this;},setTexture(key){this.texture=key;return this;},
+    setScale(){return this;},setFlipX(){return this;},setText(value){this.text=value;return this;},setDepth(){return this;},
+    setPosition(x,y){this.x=x;this.y=y;return this;},destroy(){}});
+  const remotes=new RemotePlayers({add:{sprite:object,text:object}},{clock:()=>0});
+  remotes.receive([
+    row(10,'down',{playerId:'live-michael-a',characterId:'michael',characterBaseId:'michael',name:'Michael',displayName:'Alice'}),
+    row(20,'down',{playerId:'live-michael-b',characterId:'michael',characterBaseId:'michael',name:'Michael',displayName:'Bob'}),
+  ]);
+  assert.equal(remotes.players.size,2);
+  assert.equal(remotes.players.get('live-michael-a').characterBaseId,'michael');
+  assert.equal(remotes.players.get('live-michael-b').characterBaseId,'michael');
+  assert.equal(remotes.players.get('live-michael-a').label.text,'Alice');
+  assert.equal(remotes.players.get('live-michael-b').label.text,'Bob');
+  assert.notEqual(remotes.players.get('live-michael-a').sprite,remotes.players.get('live-michael-b').sprite);
+});

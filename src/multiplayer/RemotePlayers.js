@@ -1,4 +1,4 @@
-import { characterById } from '../characters.js';
+import { characterBaseIdFor, characterById } from '../characters.js';
 import { applyCharacterVisual,updateCharacterVisual,visualStyleForActiveItem } from '../characterVisuals.js';
 import { RemoteSnapshotBuffer } from './remoteMovement.js';
 
@@ -17,19 +17,24 @@ export class RemotePlayers {
     for (const row of rows) {
       let remote = this.players.get(row.playerId);
       if (!remote) {
-        const character=characterById(row.characterId);
+        const character=characterById(characterBaseIdFor(row));
         const sprite = this.scene.add.sprite(row.x,row.y,'student').setOrigin(0.5,1);
         const style=visualStyleForActiveItem(row.activeCharacterItem,row.equippedSkin);
         const visual=applyCharacterVisual(sprite,character,style);
-        const label = this.scene.add.text(row.x, row.y, row.name, { fontSize: '10px', color: '#152c42', backgroundColor: '#ffffffcc' }).setOrigin(0.5, 1);
-        remote = { sprite,label,visual,character,style,buffer:new RemoteSnapshotBuffer(this.bufferOptions) };
+        const label = this.scene.add.text(row.x, row.y, row.displayName??row.name, { fontSize: '10px', color: '#152c42', backgroundColor: '#ffffffcc' }).setOrigin(0.5, 1);
+        remote = { sprite,label,visual,character,characterBaseId:characterBaseIdFor(row),style,buffer:new RemoteSnapshotBuffer(this.bufferOptions) };
         this.players.set(row.playerId, remote);
+      }
+      const nextBaseId=characterBaseIdFor(row);
+      if(remote.characterBaseId!==nextBaseId){
+        remote.character=characterById(nextBaseId);remote.characterBaseId=nextBaseId;
+        remote.visual=applyCharacterVisual(remote.sprite,remote.character,remote.style);
       }
       const { teleport } = remote.buffer.push(row, arrivalAt);
       remote.presenceMode=row.presenceMode??'playing';
       remote.terminalLeaseExpiresAt=row.terminalLeaseExpiresAt;
       if (teleport) remote.sprite.setPosition(row.x, row.y);
-      remote.label.setText(row.name);
+      remote.label.setText(row.displayName??row.name);
     }
   }
 

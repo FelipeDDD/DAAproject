@@ -1,4 +1,3 @@
-import { CHARACTERS,baseCharacterId } from './characters.js';
 import { distanceToSeat, QUIZ_SEAT_DISTANCE } from './maps/quizSeats.js';
 import { renderQuizMedia } from './QuizMedia.js';
 import { remainingQuizSeconds } from './quizTimer.js';
@@ -11,8 +10,8 @@ export const QUIZ_SEAT_PROMPT = Object.freeze({text:'[E] Sit',offsetX:0,offsetY:
 export const QUIZ_TIMEOUT_MAX_ATTEMPTS=4;
 export const quizTimeoutRetryDelay=attempt=>1000*2**Math.max(0,attempt-1);
 
-export function shouldShowStartButton(lobby,characterId){
-  return lobby?.status==='lobby'&&lobby.hostCharacterId===characterId;
+export function shouldShowStartButton(lobby,playerId){
+  return lobby?.status==='lobby'&&lobby.hostPlayerId===playerId;
 }
 
 export function shouldConfirmQuizLeave(lobby){return lobby?.status==='starting';}
@@ -24,7 +23,6 @@ export class QuizLobby {
       selectedAnswer:null,confirmedAnswer:null,pendingAnswer:false,pendingNext:false,answerError:'',
       pendingSettings:false,settingsError:'',
     });
-    this.seat=seats.find(seat=>seat.characterId===baseCharacterId(presence.identity.characterId));
     this.root=document.getElementById('quiz-lobby');
     this.list=document.getElementById('quiz-participants');
     this.status=document.getElementById('quiz-status');
@@ -76,11 +74,12 @@ export class QuizLobby {
 
   subscribeCurrent(){
     if(this.closed||this.currentSuspended||this.unsubscribe)return false;
-    const {characterId}=this.presence.identity;
-    this.unsubscribe=this.presence.client.onUpdate(this.presence.api.quizLobbies.current,{room:this.room,characterId},lobby=>{
+    const {playerId}=this.presence.identity;
+    this.unsubscribe=this.presence.client.onUpdate(this.presence.api.quizLobbies.current,{room:this.room,playerId},lobby=>{
       if(this.closed||this.currentSuspended)return;
+      this.currentSnapshotRevision=(this.currentSnapshotRevision??0)+1;
       this.lobby=lobby;
-      if(this.seated&&!lobby?.participants.includes(characterId))this.standLocally();
+      if(this.seated&&!lobby?.participants.includes(playerId))this.standLocally();
       this.render();
     },error=>this.presence.fail(error));
     return true;
@@ -94,7 +93,16 @@ export class QuizLobby {
     this.currentSuspended=false;this.subscribeCurrent();return true;
   }
 
-  nearbySeat(){return this.seat&&distanceToSeat(this.seat,this.scene.player.body)<=QUIZ_SEAT_DISTANCE?this.seat:null;}
+  nearbySeat(){
+    if(this.seated||this.pending||this.lobby?.status&&this.lobby.status!=='lobby')return null;
+    const playerId=this.presence.identity.playerId;
+    const occupied=new Set((this.lobby?.seatAssignments??[])
+      .filter(assignment=>assignment.playerId!==playerId).map(assignment=>assignment.seatId));
+    return this.seats.filter(seat=>!occupied.has(seat.seatId))
+      .map(seat=>({seat,distance:distanceToSeat(seat,this.scene.player.body)}))
+      .filter(result=>result.distance<=QUIZ_SEAT_DISTANCE)
+      .sort((left,right)=>left.distance-right.distance)[0]?.seat??null;
+  }
 
   // Visibility uses only local Phaser state. Convex is never consulted from this path.
   updateSeatPrompt(localSeat){
@@ -112,8 +120,8 @@ export class QuizLobby {
     if(!this.nearbySeat())return;
     this.pending=true;this.seatPrompt.setVisible(false);this.status.textContent='Joining lobby…';
     try{
-      const {characterId,sessionId}=this.presence.identity;
-      const seat=await this.presence.client.mutation(this.presence.api.quizLobbies.join,{room:this.room,characterId,sessionId});
+      const {playerId,sessionId}=this.presence.identity;
+      const seat=await this.presence.client.mutation(this.presence.api.quizLobbies.join,{room:this.room,playerId,sessionId});
       this.seated=true;this.scene.player.body.reset(seat.seatX,seat.seatY);
       if(this.scene.player.setFacing)this.scene.player.setFacing(seat.direction,false);
       else{this.scene.player.facing=seat.direction;this.scene.player.setFlipX(seat.direction==='left');}
@@ -132,12 +140,34 @@ export class QuizLobby {
       this.confirmingLeave=true;this.render();return false;
     }
     this.pending=true;
+    // Leaving is a local control/UI transition. Do it before the network round
+    // trip; the Convex mutation remains authoritative for freeing the seat.
+    const {playerId,sessionId}=this.presence.identity;
+    const body=this.scene.player.body;
+    const snapshotRevision=this.currentSnapshotRevision??0;
+    const previous={x:body.x,y:body.y,facing:this.scene.player.facing,lobby:this.lobby};
+    this.standLocally();
     try{
-      const {characterId,sessionId}=this.presence.identity;
-      await this.presence.client.mutation(this.presence.api.quizLobbies.leave,{room:this.room,characterId,sessionId});
-      this.standLocally();return true;
-    }catch{this.status.textContent='Could not leave the lobby.';return false;}
-    finally{this.pending=false;}
+      await this.presence.client.mutation(this.presence.api.quizLobbies.leave,{room:this.room,playerId,sessionId});
+      return true;
+    }catch{
+      // A failed request normally leaves the transaction untouched. Restore
+      // the seat only if the current authoritative snapshot still includes us;
+      // a committed request with a lost response must not resurrect the seat.
+      const receivedNewSnapshot=(this.currentSnapshotRevision??0)>snapshotRevision;
+      const stillParticipant=receivedNewSnapshot
+        ?Boolean(this.lobby?.participants?.includes(playerId))
+        :Boolean(previous.lobby?.participants?.includes(playerId));
+      if(!this.closed&&this.presence.identity.playerId===playerId&&
+        this.presence.identity.sessionId===sessionId&&stillParticipant){
+        this.seated=true;this.lobby??=previous.lobby;
+        body.reset(previous.x,previous.y);
+        if(this.scene.player.setFacing)this.scene.player.setFacing(previous.facing,false);
+        this.root.hidden=false;
+        this.status.textContent='Could not leave the lobby.';
+      }
+      return false;
+    }finally{this.pending=false;this.render();}
   }
 
   cancelLeave(){
@@ -161,9 +191,9 @@ export class QuizLobby {
     const settings=readQuizSettingsControls(this,this.options);
     this.pendingSettings=true;this.settingsError='';this.renderSettings();
     try{
-      const {characterId,sessionId}=this.presence.identity;
+      const {playerId,sessionId}=this.presence.identity;
       await this.presence.client.mutation(this.presence.api.quizLobbies.configure,{
-        room:this.room,characterId,sessionId,...settings,
+        room:this.room,playerId,sessionId,...settings,
       });
     }catch{this.settingsError='Could not update quiz settings.';}
     finally{this.pendingSettings=false;this.render();}
@@ -173,8 +203,8 @@ export class QuizLobby {
     if(this.pending||this.pendingSettings||!this.isHost()||this.lobby?.status!=='lobby')return;
     this.pending=true;
     try{
-      const {characterId,sessionId}=this.presence.identity;
-      await this.presence.client.mutation(this.presence.api.quizLobbies.start,{room:this.room,characterId,sessionId});
+      const {playerId,sessionId}=this.presence.identity;
+      await this.presence.client.mutation(this.presence.api.quizLobbies.start,{room:this.room,playerId,sessionId});
     }catch(error){
       this.status.textContent=error.message.includes('At least 2')
         ?'Wait for at least one more player.'
@@ -194,8 +224,8 @@ export class QuizLobby {
     const answerIndex=this.selectedAnswer;
     this.pendingAnswer=true;this.answerError='';this.render();
     try{
-      const {characterId,sessionId}=this.presence.identity;
-      const result=await this.presence.client.mutation(this.presence.api.quizLobbies.answer,{room:this.room,characterId,sessionId,answerIndex});
+      const {playerId,sessionId}=this.presence.identity;
+      const result=await this.presence.client.mutation(this.presence.api.quizLobbies.answer,{room:this.room,playerId,sessionId,answerIndex});
       this.confirmedAnswer=result.answerIndex;
     }catch{
       this.answerError='Could not save your answer.';
@@ -205,7 +235,7 @@ export class QuizLobby {
   questionHasExpired(){return remainingQuizSeconds(this.lobby?.questionDeadline)===0;}
 
   isActiveParticipant(){
-    return !this.closed&&this.seated&&Boolean(this.lobby?.participants?.includes(this.presence.identity.characterId));
+    return !this.closed&&this.seated&&Boolean(this.lobby?.participants?.includes(this.presence.identity.playerId));
   }
 
   updateTimer(){
@@ -227,8 +257,8 @@ export class QuizLobby {
     this.finishingTimedQuestion=true;this.timerRetryCount=(this.timerRetryCount??0)+1;
     this.answerError='';this.render();
     try{
-      const {characterId,sessionId}=this.presence.identity;
-      const args={room:this.room,characterId,sessionId};
+      const {playerId,sessionId}=this.presence.identity;
+      const args={room:this.room,playerId,sessionId};
       if(Number.isInteger(this.selectedAnswer))args.answerIndex=this.selectedAnswer;
       const result=await this.presence.client.mutation(this.presence.api.quizLobbies.finishTimedQuestion,args);
       if(this.closed||!this.seated||this.lobby?.question?.id!==questionId)return;
@@ -256,13 +286,13 @@ export class QuizLobby {
     if(this.pendingNext||!this.isHost()||!this.lobby?.allAnswered)return;
     this.pendingNext=true;this.render();
     try{
-      const {characterId,sessionId}=this.presence.identity;
-      await this.presence.client.mutation(this.presence.api.quizLobbies.nextQuestion,{room:this.room,characterId,sessionId});
+      const {playerId,sessionId}=this.presence.identity;
+      await this.presence.client.mutation(this.presence.api.quizLobbies.nextQuestion,{room:this.room,playerId,sessionId});
     }catch{this.status.textContent='Could not advance to the next question.';}
     finally{this.pendingNext=false;this.render();}
   }
 
-  isHost(){return this.lobby?.hostCharacterId===this.presence.identity.characterId;}
+  isHost(){return this.lobby?.hostPlayerId===this.presence.identity.playerId;}
 
   standLocally(){
     this.calculator.close({reset:true});
@@ -316,20 +346,19 @@ export class QuizLobby {
     const finished=this.lobby?.status==='finished';
     this.resultsRoot.hidden=!finished;
     if(!finished)return;
-    const scores=new Map(this.lobby.scores.map(score=>[score.characterId,score.points]));
-    this.scoresList.replaceChildren(...this.lobby.participants.map(characterId=>{
-      const character=CHARACTERS.find(item=>item.id===characterId);
-      const points=scores.get(characterId)??0;
-      const li=document.createElement('li');li.textContent=`${character?.name??characterId}: ${points} ${points===1?'point':'points'}`;return li;
+    const scores=new Map(this.lobby.scores.map(score=>[score.playerId,score.points]));
+    this.scoresList.replaceChildren(...this.lobby.participants.map(playerId=>{
+      const participant=this.lobby.participantDetails?.find(item=>item.playerId===playerId);
+      const points=scores.get(playerId)??0;
+      const li=document.createElement('li');li.textContent=`${participant?.displayName??playerId}: ${points} ${points===1?'point':'points'}`;return li;
     }));
   }
 
   render(){
     if(!this.seated){this.root.hidden=true;return;}
-    const participants=new Set(this.lobby?.participants??[]);
-    this.list.replaceChildren(...CHARACTERS.map(character=>{
+    this.list.replaceChildren(...(this.lobby?.participantDetails??[]).map(participant=>{
       const li=document.createElement('li');
-      li.textContent=`${participants.has(character.id)?'✓':'○'} ${character.name}${this.lobby?.hostCharacterId===character.id?' (host)':''}`;
+      li.textContent=`${participant.displayName}${this.lobby?.hostPlayerId===participant.playerId?' (host)':''}`;
       return li;
     }));
     const playing=this.lobby?.status==='starting',finished=this.lobby?.status==='finished';
@@ -347,7 +376,7 @@ export class QuizLobby {
         this.pendingAnswer?'Sending answer…':this.confirmedAnswer!==null?'Answer recorded. Waiting for the other players.':'Select an answer and confirm it.'
       );
     }else this.status.textContent='Press E, Esc, or the button to leave the lobby';
-    this.startButton.hidden=!shouldShowStartButton(this.lobby,this.presence.identity.characterId);this.startButton.disabled=this.pending||this.pendingSettings;
+    this.startButton.hidden=!shouldShowStartButton(this.lobby,this.presence.identity.playerId);this.startButton.disabled=this.pending||this.pendingSettings;
     this.nextButton.hidden=!playing||!this.lobby.allAnswered||!this.isHost();this.nextButton.disabled=this.pendingNext;
     this.leaveButton.textContent=this.confirmingLeave?'Confirm leave':'Leave lobby';
     this.leaveButton.disabled=this.pending||this.pendingAnswer||this.pendingNext;

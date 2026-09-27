@@ -5,7 +5,6 @@ import { nearbySoloStudySeat } from './maps/soloStudySeats.js';
 import { CalculatorWidget } from './calculator/CalculatorWidget.js';
 import { WorldPrompt } from './ui/WorldPrompt.js';
 import { QuizStatisticsPanel } from './quiz/QuizStatisticsPanel.js';
-import { CHARACTERS } from './characters.js';
 import {
   IT_CHALLENGE_DURATION_MS,IT_CHALLENGE_FEEDBACK_DELAY_MS,IT_CHALLENGE_POINTS,
   IT_CHALLENGE_QUESTION_TIMEOUT_MS,IT_CHALLENGE_RULES_VERSION,IT_CHALLENGE_VARIANT,
@@ -158,9 +157,9 @@ export class SoloStudyController {
     this.resetRun();this.mode='study';this.pending=true;
     this.status.textContent='Preparing questions…';this.render();
     try{
-      const {characterId,sessionId}=this.presence.identity;
+      const {playerId,sessionId}=this.presence.identity;
       const result=await this.terminalMutation(this.presence.api.soloStudy.start,{
-        characterId,sessionId,mode:'study',...settings,
+        playerId,sessionId,mode:'study',...settings,
       });
       this.settings=result.settings;this.session=createSoloSession('study',result.questions);this.runId=result.runId;
       this.status.textContent='';
@@ -227,8 +226,8 @@ export class SoloStudyController {
     this.resetRun();this.mode='challenge';this.pending=true;
     this.status.textContent='Preparing challenge…';this.render();
     try{
-      const {characterId,sessionId}=this.presence.identity;
-      const result=await this.terminalMutation(this.presence.api.itChallenge.start,{characterId,sessionId});
+      const {playerId,sessionId}=this.presence.identity;
+      const result=await this.terminalMutation(this.presence.api.itChallenge.start,{playerId,sessionId});
       this.session=createSoloSession('challenge',result.questions);this.runId=result.runId;
       this.status.textContent='';
     }catch(error){
@@ -317,14 +316,14 @@ export class SoloStudyController {
     }
     this.mode=this.modeSelect.value;this.pending=true;this.status.textContent='Preparing questions…';this.render();
     try{
-      const {characterId,sessionId}=this.presence.identity;
+      const {playerId,sessionId}=this.presence.identity;
       if(this.mode==='challenge'){
-        const result=await this.terminalMutation(this.presence.api.itChallenge.start,{characterId,sessionId});
+        const result=await this.terminalMutation(this.presence.api.itChallenge.start,{playerId,sessionId});
         this.session=createSoloSession('challenge',result.questions);this.runId=result.runId;
       }else{
         const settings=readQuizSettingsControls(this,this.options);this.settings=settings;
         const result=await this.terminalMutation(this.presence.api.soloStudy.start,{
-          characterId,sessionId,mode:'study',...settings,
+          playerId,sessionId,mode:'study',...settings,
         });
         this.session=createSoloSession('study',result.questions);this.runId=result.runId;
       }
@@ -363,9 +362,9 @@ export class SoloStudyController {
     await this.statisticsPending;
     if(!this.session?.next())return;
     if(!this.session.complete){
-      const {characterId,sessionId}=this.presence.identity;
+      const {playerId,sessionId}=this.presence.identity;
       this.terminalMutation(this.presence.api.soloStudy.markViewed,{
-        characterId,sessionId,questionId:this.session.question.id,
+        playerId,sessionId,questionId:this.session.question.id,
       }).catch(()=>{this.status.textContent='Progress continues, but recent-question history could not be updated.';this.render();});
     }
     this.status.textContent='';this.render();
@@ -373,17 +372,17 @@ export class SoloStudyController {
 
   markChallengeQuestionViewed(){
     if(!this.session?.question)return;
-    const {characterId,sessionId}=this.presence.identity;
+    const {playerId,sessionId}=this.presence.identity;
     this.terminalMutation(this.presence.api.soloStudy.markViewed,{
-      characterId,sessionId,questionId:this.session.question.id,
+      playerId,sessionId,questionId:this.session.question.id,
     }).catch(()=>{});
   }
 
   recordCurrentAnswer(result){
     if(!this.runId||this.session?.mode!=='study')return;
-    const {characterId,sessionId}=this.presence.identity;
+    const {playerId,sessionId}=this.presence.identity;
     this.statisticsPending=this.terminalMutation(this.presence.api.quizStatistics.recordSoloAnswer,{
-      characterId,sessionId,runId:this.runId,questionIndex:this.session.index,
+      playerId,sessionId,runId:this.runId,questionIndex:this.session.index,
       ...(result.answerIndex===null?{}:{answerIndex:result.answerIndex}),
     }).catch(()=>{this.status.textContent='Answer saved locally, but statistics could not be updated.';this.render();});
   }
@@ -422,9 +421,9 @@ export class SoloStudyController {
     if(this.finishingChallenge||!this.runId||this.session?.mode!=='challenge')return;
     this.finishingChallenge=true;this.status.textContent='Saving result…';this.render();
     try{
-      const {characterId,sessionId}=this.presence.identity;
+      const {playerId,sessionId}=this.presence.identity;
       const response=await this.terminalMutation(this.presence.api.itChallenge.finish,{
-        characterId,sessionId,runId:this.runId,outcomes:this.session.submission(),
+        playerId,sessionId,runId:this.runId,outcomes:this.session.submission(),
         lastViewedQuestionIndex:this.session.index,
       });
       this.completionResult=response.result;this.newPersonalBest=response.newPersonalBest;
@@ -442,14 +441,13 @@ export class SoloStudyController {
     this.leaderboardStatus.textContent='Loading leaderboard…';this.render();
     try{
       const rows=await this.presence.client.query(this.presence.api.itChallenge.leaderboard,{});
-      const byId=new Map(CHARACTERS.map(character=>[character.id,character.name]));
       this.leaderboardList.replaceChildren(...rows.map(row=>{
         const item=document.createElement('li');
-        item.textContent=`${byId.get(row.characterId)??row.characterId} — ${row.score}`;
+        item.textContent=`${row.displayName??'Player'} — ${row.score}`;
         item.title=`Correct ${row.correct}, wrong ${row.wrong}, skipped ${row.skipped}, accuracy ${row.accuracy}%`;
         return item;
       }));
-      this.leaderboardStatus.textContent=rows.length?'Best score for each character under the current 5-minute rules.':'No completed challenges yet.';
+      this.leaderboardStatus.textContent=rows.length?'Best score for each profile under the current 5-minute rules.':'No completed challenges yet.';
     }catch{this.leaderboardStatus.textContent='Could not load the leaderboard.';}
   }
 

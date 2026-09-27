@@ -9,6 +9,8 @@ export class ProfileAuth{
     this.message=document.getElementById('profile-auth-message');
     this.loginForm=document.getElementById('profile-login-form');
     this.registerForm=document.getElementById('profile-register-form');
+    this.displayNameForm=document.getElementById('profile-display-name-form');
+    this.title=document.getElementById('profile-auth-title');
     this.loginTab=document.getElementById('profile-login-tab');
     this.registerTab=document.getElementById('profile-register-tab');
     this.guestButton=document.getElementById('play-as-guest');
@@ -19,6 +21,8 @@ export class ProfileAuth{
     this.registerTab.addEventListener('click',()=>this.setMode('register'));
     this.loginForm.addEventListener('submit',event=>this.submit(event,'login'));
     this.registerForm.addEventListener('submit',event=>this.submit(event,'register'));
+    this.onDisplayNameSubmit=event=>this.submitDisplayName(event);
+    this.displayNameForm.addEventListener('submit',this.onDisplayNameSubmit);
     this.guestButton.addEventListener('click',()=>this.playAsGuest());
   }
 
@@ -28,6 +32,9 @@ export class ProfileAuth{
 
   setMode(mode){
     const login=mode==='login';
+    this.displayNameForm.hidden=true;this.loginTab.hidden=false;this.registerTab.hidden=false;
+    this.guestButton.closest('.profile-guest-option').hidden=false;
+    this.title.textContent='Player profile';
     this.loginForm.hidden=!login;this.registerForm.hidden=login;
     this.loginTab.setAttribute('aria-selected',String(login));
     this.registerTab.setAttribute('aria-selected',String(!login));
@@ -58,7 +65,7 @@ export class ProfileAuth{
     event.preventDefault();if(this.pending||!this.presence)return;
     const form=event.currentTarget;
     const args={profileName:form.elements.profileName.value,password:form.elements.password.value};
-    if(mode==='register')args.selectedCharacterId=form.elements.selectedCharacterId.value;
+    if(mode==='register')args.displayName=form.elements.displayName.value;
     this.setPending(true);this.message.textContent=mode==='register'?'Creating profile…':'Logging in…';
     try{
       const result=await this.presence.client.action(this.presence.api.profiles[mode],args);
@@ -69,12 +76,39 @@ export class ProfileAuth{
         :text.includes('INVALID_CREDENTIALS')?'Invalid profile name or password.'
         :text.includes('INVALID_PROFILE_NAME')?'Use 3–32 letters, numbers, dots, underscores or hyphens.'
         :text.includes('INVALID_PASSWORD')?'Password must contain between 8 and 128 characters.'
+        :text.includes('INVALID_DISPLAY_NAME')?'Enter a display name with 1–32 characters.'
         :'Could not authenticate. Check the connection and try again.';
     }finally{this.setPending(false);}
   }
 
   accept(profile,token){
+    if(typeof profile?.displayName!=='string'||!profile.displayName.trim()||profile.displayName.trim().length>32){
+      this.showDisplayNameSetup(profile,token);return;
+    }
     this.mode='profile';this.profile=profile;this.token=token;this.root.hidden=true;this.onAuthenticated(profile,token);
+  }
+
+  showDisplayNameSetup(profile,token){
+    this.mode='profile';this.profile=profile;this.token=token;this.root.hidden=false;
+    this.title.textContent='Choose your display name';
+    this.loginTab.hidden=true;this.registerTab.hidden=true;this.loginForm.hidden=true;this.registerForm.hidden=true;
+    this.guestButton.closest('.profile-guest-option').hidden=true;
+    this.displayNameForm.hidden=false;this.displayNameForm.elements.displayName.value='';
+    this.message.textContent='Choose the name other players will see. You only need to do this once.';
+  }
+
+  async submitDisplayName(event){
+    event.preventDefault();if(this.pending||!this.presence||!this.token)return;
+    const displayName=event.currentTarget.elements.displayName.value;
+    this.setPending(true);this.message.textContent='Saving display name…';
+    try{
+      const profile=await this.presence.client.action(this.presence.api.profiles.setDisplayName,{token:this.token,displayName});
+      this.accept(profile,this.token);
+    }catch(error){
+      this.message.textContent=String(error).includes('INVALID_DISPLAY_NAME')
+        ?'Enter a display name with 1–32 characters.'
+        :'Could not save the display name. Check the connection and try again.';
+    }finally{this.setPending(false);}
   }
 
   playAsGuest(){
@@ -94,6 +128,7 @@ export class ProfileAuth{
   destroy(){
     this.root.removeEventListener('keydown',this.onAuthKey);
     this.root.removeEventListener('keyup',this.onAuthKey);
+    this.displayNameForm.removeEventListener('submit',this.onDisplayNameSubmit);
     this.profile=null;this.token=null;
   }
 }

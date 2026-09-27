@@ -7,9 +7,9 @@ import {
   IT_CHALLENGE_DURATION_MS,IT_CHALLENGE_RULES_VERSION,itChallengeRulesKey,
 } from '../src/quiz/itChallengeRules.js';
 
-function row(characterId,score,overrides={}){
+function row(profileId,score,overrides={}){
   return {
-    characterId,score,rulesKey:itChallengeRulesKey(),rulesVersion:IT_CHALLENGE_RULES_VERSION,
+    profileId,displayName:profileId,score,rulesKey:itChallengeRulesKey(),rulesVersion:IT_CHALLENGE_RULES_VERSION,
     durationMs:IT_CHALLENGE_DURATION_MS,variant:'5m',correct:10,wrong:2,skipped:1,
     manualSkip:1,timeoutSkip:0,mediumCorrect:7,hardCorrect:3,totalAnswered:12,
     accuracy:83.3,achievedAt:1000,...overrides,
@@ -18,9 +18,9 @@ function row(characterId,score,overrides={}){
 
 test('terminal leaderboard keeps only current challenge records and ranks a dynamic list',()=>{
   const records=normalizeLeaderboardRows([
-    row('michael',80),row('future-player',120),row('felipe',99),
+    row('michael',80,{displayName:'Michael'}),row('future-player',120,{displayName:'Future Player'}),row('felipe',99,{displayName:'Felipe'}),
     row('old',999,{rulesVersion:0,rulesKey:'5m:v0'}),
-  ],{currentCharacterId:'felipe'});
+  ],{currentProfileId:'felipe'});
   assert.deepEqual(records.map(item=>[item.rank,item.name,item.score]),[
     [1,'Future Player',120],[2,'Felipe',99],[3,'Michael',80],
   ]);
@@ -32,8 +32,8 @@ test('terminal leaderboard bridge uses the existing Convex query and preserves r
   const messages=[];const queryReference={};
   const contentWindow={postMessage(message,origin){messages.push({message,origin});}};
   const presence={
-    identity:{characterId:'sarina'},api:{itChallenge:{leaderboard:queryReference}},
-    client:{async query(reference,args){assert.equal(reference,queryReference);assert.deepEqual(args,{});return [row('sarina',147)];}},
+    identity:{profileId:'sarina'},api:{itChallenge:{leaderboard:queryReference}},
+    client:{async query(reference,args){assert.equal(reference,queryReference);assert.deepEqual(args,{});return [row('sarina',147,{displayName:'Sarina'})];}},
   };
   const frame={contentWindow};const bridge=new TerminalLeaderboardBridge({frame,presence,origin:'http://local.test'});
   const event={origin:'http://local.test',source:contentWindow,data:{type:TERMINAL_LEADERBOARD_MESSAGES.request,requestId:4}};

@@ -513,7 +513,8 @@ export class BossController {
     const aimed=projectileVelocityToward(center,target,PLAYER_PROJECTILE_SPEED);
     if(!aimed)return false;
     const direction={x:aimed.x/PLAYER_PROJECTILE_SPEED,y:aimed.y/PLAYER_PROJECTILE_SPEED};
-    const visual=playerAttackVisual(this.scene.presence?.identity?.characterId);
+    const identity=this.scene.presence?.identity;
+    const visual=playerAttackVisual(identity?.characterBaseId??identity?.characterId);
     const origin=visual?playerAttackSpawn(player,visual,direction)
       :{x:center.x+direction.x*20,y:center.y+direction.y*20};
     const velocity=projectileVelocityToward(origin,target,PLAYER_PROJECTILE_SPEED);

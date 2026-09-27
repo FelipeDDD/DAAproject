@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { enterTerminal,exitTerminal,heartbeat,update,availability } from '../convex/players.js';
 import { Presence } from '../src/multiplayer/Presence.js';
 import { TerminalOverlayController } from '../src/terminal/TerminalOverlayController.js';
-import { TERMINAL_LEASE_MS } from '../src/multiplayer/presencePolicy.js';
+import { TERMINAL_LEASE_MS,isPlayerActive } from '../src/multiplayer/presencePolicy.js';
 
 function fixture(){
   const row={_id:'p',playerId:'felipe',characterId:'felipe',sessionId:'session-123456789',lastSeen:100_000,
@@ -19,7 +19,7 @@ test('terminal entry preserves visual state; exit clears ten-minute lease and re
   assert.equal(result.terminalLeaseExpiresAt,now+TERMINAL_LEASE_MS);
   assert.equal(row.room,'school');assert.equal(row.x,10);assert.equal(row.direction,'left');assert.equal(row.equippedSkin,'remastered');
   now+=70_000;
-  assert.equal((await availability._handler(ctx,{})).find(r=>r.characterId==='felipe').active,true);
+  assert.equal(isPlayerActive((await availability._handler(ctx,{})).players[0]),true);
   await heartbeat._handler(ctx,args);
   await update._handler(ctx,{...args,playerId:'felipe',name:'Felipe',room:'outside',x:999,y:999,direction:'down'});
   assert.equal(row.x,10);assert.equal(row.lastSeen,100_000);assert.equal(row.presenceMode,'terminal');

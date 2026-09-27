@@ -40,6 +40,7 @@ import { CharacterItemController } from '../inventory/CharacterItemController.js
 import { WorldPrompt,centeredMessageViewport } from '../ui/WorldPrompt.js';
 import { getGameHud } from '../hud/GameHudController.js';
 import { hasProfileSession } from '../ProfileSessionClient.js';
+import { applySmoothDecorativeTextureFilters } from '../maps/decorativeTextureFilters.js';
 import '../terminal/terminal.css';
 
 function readTileset(xml, firstgid) {
@@ -116,6 +117,12 @@ export class MapScene extends Phaser.Scene {
         if (!texture.has(i)) texture.add(i, 0, x, y, definition.tilewidth, definition.tileheight);
       }
       return map.addTilesetImage(definition.name, key);
+    });
+    applySmoothDecorativeTextureFilters({
+      tilesets: data.tilesets,
+      textureManager: this.textures,
+      textureKeyPrefix: `${this.mapKey}-tileset-`,
+      linearFilter: Phaser.Textures.FilterMode.LINEAR,
     });
     for (const [name, depth] of [['Floor', -2], ['Decoration', -1.5], ['Walls', -0.5]]) {
       if (map.getLayer(name)) map.createLayer(name, tilesets).setDepth(depth);
@@ -260,7 +267,7 @@ export class MapScene extends Phaser.Scene {
       this.soloStudy?.close();
       this.soloStudy=this.presence ? new SoloStudyController(this,this.presence,this.soloStudySeats) : null;
       this.emoteBar?.close();this.emoteSync?.close();this.emoteRenderer?.close();
-      this.emoteRenderer=this.presence ? new EmoteRenderer(this,this.mapKey,this.presence.identity.characterId,this.remotes) : null;
+      this.emoteRenderer=this.presence ? new EmoteRenderer(this,this.mapKey,this.presence.identity.playerId,this.remotes) : null;
       this.emoteSync=this.presence ? new EmoteSync(this.presence,this.mapKey,this.emoteRenderer) : null;
       this.emoteBar=this.presence ? new EmoteBar(this.presence.identity.characterId,emote=>this.emoteSync.trigger(emote)) : null;
       this.returnDestination = destination.returnDestination;

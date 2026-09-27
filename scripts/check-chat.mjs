@@ -10,7 +10,7 @@ const wait=async(predicate)=>{const until=Date.now()+10_000;while(!predicate()){
 const marker=`Teste de chat ${Date.now()}`;
 try{
   identity=await claimTestCharacter(a);
-  const author={characterId:identity.characterId,sessionId:identity.sessionId};
+  const author={playerId:identity.playerId,characterId:identity.characterId,sessionId:identity.sessionId};
   await a.mutation(api.players.update,{...identity,room:'school',x:800,y:750,direction:'down',activeCharacterItem:null});
   await a.mutation(api.messages.send,{...author,room:'school',text:marker});
   await wait(()=>school.some(m=>m.text===marker));

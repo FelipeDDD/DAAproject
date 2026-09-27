@@ -188,6 +188,16 @@ test('opening chat shows room history; peek shows only the latest messages',()=>
   }finally{h.restore();}
 });
 
+test('chat history attributes a profile message to displayName rather than its character base',()=>{
+  const h=setup();
+  try{
+    const chat=new RoomChat(h.scene,h.presence);
+    h.presence.receive([{_id:'alice-message',displayName:'Alice',characterName:'Michael',text:'Hello'}]);
+    assert.equal(h.nodes.get('chat-messages').children[0].children[0].textContent,'Alice: ');
+    chat.close();
+  }finally{h.restore();}
+});
+
 test('a rejected send keeps the message and its error visible for retry',async()=>{
   const h=setup(),previousWarn=console.warn;
   console.warn=()=>{};
@@ -245,5 +255,20 @@ test('new room messages trigger peek, pin persists, and reentry replaces old han
     const next=new RoomChat(h.scene,h.presence);
     assert.equal(next.visibility.state,'peek');assert.equal(h.listeners.size,2);
     next.close();assert.equal(h.listeners.size,0);
+  }finally{h.restore();}
+});
+
+test('pin can be toggled off while chat input is active and then hides normally',()=>{
+  const h=setup();
+  try{
+    const chat=new RoomChat(h.scene,h.presence),pin=h.nodes.get('chat-pin');
+    chat.openInput();
+    pin.events.get('click')();
+    assert.equal(chat.visibility.pinned,true);assert.equal(chat.visibility.state,'active');
+    pin.events.get('click')();
+    assert.equal(chat.visibility.pinned,false);assert.equal(chat.visibility.state,'peek');
+    assert.equal(chat.visibility.timer!==null,true);
+    assert.equal(chat.focused,false);
+    chat.close();
   }finally{h.restore();}
 });

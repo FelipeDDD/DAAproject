@@ -1,7 +1,8 @@
-import { CHARACTERS, CHARACTER_STORAGE_KEY } from './characters.js';
+import { CHARACTERS, CHARACTER_STORAGE_KEY, baseCharacterId } from './characters.js';
 import { characterVisual } from './characterVisuals.js';
 import { isPlayerActive } from './multiplayer/presencePolicy.js';
 import { createSessionId } from './playerIdentity.js';
+import { MAX_PLAYER_CAPACITY } from './multiplayer/playerCapacity.js';
 
 export const createCharacterSessionId=createSessionId;
 
@@ -13,7 +14,7 @@ export class CharacterMenu {
     this.message=document.getElementById('character-message');
     this.styleSelect=document.getElementById('character-style');this.style='old';
     this.styleSelect.value='old';this.styleSelect.closest('.character-style-control').hidden=true;
-    this.rows=[];this.ready=false;this.connectionFailed=false;this.closed=false;
+    this.rows=[];this.maxPlayers=MAX_PLAYER_CAPACITY;this.ready=false;this.connectionFailed=false;this.closed=false;
     let saved;try{saved=localStorage.getItem(CHARACTER_STORAGE_KEY);}catch{}
     this.cards=CHARACTERS.map(c=>{
       const button=document.createElement('button');button.className='character-card';
@@ -21,7 +22,7 @@ export class CharacterMenu {
       const name=document.createElement('strong');name.textContent=c.name;
       const state=document.createElement('span');
       button.append(image,name,state);button.addEventListener('click',()=>this.choose(c));
-      if(saved===c.id)button.classList.add('preferred');
+      if(baseCharacterId(saved)===c.id)button.classList.add('preferred');
       document.getElementById('character-list').append(button);
       return {c,button,image,state};
     });
@@ -38,8 +39,10 @@ export class CharacterMenu {
     const receiveRows=rows=>{
       if(this.closed||this.root.hidden||this.availabilitySubscription!==subscription)return;
       clearTimeout(this.connectionTimer);
-      this.rows=rows;this.ready=true;this.connectionFailed=false;this.render();
-      if(!this.pending)this.message.textContent='Choose an available character.';
+      this.rows=Array.isArray(rows)?rows:(rows?.players??[]);
+      this.maxPlayers=Number.isFinite(rows?.maxPlayers)?rows.maxPlayers:MAX_PLAYER_CAPACITY;
+      this.ready=true;this.connectionFailed=false;this.render();
+      if(!this.pending)this.message.textContent='Choose a character base.';
     };
     const showConnectionError=()=>{
       if(this.closed||this.root.hidden||this.availabilitySubscription!==subscription||this.ready)return;
@@ -58,10 +61,10 @@ export class CharacterMenu {
     this.render();
   }
   render(){
-    for(const {c,button,state}of this.cards){
-      const busy=this.rows.some(r=>r.characterId===c.id&&isPlayerActive(r));
-      button.disabled=!this.ready||this.pending||busy;
-      state.textContent=busy?'In use':this.ready?'Available':this.connectionFailed?'Offline':'Loading…';
+    const full=this.rows.filter(row=>isPlayerActive(row)).length>=this.maxPlayers;
+    for(const {button,state}of this.cards){
+      button.disabled=!this.ready||this.pending||full;
+      state.textContent=full?'Server full':this.ready?'Available':this.connectionFailed?'Offline':'Loading…';
     }
   }
   renderPreviews(){
@@ -74,7 +77,7 @@ export class CharacterMenu {
   setAuthentication(profile,token){
     this.mode='profile';this.profile=profile;this.authToken=token;this.guest=null;
     this.presence.profileSessionToken=token;
-    for(const {c,button}of this.cards)button.classList.toggle('preferred',c.id===profile.selectedCharacterId);
+    for(const {c,button}of this.cards)button.classList.toggle('preferred',c.id===baseCharacterId(profile.selectedCharacterId));
     document.getElementById('logout-profile-menu').textContent='Logout profile';
   }
   setGuestIdentity(guest){
@@ -88,15 +91,18 @@ export class CharacterMenu {
     try{
       const result=this.mode==='guest'
         ?await this.presence.client.mutation(this.presence.api.players.claimGuest,{
-          guestId:this.guest.guestId,characterId:c.id,sessionId:this.sessionId,
+          guestId:this.guest.guestId,characterBaseId:c.id,sessionId:this.sessionId,
         })
         :await this.presence.client.action(this.presence.api.profiles.claimCharacter,{
-          token:this.authToken,characterId:c.id,presenceSessionId:this.sessionId,
+          token:this.authToken,characterBaseId:c.id,presenceSessionId:this.sessionId,
         });
-      if(!result.ok){this.message.textContent='Another session just selected this character.';return;}
+      if(!result.ok){this.message.textContent=result.reason==='full'?'The player limit has been reached.':'Could not claim this character.';return;}
+      if(!result.playerId)throw new Error('Claim did not return a live player ID.');
       if(result.profile)this.profile=result.profile;
+      const displayName=this.mode==='guest'?c.name:result.profile.displayName;
       this.presence.identity={
-        kind:this.mode,playerId:c.id,characterId:c.id,name:c.name,sessionId:this.sessionId,
+        kind:this.mode,playerId:result.playerId,characterId:c.id,characterBaseId:baseCharacterId(c.id),
+        name:displayName,displayName,characterName:c.name,sessionId:this.sessionId,
         ...(this.mode==='guest'?{guestId:this.guest.guestId}:{profileId:result.profile.profileId}),
       };
       try{localStorage.setItem(CHARACTER_STORAGE_KEY,c.id);}catch{}

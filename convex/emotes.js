@@ -1,7 +1,9 @@
 import { internalMutationGeneric as internalMutation,mutationGeneric as mutation,queryGeneric as query } from 'convex/server';
 import { v } from 'convex/values';
 import { AVAILABLE_EMOTES,EMOTE_COOLDOWN_MS,EMOTE_DURATION_MS } from '../src/emotes/config.js';
-import { requireActivePlayer } from './playerSessions.js';
+import { findSessionPlayer } from './playerSessions.js';
+import { isPlayerActive } from '../src/multiplayer/presencePolicy.js';
+import { characterBaseIdFor } from '../src/characters.js';
 
 export const inRoom=query({
   args:{room:v.string()},
@@ -10,14 +12,16 @@ export const inRoom=query({
 });
 
 export const send=mutation({
-  args:{room:v.string(),characterId:v.string(),sessionId:v.string(),emote:v.string()},
+  args:{room:v.string(),playerId:v.string(),sessionId:v.string(),emote:v.string()},
   handler:async(ctx,args)=>{
-    const player=await requireActivePlayer(ctx,args.characterId,args.sessionId,args.room);
+    const player=await findSessionPlayer(ctx,undefined,args.playerId);
+    if(!player||player.playerId!==args.playerId||player.sessionId!==args.sessionId||player.room!==args.room||!isPlayerActive(player))
+      throw new Error('Invalid session or room.');
     if(!AVAILABLE_EMOTES.includes(args.emote))throw new Error('Invalid emote.');
     const now=Date.now();
-    const existing=await ctx.db.query('emoteEvents').withIndex('by_character',q=>q.eq('characterId',args.characterId)).unique();
+    const existing=await ctx.db.query('emoteEvents').withIndex('by_player',q=>q.eq('playerId',args.playerId)).unique();
     if(existing&&now-existing.createdAt<EMOTE_COOLDOWN_MS)throw new Error('EMOTE_COOLDOWN');
-    const event={characterId:player.characterId,playerId:player.playerId,room:player.room,emote:args.emote,createdAt:now};
+    const event={playerId:player.playerId,characterBaseId:characterBaseIdFor(player),room:player.room,emote:args.emote,createdAt:now};
     if(existing)await ctx.db.patch(existing._id,event);else await ctx.db.insert('emoteEvents',event);
     return event;
   },

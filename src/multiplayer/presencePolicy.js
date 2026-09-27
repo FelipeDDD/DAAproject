@@ -29,6 +29,10 @@ export function isPlayerActive(player, now = Date.now()) {
 }
 
 export function ownsCharacterSession(player, characterId, sessionId) {
-  return Boolean(player && player.playerId === characterId
-    && player.characterId === characterId && player.sessionId === sessionId);
+  return Boolean(player && player.characterId === characterId && player.sessionId === sessionId);
+}
+
+// Live identity plus ownership generation; slot validation remains separate during migration.
+export function ownsPlayerSession(player, playerId, sessionId) {
+  return Boolean(player && player.playerId === playerId && player.sessionId === sessionId);
 }

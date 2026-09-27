@@ -23,7 +23,7 @@ async function findProgress(ctx,profileId,bossId=DIRECTOR_BOSS_ID){
 }
 function storedProgress(progress,profile,now=Date.now()){
   return {
-    profileId:profile._id,characterId:profile.selectedCharacterId,bossId:progress.bossId,
+    profileId:profile._id,bossId:progress.bossId,
     wins:progress.wins,defeated:progress.defeated,rewards:progress.rewards,
     equippedSkin:progress.equippedSkin,updatedAt:now,
   };
@@ -64,7 +64,7 @@ export const recordVictory=mutation({
     const stored=storedProgress(progress,profile);
     if(previous)await ctx.db.replace(previous._id,stored);else await ctx.db.insert('bossProgress',stored);
     await ctx.db.insert('bossVictoryReceipts',{
-      victoryId:args.victoryId,profileId:profile._id,characterId:profile.selectedCharacterId,
+      victoryId:args.victoryId,profileId:profile._id,
       bossId:args.bossId,wins:progress.wins,outcome:outcome.type,
       rewardId:outcome.rewardId,createdAt:Date.now(),
     });

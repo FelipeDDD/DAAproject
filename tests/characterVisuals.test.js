@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { CHARACTERS,baseCharacterId } from '../src/characters.js';
+import { CHARACTERS,baseCharacterId,characterBaseIdFor } from '../src/characters.js';
 import {
   NEW_CHARACTER_FRAME,characterVisual,footBodyForVisual,idleFrame,normalizeCharacterStyle,
   preloadCharacterTextures,saveCharacterStyle,updateCharacterVisual,visualStyleForActiveItem,
@@ -12,6 +12,14 @@ const michael=CHARACTERS.find(character=>character.id==='michael');
 const sarina=CHARACTERS.find(character=>character.id==='sarina');
 const yassin=CHARACTERS.find(character=>character.id==='jassine');
 const felipe=CHARACTERS.find(character=>character.id==='felipe');
+
+test('character base identity maps original and synthetic slots and supports legacy rows',()=>{
+  assert.equal(baseCharacterId('felipe'),'felipe');
+  assert.equal(baseCharacterId('felipe-2'),'felipe');
+  assert.equal(baseCharacterId('michael-2'),'michael');
+  assert.equal(characterBaseIdFor({playerId:'michael-2',characterId:'michael-2'}),'michael');
+  assert.equal(characterBaseIdFor({characterId:'felipe-2',characterBaseId:'felipe'}),'felipe');
+});
 
 test('new character sheets expose four directions with fixed idle and walk frames',()=>{
   assert.deepEqual(['down','left','right','up'].map(idleFrame),[0,6,12,18]);
@@ -27,18 +35,15 @@ test('new style applies to all four character test spritesheets',()=>{
   assert.equal(normalizeCharacterStyle('unknown'),'old');
 });
 
-test('ten selectable slots keep unique identities while reusing the four existing visuals',()=>{
-  assert.equal(CHARACTERS.length,10);
-  assert.equal(new Set(CHARACTERS.map(character=>character.id)).size,10);
+test('the menu exposes only the four real character bases',()=>{
+  assert.equal(CHARACTERS.length,4);
+  assert.deepEqual(new Set(CHARACTERS.map(character=>character.id)),new Set(['michael','jassine','sarina','felipe']));
+  assert.ok(CHARACTERS.every(character=>!/-[23]$/.test(character.id)));
   assert.equal(new Set(CHARACTERS.map(character=>character.newVisual.previewAsset)).size,4);
-  for(const character of CHARACTERS){
-    const original=CHARACTERS.find(item=>item.id===baseCharacterId(character.id));
-    assert.equal(character.sprite,original.sprite);
-    assert.equal(character.newVisual.previewAsset,original.newVisual.previewAsset);
-  }
+  for(const character of CHARACTERS)assert.equal(baseCharacterId(character.id),character.id);
 });
 
-test('shared visuals are queued once when all ten slots preload',()=>{
+test('shared visuals are queued once for all four selectable bases',()=>{
   const loaded=[];
   const scene={textures:{exists:()=>false},load:{
     svg:key=>loaded.push(key),spritesheet:key=>loaded.push(key),

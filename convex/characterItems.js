@@ -2,6 +2,7 @@ import { mutationGeneric as mutation,queryGeneric as query } from 'convex/server
 import { v } from 'convex/values';
 import { requireSessionToken } from './profileStore.js';
 import { CHARACTER_ITEM_COOLDOWN_MS,canCharacterOwnItem,characterItemDefinition } from '../src/inventory/characterItems.js';
+import { baseCharacterId } from '../src/characters.js';
 
 async function authenticatedProfile(ctx,token){
   const {profile}=await requireSessionToken(ctx,token);
@@ -14,7 +15,7 @@ async function findItem(ctx,profileId,itemId){
 }
 function publicItem(item){
   if(!item)return null;
-  return {itemId:item.itemId,characterId:item.characterId,active:Boolean(item.active),
+  return {itemId:item.itemId,characterBaseId:item.characterBaseId??baseCharacterId(item.characterId),active:Boolean(item.active),
     cooldownUntil:item.cooldownUntil,updatedAt:item.updatedAt};
 }
 
@@ -31,10 +32,11 @@ export const claim=mutation({
   args:{token:v.string(),itemId:v.string()},
   handler:async(ctx,args)=>{
     const profile=await authenticatedProfile(ctx,args.token);
-    if(!canCharacterOwnItem(profile.selectedCharacterId,args.itemId))throw new Error('This character cannot collect that item.');
+    const characterBaseId=baseCharacterId(profile.selectedCharacterId);
+    if(!canCharacterOwnItem(characterBaseId,args.itemId))throw new Error('This character cannot collect that item.');
     const existing=await findItem(ctx,profile._id,args.itemId);
     if(existing)return {item:publicItem(existing),duplicate:true};
-    const item={profileId:profile._id,characterId:profile.selectedCharacterId,itemId:args.itemId,
+    const item={profileId:profile._id,characterBaseId,itemId:args.itemId,
       active:false,cooldownUntil:0,updatedAt:Date.now()};
     await ctx.db.insert('characterItems',item);
     return {item:publicItem(item),duplicate:false};
@@ -46,12 +48,12 @@ export const setActive=mutation({
   handler:async(ctx,args)=>{
     const profile=await authenticatedProfile(ctx,args.token);
     const definition=characterItemDefinition(args.itemId);
-    if(!definition?.activatable||!canCharacterOwnItem(profile.selectedCharacterId,args.itemId))throw new Error('This character cannot use that item.');
+    if(!definition?.activatable||!canCharacterOwnItem(baseCharacterId(profile.selectedCharacterId),args.itemId))throw new Error('This character cannot use that item.');
     const existing=await findItem(ctx,profile._id,args.itemId);
     if(!existing)throw new Error('Item has not been collected.');
     const now=Date.now();if(existing.cooldownUntil>now)throw new Error('Item is cooling down.');
     const next={active:args.active,cooldownUntil:now+CHARACTER_ITEM_COOLDOWN_MS,updatedAt:now,
-      characterId:profile.selectedCharacterId};
+      characterBaseId:baseCharacterId(profile.selectedCharacterId)};
     await ctx.db.patch(existing._id,next);
     return publicItem({...existing,...next});
   },

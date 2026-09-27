@@ -2,13 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { CHARACTER_ITEM_IDS,characterItemDefinition,normalizeCharacterItem } from '../src/inventory/characterItems.js';
+import { baseCharacterId } from '../src/characters.js';
 
 // Exercise the real controller with a minimal scene; Phaser's renderer needs a browser.
 const source=readFileSync(new URL('../src/inventory/CharacterItemController.js',import.meta.url),'utf8')
   .replace(/^import .*;\r?\n/gm,'').replace('export const ','const ').replace('export class ','class ');
-const Controller=new Function('Phaser','CHARACTER_ITEM_IDS','characterItemDefinition','normalizeCharacterItem','CharacterItemClient','ItemRewardOverlay',
+const Controller=new Function('Phaser','CHARACTER_ITEM_IDS','characterItemDefinition','normalizeCharacterItem','CharacterItemClient','ItemRewardOverlay','baseCharacterId',
   `${source}\nreturn CharacterItemController;`)(
-  {Animations:{Events:{ANIMATION_COMPLETE:'complete'}}},CHARACTER_ITEM_IDS,characterItemDefinition,normalizeCharacterItem,class {},class {destroy(){}});
+  {Animations:{Events:{ANIMATION_COMPLETE:'complete'}}},CHARACTER_ITEM_IDS,characterItemDefinition,normalizeCharacterItem,class {},class {destroy(){}},baseCharacterId);
 
 function fixture(){
   let finish;const animations=[];const visuals=[];

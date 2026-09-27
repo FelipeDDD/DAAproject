@@ -11,7 +11,7 @@ export const CHARACTER_ITEMS=Object.freeze({
   }),
   [CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000]:Object.freeze({
     itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000,type:'character_item',quantity:1,
-    allowedCharacter:'michael',name:'Lung Crusher 3000',
+    allowedCharacterBaseId:'michael',name:'Lung Crusher 3000',
     description:'A very large cigarette. Click to activate or deactivate.',
     icon:'assets/items/lung-crusher-slot-icon.png',presentationImage:'assets/items/lung-crusher-3000.png',
     activatable:true,useBehavior:'functional',
@@ -19,21 +19,21 @@ export const CHARACTER_ITEMS=Object.freeze({
 });
 
 export function characterItemDefinition(itemId){return CHARACTER_ITEMS[itemId]??null;}
-export function canCharacterOwnItem(characterId,itemId){
+export function canCharacterOwnItem(characterBaseId,itemId){
   const item=characterItemDefinition(itemId);
-  return Boolean(item&&(item.allowedCharacter===undefined||item.allowedCharacter===baseCharacterId(characterId)));
+  return Boolean(item&&(item.allowedCharacterBaseId===undefined||item.allowedCharacterBaseId===baseCharacterId(characterBaseId)));
 }
-export function normalizeCharacterItem(row,currentCharacterId=row?.characterId){
+export function normalizeCharacterItem(row,currentCharacterBaseId=row?.characterBaseId??row?.characterId){
   const item=characterItemDefinition(row?.itemId);
   if(!item)return null;
-  const selectedCharacterId=typeof currentCharacterId==='string'?currentCharacterId:row?.characterId;
-  const compatible=canCharacterOwnItem(selectedCharacterId,row.itemId);
-  return {...item,characterId:row.characterId,compatible,active:compatible&&Boolean(row.active),cooldownUntil:Math.max(0,Number(row.cooldownUntil)||0)};
+  const characterBaseId=typeof currentCharacterBaseId==='string'?baseCharacterId(currentCharacterBaseId):baseCharacterId(row?.characterBaseId??row?.characterId);
+  const compatible=canCharacterOwnItem(characterBaseId,row.itemId);
+  return {...item,characterBaseId,compatible,active:compatible&&Boolean(row.active),cooldownUntil:Math.max(0,Number(row.cooldownUntil)||0)};
 }
-export function characterInventoryItems(rows,characterId){
+export function characterInventoryItems(rows,characterBaseId){
   const unique=new Map();
   for(const row of rows??[]){
-    const item=normalizeCharacterItem(row,characterId);
+    const item=normalizeCharacterItem(row,characterBaseId);
     if(item&&!unique.has(item.itemId))unique.set(item.itemId,item);
   }
   return [...unique.values()];

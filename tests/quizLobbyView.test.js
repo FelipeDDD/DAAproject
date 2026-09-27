@@ -5,7 +5,7 @@ import { QuizLobby, QUIZ_TIMEOUT_MAX_ATTEMPTS,quizTimeoutRetryDelay,shouldConfir
 import { readQuizSettingsControls,topicsForQuizCategory } from '../src/quiz/QuizSettingsControls.js';
 import { PRESENCE_TIMEOUT_MS } from '../src/multiplayer/presencePolicy.js';
 
-test('menu expires cached active reservations locally without new Convex calls',t=>{
+test('menu counts active players toward capacity and recalculates expiry without Convex calls',t=>{
   const lastSeen=1_000_000;let now=lastSeen+PRESENCE_TIMEOUT_MS-1,tick,receive,subscriptions=0;
   t.mock.method(Date,'now',()=>now);
   t.mock.method(globalThis,'setInterval',(callback,delay)=>{
@@ -13,7 +13,7 @@ test('menu expires cached active reservations locally without new Convex calls',
   });
   const button={},state={};
   const menu=Object.assign(Object.create(CharacterMenu.prototype),{
-    root:{hidden:true},message:{textContent:''},cards:[{c:{id:'felipe'},button,state}],closed:false,
+    root:{hidden:true},message:{textContent:''},cards:[{c:{id:'felipe'},button,state}],closed:false,maxPlayers:1,
     presence:{api:{players:{availability:'availability'}},client:{
       onUpdate(_fn,_args,callback){subscriptions++;receive=callback;return()=>{};},
       mutation(){assert.fail('local expiry must not send mutations');},
@@ -21,15 +21,15 @@ test('menu expires cached active reservations locally without new Convex calls',
     }},
   });
   try{
-    menu.show();receive([{characterId:'felipe',active:true,lastSeen}]);
-    assert.equal(button.disabled,true);assert.equal(state.textContent,'In use');
+    menu.show();receive({maxPlayers:1,players:[{characterId:'felipe',lastSeen}]});
+    assert.equal(button.disabled,true);assert.equal(state.textContent,'Server full');
     now=lastSeen+PRESENCE_TIMEOUT_MS;tick();
     assert.equal(button.disabled,false);assert.equal(state.textContent,'Available');
-    assert.equal(menu.rows[0].active,true); // No server callback or cleanup changed the row.
+    assert.equal(menu.rows[0].lastSeen,lastSeen); // Local expiry does not mutate the cached snapshot.
     for(let i=0;i<10;i++)tick();
     assert.equal(subscriptions,1);
-    // A fresh heartbeat makes the card busy again through the existing subscription.
-    receive([{characterId:'felipe',active:true,lastSeen:now}]);
+    // A fresh heartbeat keeps the only available player counted at capacity.
+    receive({maxPlayers:1,players:[{characterId:'felipe',lastSeen:now}]});
     assert.equal(button.disabled,true);
   }finally{menu.close();}
 });
@@ -46,24 +46,25 @@ test('menu locally expires stationary reservations using the lease, not cached a
   let now=100_000;t.mock.method(Date,'now',()=>now);
   const button={},state={};
   const menu=Object.assign(Object.create(CharacterMenu.prototype),{
-    ready:true,cards:[{c:{id:'felipe'},button,state}],
-    rows:[{characterId:'felipe',active:true,presenceMode:'stationary',lastSeen:0,stationaryLeaseExpiresAt:200_000}],
+    ready:true,maxPlayers:1,cards:[{c:{id:'felipe'},button,state}],
+    rows:[{characterId:'felipe',presenceMode:'stationary',lastSeen:0,stationaryLeaseExpiresAt:200_000}],
   });
-  menu.render();assert.equal(button.disabled,true);assert.equal(state.textContent,'In use');
+  menu.render();assert.equal(button.disabled,true);assert.equal(state.textContent,'Server full');
   now=200_000;menu.render();assert.equal(button.disabled,false);assert.equal(state.textContent,'Available');
 });
 
 test('character selection sends a valid presence snapshot before the map loads',async()=>{
-  let snapshot;
+  let snapshot,claimArgs;
   const menu=Object.assign(Object.create(CharacterMenu.prototype),{
     sessionId:'session-123456789',render(){},message:{textContent:''},root:{hidden:false},
-    mode:'profile',authToken:'profile-token',presence:{api:{profiles:{claimCharacter:'claim'}},client:{action:async()=>({ok:true,profile:{profileId:'profile-id'}})},enter:(room,getState)=>{
+    mode:'profile',authToken:'profile-token',presence:{api:{profiles:{claimCharacter:'claim'}},client:{action:async(_fn,args)=>{claimArgs=args;return {ok:true,playerId:'live-profile-id',profile:{profileId:'profile-id',displayName:'Profile Player'}};}},enter:(room,getState)=>{
       assert.equal(room,'selection');snapshot=getState();
     }},onChoose(){},
   });
   await menu.choose({id:'felipe',name:'Felipe'});
+  assert.deepEqual(claimArgs,{token:'profile-token',characterBaseId:'felipe',presenceSessionId:'session-123456789'});
   assert.deepEqual(snapshot,{x:0,y:0,direction:'down',activeCharacterItem:null});
-  assert.equal(menu.presence.identity.kind,'profile');
+  assert.equal(menu.presence.identity.kind,'profile');assert.equal(menu.presence.identity.playerId,'live-profile-id');
 });
 
 test('guest character selection claims presence without a profile action',async()=>{
@@ -72,15 +73,15 @@ test('guest character selection claims presence without a profile action',async(
     mode:'guest',guest:{guestId:'guest-temporary-identity-123456'},sessionId:'session-123456789',
     render(){},message:{textContent:''},root:{hidden:false},
     presence:{api:{players:{claimGuest:'claim-guest'}},client:{
-      mutation:async(_fn,args)=>{claimArgs=args;return {ok:true};},
+      mutation:async(_fn,args)=>{claimArgs=args;return {ok:true,playerId:'live-guest-id'};},
       action:async()=>assert.fail('guest selection must not use a profile action'),
     },enter(){}},onChoose(){},
   });
   await menu.choose({id:'sarina',name:'Sarina'});
   assert.deepEqual(claimArgs,{
-    guestId:'guest-temporary-identity-123456',characterId:'sarina',sessionId:'session-123456789',
+    guestId:'guest-temporary-identity-123456',characterBaseId:'sarina',sessionId:'session-123456789',
   });
-  assert.equal(menu.presence.identity.kind,'guest');
+  assert.equal(menu.presence.identity.kind,'guest');assert.equal(menu.presence.identity.playerId,'live-guest-id');
   assert.equal(menu.presence.identity.profileId,undefined);
 });
 
@@ -112,7 +113,7 @@ function expiredQuizClient({seated=true,participants=['felipe']}={}){
     seated,room:'school',selectedAnswer:2,render(){},
     lobby:{status:'starting',participants,question:{id:'expired-question'},questionDeadline:0,allAnswered:false},
     timerElement:{classList:{toggle(){}}},
-    presence:{identity:{characterId:'felipe',sessionId:'session-123456789'},
+    presence:{identity:{playerId:'felipe',characterId:'felipe',sessionId:'session-123456789'},
       api:{quizLobbies:{finishTimedQuestion:'finish'}},
       client:{async mutation(name,args){calls.push({name,args});return {answerIndex:args.answerIndex};}}},
   });
@@ -132,7 +133,7 @@ test('unseated or nonparticipant clients never finalize expired multiplayer ques
 test('seated participant finalizes timeout with the selected answer and does not repeat success',async()=>{
   const {quiz,calls}=expiredQuizClient();
   quiz.updateTimer();await new Promise(resolve=>setImmediate(resolve));
-  assert.deepEqual(calls,[{name:'finish',args:{room:'school',characterId:'felipe',sessionId:'session-123456789',answerIndex:2}}]);
+  assert.deepEqual(calls,[{name:'finish',args:{room:'school',playerId:'felipe',sessionId:'session-123456789',answerIndex:2}}]);
   assert.equal(quiz.confirmedAnswer,2);
   for(let tick=0;tick<40;tick++)quiz.updateTimer();
   assert.equal(calls.length,1);
@@ -153,7 +154,7 @@ test('quiz timeout retries back off and stop until the player retries explicitly
   let calls=0;
   const quiz=Object.assign(Object.create(QuizLobby.prototype),{
     seated:true,room:'school',lobby:{status:'starting',participants:['felipe'],question:{id:'question-1'}},render(){},
-    presence:{identity:{characterId:'felipe',sessionId:'session-123456789'},
+    presence:{identity:{playerId:'felipe',characterId:'felipe',sessionId:'session-123456789'},
       api:{quizLobbies:{finishTimedQuestion:'finish'}},client:{async mutation(){calls++;throw new Error('persistent failure');}}},
     questionHasExpired(){return true;},
   });
@@ -178,22 +179,44 @@ test('quiz timeout retries back off and stop until the player retries explicitly
 });
 
 test('start button follows the current host and lobby status',()=>{
-  const lobby={status:'lobby',hostCharacterId:'michael'};
+  const lobby={status:'lobby',hostPlayerId:'michael'};
   assert.equal(shouldShowStartButton(lobby,'michael'),true);
   assert.equal(shouldShowStartButton(lobby,'felipe'),false);
-  lobby.hostCharacterId='felipe';
+  lobby.hostPlayerId='felipe';
   assert.equal(shouldShowStartButton(lobby,'michael'),false);
   assert.equal(shouldShowStartButton(lobby,'felipe'),true);
   lobby.status='starting';
   assert.equal(shouldShowStartButton(lobby,'felipe'),false);
 });
 
+test('participant list labels live players separately even when they share a class',()=>{
+  const previousDocument=globalThis.document;
+  globalThis.document={createElement:()=>({textContent:''})};
+  try{
+    const items=[];
+    const quiz=Object.assign(Object.create(QuizLobby.prototype),{
+      seated:true,root:{hidden:false},list:{replaceChildren(...rows){items.push(...rows);}},
+      lobby:{status:'lobby',hostPlayerId:'live-a',participants:['live-a','live-b'],
+        participantDetails:[
+          {playerId:'live-a',characterBaseId:'michael',displayName:'Alice'},
+          {playerId:'live-b',characterBaseId:'michael',displayName:'Bob'},
+        ]},
+      presence:{identity:{playerId:'live-a'}},pending:false,pendingSettings:false,
+      renderSettings(){},renderQuestion(){},updateTimer(){},renderResults(){},
+      startButton:{},nextButton:{},leaveButton:{},cancelLeaveButton:{},status:{},
+    });
+    quiz.render();
+    assert.deepEqual(items.map(row=>row.textContent),['Alice (host)','Bob']);
+    assert.equal(quiz.startButton.hidden,false);
+  }finally{globalThis.document=previousDocument;}
+});
+
 test('changed quiz settings are captured before realtime rendering restores old values',async()=>{
   let sent;
   const quiz=Object.assign(Object.create(QuizLobby.prototype),{
-    pendingSettings:false,lobby:{status:'lobby',hostCharacterId:'michael'},room:'school',
+    pendingSettings:false,lobby:{status:'lobby',hostPlayerId:'michael'},room:'school',
     categorySelect:{value:'Hardware'},difficultySelect:{value:'hard'},quantitySelect:{value:'10'},
-    presence:{identity:{characterId:'michael',sessionId:'session-123456789'},client:{
+    presence:{identity:{playerId:'michael',characterId:'michael',sessionId:'session-123456789'},client:{
       async mutation(_name,args){sent=args;},
     },api:{quizLobbies:{configure:'configure'}}},
     isHost(){return true;},
@@ -204,7 +227,7 @@ test('changed quiz settings are captured before realtime rendering restores old 
   });
   await quiz.updateSettings();
   assert.deepEqual(sent,{
-    room:'school',characterId:'michael',sessionId:'session-123456789',
+    room:'school',playerId:'michael',sessionId:'session-123456789',
     category:'Hardware',topic:null,difficulty:'hard',count:10,
   });
 });
@@ -234,7 +257,8 @@ test('first leave request asks for confirmation and the second leaves',async()=>
   let mutations=0;
   const quiz=Object.assign(Object.create((await import('../src/QuizLobby.js')).QuizLobby.prototype),{
     seated:true,pending:false,confirmingLeave:false,lobby:{status:'starting'},room:'school',
-    presence:{identity:{characterId:'michael',sessionId:'session-123456789'},client:{
+    scene:{player:{body:{x:10,y:20},facing:'down'}},
+    presence:{identity:{playerId:'michael',characterId:'michael',sessionId:'session-123456789'},client:{
       async mutation(){mutations++;},
     },api:{quizLobbies:{leave:'leave'}}},
     render(){},standLocally(){this.seated=false;this.confirmingLeave=false;},status:{textContent:''},
@@ -247,12 +271,62 @@ test('first leave request asks for confirmation and the second leaves',async()=>
   assert.equal(mutations,1);
 });
 
+test('confirmed leave closes local quiz UI before the leave mutation resolves',async()=>{
+  let resolveMutation,argsSent,receiveCurrent;
+  const body={x:120,y:240,reset(x,y){this.x=x;this.y=y;}};
+  const quiz=Object.assign(Object.create(QuizLobby.prototype),{
+    seated:true,pending:false,confirmingLeave:true,lobby:{status:'starting',participants:['live-player'],seatAssignments:[{playerId:'live-player',seatId:'seat-1'}]},
+    room:'school',closed:false,root:{hidden:false},status:{textContent:''},scene:{player:{body,facing:'left'}},
+    presence:{identity:{playerId:'live-player',sessionId:'session-current'},client:{
+      mutation(_fn,args){argsSent=args;return new Promise(resolve=>{resolveMutation=resolve;});},
+      onUpdate(_fn,_args,callback){receiveCurrent=callback;return()=>{};},
+    },api:{quizLobbies:{leave:'leave',current:'current'}}},
+    standLocally(){this.seated=false;this.root.hidden=true;this.confirmingLeave=false;},
+    render(){},
+  });
+  quiz.subscribeCurrent();
+  const leaving=quiz.leave();
+  assert.equal(quiz.seated,false);
+  assert.equal(quiz.root.hidden,true);
+  assert.equal(quiz.pending,true);
+  assert.deepEqual(argsSent,{room:'school',playerId:'live-player',sessionId:'session-current'});
+  resolveMutation();
+  assert.equal(await leaving,true);
+  receiveCurrent({status:'starting',participants:['live-player'],seatAssignments:[{playerId:'live-player',seatId:'seat-1'}]});
+  assert.equal(quiz.seated,false);
+  assert.equal(quiz.root.hidden,true);
+  assert.equal(quiz.pending,false);
+});
+
+test('failed leave restores the seat only while the latest lobby still contains this session player',async()=>{
+  for(const stillParticipant of [true,false]){
+    let receiveCurrent;
+    const body={x:120,y:240,reset(x,y){this.x=x;this.y=y;}};
+    const quiz=Object.assign(Object.create(QuizLobby.prototype),{
+      seated:true,pending:false,confirmingLeave:true,lobby:{status:'lobby',participants:['live-player']},room:'school',
+      closed:false,root:{hidden:false},status:{textContent:''},scene:{player:{body,facing:'left'}},
+      presence:{identity:{playerId:'live-player',sessionId:'session-current'},client:{
+        onUpdate(_fn,_args,callback){receiveCurrent=callback;return()=>{};},
+        async mutation(){
+        if(!stillParticipant)receiveCurrent({status:'lobby',participants:[]});
+        throw new Error('request failed');
+      }},api:{quizLobbies:{leave:'leave',current:'current'}}},
+      standLocally(){this.seated=false;this.root.hidden=true;this.confirmingLeave=false;},render(){},
+    });
+    quiz.subscribeCurrent();
+    assert.equal(await quiz.leave(),false);
+    assert.equal(quiz.seated,stillParticipant);
+    assert.equal(quiz.root.hidden,!stillParticipant);
+    if(stillParticipant)assert.deepEqual([body.x,body.y],[120,240]);
+  }
+});
+
 test('joining renders once more after pending clears so Leave lobby is enabled',async()=>{
   const renderedPending=[];
   const quiz=Object.assign(Object.create((await import('../src/QuizLobby.js')).QuizLobby.prototype),{
     pending:false,seated:false,seatPrompt:{setVisible(){}},status:{textContent:''},root:{hidden:true},
     nearbySeat(){return {seatX:100,seatY:120,direction:'down'};},
-    presence:{identity:{characterId:'michael',sessionId:'session-123456789'},client:{
+    presence:{identity:{playerId:'michael',characterId:'michael',sessionId:'session-123456789'},client:{
       async mutation(){return {seatX:100,seatY:120,direction:'down'};},
     },api:{quizLobbies:{join:'join'}}},room:'school',
     scene:{player:{body:{reset(){}},setFlipX(){},setVelocity(){},facing:'down'}},

@@ -78,3 +78,21 @@ test('chat message displays a www URL unchanged and adds HTTPS to its href',()=>
     {type:'text',textContent:' today'},
   ]);
 });
+
+
+test('chat validates an independent live ID with session ownership',async()=>{
+  const ctx=context({playerId:'independent-live-id'});
+  await send._handler(ctx,{...args,playerId:'independent-live-id'});
+  assert.equal(ctx.inserted.length,1);
+  assert.equal(ctx.inserted[0].authorPlayerId,'independent-live-id');
+  assert.equal(ctx.inserted[0].displayName,'Michael');
+  assert.equal(ctx.inserted[0].characterBaseId,'michael');
+  await assert.rejects(send._handler(ctx,{...args,playerId:'wrong-live-id'}),/Invalid session/);
+});
+
+test('chat attribution uses profile displayName and keeps the selected class name separate',async()=>{
+  const ctx=context({playerId:'live-alice',profileId:'profiles:alice',displayName:'Alice',name:'Alice',characterId:'michael',characterBaseId:'michael'});
+  await send._handler(ctx,{...args,playerId:'live-alice'});
+  assert.equal(ctx.inserted[0].displayName,'Alice');
+  assert.equal(ctx.inserted[0].characterName,'Michael');
+});

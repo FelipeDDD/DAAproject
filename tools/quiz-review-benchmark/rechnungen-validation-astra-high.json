@@ -1,0 +1,2204 @@
+{
+  "schema_version": 1,
+  "source_file": "quiz-data/rechnungen.csv",
+  "validation_model": "Astra High",
+  "validations": [
+    {
+      "id": "rechnungen-001",
+      "verdict": "APPROVE",
+      "reason": "Recálculo: 200 × 1,10 = 220 €, somente a alternativa de índice 1. As outras opções confundem aumento absoluto ou redução; explicação suficiente e nível medium adequado."
+    },
+    {
+      "id": "rechnungen-002",
+      "verdict": "APPROVE",
+      "reason": "O desconto é 300 × 0,20 = 60 € e o preço final é 240 €, índice 0. Enunciado distingue preço final de desconto; as quatro quantias são distintas. Manter medium."
+    },
+    {
+      "id": "rechnungen-004",
+      "verdict": "APPROVE",
+      "reason": "Preço unitário constante explicitado: 40 / 5 = 8 € e 8 × 8 = 64 €, índice 2. Unidade e explicação corretas; nenhum distrator coincide com o resultado."
+    },
+    {
+      "id": "rechnungen-005",
+      "verdict": "APPROVE",
+      "reason": "A taxa é fornecida no enunciado: 100 × 1,19 = 119 €, índice 1. Não há arredondamento nem outra alternativa correta; a simplicidade não exige mudar medium."
+    },
+    {
+      "id": "rechnungen-006",
+      "verdict": "APPROVE",
+      "reason": "400 × 0,15 = 60 €, índice 2. A pergunta solicita expressamente o desconto, não os 340 € restantes; explicação e alternativas coerentes."
+    },
+    {
+      "id": "rechnungen-007",
+      "verdict": "APPROVE",
+      "reason": "A proposta elimina a ambiguidade entre duração e trabalho acumulado ao dizer jeweils e Personenstunden. 3 × 12 = 36 pessoas-hora, índice 2; os demais valores são incorretos. Manter medium."
+    },
+    {
+      "id": "rechnungen-008",
+      "verdict": "APPROVE",
+      "reason": "25 / 500 × 100 = 5 %, índice 1. As quatro porcentagens são distintas e a base é inequívoca; explicação correta, embora curta."
+    },
+    {
+      "id": "rechnungen-010",
+      "verdict": "REVISE",
+      "reason": "A original praticamente repete Abzug na resposta e usa dobrar o preço como distrator. A aplicação inversa preserva a interpretação do desconto e exige identificar corretamente a base percentual.",
+      "recommended_final_question": {
+        "id": "rechnungen-010",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Nach Abzug von 20 % Rabatt kostet ein Monitor 160 €. Wie hoch war der Preis vor dem Rabatt?",
+        "answer1": "200 €",
+        "answer2": "192 €",
+        "answer3": "128 €",
+        "answer4": "180 €",
+        "correctAnswer": 0,
+        "explanation": "160 € entsprechen 80 % des ursprünglichen Preises. 160 € / 0,80 = 200 €. Der Rabatt beträgt 40 €. 20 % auf den Endpreis aufzuschlagen wäre falsch.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-011",
+      "verdict": "APPROVE",
+      "reason": "A proposta mantém como critério a atribuição direta ao Auftrag, sem confundir Einzelkosten com custos variáveis. As opções contrapõem atribuição, comportamento e momento do custo; a definição e o exemplo são corretos."
+    },
+    {
+      "id": "rechnungen-012",
+      "verdict": "APPROVE",
+      "reason": "A proposta identifica a distribuição dos Gemeinkosten por uma chave apropriada, índice 1. Não afirma que todo Gemeinkosten seja fixo ou variável; enunciado e explicação sustentam uma única resposta geral."
+    },
+    {
+      "id": "rechnungen-013",
+      "verdict": "APPROVE",
+      "reason": "A proposta situa a definição em um período e a explicação limita sua validade ao intervalo considerado. A constância dos custos totais frente à quantidade está correta; não se afirma constância do custo fixo por unidade."
+    },
+    {
+      "id": "rechnungen-014",
+      "verdict": "APPROVE",
+      "reason": "O material de cada aparelho adicional varia com a produção, índice 2. Aluguel, taxa anual básica e instalação única representam custos distintos e plausíveis do mesmo contexto; a proposta melhora a original."
+    },
+    {
+      "id": "rechnungen-015",
+      "verdict": "REVISE",
+      "reason": "A original repete 011 e contrapõe atribuição a pagamento e reembolso, além de usar Ausgabe como sinônimo de custo. Um caso de atribuição direta testa o conceito sem repetir sua definição.",
+      "recommended_final_question": {
+        "id": "rechnungen-015",
+        "category": "Rechnungen",
+        "topic": "Kostenbegriffe",
+        "difficulty": "medium",
+        "question": "Welche Kosten können einem bestimmten Kundenauftrag direkt zugerechnet werden?",
+        "answer1": "Eine Softwarelizenz, die ausschließlich für diesen Auftrag gekauft wird",
+        "answer2": "Die Miete für das gemeinsam genutzte Büro",
+        "answer3": "Die Stromkosten des gemeinsam genutzten Servers",
+        "answer4": "Die Kosten der Buchhaltung für alle Aufträge",
+        "correctAnswer": 0,
+        "explanation": "Die ausschließlich für den Auftrag gekaufte Lizenz ist direkt zurechenbar. Die gemeinsam genutzten Leistungen müssen nach einem geeigneten Schlüssel auf die Aufträge verteilt werden.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-016",
+      "verdict": "REVISE",
+      "reason": "A definição repete 012, e apagar custos ou registrá-los como lucro são distratores frágeis. A distribuição proporcional abaixo aplica o mesmo objetivo: 1.200 × 30 / 120 = 300 €.",
+      "recommended_final_question": {
+        "id": "rechnungen-016",
+        "category": "Rechnungen",
+        "topic": "Kostenbegriffe",
+        "difficulty": "medium",
+        "question": "Serverkosten von 1.200 € werden nach Nutzungsstunden auf Projekte umgelegt. Insgesamt wurden 120 Stunden erfasst, davon 30 Stunden für Projekt A. Welcher Betrag entfällt auf Projekt A?",
+        "answer1": "300 €",
+        "answer2": "400 €",
+        "answer3": "10 €",
+        "answer4": "1.200 €",
+        "correctAnswer": 0,
+        "explanation": "Projekt A nutzt 30 / 120 = 25 % der Stunden. Sein Kostenanteil beträgt 1.200 € × 0,25 = 300 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-019",
+      "verdict": "APPROVE",
+      "reason": "No modelo de custos usual, a cobertura de todos os custos corresponde aos Selbstkosten, índice 0. Custos materiais, custos variáveis e preço de lista são distinções relevantes; explicação suficiente."
+    },
+    {
+      "id": "rechnungen-020",
+      "verdict": "APPROVE",
+      "reason": "Herstellkosten reúne Materialkosten e Fertigungskosten, índice 1. As demais alternativas representam parcelas, Selbstkosten com lucro ou administração e vendas; a distinção conceitual é válida."
+    },
+    {
+      "id": "rechnungen-022",
+      "verdict": "REVISE",
+      "reason": "A original deixa implícito de qual grandeza e de qual unidade se subtraem os custos. O novo caso explicita preço e custos por unidade e evita os distratores desconexos sobre dobrar custos fixos.",
+      "recommended_final_question": {
+        "id": "rechnungen-022",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Gerät wird für 120 € verkauft. Nach Abzug der variablen Stückkosten von 70 € verbleibt welcher Betrag zur Deckung der Fixkosten?",
+        "answer1": "50 € je Gerät",
+        "answer2": "70 € je Gerät",
+        "answer3": "120 € je Gerät",
+        "answer4": "190 € je Gerät",
+        "correctAnswer": 0,
+        "explanation": "Der Stückdeckungsbeitrag beträgt 120 € − 70 € = 50 €. Dieser Betrag steht zur Deckung der Fixkosten zur Verfügung.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-023",
+      "verdict": "REVISE",
+      "reason": "A original repete 025 e não verifica a diferença entre contribuição positiva e lucro. A aplicação mostra que um Deckungsbeitrag positivo pode coexistir com prejuízo: 20 × 100 − 2.500 = −500 €.",
+      "recommended_final_question": {
+        "id": "rechnungen-023",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Produkt erzielt 20 € Deckungsbeitrag je Stück. Im Monat werden 100 Stück verkauft; die monatlichen Fixkosten betragen 2.500 €. Wie hoch ist das Betriebsergebnis?",
+        "answer1": "−500 €",
+        "answer2": "500 €",
+        "answer3": "2.000 €",
+        "answer4": "4.500 €",
+        "correctAnswer": 0,
+        "explanation": "Der Gesamtdeckungsbeitrag beträgt 20 € × 100 = 2.000 €. Nach Abzug der Fixkosten bleiben 2.000 € − 2.500 € = −500 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-024",
+      "verdict": "APPROVE",
+      "reason": "Stückdeckungsbeitrag × Absatzmenge ergibt den Gesamtdeckungsbeitrag, índice 1. As outras fórmulas confundem custos fixos, preço e Selbstkosten; original e explicação são corretas."
+    },
+    {
+      "id": "rechnungen-025",
+      "verdict": "APPROVE",
+      "reason": "DB I positivo significa que resta valor após os custos variáveis para cobrir custos fixos, índice 0. Não garante lucro nem cobertura integral; os distratores testam essas confusões. Manter a original."
+    },
+    {
+      "id": "rechnungen-028",
+      "verdict": "APPROVE",
+      "reason": "Gewinnschwelle é a tradução técnica correta e única entre as opções, índice 1. Há sobreposição com 027, mas reconhecer o termo alemão tem objetivo próprio; a redundância isolada não justifica reescrita."
+    },
+    {
+      "id": "rechnungen-029",
+      "verdict": "REVISE",
+      "reason": "A original equipara início de lucro positivo ao ponto em que o resultado é zero. A nova versão distingue esses limites e evita sugerir que a quantidade exata de equilíbrio já produz lucro.",
+      "recommended_final_question": {
+        "id": "rechnungen-029",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Service erzielt 30 € Deckungsbeitrag je Kunde und Monat. Die monatlichen Fixkosten betragen 9.000 €. Ab welcher ganzen Kundenzahl entsteht erstmals ein positiver Monatsgewinn?",
+        "answer1": "301 Kunden",
+        "answer2": "300 Kunden",
+        "answer3": "299 Kunden",
+        "answer4": "330 Kunden",
+        "correctAnswer": 0,
+        "explanation": "9.000 € / 30 € = 300 Kunden decken die Fixkosten genau. Erst bei 301 Kunden entsteht ein positiver Gewinn von 30 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-030",
+      "verdict": "REVISE",
+      "reason": "A definição repete 027 e 075; os distratores sobre lucro máximo e inexistência de custos não competem. O caso distingue resultado zero de receita zero usando valores concretos.",
+      "recommended_final_question": {
+        "id": "rechnungen-030",
+        "category": "Rechnungen",
+        "topic": "Break-Even",
+        "difficulty": "medium",
+        "question": "Ein Betrieb erzielt 4.000 € Erlöse. Die variablen Kosten betragen 2.500 €, die Fixkosten 1.500 €. Welche Aussage ist richtig?",
+        "answer1": "Das Betriebsergebnis beträgt 0 €. Alle Kosten sind gedeckt.",
+        "answer2": "Das Betriebsergebnis beträgt 1.500 €. Die Fixkosten sind Gewinn.",
+        "answer3": "Das Betriebsergebnis beträgt 2.500 €. Nur Fixkosten werden abgezogen.",
+        "answer4": "Das Betriebsergebnis beträgt 4.000 €. Die Erlöse sind der Gewinn.",
+        "correctAnswer": 0,
+        "explanation": "Gesamtkosten: 2.500 € + 1.500 € = 4.000 €. Das Betriebsergebnis ist 4.000 € − 4.000 € = 0 €. Es entstehen weder Gewinn noch Verlust.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-031",
+      "verdict": "APPROVE",
+      "reason": "A unidade Stück evita confundir segurança absoluta e percentual: 500 − 400 = 100 peças, índice 0. A proposta melhora os distratores e a explicação; manter medium."
+    },
+    {
+      "id": "rechnungen-032",
+      "verdict": "APPROVE",
+      "reason": "Ertrag / Aufwand é a relação correta. Os outros quocientes testam inversão, ROI e receita unitária, com estrutura comparável; melhora substantiva em relação à original."
+    },
+    {
+      "id": "rechnungen-033",
+      "verdict": "APPROVE",
+      "reason": "No contexto didático da Wirtschaftlichkeitsrechnung, o valor monetário da prestação obtida é adequado para Ertrag. As alternativas distinguem uso de recursos, resultado e caixa; a proposta evita equiparar Ertrag a lucro."
+    },
+    {
+      "id": "rechnungen-034",
+      "verdict": "APPROVE",
+      "reason": "A proposta substitui a equivalência imprecisa entre Aufwand e Kosten pelo consumo de recursos e serviços avaliado em dinheiro. Distingue corretamente Ertrag, resultado e liquidez; uma única resposta."
+    },
+    {
+      "id": "rechnungen-036",
+      "verdict": "APPROVE",
+      "reason": "Ertrag / Aufwand = 1 implica igualdade das grandezas, opção 0. A proposta troca os distratores alheios ao conceito por interpretações da relação e mantém medium."
+    },
+    {
+      "id": "rechnungen-037",
+      "verdict": "APPROVE",
+      "reason": "0,80 significa Ertrag = 80 % do Aufwand, portanto 20 % abaixo dele. Não significa Aufwand 20 % menor que Ertrag; a base percentual está correta e a proposta tem resposta única."
+    },
+    {
+      "id": "rechnungen-039",
+      "verdict": "REJECT",
+      "reason": "A original testa reconhecer Arbeitsproduktivität pela relação entre tickets e colaboradores, índice 2; 600 / 5 = 120 confirma a unidade. A proposta é correta, mas troca esse objetivo por uma divisão já coberta em 081. Preservar a original oferece melhor variedade pedagógica."
+    },
+    {
+      "id": "rechnungen-040",
+      "verdict": "APPROVE",
+      "reason": "As fórmulas propostas distinguem relação monetária e produção por colaborador. Só a opção 0 combina as duas corretamente; distratores de inversão e troca de indicadores são melhores que os da original."
+    },
+    {
+      "id": "rechnungen-042",
+      "verdict": "APPROVE",
+      "reason": "No contexto apresentado, compra e preparação inicial do servidor para uso pertencem à aquisição, enquanto energia e suporte recorrente pertencem ao funcionamento. A proposta torna comparáveis as quatro combinações e tem resposta única."
+    },
+    {
+      "id": "rechnungen-043",
+      "verdict": "APPROVE",
+      "reason": "Energia e taxas recorrentes de serviços usados na operação são Betriebskosten; aquisição, instalação e descarte não formam esse par. A proposta mantém custos do mesmo domínio em todas as opções e melhora a discriminação."
+    },
+    {
+      "id": "rechnungen-044",
+      "verdict": "REVISE",
+      "reason": "Original e proposta tratam reparações genericamente como Wartung. Para precisão técnica, é melhor distinguir manutenção preventiva de reparação após falha e de operação, preservando o objetivo de classificar custos.",
+      "recommended_final_question": {
+        "id": "rechnungen-044",
+        "category": "Rechnungen",
+        "topic": "TCO",
+        "difficulty": "medium",
+        "question": "Welche Kosten entstehen bei der vorbeugenden Wartung eines Servers?",
+        "answer1": "Kosten für die regelmäßige Reinigung der Lüfter",
+        "answer2": "Kosten für den Austausch eines bereits ausgefallenen Netzteils",
+        "answer3": "Kosten für den Stromverbrauch im Normalbetrieb",
+        "answer4": "Kosten für die erstmalige Installation des Betriebssystems",
+        "correctAnswer": 0,
+        "explanation": "Die regelmäßige Reinigung dient dazu, Ausfälle zu vermeiden, und zählt zur Wartung. Der Austausch nach einem Defekt ist eine Instandsetzung. Strom und Erstinstallation gehören zu anderen Kostenarten.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-045",
+      "verdict": "APPROVE",
+      "reason": "A proposta distingue cinco anos de uso, três de garantia e duas semanas de entrega. Só cinco anos é o horizonte informado para a TCO, índice 2; não é preciso inventar um cálculo para esse objetivo."
+    },
+    {
+      "id": "rechnungen-047",
+      "verdict": "APPROVE",
+      "reason": "No ROI simples solicitado, o investimento de 80.000 € é a base, índice 1; 12.000 € é lucro e 100.000 € é receita. O ROI resultante seria 15 %, confirmando a distinção sem exigir esse cálculo adicional."
+    },
+    {
+      "id": "rechnungen-048",
+      "verdict": "REVISE",
+      "reason": "30.000 / 10.000 = 3 anos está correto na proposta, mas suas alternativas misturam duração, receita e lucro, revelando a resposta pela grandeza. Preservar o cenário com quatro durações plausíveis.",
+      "recommended_final_question": {
+        "id": "rechnungen-048",
+        "category": "Rechnungen",
+        "topic": "ROI-Amortisation",
+        "difficulty": "medium",
+        "question": "Eine Anlage kostet 30.000 €. Der jährliche Rückfluss beträgt gleichbleibend 10.000 €. Wie lange dauert die statische Amortisation?",
+        "answer1": "3 Jahre",
+        "answer2": "0,33 Jahre",
+        "answer3": "2 Jahre",
+        "answer4": "30 Jahre",
+        "correctAnswer": 0,
+        "explanation": "Statische Amortisationsdauer = Anfangsinvestition / jährlicher Rückfluss = 30.000 € / 10.000 € pro Jahr = 3 Jahre. Zinsen werden bei dieser einfachen Rechnung nicht berücksichtigt.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-049",
+      "verdict": "APPROVE",
+      "reason": "A proposta calcula 8.000 − 2.000 = 6.000 € anuais, índice 1, no modelo simples de economia líquida apresentado. As opções representam custo isolado, economia bruta e soma incorreta; melhora a definição circular original."
+    },
+    {
+      "id": "rechnungen-051",
+      "verdict": "REVISE",
+      "reason": "Beträgt é apenas repetido como liegt bei, e metade dos distratores não representa leitura plausível de um preço. O novo item usa a expressão numa quantidade comercial sem elevar a dificuldade linguística.",
+      "recommended_final_question": {
+        "id": "rechnungen-051",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Der Verkaufspreis eines Monitors beträgt 120 €. Ein Kunde bestellt drei Monitore. Wie hoch ist der Gesamtpreis ohne weitere Kosten oder Rabatte?",
+        "answer1": "360 €",
+        "answer2": "123 €",
+        "answer3": "120 €",
+        "answer4": "40 €",
+        "correctAnswer": 0,
+        "explanation": "Drei Monitore zu je 120 € kosten 3 × 120 € = 360 €. Der angegebene Preis gilt für einen Monitor.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-052",
+      "verdict": "APPROVE",
+      "reason": "Mindestens 200 inclui 200 e qualquer quantidade maior, índice 2. As opções testam exatamente igualdade, limite superior e limite inferior; o objetivo de leitura de uma restrição justifica manter a original em medium."
+    },
+    {
+      "id": "rechnungen-053",
+      "verdict": "APPROVE",
+      "reason": "Höchstens 500 € inclui valores até 500 €, índice 0. As outras opções representam igualdade obrigatória ou limites invertidos. É complementar a 052, não uma duplicata do mesmo limite."
+    },
+    {
+      "id": "rechnungen-054",
+      "verdict": "REVISE",
+      "reason": "A original usa zusätzlich para explicar zusätzliche e tem dois distratores equivalentes de redução/cancelamento. Aplicar a expressão evita uma pista literal e verifica quantidade adicional versus total.",
+      "recommended_final_question": {
+        "id": "rechnungen-054",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Kunde hat bereits 250 Adapter bestellt und bestellt nun zusätzliche 100 Stück. Wie viele Adapter umfasst die Bestellung insgesamt?",
+        "answer1": "350 Stück",
+        "answer2": "250 Stück",
+        "answer3": "150 Stück",
+        "answer4": "100 Stück",
+        "correctAnswer": 0,
+        "explanation": "Die zusätzlichen 100 Adapter kommen zu den bereits bestellten 250 hinzu: 250 + 100 = 350 Stück.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-055",
+      "verdict": "APPROVE",
+      "reason": "Steigen um 2.000 € indica acréscimo ao valor anterior, índice 2, e não um novo total de 2.000 €. As opções contrastam incremento, subtração e limite; o item tem utilidade própria de interpretação."
+    },
+    {
+      "id": "rechnungen-056",
+      "verdict": "REVISE",
+      "reason": "Apesar do PASS, answer1 e answer4 dizem a mesma coisa: reduzir em 800 €. A nova versão remove essa duplicação e exige distinguir valor final e tamanho da redução.",
+      "recommended_final_question": {
+        "id": "rechnungen-056",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Die monatlichen Kosten sinken von 1.200 € auf 800 €. Um welchen Betrag sind sie gesunken?",
+        "answer1": "400 €",
+        "answer2": "800 €",
+        "answer3": "1.200 €",
+        "answer4": "2.000 €",
+        "correctAnswer": 0,
+        "explanation": "800 € ist der neue Endwert. Die Verringerung beträgt 1.200 € − 800 € = 400 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-057",
+      "verdict": "REVISE",
+      "reason": "Duas alternativas originais dizem que o novo preço é 20 €, e o item repete a distinção um/auf sem aplicá-la. O cenário mantém o foco e oferece quatro resultados distintos.",
+      "recommended_final_question": {
+        "id": "rechnungen-057",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Kabeltester kostet bisher 85 €. Der Preis sinkt um 20 €. Wie hoch ist der neue Preis?",
+        "answer1": "65 €",
+        "answer2": "20 €",
+        "answer3": "85 €",
+        "answer4": "105 €",
+        "correctAnswer": 0,
+        "explanation": "Sinkt um 20 € bedeutet, dass 20 € vom bisherigen Preis abgezogen werden: 85 € − 20 € = 65 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-058",
+      "verdict": "REVISE",
+      "reason": "A original contém dois distratores equivalentes para aumento de 130 €. O cálculo da variação aplica a leitura de auf e evita duplicar a questão 003, que pede porcentagem.",
+      "recommended_final_question": {
+        "id": "rechnungen-058",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Preis steigt von 100 € auf 130 €. Wie hoch ist die Erhöhung in Euro?",
+        "answer1": "30 €",
+        "answer2": "130 €",
+        "answer3": "100 €",
+        "answer4": "230 €",
+        "correctAnswer": 0,
+        "explanation": "130 € ist der neue Preis. Die Erhöhung beträgt 130 € − 100 € = 30 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-059",
+      "verdict": "REVISE",
+      "reason": "A definição de pro Stück contrapõe indevidamente quantidade a período anual. A aplicação de preço unitário mantém todas as opções na mesma unidade e verifica a diferença entre preço e total.",
+      "recommended_final_question": {
+        "id": "rechnungen-059",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Händler liefert 24 Adapter zu 5 € pro Stück. Wie hoch ist der Warenwert ohne weitere Kosten?",
+        "answer1": "120 €",
+        "answer2": "29 €",
+        "answer3": "24 €",
+        "answer4": "5 €",
+        "correctAnswer": 0,
+        "explanation": "Pro Stück bedeutet je Adapter. Der Warenwert beträgt 24 × 5 € = 120 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-060",
+      "verdict": "APPROVE",
+      "reason": "Insgesamt pede o total dos valores relevantes, índice 1. Parcela, mínimo e média são erros reais de seleção da operação; a explicação é suficiente. Manter como apoio à interpretação, sem reclassificar por simplicidade."
+    },
+    {
+      "id": "rechnungen-061",
+      "verdict": "REVISE",
+      "reason": "A original repete a distribuição de Gemeinkosten e oferece ignorar ou dobrar custos como distratores. O caso aplica a parcela junto de custos diretos e distingue parcela de custo total.",
+      "recommended_final_question": {
+        "id": "rechnungen-061",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Auftrag verursacht 800 € Einzelkosten. Zusätzlich werden ihm 20 % der Gemeinkosten von insgesamt 6.000 € zugerechnet. Wie hoch sind die gesamten Kosten dieses Auftrags?",
+        "answer1": "2.000 €",
+        "answer2": "1.200 €",
+        "answer3": "6.800 €",
+        "answer4": "960 €",
+        "correctAnswer": 0,
+        "explanation": "Der Gemeinkostenanteil beträgt 6.000 € × 20 % = 1.200 €. Zusammen mit 800 € Einzelkosten ergeben sich 2.000 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-062",
+      "verdict": "REVISE",
+      "reason": "A referência original a Erlöse beziehungsweise Deckungsbeiträge não evidencia que primeiro se deduzem custos variáveis. O caso verifica se os custos fixos estão efetivamente cobertos.",
+      "recommended_final_question": {
+        "id": "rechnungen-062",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Service erzielt monatlich 12.000 € Erlöse bei 8.000 € variablen Kosten und 5.000 € Fixkosten. Welcher Betrag der Fixkosten bleibt ungedeckt?",
+        "answer1": "1.000 €",
+        "answer2": "4.000 €",
+        "answer3": "5.000 €",
+        "answer4": "7.000 €",
+        "correctAnswer": 0,
+        "explanation": "Der Deckungsbeitrag beträgt 12.000 € − 8.000 € = 4.000 €. Von 5.000 € Fixkosten bleiben 1.000 € ungedeckt.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-063",
+      "verdict": "REVISE",
+      "reason": "A ideia de resultado não negativo é correta, mas todos os distratores originais são afirmações extremas sobre lucro ou custos. Comparar resultados concretos testa a inclusão de zero.",
+      "recommended_final_question": {
+        "id": "rechnungen-063",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Drei Projekte erzielen folgende Betriebsergebnisse: A: −500 €, B: 0 €, C: 300 €. Bei welchen Projekten entsteht kein Verlust?",
+        "answer1": "Bei B und C",
+        "answer2": "Nur bei C",
+        "answer3": "Nur bei B",
+        "answer4": "Bei A und B",
+        "correctAnswer": 0,
+        "explanation": "Kein Verlust bedeutet ein Ergebnis von mindestens 0 €. Das trifft auf B mit 0 € und C mit 300 € zu; A erzielt einen Verlust.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-065",
+      "verdict": "APPROVE",
+      "reason": "80 − 50 = 30 € por unidade, índice 1. No contexto, os 80 € são o preço do produto; as opções representam diferença, custos e soma. Explicação correta e nível medium adequado."
+    },
+    {
+      "id": "rechnungen-066",
+      "verdict": "REVISE",
+      "reason": "O PASS pressupõe sem declarar que os 25 € de custos por cliente também são mensais. Só com períodos iguais é válido subtrair do preço mensal; explicitar a base temporal corrige uma ambiguidade material.",
+      "recommended_final_question": {
+        "id": "rechnungen-066",
+        "category": "Rechnungen",
+        "topic": "Deckungsbeitrag",
+        "difficulty": "medium",
+        "question": "Ein Service wird für 100 € je Kunde und Monat verkauft. Die variablen Kosten betragen 25 € je Kunde und Monat. Wie hoch ist der monatliche Deckungsbeitrag je Kunde?",
+        "answer1": "75 €",
+        "answer2": "25 €",
+        "answer3": "100 €",
+        "answer4": "125 €",
+        "correctAnswer": 0,
+        "explanation": "Preis und variable Kosten beziehen sich auf denselben Monat: 100 € − 25 € = 75 € Deckungsbeitrag je Kunde und Monat.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-067",
+      "verdict": "APPROVE",
+      "reason": "40 € por peça × 200 peças = 8.000 €, índice 2. A proposta inclui adição e erro de escala, com quatro quantias distintas; cálculo, unidade e explicação estão corretos."
+    },
+    {
+      "id": "rechnungen-068",
+      "verdict": "APPROVE",
+      "reason": "15.000 − 12.000 = 3.000 €, índice 0. Soma, custo isolado e inversão do sinal são distratores diagnósticos; manter a original."
+    },
+    {
+      "id": "rechnungen-070",
+      "verdict": "APPROVE",
+      "reason": "No contexto de mercadorias, abnehmen significa comprar ou receber a quantidade, índice 1. O duplo sentido reduzir/comprar é uma dificuldade real de leitura; manter este item e diferenciar a aplicação em 097."
+    },
+    {
+      "id": "rechnungen-072",
+      "verdict": "APPROVE",
+      "reason": "A proposta calcula o Stückdeckungsbeitrag: 50 − 20 = 30 €, e a quantidade de equilíbrio: 9.000 / 30 = 300, índice 1. Pergunta atingir a Gewinnschwelle, não obter lucro positivo; 180 e 450 testam denominadores errados."
+    },
+    {
+      "id": "rechnungen-073",
+      "verdict": "APPROVE",
+      "reason": "300 × 40 = 12.000 €, índice 2. A proposta mantém todas as respostas como receitas e inclui erros de escala. Não há cálculo de custo nem arredondamento necessário."
+    },
+    {
+      "id": "rechnungen-074",
+      "verdict": "REVISE",
+      "reason": "A leitura literal repete 029 e não testa o limite de lucro. O caso usa divisão não inteira e exige escolher a primeira quantidade que satisfaz a condição.",
+      "recommended_final_question": {
+        "id": "rechnungen-074",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Service erzielt monatlich 35 € Deckungsbeitrag je Kunde und verursacht 1.000 € Fixkosten. Ab welcher ganzen Kundenzahl ist der Service monatlich profitabel?",
+        "answer1": "29 Kunden",
+        "answer2": "28 Kunden",
+        "answer3": "35 Kunden",
+        "answer4": "36 Kunden",
+        "correctAnswer": 0,
+        "explanation": "1.000 € / 35 € = 28,571... . Bei 28 Kunden fehlen 20 €; bei 29 Kunden entsteht ein Gewinn von 15 €. Deshalb sind mindestens 29 Kunden erforderlich.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-075",
+      "verdict": "APPROVE",
+      "reason": "Na quantidade de equilíbrio, receita e custo total são iguais e o Betriebsergebnis é zero, índice 2. Embora relacionado a 027, testa diretamente o resultado e mantém distratores comparáveis."
+    },
+    {
+      "id": "rechnungen-076",
+      "verdict": "REVISE",
+      "reason": "A original repete a definição de Gewinnzone e inclui cenários sem receita ou apenas custos fixos como distratores. O novo item verifica a relação entre quantidade e lucro no modelo linear.",
+      "recommended_final_question": {
+        "id": "rechnungen-076",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Die Break-Even-Menge beträgt 300 Stück. Der Stückdeckungsbeitrag ist positiv und bleibt konstant; die Fixkosten bleiben gleich. Welche Absatzmenge liegt in der Gewinnzone?",
+        "answer1": "350 Stück",
+        "answer2": "300 Stück",
+        "answer3": "250 Stück",
+        "answer4": "0 Stück",
+        "correctAnswer": 0,
+        "explanation": "Bei 300 Stück ist das Ergebnis null. Bei konstant positivem Stückdeckungsbeitrag und unveränderten Fixkosten führt jede zusätzliche verkaufte Einheit zu Gewinn; 350 Stück liegen daher in der Gewinnzone.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-078",
+      "verdict": "REVISE",
+      "reason": "A proposta é matematicamente correta: 0,90 significa receita 10 % abaixo do Aufwand. Porém repete quase literalmente a proposta de 037. O novo caso verifica a diferença de base: quanto o Ertrag precisa subir para chegar a 1,0.",
+      "recommended_final_question": {
+        "id": "rechnungen-078",
+        "category": "Rechnungen",
+        "topic": "Wirtschaftlichkeit",
+        "difficulty": "medium",
+        "question": "Ein Projekt erzielt 90.000 € Ertrag bei 100.000 € Aufwand. Um wie viel Prozent muss der Ertrag bei gleichem Aufwand steigen, damit die Wirtschaftlichkeit 1,0 beträgt? Runde auf zwei Nachkommastellen.",
+        "answer1": "11,11 %",
+        "answer2": "10,00 %",
+        "answer3": "90,00 %",
+        "answer4": "111,11 %",
+        "correctAnswer": 0,
+        "explanation": "Für eine Wirtschaftlichkeit von 1,0 sind 100.000 € Ertrag nötig. Der Anstieg von 10.000 € wird auf den bisherigen Ertrag von 90.000 € bezogen: 10.000 / 90.000 × 100 = 11,11 %.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-079",
+      "verdict": "APPROVE",
+      "reason": "50.000 / 50.000 = 1,0, índice 2. A proposta mantém respostas numéricas comparáveis e incorpora o erro de subtrair os valores; a explicação resolve a razão corretamente."
+    },
+    {
+      "id": "rechnungen-080",
+      "verdict": "REVISE",
+      "reason": "A original entrega a única fórmula de economicidade em meio a contagens e custos isolados. Comparar duas relações permite distinguir economicidade de receita absoluta.",
+      "recommended_final_question": {
+        "id": "rechnungen-080",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Abteilung A erzielt 120.000 € Ertrag bei 100.000 € Aufwand. Abteilung B erzielt 150.000 € Ertrag bei 130.000 € Aufwand. Welche Abteilung hat die höhere Wirtschaftlichkeit?",
+        "answer1": "A, weil 1,20 größer als etwa 1,15 ist",
+        "answer2": "B, weil 150.000 € mehr Ertrag als 120.000 € sind",
+        "answer3": "Beide, weil der Überschuss jeweils 20.000 € beträgt",
+        "answer4": "B, weil 130.000 € mehr Aufwand als 100.000 € sind",
+        "correctAnswer": 0,
+        "explanation": "A: 120.000 / 100.000 = 1,20. B: 150.000 / 130.000 ≈ 1,15. A ist wirtschaftlicher, obwohl B den höheren Ertrag erzielt.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-081",
+      "verdict": "APPROVE",
+      "reason": "1.200 / 6 = 200 tickets por colaborador, índice 1. A divisão e a unidade estão corretas; adição e multiplicação incorretas aparecem entre os distratores. Manter como aplicação numérica de produtividade."
+    },
+    {
+      "id": "rechnungen-083",
+      "verdict": "APPROVE",
+      "reason": "Bei gleicher Besetzung mantém a quantidade de colaboradores, índice 0, sem garantir custos ou produção constantes. Essa distinção evita inferências indevidas em produtividade; não precisa de reescrita."
+    },
+    {
+      "id": "rechnungen-084",
+      "verdict": "REVISE",
+      "reason": "A original oferece apenas uma quantidade produzida entre alternativas monetárias e temporais, revelando o termo pela unidade. Comparar produção, vendas e estoque torna os distratores do mesmo domínio.",
+      "recommended_final_question": {
+        "id": "rechnungen-084",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Betrieb produziert in einer Woche 240 Router und verkauft davon 200. Weitere 40 Router bleiben im Lager. Wie hoch ist die Ausbringungsmenge dieser Woche?",
+        "answer1": "240 Router",
+        "answer2": "200 Router",
+        "answer3": "40 Router",
+        "answer4": "280 Router",
+        "correctAnswer": 0,
+        "explanation": "Die Ausbringungsmenge ist die produzierte Menge, hier 240 Router. Absatz und Lagerbestand sind davon zu unterscheiden.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-086",
+      "verdict": "REVISE",
+      "reason": "Einmalige Kosten é definido pela repetição de einmal e sobrepõe 042. O caso calcula o primeiro ano distinguindo um pagamento inicial de custos mensais.",
+      "recommended_final_question": {
+        "id": "rechnungen-086",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Für einen Cloud-Service fallen einmalig 600 € Einrichtungskosten und monatlich 100 € Nutzungsgebühr an. Wie hoch sind die Gesamtkosten für die ersten zwölf Monate?",
+        "answer1": "1.800 €",
+        "answer2": "700 €",
+        "answer3": "1.200 €",
+        "answer4": "8.400 €",
+        "correctAnswer": 0,
+        "explanation": "Die Einrichtung wird einmal berechnet: 600 € + 12 × 100 € = 1.800 €. Die Einrichtungskosten dürfen nicht jeden Monat angesetzt werden.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-087",
+      "verdict": "REVISE",
+      "reason": "A original repete 043 e 140 e mistura lucro com categorias de custo. O novo item identifica custos recorrentes em um período posterior à aquisição.",
+      "recommended_final_question": {
+        "id": "rechnungen-087",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Server wurde im Vorjahr für 5.000 € gekauft und für 500 € eingerichtet. Jährlich fallen 900 € Strom- und 600 € Supportkosten an. Wie hoch sind die laufenden Kosten im zweiten Jahr?",
+        "answer1": "1.500 €",
+        "answer2": "6.500 €",
+        "answer3": "7.000 €",
+        "answer4": "5.500 €",
+        "correctAnswer": 0,
+        "explanation": "Im zweiten Jahr fallen die laufenden Strom- und Supportkosten an: 900 € + 600 € = 1.500 €. Kauf und Ersteinrichtung werden nicht erneut bezahlt.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-089",
+      "verdict": "APPROVE",
+      "reason": "20.000 / 100.000 × 100 = 20 %, índice 1. A base é o capital, não a receita; o resultado é único e a explicação corresponde ao ROI simples solicitado."
+    },
+    {
+      "id": "rechnungen-090",
+      "verdict": "REVISE",
+      "reason": "A original repete 048 e 143 e oferece consequências sem relação necessária com amortização. O novo caso verifica o limite de três anos por soma de retornos.",
+      "recommended_final_question": {
+        "id": "rechnungen-090",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Eine Investition kostet 24.000 €. Die Rückflüsse betragen im ersten Jahr 6.000 €, im zweiten 8.000 € und im dritten 10.000 €. Nach welchem Jahr ist die Investition vollständig amortisiert? Zinsen bleiben unberücksichtigt.",
+        "answer1": "Nach dem dritten Jahr",
+        "answer2": "Nach dem ersten Jahr",
+        "answer3": "Nach dem zweiten Jahr",
+        "answer4": "Nach dem vierten Jahr",
+        "correctAnswer": 0,
+        "explanation": "Nach Jahr 1 sind 6.000 €, nach Jahr 2 insgesamt 14.000 € und nach Jahr 3 insgesamt 24.000 € zurückgeflossen. Damit ist die Anfangsinvestition am Ende des dritten Jahres ausgeglichen.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-091",
+      "verdict": "REVISE",
+      "reason": "A original revela a resposta como única contagem de unidades, enquanto o termo exige distinguir vendas de produção. O cenário mantém todas as opções como quantidades.",
+      "recommended_final_question": {
+        "id": "rechnungen-091",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Händler hat zu Monatsbeginn 40 Router auf Lager. Er kauft 100 hinzu und hat am Monatsende noch 30. Es gibt keine Rückgaben oder sonstigen Bestandsänderungen. Wie hoch ist die Absatzmenge?",
+        "answer1": "110 Router",
+        "answer2": "100 Router",
+        "answer3": "140 Router",
+        "answer4": "70 Router",
+        "correctAnswer": 0,
+        "explanation": "Anfangsbestand + Zugang − Endbestand = 40 + 100 − 30 = 110 verkaufte Router.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-092",
+      "verdict": "APPROVE",
+      "reason": "Um trimestre abrange três meses, índice 1. As quatro alternativas diferem apenas pelo período e testam um erro real de base temporal; a original acrescenta um objetivo útil."
+    },
+    {
+      "id": "rechnungen-093",
+      "verdict": "REVISE",
+      "reason": "A formulação original sobre custos relevantes é vaga e os distratores misturam grandezas. A nova pergunta distingue operacionalmente resultado, receita e contribuição total.",
+      "recommended_final_question": {
+        "id": "rechnungen-093",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Service erzielt im Monat 18.000 € Erlöse. Die variablen Kosten betragen 7.000 €, die Fixkosten 8.000 €. Wie hoch ist das Betriebsergebnis?",
+        "answer1": "3.000 €",
+        "answer2": "11.000 €",
+        "answer3": "10.000 €",
+        "answer4": "18.000 €",
+        "correctAnswer": 0,
+        "explanation": "Gesamtdeckungsbeitrag: 18.000 € − 7.000 € = 11.000 €. Betriebsergebnis: 11.000 € − 8.000 € = 3.000 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-094",
+      "verdict": "REVISE",
+      "reason": "Großkunde é testado com distratores como prédio grande ou fornecedor, sem valor diagnóstico. O caso aplica o volume do cliente ao preço total com desconto, em linguagem direta.",
+      "recommended_final_question": {
+        "id": "rechnungen-094",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Großkunde bestellt 200 Lizenzen zum Listenpreis von je 50 €. Er erhält 10 % Rabatt auf den gesamten Listenpreis. Wie hoch ist der Rechnungsbetrag ohne weitere Kosten?",
+        "answer1": "9.000 €",
+        "answer2": "10.000 €",
+        "answer3": "9.990 €",
+        "answer4": "1.000 €",
+        "correctAnswer": 0,
+        "explanation": "Listenpreis insgesamt: 200 × 50 € = 10.000 €. Rabatt: 10 % von 10.000 € = 1.000 €. Zu zahlen sind 9.000 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-095",
+      "verdict": "REVISE",
+      "reason": "A original repete adicional no enunciado e na resposta, sem testar seu efeito econômico. O caso explicita capacidade livre e ausência de custos fixos adicionais, necessários à decisão pelo Deckungsbeitrag.",
+      "recommended_final_question": {
+        "id": "rechnungen-095",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Zusatzauftrag umfasst 100 Geräte zu je 25 €. Die variablen Kosten betragen 18 € je Gerät. Freie Kapazität ist vorhanden; zusätzliche Fixkosten entstehen nicht. Um welchen Betrag verändert sich das Betriebsergebnis?",
+        "answer1": "Es steigt um 700 €.",
+        "answer2": "Es steigt um 2.500 €.",
+        "answer3": "Es steigt um 1.800 €.",
+        "answer4": "Es sinkt um 700 €.",
+        "correctAnswer": 0,
+        "explanation": "Zusätzlicher Deckungsbeitrag: 100 × (25 € − 18 €) = 700 €. Da keine zusätzlichen Fixkosten entstehen und kein anderer Auftrag verdrängt wird, steigt das Betriebsergebnis um 700 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-096",
+      "verdict": "REVISE",
+      "reason": "A pergunta sobre a instrução Begründe pode ser respondida sem conteúdo econômico; überspringen é um distrator absurdo. O novo item exige escolher uma justificativa válida para uma decisão.",
+      "recommended_final_question": {
+        "id": "rechnungen-096",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Angebot A und B erfüllen dieselben Anforderungen über drei Jahre. A hat eine TCO von 18.000 €, B von 21.000 €. Welche Begründung stützt die Wahl von A bei einem reinen Kostenvergleich?",
+        "answer1": "A verursacht bei gleicher Leistung 3.000 € weniger Gesamtkosten.",
+        "answer2": "A muss den niedrigeren Kaufpreis haben, weil seine TCO niedriger ist.",
+        "answer3": "B muss länger nutzbar sein, weil seine TCO höher ist.",
+        "answer4": "Beide Angebote sind gleich teuer, weil sie gleich viel leisten.",
+        "correctAnswer": 0,
+        "explanation": "Bei gleichem Leistungsumfang und Vergleichszeitraum ist die niedrigere TCO entscheidend: 21.000 € − 18.000 € = 3.000 € Kostenersparnis. Aus der TCO allein folgt kein bestimmter Kaufpreis.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-097",
+      "verdict": "REVISE",
+      "reason": "A leitura de abnehmen já está coberta por 070. O novo item usa os 500 itens a 5 € para verificar preço unitário versus total: 500 × 5 = 2.500 €.",
+      "recommended_final_question": {
+        "id": "rechnungen-097",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Kunde möchte 500 Adapter für 5 € pro Stück abnehmen. Welchen Umsatz erzielt der Händler mit diesem Auftrag, wenn keine Rabatte hinzukommen?",
+        "answer1": "2.500 €",
+        "answer2": "505 €",
+        "answer3": "500 €",
+        "answer4": "100 €",
+        "correctAnswer": 0,
+        "explanation": "Der Kunde kauft 500 Adapter zu jeweils 5 €. Der Umsatz beträgt 500 × 5 € = 2.500 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-098",
+      "verdict": "REVISE",
+      "reason": "A original combina uma negação óbvia da demanda com desaparecimento de custos fixos. O cenário distingue demanda, vendas realizáveis e capacidade disponível.",
+      "recommended_final_question": {
+        "id": "rechnungen-098",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Die Nachfrage steigt von 800 auf 1.100 Geräte pro Monat. Die Fertigungskapazität bleibt bei 1.000 Geräten; Lagerbestand und Zukauf sind ausgeschlossen. Wie viele Geräte können höchstens pro Monat verkauft werden?",
+        "answer1": "1.000 Geräte",
+        "answer2": "1.100 Geräte",
+        "answer3": "800 Geräte",
+        "answer4": "300 Geräte",
+        "correctAnswer": 0,
+        "explanation": "Trotz einer Nachfrage von 1.100 Geräten können nur 1.000 gefertigt und geliefert werden. Die unveränderte Kapazität begrenzt den Absatz auf 1.000 Geräte.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-099",
+      "verdict": "APPROVE",
+      "reason": "Begrenzt auf 1.000 indica capacidade máxima, índice 1, sem obrigar produção ou venda nesse volume. O objetivo distingue limite de plano ou mínimo; pode permanecer, mesmo próximo de 053."
+    },
+    {
+      "id": "rechnungen-100",
+      "verdict": "REVISE",
+      "reason": "A original repete 054 com outro produto e contrapõe a quantidade adicional a uma entrega gratuita. O caso aplica o acréscimo ao Deckungsbeitrag, mantendo a condição de custos fixos constantes.",
+      "recommended_final_question": {
+        "id": "rechnungen-100",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Händler verkauft 200 weitere SSDs. Der Stückdeckungsbeitrag beträgt 12 €. Andere Verkäufe und Fixkosten bleiben unverändert. Wie verändert sich das Betriebsergebnis?",
+        "answer1": "Es steigt um 2.400 €.",
+        "answer2": "Es steigt um 200 €.",
+        "answer3": "Es steigt um 212 €.",
+        "answer4": "Es sinkt um 2.400 €.",
+        "correctAnswer": 0,
+        "explanation": "Der zusätzliche Gesamtdeckungsbeitrag beträgt 200 × 12 € = 2.400 €. Bei unveränderten übrigen Verkäufen und Fixkosten steigt das Betriebsergebnis um diesen Betrag.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-101",
+      "verdict": "APPROVE",
+      "reason": "Um 200 Stück senken significa produzir 200 a menos, índice 2; as opções distinguem redução, novo total e aumento. É útil na leitura de alterações da produção e não apresenta erro factual."
+    },
+    {
+      "id": "rechnungen-102",
+      "verdict": "REVISE",
+      "reason": "A expressão Lohnt sich repete 050 e os distratores sobre nome ou funcionários são desconexos. O caso exige avaliar vantagem líquida no mesmo período.",
+      "recommended_final_question": {
+        "id": "rechnungen-102",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Eine Umstellung spart jährlich 8.000 € Betriebskosten, verursacht aber jährlich 3.000 € zusätzliche Lizenzkosten. Einmalige Kosten entstehen nicht. Wie verändert sich das jährliche Betriebsergebnis bei sonst gleichen Bedingungen?",
+        "answer1": "Es verbessert sich um 5.000 €.",
+        "answer2": "Es verbessert sich um 8.000 €.",
+        "answer3": "Es verbessert sich um 11.000 €.",
+        "answer4": "Es verschlechtert sich um 5.000 €.",
+        "correctAnswer": 0,
+        "explanation": "Die jährliche Einsparung wird um die zusätzlichen Lizenzkosten vermindert: 8.000 € − 3.000 € = 5.000 € Verbesserung.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-103",
+      "verdict": "REVISE",
+      "reason": "Ein Paket einstellen pode significar configurar um pacote sem contexto suficiente. O cenário define a retirada da oferta e testa a consequência relevante, sem supor eliminação automática dos custos fixos.",
+      "recommended_final_question": {
+        "id": "rechnungen-103",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen nimmt ein Servicepaket aus dem Angebot. Dadurch entfällt dessen monatlicher Deckungsbeitrag von 2.000 €. Fixkosten und Ergebnisse der anderen Pakete bleiben gleich. Wie verändert sich das Betriebsergebnis?",
+        "answer1": "Es sinkt um 2.000 €.",
+        "answer2": "Es steigt um 2.000 €.",
+        "answer3": "Es bleibt unverändert.",
+        "answer4": "Es sinkt auf genau 0 €.",
+        "correctAnswer": 0,
+        "explanation": "Der bisherige Deckungsbeitrag von 2.000 € entfällt. Da keine Fixkosten eingespart werden und die anderen Ergebnisse gleich bleiben, sinkt das Betriebsergebnis um 2.000 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-104",
+      "verdict": "REVISE",
+      "reason": "A resposta original é a única longa e os distratores confundem recursos disponíveis com produtos gratuitos e custos. O cálculo de capacidade liberada aplica diretamente o termo.",
+      "recommended_final_question": {
+        "id": "rechnungen-104",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Team hat monatlich 1.200 Arbeitsstunden verfügbar. Nach einer Umstellung benötigt es für die bisherigen Aufgaben nur noch 900 Stunden. Wie viele Stunden können für andere Aufgaben genutzt werden?",
+        "answer1": "300 Stunden",
+        "answer2": "900 Stunden",
+        "answer3": "1.200 Stunden",
+        "answer4": "2.100 Stunden",
+        "correctAnswer": 0,
+        "explanation": "Frei verfügbare Kapazität = 1.200 − 900 = 300 Arbeitsstunden pro Monat.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-105",
+      "verdict": "REVISE",
+      "reason": "A original pergunta apenas o significado de bleiben gleich e repete 013. A aplicação distingue custos fixos totais de custos fixos por unidade, um erro conceitual relevante.",
+      "recommended_final_question": {
+        "id": "rechnungen-105",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Die monatlichen Fixkosten bleiben bei 5.000 €. Die Produktionsmenge steigt von 500 auf 1.000 Stück. Wie hoch sind die Fixkosten je Stück nach der Steigerung?",
+        "answer1": "5 €",
+        "answer2": "10 €",
+        "answer3": "2,50 €",
+        "answer4": "5.000 €",
+        "correctAnswer": 0,
+        "explanation": "Die gesamten Fixkosten bleiben gleich, verteilen sich aber auf 1.000 Stück: 5.000 € / 1.000 = 5 € je Stück. Zuvor waren es 10 € je Stück.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-106",
+      "verdict": "APPROVE",
+      "reason": "Ist-Absatz é a quantidade efetivamente vendida, índice 0. Capacidade máxima, planejamento futuro e quantidade de equilíbrio são distratores do mesmo domínio. Complementa 031 ao distinguir grandezas, sem precisar substituição."
+    },
+    {
+      "id": "rechnungen-107",
+      "verdict": "REVISE",
+      "reason": "A original duplica 031. A nova versão testa a Sicherheitsspanne percentual e explicita sua base, distinguindo diferença absoluta de proporção sobre as vendas atuais.",
+      "recommended_final_question": {
+        "id": "rechnungen-107",
+        "category": "Rechnungen",
+        "topic": "Break-Even",
+        "difficulty": "medium",
+        "question": "Der Ist-Absatz beträgt 500 Stück, die Break-Even-Menge 400 Stück. Wie hoch ist die Sicherheitsspanne in Prozent des Ist-Absatzes?",
+        "answer1": "20 %",
+        "answer2": "25 %",
+        "answer3": "80 %",
+        "answer4": "100 %",
+        "correctAnswer": 0,
+        "explanation": "Sicherheitsspanne: 500 − 400 = 100 Stück. Bezogen auf den Ist-Absatz: 100 / 500 × 100 = 20 %. 25 % würde sich auf die Break-Even-Menge beziehen.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-108",
+      "verdict": "REVISE",
+      "reason": "A original só descreve a instrução de comparar. O novo caso permite calcular antes e depois com Stückdeckungsbeitrag constante e identificar a direção da mudança.",
+      "recommended_final_question": {
+        "id": "rechnungen-108",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Die Fixkosten steigen von 6.000 € auf 7.500 €. Der Stückdeckungsbeitrag bleibt bei 30 €. Welche Aussage zur Break-Even-Menge ist richtig?",
+        "answer1": "Sie steigt von 200 auf 250 Stück.",
+        "answer2": "Sie bleibt bei 200 Stück.",
+        "answer3": "Sie sinkt von 200 auf 160 Stück.",
+        "answer4": "Sie steigt von 200 auf 1.700 Stück.",
+        "correctAnswer": 0,
+        "explanation": "Bisher: 6.000 € / 30 € = 200 Stück. Neu: 7.500 € / 30 € = 250 Stück. Die Gewinnschwelle steigt um 50 Stück.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-110",
+      "verdict": "REVISE",
+      "reason": "A original adiciona erwartete a uma distribuição que pode ser observada e tem distratores pouco concorrentes. Aplicar a proporção mantém o objetivo e testa percentual versus quantidade.",
+      "recommended_final_question": {
+        "id": "rechnungen-110",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Service hat 250 Nutzer. Davon nutzen 40 % Premium und 60 % Basis. Wie viele Premium-Nutzer gibt es?",
+        "answer1": "100 Nutzer",
+        "answer2": "150 Nutzer",
+        "answer3": "40 Nutzer",
+        "answer4": "250 Nutzer",
+        "correctAnswer": 0,
+        "explanation": "40 % von 250 Nutzern sind 0,40 × 250 = 100 Premium-Nutzer. Die übrigen 150 nutzen Basis.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-111",
+      "verdict": "REVISE",
+      "reason": "A definição de Anfangsinvestition repete 047/133 e é revelada por Beginn. O cenário distingue os pagamentos necessários ao início dos custos anuais de operação.",
+      "recommended_final_question": {
+        "id": "rechnungen-111",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Für den Start eines Services werden 12.000 € für Hardware und einmalig 3.000 € für die Einrichtung bezahlt. Später fallen jährlich 4.000 € Betriebskosten an. Wie hoch ist die Anfangsinvestition?",
+        "answer1": "15.000 €",
+        "answer2": "19.000 €",
+        "answer3": "12.000 €",
+        "answer4": "4.000 €",
+        "correctAnswer": 0,
+        "explanation": "Zur Anfangsinvestition gehören hier Hardware und Einrichtung: 12.000 € + 3.000 € = 15.000 €. Die späteren jährlichen Betriebskosten werden getrennt betrachtet.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-112",
+      "verdict": "APPROVE",
+      "reason": "Regelmäßig wiederkehrende Fixkosten é a interpretação correta. A original diferencia recorrência, aquisição única e custos variáveis unitários; a explicação é curta, mas não incorreta. A proximidade de 043 não elimina esse objetivo combinado."
+    },
+    {
+      "id": "rechnungen-113",
+      "verdict": "REVISE",
+      "reason": "A definição de monatlich profitabel contrapõe lucro a encarecimento ou ausência de custos, oferecendo pouca discriminação. O caso exige alinhar receita e custos na base mensal.",
+      "recommended_final_question": {
+        "id": "rechnungen-113",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Service erzielt monatlich 8.000 € Erlöse bei 3.000 € variablen Kosten und 4.000 € Fixkosten. Wie hoch ist der monatliche Gewinn?",
+        "answer1": "1.000 €",
+        "answer2": "5.000 €",
+        "answer3": "4.000 €",
+        "answer4": "12.000 €",
+        "correctAnswer": 0,
+        "explanation": "Monatlicher Gewinn = 8.000 € − 3.000 € − 4.000 € = 1.000 €. Alle Größen beziehen sich auf denselben Monat.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-114",
+      "verdict": "REVISE",
+      "reason": "A original repete 048/090 e apenas reconhece a pergunta por sua paráfrase. A aplicação usa retorno mensal e evita confundir o prazo com uma base anual.",
+      "recommended_final_question": {
+        "id": "rechnungen-114",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Service benötigt eine Anfangsinvestition von 18.000 €. Der monatliche Netto-Rückfluss beträgt konstant 750 €. Nach wie vielen Monaten ist die Investition statisch amortisiert?",
+        "answer1": "24 Monaten",
+        "answer2": "18 Monaten",
+        "answer3": "12 Monaten",
+        "answer4": "2 Monaten",
+        "correctAnswer": 0,
+        "explanation": "18.000 € / 750 € pro Monat = 24 Monate. Nach diesem Zeitraum entspricht die Summe der Rückflüsse der Anfangsinvestition; Zinsen bleiben unberücksichtigt.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-115",
+      "verdict": "REVISE",
+      "reason": "A original apenas define vor und nach. A comparação proposta testa a diferença entre aumento de receita e aumento de resultado, sem atribuir lucro automaticamente à receita maior.",
+      "recommended_final_question": {
+        "id": "rechnungen-115",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Vor einer Investition betragen der jährliche Ertrag 100.000 € und der jährliche Aufwand 70.000 €. Danach sind es 120.000 € Ertrag und 90.000 € Aufwand. Wie verändert sich das jährliche Ergebnis?",
+        "answer1": "Es bleibt bei 30.000 €.",
+        "answer2": "Es steigt um 20.000 €.",
+        "answer3": "Es sinkt um 20.000 €.",
+        "answer4": "Es steigt auf 50.000 €.",
+        "correctAnswer": 0,
+        "explanation": "Vorher: 100.000 € − 70.000 € = 30.000 €. Nachher: 120.000 € − 90.000 € = 30.000 €. Ertrag und Aufwand steigen im gleichen Umfang; das Ergebnis bleibt gleich.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-116",
+      "verdict": "APPROVE",
+      "reason": "Durchschnittlich 10 significa média de dez, não valor exato em toda ocorrência, mínimo ou máximo. Os quatro sentidos são comparáveis e a distinção é necessária em previsões; manter medium."
+    },
+    {
+      "id": "rechnungen-117",
+      "verdict": "APPROVE",
+      "reason": "Maximaler Gewinn é o maior lucro sob as condições dadas, índice 1. As opções diferenciam mínimo, equilíbrio e receita; o reconhecimento da função objetivo é válido, embora relacionado a 176."
+    },
+    {
+      "id": "rechnungen-118",
+      "verdict": "REVISE",
+      "reason": "A original explica nötig por benötigt e não exige ler uma condição quantitativa. O caso distingue pedidos adicionais do total necessário para atingir a cobertura.",
+      "recommended_final_question": {
+        "id": "rechnungen-118",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Service hat monatliche Fixkosten von 4.000 € und erzielt 40 € Deckungsbeitrag je Bestellung. Es liegen bereits 70 Bestellungen vor. Wie viele zusätzliche Bestellungen sind nötig, um die Fixkosten zu decken?",
+        "answer1": "30 Bestellungen",
+        "answer2": "100 Bestellungen",
+        "answer3": "70 Bestellungen",
+        "answer4": "40 Bestellungen",
+        "correctAnswer": 0,
+        "explanation": "Für die Kostendeckung sind 4.000 € / 40 € = 100 Bestellungen nötig. 70 liegen bereits vor; es fehlen 100 − 70 = 30 weitere.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-119",
+      "verdict": "REVISE",
+      "reason": "Den BEP halten não especifica a unidade ou a condição de compensação. A nova pergunta fixa a quantidade de equilíbrio e verifica o Deckungsbeitrag necessário após aumento de custos.",
+      "recommended_final_question": {
+        "id": "rechnungen-119",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Die Break-Even-Menge soll bei 200 Stück bleiben. Die Fixkosten steigen von 6.000 € auf 6.600 €. Wie hoch muss der neue Stückdeckungsbeitrag sein?",
+        "answer1": "33 €",
+        "answer2": "30 €",
+        "answer3": "3 €",
+        "answer4": "220 €",
+        "correctAnswer": 0,
+        "explanation": "Damit 200 Stück weiterhin die Fixkosten decken, muss gelten: 6.600 € / 200 Stück = 33 € je Stück. Der bisherige Beitrag von 30 € reicht nicht mehr.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-120",
+      "verdict": "REVISE",
+      "reason": "A original tem dois distratores sem relação com a escolha operacional. O caso aplica Eigenbetrieb a um custo total e evita inferir que operação própria seja necessariamente mais barata.",
+      "recommended_final_question": {
+        "id": "rechnungen-120",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Service kostet im Eigenbetrieb monatlich 3.000 € fix und 4 € je Nutzer. Ein externer Anbieter verlangt 10 € je Nutzer ohne Grundgebühr. Bei 400 Nutzern haben beide Lösungen denselben Leistungsumfang. Welche ist monatlich günstiger?",
+        "answer1": "Der externe Anbieter um 600 €",
+        "answer2": "Der Eigenbetrieb um 600 €",
+        "answer3": "Der Eigenbetrieb um 1.000 €",
+        "answer4": "Beide kosten gleich viel",
+        "correctAnswer": 0,
+        "explanation": "Eigenbetrieb: 3.000 € + 400 × 4 € = 4.600 €. Externer Anbieter: 400 × 10 € = 4.000 €. Der externe Anbieter ist um 600 € günstiger.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-121",
+      "verdict": "REVISE",
+      "reason": "Partnermodell pode assumir formas diferentes; a definição genérica e os distratores não testam nenhuma delas. A nova versão informa a remuneração do parceiro antes de calcular o valor restante.",
+      "recommended_final_question": {
+        "id": "rechnungen-121",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "In einem Partnermodell erhält der Partner 30 % des monatlichen Serviceumsatzes. Der Umsatz beträgt 10.000 €. Welcher Betrag bleibt dem Unternehmen vor seinen eigenen Kosten?",
+        "answer1": "7.000 €",
+        "answer2": "3.000 €",
+        "answer3": "10.000 €",
+        "answer4": "13.000 €",
+        "correctAnswer": 0,
+        "explanation": "Partneranteil: 10.000 € × 30 % = 3.000 €. Dem Unternehmen bleiben 10.000 € − 3.000 € = 7.000 € vor den eigenen Kosten.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-122",
+      "verdict": "REVISE",
+      "reason": "Profitabler pode exigir explicitar o critério; a original fala em melhor resultado sem base de comparação e oferece distratores fracos. O cenário fixa lucro mensal absoluto e distingue-o de receita.",
+      "recommended_final_question": {
+        "id": "rechnungen-122",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Modell A erzielt monatlich 20.000 € Erlöse bei 16.000 € Gesamtkosten. Modell B erzielt 25.000 € Erlöse bei 22.000 € Gesamtkosten. Welches Modell erzielt den höheren absoluten Monatsgewinn?",
+        "answer1": "Modell A mit 4.000 €",
+        "answer2": "Modell B mit 3.000 €",
+        "answer3": "Modell B mit 25.000 €",
+        "answer4": "Beide mit demselben Gewinn",
+        "correctAnswer": 0,
+        "explanation": "A: 20.000 € − 16.000 € = 4.000 €. B: 25.000 € − 22.000 € = 3.000 €. Nach dem vorgegebenen Kriterium des absoluten Monatsgewinns ist A besser.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-123",
+      "verdict": "REVISE",
+      "reason": "A original trata Erlöse, Einnahmen e Erträge como intercambiáveis e usa distratores de outros assuntos. A nova questão distingue prestação faturada de recebimento, sem depender de uma paráfrase.",
+      "recommended_final_question": {
+        "id": "rechnungen-123",
+        "category": "Rechnungen",
+        "topic": "Wirtschaftlichkeit",
+        "difficulty": "medium",
+        "question": "Ein IT-Dienstleister erbringt und berechnet im September Leistungen für 5.000 € netto. Der Kunde bezahlt erst im Oktober. Wie hoch ist der Umsatzerlös aus diesen Leistungen im September?",
+        "answer1": "5.000 €",
+        "answer2": "0 €",
+        "answer3": "10.000 €",
+        "answer4": "2.500 €",
+        "correctAnswer": 0,
+        "explanation": "Die im September erbrachten und berechneten Leistungen führen zu 5.000 € Umsatzerlös. Die spätere Zahlung ist davon zu unterscheiden und verschiebt den Leistungserlös nicht in den Oktober.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-124",
+      "verdict": "REVISE",
+      "reason": "A pergunta sobre betrugen repete 051 com outro tempo verbal. O novo item interpreta o valor dado como custo total, sem confundi-lo com aumento ou lucro.",
+      "recommended_final_question": {
+        "id": "rechnungen-124",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Im vergangenen Jahr betrugen die Gesamtkosten 162.000 €. Die Erlöse lagen bei 180.000 €. Wie hoch war das Betriebsergebnis?",
+        "answer1": "18.000 €",
+        "answer2": "162.000 €",
+        "answer3": "180.000 €",
+        "answer4": "342.000 €",
+        "correctAnswer": 0,
+        "explanation": "Betrugen nennt den damaligen Gesamtwert der Kosten. Betriebsergebnis = 180.000 € − 162.000 € = 18.000 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-125",
+      "verdict": "REVISE",
+      "reason": "A original define ordenar usando distratores como escolha aleatória. A aplicação explicita o critério de ordenação e oferece quatro sequências plausíveis.",
+      "recommended_final_question": {
+        "id": "rechnungen-125",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Drei Projekte haben folgende Wirtschaftlichkeit: A = 1,20; B = 1,10; C = 1,30. Welche Rangfolge ist nach absteigender Wirtschaftlichkeit richtig?",
+        "answer1": "C, A, B",
+        "answer2": "B, A, C",
+        "answer3": "A, C, B",
+        "answer4": "C, B, A",
+        "correctAnswer": 0,
+        "explanation": "Absteigend bedeutet vom höchsten zum niedrigsten Wert: 1,30 > 1,20 > 1,10. Daher lautet die Rangfolge C, A, B.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-126",
+      "verdict": "REVISE",
+      "reason": "A original revela a resposta por anbieten e mistura fornecedor, cliente, funcionário e indicador. O caso usa dois fornecedores para exigir um Vergleich de custos sobre o mesmo prazo.",
+      "recommended_final_question": {
+        "id": "rechnungen-126",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Anbieter A verlangt für eine Serverlösung einmalig 4.000 € und jährlich 1.000 €. Anbieter B verlangt einmalig 2.000 € und jährlich 1.800 €. Beide Leistungen sind gleichwertig. Welcher Anbieter ist über drei Jahre günstiger?",
+        "answer1": "A um 400 €",
+        "answer2": "B um 400 €",
+        "answer3": "B um 2.000 €",
+        "answer4": "A um 800 €",
+        "correctAnswer": 0,
+        "explanation": "A: 4.000 € + 3 × 1.000 € = 7.000 €. B: 2.000 € + 3 × 1.800 € = 7.400 €. A ist über drei Jahre um 400 € günstiger.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-127",
+      "verdict": "APPROVE",
+      "reason": "Erwartete Nutzungsdauer é a duração futura estimada de utilização, não a garantia ou entrega. A distinção entre estimativa e obrigação de garantia é útil; registrar proximidade com 045, mas manter a original é aceitável."
+    },
+    {
+      "id": "rechnungen-128",
+      "verdict": "APPROVE",
+      "reason": "Eigenentwicklung designa desenvolvimento pela própria empresa; não implica gratuidade e difere de adquirir licença pronta. A explicação corresponde ao termo técnico; a simplicidade não invalida medium."
+    },
+    {
+      "id": "rechnungen-130",
+      "verdict": "REVISE",
+      "reason": "A original repete 105 como sinônimo de custos constantes. O cenário usa a hipótese para derivar o efeito de uma variação de receita, deixando explícito que os custos totais permanecem constantes.",
+      "recommended_final_question": {
+        "id": "rechnungen-130",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Die Erlöse steigen von 80.000 € auf 92.000 €. Die gesamten Kosten bleiben bei 70.000 €. Wie verändert sich das Betriebsergebnis?",
+        "answer1": "Es steigt um 12.000 €.",
+        "answer2": "Es steigt auf 12.000 €.",
+        "answer3": "Es bleibt bei 10.000 €.",
+        "answer4": "Es sinkt um 12.000 €.",
+        "correctAnswer": 0,
+        "explanation": "Bisheriges Ergebnis: 80.000 € − 70.000 € = 10.000 €. Neues Ergebnis: 92.000 € − 70.000 € = 22.000 €. Der Anstieg beträgt 12.000 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-131",
+      "verdict": "APPROVE",
+      "reason": "A original identifica corretamente Gewinn / eingesetztes Kapital; a explicação distingue rentabilidade de prazo e soma de custos. Há proximidade temática com 046, mas aqui se exige reconhecer especificamente as grandezas da relação."
+    },
+    {
+      "id": "rechnungen-132",
+      "verdict": "REVISE",
+      "reason": "A original duplica 047 e usa a própria palavra eingesetzt na resposta. O caso explicita as parcelas de capital e impede usar apenas a compra principal como base do ROI.",
+      "recommended_final_question": {
+        "id": "rechnungen-132",
+        "category": "Rechnungen",
+        "topic": "ROI-Amortisation",
+        "difficulty": "medium",
+        "question": "Eine Investition umfasst 20.000 € für Hardware und 10.000 € für die notwendige Einrichtung. Der jährliche Gewinn beträgt 6.000 €. Wie hoch ist der einfache jährliche ROI bezogen auf die gesamte Anfangsinvestition?",
+        "answer1": "20 %",
+        "answer2": "30 %",
+        "answer3": "60 %",
+        "answer4": "5 %",
+        "correctAnswer": 0,
+        "explanation": "Gesamte Anfangsinvestition: 20.000 € + 10.000 € = 30.000 €. ROI = 6.000 € / 30.000 € × 100 = 20 %.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-133",
+      "verdict": "REVISE",
+      "reason": "Investitionssumme é explicada circularmente e sobrepõe 047/132. A nova versão verifica o montante efetivamente investido após desconto, distinguindo-o da soma dos preços de tabela.",
+      "recommended_final_question": {
+        "id": "rechnungen-133",
+        "category": "Rechnungen",
+        "topic": "ROI-Amortisation",
+        "difficulty": "medium",
+        "question": "Für ein Projekt werden Hardware für 15.000 € und die Ersteinrichtung für 5.000 € beschafft. Auf die Hardware gibt es 10 % Rabatt, auf die Einrichtung keinen. Wie hoch ist die Investitionssumme?",
+        "answer1": "18.500 €",
+        "answer2": "18.000 €",
+        "answer3": "20.000 €",
+        "answer4": "13.500 €",
+        "correctAnswer": 0,
+        "explanation": "Rabatt auf die Hardware: 15.000 € × 10 % = 1.500 €. Investitionssumme = 15.000 € − 1.500 € + 5.000 € = 18.500 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-134",
+      "verdict": "REVISE",
+      "reason": "A original testa Mehrerlös contra despesas e queda de receita, sem distinguir receita adicional de lucro adicional. O cenário inclui custos adicionais como distrator relevante.",
+      "recommended_final_question": {
+        "id": "rechnungen-134",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Nach einer Erweiterung steigt der jährliche Erlös von 50.000 € auf 62.000 €. Zusätzlich entstehen 5.000 € Kosten pro Jahr. Wie hoch ist ausschließlich der jährliche Mehrerlös?",
+        "answer1": "12.000 €",
+        "answer2": "7.000 €",
+        "answer3": "17.000 €",
+        "answer4": "62.000 €",
+        "correctAnswer": 0,
+        "explanation": "Mehrerlös ist die Zunahme des Erlöses: 62.000 € − 50.000 € = 12.000 €. Die zusätzlichen Kosten werden erst für die Veränderung des Ergebnisses abgezogen.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-135",
+      "verdict": "REVISE",
+      "reason": "A original repete adicional no enunciado e na definição. O caso distingue custos novos de custos já incluídos e evita contá-los duas vezes.",
+      "recommended_final_question": {
+        "id": "rechnungen-135",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Projekt kostet bisher 10.000 €. Eine neue Funktion verursacht zusätzlich 2.000 €. Die bereits enthaltenen Supportkosten von 1.000 € bleiben unverändert. Wie hoch sind die neuen Gesamtkosten?",
+        "answer1": "12.000 €",
+        "answer2": "13.000 €",
+        "answer3": "11.000 €",
+        "answer4": "2.000 €",
+        "correctAnswer": 0,
+        "explanation": "Die Supportkosten sind schon im bisherigen Gesamtbetrag enthalten. Hinzu kommen nur 2.000 €: 10.000 € + 2.000 € = 12.000 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-136",
+      "verdict": "REVISE",
+      "reason": "A original tem distratores de receitas, preços e investimento; não distingue economia bruta de resultado líquido. A nova questão pede explicitamente economia operacional antes da compra inicial.",
+      "recommended_final_question": {
+        "id": "rechnungen-136",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Die jährlichen Betriebskosten sinken von 9.000 € auf 6.500 €. Die Umstellung kostet einmalig 4.000 €. Wie hoch ist die jährliche Betriebskosteneinsparung vor Berücksichtigung der Umstellungskosten?",
+        "answer1": "2.500 €",
+        "answer2": "−1.500 €",
+        "answer3": "6.500 €",
+        "answer4": "15.500 €",
+        "correctAnswer": 0,
+        "explanation": "Die jährliche Betriebskosteneinsparung beträgt 9.000 € − 6.500 € = 2.500 €. Die einmaligen Umstellungskosten gehören nicht zu dieser jährlichen Differenz.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-137",
+      "verdict": "REVISE",
+      "reason": "O resultado 18.000 − 5.000 = 13.000 € está correto, mas o PASS aceita valores sem período para uma pergunta anual. Explicitar a mesma base anual e o alcance dos custos evita uma hipótese não declarada.",
+      "recommended_final_question": {
+        "id": "rechnungen-137",
+        "category": "Rechnungen",
+        "topic": "ROI-Amortisation",
+        "difficulty": "medium",
+        "question": "Eine Investition erzielt jährlich 18.000 € Mehrerlös. Alle dadurch zusätzlich entstehenden jährlichen Kosten betragen zusammen 5.000 €. Wie hoch ist der zusätzliche jährliche Gewinn?",
+        "answer1": "13.000 €",
+        "answer2": "18.000 €",
+        "answer3": "23.000 €",
+        "answer4": "5.000 €",
+        "correctAnswer": 0,
+        "explanation": "Zusätzlicher jährlicher Gewinn = jährlicher Mehrerlös − zusätzliche jährliche Kosten = 18.000 € − 5.000 € = 13.000 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-139",
+      "verdict": "REVISE",
+      "reason": "A original define jährlich por jedes Jahr e repete 136/141. A conversão mensal-anual aplica a expressão e produz distratores do mesmo tipo.",
+      "recommended_final_question": {
+        "id": "rechnungen-139",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein System spart jeden Monat 350 € Betriebskosten. Wie hoch ist die Einsparung über zwölf Monate bei gleichbleibendem Monatsbetrag?",
+        "answer1": "4.200 €",
+        "answer2": "350 €",
+        "answer3": "1.050 €",
+        "answer4": "3.500 €",
+        "correctAnswer": 0,
+        "explanation": "Jährliche Einsparung = 12 × 350 € = 4.200 €. 1.050 € wären nur drei Monate.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-140",
+      "verdict": "REVISE",
+      "reason": "A original duplica 087 e contém duas formas de investimento inicial como distratores. O novo caso distingue parcela fixa recorrente de parcela variável, ambas operacionais.",
+      "recommended_final_question": {
+        "id": "rechnungen-140",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Für eine Cloud-Lösung fallen monatlich 200 € Grundgebühr und 3 € je aktivem Nutzer an. Im betrachteten Monat gibt es 100 aktive Nutzer. Wie hoch sind die laufenden Kosten dieses Monats?",
+        "answer1": "500 €",
+        "answer2": "300 €",
+        "answer3": "200 €",
+        "answer4": "20.300 €",
+        "correctAnswer": 0,
+        "explanation": "Laufende Monatskosten = 200 € Grundgebühr + 100 × 3 € = 500 €. Sowohl die wiederkehrende Grundgebühr als auch die nutzungsabhängigen Kosten gehören dazu.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-141",
+      "verdict": "REVISE",
+      "reason": "6.200 − 1.800 = 4.400 € seria correto se os custos também fossem anuais. A original informa jährlich apenas para a economia; explicitar o período dos custos resolve a ambiguidade aceita no PASS.",
+      "recommended_final_question": {
+        "id": "rechnungen-141",
+        "category": "Rechnungen",
+        "topic": "ROI-Amortisation",
+        "difficulty": "medium",
+        "question": "Ein Ticketsystem spart jährlich 6.200 € ein. Seine zusätzlichen laufenden Kosten betragen 1.800 € pro Jahr. Wie hoch ist der jährliche Nettoeffekt?",
+        "answer1": "4.400 €",
+        "answer2": "6.200 €",
+        "answer3": "8.000 €",
+        "answer4": "1.800 €",
+        "correctAnswer": 0,
+        "explanation": "Beide Beträge beziehen sich auf ein Jahr. Nettoeffekt = 6.200 € − 1.800 € = 4.400 € pro Jahr.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-142",
+      "verdict": "REVISE",
+      "reason": "A original apenas parafraseia primeiro ano e é repetida em 172. O novo caso delimita pagamentos no primeiro ano, distinguindo-os de lucro contábil ou de toda a vida útil.",
+      "recommended_final_question": {
+        "id": "rechnungen-142",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein System wird zu Jahresbeginn gekauft. Es kostet einmalig 12.000 € und verursacht 200 € Betriebsauszahlungen pro Monat. Wie hoch sind die gesamten Auszahlungen im ersten Jahr?",
+        "answer1": "14.400 €",
+        "answer2": "12.200 €",
+        "answer3": "2.400 €",
+        "answer4": "24.000 €",
+        "correctAnswer": 0,
+        "explanation": "Auszahlungen im ersten Jahr = 12.000 € Kaufpreis + 12 × 200 € Betriebsauszahlungen = 14.400 €. Gefragt sind Zahlungen, nicht der bilanzielle Jahresgewinn.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-143",
+      "verdict": "REVISE",
+      "reason": "A original repete 048/090 e usa cessação de custos como distrator óbvio. O novo item verifica que amortização depende do retorno acumulado, sem confundi-lo com a receita ou com o fim da operação.",
+      "recommended_final_question": {
+        "id": "rechnungen-143",
+        "category": "Rechnungen",
+        "topic": "ROI-Amortisation",
+        "difficulty": "medium",
+        "question": "Eine Investition von 20.000 € hat bisher Netto-Rückflüsse von insgesamt 18.000 € erzielt. Welche Aussage ist bei einer statischen Betrachtung richtig?",
+        "answer1": "Zur Amortisation fehlen noch 2.000 € Rückfluss.",
+        "answer2": "Die Investition ist bereits vollständig amortisiert.",
+        "answer3": "Zur Amortisation fehlen noch 20.000 € Rückfluss.",
+        "answer4": "Die verbleibende Amortisationsdauer beträgt sicher zwei Jahre.",
+        "correctAnswer": 0,
+        "explanation": "20.000 € − 18.000 € = 2.000 € sind noch auszugleichen. Ohne Angaben zu künftigen Rückflüssen lässt sich daraus keine verbleibende Dauer bestimmen.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-144",
+      "verdict": "REVISE",
+      "reason": "A original repete 047/132 e oferece destruição do capital como alternativa. O cenário distingue o rendimento percentual do investimento do lucro absoluto.",
+      "recommended_final_question": {
+        "id": "rechnungen-144",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Projekt A bindet 40.000 € Kapital und erzielt 8.000 € Jahresgewinn. Projekt B bindet 80.000 € und erzielt 12.000 € Jahresgewinn. Welches Projekt hat den höheren jährlichen ROI?",
+        "answer1": "A mit 20 %",
+        "answer2": "B mit 15 %",
+        "answer3": "B mit 30 %",
+        "answer4": "Beide mit 20 %",
+        "correctAnswer": 0,
+        "explanation": "A: 8.000 € / 40.000 € × 100 = 20 %. B: 12.000 € / 80.000 € × 100 = 15 %. A ist nach ROI rentabler, obwohl B mehr absoluten Gewinn erzielt.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-145",
+      "verdict": "APPROVE",
+      "reason": "36.000 / 200.000 × 100 = 18 %, índice 1. As quatro alternativas são taxas distintas, sem outra defensável; explicação e fórmula correspondem ao ROI simples."
+    },
+    {
+      "id": "rechnungen-146",
+      "verdict": "APPROVE",
+      "reason": "Umsatzrentabilität = Gewinn / Umsatz × 100, opção 0. Capitalumschlag, relação com custos fixos e percentual de custos são distratores do mesmo domínio; manter a original."
+    },
+    {
+      "id": "rechnungen-147",
+      "verdict": "APPROVE",
+      "reason": "Kapitalumschlag = Umsatz / eingesetztes Kapital, opção 0. A original distingue corretamente margem, custos e duração; a explicação fornece a fórmula sem confundir taxa percentual com fator."
+    },
+    {
+      "id": "rechnungen-148",
+      "verdict": "REVISE",
+      "reason": "A original pressupõe que vergleiche signifique comparar com o ROI direto, sem a instrução completa, e oferece apenas uma resposta longa pertinente. O caso fornece os dados e explicita os dois caminhos.",
+      "recommended_final_question": {
+        "id": "rechnungen-148",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen erzielt 300.000 € Jahresumsatz und 30.000 € Jahresgewinn bei 200.000 € eingesetztem Kapital. Welcher Vergleich von DuPont-ROI und direktem ROI ist richtig?",
+        "answer1": "10 % × 1,5 = 15 %; 30.000 / 200.000 × 100 = 15 %",
+        "answer2": "10 % × 1,5 = 15 %; 30.000 / 300.000 × 100 = 10 %",
+        "answer3": "10 % + 1,5 % = 11,5 %; 30.000 / 200.000 × 100 = 15 %",
+        "answer4": "10 % × (200.000 / 300.000) ≈ 6,67 %; 30.000 / 200.000 × 100 = 15 %",
+        "correctAnswer": 0,
+        "explanation": "Umsatzrentabilität: 30.000 / 300.000 × 100 = 10 %. Kapitalumschlag: 300.000 / 200.000 = 1,5. DuPont-ROI = 10 % × 1,5 = 15 %. Direkt: 30.000 / 200.000 × 100 = 15 %.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-149",
+      "verdict": "REVISE",
+      "reason": "A original apresenta apenas uma alternativa como relação entre retorno e capital. O novo caso compara taxas sob a mesma duração e diferencia pontos percentuais de valores absolutos.",
+      "recommended_final_question": {
+        "id": "rechnungen-149",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Investition A erzielt 7.000 € Jahresgewinn bei 35.000 € Kapital. B erzielt 15.000 € bei 50.000 € Kapital. Um wie viele Prozentpunkte ist der jährliche ROI von B höher?",
+        "answer1": "10 Prozentpunkte",
+        "answer2": "20 Prozentpunkte",
+        "answer3": "30 Prozentpunkte",
+        "answer4": "50 Prozentpunkte",
+        "correctAnswer": 0,
+        "explanation": "ROI A = 7.000 / 35.000 × 100 = 20 %. ROI B = 15.000 / 50.000 × 100 = 30 %. Die Differenz beträgt 30 % − 20 % = 10 Prozentpunkte.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-151",
+      "verdict": "REVISE",
+      "reason": "A definição de Budget é reconhecível entre lucro, quantidade e ROI sem aplicar restrição financeira. O caso verifica o saldo do orçamento após compromissos já assumidos.",
+      "recommended_final_question": {
+        "id": "rechnungen-151",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Für ein IT-Projekt stehen 65.000 € Budget zur Verfügung. Davon sind 42.000 € für Hardware und 8.000 € für die Einrichtung fest eingeplant. Wie viel Budget bleibt für weitere Ausgaben?",
+        "answer1": "15.000 €",
+        "answer2": "23.000 €",
+        "answer3": "50.000 €",
+        "answer4": "57.000 €",
+        "correctAnswer": 0,
+        "explanation": "Bereits eingeplant sind 42.000 € + 8.000 € = 50.000 €. Verfügbar bleiben 65.000 € − 50.000 € = 15.000 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-152",
+      "verdict": "APPROVE",
+      "reason": "Nur 65.000 € Budget estabelece limite máximo disponível, índice 0; não impõe gasto mínimo nem descreve lucro ou custos fixos. Pode permanecer como interpretação de restrição, complementar ao cálculo em 151."
+    },
+    {
+      "id": "rechnungen-153",
+      "verdict": "REVISE",
+      "reason": "A original aprova uma recomendação genericamente fundamentada sem avaliar fundamento algum. O cenário obriga a considerar simultaneamente orçamento e rentabilidade, em vez de escolher só o maior lucro.",
+      "recommended_final_question": {
+        "id": "rechnungen-153",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Das Investitionsbudget beträgt 45.000 €. Projekt A kostet 50.000 € und bringt 12.000 € Jahresgewinn. Projekt B kostet 40.000 € und bringt 10.000 € Jahresgewinn. Weitere Finanzierung ist ausgeschlossen. Welche Empfehlung ist begründet?",
+        "answer1": "B wählen: Es passt ins Budget und erzielt 25 % jährlichen ROI.",
+        "answer2": "A wählen: Sein höherer Jahresgewinn hebt die Budgetgrenze auf.",
+        "answer3": "A wählen: Sein ROI beträgt 25 % und ist höher als der von B.",
+        "answer4": "B wählen: Sein jährlicher ROI beträgt 40 %.",
+        "correctAnswer": 0,
+        "explanation": "A überschreitet das Budget und hat einen ROI von 12.000 / 50.000 × 100 = 24 %. B liegt im Budget und erreicht 10.000 / 40.000 × 100 = 25 %. Daher ist B die zulässige Wahl.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-154",
+      "verdict": "APPROVE",
+      "reason": "Erwartete Einsparungen são custos que se prevê evitar no futuro, não lucro já realizado. A distinção entre previsão e resultado certo é pedagogicamente útil; a original pode permanecer."
+    },
+    {
+      "id": "rechnungen-155",
+      "verdict": "APPROVE",
+      "reason": "Kumuliert significa somar valores dos períodos; média e último período são erros reais e distintos. A explicação é correta e prepara a aplicação em 156 sem exigir nova formulação."
+    },
+    {
+      "id": "rechnungen-156",
+      "verdict": "APPROVE",
+      "reason": "Recálculo independente: −7.000 + 17.000 + 24.000 + 30.000 = 64.000 €, índice 1. 71.000 ignora o ano negativo e 78.000 troca seu sinal; bons distratores. Soma de quatro parcelas permanece medium."
+    },
+    {
+      "id": "rechnungen-157",
+      "verdict": "REVISE",
+      "reason": "A original mistura equilíbrio operacional, Erträge e Rückflüsse sem definir o modelo temporal. A nova versão pergunta diretamente quando o resultado acumulado deixa de ser negativo, sem equipará-lo automaticamente à amortização.",
+      "recommended_final_question": {
+        "id": "rechnungen-157",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Projekt erzielt folgende Jahresergebnisse: Jahr 1: −12.000 €, Jahr 2: 5.000 €, Jahr 3: 8.000 €, Jahr 4: 10.000 €. Nach welchem Jahr ist das kumulierte Ergebnis erstmals nicht mehr negativ?",
+        "answer1": "Nach Jahr 3",
+        "answer2": "Nach Jahr 1",
+        "answer3": "Nach Jahr 2",
+        "answer4": "Nach Jahr 4",
+        "correctAnswer": 0,
+        "explanation": "Kumuliert: nach Jahr 1 −12.000 €, nach Jahr 2 −7.000 €, nach Jahr 3 1.000 € und nach Jahr 4 11.000 €. Erstmals nicht negativ ist das Ergebnis nach Jahr 3.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-158",
+      "verdict": "REVISE",
+      "reason": "A original testa apenas durchgeführt com alternativas sobre encerramento ou venda da empresa. O caso avalia o efeito de uma campanha, deixando explícito que a margem de contribuição ainda não desconta o custo da campanha.",
+      "recommended_final_question": {
+        "id": "rechnungen-158",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Eine Marketingkampagne kostet 4.000 €. Sie bringt zusätzliche Verkäufe mit insgesamt 6.000 € Deckungsbeitrag vor Kampagnenkosten. Andere Fixkosten bleiben unverändert. Wie verändert sich das Betriebsergebnis?",
+        "answer1": "Es steigt um 2.000 €.",
+        "answer2": "Es steigt um 6.000 €.",
+        "answer3": "Es steigt um 10.000 €.",
+        "answer4": "Es sinkt um 4.000 €.",
+        "correctAnswer": 0,
+        "explanation": "Vom zusätzlichen Deckungsbeitrag sind die Kampagnenkosten abzuziehen: 6.000 € − 4.000 € = 2.000 € Verbesserung des Betriebsergebnisses.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-159",
+      "verdict": "REVISE",
+      "reason": "A definição de neu gewonnene Kunden é uma paráfrase evidente. O novo caso distingue quantidade de novos clientes e crescimento líquido após perdas.",
+      "recommended_final_question": {
+        "id": "rechnungen-159",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Service hat zu Monatsbeginn 200 Kunden. Im Monat kommen 30 Neukunden hinzu und 10 bisherige Kunden kündigen. Wie hoch ist der Nettozuwachs der Kundenzahl?",
+        "answer1": "20 Kunden",
+        "answer2": "30 Kunden",
+        "answer3": "40 Kunden",
+        "answer4": "220 Kunden",
+        "correctAnswer": 0,
+        "explanation": "Nettozuwachs = 30 neue Kunden − 10 verlorene Kunden = 20 Kunden. Der neue Gesamtbestand beträgt 220, ist aber nicht der Zuwachs.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-160",
+      "verdict": "REVISE",
+      "reason": "A definição geral de Marge é aceitável, mas os distratores são grandezas de outros domínios. O caso define quais custos entram e exige distinguir margem sobre receita de acréscimo sobre custo.",
+      "recommended_final_question": {
+        "id": "rechnungen-160",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Produkt wird für 100 € verkauft; die für diese Rechnung berücksichtigten Kosten betragen 80 €. Wie hoch ist die prozentuale Marge bezogen auf den Verkaufserlös?",
+        "answer1": "20 %",
+        "answer2": "25 %",
+        "answer3": "80 %",
+        "answer4": "125 %",
+        "correctAnswer": 0,
+        "explanation": "Absolute Marge = 100 € − 80 € = 20 €. Bezogen auf den Erlös: 20 / 100 × 100 = 20 %. 25 % wäre der Aufschlag auf die Kosten von 80 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-161",
+      "verdict": "APPROVE",
+      "reason": "45 × 1.200 = 54.000 € de receita anual adicional, índice 1. Não se subtraem custos porque a pergunta é sobre Umsatz; unidade temporal e explicação estão corretas."
+    },
+    {
+      "id": "rechnungen-163",
+      "verdict": "REVISE",
+      "reason": "A original não apresenta a frase completa nem dados e associa qualquer mínimo a uma quantidade. O caso explicita o ROI considerado e testa a desigualdade estrita para ROI positivo.",
+      "recommended_final_question": {
+        "id": "rechnungen-163",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Eine Kampagne kostet 3.000 €. Jeder gewonnene Kunde liefert 100 € zusätzlichen Deckungsbeitrag vor Kampagnenkosten. Der Kampagnen-ROI wird als (Gesamtdeckungsbeitrag − Kampagnenkosten) / Kampagnenkosten × 100 berechnet. Wie viele Neukunden sind mindestens für einen positiven ROI nötig?",
+        "answer1": "31 Neukunden",
+        "answer2": "30 Neukunden",
+        "answer3": "29 Neukunden",
+        "answer4": "300 Neukunden",
+        "correctAnswer": 0,
+        "explanation": "Bei 30 Kunden beträgt der Deckungsbeitrag 3.000 €; der ROI ist dann 0 %. Für einen positiven ROI muss 100 € × Kundenzahl > 3.000 € gelten. Die kleinste ganze Kundenzahl ist 31.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-164",
+      "verdict": "REVISE",
+      "reason": "A original pergunta apenas o significado de behalten. A comparação usa explicitamente pagamentos futuros, mantendo custos anteriores fora da decisão e evitando confundir compra nova com economia automática.",
+      "recommended_final_question": {
+        "id": "rechnungen-164",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Alte Drucker verursachen in den nächsten zwei Jahren jeweils 3.000 € Betriebsauszahlungen. Neue Drucker kosten jetzt 4.000 € und anschließend 1.500 € pro Jahr im Betrieb. Erlöse beim Verkauf der alten Geräte und Restwerte gibt es nicht. Welche Wahl verursacht über zwei Jahre weniger Auszahlungen?",
+        "answer1": "Alte Drucker behalten: 1.000 € weniger",
+        "answer2": "Neue Drucker kaufen: 1.000 € weniger",
+        "answer3": "Neue Drucker kaufen: 3.000 € weniger",
+        "answer4": "Beide verursachen gleich hohe Auszahlungen",
+        "correctAnswer": 0,
+        "explanation": "Behalten: 2 × 3.000 € = 6.000 €. Ersetzen: 4.000 € + 2 × 1.500 € = 7.000 €. Behalten verursacht im betrachteten Zeitraum 1.000 € weniger Auszahlungen.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-165",
+      "verdict": "REVISE",
+      "reason": "A original define substituir com distratores como mudar preço. O caso avalia uma troca com venda dos equipamentos antigos, distinguindo aquisição bruta e desembolso líquido.",
+      "recommended_final_question": {
+        "id": "rechnungen-165",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Neue Geräte kosten 9.000 €. Beim Ersatz werden die alten Geräte für insgesamt 1.500 € verkauft. Weitere Zahlungen fallen nicht an. Wie hoch ist die anfängliche Nettoauszahlung?",
+        "answer1": "7.500 €",
+        "answer2": "9.000 €",
+        "answer3": "10.500 €",
+        "answer4": "1.500 €",
+        "correctAnswer": 0,
+        "explanation": "Nettoauszahlung = Kaufpreis der neuen Geräte − Verkaufserlös der alten Geräte = 9.000 € − 1.500 € = 7.500 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-166",
+      "verdict": "APPROVE",
+      "reason": "14.400 − 7.600 = 6.800 € por ano, índice 0. Ambos os valores são custos anuais de operação; a pergunta pede a economia bruta, portanto nenhum investimento inicial deve ser subtraído."
+    },
+    {
+      "id": "rechnungen-167",
+      "verdict": "REVISE",
+      "reason": "A original define literalmente quatro anos e apresenta meses como distrator. O caso obriga a usar toda a duração, distinguindo custos anuais de aquisição única.",
+      "recommended_final_question": {
+        "id": "rechnungen-167",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein System kostet einmalig 5.000 €. Die Betriebskosten betragen in den ersten beiden Jahren je 1.800 € und in den Jahren 3 und 4 je 1.200 €. Wie hoch sind die Gesamtkosten über vier Jahre?",
+        "answer1": "11.000 €",
+        "answer2": "6.200 €",
+        "answer3": "12.200 €",
+        "answer4": "9.800 €",
+        "correctAnswer": 0,
+        "explanation": "Gesamtkosten = 5.000 € + 2 × 1.800 € + 2 × 1.200 € = 11.000 €. Die unterschiedlichen Jahreskosten werden jeweils nur für die angegebenen Jahre angesetzt.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-168",
+      "verdict": "REVISE",
+      "reason": "A original testa aufbauen com opções sobre fechamento e custos, sem raciocínio financeiro. O caso distingue despesas iniciais da estrutura de pagamentos posteriores.",
+      "recommended_final_question": {
+        "id": "rechnungen-168",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Für den Aufbau einer Schulungsakademie werden zu Beginn 25.000 € für Ausstattung und 15.000 € für die Einrichtung bezahlt. Später fallen jährlich 12.000 € Betriebsausgaben an. Wie hoch ist die Anfangsinvestition?",
+        "answer1": "40.000 €",
+        "answer2": "52.000 €",
+        "answer3": "25.000 €",
+        "answer4": "12.000 €",
+        "correctAnswer": 0,
+        "explanation": "Die Anfangsinvestition umfasst Ausstattung und Einrichtung: 25.000 € + 15.000 € = 40.000 €. Die späteren Betriebsausgaben sind getrennt zu berücksichtigen.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-169",
+      "verdict": "REVISE",
+      "reason": "A original repete erwartete e Erlöse na resposta. O novo item aplica uma previsão sem tratá-la como lucro certo, com quantidades e preço informados.",
+      "recommended_final_question": {
+        "id": "rechnungen-169",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Eine Akademie plant 20 Schulungen pro Jahr mit durchschnittlich 12 zahlenden Teilnehmern. Jeder Teilnehmer zahlt 250 €. Wie hoch sind die erwarteten jährlichen Schulungserlöse?",
+        "answer1": "60.000 €",
+        "answer2": "5.000 €",
+        "answer3": "3.000 €",
+        "answer4": "63.000 €",
+        "correctAnswer": 0,
+        "explanation": "Erwartete Teilnehmerzahl: 20 × 12 = 240. Erlöse: 240 × 250 € = 60.000 € pro Jahr. Kosten sind für die Erlösberechnung nicht abzuziehen.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-170",
+      "verdict": "REVISE",
+      "reason": "A original associa economia externa a não pagar, com distratores desconexos. O caso separa a redução de despesas externas dos custos próprios e do efeito líquido.",
+      "recommended_final_question": {
+        "id": "rechnungen-170",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Die Ausgaben für externe Schulungen sinken durch eine eigene Akademie von 18.000 € auf 6.000 € pro Jahr. Die Akademie verursacht zusätzlich 8.000 € jährliche Betriebskosten. Wie hoch ist allein die Einsparung bei externen Schulungen?",
+        "answer1": "12.000 €",
+        "answer2": "4.000 €",
+        "answer3": "18.000 €",
+        "answer4": "6.000 €",
+        "correctAnswer": 0,
+        "explanation": "Externe Einsparung = 18.000 € − 6.000 € = 12.000 € pro Jahr. Nach zusätzlichen Betriebskosten wäre der Nettoeffekt 4.000 €, aber danach wird hier nicht gefragt.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-171",
+      "verdict": "REVISE",
+      "reason": "A original repete a fórmula em palavras e tem só parcelas isoladas como alternativas. O caso verifica a aplicação e explicita que os custos já informados não devem ser reduzidos novamente pela economia externa.",
+      "recommended_final_question": {
+        "id": "rechnungen-171",
+        "category": "Rechnungen",
+        "topic": "ROI-Amortisation",
+        "difficulty": "medium",
+        "question": "Eine Akademie erzielt 40.000 € Erlöse pro Jahr. Zusätzlich entfallen 15.000 € bisherige externe Schulungskosten. Der Betrieb der Akademie kostet 35.000 € jährlich; die externen Kosten sind darin nicht enthalten. Wie hoch ist der jährliche Nettonutzen nach der Formel Erlöse + Einsparungen − laufende Kosten?",
+        "answer1": "20.000 €",
+        "answer2": "5.000 €",
+        "answer3": "55.000 €",
+        "answer4": "90.000 €",
+        "correctAnswer": 0,
+        "explanation": "Nettonutzen = 40.000 € + 15.000 € − 35.000 € = 20.000 € pro Jahr. Die externe Einsparung wird einmal angesetzt.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-172",
+      "verdict": "REVISE",
+      "reason": "A original repete 142 e não testa a base temporal. A nova versão exige usar apenas os meses efetivos do primeiro ano e impede anualização implícita.",
+      "recommended_final_question": {
+        "id": "rechnungen-172",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Eine Investition von 30.000 € geht am 1. Juli in Betrieb und erzielt von Juli bis Dezember jeden Monat 1.000 € Gewinn. Wie hoch ist der einfache ROI für dieses erste Kalenderjahr, ohne Hochrechnung auf zwölf Monate?",
+        "answer1": "20 %",
+        "answer2": "40 %",
+        "answer3": "3,33 %",
+        "answer4": "6 %",
+        "correctAnswer": 0,
+        "explanation": "Im ersten Kalenderjahr entstehen sechs Monatsgewinne: 6 × 1.000 € = 6.000 €. ROI = 6.000 € / 30.000 € × 100 = 20 %. Eine Hochrechnung auf zwölf Monate ist ausdrücklich ausgeschlossen.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-173",
+      "verdict": "REVISE",
+      "reason": "A original define ab Jahr 2 por repetição e usa períodos sem relação como distratores. O cálculo verifica que a taxa do segundo ano também vale para os anos seguintes.",
+      "recommended_final_question": {
+        "id": "rechnungen-173",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Wartungsvertrag kostet im ersten Jahr 1.000 € und ab Jahr 2 jährlich 1.500 €. Wie hoch sind die Wartungskosten für die ersten vier Jahre insgesamt?",
+        "answer1": "5.500 €",
+        "answer2": "6.000 €",
+        "answer3": "4.000 €",
+        "answer4": "4.500 €",
+        "correctAnswer": 0,
+        "explanation": "Jahr 1 kostet 1.000 €. Für die Jahre 2, 3 und 4 fallen jeweils 1.500 € an: 1.000 € + 3 × 1.500 € = 5.500 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-174",
+      "verdict": "REVISE",
+      "reason": "A original entrega Gesamtbudget pela palavra zusammen. O caso exige somar compromissos antes de aplicar o teto, sem transformar orçamento máximo em obrigação de gastar tudo.",
+      "recommended_final_question": {
+        "id": "rechnungen-174",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Das Gesamtbudget beträgt 100.000 €. Zwei bereits ausgewählte Investitionen kosten 45.000 € und 35.000 €. Wie teuer darf eine dritte Investition höchstens sein, damit alle drei im Budget bleiben?",
+        "answer1": "20.000 €",
+        "answer2": "55.000 €",
+        "answer3": "65.000 €",
+        "answer4": "100.000 €",
+        "correctAnswer": 0,
+        "explanation": "Die ersten beiden Investitionen binden 45.000 € + 35.000 € = 80.000 €. Für die dritte bleiben höchstens 100.000 € − 80.000 € = 20.000 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-175",
+      "verdict": "REVISE",
+      "reason": "A original define combinação de forma circular, sem verificar a seleção conjunta. O caso testa alternativas indivisíveis sob orçamento e distingue custo conjunto de valor individual.",
+      "recommended_final_question": {
+        "id": "rechnungen-175",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Das Budget beträgt 70.000 €. Investition A kostet 40.000 €, B 35.000 € und C 30.000 €. Jede Investition kann nur vollständig gewählt werden. Welche Auswahl überschreitet das Budget?",
+        "answer1": "A und B",
+        "answer2": "A und C",
+        "answer3": "B und C",
+        "answer4": "Nur A",
+        "correctAnswer": 0,
+        "explanation": "A + B = 75.000 € überschreitet 70.000 €. A + C = 70.000 € und B + C = 65.000 € sind zulässig; A allein kostet 40.000 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-176",
+      "verdict": "REVISE",
+      "reason": "A original só opõe maximizar a minimizar. A nova versão exige comparar combinações, somar lucros e respeitar orçamento; essa combinação de restrições e otimização justifica hard.",
+      "recommended_final_question": {
+        "id": "rechnungen-176",
+        "category": "Rechnungen",
+        "topic": "ROI-Amortisation",
+        "difficulty": "hard",
+        "question": "Vier voneinander unabhängige Investitionen stehen zur Wahl (Kosten; Jahresgewinn): A (40.000 €; 12.000 €), B (30.000 €; 8.000 €), C (20.000 €; 7.000 €), D (50.000 €; 14.000 €). Das Budget beträgt 70.000 €. Jede Investition darf höchstens einmal und nur vollständig gewählt werden. Welche Kombination maximiert den Jahresgewinn innerhalb des Budgets?",
+        "answer1": "C und D",
+        "answer2": "A und B",
+        "answer3": "A und C",
+        "answer4": "B und C",
+        "correctAnswer": 0,
+        "explanation": "C + D kostet 70.000 € und bringt 21.000 € Jahresgewinn. A + B bringt bei 70.000 € Kosten 20.000 €, A + C bei 60.000 € Kosten 19.000 €, B + C bei 50.000 € Kosten 15.000 €. Einzelinvestitionen bringen weniger, weitere Paare und alle Dreierkombinationen überschreiten das Budget.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-177",
+      "verdict": "REVISE",
+      "reason": "A original define dentro do orçamento contra alternativas absurdas, e a explicação usa unter embora igualdade também seja permitida. O novo caso inclui exatamente o teto e pergunta a admissibilidade.",
+      "recommended_final_question": {
+        "id": "rechnungen-177",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Das Budget beträgt 50.000 €. Die gewählte Kombination kostet einschließlich Einrichtung genau 50.000 €; weitere Kosten im Budgetzeitraum entstehen nicht. Welche Aussage ist richtig?",
+        "answer1": "Die Auswahl liegt innerhalb des Budgets; der Restbetrag ist 0 €.",
+        "answer2": "Die Auswahl überschreitet das Budget, weil kein Restbetrag bleibt.",
+        "answer3": "Die Auswahl liegt nur dann im Budget, wenn sie weniger als 50.000 € kostet.",
+        "answer4": "Die Auswahl lässt noch 50.000 € für weitere Investitionen frei.",
+        "correctAnswer": 0,
+        "explanation": "Innerhalb des Budgets bedeutet, dass die Kosten höchstens dem verfügbaren Betrag entsprechen. 50.000 € ≤ 50.000 €; die Auswahl ist zulässig und schöpft das Budget vollständig aus.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-178",
+      "verdict": "APPROVE",
+      "reason": "Somar lucros e capitais dá 13.000 / 50.000 × 100 = 26 %, índice 1. A soma de ROIs individuais seria o erro de 50 %; a proposta usa corretamente a base conjunta e melhora a definição circular."
+    },
+    {
+      "id": "rechnungen-179",
+      "verdict": "REVISE",
+      "reason": "A original só contrapõe ano a dia, trimestre e vida útil, sem testar a distinção importante de que Geschäftsjahr pode diferir do ano civil. O novo item verifica o intervalo completo de doze meses.",
+      "recommended_final_question": {
+        "id": "rechnungen-179",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Das Geschäftsjahr eines Unternehmens beginnt am 1. April 2026 und dauert zwölf Monate. Wann endet es?",
+        "answer1": "Am 31. März 2027",
+        "answer2": "Am 31. Dezember 2026",
+        "answer3": "Am 30. Juni 2026",
+        "answer4": "Am 30. April 2027",
+        "correctAnswer": 0,
+        "explanation": "Ein zwölfmonatiges Geschäftsjahr vom 1. April 2026 läuft bis zum 31. März 2027. Es muss nicht mit dem Kalenderjahr übereinstimmen.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-180",
+      "verdict": "REVISE",
+      "reason": "A original define Kennzahlen por uma alternativa longa contra nomes de projetos. O caso pede escolher o indicador adequado a um objetivo mensurável e usa apenas indicadores econômicos como opções.",
+      "recommended_final_question": {
+        "id": "rechnungen-180",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen möchte vergleichen, welche Investition je eingesetztem Euro Kapital mehr Gewinn erzielt. Welche Kennzahl passt zu diesem Ziel?",
+        "answer1": "ROI",
+        "answer2": "Umsatzrentabilität",
+        "answer3": "Kapitalumschlag",
+        "answer4": "Amortisationsdauer",
+        "correctAnswer": 0,
+        "explanation": "Der ROI setzt Gewinn ins Verhältnis zum eingesetzten Kapital. Umsatzrentabilität bezieht Gewinn auf Umsatz, Kapitalumschlag Umsatz auf Kapital, und Amortisationsdauer misst einen Zeitraum.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-181",
+      "verdict": "REVISE",
+      "reason": "A original duplica a definição de 146. O novo caso parte de uma meta de Umsatzrentabilität e exige recuperar o lucro necessário, complementando o cálculo direto de 182.",
+      "recommended_final_question": {
+        "id": "rechnungen-181",
+        "category": "Rechnungen",
+        "topic": "ROI-Amortisation",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen plant 500.000 € Jahresumsatz und strebt eine Umsatzrentabilität von 12 % an. Wie hoch muss der Jahresgewinn dafür sein?",
+        "answer1": "60.000 €",
+        "answer2": "50.000 €",
+        "answer3": "440.000 €",
+        "answer4": "560.000 €",
+        "correctAnswer": 0,
+        "explanation": "Umsatzrentabilität = Gewinn / Umsatz × 100. Daher: Gewinn = 500.000 € × 0,12 = 60.000 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-182",
+      "verdict": "APPROVE",
+      "reason": "50.000 / 500.000 × 100 = 10 %, índice 1. Lucro e receita são usados na ordem correta e nenhuma outra taxa coincide; a original aplica a definição de 146."
+    },
+    {
+      "id": "rechnungen-183",
+      "verdict": "APPROVE",
+      "reason": "1.000.000 / 500.000 = 2, índice 2. Kapitalumschlag é um fator, sem multiplicar por 100; 0,5 testa a inversão da razão. Explicação correta."
+    },
+    {
+      "id": "rechnungen-185",
+      "verdict": "REVISE",
+      "reason": "A original pergunta apenas o significado de getrennt. O novo caso realmente separa os dois componentes da DuPont, com inversões de fórmula entre os distratores.",
+      "recommended_final_question": {
+        "id": "rechnungen-185",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen erzielt 500.000 € Umsatz und 40.000 € Gewinn bei 250.000 € eingesetztem Kapital. Wie hoch sind Umsatzrentabilität und Kapitalumschlag?",
+        "answer1": "8 % und 2",
+        "answer2": "16 % und 2",
+        "answer3": "8 % und 0,5",
+        "answer4": "16 % und 0,5",
+        "correctAnswer": 0,
+        "explanation": "Umsatzrentabilität = 40.000 / 500.000 × 100 = 8 %. Kapitalumschlag = 500.000 / 250.000 = 2. Die 16 % entsprechen dem ROI, nicht der Umsatzrentabilität.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-186",
+      "verdict": "REVISE",
+      "reason": "A original compara auf e um, mas dois distratores não correspondem a taxas. O novo item distingue meta final, pontos percentuais e aumento relativo usando o mesmo ROI de 35 %.",
+      "recommended_final_question": {
+        "id": "rechnungen-186",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Der ROI soll von 20 % auf 35 % steigen. Um wie viele Prozentpunkte muss er steigen?",
+        "answer1": "15 Prozentpunkte",
+        "answer2": "35 Prozentpunkte",
+        "answer3": "55 Prozentpunkte",
+        "answer4": "75 Prozentpunkte",
+        "correctAnswer": 0,
+        "explanation": "Differenz der Prozentwerte: 35 % − 20 % = 15 Prozentpunkte. Der relative Anstieg gegenüber 20 % wäre 75 %, ist aber nicht gefragt.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-187",
+      "verdict": "REVISE",
+      "reason": "A original reconhece dois caminhos pela própria expressão. O caso fixa numericamente a meta e testa duas maneiras independentes de atingi-la, sem pressupor viabilidade operacional real.",
+      "recommended_final_question": {
+        "id": "rechnungen-187",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen erzielt 20.000 € Jahresgewinn bei 100.000 € Kapital. Der ROI soll rechnerisch auf 25 % steigen. Welche zwei Änderungen erreichen das Ziel jeweils für sich?",
+        "answer1": "Gewinn auf 25.000 € erhöhen oder Kapital auf 80.000 € senken",
+        "answer2": "Gewinn auf 25.000 € erhöhen oder Kapital auf 125.000 € erhöhen",
+        "answer3": "Gewinn auf 24.000 € erhöhen oder Kapital auf 80.000 € senken",
+        "answer4": "Gewinn auf 24.000 € erhöhen oder Kapital auf 125.000 € erhöhen",
+        "correctAnswer": 0,
+        "explanation": "Bei unverändertem Kapital: 25.000 / 100.000 × 100 = 25 %. Bei unverändertem Gewinn: 20.000 / 80.000 × 100 = 25 %. Es sind zwei getrennte rechnerische Möglichkeiten.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-188",
+      "verdict": "APPROVE",
+      "reason": "(Gewinn / Umsatz) × (Umsatz / Kapital) simplifica para Gewinn / Kapital. A proposta mostra corretamente o ROI como razão e distingue multiplicação, soma e inversão. Não exige um resultado percentual, portanto não falta um fator 100 na identidade."
+    },
+    {
+      "id": "rechnungen-189",
+      "verdict": "REVISE",
+      "reason": "A original define Zielwert por repetição de Ziel e oferece um valor aleatório como distrator. A aplicação recupera um componente da DuPont para uma meta definida.",
+      "recommended_final_question": {
+        "id": "rechnungen-189",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Der ROI soll 18 % betragen. Der Kapitalumschlag bleibt bei 1,5. Welche Umsatzrentabilität ist dafür nötig?",
+        "answer1": "12 %",
+        "answer2": "27 %",
+        "answer3": "16,5 %",
+        "answer4": "1,2 %",
+        "correctAnswer": 0,
+        "explanation": "ROI = Umsatzrentabilität × Kapitalumschlag. Benötigte Umsatzrentabilität = 18 % / 1,5 = 12 %.",
+        "media": ""
+      }
+    },
+    {
+      "id": "rechnungen-190",
+      "verdict": "REVISE",
+      "reason": "A original repete 149/150 e faz o ROI competir com preço e quantidade de colaboradores. O caso distingue igualdade de rentabilidade e diferença de lucro absoluto, complementando as comparações com ROIs diferentes.",
+      "recommended_final_question": {
+        "id": "rechnungen-190",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Für denselben Zeitraum erzielt Investition A bei 25.000 € Kapital einen Gewinn von 5.000 €. B erzielt bei 40.000 € Kapital einen Gewinn von 8.000 €. Welche Aussage zur Rentabilität nach ROI ist richtig?",
+        "answer1": "Beide Investitionen erzielen 20 % ROI.",
+        "answer2": "B ist rentabler, weil sein absoluter Gewinn höher ist.",
+        "answer3": "A ist rentabler, weil es weniger Kapital benötigt.",
+        "answer4": "A erzielt 25 % ROI und B 40 % ROI.",
+        "correctAnswer": 0,
+        "explanation": "ROI A = 5.000 / 25.000 × 100 = 20 %. ROI B = 8.000 / 40.000 × 100 = 20 %. Beide erzielen denselben Gewinn je eingesetztem Euro Kapital, obwohl Kapital und absoluter Gewinn unterschiedlich hoch sind.",
+        "media": ""
+      }
+    }
+  ]
+}

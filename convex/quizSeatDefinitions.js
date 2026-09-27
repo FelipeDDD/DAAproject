@@ -3,7 +3,7 @@ export default {
   "school": [
     {
       "id": "269",
-      "characterId": "sarina",
+      "seatId": "269",
       "x": 933,
       "y": 559.5,
       "width": 28,
@@ -14,7 +14,7 @@ export default {
     },
     {
       "id": "270",
-      "characterId": "felipe",
+      "seatId": "270",
       "x": 932,
       "y": 621,
       "width": 28,
@@ -25,7 +25,7 @@ export default {
     },
     {
       "id": "273",
-      "characterId": "michael",
+      "seatId": "273",
       "x": 1022,
       "y": 560,
       "width": 28,
@@ -36,7 +36,7 @@ export default {
     },
     {
       "id": "274",
-      "characterId": "jassine",
+      "seatId": "274",
       "x": 1022,
       "y": 624,
       "width": 28,

@@ -83,7 +83,7 @@ test('collected item survives repeated normalization when activated and deactiva
     item=normalizeCharacterItem({...item,active});
     const controllerItems=[item].map(normalizeCharacterItem).filter(Boolean);
     assert.equal(controllerItems.length,1,'owned item must not become a ground pickup');
-    assert.equal(controllerItems[0].characterId,'michael');
+    assert.equal(controllerItems[0].characterBaseId,'michael');
     const slots=inventorySlots(inventoryItemsFromSources(null,controllerItems,'michael'));
     assert.equal(slots.filter(Boolean).length,1);
     assert.equal(slots[0].active,active);

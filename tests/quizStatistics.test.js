@@ -21,7 +21,7 @@ class MemoryDatabase{
 }
 
 const attempt=(overrides={})=>({
-  attemptKey:'study:run:0:michael',characterId:'michael',questionId:'hardware-001',
+  attemptKey:'study:run:0:player-1',profileId:'profile-1',characterBaseId:'michael',questionId:'hardware-001',
   category:'Hardware',topic:null,difficulty:'medium',mode:'study',correct:true,answeredAt:100,
   ...overrides,
 });
@@ -93,14 +93,23 @@ test('generated question instances use their normalized template ID',async()=>{
   assert.equal(db.rows('quizAttempts')[0].questionId,'network-subnet-hosts-generated');
 });
 
-test('characters and individual multiplayer attempts remain separated',async()=>{
+test('the same profile shares statistics across character bases, while another profile stays separate',async()=>{
   const db=new MemoryDatabase(),ctx={db};
-  await recordQuizAttempt(ctx,attempt({attemptKey:'multiplayer:lobby:q:michael',mode:'multiplayer'}));
-  await recordQuizAttempt(ctx,attempt({attemptKey:'multiplayer:lobby:q:sarina',characterId:'sarina',mode:'multiplayer',correct:false}));
-  const michael=buildQuizStatisticsSummary(db.rows('quizPerformance').filter(row=>row.characterId==='michael'));
-  const sarina=buildQuizStatisticsSummary(db.rows('quizPerformance').filter(row=>row.characterId==='sarina'));
-  assert.deepEqual([michael.overall.correct,michael.overall.wrong],[1,0]);
-  assert.deepEqual([sarina.overall.correct,sarina.overall.wrong],[0,1]);
+  await recordQuizAttempt(ctx,attempt({attemptKey:'multiplayer:lobby:q:player-1',mode:'multiplayer'}));
+  await recordQuizAttempt(ctx,attempt({attemptKey:'multiplayer:lobby:q:player-2',characterBaseId:'sarina',mode:'multiplayer',correct:false}));
+  await recordQuizAttempt(ctx,attempt({attemptKey:'multiplayer:lobby:q:player-3',profileId:'profile-2',characterBaseId:'michael',mode:'multiplayer',correct:false}));
+  const shared=buildQuizStatisticsSummary(db.rows('quizPerformance').filter(row=>row.profileId==='profile-1'));
+  const other=buildQuizStatisticsSummary(db.rows('quizPerformance').filter(row=>row.profileId==='profile-2'));
+  assert.deepEqual([shared.overall.correct,shared.overall.wrong],[1,1]);
+  assert.deepEqual([other.overall.correct,other.overall.wrong],[0,1]);
+  assert.equal(db.rows('quizPerformance').filter(row=>row.profileId==='profile-1').length,1);
+  assert.equal(db.rows('quizAttempts').filter(row=>row.profileId==='profile-1').length,2);
+});
+
+test('guest attempts cannot enter persistent statistics',async()=>{
+  const db=new MemoryDatabase();
+  await assert.rejects(recordQuizAttempt({db},attempt({profileId:undefined})),/PROFILE_REQUIRED/);
+  assert.equal(db.rows('quizAttempts').length,0);
 });
 
 test('bucket updates keep answered equal to correct plus wrong',()=>{

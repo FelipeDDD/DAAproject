@@ -28,8 +28,8 @@ export function inventoryItemsFromBossProgress(progress){
     ?[ITEM_CATALOG[BOSS_REWARDS.DIRECTOR_ACCESS_BADGE]]:[]);
 }
 
-export function inventoryItemsFromSources(progress,characterItems,characterId){
-  return normalizeInventoryItems([...inventoryItemsFromBossProgress(progress),...characterInventoryItems(characterItems,characterId)]);
+export function inventoryItemsFromSources(progress,characterItems,characterBaseId){
+  return normalizeInventoryItems([...inventoryItemsFromBossProgress(progress),...characterInventoryItems(characterItems,characterBaseId)]);
 }
 
 export function inventorySlots(items,count=INVENTORY_SLOT_COUNT){

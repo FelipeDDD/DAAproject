@@ -1,4 +1,3 @@
-import { characterById } from '../characters.js';
 
 function metric(documentRef,label,value){
   const item=documentRef.createElement('div');item.className='quiz-statistic-metric';
@@ -30,19 +29,19 @@ export class QuizStatisticsPanel{
 
   async open(){
     this.openState=true;this.root.hidden=false;this.content.replaceChildren();
-    const character=characterById(this.presence.identity.characterId);
-    this.title.textContent=`${character?.name??this.presence.identity.characterId}'s Statistics`;
+    const displayName=this.presence.identity.displayName;
+    this.title.textContent=displayName?`${displayName}'s Statistics`:'Your Statistics';
     this.onClose();await this.load();
   }
 
   async load(){
     if(!this.openState)return;
     const token=++this.requestToken;this.status.textContent='Loading statistics…';
-    const {characterId,sessionId}=this.presence.identity;
+    const {playerId,sessionId}=this.presence.identity;
     const mode=this.mode.value||undefined;
     try{
       const summary=await this.presence.client.query(this.presence.api.quizStatistics.summary,{
-        characterId,sessionId,...(mode?{mode}:{}),
+        playerId,sessionId,...(mode?{mode}:{}),
       });
       if(token!==this.requestToken||!this.openState)return;
       this.render(summary);this.status.textContent='';

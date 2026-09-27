@@ -35,3 +35,11 @@ test('active chat pauses hiding, sending returns to peek, pin persists and map c
   assert.equal(loadChatPinned(storage),false);
   saveChatPinned(true,storage);assert.equal(loadChatPinned(storage),true);
 });
+
+test('unpinning while input is active returns to peek and starts the hide timer',()=>{
+  const timer=clock(),visibility=new ChatVisibility(()=>{},timer);
+  visibility.open();visibility.pin(true);
+  assert.equal(visibility.state,'active');assert.equal(timer.timers.size,0);
+  visibility.pin(false);
+  assert.equal(visibility.pinned,false);assert.equal(visibility.state,'peek');assert.equal(timer.timers.size,1);
+});

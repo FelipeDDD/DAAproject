@@ -141,3 +141,21 @@ test('visual size and offsets never resize or move the collision doorway',()=>{
   assert.deepEqual([door.visual.width,door.visual.height],[16,96]);
   assert.deepEqual([door.blocker.x,door.blocker.y,door.blocker.width,door.blocker.height],blocker);
 });
+
+
+test('shared door authorization uses independent live identity and session generation',async()=>{
+  const {setOpen}=await import('../convex/doors.js');
+  const {default:definitions}=await import('../convex/doorDefinitions.js');
+  const [room,list]=Object.entries(definitions).find(([,list])=>list.some(d=>d.interactive&&!d.locked));
+  const door=list.find(d=>d.interactive&&!d.locked);
+  const player={playerId:'independent-live-id',characterId:'felipe',sessionId:'current-session',room,
+    lastSeen:Date.now(),x:door.x+door.width/2,y:door.y+door.height/2};
+  const writes=[];
+  const ctx={db:{query:table=>({withIndex:()=>({unique:async()=>null,collect:async()=>table==='players'?[player]:[]})}),
+    insert:async(table,state)=>writes.push({table,state})}};
+  const args={room,doorId:door.id,playerId:player.playerId,sessionId:player.sessionId,open:true};
+  await setOpen._handler(ctx,args);assert.equal(writes.length,1);
+  for(const invalid of [{sessionId:'obsolete-session'},{playerId:'felipe'}])
+    await assert.rejects(setOpen._handler(ctx,{...args,...invalid}),/Move closer/);
+  assert.equal(writes.length,1);
+});

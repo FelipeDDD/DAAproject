@@ -23,8 +23,8 @@ function context(){
   }};return ctx;
 }
 async function lobby(ctx,participants=['a','b'],status='lobby',room='test'){
-  const id=await ctx.db.insert('quizLobbies',{room,participants,hostCharacterId:participants[0],status,createdAt:Date.now(),
-    scores:participants.map(characterId=>({characterId,points:2}))});
+  const id=await ctx.db.insert('quizLobbies',{room,participants,hostPlayerId:participants[0],status,createdAt:Date.now(),
+    scores:participants.map(playerId=>({playerId,points:2}))});
   for(const characterId of participants)await ctx.db.insert('players',{playerId:characterId,characterId,room,sessionId:'session',lastSeen:Date.now()});
   return ctx.tables.quizLobbies.find(r=>r._id===id);
 }
@@ -39,9 +39,9 @@ test('zero lobbies never start a worker; first starts and additional lobbies sha
 
 test('actual first lobby creation schedules the shared worker and repeated join reuses it',async()=>{
   const ctx=context(),[room,seats]=Object.entries(seatsByRoom)[0],seat=seats[0];
-  await ctx.db.insert('players',{playerId:seat.characterId,characterId:seat.characterId,room,
+  await ctx.db.insert('players',{playerId:'live-player',characterId:'michael',characterBaseId:'michael',room,
     sessionId:'session',lastSeen:Date.now(),x:seat.seatX,y:seat.seatY});
-  const args={room,characterId:seat.characterId,sessionId:'session'};
+  const args={room,playerId:'live-player',sessionId:'session'};
   await join._handler(ctx,args);await join._handler(ctx,args);
   assert.equal(ctx.tables.quizLobbies.length,1);assert.equal(ctx.jobs.length,1);
 });
@@ -59,7 +59,7 @@ test('worker continues once, and duplicate or obsolete callbacks cannot schedule
 
 test('normal final leave cancels pending worker; recovery deletes abandoned lobbies and answers',async()=>{
   const ctx=context();await lobby(ctx,['a']);await ensureQuizCleanupWorker(ctx);
-  await leave._handler(ctx,{room:'test',characterId:'a',sessionId:'session'});
+  await leave._handler(ctx,{room:'test',playerId:'a',sessionId:'session'});
   assert.equal(ctx.tables.quizLobbies.length,0);assert.equal(ctx.jobs[0].canceled,true);
   const l=await lobby(ctx,['b']);await ctx.db.insert('quizAnswers',{lobbyId:l._id});await ensureQuizCleanupWorker(ctx);
   ctx.tables.players=[];await cleanup._handler(ctx,ctx.jobs[1].args);
@@ -71,9 +71,9 @@ test('recovery transfers host and preserves scores for active participants',asyn
   const ctx=context();await lobby(ctx,['a','b','c'],'starting');await ensureQuizCleanupWorker(ctx);
   ctx.tables.players[0].lastSeen=0;
   await cleanup._handler(ctx,ctx.jobs[0].args);
-  const l=ctx.tables.quizLobbies[0];assert.equal(l.hostCharacterId,'b');
+  const l=ctx.tables.quizLobbies[0];assert.equal(l.hostPlayerId,'b');
   assert.deepEqual(l.participants,['b','c']);assert.equal(l.status,'starting');
-  assert.deepEqual(l.scores,[{characterId:'b',points:2},{characterId:'c',points:2}]);
+  assert.deepEqual(l.scores,[{playerId:'b',points:2},{playerId:'c',points:2}]);
 });
 
 test('recovery finishes active quiz below two participants',async()=>{
@@ -86,9 +86,9 @@ test('recovery finishes active quiz below two participants',async()=>{
 test('recovery does not finalize an expired question on behalf of players',async()=>{
   const ctx=context();const l=await lobby(ctx,['a','b'],'starting');
   Object.assign(l,{questionDeadline:0,questions:[{id:'q',correctAnswer:0}],scoredQuestionIds:[]});
-  await ctx.db.insert('quizAnswers',{lobbyId:l._id,questionId:'q',characterId:'a',answerIndex:0});
+  await ctx.db.insert('quizAnswers',{lobbyId:l._id,questionId:'q',playerId:'a',answerIndex:0});
   await ensureQuizCleanupWorker(ctx);await cleanup._handler(ctx,ctx.jobs[0].args);
-  assert.deepEqual(l.scoredQuestionIds,[]);assert.equal(l.timedOutCharacterIds,undefined);
+  assert.deepEqual(l.scoredQuestionIds,[]);assert.equal(l.timedOutPlayerIds,undefined);
   assert.equal(l.questionDeadline,0);
 });
 

@@ -31,7 +31,7 @@ export class InventoryHotbar {
   setProgress(progress){this.progress=progress;this.refreshItems();}
   setCharacterItems(items){this.characterItems=items??[];this.refreshItems();}
   refreshItems(){
-    this.items=inventoryItemsFromSources(this.progress,this.characterItems,this.presence?.identity?.characterId);this.render();
+    this.items=inventoryItemsFromSources(this.progress,this.characterItems,this.presence?.identity?.characterBaseId);this.render();
     clearTimeout(this.cooldownTimer);const next=Math.min(...this.items.filter(item=>itemCooldownRemaining(item)>0).map(item=>itemCooldownRemaining(item)),Infinity);
     if(Number.isFinite(next))this.cooldownTimer=setTimeout(()=>this.refreshItems(),Math.min(next,250));
   }
