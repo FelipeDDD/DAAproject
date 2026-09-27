@@ -1,0 +1,1262 @@
+{
+  "summary": {
+    "totalAnalyzed": 165,
+    "PASS": 26,
+    "REWRITE": 28,
+    "OTHER_ISSUE": 111
+  },
+  "verification": {
+    "excludedIdsAbsent": true,
+    "allOtherSourceIdsExactlyOnce": true,
+    "replacementDifficultiesOnlyMediumOrHard": true,
+    "sourceCsvUnchanged": true,
+    "sourceCsvSha256": "429307E83BEFB61543B6F8728B524DAE160311CA6758378A3F9D285A9D34FBE2"
+  },
+  "results": [
+    {
+      "id": "rechnungen-001",
+      "decision": "PASS",
+      "reason": "200 € × 1,10 = 220 €; índice 1 correto. Unidades e arredondamento adequados; uma resposta defensável."
+    },
+    {
+      "id": "rechnungen-002",
+      "decision": "PASS",
+      "reason": "300 € × 0,80 = 240 €; índice 0 correto. Unidades e arredondamento adequados; uma resposta defensável."
+    },
+    {
+      "id": "rechnungen-004",
+      "decision": "PASS",
+      "reason": "40 € / 5 × 8 = 64 €; índice 2 correto. Unidades e arredondamento adequados; uma resposta defensável."
+    },
+    {
+      "id": "rechnungen-005",
+      "decision": "PASS",
+      "reason": "100 € × 1,19 = 119 €; índice 1 correto. Unidades e arredondamento adequados; uma resposta defensável."
+    },
+    {
+      "id": "rechnungen-006",
+      "decision": "PASS",
+      "reason": "400 € × 0,15 = 60 €; índice 2 correto. Unidades e arredondamento adequados; uma resposta defensável."
+    },
+    {
+      "id": "rechnungen-007",
+      "decision": "REWRITE",
+      "reason": "A unidade pedida é horas de trabalho somadas entre pessoas; «Stunden» nas alternativas permite confundir duração com esforço total.",
+      "replacement": {
+        "id": "rechnungen-007",
+        "category": "Rechnungen",
+        "topic": "Dreisatz",
+        "difficulty": "medium",
+        "question": "Drei Mitarbeiter arbeiten jeweils 12 Stunden an einer Aufgabe. Wie viele Personenstunden sind das zusammen?",
+        "answers": [
+          "12 Personenstunden",
+          "15 Personenstunden",
+          "36 Personenstunden",
+          "48 Personenstunden"
+        ],
+        "correctAnswer": 2,
+        "explanation": "3 Mitarbeiter × 12 Stunden je Mitarbeiter = 36 Personenstunden."
+      }
+    },
+    {
+      "id": "rechnungen-008",
+      "decision": "PASS",
+      "reason": "25 / 500 × 100 = 5 %; índice 1 correto. Unidades e arredondamento adequados; uma resposta defensável."
+    },
+    {
+      "id": "rechnungen-010",
+      "decision": "OTHER_ISSUE",
+      "reason": "Interpretação isolada de «nach Abzug», repetida no conjunto; as alternativas erradas são artificiais. Convém consolidar esse ponto numa questão aplicada de desconto ou contribuição."
+    },
+    {
+      "id": "rechnungen-011",
+      "decision": "REWRITE",
+      "reason": "Os distratores originais descrevem categorias distintas de custo e a resposta se destaca pelo comprimento; usar classificações próximas melhora a discriminação.",
+      "replacement": {
+        "id": "rechnungen-011",
+        "category": "Rechnungen",
+        "topic": "Kostenbegriffe",
+        "difficulty": "medium",
+        "question": "Welche Kosten sind Einzelkosten eines bestimmten Kundenauftrags?",
+        "answers": [
+          "Kosten, die dem Auftrag direkt zugeordnet werden können",
+          "Kosten, die nur über einen Verteilungsschlüssel zugeordnet werden können",
+          "Kosten, die bei mehr Aufträgen unverändert bleiben",
+          "Kosten, die erst nach Abschluss des Auftrags entstehen"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Einzelkosten lassen sich einem Auftrag direkt zuordnen, zum Beispiel Material für genau diesen Auftrag."
+      }
+    },
+    {
+      "id": "rechnungen-012",
+      "decision": "REWRITE",
+      "reason": "Os distratores originais misturam matéria-prima, variabilidade e ocorrência única; comparar formas de atribuição aproxima as opções.",
+      "replacement": {
+        "id": "rechnungen-012",
+        "category": "Rechnungen",
+        "topic": "Kostenbegriffe",
+        "difficulty": "medium",
+        "question": "Welche Aussage zu Gemeinkosten ist richtig?",
+        "answers": [
+          "Sie lassen sich einem Auftrag immer direkt zuordnen.",
+          "Sie werden mithilfe eines Verteilungsschlüssels auf Aufträge verteilt.",
+          "Sie entstehen nur bei einem einzigen Auftrag.",
+          "Sie verändern sich bei jedem zusätzlichen Auftrag im gleichen Verhältnis."
+        ],
+        "correctAnswer": 1,
+        "explanation": "Gemeinkosten können einem einzelnen Auftrag nicht direkt zugeordnet werden. Für die Verteilung wird ein geeigneter Schlüssel verwendet."
+      }
+    },
+    {
+      "id": "rechnungen-013",
+      "decision": "REWRITE",
+      "reason": "A definição original usa linguagem abstrata e os distratores pouco próximos; o intervalo de análise deve ficar explícito.",
+      "replacement": {
+        "id": "rechnungen-013",
+        "category": "Rechnungen",
+        "topic": "Kostenbegriffe",
+        "difficulty": "medium",
+        "question": "Was kennzeichnet Fixkosten innerhalb eines betrachteten Zeitraums?",
+        "answers": [
+          "Sie steigen mit jeder zusätzlich produzierten Einheit.",
+          "Sie bleiben bei veränderter Ausbringungsmenge zunächst gleich.",
+          "Sie fallen nur an, wenn ein Produkt verkauft wird.",
+          "Sie entsprechen immer den Materialkosten pro Stück."
+        ],
+        "correctAnswer": 1,
+        "explanation": "Fixkosten bleiben innerhalb des betrachteten Bereichs zunächst gleich, auch wenn sich die Ausbringungsmenge ändert, zum Beispiel die monatliche Miete."
+      }
+    },
+    {
+      "id": "rechnungen-014",
+      "decision": "REWRITE",
+      "reason": "A resposta original é imediatamente identificável pelo termo «verändern»; exemplos do mesmo contexto tornam os distratores plausíveis.",
+      "replacement": {
+        "id": "rechnungen-014",
+        "category": "Rechnungen",
+        "topic": "Kostenbegriffe",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen fertigt zusätzliche Geräte. Welche Kosten sind typischerweise variabel?",
+        "answers": [
+          "Die monatliche Hallenmiete",
+          "Die jährliche Grundgebühr für eine Softwarelizenz",
+          "Das Material für jedes zusätzlich gefertigte Gerät",
+          "Die einmalige Einrichtung einer Fertigungslinie"
+        ],
+        "correctAnswer": 2,
+        "explanation": "Für jedes zusätzliche Gerät wird weiteres Material benötigt. Die Materialkosten steigen daher mit der produzierten Menge."
+      }
+    },
+    {
+      "id": "rechnungen-015",
+      "decision": "OTHER_ISSUE",
+      "reason": "Definição isolada que repete a distinção entre Einzelkosten e Gemeinkosten das questões 011 e 012. Melhor consolidar o vocabulário nessas questões."
+    },
+    {
+      "id": "rechnungen-016",
+      "decision": "OTHER_ISSUE",
+      "reason": "Definição isolada que repete a distinção entre Einzelkosten e Gemeinkosten das questões 011 e 012. Melhor consolidar o vocabulário nessas questões."
+    },
+    {
+      "id": "rechnungen-019",
+      "decision": "PASS",
+      "reason": "Definição correta da contabilidade de custos; alternativa única e explicação suficiente para o nível medium."
+    },
+    {
+      "id": "rechnungen-020",
+      "decision": "PASS",
+      "reason": "Definição correta da contabilidade de custos; alternativa única e explicação suficiente para o nível medium."
+    },
+    {
+      "id": "rechnungen-022",
+      "decision": "OTHER_ISSUE",
+      "reason": "Interpretação isolada de «nach Abzug», repetida no conjunto; as alternativas erradas são artificiais. Convém consolidar esse ponto numa questão aplicada de desconto ou contribuição."
+    },
+    {
+      "id": "rechnungen-023",
+      "decision": "OTHER_ISSUE",
+      "reason": "Paráfrase da contribuição para cobrir custos fixos já cobrada pelas questões 024 e 025; os distratores são obviamente falsos. Recomenda-se retirar ou consolidar."
+    },
+    {
+      "id": "rechnungen-024",
+      "decision": "PASS",
+      "reason": "Definição correta da contabilidade de custos; alternativa única e explicação suficiente para o nível medium."
+    },
+    {
+      "id": "rechnungen-025",
+      "decision": "PASS",
+      "reason": "Definição correta da contabilidade de custos; alternativa única e explicação suficiente para o nível medium."
+    },
+    {
+      "id": "rechnungen-028",
+      "decision": "OTHER_ISSUE",
+      "reason": "Repete a definição de Break-Even em três paráfrases, sem exigir cálculo ou interpretação nova. Convém consolidar no item conceitual e nas aplicações numéricas."
+    },
+    {
+      "id": "rechnungen-029",
+      "decision": "OTHER_ISSUE",
+      "reason": "Repete a definição de Break-Even em três paráfrases, sem exigir cálculo ou interpretação nova. Convém consolidar no item conceitual e nas aplicações numéricas."
+    },
+    {
+      "id": "rechnungen-030",
+      "decision": "OTHER_ISSUE",
+      "reason": "Repete a definição de Break-Even em três paráfrases, sem exigir cálculo ou interpretação nova. Convém consolidar no item conceitual e nas aplicações numéricas."
+    },
+    {
+      "id": "rechnungen-031",
+      "decision": "REWRITE",
+      "reason": "Os distratores originais pertencem a outros temas e não testam a diferença entre Absatz real e Gewinnschwelle.",
+      "replacement": {
+        "id": "rechnungen-031",
+        "category": "Rechnungen",
+        "topic": "Break-Even",
+        "difficulty": "medium",
+        "question": "Der Ist-Absatz beträgt 500 Stück, die Break-Even-Menge 400 Stück. Wie groß ist die Sicherheitsspanne in Stück?",
+        "answers": [
+          "100 Stück",
+          "400 Stück",
+          "500 Stück",
+          "900 Stück"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Sicherheitsspanne = Ist-Absatz − Break-Even-Menge = 500 − 400 = 100 Stück."
+      }
+    },
+    {
+      "id": "rechnungen-032",
+      "decision": "REWRITE",
+      "reason": "A alternativa correta é a única relação monetária e as demais pertencem a outros assuntos; reformular com relações econômicas próximas.",
+      "replacement": {
+        "id": "rechnungen-032",
+        "category": "Rechnungen",
+        "topic": "Wirtschaftlichkeit",
+        "difficulty": "medium",
+        "question": "Wie wird die Wirtschaftlichkeit eines Projekts berechnet?",
+        "answers": [
+          "Ertrag geteilt durch Aufwand",
+          "Aufwand geteilt durch Ertrag",
+          "Gewinn geteilt durch eingesetztes Kapital",
+          "Umsatz geteilt durch Absatzmenge"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Wirtschaftlichkeit = Ertrag / Aufwand. Beide Größen werden in Geld bewertet."
+      }
+    },
+    {
+      "id": "rechnungen-033",
+      "decision": "REWRITE",
+      "reason": "«Wirtschaftlicher Wert beziehungsweise erzielte Leistung» é abstrato, enquanto os distratores são desconexos; uma formulação direta é mais adequada.",
+      "replacement": {
+        "id": "rechnungen-033",
+        "category": "Rechnungen",
+        "topic": "Wirtschaftlichkeit",
+        "difficulty": "medium",
+        "question": "Was bezeichnet der Ertrag in der Wirtschaftlichkeitsrechnung?",
+        "answers": [
+          "Den Wert der erzielten Leistung in Geld",
+          "Den Wert der eingesetzten Mittel in Geld",
+          "Die Differenz zwischen Ertrag und Aufwand",
+          "Den verfügbaren Geldbestand am Jahresende"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Der Ertrag ist der in Geld bewertete Wert der erzielten Leistung. Er wird dem Aufwand gegenübergestellt."
+      }
+    },
+    {
+      "id": "rechnungen-034",
+      "decision": "REWRITE",
+      "reason": "«Eingesetzte wirtschaftliche Mittel beziehungsweise Kosten» é impreciso e abstrato; a substituição usa a noção de consumo de recursos.",
+      "replacement": {
+        "id": "rechnungen-034",
+        "category": "Rechnungen",
+        "topic": "Wirtschaftlichkeit",
+        "difficulty": "medium",
+        "question": "Was bezeichnet der Aufwand in der Wirtschaftlichkeitsrechnung?",
+        "answers": [
+          "Den Wert der verbrauchten Mittel und Leistungen",
+          "Den Wert der erzielten Leistung",
+          "Die Differenz zwischen Ertrag und Aufwand",
+          "Den Betrag der verfügbaren liquiden Mittel"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Aufwand ist der in Geld bewertete Verbrauch von Mitteln und Leistungen. Für die Wirtschaftlichkeit wird er dem Ertrag gegenübergestellt."
+      }
+    },
+    {
+      "id": "rechnungen-036",
+      "decision": "REWRITE",
+      "reason": "Os distratores originais são desligados da relação Ertrag/Aufwand; usar interpretações próximas da razão.",
+      "replacement": {
+        "id": "rechnungen-036",
+        "category": "Rechnungen",
+        "topic": "Wirtschaftlichkeit",
+        "difficulty": "medium",
+        "question": "Ein Projekt hat eine Wirtschaftlichkeit von genau 1,0. Welche Aussage ist richtig?",
+        "answers": [
+          "Der Ertrag ist genauso hoch wie der Aufwand.",
+          "Der Ertrag liegt 1 % über dem Aufwand.",
+          "Der Aufwand ist doppelt so hoch wie der Ertrag.",
+          "Der Ertrag ist doppelt so hoch wie der Aufwand."
+        ],
+        "correctAnswer": 0,
+        "explanation": "Wirtschaftlichkeit = Ertrag / Aufwand = 1,0. Daher sind Ertrag und Aufwand gleich hoch."
+      }
+    },
+    {
+      "id": "rechnungen-037",
+      "decision": "REWRITE",
+      "reason": "Os distratores originais misturam produtividade e ausência de lucro; uma razão concreta testa o significado de valor inferior a 1.",
+      "replacement": {
+        "id": "rechnungen-037",
+        "category": "Rechnungen",
+        "topic": "Wirtschaftlichkeit",
+        "difficulty": "medium",
+        "question": "Ein Projekt hat eine Wirtschaftlichkeit von 0,80. Welche Aussage folgt daraus?",
+        "answers": [
+          "Der Ertrag liegt 20 % unter dem Aufwand.",
+          "Der Aufwand liegt 20 % unter dem Ertrag.",
+          "Der Ertrag ist 80 % höher als der Aufwand.",
+          "Ertrag und Aufwand sind gleich hoch."
+        ],
+        "correctAnswer": 0,
+        "explanation": "0,80 = Ertrag / Aufwand. Der Ertrag beträgt 80 % des Aufwands und liegt damit 20 % darunter."
+      }
+    },
+    {
+      "id": "rechnungen-039",
+      "decision": "REWRITE",
+      "reason": "As alternativas originais são nomes de indicadores alheios ao cálculo; aplicar a divisão mantém o objetivo de Arbeitsproduktivität.",
+      "replacement": {
+        "id": "rechnungen-039",
+        "category": "Rechnungen",
+        "topic": "Produktivität",
+        "difficulty": "medium",
+        "question": "Ein Helpdesk bearbeitet 600 Tickets mit fünf Mitarbeitern. Wie hoch ist die Arbeitsproduktivität in Tickets je Mitarbeiter?",
+        "answers": [
+          "5 Tickets je Mitarbeiter",
+          "120 Tickets je Mitarbeiter",
+          "600 Tickets je Mitarbeiter",
+          "3.000 Tickets je Mitarbeiter"
+        ],
+        "correctAnswer": 1,
+        "explanation": "600 Tickets / 5 Mitarbeiter = 120 Tickets je Mitarbeiter."
+      }
+    },
+    {
+      "id": "rechnungen-040",
+      "decision": "REWRITE",
+      "reason": "Os distratores originais são absurdos ou negam diretamente a definição; comparar fórmulas próximas torna a distinção verificável.",
+      "replacement": {
+        "id": "rechnungen-040",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Welche Berechnungen passen zu Wirtschaftlichkeit und Arbeitsproduktivität?",
+        "answers": [
+          "Wirtschaftlichkeit: Ertrag / Aufwand; Arbeitsproduktivität: Tickets / Mitarbeiter",
+          "Wirtschaftlichkeit: Aufwand / Ertrag; Arbeitsproduktivität: Mitarbeiter / Tickets",
+          "Wirtschaftlichkeit: Tickets / Mitarbeiter; Arbeitsproduktivität: Ertrag / Aufwand",
+          "Wirtschaftlichkeit: Gewinn / Kapital; Arbeitsproduktivität: Aufwand / Ertrag"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Wirtschaftlichkeit vergleicht Geldwerte (Ertrag / Aufwand). Arbeitsproduktivität vergleicht die Leistung mit dem Arbeitseinsatz (hier Tickets / Mitarbeiter)."
+      }
+    },
+    {
+      "id": "rechnungen-042",
+      "decision": "REWRITE",
+      "reason": "Os distratores são custos claramente alheios à compra; a pergunta passa a distinguir custos iniciais de custos de operação no mesmo sistema.",
+      "replacement": {
+        "id": "rechnungen-042",
+        "category": "Rechnungen",
+        "topic": "TCO",
+        "difficulty": "medium",
+        "question": "Ein Server wird gekauft und erstmals eingerichtet. Welche Kosten gehören zu den Anschaffungskosten?",
+        "answers": [
+          "Kaufpreis und Kosten der Ersteinrichtung",
+          "Stromkosten und Kosten der Ersteinrichtung",
+          "Kaufpreis und monatliche Stromkosten",
+          "Monatliche Strom- und Supportkosten"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Kauf und Ersteinrichtung fallen bei der Beschaffung an. Strom und laufender Support gehören zu den späteren Betriebs- oder Wartungskosten."
+      }
+    },
+    {
+      "id": "rechnungen-043",
+      "decision": "REWRITE",
+      "reason": "Apenas a resposta correta menciona custos recorrentes; distratores comparáveis reduzem essa pista.",
+      "replacement": {
+        "id": "rechnungen-043",
+        "category": "Rechnungen",
+        "topic": "TCO",
+        "difficulty": "medium",
+        "question": "Welche Kosten gehören bei einem Server typischerweise zu den laufenden Betriebskosten?",
+        "answers": [
+          "Kaufpreis und Erstinstallation",
+          "Stromverbrauch und laufende Cloud-Gebühren",
+          "Kaufpreis und Entsorgung",
+          "Erstinstallation und Schulung vor dem Start"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Strom und laufende Cloud-Gebühren entstehen während des Betriebs. Kauf und Ersteinrichtung fallen zu Beginn an."
+      }
+    },
+    {
+      "id": "rechnungen-044",
+      "decision": "REWRITE",
+      "reason": "Os distratores atuais («Werbung», «Mehrwertsteuer») são pouco plausíveis; a questão deve distinguir manutenção de compra e operação.",
+      "replacement": {
+        "id": "rechnungen-044",
+        "category": "Rechnungen",
+        "topic": "TCO",
+        "difficulty": "medium",
+        "question": "Welche Kosten gehören typischerweise zur Wartung eines Servers?",
+        "answers": [
+          "Kaufpreis und Lieferung",
+          "Stromverbrauch und Internetanschluss",
+          "Supportvertrag und Reparaturen",
+          "Erstinstallation und einmalige Schulung"
+        ],
+        "correctAnswer": 2,
+        "explanation": "Support und Reparaturen halten den Server funktionsfähig und zählen typischerweise zur Wartung."
+      }
+    },
+    {
+      "id": "rechnungen-045",
+      "decision": "REWRITE",
+      "reason": "Os distratores originais são de assuntos diferentes; um pequeno cenário separa duração de uso, garantia e entrega.",
+      "replacement": {
+        "id": "rechnungen-045",
+        "category": "Rechnungen",
+        "topic": "TCO",
+        "difficulty": "medium",
+        "question": "Ein Server wird voraussichtlich fünf Jahre genutzt. Die Garantie läuft drei Jahre, die Lieferung dauert zwei Wochen. Welche Nutzungsdauer wird für die TCO angesetzt?",
+        "answers": [
+          "Zwei Wochen",
+          "Drei Jahre",
+          "Fünf Jahre",
+          "Acht Jahre"
+        ],
+        "correctAnswer": 2,
+        "explanation": "Die Nutzungsdauer ist der geplante Zeitraum der Verwendung, hier fünf Jahre. Garantie und Lieferzeit ändern ihn nicht."
+      }
+    },
+    {
+      "id": "rechnungen-047",
+      "decision": "REWRITE",
+      "reason": "A resposta é uma paráfrase da pergunta e os distratores não concorrem; um cenário distingue capital investido de receitas e custos.",
+      "replacement": {
+        "id": "rechnungen-047",
+        "category": "Rechnungen",
+        "topic": "ROI-Amortisation",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen kauft eine Anlage für 80.000 €. Im ersten Jahr erzielt es damit 100.000 € Umsatz und 12.000 € Gewinn. Welcher Betrag ist für einen einfachen ROI als eingesetztes Kapital anzusetzen?",
+        "answers": [
+          "12.000 €",
+          "80.000 €",
+          "100.000 €",
+          "180.000 €"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Für den einfachen ROI wird der Gewinn auf die Investitionssumme bezogen. Eingesetztes Kapital sind hier 80.000 €."
+      }
+    },
+    {
+      "id": "rechnungen-048",
+      "decision": "REWRITE",
+      "reason": "A resposta longa revela a definição e as alternativas são de outros temas; números próximos permitem testar o conceito.",
+      "replacement": {
+        "id": "rechnungen-048",
+        "category": "Rechnungen",
+        "topic": "ROI-Amortisation",
+        "difficulty": "medium",
+        "question": "Eine Anlage kostet 30.000 € und bringt jährlich einen gleichbleibenden Rückfluss von 10.000 €. Was beschreibt die Amortisationsdauer?",
+        "answers": [
+          "Den jährlichen Gewinn von 3.000 €",
+          "Die Rückzahlung der Investition nach drei Jahren",
+          "Die Nutzungsdauer von zehn Jahren",
+          "Den Umsatz von 30.000 € pro Jahr"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Die statische Amortisationsdauer beträgt 30.000 € / 10.000 € pro Jahr = 3 Jahre. Danach haben die Rückflüsse die Anfangsinvestition ausgeglichen."
+      }
+    },
+    {
+      "id": "rechnungen-049",
+      "decision": "REWRITE",
+      "reason": "A resposta original é uma longa Umschreibung sem distratores econômicos próximos; um caso concreto esclarece o retorno de recursos.",
+      "replacement": {
+        "id": "rechnungen-049",
+        "category": "Rechnungen",
+        "topic": "ROI-Amortisation",
+        "difficulty": "medium",
+        "question": "Eine Maschine spart jährlich 8.000 € Kosten und verursacht 2.000 € zusätzliche laufende Kosten. Wie hoch ist der jährliche Rückfluss für eine einfache Amortisationsrechnung?",
+        "answers": [
+          "2.000 €",
+          "6.000 €",
+          "8.000 €",
+          "10.000 €"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Der jährliche Rückfluss beträgt 8.000 € Einsparung minus 2.000 € zusätzliche laufende Kosten = 6.000 €."
+      }
+    },
+    {
+      "id": "rechnungen-051",
+      "decision": "OTHER_ISSUE",
+      "reason": "Pergunta apenas o significado literal de uma expressão comum, com alternativas facilmente descartáveis. Neste bloco há repetição de leitura básica; convém fundir em problemas quantitativos contextualizados."
+    },
+    {
+      "id": "rechnungen-052",
+      "decision": "OTHER_ISSUE",
+      "reason": "Pergunta apenas o significado literal de uma expressão comum, com alternativas facilmente descartáveis. Neste bloco há repetição de leitura básica; convém fundir em problemas quantitativos contextualizados."
+    },
+    {
+      "id": "rechnungen-053",
+      "decision": "OTHER_ISSUE",
+      "reason": "Pergunta apenas o significado literal de uma expressão comum, com alternativas facilmente descartáveis. Neste bloco há repetição de leitura básica; convém fundir em problemas quantitativos contextualizados."
+    },
+    {
+      "id": "rechnungen-054",
+      "decision": "OTHER_ISSUE",
+      "reason": "Pergunta apenas o significado literal de uma expressão comum, com alternativas facilmente descartáveis. Neste bloco há repetição de leitura básica; convém fundir em problemas quantitativos contextualizados."
+    },
+    {
+      "id": "rechnungen-055",
+      "decision": "OTHER_ISSUE",
+      "reason": "Pergunta apenas o significado literal de uma expressão comum, com alternativas facilmente descartáveis. Neste bloco há repetição de leitura básica; convém fundir em problemas quantitativos contextualizados."
+    },
+    {
+      "id": "rechnungen-056",
+      "decision": "PASS",
+      "reason": "Distingue corretamente «sinken auf» de «sinken um»; alternativas claras e explicação útil."
+    },
+    {
+      "id": "rechnungen-057",
+      "decision": "OTHER_ISSUE",
+      "reason": "Pergunta apenas o significado literal de uma expressão comum, com alternativas facilmente descartáveis. Neste bloco há repetição de leitura básica; convém fundir em problemas quantitativos contextualizados."
+    },
+    {
+      "id": "rechnungen-058",
+      "decision": "OTHER_ISSUE",
+      "reason": "Pergunta apenas o significado literal de uma expressão comum, com alternativas facilmente descartáveis. Neste bloco há repetição de leitura básica; convém fundir em problemas quantitativos contextualizados."
+    },
+    {
+      "id": "rechnungen-059",
+      "decision": "OTHER_ISSUE",
+      "reason": "Pergunta apenas o significado literal de uma expressão comum, com alternativas facilmente descartáveis. Neste bloco há repetição de leitura básica; convém fundir em problemas quantitativos contextualizados."
+    },
+    {
+      "id": "rechnungen-060",
+      "decision": "OTHER_ISSUE",
+      "reason": "Pergunta apenas o significado literal de uma expressão comum, com alternativas facilmente descartáveis. Neste bloco há repetição de leitura básica; convém fundir em problemas quantitativos contextualizados."
+    },
+    {
+      "id": "rechnungen-061",
+      "decision": "OTHER_ISSUE",
+      "reason": "Pergunta apenas o significado literal de uma expressão comum, com alternativas facilmente descartáveis. Neste bloco há repetição de leitura básica; convém fundir em problemas quantitativos contextualizados."
+    },
+    {
+      "id": "rechnungen-062",
+      "decision": "OTHER_ISSUE",
+      "reason": "Pergunta apenas o significado literal de uma expressão comum, com alternativas facilmente descartáveis. Neste bloco há repetição de leitura básica; convém fundir em problemas quantitativos contextualizados."
+    },
+    {
+      "id": "rechnungen-063",
+      "decision": "OTHER_ISSUE",
+      "reason": "Pergunta apenas o significado literal de uma expressão comum, com alternativas facilmente descartáveis. Neste bloco há repetição de leitura básica; convém fundir em problemas quantitativos contextualizados."
+    },
+    {
+      "id": "rechnungen-065",
+      "decision": "PASS",
+      "reason": "80 € − 50 € = 30 €; índice 1 correto. Unidades e arredondamento adequados; uma resposta defensável."
+    },
+    {
+      "id": "rechnungen-066",
+      "decision": "PASS",
+      "reason": "100 € − 25 € = 75 €; índice 1 correto. Unidades e arredondamento adequados; uma resposta defensável."
+    },
+    {
+      "id": "rechnungen-067",
+      "decision": "REWRITE",
+      "reason": "Dois distratores originais têm ordens de grandeza sem relação com erros típicos; usar erros de operação e de fator dez.",
+      "replacement": {
+        "id": "rechnungen-067",
+        "category": "Rechnungen",
+        "topic": "Deckungsbeitrag",
+        "difficulty": "medium",
+        "question": "Der Stückdeckungsbeitrag beträgt 40 €. Es werden 200 Stück verkauft. Wie hoch ist der Gesamtdeckungsbeitrag?",
+        "answers": [
+          "240 €",
+          "800 €",
+          "8.000 €",
+          "40.000 €"
+        ],
+        "correctAnswer": 2,
+        "explanation": "40 € pro Stück × 200 Stück = 8.000 € Gesamtdeckungsbeitrag."
+      }
+    },
+    {
+      "id": "rechnungen-068",
+      "decision": "PASS",
+      "reason": "15.000 € − 12.000 € = 3.000 €; índice 0 correto. Unidades e arredondamento adequados; uma resposta defensável."
+    },
+    {
+      "id": "rechnungen-070",
+      "decision": "OTHER_ISSUE",
+      "reason": "Paráfrase de termo comercial ou de Break-Even já presente em outras questões, com alternativas desconexas. Melhor consolidar em uma aplicação contextual."
+    },
+    {
+      "id": "rechnungen-072",
+      "decision": "REWRITE",
+      "reason": "Perguntar qual valor usar «primeiro» entrega a resposta pelo único cálculo exibido; é melhor aplicar o objetivo de Break-Even ao cenário.",
+      "replacement": {
+        "id": "rechnungen-072",
+        "category": "Rechnungen",
+        "topic": "Break-Even",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen verkauft ein Produkt für 50 € pro Stück. Die variablen Stückkosten betragen 20 €, die Fixkosten 9.000 €. Wie viele Stück muss es mindestens verkaufen, um die Gewinnschwelle zu erreichen?",
+        "answers": [
+          "180 Stück",
+          "300 Stück",
+          "450 Stück",
+          "900 Stück"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Der Stückdeckungsbeitrag beträgt 50 € - 20 € = 30 €. 9.000 € / 30 € pro Stück = 300 Stück."
+      }
+    },
+    {
+      "id": "rechnungen-073",
+      "decision": "REWRITE",
+      "reason": "Dois distratores originais são quantidades sem sentido como Umsatz; usar erros plausíveis de multiplicação e escala.",
+      "replacement": {
+        "id": "rechnungen-073",
+        "category": "Rechnungen",
+        "topic": "Break-Even",
+        "difficulty": "medium",
+        "question": "Die Break-Even-Menge beträgt 300 Stück. Ein Stück wird für 40 € verkauft. Wie hoch ist der Break-Even-Umsatz?",
+        "answers": [
+          "1.200 €",
+          "7.500 €",
+          "12.000 €",
+          "120.000 €"
+        ],
+        "correctAnswer": 2,
+        "explanation": "300 Stück × 40 € pro Stück = 12.000 € Umsatz an der Gewinnschwelle."
+      }
+    },
+    {
+      "id": "rechnungen-074",
+      "decision": "OTHER_ISSUE",
+      "reason": "Paráfrase de termo comercial ou de Break-Even já presente em outras questões, com alternativas desconexas. Melhor consolidar em uma aplicação contextual."
+    },
+    {
+      "id": "rechnungen-075",
+      "decision": "PASS",
+      "reason": "Conceito correto, resposta única e explicação adequada; dificuldade medium apropriada."
+    },
+    {
+      "id": "rechnungen-076",
+      "decision": "OTHER_ISSUE",
+      "reason": "Paráfrase de termo comercial ou de Break-Even já presente em outras questões, com alternativas desconexas. Melhor consolidar em uma aplicação contextual."
+    },
+    {
+      "id": "rechnungen-078",
+      "decision": "REWRITE",
+      "reason": "Uma alternativa com «90 Stück» revela-se alheia à razão monetária; as quatro opções devem contrastar Ertrag e Aufwand.",
+      "replacement": {
+        "id": "rechnungen-078",
+        "category": "Rechnungen",
+        "topic": "Wirtschaftlichkeit",
+        "difficulty": "medium",
+        "question": "Ein Projekt hat eine Wirtschaftlichkeit von 0,90. Welche Aussage folgt daraus?",
+        "answers": [
+          "Der Ertrag liegt 10 % unter dem Aufwand.",
+          "Der Aufwand liegt 10 % unter dem Ertrag.",
+          "Ertrag und Aufwand sind gleich hoch.",
+          "Der Ertrag liegt 90 % über dem Aufwand."
+        ],
+        "correctAnswer": 0,
+        "explanation": "0,90 = Ertrag / Aufwand. Der Ertrag beträgt somit 90 % des Aufwands und liegt 10 % darunter."
+      }
+    },
+    {
+      "id": "rechnungen-079",
+      "decision": "REWRITE",
+      "reason": "O distrator «50.000» não tem unidade coerente com a razão; substituir por um erro plausível de subtração.",
+      "replacement": {
+        "id": "rechnungen-079",
+        "category": "Rechnungen",
+        "topic": "Wirtschaftlichkeit",
+        "difficulty": "medium",
+        "question": "Ein Projekt erzielt 50.000 € Ertrag bei 50.000 € Aufwand. Wie hoch ist die Wirtschaftlichkeit?",
+        "answers": [
+          "0,0",
+          "0,5",
+          "1,0",
+          "2,0"
+        ],
+        "correctAnswer": 2,
+        "explanation": "Wirtschaftlichkeit = 50.000 € / 50.000 € = 1,0."
+      }
+    },
+    {
+      "id": "rechnungen-080",
+      "decision": "OTHER_ISSUE",
+      "reason": "Vocabulário ou instrução de enunciado isolado; as alternativas não competem de forma plausível com a correta. Melhor incorporar a expressão a um exercício de produtividade ou economicidade."
+    },
+    {
+      "id": "rechnungen-081",
+      "decision": "PASS",
+      "reason": "1.200 / 6 = 200 tickets por colaborador; índice 1 correto. Unidades e arredondamento adequados; uma resposta defensável."
+    },
+    {
+      "id": "rechnungen-083",
+      "decision": "OTHER_ISSUE",
+      "reason": "Vocabulário ou instrução de enunciado isolado; as alternativas não competem de forma plausível com a correta. Melhor incorporar a expressão a um exercício de produtividade ou economicidade."
+    },
+    {
+      "id": "rechnungen-084",
+      "decision": "OTHER_ISSUE",
+      "reason": "Vocabulário ou instrução de enunciado isolado; as alternativas não competem de forma plausível com a correta. Melhor incorporar a expressão a um exercício de produtividade ou economicidade."
+    },
+    {
+      "id": "rechnungen-086",
+      "decision": "OTHER_ISSUE",
+      "reason": "Definição trivial de periodicidade de custos, com distratores de natureza diferente. Convém fundir com uma questão de TCO que separe custos únicos e recorrentes."
+    },
+    {
+      "id": "rechnungen-087",
+      "decision": "OTHER_ISSUE",
+      "reason": "Definição trivial de periodicidade de custos, com distratores de natureza diferente. Convém fundir com uma questão de TCO que separe custos únicos e recorrentes."
+    },
+    {
+      "id": "rechnungen-089",
+      "decision": "PASS",
+      "reason": "20.000 € / 100.000 € × 100 = 20 %; índice 1 correto. Unidades e arredondamento adequados; uma resposta defensável."
+    },
+    {
+      "id": "rechnungen-090",
+      "decision": "OTHER_ISSUE",
+      "reason": "Série de microperguntas de leitura ou vocabulário com distratores óbvios; vários conceitos já aparecem em questões aplicadas. Revisão pedagógica do bloco deve consolidá-las, em vez de substituir cada uma por outra paráfrase."
+    },
+    {
+      "id": "rechnungen-091",
+      "decision": "OTHER_ISSUE",
+      "reason": "Série de microperguntas de leitura ou vocabulário com distratores óbvios; vários conceitos já aparecem em questões aplicadas. Revisão pedagógica do bloco deve consolidá-las, em vez de substituir cada uma por outra paráfrase."
+    },
+    {
+      "id": "rechnungen-092",
+      "decision": "OTHER_ISSUE",
+      "reason": "Série de microperguntas de leitura ou vocabulário com distratores óbvios; vários conceitos já aparecem em questões aplicadas. Revisão pedagógica do bloco deve consolidá-las, em vez de substituir cada uma por outra paráfrase."
+    },
+    {
+      "id": "rechnungen-093",
+      "decision": "OTHER_ISSUE",
+      "reason": "Série de microperguntas de leitura ou vocabulário com distratores óbvios; vários conceitos já aparecem em questões aplicadas. Revisão pedagógica do bloco deve consolidá-las, em vez de substituir cada uma por outra paráfrase."
+    },
+    {
+      "id": "rechnungen-094",
+      "decision": "OTHER_ISSUE",
+      "reason": "Série de microperguntas de leitura ou vocabulário com distratores óbvios; vários conceitos já aparecem em questões aplicadas. Revisão pedagógica do bloco deve consolidá-las, em vez de substituir cada uma por outra paráfrase."
+    },
+    {
+      "id": "rechnungen-095",
+      "decision": "OTHER_ISSUE",
+      "reason": "Série de microperguntas de leitura ou vocabulário com distratores óbvios; vários conceitos já aparecem em questões aplicadas. Revisão pedagógica do bloco deve consolidá-las, em vez de substituir cada uma por outra paráfrase."
+    },
+    {
+      "id": "rechnungen-096",
+      "decision": "OTHER_ISSUE",
+      "reason": "Série de microperguntas de leitura ou vocabulário com distratores óbvios; vários conceitos já aparecem em questões aplicadas. Revisão pedagógica do bloco deve consolidá-las, em vez de substituir cada uma por outra paráfrase."
+    },
+    {
+      "id": "rechnungen-097",
+      "decision": "OTHER_ISSUE",
+      "reason": "Série de microperguntas de leitura ou vocabulário com distratores óbvios; vários conceitos já aparecem em questões aplicadas. Revisão pedagógica do bloco deve consolidá-las, em vez de substituir cada uma por outra paráfrase."
+    },
+    {
+      "id": "rechnungen-098",
+      "decision": "OTHER_ISSUE",
+      "reason": "Série de microperguntas de leitura ou vocabulário com distratores óbvios; vários conceitos já aparecem em questões aplicadas. Revisão pedagógica do bloco deve consolidá-las, em vez de substituir cada uma por outra paráfrase."
+    },
+    {
+      "id": "rechnungen-099",
+      "decision": "OTHER_ISSUE",
+      "reason": "Série de microperguntas de leitura ou vocabulário com distratores óbvios; vários conceitos já aparecem em questões aplicadas. Revisão pedagógica do bloco deve consolidá-las, em vez de substituir cada uma por outra paráfrase."
+    },
+    {
+      "id": "rechnungen-100",
+      "decision": "OTHER_ISSUE",
+      "reason": "Série de microperguntas de leitura ou vocabulário com distratores óbvios; vários conceitos já aparecem em questões aplicadas. Revisão pedagógica do bloco deve consolidá-las, em vez de substituir cada uma por outra paráfrase."
+    },
+    {
+      "id": "rechnungen-101",
+      "decision": "OTHER_ISSUE",
+      "reason": "Série de microperguntas de leitura ou vocabulário com distratores óbvios; vários conceitos já aparecem em questões aplicadas. Revisão pedagógica do bloco deve consolidá-las, em vez de substituir cada uma por outra paráfrase."
+    },
+    {
+      "id": "rechnungen-102",
+      "decision": "OTHER_ISSUE",
+      "reason": "Série de microperguntas de leitura ou vocabulário com distratores óbvios; vários conceitos já aparecem em questões aplicadas. Revisão pedagógica do bloco deve consolidá-las, em vez de substituir cada uma por outra paráfrase."
+    },
+    {
+      "id": "rechnungen-103",
+      "decision": "OTHER_ISSUE",
+      "reason": "Série de microperguntas de leitura ou vocabulário com distratores óbvios; vários conceitos já aparecem em questões aplicadas. Revisão pedagógica do bloco deve consolidá-las, em vez de substituir cada uma por outra paráfrase."
+    },
+    {
+      "id": "rechnungen-104",
+      "decision": "OTHER_ISSUE",
+      "reason": "Série de microperguntas de leitura ou vocabulário com distratores óbvios; vários conceitos já aparecem em questões aplicadas. Revisão pedagógica do bloco deve consolidá-las, em vez de substituir cada uma por outra paráfrase."
+    },
+    {
+      "id": "rechnungen-105",
+      "decision": "OTHER_ISSUE",
+      "reason": "Série de microperguntas de leitura ou vocabulário com distratores óbvios; vários conceitos já aparecem em questões aplicadas. Revisão pedagógica do bloco deve consolidá-las, em vez de substituir cada uma por outra paráfrase."
+    },
+    {
+      "id": "rechnungen-106",
+      "decision": "OTHER_ISSUE",
+      "reason": "Repete «Ist-Absatz» e «Sicherheitsspanne» de 031, ou pede apenas interpretar uma instrução. Convém juntar a um cálculo ou comparação de Break-Even."
+    },
+    {
+      "id": "rechnungen-107",
+      "decision": "OTHER_ISSUE",
+      "reason": "Repete praticamente a questão 031 sobre Sicherheitsspanne. Convém manter uma delas e usar a outra vaga para aplicação numérica."
+    },
+    {
+      "id": "rechnungen-108",
+      "decision": "OTHER_ISSUE",
+      "reason": "Repete «Ist-Absatz» e «Sicherheitsspanne» de 031, ou pede apenas interpretar uma instrução. Convém juntar a um cálculo ou comparação de Break-Even."
+    },
+    {
+      "id": "rechnungen-110",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-111",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-112",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-113",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-114",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-115",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-116",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-117",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-118",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-119",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-120",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-121",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-122",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-123",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-124",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-125",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-126",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-127",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-128",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-130",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-131",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-132",
+      "decision": "OTHER_ISSUE",
+      "reason": "Repete «eingesetztes Kapital» da questão 047. Recomenda-se consolidar."
+    },
+    {
+      "id": "rechnungen-133",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-134",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-135",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-136",
+      "decision": "OTHER_ISSUE",
+      "reason": "Item de vocabulário ou paráfrase, frequentemente repetido no bloco ROI/TCO, com distratores sem plausibilidade. Convém selecionar os termos essenciais e testá-los em contexto."
+    },
+    {
+      "id": "rechnungen-137",
+      "decision": "PASS",
+      "reason": "18.000 € − 5.000 € = 13.000 €; índice 0 correto. Unidades e arredondamento adequados; uma resposta defensável."
+    },
+    {
+      "id": "rechnungen-139",
+      "decision": "OTHER_ISSUE",
+      "reason": "Paráfrase de termo já definido ou usado nas questões de ROI e amortização; não acrescenta raciocínio e os distratores são muito fracos. Recomenda-se consolidar."
+    },
+    {
+      "id": "rechnungen-140",
+      "decision": "OTHER_ISSUE",
+      "reason": "Paráfrase de termo já definido ou usado nas questões de ROI e amortização; não acrescenta raciocínio e os distratores são muito fracos. Recomenda-se consolidar."
+    },
+    {
+      "id": "rechnungen-141",
+      "decision": "PASS",
+      "reason": "6.200 € − 1.800 € = 4.400 €; índice 0 correto. Unidades e arredondamento adequados; uma resposta defensável."
+    },
+    {
+      "id": "rechnungen-142",
+      "decision": "OTHER_ISSUE",
+      "reason": "Paráfrase de termo já definido ou usado nas questões de ROI e amortização; não acrescenta raciocínio e os distratores são muito fracos. Recomenda-se consolidar."
+    },
+    {
+      "id": "rechnungen-143",
+      "decision": "OTHER_ISSUE",
+      "reason": "Repete a definição de amortização da questão 048 e a paráfrase de 090. Convém consolidar."
+    },
+    {
+      "id": "rechnungen-144",
+      "decision": "OTHER_ISSUE",
+      "reason": "Paráfrase de termo já definido ou usado nas questões de ROI e amortização; não acrescenta raciocínio e os distratores são muito fracos. Recomenda-se consolidar."
+    },
+    {
+      "id": "rechnungen-145",
+      "decision": "PASS",
+      "reason": "36.000 € / 200.000 € × 100 = 18 %; índice 1 correto. Unidades e arredondamento adequados; uma resposta defensável."
+    },
+    {
+      "id": "rechnungen-146",
+      "decision": "PASS",
+      "reason": "Conceito correto, resposta única, alemão claro e explicação suficiente para uma questão básica de nível medium."
+    },
+    {
+      "id": "rechnungen-147",
+      "decision": "PASS",
+      "reason": "Conceito correto, resposta única, alemão claro e explicação suficiente para uma questão básica de nível medium."
+    },
+    {
+      "id": "rechnungen-148",
+      "decision": "OTHER_ISSUE",
+      "reason": "Leitura literal ou definição isolada, com alternativas claramente alheias ao conceito. Convém integrar os termos relevantes a exercícios de ROI, orçamento ou amortização."
+    },
+    {
+      "id": "rechnungen-149",
+      "decision": "OTHER_ISSUE",
+      "reason": "Leitura literal ou definição isolada, com alternativas claramente alheias ao conceito. Convém integrar os termos relevantes a exercícios de ROI, orçamento ou amortização."
+    },
+    {
+      "id": "rechnungen-151",
+      "decision": "OTHER_ISSUE",
+      "reason": "Leitura literal ou definição isolada, com alternativas claramente alheias ao conceito. Convém integrar os termos relevantes a exercícios de ROI, orçamento ou amortização."
+    },
+    {
+      "id": "rechnungen-152",
+      "decision": "OTHER_ISSUE",
+      "reason": "Leitura literal ou definição isolada, com alternativas claramente alheias ao conceito. Convém integrar os termos relevantes a exercícios de ROI, orçamento ou amortização."
+    },
+    {
+      "id": "rechnungen-153",
+      "decision": "OTHER_ISSUE",
+      "reason": "Leitura literal ou definição isolada, com alternativas claramente alheias ao conceito. Convém integrar os termos relevantes a exercícios de ROI, orçamento ou amortização."
+    },
+    {
+      "id": "rechnungen-154",
+      "decision": "OTHER_ISSUE",
+      "reason": "Leitura literal ou definição isolada, com alternativas claramente alheias ao conceito. Convém integrar os termos relevantes a exercícios de ROI, orçamento ou amortização."
+    },
+    {
+      "id": "rechnungen-155",
+      "decision": "OTHER_ISSUE",
+      "reason": "Leitura literal ou definição isolada, com alternativas claramente alheias ao conceito. Convém integrar os termos relevantes a exercícios de ROI, orçamento ou amortização."
+    },
+    {
+      "id": "rechnungen-156",
+      "decision": "REWRITE",
+      "reason": "O enunciado original pergunta apenas a tradução de «kumuliert», apesar de fornecer dados; aplicar a soma, inclusive o ano negativo, testa o objetivo.",
+      "replacement": {
+        "id": "rechnungen-156",
+        "category": "Rechnungen",
+        "topic": "ROI-Amortisation",
+        "difficulty": "medium",
+        "question": "Die Jahresergebnisse einer Investition betragen -7.000 €, 17.000 €, 24.000 € und 30.000 €. Wie hoch ist das kumulierte Ergebnis nach vier Jahren?",
+        "answers": [
+          "47.000 €",
+          "64.000 €",
+          "71.000 €",
+          "78.000 €"
+        ],
+        "correctAnswer": 1,
+        "explanation": "-7.000 € + 17.000 € + 24.000 € + 30.000 € = 64.000 €."
+      }
+    },
+    {
+      "id": "rechnungen-157",
+      "decision": "OTHER_ISSUE",
+      "reason": "Leitura literal ou definição isolada, com alternativas claramente alheias ao conceito. Convém integrar os termos relevantes a exercícios de ROI, orçamento ou amortização."
+    },
+    {
+      "id": "rechnungen-158",
+      "decision": "OTHER_ISSUE",
+      "reason": "Leitura literal ou definição isolada, com alternativas claramente alheias ao conceito. Convém integrar os termos relevantes a exercícios de ROI, orçamento ou amortização."
+    },
+    {
+      "id": "rechnungen-159",
+      "decision": "OTHER_ISSUE",
+      "reason": "Leitura literal ou definição isolada, com alternativas claramente alheias ao conceito. Convém integrar os termos relevantes a exercícios de ROI, orçamento ou amortização."
+    },
+    {
+      "id": "rechnungen-160",
+      "decision": "OTHER_ISSUE",
+      "reason": "Leitura literal ou definição isolada, com alternativas claramente alheias ao conceito. Convém integrar os termos relevantes a exercícios de ROI, orçamento ou amortização."
+    },
+    {
+      "id": "rechnungen-161",
+      "decision": "PASS",
+      "reason": "45 × 1.200 € = 54.000 €; índice 1 correto. Unidades e arredondamento adequados; uma resposta defensável."
+    },
+    {
+      "id": "rechnungen-163",
+      "decision": "OTHER_ISSUE",
+      "reason": "Bloco de vocabulário excessivamente fragmentado; as respostas são paráfrases óbvias. Melhor consolidar em cenários de investimento e orçamento, preservando os termos técnicos úteis."
+    },
+    {
+      "id": "rechnungen-164",
+      "decision": "OTHER_ISSUE",
+      "reason": "Bloco de vocabulário excessivamente fragmentado; as respostas são paráfrases óbvias. Melhor consolidar em cenários de investimento e orçamento, preservando os termos técnicos úteis."
+    },
+    {
+      "id": "rechnungen-165",
+      "decision": "OTHER_ISSUE",
+      "reason": "Bloco de vocabulário excessivamente fragmentado; as respostas são paráfrases óbvias. Melhor consolidar em cenários de investimento e orçamento, preservando os termos técnicos úteis."
+    },
+    {
+      "id": "rechnungen-166",
+      "decision": "PASS",
+      "reason": "14.400 € − 7.600 € = 6.800 €; índice 0 correto. Unidades e arredondamento adequados; uma resposta defensável."
+    },
+    {
+      "id": "rechnungen-167",
+      "decision": "OTHER_ISSUE",
+      "reason": "Bloco de vocabulário excessivamente fragmentado; as respostas são paráfrases óbvias. Melhor consolidar em cenários de investimento e orçamento, preservando os termos técnicos úteis."
+    },
+    {
+      "id": "rechnungen-168",
+      "decision": "OTHER_ISSUE",
+      "reason": "Bloco de vocabulário excessivamente fragmentado; as respostas são paráfrases óbvias. Melhor consolidar em cenários de investimento e orçamento, preservando os termos técnicos úteis."
+    },
+    {
+      "id": "rechnungen-169",
+      "decision": "OTHER_ISSUE",
+      "reason": "Bloco de vocabulário excessivamente fragmentado; as respostas são paráfrases óbvias. Melhor consolidar em cenários de investimento e orçamento, preservando os termos técnicos úteis."
+    },
+    {
+      "id": "rechnungen-170",
+      "decision": "OTHER_ISSUE",
+      "reason": "Bloco de vocabulário excessivamente fragmentado; as respostas são paráfrases óbvias. Melhor consolidar em cenários de investimento e orçamento, preservando os termos técnicos úteis."
+    },
+    {
+      "id": "rechnungen-171",
+      "decision": "OTHER_ISSUE",
+      "reason": "Bloco de vocabulário excessivamente fragmentado; as respostas são paráfrases óbvias. Melhor consolidar em cenários de investimento e orçamento, preservando os termos técnicos úteis."
+    },
+    {
+      "id": "rechnungen-172",
+      "decision": "OTHER_ISSUE",
+      "reason": "Bloco de vocabulário excessivamente fragmentado; as respostas são paráfrases óbvias. Melhor consolidar em cenários de investimento e orçamento, preservando os termos técnicos úteis."
+    },
+    {
+      "id": "rechnungen-173",
+      "decision": "OTHER_ISSUE",
+      "reason": "Bloco de vocabulário excessivamente fragmentado; as respostas são paráfrases óbvias. Melhor consolidar em cenários de investimento e orçamento, preservando os termos técnicos úteis."
+    },
+    {
+      "id": "rechnungen-174",
+      "decision": "OTHER_ISSUE",
+      "reason": "Bloco de vocabulário excessivamente fragmentado; as respostas são paráfrases óbvias. Melhor consolidar em cenários de investimento e orçamento, preservando os termos técnicos úteis."
+    },
+    {
+      "id": "rechnungen-175",
+      "decision": "OTHER_ISSUE",
+      "reason": "Bloco de vocabulário excessivamente fragmentado; as respostas são paráfrases óbvias. Melhor consolidar em cenários de investimento e orçamento, preservando os termos técnicos úteis."
+    },
+    {
+      "id": "rechnungen-176",
+      "decision": "OTHER_ISSUE",
+      "reason": "Bloco de vocabulário excessivamente fragmentado; as respostas são paráfrases óbvias. Melhor consolidar em cenários de investimento e orçamento, preservando os termos técnicos úteis."
+    },
+    {
+      "id": "rechnungen-177",
+      "decision": "OTHER_ISSUE",
+      "reason": "Bloco de vocabulário excessivamente fragmentado; as respostas são paráfrases óbvias. Melhor consolidar em cenários de investimento e orçamento, preservando os termos técnicos úteis."
+    },
+    {
+      "id": "rechnungen-178",
+      "decision": "REWRITE",
+      "reason": "A resposta original repete a expressão do enunciado; números concretos testam a razão conjunta sem somar porcentagens.",
+      "replacement": {
+        "id": "rechnungen-178",
+        "category": "Rechnungen",
+        "topic": "ROI-Amortisation",
+        "difficulty": "medium",
+        "question": "Investition A kostet 20.000 € und bringt 4.000 € Gewinn. Investition B kostet 30.000 € und bringt 9.000 € Gewinn. Wie hoch ist der gemeinsame ROI?",
+        "answers": [
+          "20 %",
+          "26 %",
+          "30 %",
+          "50 %"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Gesamtgewinn: 4.000 € + 9.000 € = 13.000 €. Eingesetztes Kapital: 20.000 € + 30.000 € = 50.000 €. ROI = 13.000 € / 50.000 € × 100 = 26 %."
+      }
+    },
+    {
+      "id": "rechnungen-179",
+      "decision": "OTHER_ISSUE",
+      "reason": "Repetição de definição ou leitura literal de instrução, com pouca discriminação entre alunos; convém consolidar nas questões aplicadas de ROI."
+    },
+    {
+      "id": "rechnungen-180",
+      "decision": "OTHER_ISSUE",
+      "reason": "Repetição de definição ou leitura literal de instrução, com pouca discriminação entre alunos; convém consolidar nas questões aplicadas de ROI."
+    },
+    {
+      "id": "rechnungen-181",
+      "decision": "OTHER_ISSUE",
+      "reason": "Repete a definição de Umsatzrentabilität da questão 146, sem novo contexto; convém manter uma só questão conceitual e aplicar a fórmula na 182."
+    },
+    {
+      "id": "rechnungen-182",
+      "decision": "PASS",
+      "reason": "50.000 € / 500.000 € × 100 = 10 %; índice 1 correto. Unidades e arredondamento adequados; uma resposta defensável."
+    },
+    {
+      "id": "rechnungen-183",
+      "decision": "PASS",
+      "reason": "1.000.000 € / 500.000 € = 2; índice 2 correto. Unidades e arredondamento adequados; uma resposta defensável."
+    },
+    {
+      "id": "rechnungen-185",
+      "decision": "OTHER_ISSUE",
+      "reason": "Repetição de definição ou leitura literal de instrução, com pouca discriminação entre alunos; convém consolidar nas questões aplicadas de ROI."
+    },
+    {
+      "id": "rechnungen-186",
+      "decision": "OTHER_ISSUE",
+      "reason": "Repetição de definição ou leitura literal de instrução, com pouca discriminação entre alunos; convém consolidar nas questões aplicadas de ROI."
+    },
+    {
+      "id": "rechnungen-187",
+      "decision": "OTHER_ISSUE",
+      "reason": "Repetição de definição ou leitura literal de instrução, com pouca discriminação entre alunos; convém consolidar nas questões aplicadas de ROI."
+    },
+    {
+      "id": "rechnungen-188",
+      "decision": "REWRITE",
+      "reason": "A alternativa correta original é o único par de fatores da fórmula, enquanto os demais pares vêm de outros temas; opções de fórmulas eliminam essa pista.",
+      "replacement": {
+        "id": "rechnungen-188",
+        "category": "Rechnungen",
+        "topic": "ROI-Amortisation",
+        "difficulty": "medium",
+        "question": "Welche Zerlegung entspricht dem ROI nach der DuPont-Formel?",
+        "answers": [
+          "Gewinn / Umsatz × Umsatz / eingesetztes Kapital",
+          "Umsatz / Gewinn × Umsatz / eingesetztes Kapital",
+          "Gewinn / Umsatz + Umsatz / eingesetztes Kapital",
+          "Gewinn / eingesetztes Kapital × Umsatz / eingesetztes Kapital"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Umsatzrentabilität = Gewinn / Umsatz und Kapitalumschlag = Umsatz / eingesetztes Kapital. Ihr Produkt ergibt Gewinn / eingesetztes Kapital."
+      }
+    },
+    {
+      "id": "rechnungen-189",
+      "decision": "OTHER_ISSUE",
+      "reason": "Repetição de definição ou leitura literal de instrução, com pouca discriminação entre alunos; convém consolidar nas questões aplicadas de ROI."
+    },
+    {
+      "id": "rechnungen-190",
+      "decision": "OTHER_ISSUE",
+      "reason": "Repetição de definição ou leitura literal de instrução, com pouca discriminação entre alunos; convém consolidar nas questões aplicadas de ROI."
+    }
+  ]
+}

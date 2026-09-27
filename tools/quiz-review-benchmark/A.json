@@ -1,0 +1,250 @@
+{
+  "benchmark": "rechnungen-first-pass-v1",
+  "results": [
+    {
+      "id": "rechnungen-003",
+      "decision": "OTHER_ISSUE",
+      "reason": "Cálculo correto: (125 − 100) / 100 × 100 = 25 %. Pergunta clara, resposta única e explicação suficiente. Porém, usar uma base de 100 torna a resposta praticamente imediata; o nível adequado é easy. Recomenda-se revisar a classificação, preservando a pergunta."
+    },
+    {
+      "id": "rechnungen-009",
+      "decision": "OTHER_ISSUE",
+      "reason": "Resultado correto: 119 / 1,19 = 100 €. Existe uma única resposta defensável. A operação direta com valores exemplares de líquido e bruto corresponde melhor a easy; o problema principal é a classificação de dificuldade."
+    },
+    {
+      "id": "rechnungen-017",
+      "decision": "OTHER_ISSUE",
+      "reason": "Definição e explicação corretas no contexto da apuração dos custos de uma prestação. As alternativas distinguem custos parciais, custos totais e preço com lucro. É uma questão de reconhecimento básico, mais adequada a easy; não há necessidade de reescrever o conteúdo."
+    },
+    {
+      "id": "rechnungen-018",
+      "decision": "REWRITE",
+      "reason": "A resposta confunde custos variáveis com custos diretamente atribuíveis, que são classificações diferentes. A explicação também não esclarece que, exatamente na fronteira de preço, o Deckungsbeitrag é zero. A revisão explicita o modelo e distingue a fronteira de curto prazo da de longo prazo. Referência: [Ausbildungspark — Preisuntergrenzen](https://www.ausbildungspark.com/rechnungswesen-und-buchfuehrung/kosten-und-leistungsrechnung/preisuntergrenzen).",
+      "proposal": {
+        "id": "rechnungen-018",
+        "category": "Rechnungen",
+        "topic": "Kostenbegriffe",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen hat freie Kapazitäten und konstante variable Stückkosten. Zusätzliche Fixkosten entstehen nicht. Welchem Betrag entspricht die kurzfristige Preisuntergrenze pro Stück?",
+        "answers": [
+          "Den Selbstkosten pro Stück zuzüglich Gewinnzuschlag",
+          "Den anteiligen Fixkosten pro Stück",
+          "Den variablen Kosten pro Stück",
+          "Den gesamten Selbstkosten pro Stück"
+        ],
+        "correctAnswer": 2,
+        "explanation": "Die kurzfristige Preisuntergrenze entspricht unter diesen Annahmen den variablen Stückkosten. Bei diesem Preis ist der Stückdeckungsbeitrag null; die Fixkosten werden nicht gedeckt. Erst ein höherer Preis liefert einen positiven Beitrag zur Fixkostendeckung."
+      }
+    },
+    {
+      "id": "rechnungen-021",
+      "decision": "OTHER_ISSUE",
+      "reason": "Definição correta e resposta única: preço de venda menos custos variáveis por unidade. A alternativa correta é mais longa, mas descreve diretamente o conceito sem detalhamento desnecessário. Trata-se de reconhecimento básico, mais adequado a easy; recomenda-se reclassificar."
+    },
+    {
+      "id": "rechnungen-026",
+      "decision": "PASS",
+      "reason": "Correta no esquema usual da Deckungsbeitragsrechnung em etapas: DB II = DB I − custos fixos específicos do produto. Resposta única, alternativas distinguíveis e explicação suficiente. A distinção entre etapas é compatível com medium."
+    },
+    {
+      "id": "rechnungen-027",
+      "decision": "OTHER_ISSUE",
+      "reason": "Conceito correto, com uma única resposta defensável e explicação adequada. Os distratores são simples e a pergunta exige apenas reconhecer a definição do ponto de equilíbrio. Recomenda-se classificá-la como easy, preservando o conteúdo."
+    },
+    {
+      "id": "rechnungen-035",
+      "decision": "OTHER_ISSUE",
+      "reason": "Interpretação correta: Ertrag / Aufwand = 1,25 indica que o rendimento supera o gasto. A resposta é única e a explicação suficiente. A identificação de um valor superior a 1 corresponde melhor a easy; não é necessário tornar a pergunta mais complexa."
+    },
+    {
+      "id": "rechnungen-038",
+      "decision": "OTHER_ISSUE",
+      "reason": "Definição correta de produtividade como relação quantitativa entre output e input. Os distratores representam outros indicadores, permitindo uma distinção conceitual válida. Ainda assim, exige apenas reconhecimento de fórmula e se enquadra melhor em easy."
+    },
+    {
+      "id": "rechnungen-041",
+      "decision": "OTHER_ISSUE",
+      "reason": "Definição correta de TCO, resposta única e explicação consistente. As alternativas sobre somente aquisição ou somente manutenção são erros pertinentes. A pergunta é introdutória e corresponde melhor a easy; recomenda-se ajustar a dificuldade."
+    },
+    {
+      "id": "rechnungen-046",
+      "decision": "REWRITE",
+      "reason": "O conceito está correto, mas os distratores sobre quantidade produzida, custos fixos e prazo de entrega permitem acertar sem compreender o ROI. A alternativa correta também é muito mais detalhada. A revisão diferencia ROI de indicadores econômicos próximos.",
+      "proposal": {
+        "id": "rechnungen-046",
+        "category": "Rechnungen",
+        "topic": "ROI-Amortisation",
+        "difficulty": "medium",
+        "question": "Welche Beziehung beschreibt der Return on Investment (ROI)?",
+        "answers": [
+          "Gewinn im Verhältnis zum eingesetzten Kapital",
+          "Gewinn im Verhältnis zum erzielten Umsatz",
+          "Ertrag im Verhältnis zum entstandenen Aufwand",
+          "Investitionsbetrag im Verhältnis zum jährlichen Rückfluss"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Der ROI beschreibt die Rentabilität des eingesetzten Kapitals: ROI = Gewinn / eingesetztes Kapital × 100 %. Gewinn / Umsatz beschreibt die Umsatzrentabilität, Ertrag / Aufwand die Wirtschaftlichkeit und Investitionsbetrag / jährlicher Rückfluss die statische Amortisationsdauer bei konstanten Rückflüssen."
+      }
+    },
+    {
+      "id": "rechnungen-050",
+      "decision": "REWRITE",
+      "reason": "A interpretação pretendida é correta, mas os distratores são desconectados da avaliação de investimentos. A resposta pode ser encontrada por eliminação superficial. A revisão mantém o objetivo de compreensão do enunciado e introduz alternativas economicamente pertinentes.",
+      "proposal": {
+        "id": "rechnungen-050",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Eine Prüfungsaufgabe fragt: „Lohnt sich die Investition aus wirtschaftlicher Sicht?“ Welche Beurteilung ist damit gemeint?",
+        "answers": [
+          "Ob der erwartete wirtschaftliche Nutzen die relevanten Kosten rechtfertigt",
+          "Ob die Anschaffungskosten unter denen aller Alternativen liegen",
+          "Ob die Investition bereits im ersten Jahr vollständig amortisiert ist",
+          "Ob nach der Investition keine laufenden Betriebskosten mehr entstehen"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Gefragt ist eine wirtschaftliche Bewertung anhand der angegebenen Kosten, Erträge oder Einsparungen und des betrachteten Zeitraums. Der niedrigste Anschaffungspreis allein genügt dafür nicht. Eine vollständige Amortisation im ersten Jahr oder der Wegfall aller Betriebskosten ist keine allgemeine Voraussetzung."
+      }
+    },
+    {
+      "id": "rechnungen-064",
+      "decision": "REWRITE",
+      "reason": "O critério pretendido é adequado para capacidade livre, sem custos fixos adicionais nem deslocamento de outros pedidos. Essas condições faltam, e os distratores são pouco plausíveis. A revisão delimita a decisão e distingue contribuição positiva de cobertura integral dos custos. A importância das restrições de capacidade é tratada em [FernUniversität Hagen — Produktionsplanung](https://www.fernuni-hagen.de/wirtschaftswissenschaft/studium/download/leseproben/lp_31541.pdf).",
+      "proposal": {
+        "id": "rechnungen-064",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein Zusatzauftrag kann mit freien Kapazitäten ausgeführt werden. Er verdrängt keine anderen Aufträge und verursacht keine zusätzlichen Fixkosten. Wann lohnt er sich kurzfristig aus Sicht des Deckungsbeitrags?",
+        "answers": [
+          "Wenn sein zusätzlicher Erlös seine zusätzlichen variablen Kosten übersteigt",
+          "Wenn sein zusätzlicher Erlös genau seinen zusätzlichen variablen Kosten entspricht",
+          "Erst wenn sein zusätzlicher Erlös sämtliche Fixkosten des Unternehmens deckt",
+          "Erst wenn sein Stückpreis den regulären Verkaufspreis übersteigt"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Unter diesen Voraussetzungen erhöht ein positiver zusätzlicher Deckungsbeitrag das Betriebsergebnis: zusätzlicher Erlös minus zusätzliche variable Kosten > 0. Bei Gleichheit entsteht kein zusätzlicher Deckungsbeitrag. Die bereits bestehenden Fixkosten ändern sich durch den Auftrag nicht."
+      }
+    },
+    {
+      "id": "rechnungen-069",
+      "decision": "PASS",
+      "reason": "Recalculado: Deckungsbeitrag = 60 − 45 = 15 €; 15 / 60 × 100 = 25 %. A base percentual está explícita. Os distratores incluem confundir o valor absoluto com a porcentagem e calcular a participação dos custos variáveis. As duas etapas são adequadas a medium."
+    },
+    {
+      "id": "rechnungen-071",
+      "decision": "OTHER_ISSUE",
+      "reason": "Cálculo correto: 6.000 / 30 = 200 unidades. Pergunta clara e explicação suficiente. Como o Deckungsbeitrag por unidade já é fornecido, basta uma divisão direta; recomenda-se easy em vez de medium."
+    },
+    {
+      "id": "rechnungen-077",
+      "decision": "OTHER_ISSUE",
+      "reason": "Resultado correto: 120.000 / 100.000 = 1,20. A alternativa 0,83 representa a inversão da razão e é um distrator pertinente. A aplicação direta de uma única fórmula com valores simples corresponde melhor a easy."
+    },
+    {
+      "id": "rechnungen-082",
+      "decision": "REWRITE",
+      "reason": "Manter os mesmos cinco funcionários não garante o mesmo esforço de trabalho: faltam duração e horas trabalhadas. A explicação pressupõe input constante sem demonstrá-lo. Também há distratores sem relação suficiente com produtividade. A revisão explicita o tempo e permite calcular a mudança.",
+      "proposal": {
+        "id": "rechnungen-082",
+        "category": "Rechnungen",
+        "topic": "Produktivität",
+        "difficulty": "medium",
+        "question": "Ein Team aus fünf Mitarbeitern erstellt zunächst 20 Module pro Woche und nach einer Verbesserung 25 gleichwertige Module pro Woche. Die gesamte Arbeitszeit des Teams bleibt gleich. Wie verändert sich die Arbeitsproduktivität?",
+        "answers": [
+          "Sie steigt um 25 %.",
+          "Sie steigt um 20 %.",
+          "Sie bleibt unverändert.",
+          "Sie sinkt um 20 %."
+        ],
+        "correctAnswer": 0,
+        "explanation": "Bei gleicher Arbeitszeit ist die Arbeitsproduktivität proportional zur Zahl der erstellten Module. Die Steigerung beträgt (25 − 20) / 20 × 100 % = 25 %. Die Qualität der Module bleibt vergleichbar."
+      }
+    },
+    {
+      "id": "rechnungen-085",
+      "decision": "OTHER_ISSUE",
+      "reason": "Soma correta: 10.000 + 8.000 + 2.000 = 20.000 €. O enunciado limita explicitamente a análise às três posições e evita exigir outros componentes de TCO. É uma soma direta, mais adequada a easy; recomenda-se reclassificar."
+    },
+    {
+      "id": "rechnungen-088",
+      "decision": "OTHER_ISSUE",
+      "reason": "Cálculo correto no modelo de retorno anual constante: 50.000 / 10.000 = 5 anos. Há uma única resposta correta e a explicação apresenta a fórmula. A aplicação direta corresponde melhor a easy; a construção gramatical pouco natural não justifica, por si só, uma reescrita."
+    },
+    {
+      "id": "rechnungen-109",
+      "decision": "REWRITE",
+      "reason": "A direção conceitual está correta, mas não se informa que a ponderação utiliza os Deckungsbeiträge unitários e as participações quantitativas de um mix constante. O distrator sobre quilogramas explora apenas a palavra 'gewichtet', e a explicação repete o enunciado. A revisão explicita o método sem exigir um cálculo mais avançado.",
+      "proposal": {
+        "id": "rechnungen-109",
+        "category": "Rechnungen",
+        "topic": "Break-Even",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen verkauft mehrere Produktvarianten mit unterschiedlichen Stückdeckungsbeiträgen. Für die Break-Even-Berechnung wird ein konstanter Absatzmix angenommen. Wie wird die gesamte Break-Even-Menge ermittelt?",
+        "answers": [
+          "Fixkosten geteilt durch den nach Mengenanteilen gewichteten Stückdeckungsbeitrag",
+          "Fixkosten geteilt durch den nach Mengenanteilen gewichteten Verkaufspreis",
+          "Fixkosten geteilt durch den höchsten Stückdeckungsbeitrag einer Variante",
+          "Fixkosten geteilt durch die Summe der Stückdeckungsbeiträge aller Varianten"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Zunächst wird jeder Stückdeckungsbeitrag mit dem Mengenanteil seiner Variante multipliziert. Die Summe ergibt den gewichteten Stückdeckungsbeitrag. Die Fixkosten geteilt durch diesen positiven Wert ergeben die gesamte Break-Even-Menge für den angenommenen konstanten Absatzmix."
+      }
+    },
+    {
+      "id": "rechnungen-129",
+      "decision": "REWRITE",
+      "reason": "Definição correta, mas redução geral de preços, interrupção de vendas e eliminação de custos fixos são distratores frágeis. A revisão distingue Upselling de Cross-Selling, desconto e renovação contratual em um contexto de serviços de TI.",
+      "proposal": {
+        "id": "rechnungen-129",
+        "category": "Rechnungen",
+        "topic": "Textverständnis",
+        "difficulty": "medium",
+        "question": "Ein IT-Dienstleister bietet Standard- und Premium-Service an. Welche Maßnahme ist ein Beispiel für Upselling?",
+        "answers": [
+          "Einem Standardkunden wird der Premium-Service mit erweitertem Leistungsumfang angeboten.",
+          "Einem Standardkunden wird zusätzlich ein unabhängiger Backup-Service angeboten.",
+          "Einem Standardkunden wird derselbe Service zu einem niedrigeren Preis angeboten.",
+          "Einem Standardkunden wird eine Verlängerung zu unveränderten Konditionen angeboten."
+        ],
+        "correctAnswer": 0,
+        "explanation": "Upselling bedeutet, eine höherwertige Variante der bereits nachgefragten Leistung anzubieten, hier den Premium-Service statt des Standard-Service. Eine zusätzliche eigenständige Leistung ist Cross-Selling. Ein Rabatt oder eine unveränderte Vertragsverlängerung ist kein Upselling."
+      }
+    },
+    {
+      "id": "rechnungen-138",
+      "decision": "OTHER_ISSUE",
+      "reason": "Cálculo correto: 13.000 / 50.000 × 100 = 26 %, interpretado como ROI anual sobre o capital investido informado. Resposta única e explicação suficiente. Trata-se de aplicação direta de fórmula, mais adequada a easy; recomenda-se ajustar a classificação."
+    },
+    {
+      "id": "rechnungen-150",
+      "decision": "OTHER_ISSUE",
+      "reason": "A resposta A é correta para a comparação expressamente limitada ao ROI, e a explicação pressupõe uma base de comparação equivalente. Entretanto, basta identificar que 35 % é maior que 32 %. O problema é a dificuldade: recomenda-se easy, preservando a pergunta."
+    },
+    {
+      "id": "rechnungen-162",
+      "decision": "REWRITE",
+      "reason": "A multiplicação pretendida está correta: 54.000 × 0,25 = 13.500 €. Porém, 'Marge' não define explicitamente a base percentual nem quais custos já foram deduzidos; pode ser confundida com um acréscimo sobre custos. A revisão define a margem e utiliza distratores ligados a erros de cálculo.",
+      "proposal": {
+        "id": "rechnungen-162",
+        "category": "Rechnungen",
+        "topic": "ROI-Amortisation",
+        "difficulty": "medium",
+        "question": "Eine Kampagne erzielt einen zusätzlichen Nettoumsatz von 54.000 €. Nach Abzug aller diesem Umsatz zugeordneten Kosten, jedoch vor Abzug der Kampagnenkosten, verbleiben 25 % dieses Nettoumsatzes als Gewinn. Wie hoch ist dieser Gewinn vor Kampagnenkosten?",
+        "answers": [
+          "13.500 €",
+          "10.800 €",
+          "40.500 €",
+          "67.500 €"
+        ],
+        "correctAnswer": 0,
+        "explanation": "Die Gewinnmarge vor Kampagnenkosten bezieht sich ausdrücklich auf den Nettoumsatz: 54.000 € × 0,25 = 13.500 €. Ein Aufschlag von 25 % auf die Kosten wäre eine andere Bezugsgröße. Für den Gewinn nach Kampagnenkosten müssten diese anschließend noch abgezogen werden."
+      }
+    },
+    {
+      "id": "rechnungen-184",
+      "decision": "PASS",
+      "reason": "Recalculado: 10 % × 2 = 20 %. A fórmula DuPont está corretamente aplicada, existe uma única resposta defensável e os distratores representam divisão, omissão do fator e erro na escala percentual. O conhecimento da decomposição do ROI é compatível com medium."
+    }
+  ]
+}
