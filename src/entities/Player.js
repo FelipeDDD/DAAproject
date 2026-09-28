@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { PLAYER_SCALE, PLAYER_SPEED } from '../game/settings.js';
-import { applyCharacterVisual,footBodyForVisual,updateCharacterVisual } from '../characterVisuals.js';
+import { applyCharacterVisual,footBodyForVisual,updateCharacterVisual,localCharacterStyle } from '../characterVisuals.js';
 import { PlayerHealthBar } from '../ui/PlayerHealthBar.js';
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
@@ -25,7 +25,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   setCharacter(character,style){
-    this.visual=applyCharacterVisual(this,character,style);
+    this.visual=applyCharacterVisual(this,character,localCharacterStyle(character,style,this.scene.presence?.identity));
     const body=footBodyForVisual(this.visual);
     this.body.setSize(body.width,body.height);this.body.setOffset(body.offsetX,body.offsetY);
     this.setFacing(this.facing,false);

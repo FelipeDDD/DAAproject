@@ -1,0 +1,229 @@
+﻿{
+    "source":  "felipe-walk-raw-v2.png",
+    "sourceSha256":  "9BA79430AB8B434625DDF9DDD0F4769A14104C88AC72B735C29323625AA965F1",
+    "columns":  6,
+    "rows":  4,
+    "frameWidth":  64,
+    "frameHeight":  72,
+    "baseline":  71,
+    "uniformScale":  0.25287356321839083,
+    "alphaThreshold":  96,
+    "frames":  [
+                   {
+                       "row":  0,
+                       "column":  0,
+                       "x":  75,
+                       "y":  24,
+                       "width":  136,
+                       "height":  252,
+                       "headCenterX":  140
+                   },
+                   {
+                       "row":  0,
+                       "column":  1,
+                       "x":  295,
+                       "y":  24,
+                       "width":  138,
+                       "height":  256,
+                       "headCenterX":  361
+                   },
+                   {
+                       "row":  0,
+                       "column":  2,
+                       "x":  508,
+                       "y":  24,
+                       "width":  140,
+                       "height":  252,
+                       "headCenterX":  574
+                   },
+                   {
+                       "row":  0,
+                       "column":  3,
+                       "x":  730,
+                       "y":  24,
+                       "width":  143,
+                       "height":  256,
+                       "headCenterX":  796.5
+                   },
+                   {
+                       "row":  0,
+                       "column":  4,
+                       "x":  946,
+                       "y":  24,
+                       "width":  143,
+                       "height":  256,
+                       "headCenterX":  1011.5
+                   },
+                   {
+                       "row":  0,
+                       "column":  5,
+                       "x":  1167,
+                       "y":  24,
+                       "width":  141,
+                       "height":  252,
+                       "headCenterX":  1233
+                   },
+                   {
+                       "row":  1,
+                       "column":  0,
+                       "x":  82,
+                       "y":  299,
+                       "width":  117,
+                       "height":  255,
+                       "headCenterX":  135
+                   },
+                   {
+                       "row":  1,
+                       "column":  1,
+                       "x":  295,
+                       "y":  300,
+                       "width":  126,
+                       "height":  254,
+                       "headCenterX":  355
+                   },
+                   {
+                       "row":  1,
+                       "column":  2,
+                       "x":  524,
+                       "y":  301,
+                       "width":  118,
+                       "height":  253,
+                       "headCenterX":  577
+                   },
+                   {
+                       "row":  1,
+                       "column":  3,
+                       "x":  734,
+                       "y":  300,
+                       "width":  128,
+                       "height":  254,
+                       "headCenterX":  793.5
+                   },
+                   {
+                       "row":  1,
+                       "column":  4,
+                       "x":  956,
+                       "y":  300,
+                       "width":  120,
+                       "height":  255,
+                       "headCenterX":  1010
+                   },
+                   {
+                       "row":  1,
+                       "column":  5,
+                       "x":  1179,
+                       "y":  300,
+                       "width":  118,
+                       "height":  254,
+                       "headCenterX":  1232
+                   },
+                   {
+                       "row":  2,
+                       "column":  0,
+                       "x":  75,
+                       "y":  580,
+                       "width":  121,
+                       "height":  252,
+                       "headCenterX":  142
+                   },
+                   {
+                       "row":  2,
+                       "column":  1,
+                       "x":  292,
+                       "y":  580,
+                       "width":  129,
+                       "height":  252,
+                       "headCenterX":  360.5
+                   },
+                   {
+                       "row":  2,
+                       "column":  2,
+                       "x":  510,
+                       "y":  580,
+                       "width":  122,
+                       "height":  252,
+                       "headCenterX":  577
+                   },
+                   {
+                       "row":  2,
+                       "column":  3,
+                       "x":  726,
+                       "y":  582,
+                       "width":  130,
+                       "height":  250,
+                       "headCenterX":  797.5
+                   },
+                   {
+                       "row":  2,
+                       "column":  4,
+                       "x":  952,
+                       "y":  580,
+                       "width":  124,
+                       "height":  255,
+                       "headCenterX":  1020.5
+                   },
+                   {
+                       "row":  2,
+                       "column":  5,
+                       "x":  1171,
+                       "y":  582,
+                       "width":  123,
+                       "height":  250,
+                       "headCenterX":  1239
+                   },
+                   {
+                       "row":  3,
+                       "column":  0,
+                       "x":  64,
+                       "y":  849,
+                       "width":  141,
+                       "height":  255,
+                       "headCenterX":  139
+                   },
+                   {
+                       "row":  3,
+                       "column":  1,
+                       "x":  284,
+                       "y":  849,
+                       "width":  141,
+                       "height":  256,
+                       "headCenterX":  358
+                   },
+                   {
+                       "row":  3,
+                       "column":  2,
+                       "x":  501,
+                       "y":  849,
+                       "width":  145,
+                       "height":  255,
+                       "headCenterX":  578
+                   },
+                   {
+                       "row":  3,
+                       "column":  3,
+                       "x":  721,
+                       "y":  849,
+                       "width":  141,
+                       "height":  261,
+                       "headCenterX":  797.5
+                   },
+                   {
+                       "row":  3,
+                       "column":  4,
+                       "x":  937,
+                       "y":  849,
+                       "width":  145,
+                       "height":  256,
+                       "headCenterX":  1014.5
+                   },
+                   {
+                       "row":  3,
+                       "column":  5,
+                       "x":  1163,
+                       "y":  849,
+                       "width":  141,
+                       "height":  257,
+                       "headCenterX":  1234
+                   }
+               ]
+}

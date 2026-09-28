@@ -1,7 +1,8 @@
 import { CHARACTER_STYLE_STORAGE_KEY } from './characters.js';
 import { NEW_PLAYER_SCALE, PLAYER_SCALE } from './game/settings.js';
+import { prepareFelipeRecolorTexture } from './art/felipeRecolor.js';
 
-export const CHARACTER_STYLES=Object.freeze(['old','new','lungCrusher']);
+export const CHARACTER_STYLES=Object.freeze(['old','new','lungCrusher','level3Preview']);
 export const NEW_CHARACTER_FRAME=Object.freeze({width:64,height:72,columns:6,rows:4});
 export const WALK_COLUMNS=Object.freeze([2,3,4,5]);
 const DIRECTIONS=Object.freeze(['down','left','right','up']);
@@ -21,6 +22,11 @@ export function saveCharacterStyle(style,storage=globalThis.localStorage){
 }
 
 export function characterVisual(character,style=loadCharacterStyle()){
+  if(style==='level3Preview'&&character?.experimentalVisual)return {
+    ...character.experimentalVisual,style,animated:true,scale:character.experimentalVisual.scale??NEW_PLAYER_SCALE,
+    frameWidth:character.experimentalVisual.frameWidth??NEW_CHARACTER_FRAME.width,
+    frameHeight:character.experimentalVisual.frameHeight??NEW_CHARACTER_FRAME.height,labelOffset:68,
+  };
   if(style==='lungCrusher'&&character?.lungCrusherVisual)return {
     ...character.lungCrusherVisual,style:'lungCrusher',animated:true,scale:NEW_PLAYER_SCALE,
     frameWidth:character.lungCrusherVisual.frameWidth??NEW_CHARACTER_FRAME.width,
@@ -47,7 +53,13 @@ export function walkFrames(direction,visual){
 }
 export function animationKey(visual,type,direction){return `${visual.sprite}-${type}-${direction}`;}
 
-export function preloadCharacterTextures(scene,characters,baseUrl){
+// This override is used only by the local Player; remote art still uses published equipment.
+export function localCharacterStyle(character,style,identity){
+  return identity?.visualPreview==='level3Preview'&&identity.characterBaseId===character?.id&&character?.experimentalVisual
+    ?'level3Preview':style;
+}
+
+export function preloadCharacterTextures(scene,characters,baseUrl,includeExperiments=import.meta.env?.DEV===true){
   const queued=new Set();
   for(const character of characters){
     if(!queued.has(character.sprite)&&!scene.textures.exists(character.sprite))scene.load.svg(character.sprite,`${baseUrl}${character.asset}`);
@@ -63,12 +75,20 @@ export function preloadCharacterTextures(scene,characters,baseUrl){
         frameHeight:character.lungCrusherVisual.frameHeight??NEW_CHARACTER_FRAME.height},
     );
     if(character.lungCrusherVisual)queued.add(character.lungCrusherVisual.sprite);
+    const experiment=includeExperiments&&character.experimentalVisual;
+    const sourceKey=experiment&&(experiment.recolorSource??experiment.sprite);
+    if(experiment&&!queued.has(sourceKey)&&!scene.textures.exists(sourceKey))scene.load.spritesheet(
+      sourceKey,`${baseUrl}${experiment.asset}`,
+      {frameWidth:experiment.frameWidth??NEW_CHARACTER_FRAME.width,frameHeight:experiment.frameHeight??NEW_CHARACTER_FRAME.height},
+    );
+    if(experiment)queued.add(sourceKey);
   }
 }
 
-export function createCharacterAnimations(scene,characters){
+export function createCharacterAnimations(scene,characters,includeExperiments=import.meta.env?.DEV===true){
   for(const character of characters){
-    for(const style of ['new','lungCrusher']){
+    if(includeExperiments&&character.experimentalVisual)prepareFelipeRecolorTexture(scene.textures,character.experimentalVisual);
+    for(const style of ['new','lungCrusher',...(includeExperiments?['level3Preview']:[])]){
       const visual=characterVisual(character,style);
       if(!visual.animated)continue;
       for(const direction of DIRECTIONS){
@@ -78,7 +98,7 @@ export function createCharacterAnimations(scene,characters){
       });
       const walkKey=animationKey(visual,'walk',direction);
       if(!scene.anims.exists(walkKey))scene.anims.create({
-        key:walkKey,frames:walkFrames(direction,visual).map(frame=>({key:visual.sprite,frame})),frameRate:8,repeat:-1,
+        key:walkKey,frames:walkFrames(direction,visual).map(frame=>({key:visual.sprite,frame})),frameRate:visual.frameRate??8,repeat:-1,
       });
       }
     }

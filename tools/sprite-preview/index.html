@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Felipe — skin animation test</title>
+  <style>
+    :root{color-scheme:dark;font-family:system-ui,sans-serif;background:#17212b;color:#e6eef6}
+    body{max-width:1040px;margin:32px auto;padding:0 20px}h1{font-size:24px}p{color:#b3c6d7;line-height:1.5}
+    .controls{display:flex;align-items:center;flex-wrap:wrap;gap:18px;margin:24px 0}
+    button,select{font:inherit;padding:8px 12px;border:1px solid #647e91;border-radius:6px;background:#263b4b;color:inherit;cursor:pointer}
+    label{display:flex;align-items:center;gap:8px}canvas{display:block;width:100%;height:auto;image-rendering:pixelated;border:1px solid #668296;border-radius:8px;background:#526778}
+    .legend{display:grid;grid-template-columns:repeat(4,1fr);text-align:center;margin:8px 0 24px;color:#c3d4e0}
+    h2{font-size:17px;margin:24px 0 12px}a{color:#99d7ff}
+  </style>
+</head>
+<body>
+  <h1>Felipe · Third-skin animation test</h1>
+  <p>Experimental art: one idle + five walk frames per direction, now 128 × 144 pixels at half scale. Compare it with the first 64 × 72 test at the same display size. No login or backend is needed here.</p>
+  <div class="controls">
+    <button id="play" type="button">Pause</button>
+    <label>Pose <select id="pose"><option value="walk">Walk</option><option value="idle">Idle</option></select></label>
+    <label>Walk FPS <input id="fps" type="range" min="4" max="14" value="10"><output id="fps-value">10</output></label>
+    <button id="step" type="button">Next frame</button>
+    <label><input id="recolor" type="checkbox" checked>Test colors (same as in game)</label>
+  </div>
+  <h2>Experimental HD · 128 × 144 · five walk frames</h2>
+  <canvas id="experiment" width="576" height="160" aria-label="Animated front, left, right and back high resolution experimental sprites"></canvas>
+  <div class="legend"><span>Down</span><span>Left</span><span>Right</span><span>Up</span></div>
+  <h2>First test · 64 × 72 · same five walk frames</h2>
+  <canvas id="previous" width="576" height="160" aria-label="Previous low resolution test using the same poses"></canvas>
+  <h2>Current Remastered · four walk frames</h2>
+  <canvas id="current" width="576" height="160" aria-label="Animated existing Felipe sprites for comparison"></canvas>
+  <p id="status" role="status">Loading sprites…</p>
+  <p><a href="../../assets/characters/experimental/felipe-level3-hd-preview.png">Open enlarged HD spritesheet</a> · <a href="../../">Back to game</a></p>
+  <script type="module" src="./preview.js"></script>
+</body>
+</html>

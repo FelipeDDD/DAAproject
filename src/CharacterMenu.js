@@ -1,4 +1,4 @@
-import { CHARACTERS, CHARACTER_STORAGE_KEY, baseCharacterId } from './characters.js';
+import { characterMenuOptions, CHARACTER_STORAGE_KEY, baseCharacterId } from './characters.js';
 import { characterVisual } from './characterVisuals.js';
 import { isPlayerActive } from './multiplayer/presencePolicy.js';
 import { createSessionId } from './playerIdentity.js';
@@ -16,15 +16,18 @@ export class CharacterMenu {
     this.styleSelect.value='old';this.styleSelect.closest('.character-style-control').hidden=true;
     this.rows=[];this.maxPlayers=MAX_PLAYER_CAPACITY;this.ready=false;this.connectionFailed=false;this.closed=false;
     let saved;try{saved=localStorage.getItem(CHARACTER_STORAGE_KEY);}catch{}
-    this.cards=CHARACTERS.map(c=>{
+    const options=characterMenuOptions(import.meta.env.DEV);
+    document.getElementById('character-list').classList.toggle('has-experiment',options.some(option=>option.previewStyle));
+    this.cards=options.map(({c,label,previewStyle})=>{
       const button=document.createElement('button');button.className='character-card';
       const image=document.createElement('img');image.src=`${import.meta.env.BASE_URL}${c.asset}`;image.alt='';
-      const name=document.createElement('strong');name.textContent=c.name;
+      const name=document.createElement('strong');name.textContent=label;
       const state=document.createElement('span');
-      button.append(image,name,state);button.addEventListener('click',()=>this.choose(c));
-      if(baseCharacterId(saved)===c.id)button.classList.add('preferred');
+      button.append(image,name,state);button.addEventListener('click',()=>this.choose(c,previewStyle));
+      if(previewStyle)button.title='Local animation preview. Uses the same Felipe class and inventory.';
+      if(!previewStyle&&baseCharacterId(saved)===c.id)button.classList.add('preferred');
       document.getElementById('character-list').append(button);
-      return {c,button,image,state};
+      return {c,button,image,state,previewStyle};
     });
     this.renderPreviews();
     this.message.textContent=presence?'Checking availability…':'Configure Convex to choose a character.';
@@ -68,8 +71,8 @@ export class CharacterMenu {
     }
   }
   renderPreviews(){
-    for(const {c,image}of this.cards){
-      const visual=characterVisual(c,this.style);
+    for(const {c,image,previewStyle}of this.cards){
+      const visual=characterVisual(c,previewStyle??this.style);
       image.src=`${import.meta.env.BASE_URL}${visual.previewAsset}`;
       image.dataset.style=visual.style;
     }
@@ -77,7 +80,7 @@ export class CharacterMenu {
   setAuthentication(profile,token){
     this.mode='profile';this.profile=profile;this.authToken=token;this.guest=null;
     this.presence.profileSessionToken=token;
-    for(const {c,button}of this.cards)button.classList.toggle('preferred',c.id===baseCharacterId(profile.selectedCharacterId));
+    for(const {c,button,previewStyle}of this.cards)button.classList.toggle('preferred',!previewStyle&&c.id===baseCharacterId(profile.selectedCharacterId));
     document.getElementById('logout-profile-menu').textContent='Logout profile';
   }
   setGuestIdentity(guest){
@@ -85,7 +88,7 @@ export class CharacterMenu {
     this.presence.profileSessionToken=null;
     document.getElementById('logout-profile-menu').textContent='Exit guest session';
   }
-  async choose(c){
+  async choose(c,previewStyle=null){
     if(this.pending||(!this.authToken&&!this.guest))return;
     this.pending=true;this.render();this.message.textContent='Claiming character…';
     try{
@@ -103,6 +106,7 @@ export class CharacterMenu {
       this.presence.identity={
         kind:this.mode,playerId:result.playerId,characterId:c.id,characterBaseId:baseCharacterId(c.id),
         name:displayName,displayName,characterName:c.name,sessionId:this.sessionId,
+        ...(previewStyle==='level3Preview'&&c.experimentalVisual?{visualPreview:previewStyle}:{}),
         ...(this.mode==='guest'?{guestId:this.guest.guestId}:{profileId:result.profile.profileId,classState:result.classState??null}),
       };
       try{localStorage.setItem(CHARACTER_STORAGE_KEY,c.id);}catch{}

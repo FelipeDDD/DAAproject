@@ -21,9 +21,22 @@ const ORIGINAL_CHARACTERS = [
   {
     id: 'felipe', name: 'Felipe', sprite: 'character-felipe', asset: 'assets/characters/felipe.svg',
     newVisual:{sprite:'character-felipe-new',asset:'assets/characters/felipe-new.png',previewAsset:'assets/characters/felipe-new-preview.png'},
+    experimentalVisual:{sprite:'character-felipe-level3-hd-recolor-v1',recolorSource:'character-felipe-level3-hd-preview',asset:'assets/characters/experimental/felipe-level3-hd.png',
+      previewAsset:'assets/characters/experimental/felipe-level3-hd-idle.png',frameRate:10,
+      frameWidth:128,frameHeight:144,scale:0.5,
+      walkColumns:{down:[1,2,3,4,5],left:[1,2,3,4,5],right:[1,2,3,4,5],up:[1,2,3,4,5]},
+    },
   },
 ];
 export const CHARACTERS = ORIGINAL_CHARACTERS;
+// Preview cards reuse a real base. They never introduce a fifth class or claim ID.
+export function characterMenuOptions(includeExperiments=false){
+  const options=CHARACTERS.map(c=>({c,label:c.name,previewStyle:null}));
+  if(includeExperiments)for(const c of CHARACTERS.filter(c=>c.experimentalVisual)){
+    options.push({c,label:`${c.name} · Skin test`,previewStyle:'level3Preview'});
+  }
+  return options;
+}
 export const CHARACTER_STORAGE_KEY = 'daa-character-id';
 export const CHARACTER_STYLE_STORAGE_KEY = 'daa-character-style';
 export const baseCharacterId = id => {
