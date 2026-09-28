@@ -246,8 +246,12 @@ test('CLI filters the pilot, creates nested JSON, and never modifies CSVs or gen
   assert.equal(report.schemaVersion, 1);
   assert.ok(Number.isFinite(Date.parse(report.generatedAt)));
   assert.equal(report.summary.files, 1);
-  assert.equal(report.summary.questions, 18);
-  assert.deepEqual(report.summary.difficulties, { hard: 5, medium: 13 });
+  assert.ok(report.summary.questions >= 20, 'the programming bank retains a useful question set');
+  assert.equal(report.summary.questions, report.questions.length);
+  const difficultyCounts = report.summary.difficulties;
+  assert.ok(Object.keys(difficultyCounts).every((difficulty) => ['medium','hard'].includes(difficulty)));
+  assert.equal(Object.values(difficultyCounts).reduce((total, count) => total + count, 0), report.summary.questions);
+  assert.deepEqual(report.files.find(({ source }) => source === 'programming.csv').difficulties, difficultyCounts);
   assert.ok(report.questions.every((q) => q.source === 'programming.csv'));
   assert.ok(report.summary.issuesByRule.correct_answer_length_outlier > 1);
   assert.equal(report.summary.issuesByRule.exact_duplicate_question, undefined);

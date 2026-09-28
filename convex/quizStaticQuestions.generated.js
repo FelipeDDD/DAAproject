@@ -10981,15 +10981,15 @@ export default [
     "category": "Programmierung",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat eine Variable in einem Programm?",
+    "question": "Ein JavaScript-Programm zählt erfolgreiche Anmeldungen. Zu Beginn gilt let anmeldungen = 0;. Welche Anweisung muss bei jeder erfolgreichen Anmeldung ausgeführt werden?",
     "answers": [
-      "Sie speichert einen Wert, der im Programm verwendet werden kann",
-      "Sie kompiliert automatisch den gesamten Quellcode",
-      "Sie ersetzt eine Funktion",
-      "Sie stellt eine Netzwerkverbindung her"
+      "anmeldungen = anmeldungen + 1;",
+      "anmeldungen = 1;",
+      "anmeldungen = 0;",
+      "anmeldungen = anmeldungen * 2;"
     ],
     "correctAnswer": 0,
-    "explanation": "Eine Variable speichert einen Wert, auf den das Programm später zugreifen und den es gegebenenfalls verändern kann.",
+    "explanation": "Der bisherige Zählerstand muss um 1 steigen: aus 0 wird 1, danach 2 usw. Eine erneute Zuweisung von 0 oder 1 verliert den bisherigen Stand; Verdoppeln zählt die Anmeldungen nicht.",
     "source": "programming.csv"
   },
   {
@@ -11013,15 +11013,15 @@ export default [
     "category": "Programmierung",
     "topic": null,
     "difficulty": "medium",
-    "question": "Wozu wird eine Schleife verwendet?",
+    "question": "Eine Geräteliste kann unterschiedlich viele Einträge enthalten. Ein Programm soll für jeden Eintrag denselben Ausgabeschritt ausführen. Welche Struktur passt dazu?",
     "answers": [
-      "Um einen Programmabschnitt mehrfach auszuführen",
-      "Um eine Datei dauerhaft zu verschlüsseln",
-      "Um eine Variable automatisch zu löschen",
-      "Um einen Webserver zu installieren"
+      "Eine Schleife über die Einträge der Liste.",
+      "Eine if-Abfrage, ob die Liste Einträge enthält.",
+      "Eine Sortierung der Liste nach Gerätenamen.",
+      "Eine Zuweisung der Liste an eine weitere Variable."
     ],
     "correctAnswer": 0,
-    "explanation": "Schleifen wie for oder while führen einen Codeblock wiederholt aus, solange die jeweilige Bedingung dies vorsieht.",
+    "explanation": "Die Schleife führt den Ausgabeschritt für jeden Eintrag aus. Eine if-Abfrage entscheidet nur über einen Zweig; Sortieren und Zuweisen wiederholen den Ausgabeschritt nicht.",
     "source": "programming.csv"
   },
   {
@@ -11029,15 +11029,15 @@ export default [
     "category": "Programmierung",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welche Aufgabe hat eine Funktion hauptsächlich?",
+    "question": "Mehrere Programmteile berechnen Nettopreise aus Bruttopreis und Steuersatz. Welchen Vorteil bietet eine gemeinsame Funktion mit diesen beiden Parametern?",
     "answers": [
-      "Sie fasst wiederverwendbare Programmlogik unter einem Namen zusammen",
-      "Sie speichert ausschließlich Bilder",
-      "Sie ersetzt automatisch alle Variablen",
-      "Sie dient nur zur Ausgabe von Fehlermeldungen"
+      "Die Berechnung wird einmal definiert und mit unterschiedlichen Argumenten aufgerufen.",
+      "Nach dem ersten Aufruf wird dessen Ergebnis für alle späteren Aufrufe übernommen.",
+      "Die aufrufenden Programmteile müssen bei jedem Aufruf dieselben Argumente übergeben.",
+      "Der Aufruf ersetzt die übergebenen Zahlenvariablen automatisch durch den Nettopreis."
     ],
     "correctAnswer": 0,
-    "explanation": "Eine Funktion kapselt Programmlogik und kann mehrfach aufgerufen werden. Sie kann außerdem Parameter empfangen und Werte zurückgeben.",
+    "explanation": "Eine Funktion kann dieselbe Berechnung mit unterschiedlichen Argumenten ausführen und den jeweiligen Nettopreis zurückgeben. Das Bündeln der Logik vermeidet mehrfach gepflegte Kopien; es bewirkt weder eine automatische Ergebnisspeicherung noch das Überschreiben der übergebenen Zahlenvariablen.",
     "source": "programming.csv"
   },
   {
@@ -11045,15 +11045,15 @@ export default [
     "category": "Programmierung",
     "topic": null,
     "difficulty": "medium",
-    "question": "Was ist ein Array?",
+    "question": "Ein JavaScript-Programm soll drei Gerätenamen als drei einzelne Elemente eines Arrays speichern. Welche Initialisierung passt?",
     "answers": [
-      "Eine geordnete Sammlung mehrerer Werte",
-      "Eine einzelne boolesche Variable",
-      "Eine Netzwerkadresse",
-      "Eine Art Betriebssystem"
+      "const namen = [\"srv01\", \"srv02\", \"srv03\"];",
+      "const namen = \"srv01, srv02, srv03\";",
+      "const namen = [\"srv01, srv02, srv03\"];",
+      "const namen = { srv01: true, srv02: true, srv03: true };"
     ],
     "correctAnswer": 0,
-    "explanation": "Ein Array speichert mehrere Werte in einer geordneten Struktur, auf deren Elemente typischerweise über Indizes zugegriffen werden kann.",
+    "explanation": "Eckige Klammern mit drei durch Kommas getrennten Zeichenketten erzeugen ein Array mit drei Elementen. Ein Komma innerhalb einer Zeichenkette trennt keine Arrayelemente; geschweifte Klammern erzeugen hier ein Objekt.",
     "source": "programming.csv"
   },
   {
@@ -11061,15 +11061,15 @@ export default [
     "category": "Programmierung",
     "topic": null,
     "difficulty": "medium",
-    "question": "Welchen Wert kann eine boolesche Variable typischerweise annehmen?",
+    "question": "Welcher Datentyp ist für die direkte Darstellung der Information „Druckauftrag abgeschlossen: ja oder nein“ vorgesehen?",
     "answers": [
-      "Nur true oder false",
-      "Nur ganze Zahlen",
-      "Nur Zeichenketten",
-      "Beliebige Dateien"
+      "Boolean",
+      "Ganzzahl",
+      "Zeichenkette",
+      "Fließkommazahl"
     ],
     "correctAnswer": 0,
-    "explanation": "Der Datentyp Boolean repräsentiert zwei Wahrheitswerte: true und false.",
+    "explanation": "Boolean stellt die beiden Wahrheitswerte true und false dar. Damit lässt sich unmittelbar speichern, ob der Druckauftrag abgeschlossen ist.",
     "source": "programming.csv"
   },
   {
@@ -11188,32 +11188,96 @@ export default [
     "id": "Programmierung-017",
     "category": "Programmierung",
     "topic": null,
-    "difficulty": "hard",
-    "question": "Ein Array lautet const values = [10, 20, 30, 40];. Welchen Wert liefert values[2]?",
+    "difficulty": "medium",
+    "question": "Gegeben ist JavaScript-Code:\nconst values = [10, 20, 30, 40];\nvalues[1] = values[0] + values[2];\nWelche Werte enthält values anschließend?",
     "answers": [
-      "10",
-      "20",
-      "30",
-      "40"
+      "[10, 40, 30, 40]",
+      "[10, 20, 30, 40]",
+      "[40, 20, 30, 40]",
+      "[10, 60, 30, 40]"
     ],
-    "correctAnswer": 2,
-    "explanation": "Arrays beginnen in JavaScript beim Index 0. Die Indizes sind daher 0→10, 1→20, 2→30 und 3→40.",
+    "correctAnswer": 0,
+    "explanation": "values[0] ist 10 und values[2] ist 30. Ihre Summe 40 ersetzt den bisherigen Wert 20 an Index 1; die übrigen Elemente bleiben erhalten. const verhindert eine Neuzuweisung der Array-Bindung, aber keine Änderung ihrer Elemente.",
     "source": "programming.csv"
   },
   {
-    "id": "Programmierung-018",
+    "id": "Programmierung-019",
     "category": "Programmierung",
     "topic": null,
-    "difficulty": "hard",
-    "question": "Welche Aussage beschreibt den Unterschied zwischen == und === in JavaScript am besten?",
+    "difficulty": "medium",
+    "question": "In JavaScript gilt const eingabe = \"42\";. Welcher Ausdruck liefert den Zahlenwert 50?",
     "answers": [
-      "Beide Operatoren sind immer vollständig identisch",
-      "=== vergleicht Wert und Typ ohne die Typumwandlung des ==-Vergleichs",
-      "== darf nur für Zahlen verwendet werden",
-      "=== weist einer Variablen einen neuen Wert zu"
+      "Number(eingabe) + 8",
+      "eingabe + 8",
+      "Number(eingabe + 8)",
+      "Boolean(eingabe) + 8"
     ],
-    "correctAnswer": 1,
-    "explanation": "Der strikte Gleichheitsoperator === vergleicht Wert und Datentyp ohne die implizite Typumwandlung, die bei == auftreten kann.",
+    "correctAnswer": 0,
+    "explanation": "Number(eingabe) wandelt \"42\" in die Zahl 42 um; plus 8 ergibt 50. eingabe + 8 verkettet zu \"428\", dessen nachträgliche Umwandlung 428 ergibt. Boolean(\"42\") ist true und wird bei der Addition zu 1, sodass 9 entsteht.",
+    "source": "programming.csv"
+  },
+  {
+    "id": "Programmierung-020",
+    "category": "Programmierung",
+    "topic": null,
+    "difficulty": "medium",
+    "question": "Eine Datei darf nur gespeichert werden, wenn der Benutzer angemeldet ist und die Eingabe gültig ist. Welche Bedingung drückt beides aus?",
+    "answers": [
+      "angemeldet && eingabeGueltig",
+      "angemeldet || eingabeGueltig",
+      "!angemeldet && eingabeGueltig",
+      "angemeldet == eingabeGueltig"
+    ],
+    "correctAnswer": 0,
+    "explanation": "&& ist nur dann wahr, wenn beide Teilbedingungen wahr sind.",
+    "source": "programming.csv"
+  },
+  {
+    "id": "Programmierung-023",
+    "category": "Programmierung",
+    "topic": null,
+    "difficulty": "medium",
+    "question": "Ein Konfigurationsfeld erlaubt laut Vorgabe nur ganze Portnummern von 1 bis 65535 einschließlich. p liegt bereits als JavaScript-Zahl vor. Welche Bedingung akzeptiert genau die erlaubten Werte?",
+    "answers": [
+      "Number.isInteger(p) && p >= 1 && p <= 65535",
+      "Number.isInteger(p) && p >= 1",
+      "p >= 1 && p <= 65535",
+      "Number.isInteger(p) && p > 1 && p < 65535"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die Prüfung muss Ganzzahligkeit sowie beide eingeschlossenen Grenzen verlangen. Ohne obere Grenze wird z. B. 65536 akzeptiert, ohne Ganzzahlprüfung 1.5; strikte Vergleiche schließen die erlaubten Werte 1 und 65535 aus.",
+    "source": "programming.csv"
+  },
+  {
+    "id": "Programmierung-025",
+    "category": "Programmierung",
+    "topic": null,
+    "difficulty": "medium",
+    "question": "Eine Funktion soll den Gesamtpreis für mehrere gleiche Artikel berechnen, ohne Rabatte oder Zuschläge:\nfunction gesamtpreis(einzelpreis, anzahl) {\n  return einzelpreis + anzahl;\n}\nDer Test gesamtpreis(4, 3) liefert 7 statt 12. Welche Ersetzung der return-Anweisung behebt den Rechenfehler auch für andere gültige Preise und Stückzahlen?",
+    "answers": [
+      "return einzelpreis * anzahl;",
+      "return einzelpreis + anzahl + 5;",
+      "return 12;",
+      "return einzelpreis * 3;"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Der Gesamtpreis ergibt sich aus Einzelpreis mal Stückzahl. Alle vier Varianten liefern für den genannten Test 12, aber nur einzelpreis * anzahl setzt die Regel auch für andere Eingaben um; z. B. muss gesamtpreis(5, 2) den Wert 10 liefern.",
+    "source": "programming.csv"
+  },
+  {
+    "id": "Programmierung-027",
+    "category": "Programmierung",
+    "topic": null,
+    "difficulty": "medium",
+    "question": "In JavaScript ist ein Gerät so gespeichert:\nlet geraet = { name: \"srv01\", ip: \"192.0.2.10\", status: \"offline\" };\nWelche Anweisung setzt den Status auf \"online\" und erhält name und ip?",
+    "answers": [
+      "geraet.status = \"online\";",
+      "geraet.name = \"online\";",
+      "geraet.status === \"online\";",
+      "geraet = { status: \"online\" };"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Die Zuweisung an geraet.status ändert gezielt diese Eigenschaft. Die anderen Varianten ändern den Namen, vergleichen nur einen Wert oder ersetzen das gesamte Objekt und verlieren dabei name und ip.",
     "source": "programming.csv"
   },
   {
