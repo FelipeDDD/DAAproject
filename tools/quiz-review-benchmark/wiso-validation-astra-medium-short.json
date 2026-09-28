@@ -1,0 +1,1106 @@
+{
+  "schema_version": 1,
+  "source_file": "quiz-data/wiso.csv",
+  "first_pass_file": "tools/quiz-review-benchmark/wiso-luna-high-first-pass.json",
+  "validation_model": "Astra Medium",
+  "summary": {
+    "total_validated": 60,
+    "approve": 3,
+    "reject": 1,
+    "revise": 56
+  },
+  "validations": [
+    {
+      "id": "wiso-001",
+      "origin": "EXISTING",
+      "verdict": "APPROVE",
+      "reason": "Die Grundregel ist korrekt; Rechnung, Schriftform und Bezahlung bilden verbreitete Verwechslungen ab.",
+      "recommended_final_question": null
+    },
+    {
+      "id": "wiso-002",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Die Rollen werden konkret geprüft; unmittelbarer Besitz vermeidet die Verwechslung mit dem mittelbaren Besitz des Verkäufers.",
+      "recommended_final_question": {
+        "id": "wiso-002",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Händler übergibt einem Kunden einen Laptop unter wirksam vereinbartem einfachem Eigentumsvorbehalt. Der Kaufpreis ist noch nicht vollständig bezahlt; der Kunde nutzt das Gerät. Welche Zuordnung ist nach deutschem Zivilrecht zutreffend?",
+        "answer1": "Der Kunde ist unmittelbarer Besitzer; der Händler bleibt Eigentümer.",
+        "answer2": "Der Händler ist unmittelbarer Besitzer; der Kunde ist Eigentümer.",
+        "answer3": "Der Kunde ist sowohl unmittelbarer Besitzer als auch Eigentümer.",
+        "answer4": "Der Händler ist sowohl unmittelbarer Besitzer als auch Eigentümer.",
+        "correctAnswer": 0,
+        "explanation": "Die tatsächliche Sachherrschaft liegt beim Kunden. Beim einfachen Eigentumsvorbehalt geht das Eigentum grundsätzlich erst mit vollständiger Zahlung über.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-003",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Die Garantie wird als zusätzliche bindende Zusage eingeordnet und die pauschalen Distraktoren werden durch typische Rechtsirrtümer ersetzt.",
+      "recommended_final_question": {
+        "id": "wiso-003",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Eine Verbraucherin kauft in Deutschland einen neuen Laptop bei einem Händler. Zusätzlich gibt der Hersteller eine freiwillige Garantie. Wie verhält sich diese zu den gesetzlichen Mängelrechten aus dem Kaufvertrag?",
+        "answer1": "Die Garantie ergänzt die gesetzlichen Mängelrechte gegen den Händler.",
+        "answer2": "Die Garantie ersetzt die gesetzlichen Mängelrechte gegen den Händler.",
+        "answer3": "Die gesetzlichen Mängelrechte entstehen erst nach Ablauf der Garantie.",
+        "answer4": "Die gesetzlichen Mängelrechte können nur beim Hersteller geltend gemacht werden.",
+        "correctAnswer": 0,
+        "explanation": "Gesetzliche Mängelrechte richten sich grundsätzlich gegen den Verkäufer. Eine zusätzliche Herstellergarantie ist im zugesagten Umfang verbindlich und verdrängt diese Rechte nicht.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-004",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Die Mitteilungspflicht ist richtig, aber die bisherigen Distraktoren sind durch realistische Verwechslungen mit dem ärztlichen Nachweis zu ersetzen.",
+      "recommended_final_question": {
+        "id": "wiso-004",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Beschäftigter in Deutschland wird morgens vor Arbeitsbeginn arbeitsunfähig krank und kann seinen Arbeitgeber erreichen. Wann muss er nach dem Entgeltfortzahlungsgesetz die Arbeitsunfähigkeit und ihre voraussichtliche Dauer mitteilen?",
+        "answer1": "Unverzüglich, ohne erst einen ärztlichen Nachweis abzuwarten.",
+        "answer2": "Erst nach dem Arztbesuch, sobald ein ärztlicher Nachweis vorliegt.",
+        "answer3": "Erst nach drei Kalendertagen, wenn die Erkrankung noch andauert.",
+        "answer4": "Erst bei der Rückkehr, wenn die tatsächliche Dauer bekannt ist.",
+        "correctAnswer": 0,
+        "explanation": "Die unverzügliche Mitteilung ist von den Regeln zum ärztlichen Nachweis zu unterscheiden; ein späterer Arzttermin rechtfertigt grundsätzlich kein Warten mit der Krankmeldung.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-005",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-005",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Welche Sozialversicherung sichert Einkommensausfälle bei Arbeitslosigkeit ab?",
+        "answer1": "Arbeitslosenversicherung",
+        "answer2": "Pflegeversicherung",
+        "answer3": "Unfallversicherung",
+        "answer4": "Rentenversicherung",
+        "correctAnswer": 0,
+        "explanation": "Die Arbeitslosenversicherung soll unter bestimmten Voraussetzungen Einkommensausfälle durch Arbeitslosigkeit absichern und unterstützt außerdem bei der Arbeitsvermittlung.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-006",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Die Aufgabe ist richtig, die pauschalen und sachfremden Ausschlüsse werden jedoch durch Leistungen anderer Sozialversicherungszweige ersetzt.",
+      "recommended_final_question": {
+        "id": "wiso-006",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Welche Leistungen gehören in Deutschland typischerweise zur gesetzlichen Unfallversicherung für Beschäftigte?",
+        "answer1": "Behandlung und Rehabilitation nach versicherten Arbeits- und Wegeunfällen.",
+        "answer2": "Ärztliche Behandlung gewöhnlicher Erkrankungen ohne Bezug zur Arbeit.",
+        "answer3": "Einkommensersatz während versicherter Arbeitslosigkeit und Arbeitssuche.",
+        "answer4": "Unterstützung im Alltag bei dauerhaft bestehender Pflegebedürftigkeit.",
+        "correctAnswer": 0,
+        "explanation": "Die gesetzliche Unfallversicherung umfasst insbesondere versicherte Arbeits- und Wegeunfälle sowie anerkannte Berufskrankheiten; die übrigen Leistungen gehören anderen Sozialversicherungszweigen zu.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-007",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Betriebliche Erträge und Aufwendungen allein bestimmen nicht zwingend den gesamten Gewinn vor Steuern, wenn weitere Ergebnisbestandteile offenbleiben.",
+      "recommended_final_question": {
+        "id": "wiso-007",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Für ein Geschäftsjahr sind sämtliche Erträge eines Unternehmens mit 480.000 € und sämtliche Aufwendungen vor Ertragsteuern mit 455.000 € erfasst. Wie hoch ist das Ergebnis vor Ertragsteuern?",
+        "answer1": "25.000 € Gewinn.",
+        "answer2": "25.000 € Verlust.",
+        "answer3": "935.000 € Gewinn.",
+        "answer4": "0 € Gewinn oder Verlust.",
+        "correctAnswer": 0,
+        "explanation": "Der Gewinn vor Ertragsteuern ergibt sich hier aus allen Erträgen abzüglich aller Aufwendungen ohne Ertragsteuern: 480.000 € − 455.000 € = 25.000 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-008",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-008",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Betrieb vergleicht Geräte nach Preis, Verbrauch und Service mit unterschiedlicher Gewichtung. Welche Methode eignet sich?",
+        "answer1": "Eine Nutzwertanalyse mit gewichteten Kriterien und Bewertungen je Alternative.",
+        "answer2": "Ein Preisvergleich, der ausschließlich den niedrigsten Kaufpreis berücksichtigt.",
+        "answer3": "Eine Mindestanforderungsprüfung, bei der alle Kriterien gleich wichtig sind.",
+        "answer4": "Eine Absatzprognose, die nur vergangene Verkaufszahlen fortschreibt.",
+        "correctAnswer": 0,
+        "explanation": "Eine Nutzwertanalyse macht unterschiedliche Kriterien, ihre Gewichtung und die Bewertung der Alternativen gemeinsam sichtbar.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-009",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Die Distraktoren wiederholen dieselbe falsche Preisrichtung und verraten sich durch absolute Formulierungen.",
+      "recommended_final_question": {
+        "id": "wiso-009",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Für ein Servermodell steht kurzfristig eine feste Stückzahl zum Verkauf. Die Nachfrage steigt, eine Preisbindung besteht nicht. Welche Entwicklung ist im üblichen Marktmodell unter sonst gleichen Bedingungen zu erwarten?",
+        "answer1": "Der Preis steigt; die kurzfristig verfügbare Stückzahl bleibt gleich.",
+        "answer2": "Der Preis sinkt; die kurzfristig verfügbare Stückzahl bleibt gleich.",
+        "answer3": "Der Preis bleibt gleich; die kurzfristig verfügbare Stückzahl steigt.",
+        "answer4": "Der Preis bleibt gleich; die kurzfristig verfügbare Stückzahl sinkt.",
+        "correctAnswer": 0,
+        "explanation": "Bei kurzfristig festem Angebot konkurrieren mehr Nachfrager um dieselbe Menge; dadurch steigt im Modell der Preis.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-010",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-010",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Betrieb besitzt Maschinen, kann aber eine fällige Rechnung mangels Zahlungsmitteln nicht bezahlen. Welche Größe ist betroffen?",
+        "answer1": "Die Liquidität.",
+        "answer2": "Die Produktivität.",
+        "answer3": "Die Umsatzrentabilität.",
+        "answer4": "Der Marktanteil.",
+        "correctAnswer": 0,
+        "explanation": "Liquidität bezeichnet die Fähigkeit, fällige Zahlungen rechtzeitig zu leisten. Maschinenvermögen steht nicht ohne Weiteres als Zahlungsmittel zur Verfügung.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-011",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-011",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Welche Hauptleistung schuldet ein Laptopverkäufer nach dem Bürgerlichen Gesetzbuch?",
+        "answer1": "Den Laptop frei von Mängeln übergeben und das Eigentum daran verschaffen.",
+        "answer2": "Den Laptop für die vereinbarte Dauer zum Gebrauch überlassen und zurücknehmen.",
+        "answer3": "Den Kunden beim Einsatz beraten, ohne einen bestimmten Erfolg zu schulden.",
+        "answer4": "Den Kontakt zu einem anderen Verkäufer vermitteln und den Abschluss ermöglichen.",
+        "correctAnswer": 0,
+        "explanation": "Beim Kauf einer Sache schuldet der Verkäufer Übergabe und Eigentumsverschaffung sowie Freiheit von Sach- und Rechtsmängeln; der Käufer schuldet Kaufpreiszahlung und Abnahme.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-012",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-012",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Ein Händler bietet einen Laptop für 1.000 € an. Der Kunde antwortet: „Ich kaufe ihn nur für 900 €.“ Wie bewertet man diese Antwort nach dem Bürgerlichen Gesetzbuch?",
+        "answer1": "Als Ablehnung des ursprünglichen Angebots verbunden mit einem neuen Angebot.",
+        "answer2": "Als unveränderte Annahme mit einem bereits vereinbarten Kaufpreis von 1.000 €.",
+        "answer3": "Als Annahme, die den Kaufpreis ohne weitere Zustimmung auf 900 € senkt.",
+        "answer4": "Als Widerruf eines bereits durch das Händlerangebot geschlossenen Vertrags.",
+        "correctAnswer": 0,
+        "explanation": "Eine Annahme mit geänderten Bedingungen gilt als Ablehnung und neues Angebot. Der ursprüngliche Kaufvertrag ist dadurch noch nicht zustande gekommen.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-013",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-013",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Welche Aussage ist nach dem Bürgerlichen Gesetzbuch ein verbindliches Kaufangebot?",
+        "answer1": "„Ich verkaufe Ihnen diesen Laptop für 900 €; daran bin ich bis Freitag gebunden.“",
+        "answer2": "„Unsere Laptops kosten ab 900 €; Modell und Ausstattung wählen Sie noch aus.“",
+        "answer3": "„Sie interessieren sich für diesen Laptop; den Preis nennen wir nach Ihrer Anfrage.“",
+        "answer4": "„Hier ist unser Prospekt zum Laptop für 900 €; alle Angaben sind unverbindlich.“",
+        "correctAnswer": 0,
+        "explanation": "Ein Angebot muss die wesentlichen Vertragsbedingungen bestimmen und einen Bindungswillen erkennen lassen. Im ersten Fall sind Sache, Preis und Vertragspartner festgelegt.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-014",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-014",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Ein deutscher Online-Shop zeigt Waren unverbindlich an. Auf die Bestellung folgen eine reine Eingangsbestätigung und später eine ausdrückliche Annahme. Wann entsteht der Kaufvertrag?",
+        "answer1": "Mit Zugang der separaten Annahmeerklärung beim Kunden.",
+        "answer2": "Mit dem Aufruf der Produktseite durch den Kunden.",
+        "answer3": "Mit Zugang der automatischen Eingangsbestätigung beim Kunden.",
+        "answer4": "Mit dem späteren Zugang der Rechnung beim Kunden.",
+        "correctAnswer": 0,
+        "explanation": "Die ausdrücklich als reine Eingangsbestätigung bezeichnete Nachricht ist keine Annahme. Erst die zugegangene separate Annahmeerklärung vervollständigt hier den Vertrag.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-015",
+      "origin": "EXISTING",
+      "verdict": "APPROVE",
+      "reason": "Die Bedeutung des Rabatts ist korrekt; die Alternativen betreffen unterscheidbare Preis- und Kostenbestandteile.",
+      "recommended_final_question": null
+    },
+    {
+      "id": "wiso-016",
+      "origin": "EXISTING",
+      "verdict": "APPROVE",
+      "reason": "Skonto ist korrekt an eine vereinbarte Zahlungsfrist geknüpft und von anderen Preisbestandteilen abgegrenzt.",
+      "recommended_final_question": null
+    },
+    {
+      "id": "wiso-017",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-017",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Eine Rechnung über 1.000 € bietet 2 % Skonto bei fristgerechter Zahlung. Wie hoch ist der Skontoabzug?",
+        "answer1": "20 €",
+        "answer2": "2 €",
+        "answer3": "50 €",
+        "answer4": "200 €",
+        "correctAnswer": 0,
+        "explanation": "2 % von 1.000 € sind 20 €; der Skontobetrag ist unabhängig davon, ob der Kunde den Abzug tatsächlich nutzt.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-018",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-018",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Von 200 € netto gehen zuerst 10 % Rabatt ab, dann 2 % Skonto vom Rest. Ohne Umsatzsteuer und Nebenkosten: Wie hoch ist nur der Skontoabzug?",
+        "answer1": "3,60 €",
+        "answer2": "4,00 €",
+        "answer3": "20,00 €",
+        "answer4": "23,60 €",
+        "correctAnswer": 0,
+        "explanation": "Nach Rabatt bleiben 200 € × 0,90 = 180 €. Das Skonto beträgt 180 € × 0,02 = 3,60 €; der Rabatt gehört nicht zum Skontoabzug.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-019",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-019",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was ist die Zielgruppe eines Dienstleistungsangebots?",
+        "answer1": "Potenzielle Kunden mit ähnlichen Bedürfnissen, die das Angebot ansprechen soll.",
+        "answer2": "Wettbewerber mit ähnlichen Leistungen, deren Preise beobachtet werden sollen.",
+        "answer3": "Zulieferer mit ähnlichen Vorleistungen, deren Angebote eingeholt werden sollen.",
+        "answer4": "Beschäftigte mit ähnlichen Aufgaben, deren Arbeitszeiten geplant werden sollen.",
+        "correctAnswer": 0,
+        "explanation": "Die Zielgruppe beschreibt die Kunden, auf deren Bedürfnisse ein Angebot und seine Kommunikation ausgerichtet werden.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-020",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-020",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Werbung soll Aufmerksamkeit, Interesse, Kaufwunsch und Handlung auslösen. Welche Maßnahme führt unmittelbar zur Buchung einer Beratung?",
+        "answer1": "Ein Buchungslink mit auswählbaren Beratungsterminen.",
+        "answer2": "Ein auffälliges Motiv zur ersten Wahrnehmung der Anzeige.",
+        "answer3": "Ein Vergleich zur Erläuterung der Leistungsmerkmale.",
+        "answer4": "Ein Kundenbericht zur Vorstellung des persönlichen Nutzens.",
+        "correctAnswer": 0,
+        "explanation": "Die Handlungsphase soll eine konkrete Reaktion ermöglichen. Ein direkt nutzbarer Buchungslink setzt dieses Ziel um; die anderen Maßnahmen dienen eher vorgelagerten Wirkungsstufen.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-021",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-021",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Softwareteam bewältigt Migrationen dank eigener Erfahrung zuverlässiger als Wettbewerber. Wie ist das in einer Stärken-Schwächen-Chancen-Risiken-Analyse einzuordnen?",
+        "answer1": "Als interne Stärke.",
+        "answer2": "Als interne Schwäche.",
+        "answer3": "Als externe Chance.",
+        "answer4": "Als externes Risiko.",
+        "correctAnswer": 0,
+        "explanation": "Die Fähigkeit des eigenen Teams ist ein interner Faktor. Ihr vorteilhafter Einfluss macht sie zu einer Stärke.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-022",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-022",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Eine neue gesetzliche Vorgabe erhöht nur die Kosten eines Softwareanbieters. Wie ist das in einer Stärken-Schwächen-Chancen-Risiken-Analyse einzuordnen?",
+        "answer1": "Als externes Risiko.",
+        "answer2": "Als externe Chance.",
+        "answer3": "Als interne Stärke.",
+        "answer4": "Als interne Schwäche.",
+        "correctAnswer": 0,
+        "explanation": "Die gesetzliche Änderung stammt aus dem Unternehmensumfeld und wirkt sich im beschriebenen Fall nachteilig aus; sie ist daher ein externes Risiko.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-023",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-023",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Wie lässt sich am besten prüfen, ob ein Team Kundensysteme nach Ausfällen selbstständig wiederherstellen kann?",
+        "answer1": "Ergebnisse praxisnaher Wiederherstellungsaufgaben für die einzelnen Teammitglieder.",
+        "answer2": "Die Anzahl besuchter Schulungstage für die einzelnen Teammitglieder.",
+        "answer3": "Die Dauer der Betriebszugehörigkeit der einzelnen Teammitglieder.",
+        "answer4": "Die Höhe der vereinbarten Gehälter der einzelnen Teammitglieder.",
+        "correctAnswer": 0,
+        "explanation": "Praktische Aufgaben prüfen die benötigte Handlungsfähigkeit unmittelbar. Schulungsdauer, Betriebszugehörigkeit und Gehalt allein belegen diese konkrete Kompetenz nicht.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-024",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-024",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Support kostet monatlich 120 € mit Nachtbereitschaft oder 90 € nur zu Bürozeiten. Welche Aussage zum Vergleich ist begründet?",
+        "answer1": "Vor einem Preis-Leistungs-Vergleich müssen die unterschiedlichen Betreuungszeiten berücksichtigt werden.",
+        "answer2": "Die 90 € belegen bereits niedrigere Kosten je identischer Betreuungsleistung beim Wettbewerber.",
+        "answer3": "Die 120 € belegen bereits einen höheren Gewinn je Kunde beim eigenen Unternehmen.",
+        "answer4": "Die gleiche Branche genügt bereits, um beide Preise als gleichwertige Leistungen zu vergleichen.",
+        "correctAnswer": 0,
+        "explanation": "Preise sind nur im Zusammenhang mit dem Leistungsumfang vergleichbar. Aus den beiden Preisen allein folgen weder gleiche Leistungen noch die jeweiligen Kosten oder Gewinne.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-025",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-025",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Welches Dokument hält die Ziele und Anforderungen des Auftraggebers vor der technischen Ausarbeitung fest?",
+        "answer1": "Das Lastenheft.",
+        "answer2": "Das Pflichtenheft.",
+        "answer3": "Das Abnahmeprotokoll.",
+        "answer4": "Der Projektstatusbericht.",
+        "correctAnswer": 0,
+        "explanation": "Das Lastenheft beschreibt die Ziele und Anforderungen aus Auftraggebersicht. Das Pflichtenheft konkretisiert anschließend die vorgesehene Umsetzung aus Auftragnehmersicht.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-026",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-026",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Das Lastenheft fordert tägliche Datensicherungen. Welche Aussage konkretisiert die Umsetzung im Pflichtenheft?",
+        "answer1": "Ein Sicherungsdienst startet täglich um 23 Uhr und schreibt die Daten verschlüsselt auf den vorgesehenen Sicherungsspeicher.",
+        "answer2": "Die Fachabteilung benötigt eine tägliche Sicherung, damit wichtige Geschäftsdaten wiederherstellbar bleiben.",
+        "answer3": "Im gestrigen Abnahmetest konnte die bereitgestellte Sicherung erfolgreich wiederhergestellt werden.",
+        "answer4": "Die Projektleitung berichtet jeden Freitag über den Stand der Arbeiten an der Datensicherung.",
+        "correctAnswer": 0,
+        "explanation": "Das Pflichtenheft beschreibt, wie die Anforderung umgesetzt werden soll. Bedarf, späteres Testergebnis und Berichtsorganisation erfüllen andere Dokumentationsaufgaben.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-027",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-027",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Geschäftsdaten müssen nach einem Ausfall binnen 60 Minuten vollständig wiederherstellbar sein. Geplant sind nächtliche Sicherungen. Welcher Nachweis prüft das Ziel direkt?",
+        "answer1": "Ein Wiederherstellungstest der festgelegten Daten mit Zeitmessung und Vollständigkeitsprüfung.",
+        "answer2": "Ein Protokoll über den erfolgreichen Abschluss der nächtlichen Sicherung.",
+        "answer3": "Eine Herstellerangabe zur maximalen Übertragungsrate des Sicherungsspeichers.",
+        "answer4": "Ein Nachweis, dass ausreichend Speicherplatz für die Sicherungen vorhanden ist.",
+        "correctAnswer": 0,
+        "explanation": "Eine erfolgreiche Sicherung allein belegt weder Wiederherstellungsdauer noch Vollständigkeit. Der praktische Wiederherstellungstest prüft beide geforderten Merkmale.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-028",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-028",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Supportanbieter vergleicht seine Abläufe und Bearbeitungszeiten mit Branchenbestwerten, um sich zu verbessern. Welche Methode nutzt er?",
+        "answer1": "Benchmarking.",
+        "answer2": "Eine Zielgruppenanalyse.",
+        "answer3": "Eine Nutzwertanalyse.",
+        "answer4": "Eine Deckungsbeitragsrechnung.",
+        "correctAnswer": 0,
+        "explanation": "Benchmarking vergleicht geeignete Leistungs- oder Prozesswerte mit Referenzen, um Ansatzpunkte für Verbesserungen zu erkennen.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-029",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-029",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Welches Kriterium erfasst die Stakeholder eines Projekts am umfassendsten?",
+        "answer1": "Personen oder Gruppen können das Projekt beeinflussen oder von seinen Auswirkungen betroffen sein.",
+        "answer2": "Personen oder Gruppen besitzen stimmberechtigte Kapitalanteile an dem Unternehmen, das das Projekt finanziert.",
+        "answer3": "Personen oder Gruppen sind vertraglich mit der Durchführung der einzelnen Projektarbeiten beauftragt.",
+        "answer4": "Personen oder Gruppen haben einen Kaufvertrag über das geplante Projektergebnis abgeschlossen.",
+        "correctAnswer": 0,
+        "explanation": "Stakeholder sind Interessierte und Betroffene innerhalb und außerhalb des Projekts. Anteilseigner, Auftragnehmer oder Käufer können dazugehören, bilden aber jeweils nur einen Teil der möglichen Gruppen.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-030",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-030",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Eine Nutzwertanalyse gewichtet Qualität mit 60 %, Service mit 40 %. A erhält 4 bzw. 3 Punkte, B erhält 3 bzw. 5. Mehr Punkte sind besser. Welche Gesamtwerte stimmen?",
+        "answer1": "B erreicht 3,8 Punkte, A erreicht 3,6 Punkte.",
+        "answer2": "B erreicht 8 Punkte, A erreicht 7 Punkte.",
+        "answer3": "A erreicht 4 Punkte, B erreicht 3 Punkte.",
+        "answer4": "B erreicht 4,2 Punkte, A erreicht 3,4 Punkte.",
+        "correctAnswer": 0,
+        "explanation": "A: 4 × 0,60 + 3 × 0,40 = 3,6. B: 3 × 0,60 + 5 × 0,40 = 3,8. B liegt bei den angegebenen Gewichten vorn.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-031",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-031",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Bei gleichen Einzelbewertungen gewinnt A mit höherem Preisgewicht, B mit höherem Servicegewicht. Beide Nutzwertrechnungen sind korrekt. Was folgt daraus?",
+        "answer1": "Die Empfehlung hängt von den Prioritäten ab; die Gewichtung muss zum Beschaffungsziel begründet werden.",
+        "answer2": "Mindestens eine Rechnung muss fehlerhaft sein, weil gleiche Einzelpunkte dieselbe Rangfolge verlangen.",
+        "answer3": "Die Angebote sind unabhängig von den Prioritäten gleichwertig, weil beide einmal auf Platz eins stehen.",
+        "answer4": "Die stärkere Servicegewichtung liefert allein wegen des qualitativen Kriteriums das objektiv richtige Ergebnis.",
+        "correctAnswer": 0,
+        "explanation": "Gewichte drücken Prioritäten aus. Eine geänderte Rangfolge bei anderen Gewichten zeigt die Abhängigkeit der Empfehlung von diesen Prioritäten und sollte transparent gemacht werden.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-032",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-032",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Welche Posten erfassen die gesamten Geräteausgaben über vier Jahre ohne Doppelzählung? Der Kauf wird sofort bezahlt; Zinsen und Restwerte entfallen.",
+        "answer1": "Kauf, Einrichtung, Betrieb während aller vier Jahre und Entsorgung.",
+        "answer2": "Kauf, Einrichtung, Betrieb, Entsorgung und zusätzlich die Abschreibungen auf den Kaufpreis.",
+        "answer3": "Einrichtung, Betrieb während aller vier Jahre und Entsorgung ohne den Kaufpreis.",
+        "answer4": "Kauf, Einrichtung, Betrieb nur im ersten Jahr und Entsorgung.",
+        "correctAnswer": 0,
+        "explanation": "Für diese Ausgabenbetrachtung zählen Anschaffung und alle Folgekosten im festgelegten Zeitraum. Abschreibungen verteilen den bereits berücksichtigten Kaufpreis und dürfen nicht zusätzlich als Auszahlung angesetzt werden.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-033",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-033",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "A kostet netto 1.000 € plus 400 € jährlich, B 1.600 € plus 150 € jährlich. Beide werden vier Jahre gleichwertig genutzt. Weitere Kosten, Zinsen und Restwerte entfallen. Was ist günstiger?",
+        "answer1": "B ist über vier Jahre um 400 € günstiger.",
+        "answer2": "A ist über vier Jahre um 600 € günstiger.",
+        "answer3": "B ist über vier Jahre um 250 € günstiger.",
+        "answer4": "Beide kosten über vier Jahre jeweils 2.600 €.",
+        "correctAnswer": 0,
+        "explanation": "A kostet 1.000 € + 4 × 400 € = 2.600 €. B kostet 1.600 € + 4 × 150 € = 2.200 € und damit 400 € weniger.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-034",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-034",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Bei unverändert 1.000 € Monatsmiete werden statt 100 nun 200 Geräte bearbeitet. Wie ändern sich die gesamte Miete und ihr Anteil je Gerät?",
+        "answer1": "Die Monatsmiete bleibt gleich; der Anteil je Gerät sinkt von 10 € auf 5 €.",
+        "answer2": "Die Monatsmiete verdoppelt sich; der Anteil je Gerät bleibt bei 10 €.",
+        "answer3": "Die Monatsmiete bleibt gleich; der Anteil je Gerät bleibt bei 10 €.",
+        "answer4": "Die Monatsmiete halbiert sich; der Anteil je Gerät sinkt auf 2,50 €.",
+        "correctAnswer": 0,
+        "explanation": "Die Miete bleibt im angegebenen Bereich als Fixkostenblock bei 1.000 €. Dieser Betrag verteilt sich auf mehr Geräte: 1.000 € / 200 = 5 € je Gerät.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-035",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-035",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Welcher Kostenposten steigt unter den genannten Bedingungen unmittelbar mit der Zahl ausgelieferter Rechner?",
+        "answer1": "Verpackungsmaterial im Wert von 20 € für jeden zusätzlich ausgelieferten Rechner.",
+        "answer2": "Eine vertraglich feste monatliche Lagermiete bei unveränderter Lagerkapazität.",
+        "answer3": "Ein festes Monatsgehalt bei unveränderter Arbeitszeit und ohne Leistungszulagen.",
+        "answer4": "Eine feste jährliche Versicherungsprämie bei unverändertem Versicherungsumfang.",
+        "correctAnswer": 0,
+        "explanation": "Der Verpackungsverbrauch steigt mit der Liefermenge und verursacht variable Kosten. Die anderen Zahlungen bleiben unter den angegebenen Bedingungen mengenunabhängig.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-036",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-036",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Wozu dient ein positiver Deckungsbeitrag?",
+        "answer1": "Er steht zur Deckung von Fixkosten und danach für einen Gewinn zur Verfügung.",
+        "answer2": "Er bezeichnet den Gewinn nach Abzug sämtlicher variabler und fixer Kosten.",
+        "answer3": "Er entspricht dem gesamten Erlös vor Abzug der variablen Kosten.",
+        "answer4": "Er entspricht dem Betrag der variablen Kosten der verkauften Menge.",
+        "correctAnswer": 0,
+        "explanation": "Nach Abzug der variablen Kosten vom Erlös verbleibt der Deckungsbeitrag. Erst nach Abzug der Fixkosten vom gesamten Deckungsbeitrag ergibt sich das Betriebsergebnis.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-037",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-037",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Produkt erzielt 100 € Nettoerlös je Stück bei 60 € variablen Stückkosten. Wie hoch ist der Stückdeckungsbeitrag?",
+        "answer1": "40 €",
+        "answer2": "20 €",
+        "answer3": "60 €",
+        "answer4": "160 €",
+        "correctAnswer": 0,
+        "explanation": "Der Stückdeckungsbeitrag ergibt sich aus dem Nettoerlös abzüglich der variablen Stückkosten: 100 € − 60 € = 40 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-038",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-038",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Schuldner zahlt eine fällige, berechtigte Forderung schuldhaft nicht. Eine Mahnung ist erforderlich und geht ihm zu. Was gilt nach dem Bürgerlichen Gesetzbuch?",
+        "answer1": "Diese erste Mahnung kann den Zahlungsverzug auslösen.",
+        "answer2": "Zahlungsverzug setzt hier erst nach der dritten Mahnung ein.",
+        "answer3": "Nach dieser Mahnung muss grundsätzlich noch ein Monat vergehen.",
+        "answer4": "Zahlungsverzug setzt hier erst nach einem gerichtlichen Mahnbescheid ein.",
+        "correctAnswer": 0,
+        "explanation": "Bei Vorliegen der Voraussetzungen genügt grundsätzlich eine zugegangene Mahnung nach Fälligkeit. Drei Mahnungen oder ein gerichtliches Verfahren sind dafür nicht erforderlich.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-039",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-039",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Eine berechtigte Forderung ist laut Vertrag bis 30. September zahlbar. Am 1. Oktober fehlt die Zahlung schuldhaft, ohne Zurückbehaltungsrecht. Wann beginnt nach dem Bürgerlichen Gesetzbuch der Verzug?",
+        "answer1": "Mit Überschreiten des vereinbarten Zahlungstags, auch ohne Mahnung.",
+        "answer2": "Erst nach Zugang einer zusätzlichen Mahnung des Verkäufers.",
+        "answer3": "Erst 30 Tage nach dem vereinbarten Zahlungstag, auch bei einer früheren Mahnung.",
+        "answer4": "Erst nach Zustellung eines gerichtlichen Mahnbescheids.",
+        "correctAnswer": 0,
+        "explanation": "Bei einem vertraglich kalendermäßig festgelegten Zahlungstermin ist eine Mahnung grundsätzlich entbehrlich. Fälligkeit, ausbleibende Zahlung und Verantwortlichkeit liegen hier vor.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-040",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-040",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Wie hängen Nettopreis, Umsatzsteuerbetrag und Bruttopreis zusammen?",
+        "answer1": "Bruttopreis = Nettopreis + Umsatzsteuerbetrag.",
+        "answer2": "Nettopreis = Bruttopreis + Umsatzsteuerbetrag.",
+        "answer3": "Umsatzsteuerbetrag = Nettopreis + Bruttopreis.",
+        "answer4": "Bruttopreis = Nettopreis − Umsatzsteuerbetrag.",
+        "correctAnswer": 0,
+        "explanation": "Der Bruttopreis enthält den Nettopreis und den darauf entfallenden Umsatzsteuerbetrag. Der Nettopreis enthält diesen Steuerbetrag noch nicht.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-041",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-041",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Nettopreis von 100 € wird mit 19 % Umsatzsteuer berechnet. Wie hoch ist der Bruttopreis?",
+        "answer1": "119 €",
+        "answer2": "109 €",
+        "answer3": "100 €",
+        "answer4": "190 €",
+        "correctAnswer": 0,
+        "explanation": "Der Bruttopreis enthält 19 % Umsatzsteuer: 100 € × 1,19 = 119 €.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-042",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-042",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Preis von 119 € brutto enthält 19 % Umsatzsteuer. Wie hoch ist der Nettopreis?",
+        "answer1": "100,00 €",
+        "answer2": "96,39 €",
+        "answer3": "22,61 €",
+        "answer4": "141,61 €",
+        "correctAnswer": 0,
+        "explanation": "Der Bruttopreis entspricht 119 % des Nettopreises: 119 € / 1,19 = 100 €. Ein Abzug von 19 % des Bruttopreises verwendet die falsche Bezugsgröße.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-043",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-043",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Auftrag umfasst nur sechs abrechenbare Stunden zu je 85 € netto. Wie hoch ist der Nettorechnungsbetrag?",
+        "answer1": "510,00 €",
+        "answer2": "85,00 €",
+        "answer3": "14,17 €",
+        "answer4": "595,00 €",
+        "correctAnswer": 0,
+        "explanation": "Sechs abrechenbare Stunden zu je 85 € ergeben 6 × 85 € = 510 € vor Umsatzsteuer.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-044",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-044",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "96.000 € jährliche Gesamtkosten treffen auf 1.600 bezahlte, davon 1.200 abrechenbare Stunden. Welcher Nettostundensatz deckt die Kosten ohne Gewinn?",
+        "answer1": "80 €",
+        "answer2": "60 €",
+        "answer3": "20 €",
+        "answer4": "240 €",
+        "correctAnswer": 0,
+        "explanation": "Die gesamten Kosten müssen über die abrechenbaren Stunden gedeckt werden: 96.000 € / 1.200 = 80 €. Die Division durch alle bezahlten Stunden ergäbe 60 € und ließe Kosten ungedeckt.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-045",
+      "origin": "EXISTING",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-045",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Kunde schreibt: „Bitte nennen Sie unverbindlich Preis und Lieferzeit für diesen Server. Dies ist keine Bestellung.“ Was ist diese Nachricht?",
+        "answer1": "Als Anfrage zur Vorbereitung eines möglichen Kaufs.",
+        "answer2": "Als verbindliches Angebot zum Kauf des Servers.",
+        "answer3": "Als Annahme eines bereits erhaltenen Verkäuferangebots.",
+        "answer4": "Als Ablehnung eines Angebots verbunden mit einem neuen Kaufangebot.",
+        "correctAnswer": 0,
+        "explanation": "Der Kunde möchte zunächst Informationen und erklärt ausdrücklich noch keinen verbindlichen Kaufwillen. Die Nachricht ist daher eine Anfrage.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-046",
+      "origin": "NEW",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-046",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Dienstleister soll auf vorhandenen Geräten eine funktionierende Datensicherung einrichten und schuldet den Erfolg. Welcher Vertragstyp des Bürgerlichen Gesetzbuchs passt?",
+        "answer1": "Werkvertrag.",
+        "answer2": "Dienstvertrag.",
+        "answer3": "Mietvertrag.",
+        "answer4": "Kaufvertrag.",
+        "correctAnswer": 0,
+        "explanation": "Beim Werkvertrag wird ein vereinbarter Erfolg geschuldet. Ein Dienstvertrag verpflichtet grundsätzlich zur Tätigkeit, eine Miete zur Gebrauchsüberlassung und ein Kauf zur Eigentumsverschaffung.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-047",
+      "origin": "NEW",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-047",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Eine Verbraucherin kauft online einen Standardlaptop vom Händler in Deutschland, vorab korrekt über den Widerruf belehrt. Sie erhält das Gerät vollständig; keine Ausnahme greift. Welche Widerrufsfrist gilt?",
+        "answer1": "14 Tage, ausgehend vom Erhalt des Laptops.",
+        "answer2": "14 Tage, ausgehend vom Absenden der Bestellung.",
+        "answer3": "7 Tage, ausgehend vom Erhalt des Laptops.",
+        "answer4": "30 Tage, ausgehend vom Erhalt der Rechnung.",
+        "correctAnswer": 0,
+        "explanation": "Nach dem Bürgerlichen Gesetzbuch beträgt die Frist grundsätzlich 14 Tage. Bei ordnungsgemäßer vorheriger Belehrung ist hier der Warenerhalt maßgeblich; der Empfangstag wird bei der Fristberechnung nicht mitgezählt.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-048",
+      "origin": "NEW",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-048",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Eine Auszubildende braucht für ihr betriebliches Ausbildungsziel ein Fachbuch und Werkzeug. Wer muss diese grundsätzlich bezahlen?",
+        "answer1": "Der Ausbildungsbetrieb muss die erforderlichen Ausbildungsmittel kostenlos bereitstellen.",
+        "answer2": "Die Auszubildende muss sie immer aus ihrer Ausbildungsvergütung bezahlen.",
+        "answer3": "Die Berufsschule muss sie unabhängig vom Ausbildungsgang anschaffen.",
+        "answer4": "Der Prüfungsausschuss muss sie der Auszubildenden leihweise überlassen.",
+        "correctAnswer": 0,
+        "explanation": "Das Berufsbildungsgesetz verpflichtet den Ausbildenden, erforderliche Ausbildungsmittel grundsätzlich kostenlos zur Verfügung zu stellen.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-049",
+      "origin": "NEW",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-049",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Eine Erwachsene arbeitet zehn Stunden netto, im 24-Wochen-Mittel 7,8 Stunden werktäglich. Pausen und Ruhezeiten stimmen; Sonderregeln gelten nicht. Ist das nach dem Arbeitszeitgesetz erlaubt?",
+        "answer1": "Ja, die Zehnstundengrenze und der erforderliche Ausgleich sind eingehalten.",
+        "answer2": "Nein, acht Stunden dürfen auch mit Ausgleich nicht überschritten werden.",
+        "answer3": "Nein, ein Ausgleich wäre nur innerhalb derselben Kalenderwoche möglich.",
+        "answer4": "Ja, bei diesem Durchschnitt wären auch elf Stunden an diesem Tag erlaubt.",
+        "correctAnswer": 0,
+        "explanation": "Die werktägliche Arbeitszeit kann von acht auf höchstens zehn Stunden verlängert werden, wenn im zulässigen Ausgleichszeitraum durchschnittlich acht Stunden nicht überschritten werden.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-050",
+      "origin": "NEW",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-050",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Wie viel Mindestjahresurlaub gewährt das Bundesurlaubsgesetz einer Erwachsenen bei ganzjähriger Fünf-Tage-Woche, ohne Zusatzansprüche?",
+        "answer1": "20 Arbeitstage.",
+        "answer2": "16 Arbeitstage.",
+        "answer3": "24 Arbeitstage.",
+        "answer4": "30 Arbeitstage.",
+        "correctAnswer": 0,
+        "explanation": "Die 24 Werktage des Bundesurlaubsgesetzes beziehen sich auf eine Sechs-Tage-Woche. Das entspricht vier Wochen und damit 20 Arbeitstagen bei einer Fünf-Tage-Woche.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-051",
+      "origin": "NEW",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-051",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Wer kann nach dem deutschen Tarifvertragsgesetz miteinander einen Tarifvertrag schließen?",
+        "answer1": "Eine Gewerkschaft und ein Arbeitgeberverband.",
+        "answer2": "Ein Betriebsrat und die Unternehmensleitung.",
+        "answer3": "Ein einzelner Beschäftigter und sein Arbeitgeber.",
+        "answer4": "Eine Betriebsversammlung und der gewählte Betriebsrat.",
+        "correctAnswer": 0,
+        "explanation": "Gewerkschaften können Tarifverträge mit einzelnen Arbeitgebern oder Arbeitgeberverbänden schließen. Betriebsrat und Arbeitgeber schließen dagegen Betriebsvereinbarungen; individuelle Arbeitsverträge sind ebenfalls keine Tarifverträge.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-052",
+      "origin": "NEW",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-052",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Ein privater Betrieb will Beginn und Ende der Arbeitszeit im Vertragsrahmen ändern. Gesetz und Tarifvertrag legen diese nicht fest. Welches Recht hat der Betriebsrat nach dem Betriebsverfassungsgesetz?",
+        "answer1": "Mitbestimmung; der Arbeitgeber kann die Arbeitszeitlage nicht einseitig festlegen.",
+        "answer2": "Information; eine Nachricht nach der einseitigen Festlegung genügt.",
+        "answer3": "Anhörung; nach Kenntnisnahme der Bedenken darf der Arbeitgeber allein entscheiden.",
+        "answer4": "Alleinentscheidung; der Betriebsrat legt die Arbeitszeitlage ohne Beteiligung des Arbeitgebers fest.",
+        "correctAnswer": 0,
+        "explanation": "Bei Beginn und Ende der täglichen Arbeitszeit besteht unter den genannten Bedingungen Mitbestimmung. Kommt keine Einigung zustande, sieht das Gesetz die Einigungsstelle vor; bloße Information oder Anhörung genügt nicht.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-053",
+      "origin": "NEW",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-053",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Welche Leistungen gehören zur gesetzlichen Rentenversicherung in Deutschland?",
+        "answer1": "Altersrenten, Erwerbsminderungsrenten und Hinterbliebenenrenten.",
+        "answer2": "Behandlung gewöhnlicher Erkrankungen, Krankengeld und Mutterschaftsgeld.",
+        "answer3": "Arbeitslosengeld, Arbeitsvermittlung und Maßnahmen der Arbeitsförderung.",
+        "answer4": "Pflegegeld, ambulante Pflegesachleistungen und Leistungen bei stationärer Pflege.",
+        "correctAnswer": 0,
+        "explanation": "Die gesetzliche Rentenversicherung sichert insbesondere Alter, Erwerbsminderung und Hinterbliebene unter den jeweiligen Voraussetzungen ab; die anderen Leistungspakete betreffen andere Sozialversicherungszweige.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-054",
+      "origin": "NEW",
+      "verdict": "REJECT",
+      "reason": "Nahezu wortgleiche Wiederholung der vorgeschlagenen wiso-039 zum kalendermäßig bestimmten Zahlungstermin; kein zusätzlicher Lernwert.",
+      "recommended_final_question": null
+    },
+    {
+      "id": "wiso-055",
+      "origin": "NEW",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-055",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Nettoerlös je Stück: 100 €, variable Stückkosten: 70 €, monatliche Fixkosten: 18.000 €. Preise und Kosten bleiben konstant. Welche monatliche Verkaufsmenge erreicht die Gewinnschwelle?",
+        "answer1": "600 Stück.",
+        "answer2": "180 Stück.",
+        "answer3": "258 Stück.",
+        "answer4": "60 Stück.",
+        "correctAnswer": 0,
+        "explanation": "Der Stückdeckungsbeitrag beträgt 100 € − 70 € = 30 €. Für 18.000 € Fixkosten sind 18.000 € / 30 € = 600 verkaufte Stück erforderlich; das Ergebnis ist dann null.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-056",
+      "origin": "NEW",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-056",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Eine Agentur kann nur eines von zwei Projekten wählen: A mit 9.000 €, B mit 7.000 € erwartetem Deckungsbeitrag. Sie wählt A. Wie hoch sind die Opportunitätskosten?",
+        "answer1": "7.000 €, der entgangene Deckungsbeitrag der besten nicht gewählten Alternative.",
+        "answer2": "9.000 €, der Deckungsbeitrag des gewählten Projekts.",
+        "answer3": "16.000 €, die Summe der Deckungsbeiträge beider Projekte.",
+        "answer4": "0 €, weil eine getroffene Entscheidung keine Alternativkosten verursacht.",
+        "correctAnswer": 0,
+        "explanation": "Opportunitätskosten entsprechen dem Nutzen der besten nicht gewählten Alternative; hier sind das 7.000 € aus Projekt B.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-057",
+      "origin": "NEW",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-057",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Eine Bilanz enthält 140.000 € Vermögen und auf der Passivseite nur Eigenkapital und 90.000 € Verbindlichkeiten. Wie hoch ist das Eigenkapital?",
+        "answer1": "50.000 €.",
+        "answer2": "90.000 €.",
+        "answer3": "140.000 €.",
+        "answer4": "230.000 €.",
+        "correctAnswer": 0,
+        "explanation": "Die Bilanzsumme muss auf beiden Seiten übereinstimmen. 140.000 € Vermögen minus 90.000 € Verbindlichkeiten ergeben 50.000 € Eigenkapital.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-058",
+      "origin": "NEW",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-058",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was zeigt die Gewinn- und Verlustrechnung für ein abgeschlossenes Geschäftsjahr?",
+        "answer1": "Die tatsächlichen Erträge und Aufwendungen sowie den daraus resultierenden Jahreserfolg.",
+        "answer2": "Die Vermögens- und Kapitalbestände ausschließlich am Ende des Geschäftsjahres.",
+        "answer3": "Die tatsächlichen Einzahlungen und Auszahlungen sowie die Veränderung des Zahlungsmittelbestands.",
+        "answer4": "Die für das nächste Geschäftsjahr geplanten Erlöse und Kosten nach Unternehmensbereichen.",
+        "correctAnswer": 0,
+        "explanation": "Die Gewinn- und Verlustrechnung ermittelt den Erfolg einer Periode anhand von Erträgen und Aufwendungen. Bestände, Zahlungsströme und Zukunftsplanung beantworten andere Fragen.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-059",
+      "origin": "NEW",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-059",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Benötigt werden 150 Arbeitsplätze gleicher Qualität und Lieferfrist. Mehrplätze bringen keinen Nutzen; Pakete sind unteilbar. Welches Paket erfüllt das Ziel zu den geringsten Gesamtkosten?",
+        "answer1": "150 Arbeitsplätze für insgesamt 30.000 €.",
+        "answer2": "120 Arbeitsplätze für insgesamt 24.000 €.",
+        "answer3": "200 Arbeitsplätze für insgesamt 36.000 €.",
+        "answer4": "150 Arbeitsplätze für insgesamt 33.000 €.",
+        "correctAnswer": 0,
+        "explanation": "Das Paket für 30.000 € erreicht das vorgegebene Ziel zum niedrigsten Gesamtpreis. Das billigere Paket erreicht die benötigte Menge nicht; der niedrigere Stückpreis des größeren Pakets senkt nicht dessen Gesamtkosten.",
+        "media": ""
+      }
+    },
+    {
+      "id": "wiso-060",
+      "origin": "NEW",
+      "verdict": "REVISE",
+      "reason": "Fragetext gekürzt; Kontext und Antwortinhalt beibehalten.",
+      "recommended_final_question": {
+        "id": "wiso-060",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Monatlicher Geräteservice für 100 Geräte: Eigenleistung kostet 4.000 € fix plus 18 € je Gerät, Fremdbezug gleicher Leistung 5.500 €. Was ist günstiger?",
+        "answer1": "Der externe Anbieter ist um 300 € pro Monat günstiger.",
+        "answer2": "Die Eigenleistung ist um 300 € pro Monat günstiger.",
+        "answer3": "Beide Möglichkeiten kosten gleich viel.",
+        "answer4": "Der externe Anbieter ist um 1.800 € pro Monat teurer.",
+        "correctAnswer": 0,
+        "explanation": "Die Eigenleistung kostet 4.000 € + 100 × 18 € = 5.800 € pro Monat. Das externe Angebot kostet 5.500 € und ist damit 300 € günstiger.",
+        "media": ""
+      }
+    }
+  ]
+}

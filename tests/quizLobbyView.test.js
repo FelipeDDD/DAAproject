@@ -57,7 +57,7 @@ test('character selection sends a valid presence snapshot before the map loads',
   let snapshot,claimArgs;
   const menu=Object.assign(Object.create(CharacterMenu.prototype),{
     sessionId:'session-123456789',render(){},message:{textContent:''},root:{hidden:false},
-    mode:'profile',authToken:'profile-token',presence:{api:{profiles:{claimCharacter:'claim'}},client:{action:async(_fn,args)=>{claimArgs=args;return {ok:true,playerId:'live-profile-id',profile:{profileId:'profile-id',displayName:'Profile Player'}};}},enter:(room,getState)=>{
+    mode:'profile',authToken:'profile-token',presence:{api:{profiles:{claimCharacter:'claim'}},client:{action:async(_fn,args)=>{claimArgs=args;return {ok:true,playerId:'live-profile-id',profile:{profileId:'profile-id',displayName:'Profile Player'},classState:{version:1,room:'office2',x:200,y:150}};}},enter:(room,getState)=>{
       assert.equal(room,'selection');snapshot=getState();
     }},onChoose(){},
   });
@@ -65,6 +65,7 @@ test('character selection sends a valid presence snapshot before the map loads',
   assert.deepEqual(claimArgs,{token:'profile-token',characterBaseId:'felipe',presenceSessionId:'session-123456789'});
   assert.deepEqual(snapshot,{x:0,y:0,direction:'down',activeCharacterItem:null});
   assert.equal(menu.presence.identity.kind,'profile');assert.equal(menu.presence.identity.playerId,'live-profile-id');
+  assert.deepEqual(menu.presence.identity.classState,{version:1,room:'office2',x:200,y:150});
 });
 
 test('guest character selection claims presence without a profile action',async()=>{

@@ -7,6 +7,10 @@ import { Office3Scene } from '../scenes/Office3Scene.js';
 import { SecretPathScene } from '../scenes/SecretPathScene.js';
 import { GAME_LOGICAL_SIZE } from '../ui/displaySettings.js';
 
+export const GAME_SCENES_BY_KEY=Object.freeze({
+  school:SchoolScene,outside:OutsideScene,arena:ArenaScene,office2:Office2Scene,office3:Office3Scene,'secret-path':SecretPathScene,
+});
+
 export const gameConfig = {
   type: Phaser.AUTO,
   parent: 'game',
@@ -24,5 +28,5 @@ export const gameConfig = {
     default: 'arcade',
     arcade: { gravity: { x: 0, y: 0 }, debug: false },
   },
-  scene: [SchoolScene, OutsideScene, ArenaScene, Office2Scene, Office3Scene, SecretPathScene],
+  scene: Object.values(GAME_SCENES_BY_KEY),
 };

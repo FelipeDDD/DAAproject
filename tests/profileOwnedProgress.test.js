@@ -8,7 +8,7 @@ import { BOSS_REWARDS,DIRECTOR_BOSS_ID } from '../src/boss/BossRewards.js';
 import { CHARACTER_ITEM_IDS } from '../src/inventory/characterItems.js';
 
 function memoryContext(){
-  const tables={profiles:[],profileSessions:[],players:[],bossProgress:[],bossVictoryReceipts:[],characterItems:[]};
+  const tables={profiles:[],profileSessions:[],players:[],bossProgress:[],bossVictoryReceipts:[],characterItems:[],characterLoadouts:[]};
   let nextId=1;
   const query=table=>({
     collect:async()=>[...tables[table]],
@@ -61,12 +61,16 @@ test('profile items stay owned across characters but activation enforces visual 
   await addProfile(ctx,{name:'other',character:'felipe',token:TOKEN_B});
   const itemId=CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000;
   await items.claim._handler(ctx,{token:TOKEN_A,itemId});
+  const sessionId='active-session-123456789',playerId='live-player-a';
+  const playerRow=await ctx.db.insert('players',{profileId:profileA,playerId,sessionId,characterId:'sarina',characterBaseId:'sarina',lastSeen:Date.now(),room:'school'});
+  const auth={token:TOKEN_A,playerId,sessionId};
   await ctx.db.patch(profileA,{selectedCharacterId:'sarina'});
-  assert.equal((await items.forProfile._handler(ctx,{token:TOKEN_A})).length,1);
-  await assert.rejects(items.setActive._handler(ctx,{token:TOKEN_A,itemId,active:true}),/cannot use/);
-  assert.deepEqual(await items.forProfile._handler(ctx,{token:TOKEN_B,profileId:profileA,characterId:'michael'}),[]);
+  assert.equal((await items.forProfile._handler(ctx,auth)).length,1);
+  await assert.rejects(items.setActive._handler(ctx,{...auth,itemId,active:true}),/cannot use/);
+  await assert.rejects(items.forProfile._handler(ctx,{...auth,token:TOKEN_B}),/CHARACTER_SESSION_LOST/);
   await ctx.db.patch(profileA,{selectedCharacterId:'michael'});
-  const active=await items.setActive._handler(ctx,{token:TOKEN_A,itemId,active:true});
+  await ctx.db.patch(playerRow,{characterId:'michael',characterBaseId:'michael'});
+  const active=await items.setActive._handler(ctx,{...auth,itemId,active:true});
   assert.equal(active.active,true);
 });
 

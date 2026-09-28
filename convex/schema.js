@@ -130,7 +130,7 @@ export default defineSchema({
     x: v.number(), y: v.number(), direction: v.string(),
     moving:v.optional(v.boolean()),velocityX:v.optional(v.number()),velocityY:v.optional(v.number()),
     equippedSkin:v.optional(v.union(v.literal('classic'),v.literal('remastered'))),
-    activeCharacterItem:v.optional(v.union(v.literal('lung_crusher_3000'),v.null())),lastSeen: v.number(),
+    activeCharacterItem:v.optional(v.union(v.string(),v.null())),lastSeen: v.number(),
   }).index('by_player', ['playerId']).index('by_character', ['characterId']).index('by_room', ['room']).index('by_lastSeen', ['lastSeen'])
     .index('by_presenceMode_lease',['presenceMode','terminalLeaseExpiresAt'])
     .index('by_presenceMode_stationaryLease',['presenceMode','stationaryLeaseExpiresAt']),
@@ -139,9 +139,16 @@ export default defineSchema({
     rewards:v.array(v.string()),equippedSkin:v.optional(v.union(v.literal('classic'),v.literal('remastered'))),updatedAt:v.number(),
   }).index('by_profile_boss',['profileId','bossId']).index('by_character_boss',['characterId','bossId']),
   characterItems: defineTable({
-    profileId:v.optional(v.id('profiles')),characterId:v.optional(v.string()),characterBaseId:v.optional(v.string()),itemId:v.string(),active:v.boolean(),cooldownUntil:v.number(),updatedAt:v.number(),
+    profileId:v.optional(v.id('profiles')),characterId:v.optional(v.string()),characterBaseId:v.optional(v.string()),itemId:v.string(),active:v.optional(v.boolean()),cooldownUntil:v.number(),updatedAt:v.number(),
   }).index('by_profile_item',['profileId','itemId']).index('by_profile',['profileId'])
     .index('by_character_item',['characterId','itemId']).index('by_character',['characterId']),
+  characterLoadouts: defineTable({
+    profileId:v.id('profiles'),characterBaseId:v.string(),activeItemId:v.optional(v.string()),updatedAt:v.number(),
+  }).index('by_profile_base',['profileId','characterBaseId']),
+  profileCharacterState: defineTable({
+    profileId:v.id('profiles'),characterBaseId:v.string(),room:v.string(),x:v.number(),y:v.number(),
+    version:v.number(),updatedAt:v.number(),
+  }).index('by_profile_base',['profileId','characterBaseId']),
   bossVictoryReceipts: defineTable({
     victoryId:v.string(),profileId:v.optional(v.id('profiles')),characterId:v.optional(v.string()),bossId:v.string(),wins:v.number(),
     outcome:v.union(v.literal('choice'),v.literal('automatic'),v.literal('none')),

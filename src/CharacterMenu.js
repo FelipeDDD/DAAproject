@@ -103,7 +103,7 @@ export class CharacterMenu {
       this.presence.identity={
         kind:this.mode,playerId:result.playerId,characterId:c.id,characterBaseId:baseCharacterId(c.id),
         name:displayName,displayName,characterName:c.name,sessionId:this.sessionId,
-        ...(this.mode==='guest'?{guestId:this.guest.guestId}:{profileId:result.profile.profileId}),
+        ...(this.mode==='guest'?{guestId:this.guest.guestId}:{profileId:result.profile.profileId,classState:result.classState??null}),
       };
       try{localStorage.setItem(CHARACTER_STORAGE_KEY,c.id);}catch{}
       // Keep the claim alive while Phaser loads its maps and sprites.

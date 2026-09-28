@@ -20,7 +20,7 @@ const validation={source_sha256:'validation-netzwerk',validations:[
 
 function viewer(storage=new Map()){
   const elements=new Map();
-  const domNode=tag=>({tag,children:[],className:'',textContent:'',append(...nodes){this.children.push(...nodes);},
+  const domNode=tag=>({tag,children:[],dataset:{},className:'',textContent:'',append(...nodes){this.children.push(...nodes);},
     prepend(...nodes){this.children.unshift(...nodes);},setAttribute(){},addEventListener(type,handler){this[type]=handler;},
     querySelector(selector){return this.children.find(child=>child.className?.split(' ').includes(selector.slice(1)))||null;}});
   const element=id=>{
@@ -33,7 +33,7 @@ function viewer(storage=new Map()){
   },console,structuredClone,Date};
   vm.runInNewContext(source+`
     renderSummary=()=>{};renderIds=()=>{};renderSelected=()=>{};updateProgress=()=>{};
-    globalThis.api={app,recordsFrom,versions,cardActions,personal,loadPersonal,resetFilters,applyFilters,decide,
+    globalThis.api={app,recordsFrom,validate,versions,versionCard,cardActions,personal,loadPersonal,resetFilters,applyFilters,decide,
       decisionsPayload,importDecisions,saveView,restoreView,viewStorageKey,completed};
   `,context);
   const api=context.api;
@@ -60,8 +60,8 @@ test('036 and 176 retain independent existing/addition decisions; 196 has no add
   assert.deepEqual(Array.from(api.app.records,r=>r.key),[
     'existing:036','new:036-extra','existing:176','new:176-extra','existing:196']);
   assert.deepEqual(Array.from(api.versions(api.app.records[0]),v=>v.key),['original','proposal']);
-  assert.deepEqual(Array.from(api.versions(api.app.records[2]),v=>v.key),['original','revised']);
-  assert.deepEqual(Array.from(api.versions(api.app.records[4]),v=>v.key),['original','revised']);
+  assert.deepEqual(Array.from(api.versions(api.app.records[2]),v=>v.key),['original','proposal','revised']);
+  assert.deepEqual(Array.from(api.versions(api.app.records[4]),v=>v.key),['original','proposal','revised']);
   element('auto-advance').checked=false;api.applyFilters();
   api.app.selected='existing:036';api.decide('KEEP_CURRENT');
   assert.equal(api.personal('new:036-extra').decision,null);
@@ -74,6 +74,48 @@ test('036 and 176 retain independent existing/addition decisions; 196 has no add
     'KEEP_CURRENT','APPROVE_NEW','ACCEPT_RECOMMENDATION','REJECT_NEW','ACCEPT_RECOMMENDATION']);
   assert.equal(rows[1].addition_decision,'APPROVE_NEW');
   assert.equal(rows[3].addition_decision,'REJECT_NEW');
+});
+
+test('new questions compare the initial proposal with the validation result and keep personal decisions',()=>{
+  const {api,element}=viewer();
+  const candidate=(id,text)=>question(id,text);
+  const newState={source_sha256:'new-state',questions:[
+    {id:'new-revise',status:'NEW_QUESTION',new_question:candidate('new-revise','Luna revise')},
+    {id:'new-approve',status:'NEW_QUESTION',new_question:candidate('new-approve','Luna approve')},
+    {id:'new-reject',status:'NEW_QUESTION',new_question:candidate('new-reject','Luna reject')},
+  ]};
+  const newValidation={source_sha256:'new-validation',validations:[
+    {id:'new-revise',verdict:'REVISE',reason:'Astra changed the wording.',
+      recommended_final_question:candidate('new-revise','Astra revised')},
+    {id:'new-approve',verdict:'APPROVE',reason:'Astra approved the proposal.'},
+    {id:'new-reject',verdict:'REJECT',reason:'Astra rejected the question.'},
+  ]};
+  api.validate(newState,newValidation);
+  api.app.state=newState;api.app.validation=newValidation;
+  api.app.records=api.recordsFrom(newState,newValidation);
+  api.app.selected='new:new-revise';
+  element('auto-advance').checked=false;
+
+  const revised=api.app.records[0],revisedVersions=api.versions(revised);
+  assert.deepEqual(Array.from(revisedVersions,v=>[v.title,v.q.question]),[
+    ['Proposta inicial','Luna revise'],['Final validado','Astra revised']]);
+  assert.equal(api.app.records[1].final.question,'Luna approve');
+  assert.equal(api.versions(api.app.records[1])[1].q.question,'Luna approve');
+  assert.equal(api.app.records[2].final.question,'Luna reject');
+  const rejectedCards=api.versions(api.app.records[2]);
+  assert.match(rejectedCards[1].note,/REJECT.*rejeitada/);
+  assert.ok(api.versionCard(api.app.records[2],rejectedCards[1],rejectedCards,false).className.includes('rejected'));
+  assert.equal(api.app.records[0].validation.reason,'Astra changed the wording.');
+
+  for(const [record,decision] of [[revised,'APPROVE_NEW'],[api.app.records[2],'REJECT_NEW']]){
+    api.app.selected=record.key;
+    const cards=api.versions(record),actions=api.cardActions(record,cards[1]);
+    assert.deepEqual(Array.from(actions.children.filter(x=>x.tag==='button'),x=>x.textContent),
+      ['Adicionar esta pergunta','Não adicionar']);
+    actions.children.find(x=>x.textContent===(decision==='APPROVE_NEW'?'Adicionar esta pergunta':'Não adicionar')).click();
+    assert.equal(api.personal(record.key).decision,decision);
+  }
+  assert.equal(api.cardActions(revised,revisedVersions[0]),null);
 });
 
 test('original, proposal and addition can all be selected without changing the export shape',async()=>{

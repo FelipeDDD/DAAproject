@@ -1,0 +1,1444 @@
+{
+  "schema_version": 1,
+  "source_file": "quiz-data/wiso.csv",
+  "review_model": "Luna High",
+  "summary": {
+    "existing_questions": 45,
+    "new_questions": 15,
+    "total_candidates": 60,
+    "pass": 20,
+    "rewrite": 19,
+    "other_issue": 6
+  },
+  "coverage": {
+    "already_covered": [
+      "Kaufvertrag, Angebot, Annahme, Besitz und Eigentum",
+      "Arbeitsverhältnis, Krankheit und Unfallversicherung",
+      "Markt, Marketing, Zielgruppen und Unternehmensanalysen",
+      "Lastenheft, Pflichtenheft, Benchmarking und Nutzwertanalyse",
+      "Fixe und variable Kosten, Deckungsbeitrag, Preise und Stundensatz"
+    ],
+    "gaps_targeted": [
+      "Vertragstypen und Widerruf beim Onlinekauf",
+      "Ausbildungspflichten, Arbeitszeit, Urlaub, Tarifvertrag und Mitbestimmung",
+      "Rentenversicherung und präziser Zahlungsverzug",
+      "Gewinnschwelle, Opportunitätskosten, Bilanz und Jahreserfolg",
+      "Wirtschaftliches Prinzip und Eigenleistung oder Fremdbezug"
+    ]
+  },
+  "questions": [
+    {
+      "id": "wiso-001",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-001",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Wie kommt ein Kaufvertrag grundsätzlich zustande?",
+        "answer1": "Durch zwei übereinstimmende Willenserklärungen, normalerweise Angebot und Annahme",
+        "answer2": "Allein durch die Ausstellung einer Rechnung",
+        "answer3": "Nur durch eine schriftliche Unterschrift beider Parteien",
+        "answer4": "Erst nach vollständiger Bezahlung",
+        "correctAnswer": 0,
+        "explanation": "Ein Vertrag kommt grundsätzlich durch zwei übereinstimmende Willenserklärungen zustande. Typischerweise sind dies Angebot und Annahme.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Angebot und Annahme sind als Grundprinzip klar und korrekt benannt."
+    },
+    {
+      "id": "wiso-002",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-002",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Kunde besitzt eine gekaufte Sache bereits, hat aber aufgrund eines Eigentumsvorbehalts noch nicht das Eigentum daran erworben. Welche Aussage ist korrekt?",
+        "answer1": "Besitz und Eigentum können bei unterschiedlichen Personen liegen",
+        "answer2": "Besitz und Eigentum bedeuten rechtlich immer dasselbe",
+        "answer3": "Der Kunde kann niemals Besitzer der Sache sein",
+        "answer4": "Eigentum entsteht immer automatisch bei Übergabe",
+        "correctAnswer": 0,
+        "explanation": "Besitz beschreibt die tatsächliche Herrschaft über eine Sache, während Eigentum die rechtliche Zuordnung bezeichnet. Beides kann auseinanderfallen.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Besitz und Eigentum werden fachlich richtig und verständlich unterschieden."
+    },
+    {
+      "id": "wiso-003",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-003",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was ist der wesentliche Unterschied zwischen gesetzlicher Gewährleistung und einer Garantie?",
+        "answer1": "Die Gewährleistung ergibt sich aus gesetzlichen Regelungen, eine Garantie ist eine zusätzliche freiwillige Zusage",
+        "answer2": "Eine Garantie ist gesetzlich immer vorgeschrieben",
+        "answer3": "Gewährleistung gilt nur bei gebrauchten Waren",
+        "answer4": "Garantie und Gewährleistung sind rechtlich identisch",
+        "correctAnswer": 0,
+        "explanation": "Die Gewährleistung beruht auf gesetzlichen Ansprüchen bei Mängeln. Eine Garantie ist dagegen eine zusätzliche freiwillige Leistung des Herstellers oder Verkäufers.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die gesetzliche Mängelhaftung und die freiwillige Garantie sind korrekt abgegrenzt."
+    },
+    {
+      "id": "wiso-004",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-004",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Arbeitnehmer wird arbeitsunfähig krank. Welche Pflicht hat er gegenüber seinem Arbeitgeber grundsätzlich?",
+        "answer1": "Die Arbeitsunfähigkeit und deren voraussichtliche Dauer unverzüglich mitteilen",
+        "answer2": "Er darf den Arbeitgeber erst nach einer Woche informieren",
+        "answer3": "Er muss während der Krankheit Urlaub beantragen",
+        "answer4": "Er muss selbstständig einen Ersatzmitarbeiter organisieren",
+        "correctAnswer": 0,
+        "explanation": "Arbeitnehmer müssen dem Arbeitgeber die Arbeitsunfähigkeit und die voraussichtliche Dauer grundsätzlich unverzüglich mitteilen.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die unverzügliche Mitteilungspflicht ist als Grundregel korrekt formuliert."
+    },
+    {
+      "id": "wiso-005",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-005",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Welche Sozialversicherung schützt Arbeitnehmer hauptsächlich gegen die finanziellen Folgen von Arbeitslosigkeit?",
+        "answer1": "Arbeitslosenversicherung",
+        "answer2": "Pflegeversicherung",
+        "answer3": "Unfallversicherung",
+        "answer4": "Rentenversicherung",
+        "correctAnswer": 0,
+        "explanation": "Die Arbeitslosenversicherung soll unter bestimmten Voraussetzungen Einkommensausfälle durch Arbeitslosigkeit absichern und unterstützt außerdem bei der Arbeitsvermittlung.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die Arbeitslosenversicherung ist der passende Schutz bei Arbeitslosigkeit."
+    },
+    {
+      "id": "wiso-006",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-006",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Welche Aufgabe hat die gesetzliche Unfallversicherung hauptsächlich?",
+        "answer1": "Sie schützt Beschäftigte bei Arbeitsunfällen und bestimmten Berufskrankheiten",
+        "answer2": "Sie bezahlt grundsätzlich alle privaten Freizeitunfälle",
+        "answer3": "Sie ersetzt die gesetzliche Krankenversicherung vollständig",
+        "answer4": "Sie finanziert ausschließlich die Altersrente",
+        "correctAnswer": 0,
+        "explanation": "Die gesetzliche Unfallversicherung ist insbesondere für Arbeitsunfälle, Wegeunfälle und anerkannte Berufskrankheiten zuständig.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die Hauptaufgabe der gesetzlichen Unfallversicherung ist korrekt beschrieben."
+    },
+    {
+      "id": "wiso-007",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "wiso-007",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen erzielt dauerhaft höhere Einnahmen als Ausgaben. Wie wirkt sich dies grundsätzlich auf den Unternehmenserfolg aus?",
+        "answer1": "Es entsteht grundsätzlich ein Gewinn",
+        "answer2": "Es entsteht zwingend ein Verlust",
+        "answer3": "Das Eigenkapital muss automatisch auf null sinken",
+        "answer4": "Die Liquidität muss zwingend negativ sein",
+        "correctAnswer": 0,
+        "explanation": "Wenn die Erträge beziehungsweise Einnahmen die entsprechenden Aufwendungen beziehungsweise Ausgaben übersteigen, entsteht grundsätzlich ein positiver Unternehmenserfolg.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "wiso-007",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen für Informationstechnik weist für das Geschäftsjahr betriebliche Erträge von 480.000 € und betriebliche Aufwendungen von 455.000 € aus. Welches Ergebnis ergibt sich vor Steuern?",
+        "answer1": "Ein Gewinn von 25.000 €.",
+        "answer2": "Ein Verlust von 25.000 €.",
+        "answer3": "Ein Gewinn von 935.000 €.",
+        "answer4": "Ein ausgeglichenes Ergebnis von 0 €.",
+        "correctAnswer": 0,
+        "explanation": "480.000 € Erträge minus 455.000 € Aufwendungen ergeben 25.000 € Gewinn.",
+        "media": ""
+      },
+      "reason": "Für den Unternehmenserfolg müssen Erträge und Aufwendungen statt bloßer Zahlungsströme verglichen werden."
+    },
+    {
+      "id": "wiso-008",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "wiso-008",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Warum führen Unternehmen eine Nutzwertanalyse durch?",
+        "answer1": "Um mehrere Alternativen anhand gewichteter qualitativer und quantitativer Kriterien zu vergleichen",
+        "answer2": "Um ausschließlich den billigsten Einkaufspreis zu bestimmen",
+        "answer3": "Um automatisch die Steuerlast des Unternehmens zu berechnen",
+        "answer4": "Um Mitarbeitergehälter festzulegen",
+        "correctAnswer": 0,
+        "explanation": "Eine Nutzwertanalyse ermöglicht einen strukturierten Vergleich verschiedener Alternativen anhand mehrerer Kriterien und ihrer Gewichtung.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "wiso-008",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Betrieb vergleicht drei Geräte. Neben dem Kaufpreis zählen Stromverbrauch, Garantie und Service; manche Kriterien sind wichtiger als andere. Welche Methode eignet sich, um die Alternativen nachvollziehbar zu gewichten und zu vergleichen?",
+        "answer1": "Eine Nutzwertanalyse mit gewichteten Kriterien und Bewertungen je Alternative.",
+        "answer2": "Ein Preisvergleich, der ausschließlich den niedrigsten Kaufpreis berücksichtigt.",
+        "answer3": "Eine Mindestanforderungsprüfung, bei der alle Kriterien gleich wichtig sind.",
+        "answer4": "Eine Absatzprognose, die nur vergangene Verkaufszahlen fortschreibt.",
+        "correctAnswer": 0,
+        "explanation": "Eine Nutzwertanalyse macht unterschiedliche Kriterien, ihre Gewichtung und die Bewertung der Alternativen gemeinsam sichtbar.",
+        "media": ""
+      },
+      "reason": "Ein Beschaffungsszenario macht den Mehrkriterienvergleich greifbarer und stärkt die Distraktoren."
+    },
+    {
+      "id": "wiso-009",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "wiso-009",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Welche Aussage beschreibt das Prinzip von Angebot und Nachfrage in einer Marktwirtschaft am besten?",
+        "answer1": "Steigt bei gleichbleibendem Angebot die Nachfrage deutlich, kann der Marktpreis steigen",
+        "answer2": "Eine steigende Nachfrage führt grundsätzlich immer zu sinkenden Preisen",
+        "answer3": "Der Preis wird ausschließlich durch Produktionskosten bestimmt",
+        "answer4": "Angebot und Nachfrage haben keinen Einfluss auf Marktpreise",
+        "correctAnswer": 0,
+        "explanation": "Bei ansonsten unveränderten Bedingungen kann eine höhere Nachfrage bei gleichem Angebot zu einem höheren Gleichgewichtspreis führen.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "wiso-009",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Die Nachfrage nach einem bestimmten Servermodell steigt deutlich, während das verfügbare Angebot kurzfristig gleich bleibt. Welche Preisentwicklung ist unter sonst gleichen Bedingungen am ehesten zu erwarten?",
+        "answer1": "Der Gleichgewichtspreis kann steigen, weil mehr Nachfrager auf dasselbe Angebot treffen.",
+        "answer2": "Der Gleichgewichtspreis muss sinken, weil eine höhere Nachfrage den Wettbewerb unter Anbietern verringert.",
+        "answer3": "Der Preis bleibt zwingend unverändert, weil nur die Herstellungskosten den Marktpreis bestimmen.",
+        "answer4": "Der Preis sinkt automatisch, sobald das Angebot unverändert bleibt.",
+        "correctAnswer": 0,
+        "explanation": "Bei gleichbleibendem Angebot kann eine höhere Nachfrage den Gleichgewichtspreis erhöhen; andere Einflüsse können die tatsächliche Entwicklung ebenfalls verändern.",
+        "media": ""
+      },
+      "reason": "Ein klarer Gleichbleibend-Faktor und marktnahe Alternativen vermeiden eine pauschale Preisregel."
+    },
+    {
+      "id": "wiso-010",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-010",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen kann eine fällige Rechnung trotz vorhandener Vermögenswerte kurzfristig nicht bezahlen. Welches Problem liegt hauptsächlich vor?",
+        "answer1": "Ein Liquiditätsproblem",
+        "answer2": "Ein Problem der Bildschirmauflösung",
+        "answer3": "Ein Produktivitätsgewinn",
+        "answer4": "Eine automatische Insolvenz unabhängig von weiteren Umständen",
+        "correctAnswer": 0,
+        "explanation": "Liquidität beschreibt die Fähigkeit, fällige Zahlungsverpflichtungen rechtzeitig erfüllen zu können. Vermögen allein bedeutet nicht automatisch, dass kurzfristig genügend Zahlungsmittel vorhanden sind.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die Frage unterscheidet kurzfristige Zahlungsfähigkeit sinnvoll von vorhandenem Vermögen."
+    },
+    {
+      "id": "wiso-011",
+      "origin": "EXISTING",
+      "status": "OTHER_ISSUE",
+      "original": {
+        "id": "wiso-011",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was ist ein Kaufvertrag?",
+        "answer1": "Ein Vertrag, bei dem sich Verkäufer und Käufer zu Leistung und Gegenleistung verpflichten.",
+        "answer2": "Eine unverbindliche Werbung ohne rechtliche Wirkung.",
+        "answer3": "Ein Vertrag ausschließlich zwischen Arbeitnehmer und Arbeitgeber.",
+        "answer4": "Eine behördliche Genehmigung für Netzwerkbetrieb.",
+        "correctAnswer": 0,
+        "explanation": "Beim Kaufvertrag schuldet der Verkäufer die Sache bzw. Leistung, der Käufer insbesondere die Zahlung des Kaufpreises.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die Grunddefinition wiederholt wiso-001 und ergänzt gegenüber wiso-012 keinen eigenen Lernwert."
+    },
+    {
+      "id": "wiso-012",
+      "origin": "EXISTING",
+      "status": "OTHER_ISSUE",
+      "original": {
+        "id": "wiso-012",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Wann kommt ein Vertrag typischerweise zustande?",
+        "answer1": "Durch zwei übereinstimmende Willenserklärungen, Angebot und Annahme.",
+        "answer2": "Erst nach vollständiger Bezahlung.",
+        "answer3": "Nur durch eine Rechnung.",
+        "answer4": "Automatisch durch jede Werbung.",
+        "correctAnswer": 0,
+        "explanation": "Grundsätzlich entsteht ein Vertrag durch übereinstimmende Willenserklärungen.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die Entstehung eines Vertrags wird bereits in wiso-001 und nochmals in wiso-011 geprüft."
+    },
+    {
+      "id": "wiso-013",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-013",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was ist ein Angebot im rechtlichen Sinn?",
+        "answer1": "Eine empfangsbedürftige Willenserklärung, die so bestimmt ist, dass der Vertrag durch Annahme zustande kommen kann.",
+        "answer2": "Jede unverbindliche Produktwerbung.",
+        "answer3": "Nur eine mündliche Preisangabe ohne weitere Angaben.",
+        "answer4": "Eine Mahnung nach Zahlungsverzug.",
+        "correctAnswer": 0,
+        "explanation": "Ein verbindliches Angebot muss die wesentlichen Vertragsbestandteile ausreichend bestimmen.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die Bestimmtheit eines rechtlich wirksamen Angebots wird knapp und korrekt erklärt."
+    },
+    {
+      "id": "wiso-014",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "wiso-014",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Welche Aussage zu einer invitatio ad offerendum ist typisch?",
+        "answer1": "Sie ist eine Aufforderung an Kunden, ihrerseits ein Angebot abzugeben.",
+        "answer2": "Sie ist immer bereits ein verbindlicher Kaufvertrag.",
+        "answer3": "Sie ist eine Kündigungserklärung.",
+        "answer4": "Sie ist ausschließlich eine Zahlungserinnerung.",
+        "correctAnswer": 0,
+        "explanation": "Viele Warenpräsentationen oder Online-Shop-Darstellungen gelten als Aufforderung zur Abgabe eines Angebots.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "wiso-014",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Händler zeigt einen standardmäßigen Computer mit Preis in seinem Online-Shop. Ein Kunde sendet eine Bestellung ab; der Händler prüft sie und bestätigt anschließend die Annahme. Welche Einordnung beschreibt diesen Ablauf typischerweise?",
+        "answer1": "Die Shopanzeige fordert zur Abgabe eines Angebots auf; die Bestellung ist das Angebot des Kunden und die Annahmebestätigung schließt den Vertrag.",
+        "answer2": "Bereits die Shopanzeige ist stets ein angenommener Kaufvertrag, unabhängig von der Bestellung.",
+        "answer3": "Die Bestellung ist immer nur eine unverbindliche Anfrage, auch wenn der Händler sie annimmt.",
+        "answer4": "Ein Kaufvertrag entsteht erst, wenn der Kunde zusätzlich eine Rechnung unterschreibt.",
+        "correctAnswer": 0,
+        "explanation": "Warenpräsentationen im Shop sind typischerweise noch keine Annahme. Der Kunde gibt mit der Bestellung ein Angebot ab, das der Händler annehmen kann.",
+        "media": ""
+      },
+      "reason": "Ein konkreter Bestellablauf erklärt die unverbindliche Warenpräsentation ohne isolierten lateinischen Fachbegriff."
+    },
+    {
+      "id": "wiso-015",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-015",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was bedeutet Rabatt in einer Kalkulation?",
+        "answer1": "Preisnachlass auf einen Ausgangspreis.",
+        "answer2": "Zuschlag für verspätete Zahlung.",
+        "answer3": "Steuer auf den Nettopreis.",
+        "answer4": "Kosten für Lagerhaltung.",
+        "correctAnswer": 0,
+        "explanation": "Ein Rabatt reduziert den Preis nach den vereinbarten Bedingungen.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Der Rabatt ist als Preisnachlass auf einen Ausgangspreis verständlich abgegrenzt."
+    },
+    {
+      "id": "wiso-016",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-016",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was bedeutet Skonto?",
+        "answer1": "Preisnachlass bei Zahlung innerhalb einer bestimmten kurzen Frist.",
+        "answer2": "Preisaufschlag für Expresslieferung.",
+        "answer3": "Umsatzsteuer auf Dienstleistungen.",
+        "answer4": "Rabatt ausschließlich für Großhändler.",
+        "correctAnswer": 0,
+        "explanation": "Skonto ist ein zeitlich gebundener Nachlass für schnelle Zahlung.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Der zeitgebundene Preisnachlass für schnelle Zahlung ist korrekt beschrieben."
+    },
+    {
+      "id": "wiso-017",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "wiso-017",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Rechnungsbetrag beträgt 1.000 €. Es werden 2 % Skonto gewährt. Wie hoch ist der Skontobetrag?",
+        "answer1": "2 €",
+        "answer2": "20 €",
+        "answer3": "50 €",
+        "answer4": "200 €",
+        "correctAnswer": 1,
+        "explanation": "2 % von 1.000 € sind 20 €.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "wiso-017",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Eine Rechnung beträgt 1.000 €. Der Anbieter gewährt 2 % Skonto bei fristgerechter Zahlung. Wie hoch ist der Skontobetrag?",
+        "answer1": "20 €",
+        "answer2": "2 €",
+        "answer3": "50 €",
+        "answer4": "200 €",
+        "correctAnswer": 0,
+        "explanation": "2 % von 1.000 € sind 20 €; der Skontobetrag ist unabhängig davon, ob der Kunde den Abzug tatsächlich nutzt.",
+        "media": ""
+      },
+      "reason": "Die Antwortreihenfolge wird korrigiert, sodass answer1 die rechnerisch richtige Lösung enthält."
+    },
+    {
+      "id": "wiso-018",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "wiso-018",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Warum ist es in Kalkulationsaufgaben wichtig, Prozentwerte auf die richtige Bezugsgröße anzuwenden?",
+        "answer1": "Weil 10 % je nach Ausgangsbetrag unterschiedliche absolute Beträge ergeben.",
+        "answer2": "Weil Prozente immer auf den Nettogewinn bezogen werden.",
+        "answer3": "Weil alle Prozentwerte in Euro umgerechnet werden müssen, bevor man multipliziert.",
+        "answer4": "Weil die Bezugsgröße nur bei Mehrwertsteuer relevant ist.",
+        "correctAnswer": 0,
+        "explanation": "In Kalkulationsschemata ändern sich die Bezugsgrößen zwischen den Stufen.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "wiso-018",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Ein Gerät kostet laut Preisliste netto 200 €. Zuerst werden 10 % Rabatt abgezogen; anschließend gewährt der Lieferant 2 % Skonto auf den verminderten Rechnungsbetrag. Wie hoch ist das Skonto?",
+        "answer1": "3,60 €",
+        "answer2": "4,00 €",
+        "answer3": "20,00 €",
+        "answer4": "36,00 €",
+        "correctAnswer": 0,
+        "explanation": "Nach 10 % Rabatt beträgt der Rechnungsbetrag 180 €. Zwei Prozent davon sind 3,60 €; die Bezugsgröße für das Skonto ist der verminderte Betrag.",
+        "media": ""
+      },
+      "reason": "Ein mehrstufiges Beispiel prüft die Bezugsgröße konkret statt nur eine allgemeine Prozentregel abzufragen."
+    },
+    {
+      "id": "wiso-019",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-019",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was beschreibt eine Zielgruppe?",
+        "answer1": "Eine Gruppe potenzieller Kunden mit gemeinsamen relevanten Merkmalen und Bedürfnissen.",
+        "answer2": "Nur die internen Mitarbeiter eines Unternehmens.",
+        "answer3": "Alle Unternehmen einer Branche ohne weitere Unterscheidung.",
+        "answer4": "Ausschließlich bestehende Lieferanten.",
+        "correctAnswer": 0,
+        "explanation": "Zielgruppen helfen, Produkte, Beratung und Marketing gezielt auszurichten.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die Zielgruppe ist über gemeinsame relevante Merkmale und Bedürfnisse ausreichend eingegrenzt."
+    },
+    {
+      "id": "wiso-020",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "wiso-020",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Wofür steht das AIDA-Modell?",
+        "answer1": "Attention, Interest, Desire, Action",
+        "answer2": "Analysis, Integration, Data, Administration",
+        "answer3": "Attention, Information, Distribution, Accounting",
+        "answer4": "Action, Interest, Delivery, Agreement",
+        "correctAnswer": 0,
+        "explanation": "AIDA beschreibt vereinfacht Phasen der Werbewirkung von Aufmerksamkeit bis Handlung.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "wiso-020",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen plant eine Anzeige für eine neue Dienstleistung. Welche Reihenfolge führt vom ersten Wahrnehmen der Anzeige bis zur gewünschten Reaktion?",
+        "answer1": "Aufmerksamkeit, Interesse, Wunsch und Handlung.",
+        "answer2": "Interesse, Handlung, Aufmerksamkeit und Wunsch.",
+        "answer3": "Wunsch, Aufmerksamkeit, Handlung und Interesse.",
+        "answer4": "Handlung, Wunsch, Interesse und Aufmerksamkeit.",
+        "correctAnswer": 0,
+        "explanation": "Das Modell beschreibt typischerweise den Weg von Aufmerksamkeit über Interesse und Wunsch bis zur Handlung.",
+        "media": ""
+      },
+      "reason": "Die Werbewirkung wird als verständliche Abfolge geprüft, ohne künstliche Abfrage einer Abkürzung."
+    },
+    {
+      "id": "wiso-021",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "wiso-021",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Welche Perspektive gehört bei SWOT typischerweise zur internen Analyse?",
+        "answer1": "Stärken und Schwächen",
+        "answer2": "Chancen und Risiken",
+        "answer3": "Markt und Gesetzgebung",
+        "answer4": "Kunden und Wettbewerber ausschließlich",
+        "correctAnswer": 0,
+        "explanation": "Strengths und Weaknesses beziehen sich auf interne Faktoren; Opportunities und Threats auf externe.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "wiso-021",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Bei einer Stärken-Schwächen-Chancen-Risiken-Analyse (englisch: Strengths, Weaknesses, Opportunities, Threats; kurz SWOT-Analyse) untersucht ein Unternehmen seine langjährige Erfahrung mit Cloud-Projekten. Wie ist diese interne Fähigkeit bei starker Ausprägung einzuordnen?",
+        "answer1": "Als Stärke des Unternehmens.",
+        "answer2": "Als Chance aus dem externen Marktumfeld.",
+        "answer3": "Als Risiko durch Wettbewerber.",
+        "answer4": "Als Schwäche eines externen Lieferanten.",
+        "correctAnswer": 0,
+        "explanation": "Erfahrung und Fähigkeiten des eigenen Unternehmens sind interne Faktoren; eine stark ausgeprägte Fähigkeit ist eine Stärke.",
+        "media": ""
+      },
+      "reason": "Der vollständige Analysebegriff wird mit der englischen Langform eingeführt und in einem konkreten Fall angewendet."
+    },
+    {
+      "id": "wiso-022",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "wiso-022",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Welche Perspektive gehört bei SWOT typischerweise zur externen Analyse?",
+        "answer1": "Chancen und Risiken",
+        "answer2": "Stärken und Schwächen",
+        "answer3": "Mitarbeiterkompetenzen ausschließlich",
+        "answer4": "Interne Prozesse ausschließlich",
+        "correctAnswer": 0,
+        "explanation": "Opportunities und Threats betrachten das Umfeld des Unternehmens.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "wiso-022",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Bei einer Stärken-Schwächen-Chancen-Risiken-Analyse (SWOT-Analyse) bewertet ein Softwareanbieter neue gesetzliche Anforderungen, die seine Betriebskosten voraussichtlich deutlich erhöhen. Wie wird dieser externe Einfluss eingeordnet?",
+        "answer1": "Als Risiko aus dem Unternehmensumfeld.",
+        "answer2": "Als Stärke innerhalb des Unternehmens.",
+        "answer3": "Als Schwäche der eigenen Mitarbeitenden.",
+        "answer4": "Als interne Fähigkeit des Unternehmens.",
+        "correctAnswer": 0,
+        "explanation": "Eine neue gesetzliche Anforderung liegt außerhalb des Unternehmens und erhöht hier die Belastung; sie ist daher ein Risiko.",
+        "media": ""
+      },
+      "reason": "Der Analysebegriff wird ausgeschrieben und an einem externen Einfluss mit klarer Wirkung geprüft."
+    },
+    {
+      "id": "wiso-023",
+      "origin": "EXISTING",
+      "status": "OTHER_ISSUE",
+      "original": {
+        "id": "wiso-023",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Welche Analyse ist typischerweise eher intern?",
+        "answer1": "Kompetenzanalyse der eigenen Mitarbeiter.",
+        "answer2": "Analyse neuer gesetzlicher Marktanforderungen.",
+        "answer3": "Benchmarking mit Wettbewerbern.",
+        "answer4": "Analyse technologischer Trends im Markt.",
+        "correctAnswer": 0,
+        "explanation": "Eigene Mitarbeiterkompetenzen sind ein interner Faktor.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die interne Perspektive wiederholt die überarbeitete Stärkenfrage wiso-021 und übergewichtet diese Analyseabdeckung."
+    },
+    {
+      "id": "wiso-024",
+      "origin": "EXISTING",
+      "status": "OTHER_ISSUE",
+      "original": {
+        "id": "wiso-024",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Welche Analyse ist typischerweise eher extern?",
+        "answer1": "Analyse der Wettbewerber im Markt.",
+        "answer2": "Analyse der eigenen Maschinenkapazität.",
+        "answer3": "Analyse interner Prozesskosten.",
+        "answer4": "Analyse der eigenen Mitarbeiterzufriedenheit.",
+        "correctAnswer": 0,
+        "explanation": "Wettbewerber gehören zum externen Unternehmensumfeld.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die externe Perspektive überschneidet sich mit wiso-022 und verstärkt die Zahl ähnlicher Analysefragen."
+    },
+    {
+      "id": "wiso-025",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-025",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was ist ein Lastenheft?",
+        "answer1": "Beschreibung der Anforderungen aus Sicht des Auftraggebers – was soll erreicht werden?",
+        "answer2": "Detaillierte technische Umsetzung ausschließlich aus Sicht des Auftragnehmers.",
+        "answer3": "Eine Rechnung über geleistete Arbeitsstunden.",
+        "answer4": "Ein Protokoll zur Netzwerkauthentifizierung.",
+        "correctAnswer": 0,
+        "explanation": "Das Lastenheft beschreibt typischerweise die Anforderungen und Ziele des Auftraggebers.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die Sicht des Auftraggebers und das Ziel des Lastenhefts sind klar dargestellt."
+    },
+    {
+      "id": "wiso-026",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-026",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was ist ein Pflichtenheft?",
+        "answer1": "Beschreibung, wie der Auftragnehmer die Anforderungen konkret umsetzen will.",
+        "answer2": "Liste aller gesetzlichen Feiertage.",
+        "answer3": "Nur eine Preisübersicht ohne technische Inhalte.",
+        "answer4": "Ein Dokument ausschließlich für den Einkauf.",
+        "correctAnswer": 0,
+        "explanation": "Das Pflichtenheft konkretisiert die Umsetzung der Anforderungen aus dem Lastenheft.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die Umsetzungsbeschreibung aus Sicht des Auftragnehmers ist richtig abgegrenzt."
+    },
+    {
+      "id": "wiso-027",
+      "origin": "EXISTING",
+      "status": "OTHER_ISSUE",
+      "original": {
+        "id": "wiso-027",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Welche Zuordnung ist korrekt?",
+        "answer1": "Lastenheft = Was?; Pflichtenheft = Wie?",
+        "answer2": "Lastenheft = Wie?; Pflichtenheft = Wer zahlt?",
+        "answer3": "Lastenheft = Rechnung; Pflichtenheft = Mahnung",
+        "answer4": "Lastenheft = nur Hardware; Pflichtenheft = nur Software",
+        "correctAnswer": 0,
+        "explanation": "Als Merkhilfe gilt: Lastenheft beschreibt, was gefordert ist; Pflichtenheft beschreibt, wie es umgesetzt wird.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die Merkhilfe fragt dieselbe Was-Wie-Zuordnung wie die vorausgehenden Fragen erneut ab."
+    },
+    {
+      "id": "wiso-028",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "wiso-028",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was ist Benchmarking?",
+        "answer1": "Systematischer Vergleich mit Referenzwerten oder anderen Unternehmen/Prozessen.",
+        "answer2": "Berechnung der Mehrwertsteuer.",
+        "answer3": "Ein Verfahren zur Passwortspeicherung.",
+        "answer4": "Eine arbeitsrechtliche Kündigung.",
+        "correctAnswer": 0,
+        "explanation": "Benchmarking dient dazu, Leistung und Prozesse mit geeigneten Vergleichsgrößen zu bewerten.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "wiso-028",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein technischer Supportanbieter vergleicht seine durchschnittliche Bearbeitungszeit mit veröffentlichten Branchenwerten und den Abläufen besonders leistungsfähiger Wettbewerber, um Verbesserungsmöglichkeiten zu finden. Welche Methode verwendet er?",
+        "answer1": "Benchmarking.",
+        "answer2": "Eine Zielgruppenanalyse.",
+        "answer3": "Eine Nutzwertanalyse.",
+        "answer4": "Eine Deckungsbeitragsrechnung.",
+        "correctAnswer": 0,
+        "explanation": "Benchmarking vergleicht geeignete Leistungs- oder Prozesswerte mit Referenzen, um Ansatzpunkte für Verbesserungen zu erkennen.",
+        "media": ""
+      },
+      "reason": "Ein plausibles betriebliches Beispiel und fachnahe Alternativen verbessern den Benchmarking-Check."
+    },
+    {
+      "id": "wiso-029",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-029",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was versteht man unter Stakeholdern?",
+        "answer1": "Personen oder Gruppen, die ein Interesse an einem Projekt oder Unternehmen haben bzw. davon betroffen sind.",
+        "answer2": "Nur Aktionäre eines börsennotierten Unternehmens.",
+        "answer3": "Nur Kunden, die bereits bezahlt haben.",
+        "answer4": "Ausschließlich interne Führungskräfte.",
+        "correctAnswer": 0,
+        "explanation": "Stakeholder können intern oder extern sein, z. B. Mitarbeiter, Kunden, Lieferanten oder Behörden.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die Definition schließt interne und externe Interessengruppen verständlich ein."
+    },
+    {
+      "id": "wiso-030",
+      "origin": "EXISTING",
+      "status": "OTHER_ISSUE",
+      "original": {
+        "id": "wiso-030",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was ist das Ziel einer Nutzwertanalyse?",
+        "answer1": "Alternativen anhand gewichteter Kriterien systematisch vergleichen.",
+        "answer2": "Nur den günstigsten Anschaffungspreis auswählen.",
+        "answer3": "Nur technische Leistungswerte ohne Gewichtung betrachten.",
+        "answer4": "Verträge automatisch rechtlich prüfen.",
+        "correctAnswer": 0,
+        "explanation": "Eine Nutzwertanalyse kombiniert Kriterien, Gewichtungen und Bewertungen zu einem strukturierten Vergleich.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Das Ziel des gewichteten Alternativenvergleichs wird bereits in wiso-008 geprüft."
+    },
+    {
+      "id": "wiso-031",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-031",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Warum kann eine Nutzwertanalyse trotz Zahlen subjektive Elemente enthalten?",
+        "answer1": "Gewichtung und Bewertung der Kriterien beruhen teilweise auf Einschätzungen.",
+        "answer2": "Weil Rechenoperationen mit Prozenten grundsätzlich subjektiv sind.",
+        "answer3": "Weil Preise nicht als Zahlen dargestellt werden können.",
+        "answer4": "Weil alle Kriterien zufällig ausgewählt werden müssen.",
+        "correctAnswer": 0,
+        "explanation": "Die Methode strukturiert Entscheidungen, beseitigt aber subjektive Gewichtungen und Bewertungen nicht vollständig.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die subjektiven Anteile aus Gewichtung und Bewertung werden angemessen erklärt."
+    },
+    {
+      "id": "wiso-032",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "wiso-032",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was bedeutet TCO im IT-Kontext?",
+        "answer1": "Total Cost of Ownership – Gesamtkosten über den betrachteten Nutzungszeitraum.",
+        "answer2": "Technical Core Output – reine CPU-Leistung.",
+        "answer3": "Total Contract Order – Anzahl geschlossener Verträge.",
+        "answer4": "Transfer Cost Option – Netzwerkgebühr pro Paket.",
+        "correctAnswer": 0,
+        "explanation": "TCO betrachtet neben Anschaffung oft auch Betrieb, Energie, Wartung, Support und weitere Folgekosten.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "wiso-032",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Betrieb vergleicht zwei Geräte für die Informationstechnik (IT). Neben dem Kaufpreis möchte er alle Kosten während der vorgesehenen Nutzungsdauer berücksichtigen. Welche Kosten gehören in diese Gesamtbetrachtung?",
+        "answer1": "Anschaffung, Energie, Wartung, Support und weitere Betriebskosten über die Nutzungsdauer.",
+        "answer2": "Nur der Listenpreis vor Abzug eines Rabatts.",
+        "answer3": "Ausschließlich Reparaturen nach Ende der Nutzungsdauer.",
+        "answer4": "Nur die monatliche Abschreibung, unabhängig von Strom und Support.",
+        "correctAnswer": 0,
+        "explanation": "Die Gesamtkosten über die Nutzungsdauer umfassen neben dem Kaufpreis auch laufende Kosten wie Energie, Wartung und Support.",
+        "media": ""
+      },
+      "reason": "Der Gesamtbetriebskostenbegriff wird im vollständigen Wortlaut statt über eine isolierte englische Abkürzung erschlossen."
+    },
+    {
+      "id": "wiso-033",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "wiso-033",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Warum kann das günstigste Gerät bei der Anschaffung langfristig teurer sein?",
+        "answer1": "Höhere Betriebs-, Energie-, Wartungs- oder Supportkosten können den Preisvorteil übersteigen.",
+        "answer2": "Der Kaufpreis wird nachträglich automatisch verdoppelt.",
+        "answer3": "Günstige Geräte dürfen gesetzlich nicht abgeschrieben werden.",
+        "answer4": "TCO berücksichtigt nur den Listenpreis.",
+        "correctAnswer": 0,
+        "explanation": "TCO betrachtet die gesamten Kosten über den Lebenszyklus, nicht nur den Anschaffungspreis.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "wiso-033",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Betrieb vergleicht zwei Geräte für die Informationstechnik (IT) über eine geplante Nutzungsdauer von fünf Jahren. Das Gerät mit dem niedrigeren Kaufpreis verbraucht deutlich mehr Strom und verursacht höhere Wartungs- und Supportkosten. Warum kann es insgesamt teurer sein?",
+        "answer1": "Die zusätzlichen Energie-, Wartungs- und Supportkosten können den anfänglichen Preisvorteil übersteigen.",
+        "answer2": "Die Gesamtkosten werden ausschließlich durch den Kaufpreis bestimmt.",
+        "answer3": "Laufende Kosten dürfen beim Vergleich von Geräten grundsätzlich nicht berücksichtigt werden.",
+        "answer4": "Ein günstigeres Gerät muss gesetzlich immer schneller abgeschrieben werden.",
+        "correctAnswer": 0,
+        "explanation": "Bei einem Vergleich über die Nutzungsdauer zählen neben der Anschaffung auch laufende Betriebs-, Wartungs- und Supportkosten.",
+        "media": ""
+      },
+      "reason": "Die Gesamtkosten über die Nutzungsdauer werden erklärt, ohne die Abkürzung im Erklärungstext isoliert zu verwenden."
+    },
+    {
+      "id": "wiso-034",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-034",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was sind fixe Kosten?",
+        "answer1": "Kosten, die innerhalb eines relevanten Bereichs nicht direkt mit der Beschäftigungsmenge schwanken.",
+        "answer2": "Kosten, die mit jeder produzierten Einheit proportional steigen.",
+        "answer3": "Nur Steuern auf den Gewinn.",
+        "answer4": "Ausschließlich Materialkosten.",
+        "correctAnswer": 0,
+        "explanation": "Beispiele können Miete oder bestimmte Grundgebühren sein.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die Einschränkung auf einen relevanten Beschäftigungsbereich macht die Fixkostenaussage sachgerecht."
+    },
+    {
+      "id": "wiso-035",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-035",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was sind variable Kosten?",
+        "answer1": "Kosten, die sich mit der Leistungs- oder Produktionsmenge verändern.",
+        "answer2": "Kosten, die immer konstant bleiben.",
+        "answer3": "Nur Abschreibungen auf Gebäude.",
+        "answer4": "Kosten, die nie in Kalkulationen vorkommen.",
+        "correctAnswer": 0,
+        "explanation": "Materialverbrauch oder mengenabhängige Kosten sind typische Beispiele.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die Mengenabhängigkeit variabler Kosten ist korrekt und mit einem passenden Beispiel versehen."
+    },
+    {
+      "id": "wiso-036",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-036",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was ist der Deckungsbeitrag vereinfacht?",
+        "answer1": "Erlös minus variable Kosten.",
+        "answer2": "Erlös minus fixe Kosten.",
+        "answer3": "Fixkosten minus variable Kosten.",
+        "answer4": "Umsatzsteuer minus Skonto.",
+        "correctAnswer": 0,
+        "explanation": "Der Deckungsbeitrag trägt zur Deckung fixer Kosten und danach zum Gewinn bei.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Der Deckungsbeitrag wird fachlich richtig zu Fixkosten und Gewinn in Beziehung gesetzt."
+    },
+    {
+      "id": "wiso-037",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "wiso-037",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Ein Produkt wird für 100 € verkauft, die variablen Kosten betragen 60 €. Wie hoch ist der Deckungsbeitrag pro Stück?",
+        "answer1": "20 €",
+        "answer2": "40 €",
+        "answer3": "60 €",
+        "answer4": "160 €",
+        "correctAnswer": 1,
+        "explanation": "100 € − 60 € = 40 € Deckungsbeitrag.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "wiso-037",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Produkt wird für 100 € verkauft; seine variablen Kosten betragen 60 € pro Stück. Wie hoch ist der Deckungsbeitrag pro Stück?",
+        "answer1": "40 €",
+        "answer2": "20 €",
+        "answer3": "60 €",
+        "answer4": "160 €",
+        "correctAnswer": 0,
+        "explanation": "Der Deckungsbeitrag pro Stück ist Verkaufserlös minus variable Kosten: 100 € − 60 € = 40 €.",
+        "media": ""
+      },
+      "reason": "Die Rechnung wird so sortiert, dass die richtige Antwort an erster Stelle steht."
+    },
+    {
+      "id": "wiso-038",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "wiso-038",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was ist eine Mahnung?",
+        "answer1": "Aufforderung an einen Schuldner, eine fällige Leistung zu erbringen.",
+        "answer2": "Eine Preisreduzierung vor Vertragsabschluss.",
+        "answer3": "Eine Form der Inventur.",
+        "answer4": "Ein technischer Projektplan.",
+        "correctAnswer": 0,
+        "explanation": "Eine Mahnung weist auf eine fällige, noch nicht erbrachte Leistung hin und kann für Verzug relevant sein.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "wiso-038",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen hat eine fällige Rechnung noch nicht bezahlt. Der Gläubiger fordert den Schuldner nach Fälligkeit eindeutig zur Zahlung auf; es liegt kein Umstand vor, der eine Mahnung entbehrlich macht. Welche Wirkung kann diese Mahnung haben?",
+        "answer1": "Sie kann den Schuldner unter den gesetzlichen Voraussetzungen in Zahlungsverzug setzen.",
+        "answer2": "Sie verschiebt die ursprüngliche Fälligkeit automatisch um weitere 30 Tage.",
+        "answer3": "Sie hebt die Forderung auf, wenn der Schuldner nicht sofort reagiert.",
+        "answer4": "Sie beendet den Vertrag unabhängig von den vereinbarten Leistungen.",
+        "correctAnswer": 0,
+        "explanation": "Eine nach Fälligkeit zugegangene Mahnung kann Verzug begründen, wenn die gesetzlichen Voraussetzungen vorliegen; sie ändert nicht automatisch Vertrag oder Fälligkeit.",
+        "media": ""
+      },
+      "reason": "Die Mahnung wird mit einer fälligen Forderung und rechtlich vorsichtigen Antwortoptionen geprüft."
+    },
+    {
+      "id": "wiso-039",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "wiso-039",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Welche Aussage zu Zahlungsverzug ist grundsätzlich zutreffend?",
+        "answer1": "Unter bestimmten Voraussetzungen können Verzugszinsen und weitere Rechtsfolgen entstehen.",
+        "answer2": "Bei Verzug wird jeder Vertrag automatisch unwirksam.",
+        "answer3": "Verzugszinsen sind unabhängig von gesetzlichen oder vertraglichen Grundlagen frei wählbar.",
+        "answer4": "Verzug kann nur bei Barzahlungen entstehen.",
+        "correctAnswer": 0,
+        "explanation": "Bei Verzug können je nach Voraussetzungen Verzugszinsen und weitere Ansprüche entstehen.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "wiso-039",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Ein Betrieb schuldet einem Lieferanten eine fällige Zahlung bis zum ausdrücklich vereinbarten 30. September. Der Schuldner könnte zahlen und ist für die ausbleibende Zahlung verantwortlich; eine Mahnung wurde nicht geschickt. Welche Aussage trifft nach dem Bürgerlichen Gesetzbuch (BGB) grundsätzlich zu?",
+        "answer1": "Bei einem kalendermäßig bestimmten Zahlungstermin kann der Schuldner ohne Mahnung in Verzug geraten.",
+        "answer2": "Bei jeder verspäteten Zahlung muss der Gläubiger zuerst drei Mahnungen versenden.",
+        "answer3": "Ohne Mahnung wird die Forderung automatisch unwirksam.",
+        "answer4": "Der Schuldner gerät bereits vor dem vereinbarten Zahlungstermin in Verzug.",
+        "correctAnswer": 0,
+        "explanation": "Ist für eine fällige Leistung ein Kalendertag bestimmt und hat der Schuldner die Nichtzahlung zu vertreten, ist eine Mahnung grundsätzlich entbehrlich; besondere Umstände können die Beurteilung beeinflussen.",
+        "media": ""
+      },
+      "reason": "Ein fest vereinbarter Kalendertag und die Verantwortlichkeit des Schuldners machen die Verzugsregel präzise."
+    },
+    {
+      "id": "wiso-040",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-040",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was ist der Unterschied zwischen Brutto- und Nettopreis?",
+        "answer1": "Der Bruttopreis enthält typischerweise Umsatzsteuer, der Nettopreis nicht.",
+        "answer2": "Der Nettopreis enthält immer mehr Steuern als der Bruttopreis.",
+        "answer3": "Brutto und Netto unterscheiden sich nur bei Rabatten.",
+        "answer4": "Der Bruttopreis gilt nur für Unternehmen.",
+        "correctAnswer": 0,
+        "explanation": "Im üblichen Preisverständnis enthält Brutto die Umsatzsteuer.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die übliche Bedeutung von Brutto- und Nettopreis ist korrekt abgegrenzt."
+    },
+    {
+      "id": "wiso-041",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "wiso-041",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Nettopreis beträgt 100 € und die Umsatzsteuer 19 %. Wie hoch ist der Bruttopreis?",
+        "answer1": "100 €",
+        "answer2": "109 €",
+        "answer3": "119 €",
+        "answer4": "190 €",
+        "correctAnswer": 2,
+        "explanation": "100 € × 1,19 = 119 €.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "wiso-041",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Nettopreis beträgt 100 €. Für den Verkauf gilt der Umsatzsteuersatz von 19 %. Wie hoch ist der Bruttopreis?",
+        "answer1": "119 €",
+        "answer2": "109 €",
+        "answer3": "100 €",
+        "answer4": "190 €",
+        "correctAnswer": 0,
+        "explanation": "Der Bruttopreis enthält 19 % Umsatzsteuer: 100 € × 1,19 = 119 €.",
+        "media": ""
+      },
+      "reason": "Die Multiplikation und Antwortposition werden korrigiert, damit answer1 den Bruttopreis enthält."
+    },
+    {
+      "id": "wiso-042",
+      "origin": "EXISTING",
+      "status": "PASS",
+      "original": {
+        "id": "wiso-042",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Ein Bruttopreis beträgt 119 € bei 19 % Umsatzsteuer. Wie hoch ist der Nettopreis?",
+        "answer1": "100 €",
+        "answer2": "96,39 €",
+        "answer3": "99,81 €",
+        "answer4": "113,05 €",
+        "correctAnswer": 0,
+        "explanation": "119 € / 1,19 = 100 €.",
+        "media": ""
+      },
+      "proposed_question": null,
+      "reason": "Die Rückrechnung vom Bruttopreis zum Nettopreis mit dem vorgegebenen Steuersatz ist korrekt."
+    },
+    {
+      "id": "wiso-043",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "wiso-043",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was beschreibt ein Stundensatz in einer Dienstleistungskalkulation?",
+        "answer1": "Den berechneten Preis bzw. Kostensatz pro Arbeitsstunde nach dem gewählten Kalkulationsschema.",
+        "answer2": "Die maximale Arbeitszeit pro Woche.",
+        "answer3": "Nur den Bruttolohn des Mitarbeiters.",
+        "answer4": "Die Anzahl der Stunden bis zur Rechnungsstellung.",
+        "correctAnswer": 0,
+        "explanation": "Ein Stundensatz kann Personalkosten, Gemeinkosten, Zuschläge und Gewinnanteile berücksichtigen.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "wiso-043",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Dienstleistungsunternehmen vereinbart einen Netto-Kundenstundensatz von 85 € und rechnet sechs Arbeitsstunden ab. Was bedeutet der Stundensatz?",
+        "answer1": "Je abrechenbarer Arbeitsstunde werden vor Umsatzsteuer 85 € berechnet.",
+        "answer2": "Jeder Beschäftigte erhält unabhängig vom Arbeitsvertrag 85 € Bruttolohn pro Stunde.",
+        "answer3": "Der Betrieb darf insgesamt höchstens 85 Arbeitsstunden im Monat leisten.",
+        "answer4": "Für den gesamten Auftrag werden unabhängig von den Stunden 85 € berechnet.",
+        "correctAnswer": 0,
+        "explanation": "Der vereinbarte Netto-Kundenstundensatz ist der Preis je abgerechneter Leistungsstunde; er ist nicht automatisch der Bruttolohn der beschäftigten Person.",
+        "media": ""
+      },
+      "reason": "Die Frage klärt, was der Kundenstundensatz in einem Dienstleistungsangebot tatsächlich bemisst."
+    },
+    {
+      "id": "wiso-044",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "wiso-044",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Warum ist der direkte Stundenlohn eines Mitarbeiters nicht automatisch der verrechenbare Kundenstundensatz?",
+        "answer1": "Zusätzliche Kosten wie Lohnnebenkosten, Gemeinkosten, unproduktive Zeiten und Gewinn müssen berücksichtigt werden.",
+        "answer2": "Weil Kundenstundensätze gesetzlich immer exakt doppelt so hoch sein müssen.",
+        "answer3": "Weil Arbeitslohn in Kalkulationen nicht vorkommen darf.",
+        "answer4": "Weil der Kundenstundensatz nur aus Umsatzsteuer besteht.",
+        "correctAnswer": 0,
+        "explanation": "Der verrechenbare Stundensatz deckt typischerweise mehr als nur den direkten Lohn ab.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "wiso-044",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Ein Dienstleistungsbetrieb legt seinen Kundenstundensatz fest. Der direkte Bruttolohn der ausführenden Person ist bekannt. Warum genügt dieser Betrag allein normalerweise nicht für eine kostendeckende Preisberechnung?",
+        "answer1": "Zusätzlich können Arbeitgeberkosten, Gemeinkosten, nicht abrechenbare Zeiten und ein Gewinnanteil anfallen.",
+        "answer2": "Der Bruttolohn enthält bereits sämtliche Gemeinkosten und den Gewinn des Betriebs.",
+        "answer3": "Zum Bruttolohn darf ausschließlich Umsatzsteuer addiert werden; weitere Kosten sind nie relevant.",
+        "answer4": "Der Kundenstundensatz muss gesetzlich unabhängig von den Kosten genau doppelt so hoch sein.",
+        "correctAnswer": 0,
+        "explanation": "Je nach Kalkulationsziel muss der Kundenpreis neben dem direkten Lohn weitere betriebliche Kosten, nicht abrechenbare Zeiten und gegebenenfalls einen Gewinnbeitrag berücksichtigen.",
+        "media": ""
+      },
+      "reason": "Plausible Kostenbestandteile zeigen, weshalb Kundenpreis und direkter Bruttolohn voneinander abweichen."
+    },
+    {
+      "id": "wiso-045",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "wiso-045",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Was ist eine Anfrage eines Kunden in der Regel?",
+        "answer1": "Eine Bitte um Informationen oder ein Angebot, häufig noch ohne unmittelbare Vertragsbindung.",
+        "answer2": "Immer bereits eine verbindliche Bestellung.",
+        "answer3": "Eine rechtskräftige Mahnung.",
+        "answer4": "Ein automatisch angenommener Kaufvertrag.",
+        "correctAnswer": 0,
+        "explanation": "Eine Anfrage dient typischerweise der Informationsbeschaffung und ist noch keine Annahme eines Angebots.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "wiso-045",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Kunde ruft bei einem Fachgeschäft für Informationstechnik an und bittet um ein Angebot für einen geeigneten Server. Er hat noch nichts bestellt und keine Vertragsbedingungen angenommen. Was ist seine Nachricht in der Regel?",
+        "answer1": "Eine unverbindliche Anfrage nach Informationen oder einem Angebot.",
+        "answer2": "Eine verbindliche Bestellung, die der Händler nur noch ausführen muss.",
+        "answer3": "Die Annahme eines bereits geschlossenen Kaufvertrags.",
+        "answer4": "Eine Mahnung wegen einer fälligen Zahlung.",
+        "correctAnswer": 0,
+        "explanation": "Der Kunde bittet zunächst um Informationen beziehungsweise ein Angebot; ohne weitergehende Erklärungen liegt darin noch keine Bestellung oder Annahme.",
+        "media": ""
+      },
+      "reason": "Ein konkreter Kundenkontakt grenzt eine Anfrage verständlich von Bestellung und Annahme ab."
+    },
+    {
+      "id": "wiso-046",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "wiso-046",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Ein Unternehmen beauftragt einen Dienstleister zu einem Festpreis damit, eine funktionsfähige Datensicherung einzurichten und den vereinbarten Erfolg nachzuweisen. Welche Vertragsart passt dazu am ehesten?",
+        "answer1": "Werkvertrag, weil ein vereinbarter Erfolg geschuldet wird.",
+        "answer2": "Dienstvertrag, weil ausschließlich laufende Arbeitszeit ohne Ergebnis geschuldet ist.",
+        "answer3": "Mietvertrag, weil eine Sache nur vorübergehend überlassen wird.",
+        "answer4": "Kaufvertrag, weil ein fertiges Gerät übereignet werden muss.",
+        "correctAnswer": 0,
+        "explanation": "Beim Werkvertrag wird ein vereinbarter Erfolg geschuldet. Ein Dienstvertrag verpflichtet grundsätzlich zur vereinbarten Tätigkeit, nicht zu einem bestimmten Erfolg.",
+        "media": ""
+      },
+      "reason": "Ergänzt die Abgrenzung zwischen Tätigkeits- und Erfolgspflicht."
+    },
+    {
+      "id": "wiso-047",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "wiso-047",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Eine Privatperson kauft bei einem gewerblichen Händler über dessen Online-Shop einen standardmäßig angebotenen Laptop. Es greift keine gesetzliche Ausnahme vom Widerrufsrecht. Bis wann kann sie den Vertrag grundsätzlich ohne Begründung widerrufen?",
+        "answer1": "Innerhalb von 14 Tagen ab Erhalt der Ware.",
+        "answer2": "Innerhalb von sieben Tagen ab Absenden der Bestellung.",
+        "answer3": "Innerhalb von 30 Tagen ab Rechnungsdatum.",
+        "answer4": "Nur bis zur Versandbestätigung des Händlers.",
+        "correctAnswer": 0,
+        "explanation": "Bei einem gewöhnlichen Fernabsatzkauf beträgt die Widerrufsfrist grundsätzlich 14 Tage; bei Waren beginnt sie im Regelfall mit Erhalt der Ware.",
+        "media": ""
+      },
+      "reason": "Führt grundlegende Verbraucherrechte beim Onlinekauf ein."
+    },
+    {
+      "id": "wiso-048",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "wiso-048",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Eine Auszubildende benötigt für ihre betriebliche Ausbildung ein bestimmtes Fachbuch und ein Werkzeug, die zum Erreichen des Ausbildungsziels erforderlich sind. Wer muss diese Ausbildungsmittel grundsätzlich bezahlen?",
+        "answer1": "Der Ausbildungsbetrieb muss die erforderlichen Ausbildungsmittel kostenlos bereitstellen.",
+        "answer2": "Die Auszubildende muss sie immer aus ihrer Ausbildungsvergütung bezahlen.",
+        "answer3": "Die Berufsschule muss sie unabhängig vom Ausbildungsgang anschaffen.",
+        "answer4": "Der Prüfungsausschuss muss sie der Auszubildenden leihweise überlassen.",
+        "correctAnswer": 0,
+        "explanation": "Das Berufsbildungsgesetz verpflichtet den Ausbildenden, erforderliche Ausbildungsmittel grundsätzlich kostenlos zur Verfügung zu stellen.",
+        "media": ""
+      },
+      "reason": "Schließt eine praktische Lücke bei Ausbildungspflichten des Betriebs."
+    },
+    {
+      "id": "wiso-049",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "wiso-049",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Für eine volljährige Arbeitnehmerin in einem gewöhnlichen Betrieb gilt keine besondere gesetzliche Ausnahme. Welche werktägliche Arbeitszeit lässt das Arbeitszeitgesetz im Grundsatz zu?",
+        "answer1": "Acht Stunden; bis zu zehn Stunden sind mit Ausgleich auf durchschnittlich acht Stunden innerhalb von sechs Kalendermonaten oder 24 Wochen möglich.",
+        "answer2": "Zehn Stunden ohne Ausgleich, sobald der Arbeitgeber dies im Dienstplan einträgt.",
+        "answer3": "Zwölf Stunden, wenn die Arbeitnehmerin einer Verlängerung mündlich zustimmt.",
+        "answer4": "Sechs Stunden; jede Verlängerung muss innerhalb derselben Woche ausgeglichen werden.",
+        "correctAnswer": 0,
+        "explanation": "Grundsätzlich gelten acht Stunden werktäglich. Bis zu zehn Stunden sind nur zulässig, wenn im gesetzlichen Ausgleichszeitraum durchschnittlich acht Stunden werktäglich nicht überschritten werden.",
+        "media": ""
+      },
+      "reason": "Ergänzt die Anwendung der täglichen Arbeitszeitgrenze."
+    },
+    {
+      "id": "wiso-050",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "wiso-050",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Eine volljährige Beschäftigte arbeitet das ganze Kalenderjahr an fünf Tagen pro Woche. Es gilt nur der gesetzliche Mindesturlaub, ohne günstigere tarifliche oder vertragliche Regelung. Wie viele Urlaubstage stehen ihr mindestens zu?",
+        "answer1": "20 Arbeitstage.",
+        "answer2": "16 Arbeitstage.",
+        "answer3": "24 Arbeitstage zusätzlich zu den Sonntagen.",
+        "answer4": "30 Arbeitstage.",
+        "correctAnswer": 0,
+        "explanation": "Der gesetzliche Mindesturlaub entspricht vier Wochen. Bei einer Fünf-Tage-Woche sind das mindestens 20 Arbeitstage.",
+        "media": ""
+      },
+      "reason": "Macht den Mindesturlaub für eine konkrete Arbeitswoche anwendbar."
+    },
+    {
+      "id": "wiso-051",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "wiso-051",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Eine Gewerkschaft verhandelt einen Tarifvertrag über Löhne und Arbeitsbedingungen. Mit wem kann sie den Tarifvertrag nach dem Tarifvertragsgesetz auf Arbeitgeberseite abschließen?",
+        "answer1": "Mit einem einzelnen Arbeitgeber oder einer Vereinigung von Arbeitgebern.",
+        "answer2": "Mit dem Betriebsrat und einzelnen Beschäftigten gemeinsam.",
+        "answer3": "Mit der Industrie- und Handelskammer und dem zuständigen Arbeitsgericht.",
+        "answer4": "Mit der Bundesregierung und dem örtlichen Berufsschulträger.",
+        "correctAnswer": 0,
+        "explanation": "Tarifvertragsparteien sind Gewerkschaften sowie einzelne Arbeitgeber oder Vereinigungen von Arbeitgebern.",
+        "media": ""
+      },
+      "reason": "Ergänzt die bislang nicht behandelten Tarifvertragsparteien."
+    },
+    {
+      "id": "wiso-052",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "wiso-052",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "In einem Betrieb soll die tägliche Anfangs- und Endzeit geändert werden. Es gibt dazu weder eine gesetzliche noch eine tarifliche Regelung; ein Betriebsrat ist gewählt. Wer muss der Änderung der Arbeitszeitlage grundsätzlich zustimmen?",
+        "answer1": "Der Betriebsrat hat bei Beginn und Ende der täglichen Arbeitszeit einschließlich Pausen mitzubestimmen.",
+        "answer2": "Die einzelnen Beschäftigten müssen jeweils allein abstimmen; der Betriebsrat ist ausgeschlossen.",
+        "answer3": "Das Arbeitsgericht muss jede Änderung vorab genehmigen.",
+        "answer4": "Der Betriebsrat darf erst nach der endgültigen Einführung informiert werden.",
+        "correctAnswer": 0,
+        "explanation": "Soweit keine gesetzliche oder tarifliche Regelung besteht, hat der Betriebsrat bei Beginn und Ende der täglichen Arbeitszeit einschließlich der Pausen mitzubestimmen.",
+        "media": ""
+      },
+      "reason": "Deckt Mitbestimmung bei Arbeitszeitlage mit der nötigen Bedingung ab."
+    },
+    {
+      "id": "wiso-053",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "wiso-053",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Welche Risiken deckt die gesetzliche Rentenversicherung in Deutschland grundsätzlich ab?",
+        "answer1": "Finanzielle Folgen des Alters, einer verminderten Erwerbsfähigkeit und bestimmte Hinterbliebenenfälle.",
+        "answer2": "Ausschließlich Schäden an Arbeitsgeräten im Betrieb.",
+        "answer3": "Ausschließlich Kosten einer akuten ambulanten Behandlung.",
+        "answer4": "Ausschließlich den Verdienstausfall bei kurzfristiger Arbeitslosigkeit.",
+        "correctAnswer": 0,
+        "explanation": "Die gesetzliche Rentenversicherung leistet insbesondere Altersrenten, Renten bei verminderter Erwerbsfähigkeit und Hinterbliebenenrenten, jeweils unter den gesetzlichen Voraussetzungen.",
+        "media": ""
+      },
+      "reason": "Ergänzt die Kernaufgabe der Rentenversicherung."
+    },
+    {
+      "id": "wiso-054",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "wiso-054",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Ein Auftraggeber muss eine fällige Zahlung bis zum ausdrücklich vereinbarten 30. September leisten. Der Schuldner könnte zahlen und ist für die ausbleibende Zahlung verantwortlich. Eine Mahnung wurde nicht versandt. Welche Aussage trifft nach dem Bürgerlichen Gesetzbuch grundsätzlich zu?",
+        "answer1": "Bei einem kalendermäßig bestimmten Zahlungstermin kann der Schuldner ohne Mahnung in Verzug geraten.",
+        "answer2": "Der Gläubiger muss unabhängig von der Vereinbarung immer drei Mahnungen versenden.",
+        "answer3": "Ohne Mahnung wird die Forderung automatisch unwirksam.",
+        "answer4": "Der Schuldner gerät bereits vor dem vereinbarten Zahlungstermin in Verzug.",
+        "correctAnswer": 0,
+        "explanation": "Ist ein Zahlungstermin kalendermäßig bestimmt und hat der Schuldner die Nichtzahlung zu vertreten, ist eine Mahnung grundsätzlich entbehrlich.",
+        "media": ""
+      },
+      "reason": "Prüft Zahlungsverzug in einem klar abgegrenzten Fälligkeitsfall."
+    },
+    {
+      "id": "wiso-055",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "wiso-055",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Ein Produkt kostet 100 € pro Stück; die variablen Kosten betragen 70 € pro Stück. Die monatlichen Fixkosten liegen bei 18.000 €. Wie viele Stück müssen mindestens verkauft werden, damit die Gewinnschwelle erreicht wird?",
+        "answer1": "600 Stück.",
+        "answer2": "180 Stück.",
+        "answer3": "257 Stück.",
+        "answer4": "1.800 Stück.",
+        "correctAnswer": 0,
+        "explanation": "Je Stück bleiben 100 € − 70 € = 30 € Deckungsbeitrag. 18.000 € Fixkosten geteilt durch 30 € ergeben 600 Stück.",
+        "media": ""
+      },
+      "reason": "Ergänzt eine mehrstufige Gewinnschwellenrechnung."
+    },
+    {
+      "id": "wiso-056",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "wiso-056",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Eine Agentur kann entweder Projekt A mit einem erwarteten Deckungsbeitrag von 9.000 € oder Projekt B mit einem erwarteten Deckungsbeitrag von 7.000 € übernehmen, aber nicht beide. Sie wählt Projekt A. Wie hoch sind die Opportunitätskosten dieser Entscheidung?",
+        "answer1": "7.000 €, der entgangene Deckungsbeitrag der besten nicht gewählten Alternative.",
+        "answer2": "9.000 €, der Deckungsbeitrag des gewählten Projekts.",
+        "answer3": "16.000 €, die Summe der Deckungsbeiträge beider Projekte.",
+        "answer4": "0 €, weil eine getroffene Entscheidung keine Alternativkosten verursacht.",
+        "correctAnswer": 0,
+        "explanation": "Opportunitätskosten entsprechen dem Nutzen der besten nicht gewählten Alternative; hier sind das 7.000 € aus Projekt B.",
+        "media": ""
+      },
+      "reason": "Führt die entgangene beste Alternative als Entscheidungsgröße ein."
+    },
+    {
+      "id": "wiso-057",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "wiso-057",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Zum Bilanzstichtag weist ein Betrieb Vermögenswerte von 140.000 € aus. Auf der Passivseite bestehen nur Eigenkapital und Verbindlichkeiten; die Verbindlichkeiten betragen 90.000 €. Wie hoch ist das Eigenkapital?",
+        "answer1": "50.000 €.",
+        "answer2": "90.000 €.",
+        "answer3": "140.000 €.",
+        "answer4": "230.000 €.",
+        "correctAnswer": 0,
+        "explanation": "Die Bilanzsumme muss auf beiden Seiten übereinstimmen. 140.000 € Vermögen minus 90.000 € Verbindlichkeiten ergeben 50.000 € Eigenkapital.",
+        "media": ""
+      },
+      "reason": "Schließt eine Lücke bei Bilanzaufbau und Eigenkapitalberechnung."
+    },
+    {
+      "id": "wiso-058",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "wiso-058",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Welche Information zeigt die Gewinn- und Verlustrechnung eines Unternehmens für ein Geschäftsjahr?",
+        "answer1": "Die Erträge und Aufwendungen des Zeitraums sowie den daraus entstehenden Gewinn oder Verlust.",
+        "answer2": "Den Bestand aller Vermögenswerte ausschließlich an einem einzelnen Bilanzstichtag.",
+        "answer3": "Nur die tatsächlich vorhandenen Zahlungsmittel am letzten Tag des Jahres.",
+        "answer4": "Die vereinbarten Arbeitszeiten jedes Beschäftigten im gesamten Jahr.",
+        "correctAnswer": 0,
+        "explanation": "Die Gewinn- und Verlustrechnung stellt Erträge und Aufwendungen für einen Zeitraum gegenüber; die Bilanz zeigt dagegen Bestände zu einem Stichtag.",
+        "media": ""
+      },
+      "reason": "Ergänzt die Abgrenzung zwischen periodischem Erfolg und Stichtagsbestand."
+    },
+    {
+      "id": "wiso-059",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "wiso-059",
+        "category": "WiSo",
+        "difficulty": "medium",
+        "question": "Ein Betrieb muss eine festgelegte Zahl von 150 Arbeitsplätzen einrichten. Er vergleicht mehrere Verfahren und möchte dieses feste Ziel mit möglichst wenig Material und Arbeitszeit erreichen. Welches wirtschaftliche Prinzip wendet er an?",
+        "answer1": "Das Minimalprinzip: ein festes Ergebnis mit möglichst geringem Mitteleinsatz erreichen.",
+        "answer2": "Das Maximalprinzip: mit festen Mitteln ein möglichst großes Ergebnis erreichen.",
+        "answer3": "Das Höchstpreisprinzip: für jedes Ergebnis den höchstmöglichen Preis verlangen.",
+        "answer4": "Das Gleichgewichtsprinzip: Einnahmen und Ausgaben in jedem Fall gleichsetzen.",
+        "correctAnswer": 0,
+        "explanation": "Beim Minimalprinzip ist das angestrebte Ergebnis festgelegt; der dafür nötige Mitteleinsatz soll möglichst gering sein.",
+        "media": ""
+      },
+      "reason": "Nimmt ein bislang fehlendes wirtschaftliches Entscheidungsprinzip auf."
+    },
+    {
+      "id": "wiso-060",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "wiso-060",
+        "category": "WiSo",
+        "difficulty": "hard",
+        "question": "Ein Betrieb kann den monatlichen Geräteservice selbst durchführen. Das verursacht 4.000 € feste Monatskosten plus 18 € variable Kosten je Gerät; zu betreuen sind 100 Geräte. Ein externer Anbieter verlangt für denselben Leistungsumfang 5.500 € pro Monat. Welche Möglichkeit ist nach diesen Kostenangaben günstiger?",
+        "answer1": "Der externe Anbieter ist um 300 € pro Monat günstiger.",
+        "answer2": "Die Eigenleistung ist um 300 € pro Monat günstiger.",
+        "answer3": "Beide Möglichkeiten kosten gleich viel.",
+        "answer4": "Der externe Anbieter ist um 1.800 € pro Monat teurer.",
+        "correctAnswer": 0,
+        "explanation": "Die Eigenleistung kostet 4.000 € + 100 × 18 € = 5.800 € pro Monat. Das externe Angebot kostet 5.500 € und ist damit 300 € günstiger.",
+        "media": ""
+      },
+      "reason": "Ergänzt einen praxisnahen Eigenleistungs- und Fremdbezugsvergleich."
+    }
+  ]
+}

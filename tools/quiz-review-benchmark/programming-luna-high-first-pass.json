@@ -1,0 +1,834 @@
+{
+  "schema_version": 1,
+  "source_file": "quiz-data/programming.csv",
+  "review_model": "Luna High",
+  "summary": {
+    "existing_questions": 18,
+    "new_questions": 12,
+    "total_candidates": 30,
+    "pass": 0,
+    "rewrite": 18,
+    "other_issue": 0
+  },
+  "coverage": {
+    "already_covered": [
+      "Syntaxfehler, Kommentare und Algorithmen",
+      "Variablen, Bedingungen, Schleifen und Funktionen",
+      "Arrays, Boolean-Werte und return",
+      "Einfache JavaScript-Ausdrücke und Indexierung"
+    ],
+    "gaps_targeted": [
+      "Datentypen und sichere Typumwandlung",
+      "Logische Operatoren und Ablaufverfolgung",
+      "Eingabeprüfung, Fehlersuche und Fehlerarten",
+      "Gültigkeitsbereiche, Listenverarbeitung und Pseudocode",
+      "Objekte, Modularisierung und wartbarer Code"
+    ]
+  },
+  "questions": [
+    {
+      "id": "Programmierung-001",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "Programmierung-001",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Was ist ein Syntaxfehler in einem Programm?",
+        "answer1": "Ein Fehler in der Schreibweise oder Struktur des Quellcodes",
+        "answer2": "Ein zu langsamer Prozessor",
+        "answer3": "Eine falsche IP-Adresse",
+        "answer4": "Ein defektes Netzteil",
+        "correctAnswer": 0,
+        "explanation": "Ein Syntaxfehler entsteht, wenn der Quellcode nicht den grammatikalischen Regeln der Programmiersprache entspricht.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "Programmierung-001",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Ein Programm meldet beim Übersetzen einen Fehler an einer fehlenden schließenden Klammer. Um welche Fehlerart handelt es sich?",
+        "answer1": "Syntaxfehler",
+        "answer2": "Logischer Fehler",
+        "answer3": "Laufzeitfehler",
+        "answer4": "Netzwerkfehler",
+        "correctAnswer": 0,
+        "explanation": "Die Klammer verletzt die vorgeschriebene Code-Struktur; der Fehler wird daher bereits beim Prüfen oder Übersetzen erkannt.",
+        "media": ""
+      },
+      "reason": "Der konkrete Fall prüft die Fehlerart; die bisherigen Ablenker stammen aus sachfremden Bereichen."
+    },
+    {
+      "id": "Programmierung-002",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "Programmierung-002",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Welche Aufgabe hat ein Kommentar im Quellcode hauptsächlich?",
+        "answer1": "Er erklärt oder dokumentiert Code für Menschen, ohne normalerweise ausgeführt zu werden",
+        "answer2": "Er erhöht automatisch die Programmgeschwindigkeit",
+        "answer3": "Er ersetzt eine Variable",
+        "answer4": "Er kompiliert das Programm",
+        "correctAnswer": 0,
+        "explanation": "Kommentare dienen der Dokumentation und Lesbarkeit des Codes und werden normalerweise nicht als Programmlogik ausgeführt.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "Programmierung-002",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Wofür eignet sich ein Kommentar im Quellcode am besten?",
+        "answer1": "Er erläutert eine nicht offensichtliche Entscheidung für spätere Leserinnen und Leser.",
+        "answer2": "Er sorgt dafür, dass ein unbenutzter Codeabschnitt trotzdem ausgeführt wird.",
+        "answer3": "Er prüft Eingabewerte zur Laufzeit.",
+        "answer4": "Er ersetzt einen aussagekräftigen Variablennamen.",
+        "correctAnswer": 0,
+        "explanation": "Kommentare dokumentieren den Code für Menschen; sie ändern normalerweise nicht dessen Ausführung.",
+        "media": ""
+      },
+      "reason": "Die überarbeitete Frage prüft einen sinnvollen Dokumentationsfall und vermeidet technisch unplausible Ablenker."
+    },
+    {
+      "id": "Programmierung-003",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "Programmierung-003",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Was beschreibt ein Algorithmus am besten?",
+        "answer1": "Eine eindeutige Folge von Schritten zur Lösung eines Problems",
+        "answer2": "Eine Hardwarekomponente zur Datenspeicherung",
+        "answer3": "Eine Art Netzwerkprotokoll",
+        "answer4": "Eine grafische Benutzeroberfläche",
+        "correctAnswer": 0,
+        "explanation": "Ein Algorithmus ist eine klar definierte Abfolge von Schritten, mit der eine Aufgabe oder ein Problem gelöst werden kann.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "Programmierung-003",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Ein Ablaufplan liest zwei Zahlen ein, vergleicht sie und gibt die größere aus. Was beschreibt dieser Ablaufplan?",
+        "answer1": "Einen Algorithmus zur Bestimmung des größeren Werts",
+        "answer2": "Eine Datenstruktur zum dauerhaften Speichern der Zahlen",
+        "answer3": "Ein Protokoll zur Übertragung der Zahlen",
+        "answer4": "Eine Programmiersprache, die den Ablaufplan automatisch ausführt",
+        "correctAnswer": 0,
+        "explanation": "Der Ablaufplan legt eindeutige Schritte fest, mit denen ein Problem gelöst wird, und ist damit ein Algorithmus.",
+        "media": ""
+      },
+      "reason": "Das Beispiel verankert die Definition in einer typischen Verarbeitung und verbessert die fachliche Plausibilität der Ablenker."
+    },
+    {
+      "id": "Programmierung-004",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "Programmierung-004",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Welche Aufgabe hat eine Variable in einem Programm?",
+        "answer1": "Sie speichert einen Wert, der im Programm verwendet werden kann",
+        "answer2": "Sie kompiliert automatisch den gesamten Quellcode",
+        "answer3": "Sie ersetzt eine Funktion",
+        "answer4": "Sie stellt eine Netzwerkverbindung her",
+        "correctAnswer": 0,
+        "explanation": "Eine Variable speichert einen Wert, auf den das Programm später zugreifen und den es gegebenenfalls verändern kann.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "Programmierung-004",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Ein Programm soll die Anzahl erfolgreicher Anmeldungen während des Betriebs mitzählen. Welche Verwendung einer Variablen passt dazu?",
+        "answer1": "Bei jeder erfolgreichen Anmeldung den gespeicherten Zählerwert erhöhen.",
+        "answer2": "Den Quellcode bei jeder Anmeldung neu kompilieren.",
+        "answer3": "Die Anmeldedaten als Funktion ausführen.",
+        "answer4": "Die Netzwerkverbindung durch einen Variablennamen ersetzen.",
+        "correctAnswer": 0,
+        "explanation": "Eine Variable hält den aktuellen Zählerstand, der bei einem Ereignis aktualisiert und später ausgewertet werden kann.",
+        "media": ""
+      },
+      "reason": "Die Frage prüft die Verwendung eines veränderlichen Zustands statt nur die abstrakte Definition."
+    },
+    {
+      "id": "Programmierung-005",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "Programmierung-005",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Welche Anweisung wird typischerweise verwendet, um eine Bedingung zu prüfen und abhängig davon Code auszuführen?",
+        "answer1": "if",
+        "answer2": "return",
+        "answer3": "import",
+        "answer4": "class",
+        "correctAnswer": 0,
+        "explanation": "Mit einer if-Anweisung kann geprüft werden, ob eine Bedingung erfüllt ist, und entsprechend unterschiedlicher Code ausgeführt werden.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "Programmierung-005",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Ein Programm soll eine Meldung ausgeben, wenn die Temperatur über 30 °C liegt. Welche Struktur passt dafür?",
+        "answer1": "Eine if-Abfrage mit der Bedingung Temperatur > 30",
+        "answer2": "Eine return-Anweisung ohne Bedingung",
+        "answer3": "Eine Funktionsdefinition ohne Aufruf",
+        "answer4": "Eine Schleife, die unabhängig von der Temperatur einmal läuft",
+        "correctAnswer": 0,
+        "explanation": "Eine Bedingung mit if steuert, ob der zugehörige Code abhängig vom Temperaturwert ausgeführt wird.",
+        "media": ""
+      },
+      "reason": "Die praktische Situation prüft bedingte Ausführung und verwendet Ablenker aus benachbarten Programmierkonzepten."
+    },
+    {
+      "id": "Programmierung-006",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "Programmierung-006",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Wozu wird eine Schleife verwendet?",
+        "answer1": "Um einen Programmabschnitt mehrfach auszuführen",
+        "answer2": "Um eine Datei dauerhaft zu verschlüsseln",
+        "answer3": "Um eine Variable automatisch zu löschen",
+        "answer4": "Um einen Webserver zu installieren",
+        "correctAnswer": 0,
+        "explanation": "Schleifen wie for oder while führen einen Codeblock wiederholt aus, solange die jeweilige Bedingung dies vorsieht.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "Programmierung-006",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Ein Programm soll nacheinander alle Einträge einer Liste ausgeben. Welche Struktur ist dafür grundsätzlich geeignet?",
+        "answer1": "Eine Schleife, die die Listeneinträge der Reihe nach verarbeitet",
+        "answer2": "Eine einzelne if-Abfrage, die nur einen Eintrag prüft",
+        "answer3": "Eine return-Anweisung außerhalb einer Funktion",
+        "answer4": "Eine Variablendeklaration ohne weitere Anweisung",
+        "correctAnswer": 0,
+        "explanation": "Eine Schleife wiederholt denselben Verarbeitungsschritt für die Einträge der Liste.",
+        "media": ""
+      },
+      "reason": "Der Anwendungsfall vermittelt den Nutzen einer Schleife und grenzt ihn von einmaliger Auswahl ab."
+    },
+    {
+      "id": "Programmierung-007",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "Programmierung-007",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Welche Aufgabe hat eine Funktion hauptsächlich?",
+        "answer1": "Sie fasst wiederverwendbare Programmlogik unter einem Namen zusammen",
+        "answer2": "Sie speichert ausschließlich Bilder",
+        "answer3": "Sie ersetzt automatisch alle Variablen",
+        "answer4": "Sie dient nur zur Ausgabe von Fehlermeldungen",
+        "correctAnswer": 0,
+        "explanation": "Eine Funktion kapselt Programmlogik und kann mehrfach aufgerufen werden. Sie kann außerdem Parameter empfangen und Werte zurückgeben.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "Programmierung-007",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Mehrere Programmteile müssen denselben Nettopreis aus Bruttoangabe und Steuersatz berechnen. Was ist ein Vorteil einer dafür geschriebenen Funktion?",
+        "answer1": "Die Berechnung wird an einer Stelle definiert und kann mit verschiedenen Werten aufgerufen werden.",
+        "answer2": "Die Berechnung wird bei jedem Aufruf automatisch in eine Schleife umgewandelt.",
+        "answer3": "Die Funktion macht ihre Parameter für das gesamte Programm dauerhaft unveränderlich.",
+        "answer4": "Die Funktion verhindert, dass das Programm Rückgabewerte verwendet.",
+        "correctAnswer": 0,
+        "explanation": "Eine Funktion bündelt wiederverwendbare Logik und kann bei jedem Aufruf andere Parameter erhalten.",
+        "media": ""
+      },
+      "reason": "Die Frage verbindet Funktionen mit Wiederverwendung und Parametern statt mit einer allgemeinen Definition."
+    },
+    {
+      "id": "Programmierung-008",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "Programmierung-008",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Was ist ein Array?",
+        "answer1": "Eine geordnete Sammlung mehrerer Werte",
+        "answer2": "Eine einzelne boolesche Variable",
+        "answer3": "Eine Netzwerkadresse",
+        "answer4": "Eine Art Betriebssystem",
+        "correctAnswer": 0,
+        "explanation": "Ein Array speichert mehrere Werte in einer geordneten Struktur, auf deren Elemente typischerweise über Indizes zugegriffen werden kann.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "Programmierung-008",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "In einem Programm werden die Namen mehrerer Geräte in einer festen Reihenfolge verwaltet. Welche Struktur eignet sich dafür?",
+        "answer1": "Ein Array mit einem Element pro Gerätenamen",
+        "answer2": "Eine Boolean-Variable für sämtliche Namen",
+        "answer3": "Eine einzelne Zahl ohne Zuordnung zu den Namen",
+        "answer4": "Eine if-Bedingung mit einem Zweig pro möglichem Gerätenamen",
+        "correctAnswer": 0,
+        "explanation": "Ein Array hält mehrere geordnete Werte und erlaubt den Zugriff auf einzelne Einträge über ihren Index.",
+        "media": ""
+      },
+      "reason": "Das Szenario macht den Zweck einer geordneten Sammlung deutlich und nutzt thematisch passende Alternativen."
+    },
+    {
+      "id": "Programmierung-009",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "Programmierung-009",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Welchen Wert kann eine boolesche Variable typischerweise annehmen?",
+        "answer1": "Nur true oder false",
+        "answer2": "Nur ganze Zahlen",
+        "answer3": "Nur Zeichenketten",
+        "answer4": "Beliebige Dateien",
+        "correctAnswer": 0,
+        "explanation": "Der Datentyp Boolean repräsentiert zwei Wahrheitswerte: true und false.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "Programmierung-009",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Ein Programm speichert, ob ein Druckauftrag abgeschlossen ist. Welcher Datentyp passt für diese Information am besten?",
+        "answer1": "Boolean mit den Werten true oder false",
+        "answer2": "Eine Zeichenkette mit dem vollständigen Dateipfad",
+        "answer3": "Ein Array mit allen Druckertreibern",
+        "answer4": "Eine Fließkommazahl mit der Dateigröße",
+        "correctAnswer": 0,
+        "explanation": "Der Abschlussstatus hat zwei mögliche Zustände und lässt sich daher passend als Boolean darstellen.",
+        "media": ""
+      },
+      "reason": "Der konkrete Statusfall prüft die passende Verwendung des Datentyps statt bloß seine zwei Werte abzufragen."
+    },
+    {
+      "id": "Programmierung-010",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "Programmierung-010",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Was bewirkt return innerhalb einer Funktion?",
+        "answer1": "Es beendet die Funktion und kann einen Wert an den Aufrufer zurückgeben",
+        "answer2": "Es startet das gesamte Programm neu",
+        "answer3": "Es erzeugt automatisch eine Schleife",
+        "answer4": "Es löscht die Funktion aus dem Speicher",
+        "correctAnswer": 0,
+        "explanation": "return beendet die aktuelle Funktionsausführung und kann dem aufrufenden Code einen Ergebniswert übergeben.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "Programmierung-010",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Eine Funktion berechnet einen Rabattbetrag. Wie kann der aufrufende Programmteil das berechnete Ergebnis erhalten?",
+        "answer1": "Die Funktion gibt den Wert mit return zurück.",
+        "answer2": "Die Funktion schreibt den Wert automatisch in jede Variable des Programms.",
+        "answer3": "Die Funktion verwendet dafür zwingend eine Schleife.",
+        "answer4": "Die Funktion benennt sich während der Berechnung um.",
+        "correctAnswer": 0,
+        "explanation": "Mit return beendet die Funktion ihre Ausführung und übergibt den Ergebniswert an den Aufrufer.",
+        "media": ""
+      },
+      "reason": "Die Frage fokussiert auf den Ergebnisfluss zwischen Funktion und Aufrufer."
+    },
+    {
+      "id": "Programmierung-011",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "Programmierung-011",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Welche Schreibweise erzeugt in JavaScript eine Konstante namens score mit dem Wert 10?",
+        "answer1": "const score = 10;",
+        "answer2": "score == 10;",
+        "answer3": "function score = 10;",
+        "answer4": "array score = 10;",
+        "correctAnswer": 0,
+        "explanation": "Mit const wird eine Variable deklariert, deren Bindung anschließend nicht neu zugewiesen werden kann.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "Programmierung-011",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Ein JavaScript-Wert soll mit dem Namen score deklariert und später nicht neu zugewiesen werden. Welche Anweisung erfüllt das?",
+        "answer1": "const score = 10;",
+        "answer2": "let score = 10;",
+        "answer3": "score === 10;",
+        "answer4": "return score = 10;",
+        "correctAnswer": 0,
+        "explanation": "const deklariert eine Bindung, der später kein neuer Wert zugewiesen werden kann.",
+        "media": ""
+      },
+      "reason": "Die Ablenker sind gültige oder plausible JavaScript-Ausdrücke und unterscheiden Deklaration, Vergleich und Zuweisung."
+    },
+    {
+      "id": "Programmierung-012",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "Programmierung-012",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Was liefert der Ausdruck 5 > 3 in JavaScript?",
+        "answer1": "true",
+        "answer2": "false",
+        "answer3": "5",
+        "answer4": "3",
+        "correctAnswer": 0,
+        "explanation": "Da 5 größer als 3 ist, ergibt der Vergleich den booleschen Wert true.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "Programmierung-012",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Welche Art von Ergebnis liefert in JavaScript der Vergleich 5 > 3?",
+        "answer1": "Den Boolean-Wert true",
+        "answer2": "Die Zahl 2",
+        "answer3": "Die Zeichenkette \"5 > 3\"",
+        "answer4": "Den Boolean-Wert false",
+        "correctAnswer": 0,
+        "explanation": "Ein größer-als-Vergleich ergibt einen Wahrheitswert; da 5 größer als 3 ist, lautet er true.",
+        "media": ""
+      },
+      "reason": "Die überarbeitete Frage prüft zusätzlich den Ergebnistyp und bietet plausible Verwechslungen."
+    },
+    {
+      "id": "Programmierung-013",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "Programmierung-013",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Welcher Index bezeichnet normalerweise das erste Element eines JavaScript-Arrays?",
+        "answer1": "0",
+        "answer2": "1",
+        "answer3": "-1",
+        "answer4": "10",
+        "correctAnswer": 0,
+        "explanation": "JavaScript-Arrays sind nullbasiert. Das erste Element befindet sich daher am Index 0.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "Programmierung-013",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Ein JavaScript-Array enthält drei Einträge. Mit welchem Index greift das Programm auf den ersten Eintrag zu?",
+        "answer1": "0",
+        "answer2": "1",
+        "answer3": "3",
+        "answer4": "-1",
+        "correctAnswer": 0,
+        "explanation": "JavaScript-Arrays verwenden nullbasierte Indizes: Der erste Eintrag liegt an Position 0.",
+        "media": ""
+      },
+      "reason": "Die Formulierung bindet die Indexregel an einen Zugriff und ersetzt den wenig plausiblen Index 10."
+    },
+    {
+      "id": "Programmierung-014",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "Programmierung-014",
+        "category": "Programmierung",
+        "difficulty": "hard",
+        "question": "Gegeben ist der Code: let value = 5; if (value > 3) { value = value * 2; } Welchen Wert besitzt value anschließend?",
+        "answer1": "5",
+        "answer2": "8",
+        "answer3": "10",
+        "answer4": "25",
+        "correctAnswer": 2,
+        "explanation": "Da 5 größer als 3 ist, wird der Code im if-Block ausgeführt. 5 × 2 ergibt 10.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "Programmierung-014",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Gegeben ist der Code: let value = 5; if (value > 3) { value = value * 2; } Welchen Wert besitzt value anschließend?",
+        "answer1": "10",
+        "answer2": "5",
+        "answer3": "8",
+        "answer4": "25",
+        "correctAnswer": 0,
+        "explanation": "Die Bedingung 5 > 3 ist wahr. Der Block verdoppelt value daher auf 10.",
+        "media": ""
+      },
+      "reason": "Die vorhandene Antwortreihenfolge und der Lösungsschlüssel widersprechen sich; die korrekte Antwort ist nun an Index 0 und die Schwierigkeit ist medium."
+    },
+    {
+      "id": "Programmierung-015",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "Programmierung-015",
+        "category": "Programmierung",
+        "difficulty": "hard",
+        "question": "Eine Schleife lautet: for (let i = 0; i < 4; i++) { console.log(i); } Wie oft wird console.log ausgeführt?",
+        "answer1": "3-mal",
+        "answer2": "4-mal",
+        "answer3": "5-mal",
+        "answer4": "Unendlich oft",
+        "correctAnswer": 1,
+        "explanation": "Die Schleife läuft mit i = 0, 1, 2 und 3. Sobald i den Wert 4 erreicht, ist die Bedingung i < 4 nicht mehr erfüllt.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "Programmierung-015",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Eine Schleife lautet: for (let i = 0; i < 4; i++) { console.log(i); } Welche Werte werden ausgegeben?",
+        "answer1": "0, 1, 2 und 3",
+        "answer2": "1, 2, 3 und 4",
+        "answer3": "0, 1, 2, 3 und 4",
+        "answer4": "Nur 4",
+        "correctAnswer": 0,
+        "explanation": "Der Schleifenrumpf läuft für i = 0 bis i = 3; bei i = 4 ist die Bedingung nicht mehr erfüllt.",
+        "media": ""
+      },
+      "reason": "Der Schlüssel verweist bisher auf die falsche Antwort; die normalisierte Frage prüft den Ablauf klar und ist medium."
+    },
+    {
+      "id": "Programmierung-016",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "Programmierung-016",
+        "category": "Programmierung",
+        "difficulty": "hard",
+        "question": "Eine Funktion ist definiert als function add(a, b) { return a + b; }. Welches Ergebnis liefert add(4, 7)?",
+        "answer1": "3",
+        "answer2": "11",
+        "answer3": "28",
+        "answer4": "47",
+        "correctAnswer": 1,
+        "explanation": "Die Parameter a und b erhalten die Werte 4 und 7. Die Funktion gibt deren Summe 11 zurück.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "Programmierung-016",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Eine Funktion ist definiert als function add(a, b) { return a + b; }. Welchen Wert gibt add(4, 7) zurück?",
+        "answer1": "11",
+        "answer2": "3",
+        "answer3": "28",
+        "answer4": "47",
+        "correctAnswer": 0,
+        "explanation": "Die Argumente 4 und 7 werden den Parametern a und b zugeordnet und addiert.",
+        "media": ""
+      },
+      "reason": "Die korrekte Antwort stand an Index 1; nach Normalisierung ist die einfache Parameterübergabe medium."
+    },
+    {
+      "id": "Programmierung-017",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "Programmierung-017",
+        "category": "Programmierung",
+        "difficulty": "hard",
+        "question": "Ein Array lautet const values = [10, 20, 30, 40];. Welchen Wert liefert values[2]?",
+        "answer1": "10",
+        "answer2": "20",
+        "answer3": "30",
+        "answer4": "40",
+        "correctAnswer": 2,
+        "explanation": "Arrays beginnen in JavaScript beim Index 0. Die Indizes sind daher 0→10, 1→20, 2→30 und 3→40.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "Programmierung-017",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Ein Array lautet const values = [10, 20, 30, 40];. Welchen Wert liefert values[2]?",
+        "answer1": "30",
+        "answer2": "20",
+        "answer3": "40",
+        "answer4": "10",
+        "correctAnswer": 0,
+        "explanation": "Bei nullbasierter Zählung liegt 10 an Index 0, 20 an Index 1 und 30 an Index 2.",
+        "media": ""
+      },
+      "reason": "Die bisherige Lösung steht an Index 2; die normalisierte Frage prüft eine einzelne, grundlegende Indexauswertung."
+    },
+    {
+      "id": "Programmierung-018",
+      "origin": "EXISTING",
+      "status": "REWRITE",
+      "original": {
+        "id": "Programmierung-018",
+        "category": "Programmierung",
+        "difficulty": "hard",
+        "question": "Welche Aussage beschreibt den Unterschied zwischen == und === in JavaScript am besten?",
+        "answer1": "Beide Operatoren sind immer vollständig identisch",
+        "answer2": "=== vergleicht Wert und Typ ohne die Typumwandlung des ==-Vergleichs",
+        "answer3": "== darf nur für Zahlen verwendet werden",
+        "answer4": "=== weist einer Variablen einen neuen Wert zu",
+        "correctAnswer": 1,
+        "explanation": "Der strikte Gleichheitsoperator === vergleicht Wert und Datentyp ohne die implizite Typumwandlung, die bei == auftreten kann.",
+        "media": ""
+      },
+      "proposed_question": {
+        "id": "Programmierung-018",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Welche Aussage zu den JavaScript-Ausdrücken 5 == \"5\" und 5 === \"5\" trifft zu?",
+        "answer1": "Der erste ergibt true und der zweite false.",
+        "answer2": "Beide ergeben true, weil die dargestellten Zeichen gleich sind.",
+        "answer3": "Der erste ergibt false und der zweite true.",
+        "answer4": "Beide ergeben false, weil Zahl und Zeichenkette nie verglichen werden können.",
+        "correctAnswer": 0,
+        "explanation": "== kann den Operanden \"5\" in eine Zahl umwandeln; === vergleicht zusätzlich den Typ und ergibt daher false.",
+        "media": ""
+      },
+      "reason": "Die bisherige Antwort stand an Index 1; das Beispiel prüft den Unterschied direkt und normalisiert die Lösung."
+    },
+    {
+      "id": "Programmierung-019",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "Programmierung-019",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Ein Formular liefert die Zeichenkette \"42\". Das Programm soll damit numerisch rechnen. Was ist vor der Berechnung sinnvoll?",
+        "answer1": "Die Eingabe prüfen und gezielt in eine Zahl umwandeln.",
+        "answer2": "Die Zeichenkette mit einer Zahl verketten und das Ergebnis als Zahl behandeln.",
+        "answer3": "Den Wert als Boolean speichern, damit er automatisch numerisch wird.",
+        "answer4": "Den Wert unverändert mit einem Zahlenwert addieren und eine Umwandlung voraussetzen.",
+        "correctAnswer": 0,
+        "explanation": "Formulareingaben liegen häufig als Text vor. Eine Prüfung und explizite Umwandlung vermeiden unerwartete Rechen- oder Verkettungsergebnisse.",
+        "media": ""
+      },
+      "reason": "Ergänzt Typumwandlung und Prüfung externer Eingaben, die bisher nicht behandelt werden."
+    },
+    {
+      "id": "Programmierung-020",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "Programmierung-020",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Eine Datei darf nur gespeichert werden, wenn der Benutzer angemeldet ist und die Eingabe gültig ist. Welche Bedingung drückt beides aus?",
+        "answer1": "angemeldet && eingabeGueltig",
+        "answer2": "angemeldet || eingabeGueltig",
+        "answer3": "!angemeldet && eingabeGueltig",
+        "answer4": "angemeldet == eingabeGueltig",
+        "correctAnswer": 0,
+        "explanation": "&& ist nur dann wahr, wenn beide Teilbedingungen wahr sind.",
+        "media": ""
+      },
+      "reason": "Prüft die Anwendung logischer Verknüpfungen in einer typischen Freigabebedingung."
+    },
+    {
+      "id": "Programmierung-021",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "Programmierung-021",
+        "category": "Programmierung",
+        "difficulty": "hard",
+        "question": "Was gibt der folgende JavaScript-Code aus? let sum = 0; for (let i = 1; i <= 4; i++) { if (i % 2 === 0) sum += i; } console.log(sum);",
+        "answer1": "6",
+        "answer2": "10",
+        "answer3": "4",
+        "answer4": "2",
+        "correctAnswer": 0,
+        "explanation": "Nur gerade Werte erfüllen die Bedingung: 2 und 4. Ihre Summe ist 6.",
+        "media": ""
+      },
+      "reason": "Erfordert die schrittweise Verfolgung von Schleife, Bedingung und Akkumulator."
+    },
+    {
+      "id": "Programmierung-022",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "Programmierung-022",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "In JavaScript wird innerhalb einer Funktion mit let eine Variable deklariert. Welche Aussage zu ihrem Gültigkeitsbereich trifft grundsätzlich zu?",
+        "answer1": "Sie ist nur innerhalb des umschließenden Blocks gültig.",
+        "answer2": "Sie ist automatisch in allen Dateien des Programms gültig.",
+        "answer3": "Sie bleibt nach jedem Funktionsaufruf als globale Variable erhalten.",
+        "answer4": "Sie ist nur innerhalb der nächsten if-Bedingung gültig, unabhängig von ihrer Deklaration.",
+        "correctAnswer": 0,
+        "explanation": "Eine mit let deklarierte Variable ist blockbezogen gültig; bei Deklaration im Funktionsblock ist sie außerhalb dieses Blocks nicht verfügbar.",
+        "media": ""
+      },
+      "reason": "Deckt Variablen-Gültigkeitsbereiche ab, die von den bisherigen Fragen zu Variablen und Funktionen nicht geprüft werden."
+    },
+    {
+      "id": "Programmierung-023",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "Programmierung-023",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Ein Programm muss eine vom Benutzer eingegebene Portnummer akzeptieren. Welche Prüfung ist fachlich am sinnvollsten, bevor der Wert verwendet wird?",
+        "answer1": "Prüfen, ob die Eingabe eine ganze Zahl im erlaubten Portbereich ist.",
+        "answer2": "Prüfen, ob die Eingabe mindestens ein Leerzeichen enthält.",
+        "answer3": "Den eingegebenen Wert ohne Prüfung als gültig behandeln.",
+        "answer4": "Die Eingabe in Kleinbuchstaben umwandeln und danach als Zahl verwenden.",
+        "correctAnswer": 0,
+        "explanation": "Eingaben sollten auf Typ und fachlich zulässigen Wertebereich geprüft werden, bevor sie in der Programmlogik verwendet werden.",
+        "media": ""
+      },
+      "reason": "Ergänzt fachliche Validierung und Wertebereichsprüfung an einem FiSI-nahen Beispiel."
+    },
+    {
+      "id": "Programmierung-024",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "Programmierung-024",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Ein Programm stürzt ab, wenn eine Datei fehlt. Welche Maßnahme macht den Fehlerfall für den Benutzer am besten beherrschbar?",
+        "answer1": "Das Öffnen auf den erwartbaren Fehler prüfen und eine verständliche Meldung oder Ersatzaktion vorsehen.",
+        "answer2": "Den Fehler stillschweigend ignorieren und mit unvollständigen Daten weiterarbeiten.",
+        "answer3": "Die Datei vor jedem Zugriff ungeprüft als vorhanden markieren.",
+        "answer4": "Alle Eingaben des Programms löschen, sobald das Öffnen fehlschlägt.",
+        "correctAnswer": 0,
+        "explanation": "Ein erwartbarer Fehler sollte erkannt und kontrolliert behandelt werden, etwa mit einer Meldung oder einer sicheren Alternative.",
+        "media": ""
+      },
+      "reason": "Führt grundlegende Fehlerbehandlung anhand eines realistischen Datei-Zugriffs ein."
+    },
+    {
+      "id": "Programmierung-025",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "Programmierung-025",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Ein Testfall erwartet 12, die Funktion liefert 10, und das Programm läuft ohne Absturz. Wie ist der Fehler am ehesten einzuordnen?",
+        "answer1": "Logischer Fehler: Das Programm wird ausgeführt, berechnet aber ein falsches Ergebnis.",
+        "answer2": "Syntaxfehler: Der Quellcode kann deshalb grundsätzlich nicht gelesen werden.",
+        "answer3": "Hardwarefehler: Der Prozessor führt die Anweisung nicht aus.",
+        "answer4": "Netzwerkfehler: Jede falsche Berechnung entsteht durch eine fehlende Verbindung.",
+        "correctAnswer": 0,
+        "explanation": "Da die Ausführung möglich ist, aber das Ergebnis fachlich falsch ist, liegt ein logischer Fehler nahe.",
+        "media": ""
+      },
+      "reason": "Unterscheidet Laufzeitverhalten und falsche Ergebnisse von Syntaxfehlern im konkreten Debugging-Fall."
+    },
+    {
+      "id": "Programmierung-026",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "Programmierung-026",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Ein Pseudocode soll alle Werte einer Liste addieren. Welche Reihenfolge beschreibt den Ablauf korrekt?",
+        "answer1": "Summe auf 0 setzen, jeden Listenwert zur Summe addieren, Summe ausgeben.",
+        "answer2": "Summe ausgeben, auf 0 setzen, den letzten Listenwert addieren.",
+        "answer3": "Jeden Listenwert durch 0 teilen und den ersten Wert ausgeben.",
+        "answer4": "Die Liste sortieren und danach nur ihre Länge zur Summe addieren.",
+        "correctAnswer": 0,
+        "explanation": "Ein laufender Summenwert wird initialisiert, für jedes Element aktualisiert und nach der Verarbeitung ausgegeben.",
+        "media": ""
+      },
+      "reason": "Ergänzt algorithmisches Denken und Akkumulation in sprachunabhängigem Pseudocode."
+    },
+    {
+      "id": "Programmierung-027",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "Programmierung-027",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Ein Programm verwaltet für jedes Gerät Namen, IP-Adresse und Status. Warum ist ein Objekt dafür oft geeigneter als drei unabhängige Listen?",
+        "answer1": "Die zusammengehörenden Eigenschaften eines Geräts können in einem Datensatz gebündelt werden.",
+        "answer2": "Ein Objekt garantiert automatisch, dass die IP-Adresse erreichbar ist.",
+        "answer3": "Ein Objekt sortiert Geräte ohne zusätzliche Logik nach ihrem Status.",
+        "answer4": "Ein Objekt verhindert grundsätzlich, dass Eigenschaften geändert werden.",
+        "correctAnswer": 0,
+        "explanation": "Ein Objekt kann zusammengehörige Eigenschaften eines einzelnen Geräts unter einem Datensatz organisieren.",
+        "media": ""
+      },
+      "reason": "Führt einfache strukturierte Daten und den praktischen Nutzen von Objekten ein."
+    },
+    {
+      "id": "Programmierung-028",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "Programmierung-028",
+        "category": "Programmierung",
+        "difficulty": "hard",
+        "question": "Welche Änderung verbessert die Wartbarkeit einer Funktion, die Eingabe liest, Daten prüft, einen Bericht berechnet und ihn ausgibt, am deutlichsten?",
+        "answer1": "Die Aufgaben in klar benannte Funktionen aufteilen und zwischen ihnen definierte Werte übergeben.",
+        "answer2": "Alle Anweisungen in eine noch längere Funktion verschieben.",
+        "answer3": "Variablennamen verkürzen und Kommentare vollständig entfernen.",
+        "answer4": "Dieselbe Berechnung an mehreren Stellen kopieren, damit jede Stelle unabhängig wirkt.",
+        "correctAnswer": 0,
+        "explanation": "Kleine Funktionen mit klar abgegrenzten Aufgaben erleichtern Verständnis, Wiederverwendung und gezielte Änderungen.",
+        "media": ""
+      },
+      "reason": "Prüft Modularisierung und Wartbarkeit anhand mehrerer Verarbeitungsschritte."
+    },
+    {
+      "id": "Programmierung-029",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "Programmierung-029",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Eine Funktion soll aus einer Liste nur Geräte mit dem Status \"offline\" auswählen. Welches Ergebnis sollte sie zurückgeben?",
+        "answer1": "Eine Liste aller Einträge, deren Status \"offline\" ist.",
+        "answer2": "Die Anzahl aller Einträge unabhängig von ihrem Status.",
+        "answer3": "Den ersten Eintrag der Liste, auch wenn er online ist.",
+        "answer4": "Die ursprüngliche Liste mit jedem Status auf \"offline\" geändert.",
+        "correctAnswer": 0,
+        "explanation": "Eine Auswahloperation liefert nur die Einträge, die das angegebene Kriterium erfüllen, ohne andere Datensätze umzuschreiben.",
+        "media": ""
+      },
+      "reason": "Ergänzt Listenverarbeitung durch Filtern nach einem fachlichen Kriterium, nicht bloß Indexzugriff."
+    },
+    {
+      "id": "Programmierung-030",
+      "origin": "NEW",
+      "status": "NEW_QUESTION",
+      "new_question": {
+        "id": "Programmierung-030",
+        "category": "Programmierung",
+        "difficulty": "hard",
+        "question": "Ein Programm liest eine Zahl n ein und soll genau n Datensätze verarbeiten. Welche Schleifensteuerung vermeidet einen zusätzlichen Durchlauf, wenn n größer als 0 ist?",
+        "answer1": "Mit einem Zähler bei 0 starten und wiederholen, solange der Zähler kleiner als n ist; pro Durchlauf um 1 erhöhen.",
+        "answer2": "Mit einem Zähler bei 0 starten und wiederholen, solange er kleiner oder gleich n ist.",
+        "answer3": "Den Zähler vor der Prüfung um 1 erhöhen und wiederholen, solange er kleiner als n ist.",
+        "answer4": "Die Schleife unabhängig von n genau einmal ausführen.",
+        "correctAnswer": 0,
+        "explanation": "Die Werte 0 bis n-1 ergeben genau n Durchläufe; bei n ist die Bedingung nicht mehr erfüllt.",
+        "media": ""
+      },
+      "reason": "Prüft die Übertragung einer Eingabe auf eine Schleifenbegrenzung und das Vermeiden eines Off-by-one-Fehlers."
+    }
+  ]
+}

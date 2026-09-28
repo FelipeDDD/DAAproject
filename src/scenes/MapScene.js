@@ -41,6 +41,7 @@ import { WorldPrompt,centeredMessageViewport } from '../ui/WorldPrompt.js';
 import { getGameHud } from '../hud/GameHudController.js';
 import { hasProfileSession } from '../ProfileSessionClient.js';
 import { applySmoothDecorativeTextureFilters } from '../maps/decorativeTextureFilters.js';
+import { classRestoreDestination } from '../maps/classState.js';
 import '../terminal/terminal.css';
 
 function readTileset(xml, firstgid) {
@@ -228,9 +229,12 @@ export class MapScene extends Phaser.Scene {
       this.hint.hidden=true;
       this.terminal?.destroy();
       this.terminal=new TerminalOverlayController(this);
-      const spawn = resolveSpawn(this.source, destination);
-      this.player.body.reset(spawn.x, spawn.y);
       this.presence = getPresence();
+      const restoreClassState=destination.restoreClassState||
+        (destination.targetSpawn===undefined&&destination.targetX===undefined&&destination.targetY===undefined&&!destination.returnDestination);
+      const saved=restoreClassState?classRestoreDestination(this.presence?.identity?.classState,this.mapKey,this.source):{};
+      const spawn = resolveSpawn(this.source,{...destination,...saved});
+      this.player.body.reset(spawn.x, spawn.y);
       this.wardrobe?.destroy();
       this.wardrobe=hasProfileSession(this.presence)&&this.wardrobeDefinitions.length
         ?new WardrobeController(this,this.presence,this.wardrobeDefinitions):null;

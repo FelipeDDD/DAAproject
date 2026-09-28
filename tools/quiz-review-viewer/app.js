@@ -146,8 +146,11 @@ function recordsFrom(state, validation) {
 }
 function newQuestionRecord({candidate,state,validation,candidateKey,id=null,sourceId,addition=false}){
   const key="new:"+candidateKey,issues=Array.from(new Set([].concat(state&&state.tags||[],validation&&validation.issue_types||[]).filter(Boolean)));
+  const final=validation&&validation.verdict==="REVISE"
+    ? validation.recommended_final_question||candidate
+    : candidate;
   return {key,id:id||candidateKey,candidateKey,idForExport:id,itemType:"new_question",sourceId:sourceId||candidate&&candidate.source_id||null,
-    state:state||{status:"NEW_QUESTION"},validation:validation||null,original:null,proposal:candidate,final:candidate,
+    state:state||{status:"NEW_QUESTION"},validation:validation||null,original:null,proposal:candidate,final,
     addition:candidate,isAddition:addition,issues,changes:Object.fromEntries(TRACKED.map((f)=>[f,false])),repetition:false};
 }
 function identity(report) {
@@ -380,9 +383,18 @@ function renderIds(){
 function badge(label,value,cls){return node("span",label+": "+value,"badge "+(cls||"neutral"));}
 function display(value){const t=asText(value);return t===""?"(vazio)":t;}
 function versions(r){
-  if(r.itemType==="new_question")return [{key:"addition",title:r.isAddition?"Candidata adicional":"Questão nova candidata",
-    q:r.final,note:r.sourceId?"Origem: "+r.sourceId:"Sem versão original",cardClass:"candidate",
-    assessment:r.validation&&(r.validation.addition_candidate_assessment||r.validation.final_question_assessment)}];
+  if(r.itemType==="new_question"){
+    const verdict=r.validation&&r.validation.verdict;
+    const rejected=verdict==="REJECT";
+    const finalNote=rejected?"REJECT · questão rejeitada; não deve ser adicionada":
+      verdict?verdict+" · resultado validado":"Sem segunda validação";
+    const finalAssessment=r.validation&&(r.validation.addition_candidate_assessment||r.validation.final_question_assessment);
+    return [
+      {key:"proposal",title:"Proposta inicial",q:r.proposal,note:"Proposta do primeiro relatório",cardClass:"candidate"},
+      {key:"final",title:"Final validado",q:r.final,note:finalNote,cardClass:rejected?"rejected":"candidate",
+        assessment:finalAssessment}
+    ];
+  }
   const verdict=r.validation&&r.validation.verdict;
   const finalAssessment=r.validation&&Object.assign({
     curriculum_level:r.validation.curriculum_level,
@@ -438,9 +450,10 @@ function answerBlock(q,cls){
 function cardActions(r,v){
   const p=personal(r.key),actions=node("div","","card-actions");
   let options=[];
-  if(r.itemType==="new_question")options=[
-    {decision:"APPROVE_NEW",label:"Adicionar esta pergunta"},{decision:"REJECT_NEW",label:"Não adicionar"}];
-  else if(v.key==="original")options=[{decision:"KEEP_CURRENT",label:"Manter esta versão"}];
+  if(r.itemType==="new_question"){
+    if(v.key==="final")options=[
+      {decision:"APPROVE_NEW",label:"Adicionar esta pergunta"},{decision:"REJECT_NEW",label:"Não adicionar"}];
+  }else if(v.key==="original")options=[{decision:"KEEP_CURRENT",label:"Manter esta versão"}];
   else if(["proposal","final","revised"].includes(v.key))
     options.push({decision:"ACCEPT_RECOMMENDATION",acceptedVersion:v.key,label:"Usar esta versão"});
   if(r.itemType==="existing_change"&&v.key!=="original"&&
@@ -471,7 +484,7 @@ function recommendedVersion(r){
 }
 function addedVersionLabel(version){return {proposal:"a primeira proposta",revised:"a versão revisada",final:"a versão final"}[version]||version;}
 function versionCard(r,v,vs,hide){
-  const discard=r.validation&&r.validation.verdict==="REJECT"&&v.key==="proposal";
+  const discard=r.validation&&r.validation.verdict==="REJECT"&&v.key==="final";
   const actions=cardActions(r,v),selected=actions&&actions.querySelector(".selected-seal"),rejected=actions&&actions.querySelector(".rejected-seal");
   const card=node("article","", "version-card"+(discard?" discarded":"")+(v.cardClass?" "+v.cardClass:"")+(selected?" selected":"")+(rejected?" rejected":"")),head=document.createElement("header");
   const shownId=v.q&&v.q.id||(v.key==="addition"?r.candidateKey:(v.q&&v.q.source_id?"candidata de "+v.q.source_id:r.id));

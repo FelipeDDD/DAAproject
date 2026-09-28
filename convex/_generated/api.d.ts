@@ -10,6 +10,7 @@
 
 import type * as bossProgress from "../bossProgress.js";
 import type * as characterItems from "../characterItems.js";
+import type * as characterLoadouts from "../characterLoadouts.js";
 import type * as crons from "../crons.js";
 import type * as doorDefinitions from "../doorDefinitions.js";
 import type * as doors from "../doors.js";
@@ -19,6 +20,7 @@ import type * as itChallengeScoring from "../itChallengeScoring.js";
 import type * as messages from "../messages.js";
 import type * as playerSessions from "../playerSessions.js";
 import type * as players from "../players.js";
+import type * as profileCharacterState from "../profileCharacterState.js";
 import type * as profileDataMigration from "../profileDataMigration.js";
 import type * as profileStore from "../profileStore.js";
 import type * as profiles from "../profiles.js";
@@ -43,6 +45,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   bossProgress: typeof bossProgress;
   characterItems: typeof characterItems;
+  characterLoadouts: typeof characterLoadouts;
   crons: typeof crons;
   doorDefinitions: typeof doorDefinitions;
   doors: typeof doors;
@@ -52,6 +55,7 @@ declare const fullApi: ApiFromModules<{
   messages: typeof messages;
   playerSessions: typeof playerSessions;
   players: typeof players;
+  profileCharacterState: typeof profileCharacterState;
   profileDataMigration: typeof profileDataMigration;
   profileStore: typeof profileStore;
   profiles: typeof profiles;

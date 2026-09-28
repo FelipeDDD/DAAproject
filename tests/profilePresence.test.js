@@ -145,7 +145,7 @@ test('same-owner takeover is preserved and delayed release cannot delete the new
 
 function memoryContext(){
   const tables={
-    players:[],profiles:[],profileSessions:[],profileLoginAttempts:[],bossProgress:[],bossVictoryReceipts:[],characterItems:[],
+    players:[],profiles:[],profileSessions:[],profileLoginAttempts:[],bossProgress:[],bossVictoryReceipts:[],characterItems:[],characterLoadouts:[],profileCharacterState:[],
     quizPerformance:[],itChallengeHighScores:[],quizQuestionHistory:[],quizAttempts:[],
   };let nextId=1;
   const query=table=>({
@@ -384,12 +384,105 @@ test('boss progression and inventory remain profile-owned while item use follows
   await recordVictory._handler(ctx,{token:registered.token,bossId:'director',victoryId:'shared-victory-id-123456'});
   await claimCharacter._handler(actions,{token:registered.token,characterId:'sarina',presenceSessionId:'sarina-session-123456'});
   assert.equal((await getBossProgress._handler(ctx,{token:registered.token})).wins,1);
-  assert.equal((await getCharacterItems._handler(ctx,{token:registered.token}))[0].itemId,'lung_crusher_3000');
-  await assert.rejects(setCharacterItemActive._handler(ctx,{token:registered.token,itemId:'lung_crusher_3000',active:true}),/cannot use/);
+  const sarina=ctx.tables.players[0];
+  assert.equal((await getCharacterItems._handler(ctx,{token:registered.token,playerId:sarina.playerId,sessionId:sarina.sessionId}))[0].itemId,'lung_crusher_3000');
+  await assert.rejects(setCharacterItemActive._handler(ctx,{token:registered.token,playerId:sarina.playerId,sessionId:sarina.sessionId,itemId:'lung_crusher_3000',active:true}),/cannot use/);
   await claimCharacter._handler(actions,{token:registered.token,characterId:'michael',presenceSessionId:'michael-session-654321'});
-  assert.equal((await setCharacterItemActive._handler(ctx,{token:registered.token,itemId:'lung_crusher_3000',active:true})).active,true);
+  const michael=ctx.tables.players[0];
+  assert.equal((await setCharacterItemActive._handler(ctx,{token:registered.token,playerId:michael.playerId,sessionId:michael.sessionId,itemId:'lung_crusher_3000',active:true})).active,true);
   assert.equal(ctx.tables.bossProgress[0].profileId,ctx.tables.profiles[0]._id);
   assert.equal(ctx.tables.characterItems[0].profileId,ctx.tables.profiles[0]._id);
+});
+
+test('class loadout restores on switch, remains profile-owned, and rejects stale sessions',async()=>{
+  const ctx=memoryContext();
+  const alice=await createAccount(ctx,'loadout-alice','michael');
+  const bob=await createAccount(ctx,'loadout-bob','michael');
+  const actions=actionContext(ctx),itemId='lung_crusher_3000';
+  const first=await claimCharacter._handler(actions,{token:alice.token,characterBaseId:'michael',presenceSessionId:'alice-first-session-123456'});
+  const bobClaim=await claimCharacter._handler(actions,{token:bob.token,characterBaseId:'michael',presenceSessionId:'bob-first-session-123456'});
+  await claimCharacterItem._handler(ctx,{token:alice.token,itemId});
+  const firstAuth={token:alice.token,playerId:first.playerId,sessionId:'alice-first-session-123456'};
+  assert.equal((await setCharacterItemActive._handler(ctx,{...firstAuth,itemId,active:true})).active,true);
+  assert.equal(ctx.tables.players.find(row=>row.playerId===first.playerId).activeCharacterItem,itemId);
+  assert.equal(ctx.tables.players.find(row=>row.playerId===bobClaim.playerId).activeCharacterItem,null);
+  assert.equal(ctx.tables.characterItems[0].profileId,alice.profile.profileId);
+  assert.equal(ctx.tables.characterItems[0].active,undefined,'ownership row must not store equipment');
+  await ctx.db.patch(ctx.tables.characterItems[0]._id,{active:false});
+  assert.equal((await getCharacterItems._handler(ctx,firstAuth))[0].active,true,
+    'legacy active flag cannot override the loadout');
+
+  const sarina=await claimCharacter._handler(actions,{token:alice.token,characterBaseId:'sarina',presenceSessionId:'alice-sarina-session-123456'});
+  const sarinaAuth={token:alice.token,playerId:sarina.playerId,sessionId:'alice-sarina-session-123456'};
+  assert.equal(ctx.tables.players.find(row=>row.playerId===sarina.playerId).activeCharacterItem,null);
+  assert.equal((await getCharacterItems._handler(ctx,sarinaAuth))[0].active,false);
+  await assert.rejects(setCharacterItemActive._handler(ctx,{...sarinaAuth,itemId,active:true}),/cannot use/);
+  await assert.rejects(setCharacterItemActive._handler(ctx,{...firstAuth,itemId,active:false}),/CHARACTER_SESSION_LOST/);
+  await assert.rejects(setCharacterItemActive._handler(ctx,{...sarinaAuth,sessionId:'obsolete-session-123456',itemId,active:false}),/CHARACTER_SESSION_LOST/);
+  await assert.rejects(setCharacterItemActive._handler(ctx,{...sarinaAuth,playerId:bobClaim.playerId,itemId,active:false}),/CHARACTER_SESSION_LOST/);
+
+  const back=await claimCharacter._handler(actions,{token:alice.token,characterBaseId:'michael',presenceSessionId:'alice-back-session-123456'});
+  const backAuth={token:alice.token,playerId:back.playerId,sessionId:'alice-back-session-123456'};
+  assert.equal(ctx.tables.players.find(row=>row.playerId===back.playerId).activeCharacterItem,itemId);
+  assert.equal((await getCharacterItems._handler(ctx,backAuth))[0].active,true);
+  await update._handler(ctx,{playerId:back.playerId,characterId:'michael',sessionId:backAuth.sessionId,
+    room:'school',x:20,y:30,direction:'right',activeCharacterItem:null});
+  assert.equal(ctx.tables.players.find(row=>row.playerId===back.playerId).activeCharacterItem,itemId,
+    'movement cannot overwrite the server loadout');
+  assert.equal(ctx.tables.characterLoadouts.length,1);
+  assert.equal(ctx.tables.characterLoadouts[0].characterBaseId,'michael');
+});
+
+test('class position saves at transitions and release, and restores independently on claims',async()=>{
+  const ctx=memoryContext(),actions=actionContext(ctx);
+  const alice=await createAccount(ctx,'class-state-alice','michael');
+  const bob=await createAccount(ctx,'class-state-bob','michael');
+  const first=await claimCharacter._handler(actions,{token:alice.token,characterBaseId:'michael',presenceSessionId:'class-michael-first-123456'});
+  assert.equal(first.classState,null);
+  const michaelArgs={playerId:first.playerId,characterId:'michael',sessionId:'class-michael-first-123456',
+    room:'school',x:80,y:90,direction:'right'};
+  await update._handler(ctx,michaelArgs);
+  await update._handler(ctx,{...michaelArgs,x:112,y:120});
+  assert.equal(ctx.tables.profileCharacterState.length,0,'movement in one room must not persist position');
+  await update._handler(ctx,{...michaelArgs,room:'outside',x:20,y:25});
+  assert.deepEqual(ctx.tables.profileCharacterState.map(row=>[row.characterBaseId,row.room,row.x,row.y]),[['michael','school',112,120]]);
+
+  const sarina=await claimCharacter._handler(actions,{token:alice.token,characterBaseId:'sarina',presenceSessionId:'class-sarina-first-123456'});
+  assert.equal(sarina.classState,null,'a different class must start at its own default spawn');
+  assert.deepEqual(ctx.tables.profileCharacterState.find(row=>row.characterBaseId==='michael').room,'outside');
+  assert.deepEqual(ctx.tables.profileCharacterState.find(row=>row.characterBaseId==='michael').x,20);
+  await assert.rejects(update._handler(ctx,{...michaelArgs,room:'office2',x:500,y:200}),/CHARACTER_SESSION_LOST/);
+  assert.deepEqual(await release._handler(ctx,{playerId:first.playerId,characterId:'michael',sessionId:michaelArgs.sessionId}),{released:false});
+
+  const sarinaArgs={playerId:sarina.playerId,characterId:'sarina',sessionId:'class-sarina-first-123456',
+    room:'school',x:300,y:310,direction:'down'};
+  await update._handler(ctx,sarinaArgs);
+  await release._handler(ctx,sarinaArgs);
+  const backToMichael=await claimCharacter._handler(actions,{token:alice.token,characterBaseId:'michael',presenceSessionId:'class-michael-return-123456'});
+  assert.deepEqual([backToMichael.classState.room,backToMichael.classState.x,backToMichael.classState.y],['outside',20,25]);
+  const backToSarina=await claimCharacter._handler(actions,{token:alice.token,characterBaseId:'sarina',presenceSessionId:'class-sarina-return-123456'});
+  assert.deepEqual([backToSarina.classState.room,backToSarina.classState.x,backToSarina.classState.y],['school',300,310]);
+  assert.equal((await claimCharacter._handler(actions,{token:bob.token,characterBaseId:'michael',presenceSessionId:'class-bob-first-123456'})).classState,null,
+    'another profile with the same base cannot inherit Alice’s position');
+  assert.equal(ctx.tables.profileCharacterState.length,2);
+});
+
+test('guest release and unsafe rooms never create persistent class state',async()=>{
+  const ctx=memoryContext();
+  const guest=await claimGuest._handler(ctx,{guestId:'guest-class-state-identity-123456',characterBaseId:'michael',sessionId:'guest-class-session-123456'});
+  const guestArgs={playerId:guest.playerId,characterId:'michael',sessionId:'guest-class-session-123456',
+    room:'school',x:80,y:90,direction:'down'};
+  await update._handler(ctx,guestArgs);
+  await update._handler(ctx,{...guestArgs,room:'outside'});
+  await release._handler(ctx,guestArgs);
+  assert.equal(ctx.tables.profileCharacterState.length,0);
+  const alice=await createAccount(ctx,'unsafe-class-state','michael');
+  const claimResult=await claimCharacter._handler(actionContext(ctx),{token:alice.token,characterBaseId:'michael',presenceSessionId:'unsafe-class-session-123456'});
+  const args={playerId:claimResult.playerId,characterId:'michael',sessionId:'unsafe-class-session-123456',
+    room:'arena',x:400,y:500,direction:'down'};
+  await update._handler(ctx,args);
+  await release._handler(ctx,args);
+  assert.equal(ctx.tables.profileCharacterState.length,0);
 });
 
 test('explicit presence release updates availability without deleting profile or login session',async()=>{

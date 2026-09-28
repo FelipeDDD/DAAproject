@@ -1,0 +1,353 @@
+{
+  "schema_version": 1,
+  "source_file": "quiz-data/programming.csv",
+  "first_pass_file": "tools/quiz-review-benchmark/programming-luna-high-first-pass.json",
+  "validation_model": "Astra High",
+  "validations": [
+    {
+      "id": "Programmierung-001",
+      "verdict": "APPROVE",
+      "reason": "A ausência de uma chave ou parêntese de fechamento caracteriza erro de sintaxe; o contexto melhora o original e mantém medium."
+    },
+    {
+      "id": "Programmierung-002",
+      "verdict": "APPROVE",
+      "reason": "A proposta aplica corretamente a finalidade documental dos comentários a uma decisão de implementação, com resposta única e nível medium."
+    },
+    {
+      "id": "Programmierung-003",
+      "verdict": "APPROVE",
+      "reason": "O exemplo concretiza corretamente a definição do original, distingue procedimento de armazenamento e mantém dificuldade básica."
+    },
+    {
+      "id": "Programmierung-004",
+      "verdict": "REVISE",
+      "reason": "O contexto é útil, mas os distratores continuam absurdos; operações alternativas sobre o contador avaliam de fato o uso de uma variável.",
+      "recommended_final_question": {
+        "id": "Programmierung-004",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Ein JavaScript-Programm zählt erfolgreiche Anmeldungen. Zu Beginn gilt let anmeldungen = 0;. Welche Anweisung muss bei jeder erfolgreichen Anmeldung ausgeführt werden?",
+        "answer1": "anmeldungen = anmeldungen + 1;",
+        "answer2": "anmeldungen = 1;",
+        "answer3": "anmeldungen = 0;",
+        "answer4": "anmeldungen = anmeldungen * 2;",
+        "correctAnswer": 0,
+        "explanation": "Der bisherige Zählerstand muss um 1 steigen: aus 0 wird 1, danach 2 usw. Eine erneute Zuweisung von 0 oder 1 verliert den bisherigen Stand; Verdoppeln zählt die Anmeldungen nicht.",
+        "media": ""
+      }
+    },
+    {
+      "id": "Programmierung-005",
+      "verdict": "REJECT",
+      "reason": "O original é mais direto e compara palavras-chave reais, enquanto a proposta alonga a mesma habilidade e facilita a eliminação por qualificadores negativos."
+    },
+    {
+      "id": "Programmierung-006",
+      "verdict": "REVISE",
+      "reason": "A aplicação de laços é pertinente, mas os distratores usam instruções inválidas ou explicitamente incompletas, criando pistas de eliminação.",
+      "recommended_final_question": {
+        "id": "Programmierung-006",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Eine Geräteliste kann unterschiedlich viele Einträge enthalten. Ein Programm soll für jeden Eintrag denselben Ausgabeschritt ausführen. Welche Struktur passt dazu?",
+        "answer1": "Eine Schleife über die Einträge der Liste.",
+        "answer2": "Eine if-Abfrage, ob die Liste Einträge enthält.",
+        "answer3": "Eine Sortierung der Liste nach Gerätenamen.",
+        "answer4": "Eine Zuweisung der Liste an eine weitere Variable.",
+        "correctAnswer": 0,
+        "explanation": "Die Schleife führt den Ausgabeschritt für jeden Eintrag aus. Eine if-Abfrage entscheidet nur über einen Zweig; Sortieren und Zuweisen wiederholen den Ausgabeschritt nicht.",
+        "media": ""
+      }
+    },
+    {
+      "id": "Programmierung-007",
+      "verdict": "REVISE",
+      "reason": "A proposta melhora o contexto do original, mas os distratores atribuem efeitos fantasiosos às funções; devem representar confusões reais sobre chamadas e parâmetros.",
+      "recommended_final_question": {
+        "id": "Programmierung-007",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Mehrere Programmteile berechnen Nettopreise aus Bruttopreis und Steuersatz. Welchen Vorteil bietet eine gemeinsame Funktion mit diesen beiden Parametern?",
+        "answer1": "Die Berechnung wird einmal definiert und mit unterschiedlichen Argumenten aufgerufen.",
+        "answer2": "Nach dem ersten Aufruf wird dessen Ergebnis für alle späteren Aufrufe übernommen.",
+        "answer3": "Die aufrufenden Programmteile müssen bei jedem Aufruf dieselben Argumente übergeben.",
+        "answer4": "Der Aufruf ersetzt die übergebenen Zahlenvariablen automatisch durch den Nettopreis.",
+        "correctAnswer": 0,
+        "explanation": "Eine Funktion kann dieselbe Berechnung mit unterschiedlichen Argumenten ausführen und den jeweiligen Nettopreis zurückgeben. Das Bündeln der Logik vermeidet mehrfach gepflegte Kopien; es bewirkt weder eine automatische Ergebnisspeicherung noch das Überschreiben der übergebenen Zahlenvariablen.",
+        "media": ""
+      }
+    },
+    {
+      "id": "Programmierung-008",
+      "verdict": "REVISE",
+      "reason": "Os distratores não disputam a representação de vários nomes; inicializações concretas distinguem array, texto, elemento único e objeto sem repetir indexação.",
+      "recommended_final_question": {
+        "id": "Programmierung-008",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Ein JavaScript-Programm soll drei Gerätenamen als drei einzelne Elemente eines Arrays speichern. Welche Initialisierung passt?",
+        "answer1": "const namen = [\"srv01\", \"srv02\", \"srv03\"];",
+        "answer2": "const namen = \"srv01, srv02, srv03\";",
+        "answer3": "const namen = [\"srv01, srv02, srv03\"];",
+        "answer4": "const namen = { srv01: true, srv02: true, srv03: true };",
+        "correctAnswer": 0,
+        "explanation": "Eckige Klammern mit drei durch Kommas getrennten Zeichenketten erzeugen ein Array mit drei Elementen. Ein Komma innerhalb einer Zeichenkette trennt keine Arrayelemente; geschweifte Klammern erzeugen hier ein Objekt.",
+        "media": ""
+      }
+    },
+    {
+      "id": "Programmierung-009",
+      "verdict": "REVISE",
+      "reason": "Os distratores mudam para informações irrelevantes, como tamanho e caminho de arquivo; a escolha deve comparar tipos para a mesma informação.",
+      "recommended_final_question": {
+        "id": "Programmierung-009",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Welcher Datentyp ist für die direkte Darstellung der Information „Druckauftrag abgeschlossen: ja oder nein“ vorgesehen?",
+        "answer1": "Boolean",
+        "answer2": "Ganzzahl",
+        "answer3": "Zeichenkette",
+        "answer4": "Fließkommazahl",
+        "correctAnswer": 0,
+        "explanation": "Boolean stellt die beiden Wahrheitswerte true und false dar. Damit lässt sich unmittelbar speichern, ob der Druckauftrag abgeschlossen ist.",
+        "media": ""
+      }
+    },
+    {
+      "id": "Programmierung-010",
+      "verdict": "REJECT",
+      "reason": "O original explica conjuntamente término da função e devolução de valor; a proposta perde a primeira habilidade e acrescenta distratores ainda menos plausíveis."
+    },
+    {
+      "id": "Programmierung-011",
+      "verdict": "REVISE",
+      "reason": "A intenção de não reatribuir também pode ser cumprida com let; o enunciado precisa exigir que a declaração impeça a reatribuição.",
+      "recommended_final_question": {
+        "id": "Programmierung-011",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Welche JavaScript-Anweisung deklariert score mit dem Zahlenwert 10 und verhindert eine spätere Neuzuweisung an score?",
+        "answer1": "const score = 10;",
+        "answer2": "let score = 10;",
+        "answer3": "var score = 10;",
+        "answer4": "score === 10;",
+        "correctAnswer": 0,
+        "explanation": "const verhindert eine spätere Neuzuweisung an diese Bindung. let und var erlauben sie; === führt einen Vergleich aus und deklariert keine Variable.",
+        "media": ""
+      }
+    },
+    {
+      "id": "Programmierung-012",
+      "verdict": "APPROVE",
+      "reason": "O resultado é inequivocamente o Boolean true; a proposta diferencia comparação, subtração e texto sem aumentar artificialmente a dificuldade."
+    },
+    {
+      "id": "Programmierung-013",
+      "verdict": "APPROVE",
+      "reason": "O índice 0 identifica corretamente o primeiro elemento, com alternativas homogêneas; a sobreposição com 017 é resolvida na revisão daquela questão."
+    },
+    {
+      "id": "Programmierung-014",
+      "verdict": "APPROVE",
+      "reason": "5 > 3 executa o bloco e produz 10; medium e a normalização estão corretos, embora o índice 2 original já apontasse para a resposta certa."
+    },
+    {
+      "id": "Programmierung-015",
+      "verdict": "APPROVE",
+      "reason": "A saída é 0, 1, 2, 3 e a próxima condição falha; medium é adequado, e o índice 1 original já indicava corretamente quatro execuções."
+    },
+    {
+      "id": "Programmierung-016",
+      "verdict": "APPROVE",
+      "reason": "Os argumentos numéricos 4 e 7 produzem 11; a proposta preserva a habilidade do original, normaliza a resposta e corrige a dificuldade para medium."
+    },
+    {
+      "id": "Programmierung-017",
+      "verdict": "REVISE",
+      "reason": "A simples consulta por índice repete a habilidade de 013; atualizar um elemento preserva o tema e acrescenta acompanhamento de estado.",
+      "recommended_final_question": {
+        "id": "Programmierung-017",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Gegeben ist JavaScript-Code:\nconst values = [10, 20, 30, 40];\nvalues[1] = values[0] + values[2];\nWelche Werte enthält values anschließend?",
+        "answer1": "[10, 40, 30, 40]",
+        "answer2": "[10, 20, 30, 40]",
+        "answer3": "[40, 20, 30, 40]",
+        "answer4": "[10, 60, 30, 40]",
+        "correctAnswer": 0,
+        "explanation": "values[0] ist 10 und values[2] ist 30. Ihre Summe 40 ersetzt den bisherigen Wert 20 an Index 1; die übrigen Elemente bleiben erhalten. const verhindert eine Neuzuweisung der Array-Bindung, aber keine Änderung ihrer Elemente.",
+        "media": ""
+      }
+    },
+    {
+      "id": "Programmierung-018",
+      "verdict": "APPROVE",
+      "reason": "Os resultados são true e false, respectivamente; o exemplo melhora a comparação abstrata do original e exige apenas conhecimento básico de coerção."
+    },
+    {
+      "id": "Programmierung-019",
+      "verdict": "REVISE",
+      "reason": "A linguagem indefinida e a recomendação genérica de validar se sobrepõem a 023; uma conversão concreta separa essa competência da validação de limites.",
+      "recommended_final_question": {
+        "id": "Programmierung-019",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "In JavaScript gilt const eingabe = \"42\";. Welcher Ausdruck liefert den Zahlenwert 50?",
+        "answer1": "Number(eingabe) + 8",
+        "answer2": "eingabe + 8",
+        "answer3": "Number(eingabe + 8)",
+        "answer4": "Boolean(eingabe) + 8",
+        "correctAnswer": 0,
+        "explanation": "Number(eingabe) wandelt \"42\" in die Zahl 42 um; plus 8 ergibt 50. eingabe + 8 verkettet zu \"428\", dessen nachträgliche Umwandlung 428 ergibt. Boolean(\"42\") ist true und wird bei der Addition zu 1, sodass 9 entsteht.",
+        "media": ""
+      }
+    },
+    {
+      "id": "Programmierung-020",
+      "verdict": "APPROVE",
+      "reason": "A conjunção exige ambas as condições; OR, negação e igualdade falham em casos distintos, acrescentando lógica de autorização sem repetir um if simples."
+    },
+    {
+      "id": "Programmierung-021",
+      "verdict": "APPROVE",
+      "reason": "Para i = 1, 2, 3, 4, sum evolui como 0, 2, 2, 6; laço, módulo, condição e acumulação justificam hard e ampliam 015."
+    },
+    {
+      "id": "Programmierung-022",
+      "verdict": "REVISE",
+      "reason": "Escopo é uma competência nova pertinente, mas os distratores são artificiais; um bloco concreto permite verificar sombreamento e saída sem ambiguidade.",
+      "recommended_final_question": {
+        "id": "Programmierung-022",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Was gibt dieser JavaScript-Code aus?\nlet meldung = \"bereit\";\nif (true) {\n  let meldung = \"aktiv\";\n}\nconsole.log(meldung);",
+        "answer1": "\"bereit\"",
+        "answer2": "\"aktiv\"",
+        "answer3": "undefined",
+        "answer4": "Es entsteht ein ReferenceError.",
+        "correctAnswer": 0,
+        "explanation": "Die let-Deklaration im if-Block erzeugt eine eigene Variable und verdeckt dort die äußere Variable. Nach dem Block wird die unveränderte äußere Variable mit dem Wert \"bereit\" ausgegeben.",
+        "media": ""
+      }
+    },
+    {
+      "id": "Programmierung-023",
+      "verdict": "REVISE",
+      "reason": "A validação de portas é relevante, mas faltam limites concretos e distratores plausíveis; a revisão distingue inteiros, frações e extremos, além da conversão de 019.",
+      "recommended_final_question": {
+        "id": "Programmierung-023",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Ein Konfigurationsfeld erlaubt laut Vorgabe nur ganze Portnummern von 1 bis 65535 einschließlich. p liegt bereits als JavaScript-Zahl vor. Welche Bedingung akzeptiert genau die erlaubten Werte?",
+        "answer1": "Number.isInteger(p) && p >= 1 && p <= 65535",
+        "answer2": "Number.isInteger(p) && p >= 1",
+        "answer3": "p >= 1 && p <= 65535",
+        "answer4": "Number.isInteger(p) && p > 1 && p < 65535",
+        "correctAnswer": 0,
+        "explanation": "Die Prüfung muss Ganzzahligkeit sowie beide eingeschlossenen Grenzen verlangen. Ohne obere Grenze wird z. B. 65536 akzeptiert, ohne Ganzzahlprüfung 1.5; strikte Vergleiche schließen die erlaubten Werte 1 und 65535 aus.",
+        "media": ""
+      }
+    },
+    {
+      "id": "Programmierung-024",
+      "verdict": "REVISE",
+      "reason": "Tratamento de falhas de arquivo acrescenta valor prático, mas os distratores originais são absurdos; alternativas de fluxo tornam a escolha de tratamento verificável.",
+      "recommended_final_question": {
+        "id": "Programmierung-024",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Eine Anwendung benötigt eine Konfigurationsdatei. Fehlt sie, wirft die Lesefunktion eine Ausnahme. Welche Umsetzung meldet den Fehler verständlich und bricht den betroffenen Vorgang kontrolliert ab?",
+        "answer1": "Die Ausnahme beim Lesen abfangen, den Fehler melden und den Vorgang beenden.",
+        "answer2": "Die Ausnahme abfangen, eine leere Konfiguration zurückgeben und den Vorgang fortsetzen.",
+        "answer3": "Die Fehlermeldung direkt hinter den Leseaufruf ohne Ausnahmebehandlung schreiben.",
+        "answer4": "Den Leseaufruf in eine Schleife mit drei Wiederholungen ohne Ausnahmebehandlung setzen.",
+        "correctAnswer": 0,
+        "explanation": "Das Abfangen der Ausnahme ermöglicht eine verständliche Meldung und das kontrollierte Beenden des Vorgangs. Ohne Behandlung unterbricht die Ausnahme den normalen Ablauf; eine leere Konfiguration würde den Vorgang entgegen der Vorgabe fortsetzen.",
+        "media": ""
+      }
+    },
+    {
+      "id": "Programmierung-025",
+      "verdict": "REVISE",
+      "reason": "A classificação repete parcialmente 001 e usa distratores caricatos; localizar um operador errado acrescenta diagnóstico concreto em vez de outra definição de erro.",
+      "recommended_final_question": {
+        "id": "Programmierung-025",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Eine Funktion soll den Gesamtpreis für mehrere gleiche Artikel berechnen, ohne Rabatte oder Zuschläge:\nfunction gesamtpreis(einzelpreis, anzahl) {\n  return einzelpreis + anzahl;\n}\nDer Test gesamtpreis(4, 3) liefert 7 statt 12. Welche Ersetzung der return-Anweisung behebt den Rechenfehler auch für andere gültige Preise und Stückzahlen?",
+        "answer1": "return einzelpreis * anzahl;",
+        "answer2": "return einzelpreis + anzahl + 5;",
+        "answer3": "return 12;",
+        "answer4": "return einzelpreis * 3;",
+        "correctAnswer": 0,
+        "explanation": "Der Gesamtpreis ergibt sich aus Einzelpreis mal Stückzahl. Alle vier Varianten liefern für den genannten Test 12, aber nur einzelpreis * anzahl setzt die Regel auch für andere Eingaben um; z. B. muss gesamtpreis(5, 2) den Wert 10 liefern.",
+        "media": ""
+      }
+    },
+    {
+      "id": "Programmierung-026",
+      "verdict": "REJECT",
+      "reason": "Repete a acumulação já avaliada com mais substância em 021, e distratores como dividir por zero não sustentam valor pedagógico adicional."
+    },
+    {
+      "id": "Programmierung-027",
+      "verdict": "REVISE",
+      "reason": "Objetos agregam uma competência útil, mas vantagens automáticas fantasiosas enfraquecem os distratores; atualizar uma propriedade testa concretamente o uso do registro.",
+      "recommended_final_question": {
+        "id": "Programmierung-027",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "In JavaScript ist ein Gerät so gespeichert:\nlet geraet = { name: \"srv01\", ip: \"192.0.2.10\", status: \"offline\" };\nWelche Anweisung setzt den Status auf \"online\" und erhält name und ip?",
+        "answer1": "geraet.status = \"online\";",
+        "answer2": "geraet.name = \"online\";",
+        "answer3": "geraet.status === \"online\";",
+        "answer4": "geraet = { status: \"online\" };",
+        "correctAnswer": 0,
+        "explanation": "Die Zuweisung an geraet.status ändert gezielt diese Eigenschaft. Die anderen Varianten ändern den Namen, vergleichen nur einen Wert oder ersetzen das gesamte Objekt und verlieren dabei name und ip.",
+        "media": ""
+      }
+    },
+    {
+      "id": "Programmierung-028",
+      "verdict": "REVISE",
+      "reason": "A recomendação evidente não justifica hard e se aproxima de 007; separar cálculo de entrada e saída permite avaliar modularização e testabilidade em medium.",
+      "recommended_final_question": {
+        "id": "Programmierung-028",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "Die Berechnung eines Berichts soll mit festen Testdaten geprüft werden, ohne Tastaturzugriff, Dateizugriff oder Bildschirmausgabe. Welche Gestaltung der Berechnungsfunktion unterstützt das?",
+        "answer1": "Sie erhält die Daten als Parameter und gibt den berechneten Bericht zurück.",
+        "answer2": "Sie liest die Daten von der Tastatur und gibt den berechneten Bericht zurück.",
+        "answer3": "Sie erhält die Daten als Parameter und schreibt den berechneten Bericht auf den Bildschirm.",
+        "answer4": "Sie erhält einen Dateipfad, liest die Daten daraus und gibt den berechneten Bericht zurück.",
+        "correctAnswer": 0,
+        "explanation": "Parameter und Rückgabewert trennen die Berechnung von Ein- und Ausgabe. Ein Test kann Daten übergeben und den zurückgegebenen Bericht prüfen; andere Funktionen übernehmen Tastatur, Dateien oder Bildschirm.",
+        "media": ""
+      }
+    },
+    {
+      "id": "Programmierung-029",
+      "verdict": "REVISE",
+      "reason": "Filtragem amplia a cobertura, mas a proposta apenas repete o enunciado na resposta; escolher entre operações reais exige distinguir lista, mapeamento e busca.",
+      "recommended_final_question": {
+        "id": "Programmierung-029",
+        "category": "Programmierung",
+        "difficulty": "medium",
+        "question": "geraete ist ein JavaScript-Array mit Geräteobjekten, die jeweils eine Eigenschaft status besitzen. Welche Anweisung erzeugt ein neues Array mit allen Geräten mit dem Status \"offline\", ohne die ursprünglichen Einträge zu ändern?",
+        "answer1": "const auswahl = geraete.filter(geraet => geraet.status === \"offline\");",
+        "answer2": "const auswahl = geraete.map(geraet => geraet.status === \"offline\");",
+        "answer3": "const auswahl = geraete.find(geraet => geraet.status === \"offline\");",
+        "answer4": "const auswahl = geraete.every(geraet => geraet.status === \"offline\");",
+        "correctAnswer": 0,
+        "explanation": "filter liefert ein neues Array mit allen passenden Geräteobjekten, bei keinem Treffer ein leeres Array. map liefert hier Wahrheitswerte, find nur den ersten Treffer oder undefined und every einen einzelnen Wahrheitswert. Der Vergleich verändert die Geräteobjekte nicht.",
+        "media": ""
+      }
+    },
+    {
+      "id": "Programmierung-030",
+      "verdict": "REJECT",
+      "reason": "Repete a contagem de laço de 015, não justifica hard e descreve incompletamente a inicialização ou atualização dos contadores nos distratores."
+    }
+  ]
+}

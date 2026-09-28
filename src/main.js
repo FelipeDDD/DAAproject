@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import { gameConfig } from './game/config.js';
+import { gameConfig,GAME_SCENES_BY_KEY } from './game/config.js';
+import { classRestoreRoom } from './maps/classState.js';
 import { closePresence, getPresence } from './multiplayer/client.js';
 import { CharacterMenu } from './CharacterMenu.js';
 import { DisplaySettingsController } from './ui/displaySettings.js';
@@ -20,12 +21,23 @@ const backgroundSettings=new BackgroundSettingsController(
 const menu=new CharacterMenu(presence,()=>{
   gameArea.hidden=false;changeButton.hidden=false;logoutButton.hidden=false;gameHud.setVisible(true);
   logoutButton.textContent=presence?.identity?.kind==='guest'?'Exit guest session':'Logout';
-  if(!game)game=new Phaser.Game(gameConfig);
+  const targetRoom=classRestoreRoom(presence?.identity?.classState);
+  if(!game){
+    const initialScene=GAME_SCENES_BY_KEY[targetRoom];
+    game=new Phaser.Game({...gameConfig,scene:[initialScene,...gameConfig.scene.filter(scene=>scene!==initialScene)]});
+  }
   else if(pausedScene){
     const scene=pausedScene;pausedScene=null;
-    scene.enter({targetX:scene.player.x,targetY:scene.player.y});
-    scene.crosshair?.resume();
     scene.scene.resume();
+    if(scene.mapKey===targetRoom){
+      scene.enter({restoreClassState:true});
+      scene.crosshair?.resume();
+    }else{
+      // A class switch is not a map transition: do not retain the previous class's return location.
+      scene.scene.sleep();
+      if(game.scene.isSleeping(targetRoom))game.scene.wake(targetRoom,{restoreClassState:true});
+      else game.scene.launch(targetRoom,{restoreClassState:true});
+    }
   }
 });
 const auth=new ProfileAuth(presence,{

@@ -14,6 +14,8 @@ import { canCharacterOwnItem } from '../src/inventory/characterItems.js';
 import { publicProfile,requireSession } from './profileStore.js';
 import { MAX_PLAYER_CAPACITY } from '../src/multiplayer/playerCapacity.js';
 import { normalizeDisplayName } from '../src/displayName.js';
+import { equippedItemId } from './characterLoadouts.js';
+import { findProfileCharacterState,publicClassState,savePlayerClassState } from './profileCharacterState.js';
 
 export const availability = query({
   args: {},
@@ -46,15 +48,20 @@ export const claim = internalMutation({
     if(rows.filter(row=>isPlayerActive(row)).length-existing.filter(row=>isPlayerActive(row)).length>=MAX_PLAYER_CAPACITY)
       return {ok:false,reason:'full'};
     const now=Date.now();
-    for(const row of existing)await ctx.db.delete(row._id);
+    for(const row of existing){
+      if(row.profileId===profile._id&&isPlayerActive(row,now))await savePlayerClassState(ctx,row,now);
+      await ctx.db.delete(row._id);
+    }
     await ctx.db.patch(profile._id,{selectedCharacterId:c.id,updatedAt:now});
+    const activeCharacterItem=await equippedItemId(ctx,profile._id,baseCharacterId(c.id));
+    const classState=publicClassState(await findProfileCharacterState(ctx,profile._id,baseCharacterId(c.id)));
     const state={profileId:profile._id,identityKind:'profile',playerId:'pending',characterId:c.id,
       characterBaseId:baseCharacterId(c.id),name:displayName,displayName,sessionId,room:'selection',x:0,y:0,direction:'down',presenceMode:'playing',
-      equippedSkin:'classic',activeCharacterItem:null,moving:undefined,velocityX:undefined,velocityY:undefined,lastSeen:now};
+      equippedSkin:'classic',activeCharacterItem,moving:undefined,velocityX:undefined,velocityY:undefined,lastSeen:now};
     // A fresh Convex document ID is the independent live identity; never an authorization token.
     const playerId=await ctx.db.insert('players',state);
     await ctx.db.patch(playerId,{playerId});
-    return {ok:true,playerId,profile:publicProfile({...profile,selectedCharacterId:c.id,updatedAt:now})};
+    return {ok:true,playerId,profile:publicProfile({...profile,selectedCharacterId:c.id,updatedAt:now}),classState};
   },
 });
 
@@ -84,7 +91,10 @@ export const release = mutation({
   handler:async(ctx,{playerId,characterId,sessionId})=>{
     const row=await findSessionPlayer(ctx,characterId,playerId);
     const released=ownsCharacterSession(row,characterId,sessionId)&&(playerId===undefined||ownsPlayerSession(row,playerId,sessionId));
-    if(released)await ctx.db.delete(row._id);
+    if(released){
+      if(isPlayerActive(row))await savePlayerClassState(ctx,row);
+      await ctx.db.delete(row._id);
+    }
     return {released};
   },
 });
@@ -152,7 +162,7 @@ export const update = mutation({
     x: v.number(), y: v.number(), direction: v.string(),
     moving:v.optional(v.boolean()),velocityX:v.optional(v.number()),velocityY:v.optional(v.number()),
     equippedSkin:v.optional(v.union(v.literal('classic'),v.literal('remastered'))),
-    activeCharacterItem:v.optional(v.union(v.literal('lung_crusher_3000'),v.null())),
+    activeCharacterItem:v.optional(v.union(v.string(),v.null())),
   },
   handler: async (ctx, args) => {
     if (!Number.isFinite(args.x) || !Number.isFinite(args.y) ||
@@ -168,11 +178,12 @@ export const update = mutation({
     if(!ownsCharacterSession(existing,args.characterId,args.sessionId)||!ownsPlayerSession(existing,args.playerId,args.sessionId)
       ||!isPlayerActive(existing))throw new Error('CHARACTER_SESSION_LOST');
     if(existing.presenceMode==='terminal')return;
+    if(existing.room!==args.room)await savePlayerClassState(ctx,existing);
     const state = {
       room:args.room,x:args.x,y:args.y,direction:args.direction,
       characterBaseId:baseCharacterId(args.characterId),
       moving:args.moving,velocityX:args.velocityX,velocityY:args.velocityY,
-      equippedSkin:args.equippedSkin,activeCharacterItem:args.activeCharacterItem??null,
+      equippedSkin:args.equippedSkin,activeCharacterItem:existing.profileId?existing.activeCharacterItem??null:args.activeCharacterItem??null,
       name:existing.displayName??existing.name,
       displayName:existing.displayName??existing.name,lastSeen:Date.now(),
       presenceMode:'playing',stationaryLeaseExpiresAt:undefined,
