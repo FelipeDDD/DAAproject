@@ -42,7 +42,7 @@ export class ArenaHudOverlay {
 
     this.notice=element(documentRef,'div','arena-combat-notice');this.notice.hidden=true;
     this.tutorial=element(documentRef,'div','arena-attack-tutorial');this.tutorial.hidden=true;
-    this.tutorial.textContent='Aim with your mouse and press SPACE or 0 to attack';
+    this.tutorial.textContent='Aim with your mouse and press SPACE, 0 or click to attack';
     this.tutorial.setAttribute('role','status');
     this.root.append(this.bossHud,this.notice,this.tutorial);
     this.host=scene.game.canvas.parentElement?.closest?.('#game-shell')

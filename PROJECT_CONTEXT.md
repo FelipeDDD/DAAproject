@@ -15,6 +15,7 @@ Do not reread it for routine isolated edits when the current session already has
 - The first five correct answers create the profile's safe row. Later visits require one; the backend reads this persistent marker and checks the answer count at unlock. The Office3 quiz and command window now open slightly taller, within the viewport.
 - `Notes/cofre` in the authored Office3 map controls the safe footprint; `office3-safe.png` has closed/open frames, smooth per-texture filtering and a separate one-second green pulse. The local open appearance follows the profile's inventory.
 - The fictional command prompt supports `dir`, `cd`, the authored joke files and Notepad. `very_safe_program.exe` closes it and imposes a ten-second persisted per-profile cooldown. No real commands/files execute. See `src/office3/README.md` for art and implementation details.
+- The Office3 prompt now uses reusable `src/terminal/virtualComputer.js` with per-PC configuration in `src/office3/office3Computer.js`. Command parsing, nested virtual files, hostname/IP settings, DNS server versus local cache, ping, ipconfig, nslookup and hostname-sensitive `connect` services are simulated entirely on the client. PC-USER starts with stale Director DNS; `/flushdns` repairs it for that open session. The Director service only has an authentication-required banner; port clue, connect tutorial and final credentials remain future work. The existing Office3 quiz/safe progress still lives in Convex; individual terminal commands do not call it.
 
 ## Local development commands
 

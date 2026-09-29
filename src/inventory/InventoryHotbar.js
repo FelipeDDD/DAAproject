@@ -6,13 +6,12 @@ import { FloatingHotbar } from '../ui/FloatingHotbar.js';
 import { fixedHudEnabled,HUD_LAYOUT } from '../hud/config.js';
 
 const publicAsset=path=>new URL(`${import.meta.env.BASE_URL}${path}`,document.baseURI).href;
-const CONSUMABLE_PREVIEW_HOVER_MS=500;
 
 export class InventoryHotbar {
   constructor(presence,{onToggleItem=()=>{},layout=HUD_LAYOUT}={}){
     this.client=new BossProgressClient(presence);
     this.presence=presence;this.onToggleItem=onToggleItem;this.items=[];this.progress=null;this.characterItems=[];
-    this.overlay=new ItemRewardOverlay();this.slots=[];this.previewTimer=null;
+    this.overlay=new ItemRewardOverlay();this.slots=[];
     this.root=document.createElement('section');this.root.className='school-hotbar inventory-hotbar';this.root.setAttribute('aria-label','Inventory');
     const header=document.createElement('div');header.className='school-hotbar-header inventory-drag-handle';
     const title=document.createElement('span');title.textContent='INVENTORY';
@@ -38,7 +37,6 @@ export class InventoryHotbar {
     if(Number.isFinite(next))this.cooldownTimer=setTimeout(()=>this.refreshItems(),Math.min(next,250));
   }
   async activate(item){
-    clearTimeout(this.previewTimer);this.previewTimer=null;
     if(item?.compatible===false)return;
     const behavior=inventoryItemUseBehavior(item);
     if(behavior==='presentation'){this.overlay.show(item);return;}
@@ -57,33 +55,33 @@ export class InventoryHotbar {
   render(){
     this.slots=inventorySlots(this.items);
     this.slotsRoot.replaceChildren(...this.slots.map((item,index)=>{
+      const wrapper=document.createElement('div');wrapper.className='inventory-slot-wrap';
       const usable=Boolean(inventoryItemUseBehavior(item))&&item?.compatible!==false;
       const slot=document.createElement(usable?'button':'div');slot.className='school-hotbar-slot inventory-slot';slot.dataset.slot=String(index+1);
       if(slot instanceof HTMLButtonElement)slot.type='button';
       const hotkey=document.createElement('kbd');hotkey.textContent=String(index+1);slot.append(hotkey);
-      if(!item){slot.classList.add('empty');slot.setAttribute('aria-label',`Empty inventory slot ${index+1}`);return slot;}
-      slot.dataset.itemId=item.itemId;slot.dataset.tooltip=`${item.name}\n${item.description}`;
+      if(!item){slot.classList.add('empty');slot.setAttribute('aria-label',`Empty inventory slot ${index+1}`);wrapper.append(slot);return wrapper;}
+      slot.dataset.itemId=item.itemId;
+      if(!item.consumable)slot.dataset.tooltip=`${item.name}\n${item.description}`;
       slot.setAttribute('aria-label',`${item.name}. ${item.description}`);
       const image=document.createElement('img');image.src=publicAsset(item.icon);image.alt='';slot.append(image);
+      let consumableActions;
       if(item.activatable||item.consumable){
         const remaining=itemCooldownRemaining(item);slot.disabled=remaining>0||item.compatible===false;
         slot.classList.toggle('active',Boolean(item.active));
-        slot.dataset.tooltip=`${item.name}\n${item.compatible===false?'Unavailable for this character.':remaining>0?`Cooldown: ${Math.ceil(remaining/1000)}s`:item.consumable?`Restores up to ${item.healAmount} HP. Click to use.`:item.active?'Click to deactivate.':'Click to activate.'}`;
+        if(!item.consumable)slot.dataset.tooltip=`${item.name}\n${item.compatible===false?'Unavailable for this character.':remaining>0?`Cooldown: ${Math.ceil(remaining/1000)}s`:item.active?'Click to deactivate.':'Click to activate.'}`;
       }
       if(item.consumable){
-        slot.addEventListener('pointerenter',()=>{
-          clearTimeout(this.previewTimer);
-          this.previewTimer=setTimeout(()=>{
-            this.previewTimer=null;
-            this.overlay.show(item,{eyebrow:'ITEM PREVIEW'});
-          },CONSUMABLE_PREVIEW_HOVER_MS);
-        });
-        slot.addEventListener('pointerleave',()=>{clearTimeout(this.previewTimer);this.previewTimer=null;});
+        consumableActions=document.createElement('div');consumableActions.className='inventory-consumable-actions';
+        const description=document.createElement('p');description.textContent=`${item.name}\n${item.description}`;
+        const examine=document.createElement('button');examine.type='button';examine.textContent='Examine item';
+        examine.addEventListener('click',event=>{event.stopPropagation();this.overlay.show(item,{eyebrow:'ITEM PREVIEW'});});
+        consumableActions.append(description,examine);
       }
       if(usable)slot.addEventListener('click',()=>void this.activate(item));
       if(item.quantity>1){const quantity=document.createElement('span');quantity.className='inventory-quantity';quantity.textContent=String(item.quantity);slot.append(quantity);}
-      return slot;
+      wrapper.append(slot);if(consumableActions)wrapper.append(consumableActions);return wrapper;
     }));
   }
-  destroy(){clearTimeout(this.cooldownTimer);clearTimeout(this.previewTimer);window.removeEventListener('keydown',this.onKeyDown);this.floating?.destroy();this.overlay.destroy();this.root.remove();}
+  destroy(){clearTimeout(this.cooldownTimer);window.removeEventListener('keydown',this.onKeyDown);this.floating?.destroy();this.overlay.destroy();this.root.remove();}
 }

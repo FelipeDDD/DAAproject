@@ -38,7 +38,7 @@ test('fictional shell lists only authored folders, denies system directories and
   assert.equal(runOfficeCommand('',`CD ${NORMAL_FOLDER.toUpperCase()}`,'').folder,NORMAL_FOLDER);
   assert.equal(runOfficeCommand(NORMAL_FOLDER,'cd ..','').folder,'');
   assert.equal(runOfficeCommand(NORMAL_FOLDER,`cd C:\\${PASSWORD_FOLDER}`,'').folder,PASSWORD_FOLDER);
-  assert.equal(runOfficeCommand('','rm -rf /','').message,'Command not recognized.');
+  assert.match(runOfficeCommand('','rm -rf /','').message,/not recognized as an internal or external command/);
   assert.equal(runOfficeCommand('',PASSWORD_FILE,'0123').error,true);
 });
 test('notepad exposes own code and exact TODO; every joke file is usable',()=>{

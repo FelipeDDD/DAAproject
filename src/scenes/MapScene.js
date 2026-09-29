@@ -47,6 +47,10 @@ import { applySmoothDecorativeTextureFilters } from '../maps/decorativeTextureFi
 import { classRestoreDestination } from '../maps/classState.js';
 import '../terminal/terminal.css';
 
+// The main classroom quiz chairs are temporarily unavailable; remove `school`
+// from this set when multiplayer seating should be enabled there again.
+const MULTIPLAYER_QUIZ_DISABLED_MAPS=new Set(['school']);
+
 function readTileset(xml, firstgid) {
   const root = xml.documentElement;
   const image = root.querySelector('image');
@@ -283,7 +287,8 @@ export class MapScene extends Phaser.Scene {
       void this.characterItems?.restore();
       this.characterItems?.createPickup(objectsIn(this.source,'Spawns').find(object=>object.name==='arena'));
       this.quiz?.close();
-      this.quiz=this.presence ? new QuizLobby(this,this.presence,this.quizSeats) : null;
+      this.quiz=this.presence&&!MULTIPLAYER_QUIZ_DISABLED_MAPS.has(this.mapKey)
+        ? new QuizLobby(this,this.presence,this.quizSeats) : null;
       this.soloStudy?.close();
       this.soloStudy=this.presence ? new SoloStudyController(this,this.presence,this.soloStudySeats) : null;
       this.emoteBar?.close();this.emoteSync?.close();this.emoteRenderer?.close();

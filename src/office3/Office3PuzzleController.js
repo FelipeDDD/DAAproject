@@ -1,6 +1,6 @@
 import { CHARACTER_ITEM_IDS, characterItemDefinition } from '../inventory/characterItems.js';
 import { hasProfileSession, requireProfileSessionToken } from '../ProfileSessionClient.js';
-import { runOfficeCommand } from './office3Computer.js';
+import { createOffice3ComputerSession, runOfficeCommand } from './office3Computer.js';
 import { WorldPrompt } from '../ui/WorldPrompt.js';
 import { renderQuizMedia } from '../QuizMedia.js';
 import { office3PaperPlacement } from '../art/office3PaperHighlight.js';
@@ -317,7 +317,8 @@ export class Office3PuzzleController {
       const result=await this.safeRequest('unlockComputer',{password:'488',answers:this.correctAnswers});
       if(!this.active||generation!==this.generation)return;
       if(result.blockedUntil){this.scene.registry.set('office3-computer-blocked',result.blockedUntil);this.showComputerCooldown();return;}
-      this.safeCode=result.code;this.folder='';this.commandHistory=[];this.showComputer();
+      this.safeCode=result.code;this.folder='';this.computerSession=createOffice3ComputerSession();
+      this.commandHistory=[];this.showComputer();
     } catch(error) {
       if(!this.active||generation!==this.generation)return;
       this.resetPanel('COMPUTER UNAVAILABLE');
@@ -329,7 +330,7 @@ export class Office3PuzzleController {
 
   showComputer() {
     this.resetPanel('Command Prompt','computer');
-    this.panel.append(element('p','office3-command-banner','Office OS [Version 3.0]\nType dir to list files. Use cd <folder> and cd .. to navigate.\nType a filename to open it.'));
+    this.panel.append(element('p','office3-command-banner','Office OS [Version 3.0]\nType help for commands. Use dir, cd and type to inspect files.'));
     const output=element('div','office3-command-output');output.setAttribute('role','log');
     for(const line of this.commandHistory??[])output.append(element('pre',line.error?'office3-command-error':'',line.text));
     this.commandOutput=output;
@@ -346,7 +347,8 @@ export class Office3PuzzleController {
   async executeCommand() {
     if(this.busy||!this.commandInput||!this.active)return;
     const command=this.commandInput.value;if(!command.trim())return;
-    const result=runOfficeCommand(this.folder,command,this.safeCode);
+    this.computerSession ??= createOffice3ComputerSession();
+    const result=runOfficeCommand(this.folder,command,this.safeCode,this.computerSession);
     this.commandHistory.push({text:`C:\\${this.folder}> ${command}`});
     if(result.message)this.commandHistory.push({text:result.message,error:result.error});
     this.commandHistory=this.commandHistory.slice(-80);this.folder=result.folder;
@@ -361,7 +363,12 @@ export class Office3PuzzleController {
       }finally{if(generation===this.generation)this.busy=false;}
       return;
     }
-    if(result.note!==undefined){
+    if(result.service){
+      this.resetPanel(result.service.title,'computer');
+      this.panel.append(element('pre','office3-notepad-text',result.service.banner));
+      const back=element('button','','Back to command prompt');back.type='button';
+      back.addEventListener('click',()=>this.showComputer());this.panel.append(back);back.focus();
+    }else if(result.note!==undefined){
       this.resetPanel(`${result.title} — Notepad`,'notepad');
       this.panel.append(element('pre','office3-notepad-text',result.note));
       const back=element('button','','Back to command prompt');back.type='button';
@@ -445,6 +452,7 @@ export class Office3PuzzleController {
     this.generation++;
     this.commandInput=null;
     this.safeCode=null;
+    this.computerSession=null;
     this.busy = false;
     this.root.hidden = true;
     this.panel.replaceChildren();

@@ -13,7 +13,7 @@ test('Mysterious Man follows the Tiled marker used by the running map',()=>{
   assert.equal(koettingMarker(moved).x,marker.x+32);
 });
 
-test('three consecutive answers earn one three-potion stack; a mistake resets progress',()=>{
+test('three consecutive answers earn one two-potion stack; a mistake resets progress',()=>{
   let streak=nextKoettingStreak(0,true);
   streak=nextKoettingStreak(streak,true);
   assert.equal(streak,2);
@@ -21,5 +21,5 @@ test('three consecutive answers earn one three-potion stack; a mistake resets pr
   assert.equal(streak,0);
   for(let index=0;index<3;index++)streak=nextKoettingStreak(streak,true);
   assert.equal(streak,KOETTING_STREAK_TARGET);
-  assert.equal(KOETTING_REWARD_AMOUNT,3);
+  assert.equal(KOETTING_REWARD_AMOUNT,2);
 });

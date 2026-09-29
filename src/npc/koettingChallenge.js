@@ -1,7 +1,7 @@
 import { objectsIn } from '../maps/tiledObjects.js';
 
 export const KOETTING_STREAK_TARGET=3;
-export const KOETTING_REWARD_AMOUNT=3;
+export const KOETTING_REWARD_AMOUNT=2;
 
 export function koettingMarker(source){
   const marker=objectsIn(source,'Notes').find(object=>object.name==='koetting-NPC');

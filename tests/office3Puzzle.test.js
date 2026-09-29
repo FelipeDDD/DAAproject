@@ -48,12 +48,10 @@ test('five correct answers in sequence unlock; any error resets to zero', () => 
   assert.equal(nextStreak(count, true), OFFICE3_STREAK_TARGET);
 });
 
-test('repeat challenge finishes after three consecutive answers and resets on errors', () => {
-  assert.equal(nextStreak(0,true,3),1);
-  assert.equal(nextStreak(1,true,3),2);
-  assert.equal(nextStreak(2,false,3),0);
-  assert.equal(nextStreak(2,true,3),3);
-  assert.equal(nextStreak(3,true,3),3);
+test('repeat challenge accepts one correct answer', () => {
+  assert.equal(nextStreak(0,false,1),0);
+  assert.equal(nextStreak(0,true,1),1);
+  assert.equal(nextStreak(1,true,1),1);
 });
 
 test('quiz pulls four-answer questions from the existing bank without repeating the previous ID', () => {

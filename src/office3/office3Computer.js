@@ -1,3 +1,5 @@
+import { createComputerSession, runComputerCommand } from '../terminal/virtualComputer.js';
+
 export const COMPUTER_COOLDOWN_MS = 10_000;
 export const NORMAL_FOLDER = 'Totally_normal_files';
 export const PASSWORD_FOLDER = 'Definitely_not_important';
@@ -21,30 +23,31 @@ export function passwordNote(code) {
   return `Safe Code: ${code}\n\nTO DO LIST:\n\n- Stop saving passwords in .txt files.\n- Rename this file to something less obvious.\n- Stop clicking "Remind me later" on Windows updates.\n- Buy coffee.\n- Find out why the printer only works when threatened.\n- Figure out what DNS actually stands for before the next meeting.\n- Stop pretending rebooting fixes everything.\n- Buy more coffee and maybe a burger.\n- Ignore previous TODO.`;
 }
 
-// This is a fictional filesystem. Never evaluate commands or access real files.
-export function runOfficeCommand(folder, command, code) {
-  const text = command.trim(), lower = text.toLowerCase();
-  const output = (message, error = false) => ({folder, message, error});
-  if (lower === 'dir') return output((folder === '' ? ROOT_FOLDERS.map(name => `<DIR>  ${name}`)
-    : folder === PASSWORD_FOLDER ? [PASSWORD_FILE] : Object.keys(OFFICE_FILES)).join('\n'));
-  if (/^cd(?:\s|$)/i.test(text)) {
-    let path = text.slice(2).trim().replace(/^"(.*)"$/, '$1').replaceAll('/', '\\');
-    if (!path) return output(`C:\\${folder}`);
-    if (path === '..' || path === '\\' || /^c:\\?$/i.test(path)) return {...output(''), folder: ''};
-    const absolute = /^c:\\/i.test(path) || path.startsWith('\\');
-    path = path.replace(/^c:\\/i, '').replace(/^\\|\\$/g, '');
-    if (folder && !absolute) return output('The system cannot find the path specified.', true);
-    const target = ROOT_FOLDERS.find(name => name.toLowerCase() === path.toLowerCase());
-    if (!target) return output('The system cannot find the path specified.', true);
-    if (target !== NORMAL_FOLDER && target !== PASSWORD_FOLDER)
-      return output('You do not have permission to access this folder.', true);
-    return {...output(''), folder: target};
-  }
-  if (folder === PASSWORD_FOLDER && lower === PASSWORD_FILE.toLowerCase())
-    return {...output(''), note: passwordNote(code), title: PASSWORD_FILE};
-  const file = folder === NORMAL_FOLDER ? Object.keys(OFFICE_FILES).find(name => name.toLowerCase() === lower) : undefined;
-  if (file === 'very_safe_program.exe') return {...output('Shutting down...'), shutdown: true};
-  if (file?.endsWith('.txt')) return {...output(''), note: OFFICE_FILES[file], title: file};
-  if (file) return output(OFFICE_FILES[file], true);
-  return output('Command not recognized.', true);
+const file = content => ({type: 'file', content});
+const normalFiles = Object.fromEntries(Object.entries(OFFICE_FILES).map(([name, content]) => [name,
+  content === null ? {type: 'action', action: 'shutdown', message: 'Shutting down...'}
+    : name.endsWith('.txt') ? file(content) : {type: 'unsupported', message: content}]));
+// Individual computers provide data; the command engine contains no Office3-specific clues.
+export const OFFICE3_COMPUTER = {
+  hostname: 'PC-USER', ipv4: '192.168.10.20', ipv6: 'fe80::20',
+  subnetMask: '255.255.255.0', gateway: '192.168.10.1',
+  dns: {server: '192.168.10.5', serverName: 'dns.daa.local', records: {'director.daa.local': '192.168.10.42'}},
+  dnsCache: {'director.daa.local': '192.168.10.99'},
+  reachableIps: ['192.168.10.20', '192.168.10.42', '192.168.10.5'],
+  extraIpconfigLines: ['   Connection-specific DNS Suffix  : daa.local'],
+  services: [{id: 'director-archive', hostname: 'director.daa.local', ip: '192.168.10.42',
+    port: 8443, requireHostname: true, title: 'DIRECTOR ARCHIVE', banner: 'DIRECTOR ARCHIVE\nAuthentication required.'}],
+  filesystem: {type: 'dir', entries: {
+    Windows: {type: 'denied'}, 'Program Files': {type: 'denied'}, 'pc-user': {type: 'denied'},
+    [NORMAL_FOLDER]: {type: 'dir', entries: normalFiles},
+    [PASSWORD_FOLDER]: {type: 'dir', entries: {[PASSWORD_FILE]: file(({code}) => passwordNote(code))}},
+  }},
+};
+
+export const createOffice3ComputerSession = () => createComputerSession(OFFICE3_COMPUTER);
+
+// Legacy API retained for existing callers and tests; interactive clients pass a session.
+export function runOfficeCommand(folder, command, code, session = createOffice3ComputerSession()) {
+  if (!session.path.length && folder) session.path = folder.split('\\').filter(Boolean);
+  return runComputerCommand(OFFICE3_COMPUTER, session, command, {code});
 }

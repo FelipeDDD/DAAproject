@@ -173,6 +173,7 @@
 }
 .hud-fixed-hotbars #bottom-hud .school-hotbar-header { display: none; }
 .hud-fixed-hotbars #bottom-hud .school-hotbar-slots { justify-content: center; width: 100%; gap: clamp(2px,.42cqw,5px); }
+.hud-fixed-hotbars #bottom-hud .inventory-slot-wrap { flex-basis: clamp(27px,4.05cqw,45px); width: clamp(27px,4.05cqw,45px); height: clamp(27px,4.05cqw,45px); }
 .hud-fixed-hotbars #bottom-hud .school-hotbar-slot,
 .hud-fixed-hotbars #bottom-hud #emote-slots button {
   width: clamp(27px,4.05cqw,45px);
@@ -335,6 +336,7 @@ html[data-viewport-size] #bottom-hud .inventory-slot {
   background:linear-gradient(145deg,#1a2026f2,#080b0ff5);
   box-shadow:inset 0 0 0 1px #d9c49b18,inset 0 0 8px #000,inset 0 1px #d9c49b24;
 }
+html[data-viewport-size] #bottom-hud .inventory-slot-wrap { flex-basis:var(--hud-large-slot-size); width:var(--hud-large-slot-size); height:var(--hud-large-slot-size); }
 html[data-viewport-size] #bottom-hud .inventory-slot img { width:80%; height:80%; }
 html[data-viewport-size] #bottom-hud :is(#emote-slots button,#emote-settings) {
   width:var(--hud-large-emote-size); height:var(--hud-large-emote-size); flex-shrink:0;

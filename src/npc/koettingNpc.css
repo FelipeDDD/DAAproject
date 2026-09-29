@@ -53,7 +53,6 @@
 }
 .koetting-speech[role='button'] { cursor:pointer; }
 .koetting-speech-text { min-height:14em; margin:0; }
-.koetting-dialogue-hint { display:block; margin-top:12px; color:#62686a; font-size:12px; }
 .koetting-next,.koetting-choice {
   border:1px solid #a99566; border-radius:8px; background:#293831;
   color:#f8ecd3; font:inherit; cursor:pointer;

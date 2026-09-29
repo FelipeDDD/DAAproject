@@ -9,7 +9,7 @@ import { koettingMarker, KOETTING_REWARD_AMOUNT, KOETTING_STREAK_TARGET, nextKoe
 import './koettingNpc.css';
 
 const INTERACTION_DISTANCE=58;
-const TYPE_INTERVAL_MS=10;
+const TYPE_INTERVAL_MS=30;
 const NPC_SIZE=Object.freeze({width:74,height:100});
 const NPC_TILE_OFFSET_Y=.5;
 const DIALOGUE=`Hey, Schüler. Warum bist du nicht im Unterricht?
@@ -36,9 +36,9 @@ export class KoettingNpc {
     this.position={x:marker.x,y:marker.y+(scene.source.tileheight??32)*NPC_TILE_OFFSET_Y};
     this.figure=scene.add.image(this.position.x,this.position.y,'secret-path-koetting')
       .setOrigin(.5,1).setDisplaySize(NPC_SIZE.width,NPC_SIZE.height).setTint(0x8e9baa).setDepth(this.position.y);
-    this.prompt=new WorldPrompt(scene,'[E] Sprich mit dem geheimnisvollen Mann',{className:'koetting-world-prompt'});
+    this.prompt=new WorldPrompt(scene,'[E] to speak to the mysterious man',{className:'koetting-world-prompt'});
     this.prompt.setPosition(this.position.x,this.position.y-88);
-    this.giftPrompt=new WorldPrompt(scene,'[E] Drei Tränke aufheben',{className:'koetting-gift-prompt'});
+    this.giftPrompt=new WorldPrompt(scene,'[E] Tränke aufheben',{className:'koetting-gift-prompt'});
     this.giftPrompt.setPosition(this.position.x,this.position.y+6);
 
     this.root=element('div','koetting-overlay');this.root.hidden=true;
@@ -101,8 +101,7 @@ export class KoettingNpc {
     bubble.tabIndex=0;bubble.setAttribute('role','button');
     bubble.setAttribute('aria-label','Dialog vollständig anzeigen oder fortfahren');
     const text=element('p','koetting-speech-text','');
-    const hint=element('small','koetting-dialogue-hint','Klicken: Text vollständig anzeigen');
-    bubble.append(text,hint);
+    bubble.append(text);
     const next=element('button','koetting-next','Weiter');next.type='button';
     const advance=()=>this.advanceDialogue();
     bubble.addEventListener('click',advance);
@@ -111,7 +110,7 @@ export class KoettingNpc {
     });
     next.addEventListener('click',advance);
     this.content.replaceChildren(name,bubble,next);
-    this.dialogueText=text;this.dialogueHint=hint;this.dialogueNext=next;this.typed=0;
+    this.dialogueText=text;this.dialogueNext=next;this.typed=0;
     this.typeTimer=setInterval(()=>{
       this.typed=Math.min(DIALOGUE.length,this.typed+1);
       text.textContent=DIALOGUE.slice(0,this.typed);
@@ -122,7 +121,6 @@ export class KoettingNpc {
   finishTyping(){
     clearInterval(this.typeTimer);this.typeTimer=null;this.typed=DIALOGUE.length;
     this.dialogueText.textContent=DIALOGUE;
-    this.dialogueHint.textContent='Klicken, um fortzufahren';
     this.dialogueNext.textContent='Zu den Fragen';
   }
   advanceDialogue(){
@@ -198,7 +196,7 @@ export class KoettingNpc {
     this.panel.dataset.stage='reward';this.setPortrait('assets/npc/koetting-reward.png');
     const name=element('h2','koetting-name','Mysterious Man');
     const bubble=element('p','koetting-speech koetting-reward-line',REWARD_LINE);
-    const instruction=element('p','koetting-status','Drei Tränke liegen vor dir. Hebe den Stapel auf.');
+    const instruction=element('p','koetting-status',`${KOETTING_REWARD_AMOUNT} Tränke liegen vor dir. Hebe den Stapel auf.`);
     const close=element('button','koetting-next','Zurück zum Gang');close.type='button';
     close.addEventListener('click',()=>this.close());
     this.content.replaceChildren(name,bubble,instruction,close);close.focus();

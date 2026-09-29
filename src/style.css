@@ -202,6 +202,13 @@ html[data-viewport-size="large"] #room-chat {
 .school-hotbar-header { display: flex; align-items: center; justify-content: space-between; min-height: 17px; padding: 0 3px 4px; color: #7fa6ba; font-size: 9px; font-weight: 800; letter-spacing: .16em; user-select: none; cursor: grab; touch-action: none; }
 .school-hotbar-header:active { cursor: grabbing; }
 .school-hotbar-slots { display: flex; gap: 4px; }
+.inventory-slot-wrap { position: relative; flex: 0 0 44px; width: 44px; height: 44px; }
+.inventory-slot-wrap .inventory-slot { width: 100%; height: 100%; }
+.inventory-consumable-actions { position: absolute; left: 50%; bottom: 100%; z-index: 30; display: none; width: min(220px,70vw); padding: 10px; transform: translateX(-50%); color: #eaf7fc; border: 1px solid #527082; border-radius: 7px; background: #08131df5; box-shadow: 0 5px 16px #000a; font: 12px/1.4 system-ui,sans-serif; pointer-events: auto; }
+.inventory-slot-wrap:hover .inventory-consumable-actions,.inventory-slot-wrap:focus-within .inventory-consumable-actions { display: block; }
+.inventory-consumable-actions p { margin: 0 0 8px; white-space: pre-line; }
+.inventory-consumable-actions button { width: 100%; padding: 6px 8px; color: #f3fbff; border: 1px solid #527082; border-radius: 5px; background: #1b3444; cursor: pointer; font: inherit; }
+.inventory-consumable-actions button:hover,.inventory-consumable-actions button:focus-visible { border-color: #75cee7; background: #284d61; outline: 2px solid #75cee755; }
 .school-hotbar-slot,#emote-slots button { position: relative; width: 44px; height: 44px; box-sizing: border-box; padding: 2px; color: #f3fbff; border: 1px solid #567184; border-radius: 8px; background: linear-gradient(155deg,#172c3bd9,#0a151fe8); box-shadow: inset 0 1px #dff7ff13; }
 #emote-slots button { cursor: pointer; font-size: 24px; line-height: 1; font-family: "Segoe UI Emoji","Apple Color Emoji",sans-serif; }
 .school-hotbar-slot:hover,#emote-slots button:hover,#emote-slots button:focus-visible { border-color: #75cee7; box-shadow: 0 0 12px #45badb59,inset 0 1px #e7faff2b; outline: none; }
@@ -231,7 +238,7 @@ button.inventory-slot:disabled { cursor: wait; opacity: .62; }
 .inventory-slot.empty { opacity: .55; }
 .inventory-slot img { width: 38px; height: 38px; object-fit: contain; filter: drop-shadow(0 2px 3px #0009); }
 .inventory-slot[data-item-id='health_potion'] img { transform: scale(1.3); }
-.inventory-slot[data-item-id='office2_key'] img { object-fit: cover; object-position: 61% center; clip-path: inset(0 7%); }
+.inventory-slot[data-item-id='office2_key'] img { object-fit: cover; object-position: 61% center; clip-path: inset(0 7% 0 14%); }
 .inventory-quantity { position: absolute; right: 3px; bottom: 2px; color: #fff; font-size: 10px; font-weight: 800; text-shadow: 0 1px 3px #000; }
 [data-tooltip] { position: relative; }
 [data-tooltip]::after { position: absolute; left: 50%; bottom: calc(100% + 8px); z-index: 20; width: max-content; max-width: 230px; padding: 7px 9px; transform: translate(-50%,4px); color: #eaf7fc; border: 1px solid #527082; border-radius: 6px; background: #08131df5; box-shadow: 0 5px 16px #000a; content: attr(data-tooltip); font: 11px/1.35 system-ui,sans-serif; text-align: left; white-space: pre-line; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .12s,transform .12s; }
@@ -260,7 +267,7 @@ body { min-height:100vh; margin:0; color:#334550; background-color:var(--page-ba
 .boss-reward-presentation.item[data-item-id='health_potion'] img {
   image-rendering:auto; filter:none; animation:none; transform:none;
 }
-.boss-reward-presentation.item[data-item-id='office2_key'] img { width: min(260px,60vw); height: min(260px,60vw); object-fit: cover; object-position: 61% center; clip-path: inset(0 7%); }
+.boss-reward-presentation.item[data-item-id='office2_key'] img { width: min(260px,60vw); height: min(260px,60vw); object-fit: cover; object-position: 61% center; clip-path: inset(0 7% 0 14%); animation:none; transform:none; filter:none; }
 .boss-reward-presentation.skin img { width: min(45vw,360px); }
 .boss-reward-presentation small { color: #ffd36b; font-weight: 900; letter-spacing: .28em; }
 .boss-reward-panel>button { min-width: 150px; padding: 10px 18px; color: #18202a; border: 0; border-radius: 7px; background: #ffe09a; cursor: pointer; font: inherit; font-weight: 800; }
