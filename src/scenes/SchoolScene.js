@@ -2,6 +2,7 @@ import { MapScene } from './MapScene.js';
 import { drawClassroomDesks } from '../art/classroomDesks.js';
 import { drawOfficeDoor,drawOffice3Door } from '../art/officeDoor.js';
 import { registerSecretaryFrames,SecretaryNpc } from '../npc/SecretaryNpc.js';
+import { drawSchoolBackdrop } from '../art/schoolBackdrop.js';
 
 export class SchoolScene extends MapScene {
   constructor() { super('school', 'classroom.tmj'); }
@@ -20,6 +21,7 @@ export class SchoolScene extends MapScene {
 
   create(destination = {}) {
     super.create(destination);
+    drawSchoolBackdrop(this,this.source);
     drawClassroomDesks(this, this.source);
     drawOfficeDoor(this, this.source);
     drawOffice3Door(this, this.source);
