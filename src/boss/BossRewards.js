@@ -5,7 +5,7 @@ export const BOSS_REWARDS=Object.freeze({
 });
 export const DIRECTOR_REWARD_IDS=Object.freeze(Object.values(BOSS_REWARDS));
 export const CHARACTER_SKINS=Object.freeze({CLASSIC:'classic',REMASTERED:'remastered'});
-export const BOSS_DEV_PRESETS=Object.freeze(['fresh','skin_only','badge_only','both_unlocked','one_win','two_wins']);
+export const BOSS_DEV_PRESETS=Object.freeze(['fresh','skin_only','all_skins','badge_only','both_unlocked','one_win','two_wins']);
 
 export function normalizeBossProgress(progress,characterId=''){
   const rewards=[...new Set((progress?.rewards??[]).filter(id=>DIRECTOR_REWARD_IDS.includes(id)))];
@@ -75,6 +75,7 @@ export function applyBossDevPreset(previous,preset,characterId=''){
     wins,defeated:wins>0,rewards,equippedSkin:CHARACTER_SKINS.CLASSIC},characterId);
   if(preset==='fresh')return exact(0,[]);
   if(preset==='skin_only')return exact(Math.max(1,current.wins),[BOSS_REWARDS.REMASTERED_SKIN]);
+  if(preset==='all_skins')return exact(Math.max(1,current.wins),[...new Set([...current.rewards,BOSS_REWARDS.REMASTERED_SKIN])]);
   if(preset==='badge_only')return exact(Math.max(1,current.wins),[BOSS_REWARDS.DIRECTOR_ACCESS_BADGE]);
   if(preset==='both_unlocked')return exact(Math.max(2,current.wins),DIRECTOR_REWARD_IDS);
   const wins=preset==='one_win'?1:2;

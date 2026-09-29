@@ -1,14 +1,34 @@
-# Felipe third-skin prototype
+# Third-skin prototypes
+
+## Michael and Yassin tests
+
+Yassin now uses the approved subtle scalp/stubble version (v3). Previous brown and black spritesheets are preserved with their previews and registration reports in [archive/yassin](archive/yassin/README.md). The Yassin Dev Tools/wardrobe preview and this comparison page show the latest version.
+
+Michael and Yassin test skins now appear through **Dev Tools → All Skins** and the wardrobe after selecting their regular bases. Both use the approved B anchors: fully bald Michael and a slightly slimmer face for Yassin. Same 24-frame layout, 128x144 frame size, 0.5 scale and 10 FPS as the other experiments. No recolor masks. The four real bases and their ownership are unchanged; these are local-only visual previews.
+
+Open `/tools/sprite-preview/` through Vite to compare the four experiments and inspect each walking pose. New sheets, thumbnails and enlarged previews are `public/assets/characters/experimental/{michael,yassin}-level3-hd*.png`. Prompts and registration details: [michael-yassin-generation.md](michael-yassin-generation.md).
+
+## Sarina test
+
+Sarina's Skin test is available through **Dev Tools → All Skins** for the regular Sarina base. She retains her normal profile/class identity, with only a local appearance override. No Sarina recolor masks are applied.
+
+The new sheet uses Felipe's approved poses/style, with brown curly hair, purple shirt and blue trousers from the current Sarina reference. Both have the same 128x144 frames at 0.5 scale, 24 frames in down/left/right/up order, idle in column 0 and walking columns 1–5 at 10 FPS. The normalizer uses uniform scale and foot baseline 143. The comparison page includes her new and Remastered versions.
+
+Runtime artifacts: `public/assets/characters/experimental/sarina-level3-hd.png`, `-idle.png`, `-preview.png`, and `-registration.json`. Raw source: ignored `assets-drafts/character-customization/sarina-walk-raw-v1.png`. Rebuild:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/register-character-sheet.ps1 -Source assets-drafts/character-customization/sarina-walk-raw-v1.png -OutputPrefix public/assets/characters/experimental/sarina-level3-hd -FrameWidth 128 -FrameHeight 144 -ContentHeight 132 -PreviewScale 2
+```
 
 ## Try it
 
-Run `npm run dev`. In development the character menu adds **Felipe · Skin test** as a fifth card. It claims the normal Felipe base and applies a local-only visual override for that live session. Choose the ordinary Felipe card to restore the normal appearance. The override survives room changes and appearance restoration, but is not saved as an unlock or sent to other players. Production selection still has four cards.
+Run `npm run dev`. Select Felipe normally, then click **All Skins** in Dev Tools to activate the third skin. The wardrobe can switch among Classic, Remastered and Skin test. The override survives room changes and appearance restoration, but is not saved as an unlock or sent to other players. Selection always has four cards.
 
 For a backend-free animation comparison, open `http://localhost:5173/tools/sprite-preview/`. All four directions animate beside the existing Remastered art; pause, step or adjust FPS. This page is a development tool, not a production build entry.
 
 ## Runtime recolor test
 
-The fifth card now applies the fixed `FELIPE_TEST_PALETTE` from `src/art/felipeRecolor.js`: chestnut hair, teal shirt, light gray trousers and burgundy shoes. The normal menu thumbnail still shows the original HD PNG. In game, `createCharacterAnimations` first prepares a derived canvas texture from the loaded source, registers the same 128x144 frames, then creates its animations. The texture manager caches this result across scenes; no per-frame recoloring or Convex requests are added.
+Felipe's test skin applies the fixed `FELIPE_TEST_PALETTE` from `src/art/felipeRecolor.js`: chestnut hair, teal shirt, light gray trousers and burgundy shoes. The wardrobe thumbnail shows the original HD PNG. In game, `createCharacterAnimations` first prepares a derived canvas texture from the loaded source, registers the same 128x144 frames, then creates its animations. The texture manager caches this result across scenes; no per-frame recoloring or Convex requests are added.
 
 The masks use authored boundaries for each direction and walking foot pose, with protections for skin, face, white emblem, black ink and the moving drink can. Recoloring modifies RGB only, retaining original alpha, positions and shading. These masks are specific to this source sheet and are not a general segmentation algorithm. Another sheet will need its own reviewed masks. There is no color picker, skin-tone change, persistent palette or multiplayer color synchronization yet. The preview's **Test colors** checkbox compares the original and recolored frames using the exact runtime function.
 

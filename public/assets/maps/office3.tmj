@@ -804,6 +804,18 @@
                  "width":0,
                  "x":390.666666666667,
                  "y":142
+                },
+                {
+                 "height":28,
+                 "id":64,
+                 "name":"cofre",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":31.75,
+                 "x":494.25,
+                 "y":171.5
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -812,7 +824,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":64,
+ "nextobjectid":66,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.2",

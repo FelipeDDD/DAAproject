@@ -39,3 +39,19 @@ test('clear potions action updates the status and re-enables Dev Tools',async()=
   assert.equal(tools.status.textContent,'DEV: removed 10 potions');
   assert.ok(tools.content.querySelectorAll('button').every(button=>!button.disabled));
 });
+
+test('All Skins enables the selected base preview only after the DEV preset succeeds',async()=>{
+  const documentRef={createElement:tag=>new Element(tag),body:new Element('body')};
+  const events=[];
+  const tools=new BossDevTools({
+    applyBossProgress:()=>events.push('progress'),
+    enableAllDevSkins:()=>events.push('preview'),
+    disableAllDevSkins:()=>events.push('disable'),
+  },null,{documentRef});
+  tools.client.devSetPreset=async preset=>{events.push(preset);return {wins:1,rewards:['remastered_skin']};};
+  assert.equal(tools.content.querySelectorAll('button')[1].textContent,'All Skins');
+  await tools.apply('all_skins','All Skins');
+  assert.deepEqual(events,['all_skins','progress','preview']);
+  await tools.apply('fresh','Fresh');
+  assert.deepEqual(events.slice(3),['fresh','progress','disable']);
+});

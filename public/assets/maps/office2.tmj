@@ -55,6 +55,19 @@
                  "width":26.75,
                  "x":682.25,
                  "y":320.25
+                }, 
+                {
+                 "height":0,
+                 "id":48,
+                 "name":"PC-director",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":348.333333333333,
+                 "y":250
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -404,7 +417,7 @@
                  "width":0,
                  "x":492.333333333333,
                  "y":158
-                },
+                }, 
                 {
                  "height":0,
                  "id":47,
@@ -425,7 +438,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":48,
+ "nextobjectid":49,
  "orientation":"orthogonal",
  "properties":[
         {

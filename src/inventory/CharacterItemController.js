@@ -65,7 +65,7 @@ export class CharacterItemController {
   spawnDevPickup(itemId=CHARACTER_ITEM_IDS.HEALTH_POTION){
     const definition=characterItemDefinition(itemId);if(!definition||this.destroyed)return null;
     const x=this.scene.player.x,y=this.scene.player.y;
-    const sprite=this.scene.add.image(x,y,'health-potion-pickup').setOrigin(.5,1).setDisplaySize(34,34).setDepth(y+1).setInteractive({useHandCursor:true});
+    const sprite=this.scene.add.image(x,y,'health-potion-pickup').setOrigin(.5,1).setDisplaySize(52,52).setDepth(y+1).setInteractive({useHandCursor:true});
     const pickup={kind:'dev',itemId,x,y,sprite};this.devPickups.push(pickup);
     sprite.on('pointerdown',()=>void this.collectDevPickup(pickup));return pickup;
   }
@@ -107,7 +107,7 @@ export class CharacterItemController {
     return result.removed;
   }
   async devGrantOffice2Key(){
-    const result=await this.client.claim(CHARACTER_ITEM_IDS.OFFICE2_KEY);
+    const result=await this.client.devGrantOffice2Key();
     if(this.destroyed||!result?.item)return null;
     const item=normalizeCharacterItem(result.item,this.characterBaseId);
     this.setItems([...this.items.filter(existing=>existing.itemId!==item.itemId),item]);

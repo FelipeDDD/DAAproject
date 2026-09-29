@@ -6,13 +6,13 @@ import { CharacterMenu } from '../src/CharacterMenu.js';
 import { characterVisual, createCharacterAnimations, footBodyForVisual, localCharacterStyle, preloadCharacterTextures, prepareExperimentalGridTexture, walkFrames } from '../src/characterVisuals.js';
 
 const felipe=characterById('felipe');
-test('fifth development card reuses Felipe; normal selection still has four real bases',()=>{
+test('character selection shows only four real bases; test textures remain available to DEV tools',()=>{
   assert.equal(characterMenuOptions().length,4);
   const options=characterMenuOptions(true);
-  assert.equal(options.length,6);
-  assert.equal(options[4].c,felipe);
-  assert.equal(options[4].previewStyle,'level3Preview');
-  assert.equal(options[5].c.id,'michael');
+  assert.equal(options.length,4);
+  assert.deepEqual(options.map(option=>option.c.id),['michael','jassine','sarina','felipe']);
+  assert.ok(options.every(option=>option.previewStyle===null));
+  assert.ok(CHARACTERS.every(character=>character.experimentalVisual));
   assert.equal(CHARACTERS.length,4);
 });
 
@@ -32,9 +32,12 @@ test('preview selection claims the original base and normal reselection clears l
   assert.equal(menu.presence.identity.characterBaseId,'felipe');
   await menu.choose(felipe);
   assert.equal(menu.presence.identity.visualPreview,undefined);
-  await menu.choose(characterById('michael'),'level3Preview');
-  assert.equal(menu.presence.identity.characterBaseId,'michael');
-  assert.equal(menu.presence.identity.visualPreview,'level3Preview');
+  for(const id of ['sarina','michael','jassine']){
+    await menu.choose(characterById(id),'level3Preview');
+    assert.equal(claims.at(-1).characterBaseId,id);
+    assert.equal(menu.presence.identity.characterBaseId,id);
+    assert.equal(menu.presence.identity.visualPreview,'level3Preview');
+  }
 });
 
 test('appearance restore keeps only the selected local Felipe in preview style',()=>{
@@ -42,6 +45,8 @@ test('appearance restore keeps only the selected local Felipe in preview style',
   for(const style of ['old','new'])assert.equal(localCharacterStyle(felipe,style,identity),'level3Preview');
   assert.equal(localCharacterStyle(felipe,'new',{characterBaseId:'felipe'}),'new');
   assert.equal(localCharacterStyle(characterById('michael'),'lungCrusher',identity),'lungCrusher');
+  assert.equal(localCharacterStyle(characterById('michael'),'lungCrusher',
+    {characterBaseId:'michael',visualPreview:'level3Preview'}),'lungCrusher');
   assert.equal(characterVisual(felipe,'new').sprite,'character-felipe-new');
   const preview=characterVisual(felipe,'level3Preview');
   const normal=characterVisual(felipe,'new');
@@ -56,7 +61,7 @@ test('appearance restore keeps only the selected local Felipe in preview style',
 
 test('experimental frames load once only when enabled and use five walk poses at 10 FPS',()=>{
   const loaded=[],animations=new Map();
-  const scene={textures:{exists:key=>key===felipe.experimentalVisual.sprite||key===characterById('michael').experimentalVisual.sprite},
+  const scene={textures:{exists:key=>key===felipe.experimentalVisual.sprite},
     load:{svg(){},spritesheet:(...args)=>loaded.push(args),image:(...args)=>loaded.push(args)},
     anims:{exists:key=>animations.has(key),create:config=>animations.set(config.key,config)}};
   preloadCharacterTextures(scene,CHARACTERS,'/',false);
@@ -64,7 +69,8 @@ test('experimental frames load once only when enabled and use five walk poses at
   loaded.length=0;
   preloadCharacterTextures(scene,[...CHARACTERS,felipe],'/',true);
   assert.equal(loaded.filter(([key])=>key===felipe.experimentalVisual.recolorSource).length,1);
-  assert.equal(loaded.filter(([key])=>key===characterById('michael').experimentalVisual.sourceImage).length,1);
+  for(const id of ['sarina','michael','jassine'])
+    assert.equal(loaded.filter(([key])=>key===characterById(id).experimentalVisual.sprite).length,1);
   assert.deepEqual(loaded.find(([key])=>key===felipe.experimentalVisual.recolorSource)[2],{frameWidth:128,frameHeight:144});
   createCharacterAnimations(scene,CHARACTERS,true);
   const visual=characterVisual(felipe,'level3Preview');
@@ -78,10 +84,8 @@ test('experimental frames load once only when enabled and use five walk poses at
   assert.equal(animations.get('character-felipe-new-walk-down').frameRate,8);
 });
 
-test('Michael HD test sheet is normalized to the same 6x4 frame grid without changing source art',()=>{
-  const visual=characterById('michael').experimentalVisual;
-  const png=readFileSync(new URL(`../public/${visual.asset}`,import.meta.url));
-  assert.equal(png.readUInt32BE(16),1448);assert.equal(png.readUInt32BE(20),1086);
+test('generic experimental grid normalizer handles non-divisible source dimensions',()=>{
+  const visual={sprite:'test-grid',sourceImage:'test-source',sourceGrid:{columns:6,rows:4},frameWidth:128,frameHeight:144};
   const image={width:1448,height:1086};const draws=[];let registered;
   const canvas={getContext:()=>({set imageSmoothingEnabled(value){assert.equal(value,false);},
     drawImage:(...args)=>draws.push(args)})};
@@ -95,6 +99,26 @@ test('Michael HD test sheet is normalized to the same 6x4 frame grid without cha
   assert.deepEqual(draws[0].slice(5),[0,0,128,144]);
   assert.deepEqual(registered.slice(0,2),[visual.sprite,canvas]);
   assert.deepEqual(registered[2],{frameWidth:128,frameHeight:144});
+});
+
+for(const id of ['sarina','michael','jassine'])test(`${id} uses registered HD frames without recoloring, with Felipe-sized world bounds and hitbox`,()=>{
+  const character=characterById(id),visual=characterVisual(character,'level3Preview');
+  assert.equal(visual.recolorSource,undefined);
+  assert.equal(visual.sourceGrid,undefined);
+  assert.equal(visual.scale,.5);
+  assert.equal(localCharacterStyle(character,'old',{characterBaseId:id,visualPreview:'level3Preview'}),'level3Preview');
+  assert.deepEqual(footBodyForVisual(visual),footBodyForVisual(characterVisual(felipe,'level3Preview')));
+  const png=readFileSync(new URL(`../public/${visual.asset}`,import.meta.url));
+  assert.equal(png.readUInt32BE(16),6*visual.frameWidth);assert.equal(png.readUInt32BE(20),4*visual.frameHeight);
+  const report=JSON.parse(readFileSync(new URL(`../public/${visual.asset.replace(/\.png$/,'-registration.json')}`,import.meta.url),'utf8').replace(/^\uFEFF/,''));
+  assert.equal(report.frames.length,24);assert.equal(report.baseline,143);
+  const animations=[];
+  createCharacterAnimations({textures:{exists:()=>true},anims:{exists:()=>false,create:config=>animations.push(config)}},[character],true);
+  for(const [row,direction]of ['down','left','right','up'].entries()){
+    const walk=animations.find(animation=>animation.key===`${visual.sprite}-walk-${direction}`);
+    assert.deepEqual(walk.frames.map(f=>f.frame),[1,2,3,4,5].map(column=>row*6+column));
+    assert.equal(walk.frameRate,10);
+  }
 });
 
 test('experimental texture dimensions fit all 24 registered frames',()=>{

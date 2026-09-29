@@ -10,7 +10,11 @@ let playing=true,frame=0,lastFrame=0,ready=false;
 const experiment=characterVisual(character,'level3Preview');
 const previews=[['experiment',experiment],['previous',{...experiment,
   asset:'assets/characters/experimental/felipe-level3.png',frameWidth:64,frameHeight:72,scale:1,
-}],['current',characterVisual(character,'new')]].map(([id,visual])=>{
+}],['current',characterVisual(character,'new')],
+  ['sarina',characterVisual(characterById('sarina'),'level3Preview')],
+  ['sarina-current',characterVisual(characterById('sarina'),'new')],
+  ['michael',characterVisual(characterById('michael'),'level3Preview')],
+  ['yassin',characterVisual(characterById('jassine'),'level3Preview')]].map(([id,visual])=>{
   const image=new Image();
   const context=document.getElementById(id).getContext('2d');
   image.src=`${import.meta.env.BASE_URL}${visual.asset}`;

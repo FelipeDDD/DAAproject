@@ -2,6 +2,10 @@ import { defineSchema, defineTable } from 'convex/server';
 import { v } from 'convex/values';
 
 export default defineSchema({
+  office3Safes: defineTable({
+    profileId:v.id('profiles'),code:v.string(),createdAt:v.number(),openedAt:v.optional(v.number()),
+    failures:v.optional(v.number()),blockedUntil:v.optional(v.number()),computerBlockedUntil:v.optional(v.number()),
+  }).index('by_profile',['profileId']).index('by_code',['code']),
   quizCleanupWorker: defineTable({
     key:v.string(),generation:v.number(),jobId:v.optional(v.id('_scheduled_functions')),
   }).index('by_key',['key']),

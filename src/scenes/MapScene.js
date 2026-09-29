@@ -74,7 +74,7 @@ export class MapScene extends Phaser.Scene {
       `${import.meta.env.BASE_URL}assets/items/michael-bigcig-normalized.png?v=3`,{frameWidth:160,frameHeight:160});
     if(!this.textures.exists('school-hanger'))this.load.image('school-hanger',`${import.meta.env.BASE_URL}assets/hanger.png`);
     if(!this.textures.exists('health-potion-pickup'))this.load.image('health-potion-pickup',
-      `${import.meta.env.BASE_URL}assets/items/potion-michael-inventory.png`);
+      `${import.meta.env.BASE_URL}assets/items/loot-drop.png`);
     const mapUrl = new URL(`${import.meta.env.BASE_URL}assets/maps/${this.filename}`, window.location.href);
     this.load.once(`filecomplete-json-${this.sourceKey}`, (_key, _type, data) => {
       data.tilesets.forEach((reference, index) => {
@@ -100,6 +100,8 @@ export class MapScene extends Phaser.Scene {
   create(destination = {}) {
     this.gameHud=getGameHud();
     this.source = this.cache.json.get(this.sourceKey);
+    // This source is much larger than its world display size; keep smoothing scoped to the ground bag.
+    this.textures.get('health-potion-pickup').setFilter(Phaser.Textures.FilterMode.LINEAR);
     const data = {
       ...this.source,
       tilesets: this.source.tilesets.map((reference, index) => reference.source
@@ -306,6 +308,26 @@ export class MapScene extends Phaser.Scene {
     this.equippedSkin=skin==='remastered'?'remastered':'classic';
     if(character)this.player.setCharacter(character,visualStyleForActiveItem(this.activeCharacterItem,this.equippedSkin));
     void this.presence?.send();
+  }
+
+  enableAllDevSkins(){
+    if(!shouldShowBossDevTools(import.meta.env)||!hasProfileSession(this.presence))return false;
+    const character=characterById(this.presence.identity.characterBaseId);
+    this.presence.identity.devAllSkins=true;
+    if(character?.experimentalVisual){
+      this.presence.identity.visualPreview='level3Preview';
+      this.applyCharacterSkin(this.equippedSkin);
+    }
+    if(this.wardrobe?.active)this.wardrobe.render();
+    return true;
+  }
+
+  disableAllDevSkins(){
+    if(!this.presence?.identity?.devAllSkins)return;
+    delete this.presence.identity.devAllSkins;
+    delete this.presence.identity.visualPreview;
+    this.applyCharacterSkin(this.equippedSkin);
+    if(this.wardrobe?.active)this.wardrobe.render();
   }
 
   applyPreviewPalette(palette){

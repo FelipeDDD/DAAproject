@@ -18,6 +18,7 @@ import type * as emotes from "../emotes.js";
 import type * as itChallenge from "../itChallenge.js";
 import type * as itChallengeScoring from "../itChallengeScoring.js";
 import type * as messages from "../messages.js";
+import type * as office3Safe from "../office3Safe.js";
 import type * as playerSessions from "../playerSessions.js";
 import type * as players from "../players.js";
 import type * as profileCharacterState from "../profileCharacterState.js";
@@ -53,6 +54,7 @@ declare const fullApi: ApiFromModules<{
   itChallenge: typeof itChallenge;
   itChallengeScoring: typeof itChallengeScoring;
   messages: typeof messages;
+  office3Safe: typeof office3Safe;
   playerSessions: typeof playerSessions;
   players: typeof players;
   profileCharacterState: typeof profileCharacterState;

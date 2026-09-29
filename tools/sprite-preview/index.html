@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Felipe — skin animation test</title>
+  <title>Third-skin animation tests</title>
   <style>
     :root{color-scheme:dark;font-family:system-ui,sans-serif;background:#17212b;color:#e6eef6}
     body{max-width:1040px;margin:32px auto;padding:0 20px}h1{font-size:24px}p{color:#b3c6d7;line-height:1.5}
@@ -15,14 +15,14 @@
   </style>
 </head>
 <body>
-  <h1>Felipe · Third-skin animation test</h1>
+  <h1>Felipe, Sarina, Michael + Yassin · Third-skin tests</h1>
   <p>Experimental art: one idle + five walk frames per direction, now 128 × 144 pixels at half scale. Compare it with the first 64 × 72 test at the same display size. No login or backend is needed here.</p>
   <div class="controls">
     <button id="play" type="button">Pause</button>
     <label>Pose <select id="pose"><option value="walk">Walk</option><option value="idle">Idle</option></select></label>
     <label>Walk FPS <input id="fps" type="range" min="4" max="14" value="10"><output id="fps-value">10</output></label>
     <button id="step" type="button">Next frame</button>
-    <label><input id="recolor" type="checkbox" checked>Test colors (same as in game)</label>
+    <label><input id="recolor" type="checkbox" checked>Felipe test colors (same as in game)</label>
   </div>
   <h2>Experimental HD · 128 × 144 · five walk frames</h2>
   <canvas id="experiment" width="576" height="160" aria-label="Animated front, left, right and back high resolution experimental sprites"></canvas>
@@ -31,6 +31,21 @@
   <canvas id="previous" width="576" height="160" aria-label="Previous low resolution test using the same poses"></canvas>
   <h2>Current Remastered · four walk frames</h2>
   <canvas id="current" width="576" height="160" aria-label="Animated existing Felipe sprites for comparison"></canvas>
+  <h2>Sarina test · 128 × 144 · five walk frames · original colors</h2>
+  <canvas id="sarina" width="576" height="160" aria-label="Animated Sarina test in four directions"></canvas>
+  <div class="legend"><span>Down</span><span>Left</span><span>Right</span><span>Up</span></div>
+  <h2>Sarina · Current Remastered</h2>
+  <canvas id="sarina-current" width="576" height="160" aria-label="Animated existing Sarina sprites for comparison"></canvas>
+  <p><a href="../../assets/characters/experimental/sarina-level3-hd-preview.png">Open Sarina enlarged spritesheet</a></p>
+  <h2>Michael test · 128 × 144 · five walk frames</h2>
+  <canvas id="michael" width="576" height="160" aria-label="Animated bald Michael test in four directions"></canvas>
+  <div class="legend"><span>Down</span><span>Left</span><span>Right</span><span>Up</span></div>
+  <p><a href="../../assets/characters/experimental/michael-level3-hd-preview.png">Open Michael enlarged spritesheet</a></p>
+  <h2>Yassin test · 128 × 144 · five walk frames</h2>
+  <canvas id="yassin" width="576" height="160" aria-label="Animated Yassin test in four directions"></canvas>
+  <div class="legend"><span>Down</span><span>Left</span><span>Right</span><span>Up</span></div>
+  <p><a href="../../assets/characters/experimental/yassin-level3-hd-preview.png">Open Yassin enlarged spritesheet</a></p>
+  <p>Previous Yassin versions: <a href="./archive/yassin/yassin-brown-v1-preview.png">Brown stubble</a> · <a href="./archive/yassin/yassin-black-v2-preview.png">Black hair</a></p>
   <p id="status" role="status">Loading sprites…</p>
   <p><a href="../../assets/characters/experimental/felipe-level3-hd-preview.png">Open enlarged HD spritesheet</a> · <a href="../../">Back to game</a></p>
   <script type="module" src="./preview.js"></script>

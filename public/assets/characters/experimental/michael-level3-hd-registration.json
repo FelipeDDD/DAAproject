@@ -1,0 +1,229 @@
+﻿{
+    "source":  "michael-walk-raw-v1.png",
+    "sourceSha256":  "47A198940E39438D2B58669112FAD95DE9B5C6758B4641615BEC079A93171841",
+    "columns":  6,
+    "rows":  4,
+    "frameWidth":  128,
+    "frameHeight":  144,
+    "baseline":  143,
+    "uniformScale":  0.50769230769230766,
+    "alphaThreshold":  96,
+    "frames":  [
+                   {
+                       "row":  0,
+                       "column":  0,
+                       "x":  58,
+                       "y":  37,
+                       "width":  132,
+                       "height":  254,
+                       "headCenterX":  125
+                   },
+                   {
+                       "row":  0,
+                       "column":  1,
+                       "x":  285,
+                       "y":  37,
+                       "width":  134,
+                       "height":  260,
+                       "headCenterX":  351.5
+                   },
+                   {
+                       "row":  0,
+                       "column":  2,
+                       "x":  500,
+                       "y":  37,
+                       "width":  137,
+                       "height":  258,
+                       "headCenterX":  567.5
+                   },
+                   {
+                       "row":  0,
+                       "column":  3,
+                       "x":  733,
+                       "y":  37,
+                       "width":  131,
+                       "height":  260,
+                       "headCenterX":  795.5
+                   },
+                   {
+                       "row":  0,
+                       "column":  4,
+                       "x":  954,
+                       "y":  37,
+                       "width":  134,
+                       "height":  258,
+                       "headCenterX":  1017
+                   },
+                   {
+                       "row":  0,
+                       "column":  5,
+                       "x":  1180,
+                       "y":  37,
+                       "width":  132,
+                       "height":  258,
+                       "headCenterX":  1245
+                   },
+                   {
+                       "row":  1,
+                       "column":  0,
+                       "x":  66,
+                       "y":  318,
+                       "width":  109,
+                       "height":  247,
+                       "headCenterX":  120.5
+                   },
+                   {
+                       "row":  1,
+                       "column":  1,
+                       "x":  283,
+                       "y":  318,
+                       "width":  136,
+                       "height":  247,
+                       "headCenterX":  344
+                   },
+                   {
+                       "row":  1,
+                       "column":  2,
+                       "x":  506,
+                       "y":  318,
+                       "width":  108,
+                       "height":  247,
+                       "headCenterX":  560
+                   },
+                   {
+                       "row":  1,
+                       "column":  3,
+                       "x":  725,
+                       "y":  318,
+                       "width":  134,
+                       "height":  249,
+                       "headCenterX":  787.5
+                   },
+                   {
+                       "row":  1,
+                       "column":  4,
+                       "x":  965,
+                       "y":  318,
+                       "width":  108,
+                       "height":  247,
+                       "headCenterX":  1019
+                   },
+                   {
+                       "row":  1,
+                       "column":  5,
+                       "x":  1186,
+                       "y":  318,
+                       "width":  112,
+                       "height":  247,
+                       "headCenterX":  1240
+                   },
+                   {
+                       "row":  2,
+                       "column":  0,
+                       "x":  73,
+                       "y":  585,
+                       "width":  111,
+                       "height":  251,
+                       "headCenterX":  128.5
+                   },
+                   {
+                       "row":  2,
+                       "column":  1,
+                       "x":  280,
+                       "y":  585,
+                       "width":  138,
+                       "height":  251,
+                       "headCenterX":  353.5
+                   },
+                   {
+                       "row":  2,
+                       "column":  2,
+                       "x":  520,
+                       "y":  585,
+                       "width":  114,
+                       "height":  252,
+                       "headCenterX":  578.5
+                   },
+                   {
+                       "row":  2,
+                       "column":  3,
+                       "x":  717,
+                       "y":  586,
+                       "width":  141,
+                       "height":  251,
+                       "headCenterX":  798.5
+                   },
+                   {
+                       "row":  2,
+                       "column":  4,
+                       "x":  981,
+                       "y":  585,
+                       "width":  114,
+                       "height":  253,
+                       "headCenterX":  1039
+                   },
+                   {
+                       "row":  2,
+                       "column":  5,
+                       "x":  1200,
+                       "y":  585,
+                       "width":  116,
+                       "height":  252,
+                       "headCenterX":  1260.5
+                   },
+                   {
+                       "row":  3,
+                       "column":  0,
+                       "x":  58,
+                       "y":  854,
+                       "width":  136,
+                       "height":  245,
+                       "headCenterX":  126.5
+                   },
+                   {
+                       "row":  3,
+                       "column":  1,
+                       "x":  276,
+                       "y":  853,
+                       "width":  139,
+                       "height":  246,
+                       "headCenterX":  348
+                   },
+                   {
+                       "row":  3,
+                       "column":  2,
+                       "x":  497,
+                       "y":  853,
+                       "width":  139,
+                       "height":  250,
+                       "headCenterX":  568
+                   },
+                   {
+                       "row":  3,
+                       "column":  3,
+                       "x":  720,
+                       "y":  853,
+                       "width":  139,
+                       "height":  252,
+                       "headCenterX":  796
+                   },
+                   {
+                       "row":  3,
+                       "column":  4,
+                       "x":  950,
+                       "y":  853,
+                       "width":  139,
+                       "height":  251,
+                       "headCenterX":  1022
+                   },
+                   {
+                       "row":  3,
+                       "column":  5,
+                       "x":  1178,
+                       "y":  853,
+                       "width":  136,
+                       "height":  246,
+                       "headCenterX":  1245.5
+                   }
+               ]
+}

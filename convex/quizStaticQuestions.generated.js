@@ -11427,22 +11427,6 @@ export default [
   {
     "id": "rechnungen-010",
     "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "In einer Aufgabe steht: „Nach Abzug eines Rabatts von 20 % beträgt der Preis 160 €.“ Was bedeutet „nach Abzug“?",
-    "answers": [
-      "Der Rabatt wird zum Preis addiert.",
-      "Der Rabatt wird vom Preis abgezogen.",
-      "Der Preis wird verdoppelt.",
-      "Es wird nur der Rabattbetrag gesucht."
-    ],
-    "correctAnswer": 1,
-    "explanation": "„Nach Abzug“ bedeutet, dass der Rabatt bereits vom ursprünglichen Preis subtrahiert wurde.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-011",
-    "category": "Rechnungen",
     "topic": "Kostenbegriffe",
     "difficulty": "medium",
     "question": "Was bedeutet „Einzelkosten“?",
@@ -11457,7 +11441,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-012",
+    "id": "rechnungen-011",
     "category": "Rechnungen",
     "topic": "Kostenbegriffe",
     "difficulty": "medium",
@@ -11473,7 +11457,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-013",
+    "id": "rechnungen-012",
     "category": "Rechnungen",
     "topic": "Kostenbegriffe",
     "difficulty": "medium",
@@ -11489,7 +11473,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-014",
+    "id": "rechnungen-013",
     "category": "Rechnungen",
     "topic": "Kostenbegriffe",
     "difficulty": "medium",
@@ -11505,7 +11489,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-015",
+    "id": "rechnungen-014",
     "category": "Rechnungen",
     "topic": "Kostenbegriffe",
     "difficulty": "medium",
@@ -11521,7 +11505,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-016",
+    "id": "rechnungen-015",
     "category": "Rechnungen",
     "topic": "Kostenbegriffe",
     "difficulty": "medium",
@@ -11537,7 +11521,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-017",
+    "id": "rechnungen-016",
     "category": "Rechnungen",
     "topic": "Kostenbegriffe",
     "difficulty": "medium",
@@ -11553,7 +11537,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-018",
+    "id": "rechnungen-017",
     "category": "Rechnungen",
     "topic": "Kostenbegriffe",
     "difficulty": "medium",
@@ -11569,7 +11553,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-019",
+    "id": "rechnungen-018",
     "category": "Rechnungen",
     "topic": "Kostenbegriffe",
     "difficulty": "medium",
@@ -11585,7 +11569,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-020",
+    "id": "rechnungen-019",
     "category": "Rechnungen",
     "topic": "Kostenbegriffe",
     "difficulty": "medium",
@@ -11601,7 +11585,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-021",
+    "id": "rechnungen-020",
     "category": "Rechnungen",
     "topic": "Deckungsbeitrag",
     "difficulty": "medium",
@@ -11617,39 +11601,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-022",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet in einem Aufgabentext „nach Abzug der variablen Kosten“?",
-    "answers": [
-      "Die variablen Kosten werden zum Preis addiert",
-      "Die variablen Kosten werden vom Preis subtrahiert",
-      "Die Fixkosten werden verdoppelt",
-      "Der Verkaufspreis wird ignoriert"
-    ],
-    "correctAnswer": 1,
-    "explanation": "„Nach Abzug“ bedeutet, dass ein Betrag abgezogen beziehungsweise subtrahiert wurde.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-023",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Ein Produkt trägt zur Deckung der Fixkosten bei“?",
-    "answers": [
-      "Der Deckungsbeitrag hilft dabei, die Fixkosten des Unternehmens zu bezahlen",
-      "Die Fixkosten werden automatisch geringer",
-      "Das Produkt verursacht keine variablen Kosten mehr",
-      "Der Verkaufspreis entspricht immer den Selbstkosten"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Ein positiver Deckungsbeitrag steht zur Verfügung, um Fixkosten zu decken.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-024",
+    "id": "rechnungen-021",
     "category": "Rechnungen",
     "topic": "Deckungsbeitrag",
     "difficulty": "medium",
@@ -11665,7 +11617,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-025",
+    "id": "rechnungen-022",
     "category": "Rechnungen",
     "topic": "Deckungsbeitrag",
     "difficulty": "medium",
@@ -11681,7 +11633,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-026",
+    "id": "rechnungen-023",
     "category": "Rechnungen",
     "topic": "Deckungsbeitrag",
     "difficulty": "medium",
@@ -11697,7 +11649,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-027",
+    "id": "rechnungen-024",
     "category": "Rechnungen",
     "topic": "Break-Even",
     "difficulty": "medium",
@@ -11713,7 +11665,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-028",
+    "id": "rechnungen-025",
     "category": "Rechnungen",
     "topic": "Break-Even",
     "difficulty": "medium",
@@ -11729,23 +11681,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-029",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Eine Aufgabe fragt: „Ab welcher Absatzmenge beginnt das Unternehmen, Gewinn zu machen?“ Welche Kennzahl ist gesucht?",
-    "answers": [
-      "ROI",
-      "TCO",
-      "Break-Even-Point",
-      "Produktivität"
-    ],
-    "correctAnswer": 2,
-    "explanation": "Die Frage nach der notwendigen Absatzmenge bis zur Gewinnzone beschreibt den Break-Even-Point.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-030",
+    "id": "rechnungen-026",
     "category": "Rechnungen",
     "topic": "Break-Even",
     "difficulty": "medium",
@@ -11761,7 +11697,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-031",
+    "id": "rechnungen-027",
     "category": "Rechnungen",
     "topic": "Break-Even",
     "difficulty": "medium",
@@ -11777,7 +11713,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-032",
+    "id": "rechnungen-028",
     "category": "Rechnungen",
     "topic": "Wirtschaftlichkeit",
     "difficulty": "medium",
@@ -11793,7 +11729,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-033",
+    "id": "rechnungen-029",
     "category": "Rechnungen",
     "topic": "Wirtschaftlichkeit",
     "difficulty": "medium",
@@ -11809,7 +11745,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-034",
+    "id": "rechnungen-030",
     "category": "Rechnungen",
     "topic": "Wirtschaftlichkeit",
     "difficulty": "medium",
@@ -11825,7 +11761,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-035",
+    "id": "rechnungen-031",
     "category": "Rechnungen",
     "topic": "Wirtschaftlichkeit",
     "difficulty": "medium",
@@ -11841,7 +11777,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-036",
+    "id": "rechnungen-032",
     "category": "Rechnungen",
     "topic": "Wirtschaftlichkeit",
     "difficulty": "medium",
@@ -11857,7 +11793,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-037",
+    "id": "rechnungen-033",
     "category": "Rechnungen",
     "topic": "Wirtschaftlichkeit",
     "difficulty": "medium",
@@ -11873,7 +11809,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-038",
+    "id": "rechnungen-034",
     "category": "Rechnungen",
     "topic": "Produktivität",
     "difficulty": "medium",
@@ -11889,7 +11825,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-039",
+    "id": "rechnungen-035",
     "category": "Rechnungen",
     "topic": "Produktivität",
     "difficulty": "medium",
@@ -11905,23 +11841,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-040",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was ist der wichtigste Unterschied zwischen Wirtschaftlichkeit und Produktivität?",
-    "answers": [
-      "Wirtschaftlichkeit verwendet Geldeinheiten, Produktivität Mengeneinheiten",
-      "Produktivität verwendet nur Euro, Wirtschaftlichkeit nur Stückzahlen",
-      "Beide Kennzahlen sind identisch",
-      "Wirtschaftlichkeit wird nur bei Verlust berechnet"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Wirtschaftlichkeit betrachtet Ertrag und Aufwand in Geld, Produktivität dagegen Output und Input in Mengen.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-041",
+    "id": "rechnungen-036",
     "category": "Rechnungen",
     "topic": "TCO",
     "difficulty": "medium",
@@ -11937,7 +11857,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-042",
+    "id": "rechnungen-037",
     "category": "Rechnungen",
     "topic": "TCO",
     "difficulty": "medium",
@@ -11953,7 +11873,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-043",
+    "id": "rechnungen-038",
     "category": "Rechnungen",
     "topic": "TCO",
     "difficulty": "medium",
@@ -11969,7 +11889,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-044",
+    "id": "rechnungen-039",
     "category": "Rechnungen",
     "topic": "TCO",
     "difficulty": "medium",
@@ -11985,7 +11905,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-045",
+    "id": "rechnungen-040",
     "category": "Rechnungen",
     "topic": "TCO",
     "difficulty": "medium",
@@ -12001,7 +11921,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-046",
+    "id": "rechnungen-041",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -12017,7 +11937,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-047",
+    "id": "rechnungen-042",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -12033,7 +11953,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-048",
+    "id": "rechnungen-043",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -12049,7 +11969,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-049",
+    "id": "rechnungen-044",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -12065,247 +11985,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-050",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Eine Aufgabe fragt: „Lohnt sich die Investition?“ Was soll normalerweise beurteilt werden?",
-    "answers": [
-      "Ob die Investition wirtschaftlich sinnvoll beziehungsweise rentabel ist",
-      "Ob die Datei korrekt gespeichert wurde",
-      "Ob die Fixkosten vollständig verschwinden",
-      "Ob der Verkaufspreis höher als 1 € ist"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Lohnt sich“ bedeutet, dass geprüft werden soll, ob eine Investition wirtschaftlich sinnvoll oder rentabel ist.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-051",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „beträgt“ in dem Satz „Der Verkaufspreis beträgt 120 €“?",
-    "answers": [
-      "Der Verkaufspreis wird um 120 € erhöht",
-      "Der Verkaufspreis liegt bei 120 €",
-      "Der Verkaufspreis wird halbiert",
-      "Der Verkaufspreis wird noch berechnet"
-    ],
-    "correctAnswer": 1,
-    "explanation": "„Beträgt“ bedeutet hier „ist“ beziehungsweise „hat den Wert“.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-052",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „mindestens 200 Stück“?",
-    "answers": [
-      "Genau 200 Stück und niemals mehr",
-      "Höchstens 200 Stück",
-      "200 Stück oder mehr",
-      "Weniger als 200 Stück"
-    ],
-    "correctAnswer": 2,
-    "explanation": "„Mindestens“ bedeutet, dass 200 die Untergrenze ist. Mehr ist möglich.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-053",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „höchstens 500 €“?",
-    "answers": [
-      "500 € oder weniger",
-      "Genau 500 €",
-      "500 € oder mehr",
-      "Mehr als 500 €"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Höchstens“ bezeichnet eine Obergrenze.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-054",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „zusätzliche 100 Stück“?",
-    "answers": [
-      "100 Stück weniger",
-      "100 Stück zusätzlich zur bisherigen Menge",
-      "Eine Gesamtmenge von genau 100 Stück",
-      "100 Stück werden storniert"
-    ],
-    "correctAnswer": 1,
-    "explanation": "„Zusätzlich“ bedeutet, dass die Menge zur bereits vorhandenen Menge hinzukommt.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-055",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „die Kosten steigen um 2.000 €“?",
-    "answers": [
-      "Die neuen Kosten betragen immer genau 2.000 €",
-      "Von den Kosten werden 2.000 € abgezogen",
-      "Zu den bisherigen Kosten kommen 2.000 € hinzu",
-      "Die Kosten werden auf 2.000 € begrenzt"
-    ],
-    "correctAnswer": 2,
-    "explanation": "„Steigen um“ bedeutet eine Erhöhung um den genannten Betrag.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-056",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „die Kosten sinken auf 800 €“?",
-    "answers": [
-      "Die Kosten werden um 800 € reduziert",
-      "Der neue Wert der Kosten beträgt 800 €",
-      "Zu den Kosten kommen 800 € hinzu",
-      "Die Kosten sinken um genau 800 €"
-    ],
-    "correctAnswer": 1,
-    "explanation": "„Sinken auf“ nennt den neuen Endwert. „Sinken um“ würde dagegen die Höhe der Verringerung angeben.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-057",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „der Preis sinkt um 20 €“?",
-    "answers": [
-      "Der neue Preis beträgt immer 20 €",
-      "Vom bisherigen Preis werden 20 € abgezogen",
-      "Der Preis wird auf 20 € gesetzt",
-      "Zum bisherigen Preis kommen 20 € hinzu"
-    ],
-    "correctAnswer": 1,
-    "explanation": "„Sinkt um 20 €“ bedeutet, dass der bisherige Preis um 20 € reduziert wird.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-058",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Ein Preis steigt von 100 € auf 130 €. Was bedeutet „auf 130 €“?",
-    "answers": [
-      "130 € ist die Höhe der Erhöhung",
-      "130 € ist der neue Preis",
-      "Der Preis wurde um 130 € erhöht",
-      "Der alte Preis war 130 €"
-    ],
-    "correctAnswer": 1,
-    "explanation": "„Auf“ bezeichnet bei einer Veränderung normalerweise den neuen Endwert.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-059",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „pro Stück“?",
-    "answers": [
-      "Für die gesamte Absatzmenge",
-      "Für jede einzelne Einheit",
-      "Nur für das erste Produkt",
-      "Pro Jahr"
-    ],
-    "correctAnswer": 1,
-    "explanation": "„Pro Stück“ bedeutet je einzelne verkaufte oder produzierte Einheit.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-060",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „insgesamt“ in einer Rechenaufgabe?",
-    "answers": [
-      "Nur einen einzelnen Teilbetrag",
-      "Die Summe aller relevanten Werte",
-      "Den kleinsten Wert",
-      "Nur den Durchschnitt"
-    ],
-    "correctAnswer": 1,
-    "explanation": "„Insgesamt“ weist darauf hin, dass ein Gesamtwert beziehungsweise eine Summe gesucht ist.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-061",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „anteilig“ bei Gemeinkosten?",
-    "answers": [
-      "Die gesamten Gemeinkosten werden einem einzigen Auftrag zugerechnet",
-      "Nur ein entsprechender Anteil der Gemeinkosten wird zugerechnet",
-      "Die Gemeinkosten werden vollständig ignoriert",
-      "Die Gemeinkosten werden verdoppelt"
-    ],
-    "correctAnswer": 1,
-    "explanation": "„Anteilig“ bedeutet, dass nur ein bestimmter Anteil eines Gesamtbetrags zugerechnet wird.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-062",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „die Fixkosten sind gedeckt“?",
-    "answers": [
-      "Die Fixkosten wurden vollständig durch Erlöse beziehungsweise Deckungsbeiträge ausgeglichen",
-      "Die Fixkosten wurden abgeschafft",
-      "Es entstehen keine variablen Kosten mehr",
-      "Das Unternehmen hat automatisch hohen Gewinn"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Gedeckt“ bedeutet, dass für diese Kosten genügend Erträge oder Deckungsbeiträge vorhanden sind.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-063",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „kein Verlust entsteht“?",
-    "answers": [
-      "Das Ergebnis ist mindestens null",
-      "Das Unternehmen macht immer hohen Gewinn",
-      "Die Fixkosten betragen null",
-      "Es gibt keine Kosten"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Wenn kein Verlust entsteht, ist das Ergebnis null oder positiv.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-064",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Eine Aufgabe fragt „Lohnt sich der Zusatzauftrag aus Sicht des Deckungsbeitrags?“ Worauf soll besonders geachtet werden?",
-    "answers": [
-      "Ob der zusätzliche Verkaufspreis die zusätzlichen variablen Kosten übersteigt",
-      "Ob die gesamte Firma keine Fixkosten hat",
-      "Ob das Produkt besonders teuer aussieht",
-      "Ob der Kunde bar bezahlt"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Für einen Zusatzauftrag ist aus Deckungsbeitragssicht entscheidend, ob ein positiver zusätzlicher Deckungsbeitrag entsteht.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-065",
+    "id": "rechnungen-045",
     "category": "Rechnungen",
     "topic": "Deckungsbeitrag",
     "difficulty": "medium",
@@ -12321,7 +12001,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-066",
+    "id": "rechnungen-046",
     "category": "Rechnungen",
     "topic": "Deckungsbeitrag",
     "difficulty": "medium",
@@ -12337,7 +12017,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-067",
+    "id": "rechnungen-047",
     "category": "Rechnungen",
     "topic": "Deckungsbeitrag",
     "difficulty": "medium",
@@ -12353,7 +12033,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-068",
+    "id": "rechnungen-048",
     "category": "Rechnungen",
     "topic": "Deckungsbeitrag",
     "difficulty": "medium",
@@ -12369,7 +12049,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-069",
+    "id": "rechnungen-049",
     "category": "Rechnungen",
     "topic": "Deckungsbeitrag",
     "difficulty": "medium",
@@ -12385,23 +12065,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-070",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Eine Aufgabe sagt „500 weitere Stück für 5 € pro Stück abnehmen“. Was bedeutet „abnehmen“ hier?",
-    "answers": [
-      "Die Stückzahl reduzieren",
-      "Die Ware kaufen beziehungsweise übernehmen",
-      "Den Preis senken",
-      "Die Ware kostenlos zurückgeben"
-    ],
-    "correctAnswer": 1,
-    "explanation": "Im wirtschaftlichen Kontext bedeutet „Ware abnehmen“, dass ein Kunde sie kauft beziehungsweise übernimmt.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-071",
+    "id": "rechnungen-050",
     "category": "Rechnungen",
     "topic": "Break-Even",
     "difficulty": "medium",
@@ -12417,7 +12081,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-072",
+    "id": "rechnungen-051",
     "category": "Rechnungen",
     "topic": "Break-Even",
     "difficulty": "medium",
@@ -12433,7 +12097,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-073",
+    "id": "rechnungen-052",
     "category": "Rechnungen",
     "topic": "Break-Even",
     "difficulty": "medium",
@@ -12449,23 +12113,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-074",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet die Frage „Ab wie vielen Kunden ist der Service profitabel?“",
-    "answers": [
-      "Gesucht ist eine Mindestkundenzahl für einen positiven Gewinn",
-      "Gesucht ist die maximale Kundenzahl",
-      "Gesucht ist nur der Preis pro Kunde",
-      "Gesucht sind ausschließlich die Fixkosten"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Ab wie vielen“ fragt nach der unteren Grenze, ab der eine Bedingung erfüllt ist.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-075",
+    "id": "rechnungen-053",
     "category": "Rechnungen",
     "topic": "Break-Even",
     "difficulty": "medium",
@@ -12481,23 +12129,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-076",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „die Gewinnzone“?",
-    "answers": [
-      "Ein Bereich, in dem Erlöse die Gesamtkosten übersteigen",
-      "Ein Bereich ohne Umsatz",
-      "Ein Bereich mit ausschließlich Fixkosten",
-      "Ein Bereich unterhalb des Break-Even"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Oberhalb des Break-Even befindet sich das Unternehmen in der Gewinnzone.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-077",
+    "id": "rechnungen-054",
     "category": "Rechnungen",
     "topic": "Wirtschaftlichkeit",
     "difficulty": "medium",
@@ -12513,7 +12145,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-078",
+    "id": "rechnungen-055",
     "category": "Rechnungen",
     "topic": "Wirtschaftlichkeit",
     "difficulty": "medium",
@@ -12529,7 +12161,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-079",
+    "id": "rechnungen-056",
     "category": "Rechnungen",
     "topic": "Wirtschaftlichkeit",
     "difficulty": "medium",
@@ -12545,23 +12177,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-080",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „welche Abteilung arbeitet wirtschaftlicher?“",
-    "answers": [
-      "Welche Abteilung hat den höheren Wert bei Ertrag geteilt durch Aufwand",
-      "Welche Abteilung hat mehr Mitarbeiter",
-      "Welche Abteilung hat die höchsten Kosten",
-      "Welche Abteilung verkauft mehr Stück unabhängig von den Kosten"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Zum Vergleich der Wirtschaftlichkeit wird das Verhältnis Ertrag zu Aufwand betrachtet.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-081",
+    "id": "rechnungen-057",
     "category": "Rechnungen",
     "topic": "Produktivität",
     "difficulty": "medium",
@@ -12577,7 +12193,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-082",
+    "id": "rechnungen-058",
     "category": "Rechnungen",
     "topic": "Produktivität",
     "difficulty": "medium",
@@ -12593,39 +12209,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-083",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „bei gleicher Besetzung“?",
-    "answers": [
-      "Die Zahl der Mitarbeiter bleibt gleich",
-      "Alle Mitarbeiter werden ersetzt",
-      "Die Kosten bleiben zwingend gleich",
-      "Die Absatzmenge bleibt gleich"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Besetzung“ bezeichnet hier die personelle Ausstattung. „Bei gleicher Besetzung“ bedeutet gleiche Mitarbeiterzahl.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-084",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Ausbringungsmenge“?",
-    "answers": [
-      "Die erzeugte beziehungsweise produzierte Menge",
-      "Die Höhe der Fixkosten",
-      "Der Einkaufspreis",
-      "Die Arbeitszeit eines einzelnen Mitarbeiters"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Ausbringungsmenge“ bezeichnet den Output beziehungsweise die produzierte Menge.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-085",
+    "id": "rechnungen-059",
     "category": "Rechnungen",
     "topic": "TCO",
     "difficulty": "medium",
@@ -12641,39 +12225,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-086",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „einmalige Kosten“?",
-    "answers": [
-      "Kosten, die nur einmal anfallen",
-      "Kosten, die jeden Monat anfallen",
-      "Kosten, die mit jeder produzierten Einheit steigen",
-      "Kosten ohne festen Betrag"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Einmalig“ bedeutet, dass die Kosten nur zu einem bestimmten Zeitpunkt beziehungsweise einmal entstehen.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-087",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „laufende Kosten“?",
-    "answers": [
-      "Kosten, die regelmäßig während des Betriebs anfallen",
-      "Nur die Anschaffungskosten",
-      "Ein einmaliger Gewinn",
-      "Kosten, die bereits vollständig bezahlt wurden und nie wieder entstehen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Laufend“ bezeichnet regelmäßig wiederkehrende Kosten während des Betriebs.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-088",
+    "id": "rechnungen-060",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -12689,7 +12241,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-089",
+    "id": "rechnungen-061",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -12705,263 +12257,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-090",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „die Investition amortisiert sich nach drei Jahren“?",
-    "answers": [
-      "Nach drei Jahren wurde die Investition durch die Rückflüsse wirtschaftlich ausgeglichen",
-      "Nach drei Jahren entstehen keine Betriebskosten mehr",
-      "Nach drei Jahren wird die Investition automatisch verkauft",
-      "Nach drei Jahren beträgt der ROI immer 100 %"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Die Amortisation beschreibt den Zeitraum, bis die ursprüngliche Investition durch Rückflüsse zurückverdient wurde.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-091",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Absatzmenge“?",
-    "answers": [
-      "Die Anzahl der verkauften Einheiten",
-      "Die Höhe der Fixkosten",
-      "Der Verkaufspreis einer Einheit",
-      "Der Gewinn pro Jahr"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Die Absatzmenge ist die Menge der verkauften Produkte oder Leistungen.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-092",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „im Quartal werden 2.000 Stück verkauft“?",
-    "answers": [
-      "2.000 Stück werden pro Monat verkauft",
-      "2.000 Stück werden innerhalb von drei Monaten verkauft",
-      "2.000 Stück werden pro Jahr verkauft",
-      "2.000 Stück werden pro Woche verkauft"
-    ],
-    "correctAnswer": 1,
-    "explanation": "Ein Quartal umfasst drei Monate.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-093",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was ist mit „Betriebsergebnis“ gemeint?",
-    "answers": [
-      "Das wirtschaftliche Ergebnis nach Abzug der relevanten Kosten",
-      "Nur der Umsatz",
-      "Nur die Absatzmenge",
-      "Der Einkaufspreis"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Das Betriebsergebnis ergibt sich aus dem Gesamtdeckungsbeitrag abzüglich der Fixkosten.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-094",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „ein Großkunde“?",
-    "answers": [
-      "Ein Kunde mit besonders großer Nachfrage oder großem Auftragsvolumen",
-      "Ein Kunde mit einem großen Gebäude",
-      "Ein Kunde, der nur einmal bestellt",
-      "Ein Lieferant"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Ein Großkunde kauft typischerweise große Mengen oder hat ein bedeutendes Auftragsvolumen.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-095",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was ist ein „Zusatzauftrag“?",
-    "answers": [
-      "Ein bereits stornierter Auftrag",
-      "Ein zusätzlicher Auftrag neben den bisherigen Aufträgen",
-      "Der erste Auftrag eines Unternehmens",
-      "Ein Auftrag ohne Preis"
-    ],
-    "correctAnswer": 1,
-    "explanation": "Ein Zusatzauftrag kommt zu den bereits vorhandenen Aufträgen hinzu.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-096",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was verlangt die Anweisung „Begründe“?",
-    "answers": [
-      "Nur eine Zahl nennen",
-      "Eine Antwort mit einem nachvollziehbaren Grund erklären",
-      "Eine Formel abschreiben",
-      "Die Aufgabe überspringen"
-    ],
-    "correctAnswer": 1,
-    "explanation": "„Begründe“ bedeutet, dass die Antwort erklärt und argumentativ gestützt werden soll.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-097",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Der Kunde möchte 500 Stück für 5 € pro Stück abnehmen“?",
-    "answers": [
-      "Der Kunde möchte 500 Stück für jeweils 5 € kaufen",
-      "Der Kunde möchte die Produktion um 500 Stück reduzieren",
-      "Der Kunde zahlt insgesamt nur 5 €",
-      "Der Kunde gibt 500 Stück zurück"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Abnehmen“ bedeutet im Handel, eine angebotene Menge zu kaufen beziehungsweise zu übernehmen.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-098",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „die Nachfrage steigt“?",
-    "answers": [
-      "Weniger Kunden möchten das Produkt kaufen",
-      "Mehr vom Produkt wird nachgefragt",
-      "Der Verkaufspreis muss sinken",
-      "Die Fixkosten verschwinden"
-    ],
-    "correctAnswer": 1,
-    "explanation": "Steigende Nachfrage bedeutet, dass Kunden eine größere Menge kaufen möchten.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-099",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „die Fertigungskapazität ist auf 1.000 Stück begrenzt“?",
-    "answers": [
-      "Mindestens 1.000 Stück müssen produziert werden",
-      "Es können maximal 1.000 Stück produziert werden",
-      "Genau 1.000 Stück müssen verkauft werden",
-      "Die Produktion kostet 1.000 €"
-    ],
-    "correctAnswer": 1,
-    "explanation": "„Begrenzt auf“ bezeichnet hier die maximal verfügbare Produktionsmenge.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-100",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „200 weitere SSDs verkaufen“?",
-    "answers": [
-      "Insgesamt nur 200 SSDs verkaufen",
-      "200 SSDs zusätzlich zur bisherigen Menge verkaufen",
-      "200 SSDs weniger verkaufen",
-      "200 SSDs kostenlos abgeben"
-    ],
-    "correctAnswer": 1,
-    "explanation": "„Weitere“ bedeutet hier zusätzliche Einheiten.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-101",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „die HDD-Produktion um 200 Stück senken“?",
-    "answers": [
-      "Die neue HDD-Produktion beträgt automatisch 200 Stück",
-      "200 Stück zur bisherigen Produktion hinzufügen",
-      "200 Stück weniger produzieren",
-      "Die Produktion auf null setzen"
-    ],
-    "correctAnswer": 2,
-    "explanation": "„Um 200 Stück senken“ bedeutet, die bisherige Menge um 200 zu reduzieren.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-102",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Lohnt sich die Umstellung?“",
-    "answers": [
-      "Ist die Änderung wirtschaftlich vorteilhaft?",
-      "Ist die Änderung technisch überhaupt möglich?",
-      "Wie viele Mitarbeiter gibt es?",
-      "Wie lautet der Produktname?"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Lohnt sich“ fragt nach dem wirtschaftlichen Vorteil einer Änderung.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-103",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „ein Paket einstellen“ im wirtschaftlichen Kontext?",
-    "answers": [
-      "Den Preis des Pakets konfigurieren",
-      "Das Paket nicht mehr anbieten",
-      "Das Paket teurer machen",
-      "Das Paket automatisch verlängern"
-    ],
-    "correctAnswer": 1,
-    "explanation": "Ein Produkt oder Angebot „einstellen“ bedeutet hier, es aus dem Angebot zu nehmen.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-104",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was sind „frei werdende Ressourcen“?",
-    "answers": [
-      "Ressourcen, die nach einer Änderung nicht mehr benötigt werden und anderweitig genutzt werden können",
-      "Kostenlose Produkte",
-      "Neue Fixkosten",
-      "Nicht verwendbare Geräte"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Frei werdend“ bedeutet, dass Kapazitäten verfügbar werden.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-105",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Fixkosten bleiben gleich“?",
-    "answers": [
-      "Die Fixkosten steigen",
-      "Die Fixkosten sinken",
-      "Die Fixkosten verändern sich nicht",
-      "Es gibt keine Fixkosten mehr"
-    ],
-    "correctAnswer": 2,
-    "explanation": "„Gleich bleiben“ bedeutet, dass sich der Wert nicht verändert.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-106",
+    "id": "rechnungen-062",
     "category": "Rechnungen",
     "topic": "Break-Even",
     "difficulty": "medium",
@@ -12977,7 +12273,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-107",
+    "id": "rechnungen-063",
     "category": "Rechnungen",
     "topic": "Break-Even",
     "difficulty": "medium",
@@ -12993,23 +12289,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-108",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Eine Aufgabe fragt „Wie verändert sich der BEP, wenn die Fixkosten steigen?“ Was soll gemacht werden?",
-    "answers": [
-      "Nur den alten BEP nennen",
-      "Den neuen BEP berechnen und mit dem alten vergleichen",
-      "Nur die zusätzlichen Fixkosten nennen",
-      "Den Verkaufspreis ändern"
-    ],
-    "correctAnswer": 1,
-    "explanation": "„Wie verändert sich“ verlangt einen Vergleich des Zustands vor und nach der Änderung.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-109",
+    "id": "rechnungen-064",
     "category": "Rechnungen",
     "topic": "Break-Even",
     "difficulty": "medium",
@@ -13025,215 +12305,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-110",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „40 % Premium- und 60 % Basis-Nutzer“?",
-    "answers": [
-      "Jeder Nutzer verwendet beide Versionen",
-      "Die erwartete Nutzerverteilung beträgt 40 zu 60 Prozent",
-      "Premium kostet 40 % mehr",
-      "Es gibt insgesamt nur 100 Nutzer"
-    ],
-    "correctAnswer": 1,
-    "explanation": "Die Prozentwerte beschreiben die erwartete Verteilung der Nutzer auf die beiden Varianten.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-111",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was ist eine „Anfangsinvestition“?",
-    "answers": [
-      "Eine regelmäßig monatlich anfallende Ausgabe",
-      "Eine Investition, die zu Beginn eines Projekts oder Services anfällt",
-      "Der jährliche Gewinn",
-      "Der Break-Even-Umsatz"
-    ],
-    "correctAnswer": 1,
-    "explanation": "Die Anfangsinvestition ist der Betrag, der zunächst für den Start eingesetzt werden muss.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-112",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „laufende Fixkosten“?",
-    "answers": [
-      "Einmalige Anschaffungskosten",
-      "Regelmäßig wiederkehrende Fixkosten",
-      "Variable Kosten pro Stück",
-      "Gewinne eines Unternehmens"
-    ],
-    "correctAnswer": 1,
-    "explanation": "„Laufend“ bezeichnet Kosten, die regelmäßig erneut anfallen.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-113",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „monatlich profitabel“?",
-    "answers": [
-      "Der Service erzeugt auf Monatsbasis einen Gewinn",
-      "Der Service wird jeden Monat teurer",
-      "Der Service hat keine Kosten",
-      "Der Service verkauft jeden Monat genau ein Produkt"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Profitabel“ bedeutet gewinnbringend.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-114",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Nach wie vielen Monaten ist die Anfangsinvestition amortisiert?“",
-    "answers": [
-      "Wann ist die Investition durch die erwirtschafteten Rückflüsse ausgeglichen?",
-      "Wann endet der Service?",
-      "Wann steigen die Fixkosten?",
-      "Wann wird die Investition erneut bezahlt?"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Die Frage sucht die Amortisationsdauer.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-115",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „vor und nach der Investition“?",
-    "answers": [
-      "Nur der Zustand nach der Investition",
-      "Die beiden Situationen müssen miteinander verglichen werden",
-      "Nur der alte Zustand",
-      "Die Investition soll ignoriert werden"
-    ],
-    "correctAnswer": 1,
-    "explanation": "„Vor und nach“ fordert einen Vergleich zweier Zustände.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-116",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „durchschnittlich 10 Teilnehmer“?",
-    "answers": [
-      "Immer genau 10 Teilnehmer an jedem einzelnen Termin",
-      "Im Mittel sind es 10 Teilnehmer",
-      "Mindestens 10 Teilnehmer",
-      "Maximal 10 Teilnehmer"
-    ],
-    "correctAnswer": 1,
-    "explanation": "„Durchschnittlich“ bedeutet im Mittel oder durchschnittlich über mehrere Fälle.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-117",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „maximaler Gewinn“?",
-    "answers": [
-      "Der kleinstmögliche Gewinn",
-      "Der höchstmögliche Gewinn unter den gegebenen Bedingungen",
-      "Der Break-Even-Point",
-      "Der Umsatz ohne Kosten"
-    ],
-    "correctAnswer": 1,
-    "explanation": "„Maximal“ bezeichnet den größtmöglichen Wert.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-118",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „zusätzliche Bestellungen sind nötig“?",
-    "answers": [
-      "Weitere Bestellungen werden benötigt",
-      "Bestellungen müssen storniert werden",
-      "Die vorhandenen Bestellungen reichen immer aus",
-      "Die Bestellwerte müssen sinken"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Nötig“ bedeutet notwendig oder erforderlich.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-119",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „den BEP halten“?",
-    "answers": [
-      "Den Break-Even trotz einer Veränderung auf dem gewünschten Niveau beibehalten",
-      "Den Verkauf vollständig stoppen",
-      "Den BEP ignorieren",
-      "Die Fixkosten verdoppeln"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Halten“ bedeutet hier, einen bestimmten Zustand beziehungsweise Wert beizubehalten.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-120",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was ist mit „Eigenbetrieb“ gemeint?",
-    "answers": [
-      "Der Service wird vom Unternehmen selbst betrieben",
-      "Der Service wird vollständig von einem Partner betrieben",
-      "Der Service wird kostenlos angeboten",
-      "Der Service wird eingestellt"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Beim Eigenbetrieb übernimmt das Unternehmen den Betrieb selbst.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-121",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was ist mit „Partnermodell“ gemeint?",
-    "answers": [
-      "Das Unternehmen arbeitet beim Angebot mit einem Partner zusammen",
-      "Das Unternehmen hat keine Kunden",
-      "Das Unternehmen produziert ausschließlich Hardware",
-      "Alle Kosten werden zu Fixkosten"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Ein Partnermodell bezieht einen externen oder geschäftlichen Partner in die Leistung ein.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-122",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Modell A ist profitabler als Modell B“?",
-    "answers": [
-      "Modell A erzielt unter den betrachteten Bedingungen das bessere Gewinnergebnis",
-      "Modell A hat immer höhere Kosten",
-      "Modell A verkauft weniger",
-      "Beide Modelle sind gleich"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Profitabler“ bedeutet gewinnbringender.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-123",
+    "id": "rechnungen-065",
     "category": "Rechnungen",
     "topic": "Wirtschaftlichkeit",
     "difficulty": "medium",
@@ -13249,119 +12321,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-124",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Die Gesamtkosten betrugen 162.000 €“?",
-    "answers": [
-      "Die Gesamtkosten stiegen um 162.000 €",
-      "Die Gesamtkosten hatten den Wert 162.000 €",
-      "Die Gesamtkosten sanken auf null",
-      "Der Gewinn betrug 162.000 €"
-    ],
-    "correctAnswer": 1,
-    "explanation": "„Betrugen“ ist die Vergangenheitsform von „betragen“ und gibt einen Wert an.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-125",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „eine Rangfolge erstellen“?",
-    "answers": [
-      "Die Möglichkeiten in eine bestimmte Reihenfolge bringen",
-      "Nur den schlechtesten Wert nennen",
-      "Alle Werte addieren",
-      "Eine zufällige Auswahl treffen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Eine Rangfolge ordnet mehrere Alternativen beispielsweise vom besten zum schlechtesten Wert.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-126",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was ist ein „Anbieter“ in einer Aufgabe über zwei Serverlösungen?",
-    "answers": [
-      "Ein Unternehmen, das eine Ware oder Dienstleistung anbietet",
-      "Der Kunde, der die Lösung kauft",
-      "Ein Mitarbeiter der Buchhaltung",
-      "Eine Kennzahl"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Der Anbieter stellt ein Produkt oder eine Dienstleistung zum Kauf beziehungsweise zur Nutzung bereit.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-127",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „erwartete Nutzungsdauer“?",
-    "answers": [
-      "Der Zeitraum, über den die Nutzung voraussichtlich stattfinden wird",
-      "Die Garantiezeit muss exakt gleich lang sein",
-      "Die Lieferzeit",
-      "Die Dauer eines Arbeitstages"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Erwartet“ zeigt, dass es sich um einen angenommenen zukünftigen Wert handelt.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-128",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Eigenentwicklung“ bei Software?",
-    "answers": [
-      "Das Unternehmen entwickelt die Software selbst",
-      "Das Unternehmen kauft eine fertige Lizenz",
-      "Die Software wird kostenlos bereitgestellt",
-      "Die Software wird nicht genutzt"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Eigenentwicklung bedeutet Entwicklung durch das eigene Unternehmen.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-129",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Upselling“ bei einem Angebot mit Standard- und Premium-Service?",
-    "answers": [
-      "Kunden werden zu einer höherwertigen beziehungsweise teureren Variante bewegt",
-      "Der Preis wird für alle Kunden gesenkt",
-      "Produkte werden nicht mehr verkauft",
-      "Fixkosten werden abgeschafft"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Beim Upselling wird einem Kunden eine höherwertige Premiumvariante anstelle der Standardvariante angeboten.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-130",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „bei gleichbleibenden Kosten“?",
-    "answers": [
-      "Die Kosten verändern sich nicht",
-      "Die Kosten werden vollständig gestrichen",
-      "Die Kosten steigen proportional zum Umsatz",
-      "Die Kosten werden halbiert"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Gleichbleibend“ bedeutet unverändert.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-131",
+    "id": "rechnungen-066",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -13377,7 +12337,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-132",
+    "id": "rechnungen-067",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -13393,7 +12353,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-133",
+    "id": "rechnungen-068",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -13409,55 +12369,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-134",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Mehrerlös“?",
-    "answers": [
-      "Zusätzlicher Erlös im Vergleich zum bisherigen Zustand",
-      "Eine zusätzliche Ausgabe",
-      "Ein geringerer Umsatz",
-      "Eine Fixkostensteigerung"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Mehrerlös“ bezeichnet zusätzlich erzielten Erlös.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-135",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „zusätzliche Kosten“?",
-    "answers": [
-      "Kosten, die zu den bisherigen Kosten hinzukommen",
-      "Kosten, die bereits enthalten sind",
-      "Kosten, die gestrichen werden",
-      "Kosten, die nur bei Verlust entstehen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Zusätzliche Kosten erhöhen die bisherigen Kosten.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-136",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Einsparung“?",
-    "answers": [
-      "Ein Betrag, der gegenüber dem bisherigen Zustand nicht mehr ausgegeben werden muss",
-      "Eine zusätzliche Investition",
-      "Ein höherer Verkaufspreis",
-      "Ein Umsatzverlust"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Eine Einsparung reduziert den bisherigen Aufwand beziehungsweise die bisherigen Kosten.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-137",
+    "id": "rechnungen-069",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -13473,7 +12385,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-138",
+    "id": "rechnungen-070",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -13489,39 +12401,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-139",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „jährliche Einsparung“?",
-    "answers": [
-      "Ein Betrag, der jedes Jahr eingespart wird",
-      "Ein einmaliger Rabatt",
-      "Der jährliche Umsatz",
-      "Die Investitionssumme"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Jährlich“ bedeutet pro Jahr.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-140",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was sind „laufende Kosten“ einer Investition?",
-    "answers": [
-      "Regelmäßig wiederkehrende Kosten während der Nutzung",
-      "Nur der einmalige Kaufpreis",
-      "Der gesamte Gewinn",
-      "Die anfängliche Investitionssumme"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Laufende Kosten fallen während des Betriebs wiederholt an.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-141",
+    "id": "rechnungen-071",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -13537,23 +12417,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-142",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „im ersten Jahr“?",
-    "answers": [
-      "Nur der Zeitraum des ersten Jahres wird betrachtet",
-      "Alle zukünftigen Jahre werden addiert",
-      "Nur der Investitionsmonat wird betrachtet",
-      "Der Zeitraum spielt keine Rolle"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Die Betrachtung ist auf das erste Jahr begrenzt.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-143",
+    "id": "rechnungen-072",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -13569,23 +12433,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-144",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Kapital eingesetzt“?",
-    "answers": [
-      "Kapital wurde für einen wirtschaftlichen Zweck verwendet",
-      "Kapital wurde vollständig vernichtet",
-      "Kapital wurde nur auf ein Konto überwiesen",
-      "Kapital wurde nicht genutzt"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Eingesetzt“ bedeutet hier wirtschaftlich verwendet beziehungsweise investiert.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-145",
+    "id": "rechnungen-073",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -13601,7 +12449,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-146",
+    "id": "rechnungen-074",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -13617,7 +12465,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-147",
+    "id": "rechnungen-075",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -13633,39 +12481,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-148",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was verlangt „Berechne den ROI über die DuPont-Formel und vergleiche“?",
-    "answers": [
-      "Den ROI über Umsatzrentabilität und Kapitalumschlag berechnen und mit dem direkten ROI vergleichen",
-      "Nur den Gewinn berechnen",
-      "Nur den Umsatz berechnen",
-      "Die Investition ignorieren"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Vergleiche“ bedeutet, die Ergebnisse gegenüberzustellen.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-149",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „rentabler“?",
-    "answers": [
-      "Wirtschaftlich vorteilhafter beziehungsweise ertragreicher im Verhältnis zum eingesetzten Kapital",
-      "Teurer",
-      "Mit höheren Fixkosten",
-      "Mit mehr Mitarbeitern"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Rentabler“ bedeutet, dass eine Investition eine bessere Rentabilität aufweist.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-150",
+    "id": "rechnungen-076",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -13681,87 +12497,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-151",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Budget“?",
-    "answers": [
-      "Der verfügbare finanzielle Rahmen",
-      "Der erzielte Gewinn",
-      "Die Absatzmenge",
-      "Die Höhe des ROI"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Ein Budget legt fest, wie viel Geld für einen Zweck zur Verfügung steht.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-152",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Das Unternehmen hat nur 65.000 € Budget“?",
-    "answers": [
-      "Es stehen maximal 65.000 € zur Verfügung",
-      "Mindestens 65.000 € müssen ausgegeben werden",
-      "Das Unternehmen erzielt 65.000 € Gewinn",
-      "Die Fixkosten betragen 65.000 €"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Nur“ begrenzt hier den verfügbaren finanziellen Rahmen.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-153",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was verlangt „Welche Empfehlung gibst du?“",
-    "answers": [
-      "Eine begründete Entscheidung auf Basis der berechneten Werte",
-      "Nur eine Formel",
-      "Nur den höchsten Preis nennen",
-      "Keine Berechnung verwenden"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Eine Empfehlung sollte aus den Ergebnissen abgeleitet und begründet werden.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-154",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „erwartete Einsparungen“?",
-    "answers": [
-      "Voraussichtlich künftig eingesparte Kosten",
-      "Bereits sicher erzielter Gewinn",
-      "Einmalige Investitionskosten",
-      "Ungeplante Zusatzkosten"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Erwartet“ bezeichnet einen angenommenen zukünftigen Wert.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-155",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „kumuliert“?",
-    "answers": [
-      "Über mehrere Zeiträume aufsummiert",
-      "Durchschnittlich pro Jahr",
-      "Nur im letzten Jahr",
-      "Um einen Prozentsatz reduziert"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Kumuliert“ bedeutet, dass Werte fortlaufend addiert werden.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-156",
+    "id": "rechnungen-077",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -13777,71 +12513,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-157",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „In welchem Jahr wird der Break-Even erreicht?“",
-    "answers": [
-      "Gesucht ist das Jahr, in dem die kumulierten Erträge beziehungsweise Rückflüsse die relevanten Kosten ausgleichen",
-      "Gesucht ist das Jahr mit dem höchsten Umsatz",
-      "Gesucht ist nur das erste Jahr",
-      "Gesucht ist die Nutzungsdauer"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Die Frage sucht den Zeitpunkt der Kostendeckung.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-158",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Marketingkampagne durchgeführt“?",
-    "answers": [
-      "Eine Marketingmaßnahme wurde umgesetzt",
-      "Eine Investition wurde storniert",
-      "Ein Produkt wurde eingestellt",
-      "Ein Unternehmen wurde verkauft"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Durchgeführt“ bedeutet umgesetzt beziehungsweise ausgeführt.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-159",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „neu gewonnene Kunden“?",
-    "answers": [
-      "Zusätzliche Kunden, die durch eine Maßnahme gewonnen wurden",
-      "Alle bisherigen Kunden",
-      "Verlorene Kunden",
-      "Nur Premium-Kunden"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Gewonnen“ bedeutet hier als neue Kunden gewonnen.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-160",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Marge“?",
-    "answers": [
-      "Der Betrag oder Anteil des Erlöses, der nach Abzug der berücksichtigten Kosten verbleibt",
-      "Die Gesamtzahl der Kunden",
-      "Die Investitionsdauer",
-      "Die Höhe der Fixkosten"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Die absolute Marge ist Erlös minus berücksichtigte Kosten. Die prozentuale Marge setzt diese Differenz ins Verhältnis zum Erlös.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-161",
+    "id": "rechnungen-078",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -13857,7 +12529,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-162",
+    "id": "rechnungen-079",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -13873,55 +12545,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-163",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „mindestens bringen müssen, damit der ROI positiv ist“?",
-    "answers": [
-      "Gesucht ist die kleinste Anzahl, bei der ein positiver ROI entsteht",
-      "Gesucht ist die größte mögliche Anzahl",
-      "Gesucht ist nur der Umsatz",
-      "Gesucht ist die Zahl der Mitarbeiter"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Mindestens“ verlangt die Untergrenze, ab der die Bedingung erfüllt wird.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-164",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „alte Drucker behalten“?",
-    "answers": [
-      "Die bisherigen Geräte weiterhin nutzen",
-      "Die Geräte sofort verkaufen",
-      "Neue Geräte kaufen",
-      "Die Drucker kostenlos abgeben"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Behalten“ bedeutet nicht ersetzen oder abgeben.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-165",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Geräte ersetzen“?",
-    "answers": [
-      "Alte Geräte durch neue austauschen",
-      "Zusätzliche Geräte behalten",
-      "Geräte reparieren, ohne sie zu wechseln",
-      "Den Verkaufspreis ändern"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Ersetzen“ bedeutet, etwas durch etwas anderes auszutauschen.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-166",
+    "id": "rechnungen-080",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -13937,71 +12561,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-167",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „über die 4-jährige Nutzungsdauer“?",
-    "answers": [
-      "Der gesamte Zeitraum von vier Jahren wird betrachtet",
-      "Nur das vierte Jahr wird betrachtet",
-      "Vier einzelne Monate werden betrachtet",
-      "Nur das erste Jahr wird betrachtet"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Die Berechnung soll sich auf die komplette Nutzungsdauer von vier Jahren beziehen.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-168",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „eine Schulungsakademie aufbauen“?",
-    "answers": [
-      "Eine neue Schulungseinrichtung schaffen beziehungsweise einrichten",
-      "Eine Akademie schließen",
-      "Nur einen Kurs kaufen",
-      "Die Fixkosten reduzieren"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Aufbauen“ bedeutet hier eine neue Struktur oder Einrichtung schaffen.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-169",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „erwartete Schulungserlöse“?",
-    "answers": [
-      "Die voraussichtlich durch Schulungen erzielten Erlöse",
-      "Die Kosten der Schulungen",
-      "Die Investitionssumme",
-      "Die eingesparten Fixkosten"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Es handelt sich um prognostizierte Erlöse aus den Schulungen.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-170",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Einsparung externer Schulungen“?",
-    "answers": [
-      "Kosten für externe Schulungen müssen künftig nicht mehr oder in geringerem Umfang bezahlt werden",
-      "Mehr externe Schulungen werden gebucht",
-      "Der Umsatz sinkt",
-      "Die Investitionssumme steigt"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Die eigene Akademie kann bisherige Ausgaben für externe Schulungen reduzieren.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-171",
+    "id": "rechnungen-081",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -14017,103 +12577,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-172",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „bezogen auf Jahr 1“?",
-    "answers": [
-      "Die Berechnung bezieht sich nur auf das erste Jahr",
-      "Die Berechnung gilt automatisch für alle Jahre",
-      "Nur die Investitionssumme wird betrachtet",
-      "Das erste Jahr wird ignoriert"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Bezogen auf“ bedeutet hier, dass dieser Zeitraum die Grundlage der Berechnung ist.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-173",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „ab Jahr 2“?",
-    "answers": [
-      "Beginnend mit dem zweiten Jahr",
-      "Nur im ersten Jahr",
-      "Nach Ende der Nutzungsdauer",
-      "Vor der Investition"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Ab“ bezeichnet einen Startpunkt, hier das zweite Jahr.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-174",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „ein Gesamtbudget von 100.000 €“?",
-    "answers": [
-      "Für alle Investitionen zusammen stehen 100.000 € zur Verfügung",
-      "Jede Investition darf 100.000 € kosten",
-      "Der Gewinn beträgt 100.000 €",
-      "Die Fixkosten betragen 100.000 €"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Gesamtbudget“ bezeichnet den gesamten verfügbaren Betrag für alle betrachteten Maßnahmen.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-175",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „eine Kombination von Investitionen“?",
-    "answers": [
-      "Mehrere Investitionen werden gemeinsam ausgewählt",
-      "Nur eine Investition darf gewählt werden",
-      "Die Investitionen werden addiert, ohne gewählt zu werden",
-      "Alle Investitionen werden automatisch durchgeführt"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Eine Kombination besteht aus mehreren gemeinsam ausgewählten Alternativen.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-176",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „den Gesamtgewinn maximieren“?",
-    "answers": [
-      "Den größtmöglichen Gesamtgewinn erreichen",
-      "Den Gewinn auf null reduzieren",
-      "Die Kosten maximieren",
-      "Die Absatzmenge minimieren"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Maximieren“ bedeutet, einen Wert so groß wie möglich zu machen.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-177",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „innerhalb des Budgets“?",
-    "answers": [
-      "Die Gesamtkosten dürfen das verfügbare Budget nicht überschreiten",
-      "Die Investition darf beliebig teuer sein",
-      "Das Budget muss vollständig überschritten werden",
-      "Nur der Gewinn zählt"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Die Auswahl muss unter der finanziellen Obergrenze bleiben.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-178",
+    "id": "rechnungen-082",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -14129,39 +12593,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-179",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Geschäftsjahr“?",
-    "answers": [
-      "Ein wirtschaftlicher Abrechnungszeitraum eines Unternehmens, meist ein Jahr",
-      "Ein einzelner Arbeitstag",
-      "Ein Quartal",
-      "Die Nutzungsdauer eines PCs"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Ein Geschäftsjahr ist der jährliche wirtschaftliche Abrechnungszeitraum des Unternehmens.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-180",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „Kennzahlen“?",
-    "answers": [
-      "Messgrößen, mit denen wirtschaftliche Sachverhalte bewertet werden",
-      "Nur Preise von Produkten",
-      "Ausschließlich Fixkosten",
-      "Die Namen von Projekten"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Kennzahlen verdichten wirtschaftliche Informationen zu vergleichbaren Messgrößen.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-181",
+    "id": "rechnungen-083",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -14177,7 +12609,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-182",
+    "id": "rechnungen-084",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -14193,7 +12625,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-183",
+    "id": "rechnungen-085",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -14209,7 +12641,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-184",
+    "id": "rechnungen-086",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -14225,55 +12657,7 @@ export default [
     "source": "rechnungen.csv"
   },
   {
-    "id": "rechnungen-185",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „getrennt berechnen“ in „Umsatzrentabilität und Kapitalumschlag getrennt“?",
-    "answers": [
-      "Beide Kennzahlen einzeln berechnen",
-      "Nur eine der beiden Kennzahlen berechnen",
-      "Beide Werte sofort addieren",
-      "Keine Zwischenschritte zeigen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Getrennt“ bedeutet einzeln beziehungsweise separat.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-186",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „den ROI auf 35 % steigern“?",
-    "answers": [
-      "Der neue Zielwert des ROI soll 35 % betragen",
-      "Der ROI soll um exakt 35 Prozentpunkte steigen",
-      "Der Gewinn soll 35 € betragen",
-      "Der Umsatz soll sinken"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Auf 35 %“ nennt den gewünschten Endwert.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-187",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „zwei rechnerische Wege nennen“?",
-    "answers": [
-      "Zwei unterschiedliche mathematische Möglichkeiten zur Zielerreichung angeben",
-      "Die gleiche Rechnung zweimal schreiben",
-      "Nur zwei Zahlen nennen",
-      "Zwei Investitionen auswählen"
-    ],
-    "correctAnswer": 0,
-    "explanation": "Es werden zwei verschiedene rechnerische Ansätze erwartet.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-188",
+    "id": "rechnungen-087",
     "category": "Rechnungen",
     "topic": "ROI-Amortisation",
     "difficulty": "medium",
@@ -14286,38 +12670,6 @@ export default [
     ],
     "correctAnswer": 0,
     "explanation": "Die DuPont-Formel zerlegt den ROI in Umsatzrentabilität und Kapitalumschlag.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-189",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Was bedeutet „nötiger Zielwert“?",
-    "answers": [
-      "Der Wert, der erreicht werden muss, um das gewünschte Ziel zu erfüllen",
-      "Der aktuelle Wert",
-      "Der kleinste vorhandene Wert",
-      "Ein zufälliger Vergleichswert"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Nötig“ bedeutet erforderlich, „Zielwert“ bezeichnet den gewünschten Wert.",
-    "source": "rechnungen.csv"
-  },
-  {
-    "id": "rechnungen-190",
-    "category": "Rechnungen",
-    "topic": "Textverständnis",
-    "difficulty": "medium",
-    "question": "Eine Aufgabe fragt „Welche Investition ist rentabler?“ Was sollte verglichen werden?",
-    "answers": [
-      "Die Rentabilität, zum Beispiel anhand des ROI",
-      "Nur der Kaufpreis",
-      "Nur die Laufzeit",
-      "Nur die Anzahl der Mitarbeiter"
-    ],
-    "correctAnswer": 0,
-    "explanation": "„Rentabler“ bezieht sich auf das Verhältnis des wirtschaftlichen Erfolgs zum eingesetzten Kapital.",
     "source": "rechnungen.csv"
   },
   {

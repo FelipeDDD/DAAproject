@@ -50,6 +50,7 @@ export const claim=mutation({
   handler:async(ctx,args)=>{
     const profile=await authenticatedProfile(ctx,args.token);
     const characterBaseId=baseCharacterId(profile.selectedCharacterId);
+    if(args.itemId===CHARACTER_ITEM_IDS.OFFICE2_KEY)throw new Error('Use the office safe to collect this key.');
     if(!canCharacterOwnItem(characterBaseId,args.itemId))throw new Error('This character cannot collect that item.');
     const existing=await findItem(ctx,profile._id,args.itemId);
     if(existing){
@@ -113,6 +114,20 @@ export const devClearPotions=mutation({
     if(!potion)return {removed:0};
     await ctx.db.delete(potion._id);
     return {removed:potion.quantity??1};
+  },
+});
+
+export const devGrantOffice2Key=mutation({
+  args:{token:v.string(),playerId:v.string(),sessionId:v.string()},
+  handler:async(ctx,args)=>{
+    if(!devToolsEnabled())throw new Error('DEV item tools are disabled on this deployment.');
+    const {profile,characterBaseId}=await activeSession(ctx,args);
+    const itemId=CHARACTER_ITEM_IDS.OFFICE2_KEY;
+    const existing=await findItem(ctx,profile._id,itemId);
+    if(existing)return {item:publicItem(existing),duplicate:true};
+    const item={profileId:profile._id,characterBaseId,itemId,quantity:1,cooldownUntil:0,updatedAt:Date.now()};
+    await ctx.db.insert('characterItems',item);
+    return {item:publicItem(item),duplicate:false};
   },
 });
 

@@ -13,11 +13,12 @@ const PREVIEW_COLORS=Object.freeze({
 });
 const PREVIEW_LABELS=Object.freeze({hair:'Hair',shirt:'Shirt',trousers:'Trousers',shoes:'Shoes'});
 
-export function wardrobeSkinOptions(progress){
+export function wardrobeSkinOptions(progress,{experimental=false}={}){
   const normalized=normalizeBossProgress(progress);
   return [
     {id:CHARACTER_SKINS.CLASSIC,label:'Classic',unlocked:true},
     {id:CHARACTER_SKINS.REMASTERED,label:'Remastered',unlocked:hasBossReward(normalized,BOSS_REWARDS.REMASTERED_SKIN)},
+    ...(experimental?[{id:'level3Preview',label:'Skin test',unlocked:true}]:[]),
   ];
 }
 
@@ -62,13 +63,18 @@ export class WardrobeController {
     const title=document.createElement('h2');title.textContent='CHANGE APPEARANCE';panel.append(title);
     const list=document.createElement('div');list.className='wardrobe-skins';
     const character=characterById(this.presence.identity.characterId);
-    for(const option of this.presence.identity.profileId?wardrobeSkinOptions(this.progress):[]){
+    const experimental=import.meta.env.DEV===true&&this.presence.identity.devAllSkins&&Boolean(character?.experimentalVisual);
+    for(const option of this.presence.identity.profileId?wardrobeSkinOptions(this.progress,{experimental}):[]){
       const button=document.createElement('button');button.type='button';button.className='wardrobe-skin';button.disabled=!option.unlocked;
       if(!option.unlocked)button.classList.add('locked');
-      if(this.progress?.equippedSkin===option.id)button.classList.add('equipped');
-      const image=document.createElement('img');image.alt='';image.src=`${import.meta.env.BASE_URL}${option.id===CHARACTER_SKINS.REMASTERED?character.newVisual.previewAsset:character.asset}`;
+      const selected=option.id==='level3Preview'
+        ?this.presence.identity.visualPreview==='level3Preview'
+        :this.presence.identity.visualPreview!=='level3Preview'&&this.progress?.equippedSkin===option.id;
+      if(selected)button.classList.add('equipped');
+      const image=document.createElement('img');image.alt='';image.src=`${import.meta.env.BASE_URL}${option.id==='level3Preview'
+        ?character.experimentalVisual.previewAsset:option.id===CHARACTER_SKINS.REMASTERED?character.newVisual.previewAsset:character.asset}`;
       const label=document.createElement('strong');label.textContent=option.label;
-      const state=document.createElement('span');state.textContent=option.unlocked?(this.progress?.equippedSkin===option.id?'Equipped':'Available'):'Locked';
+      const state=document.createElement('span');state.textContent=option.unlocked?(selected?'Equipped':'Available'):'Locked';
       button.append(image,label,state);button.addEventListener('click',()=>this.equip(option.id));list.append(button);
     }
     if(list.childElementCount)panel.append(list);
@@ -107,7 +113,18 @@ export class WardrobeController {
 
   async equip(skin){
     if(this.loading)return;this.loading=true;
-    try{this.progress=await this.client.equipSkin(skin);this.scene.applyCharacterSkin(skin);this.render();}
+    try{
+      if(skin==='level3Preview'){
+        if(import.meta.env.DEV!==true||!this.presence.identity.devAllSkins)throw new Error('Skin test is unavailable.');
+        this.presence.identity.visualPreview='level3Preview';
+        this.scene.applyCharacterSkin(this.progress?.equippedSkin);
+      }else{
+        this.progress=await this.client.equipSkin(skin);
+        delete this.presence.identity.visualPreview;
+        this.scene.applyCharacterSkin(skin);
+      }
+      this.render();
+    }
     catch(error){this.render(error.message);}
     finally{this.loading=false;}
   }

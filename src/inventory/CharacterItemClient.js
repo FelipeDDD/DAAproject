@@ -14,12 +14,13 @@ export class CharacterItemClient {
   async consume(itemId){return this.mutate('consume',{itemId});}
   async claimKoettingPotions(amount){return this.mutate('claimKoettingPotions',{amount});}
   async devClearPotions(){return this.mutate('devClearPotions',{});}
+  async devGrantOffice2Key(){return this.mutate('devGrantOffice2Key',{});}
   async mutate(method,args){
     if(!this.identity||this.submitting)throw new Error('Character item service is unavailable.');
     this.submitting=true;
     try{return await this.presence.client.mutation(this.presence.api.characterItems[method],{
       token:requireProfileSessionToken(this.presence),
-      ...(['setActive','consume','devClearPotions','claimKoettingPotions'].includes(method)?{playerId:this.identity.playerId,sessionId:this.identity.sessionId}:{}),...args,
+      ...(['setActive','consume','devClearPotions','devGrantOffice2Key','claimKoettingPotions'].includes(method)?{playerId:this.identity.playerId,sessionId:this.identity.sessionId}:{}),...args,
     });}finally{this.submitting=false;}
   }
 }

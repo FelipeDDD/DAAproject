@@ -1,7 +1,6 @@
 import { MapScene } from './MapScene.js';
 import Phaser from 'phaser';
 import { KoettingNpc } from '../npc/KoettingNpc.js';
-import { CHARACTER_ITEMS, CHARACTER_ITEM_IDS } from '../inventory/characterItems.js';
 
 export class SecretPathScene extends MapScene {
   constructor(){super('secret-path','secret-path.tmj');}
@@ -10,10 +9,6 @@ export class SecretPathScene extends MapScene {
     super.preload();
     if(!this.textures.exists('secret-path-koetting'))this.load.image('secret-path-koetting',
       `${import.meta.env.BASE_URL}assets/npc/koetting-brille.png`);
-    for(const [baseId,path] of Object.entries(CHARACTER_ITEMS[CHARACTER_ITEM_IDS.HEALTH_POTION].iconsByCharacterBaseId)){
-      const key=`secret-path-potion-${baseId}`;
-      if(!this.textures.exists(key))this.load.image(key,`${import.meta.env.BASE_URL}${path}`);
-    }
   }
 
   create(destination={}){

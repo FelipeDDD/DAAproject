@@ -16,15 +16,14 @@ export class CharacterMenu {
     this.styleSelect.value='old';this.styleSelect.closest('.character-style-control').hidden=true;
     this.rows=[];this.maxPlayers=MAX_PLAYER_CAPACITY;this.ready=false;this.connectionFailed=false;this.closed=false;
     let saved;try{saved=localStorage.getItem(CHARACTER_STORAGE_KEY);}catch{}
-    const options=characterMenuOptions(import.meta.env.DEV);
-    document.getElementById('character-list').classList.toggle('has-experiment',options.some(option=>option.previewStyle));
+    const options=characterMenuOptions();
+    document.getElementById('character-list').classList.remove('has-experiment');
     this.cards=options.map(({c,label,previewStyle})=>{
       const button=document.createElement('button');button.className='character-card';
       const image=document.createElement('img');image.src=`${import.meta.env.BASE_URL}${c.asset}`;image.alt='';
       const name=document.createElement('strong');name.textContent=label;
       const state=document.createElement('span');
       button.append(image,name,state);button.addEventListener('click',()=>this.choose(c,previewStyle));
-      if(previewStyle)button.title='Local animation preview. Uses the same Felipe class and inventory.';
       if(!previewStyle&&baseCharacterId(saved)===c.id)button.classList.add('preferred');
       document.getElementById('character-list').append(button);
       return {c,button,image,state,previewStyle};

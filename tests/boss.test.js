@@ -480,6 +480,8 @@ test('Classic is always available and Remastered requires its persistent unlock'
   const unlocked=applyDirectorRewardChoice(applyDirectorVictory(null,'felipe').progress,
     BOSS_REWARDS.REMASTERED_SKIN).progress;
   assert.equal(wardrobeSkinOptions(unlocked)[1].unlocked,true);
+  assert.deepEqual(wardrobeSkinOptions(unlocked,{experimental:true}).map(option=>option.id),
+    ['classic','remastered','level3Preview']);
   assert.equal(equipCharacterSkin(unlocked,CHARACTER_SKINS.REMASTERED).equippedSkin,'remastered');
   assert.equal(normalizeBossProgress({...unlocked,equippedSkin:'remastered'}).equippedSkin,'remastered');
 });
@@ -510,6 +512,8 @@ test('DEV boss presets affect only the supplied character progress',()=>{
   const sarina=applyBossDevPreset(null,'badge_only','sarina');
   assert.equal(sarina.characterId,'sarina');assert.deepEqual(sarina.rewards,['director_access_badge']);
   assert.equal(michael.characterId,'michael');
+  const allSkins=applyBossDevPreset(sarina,'all_skins','sarina');
+  assert.deepEqual(new Set(allSkins.rewards),new Set(['director_access_badge','remastered_skin']));
 });
 
 test('DEV tools render only for a Vite development build',()=>{

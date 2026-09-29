@@ -12,8 +12,8 @@ export function passwordIsCorrect(digits) {
   return digits === OFFICE3_PASSWORD_DIGITS;
 }
 
-export function nextStreak(count, correct) {
-  return correct ? Math.min(OFFICE3_STREAK_TARGET, count + 1) : 0;
+export function nextStreak(count, correct, target = OFFICE3_STREAK_TARGET) {
+  return correct ? Math.min(target, count + 1) : 0;
 }
 
 export function chooseOffice3Question(questionBank,previousIds = [], random = Math.random) {

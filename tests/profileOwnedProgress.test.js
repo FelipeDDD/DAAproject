@@ -98,6 +98,28 @@ test('DEV clear deletes only the active profile potion stack and rejects stale s
   }
 });
 
+test('DEV Office2 key grant bypasses the normal safe flow only for the active profile session',async()=>{
+  const previous=process.env.DEV_TOOLS_ENABLED;process.env.DEV_TOOLS_ENABLED='true';
+  try{
+    const ctx=memoryContext();
+    const profileA=await addProfile(ctx,{name:'felipe',token:TOKEN_A});
+    await addProfile(ctx,{name:'other',character:'michael',token:TOKEN_B});
+    const playerId='live-office-key-player',sessionId='office-key-session-123456';
+    await ctx.db.insert('players',{profileId:profileA,playerId,sessionId,characterId:'felipe',
+      characterBaseId:'felipe',lastSeen:Date.now(),room:'school'});
+    const args={token:TOKEN_A,playerId,sessionId};
+    await assert.rejects(items.claim._handler(ctx,{token:TOKEN_A,itemId:CHARACTER_ITEM_IDS.OFFICE2_KEY}),/office safe/);
+    await assert.rejects(items.devGrantOffice2Key._handler(ctx,{...args,sessionId:'stale-session-123456'}),/CHARACTER_SESSION_LOST/);
+    await assert.rejects(items.devGrantOffice2Key._handler(ctx,{...args,token:TOKEN_B}),/CHARACTER_SESSION_LOST/);
+    assert.equal((await items.devGrantOffice2Key._handler(ctx,args)).duplicate,false);
+    assert.equal((await items.devGrantOffice2Key._handler(ctx,args)).duplicate,true);
+    assert.deepEqual(ctx.tables.characterItems.map(item=>[item.profileId,item.itemId]),[[profileA,CHARACTER_ITEM_IDS.OFFICE2_KEY]]);
+  }finally{
+    if(previous===undefined)delete process.env.DEV_TOOLS_ENABLED;
+    else process.env.DEV_TOOLS_ENABLED=previous;
+  }
+});
+
 test('Mysterious Man grants three shared potions atomically and respects the stack cap and live session',async()=>{
   const ctx=memoryContext();const profileId=await addProfile(ctx,{name:'felipe',token:TOKEN_A});
   const playerId='live-koetting-player',sessionId='koetting-session-123456789';

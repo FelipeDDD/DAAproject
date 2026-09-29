@@ -55,6 +55,8 @@ export function animationKey(visual,type,direction){return `${visual.sprite}-${t
 
 // This override is used only by the local Player; remote art still uses published equipment.
 export function localCharacterStyle(character,style,identity){
+  // Item-specific art has its own animation and must take priority over local skin previews.
+  if(style==='lungCrusher')return style;
   return identity?.visualPreview==='level3Preview'&&identity.characterBaseId===character?.id&&character?.experimentalVisual
     ?'level3Preview':style;
 }

@@ -3,7 +3,7 @@ import { BossProgressClient } from './BossProgressClient.js';
 export const shouldShowBossDevTools=env=>env?.DEV===true;
 
 const PRESETS=Object.freeze([
-  ['fresh','Fresh'],['skin_only','Skin only'],['badge_only','Badge only'],
+  ['fresh','Fresh'],['all_skins','All Skins'],['badge_only','Badge only'],
   ['both_unlocked','Both unlocked'],['one_win','1 win'],['two_wins','2 wins'],
 ]);
 const ACTIONS=Object.freeze([
@@ -77,7 +77,10 @@ export class BossDevTools {
     if(this.busy)return;this.busy=true;this.setDisabled(true);this.status.textContent='Applying…';
     try{
       const progress=await this.client.devSetPreset(preset);
-      this.scene.applyBossProgress(progress);this.status.textContent=`DEV: ${label} state loaded`;
+      this.scene.applyBossProgress(progress);
+      if(preset==='all_skins')this.scene.enableAllDevSkins?.();
+      else this.scene.disableAllDevSkins?.();
+      this.status.textContent=`DEV: ${label} state loaded`;
     }catch(error){this.status.textContent=error.message;}
     finally{this.busy=false;this.setDisabled(false);}
   }

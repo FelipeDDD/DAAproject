@@ -206,12 +206,9 @@ export class KoettingNpc {
 
   spawnGift(amount){
     const x=this.position.x,y=this.position.y+34;
-    const base=this.scene.presence?.identity?.characterBaseId;
-    const key=this.scene.textures.exists(`secret-path-potion-${base}`)
-      ?`secret-path-potion-${base}`:'secret-path-potion-michael';
-    const sprites=[[-10,0],[0,-7],[10,0]].map(([offsetX,offsetY])=>{
-      const sprite=this.scene.add.image(x+offsetX,y+offsetY,key).setOrigin(.5,1)
-        .setDisplaySize(28,28).setDepth(y+1).setInteractive({useHandCursor:true});
+    const sprites=[[-15,0],[0,-7],[15,0]].map(([offsetX,offsetY])=>{
+      const sprite=this.scene.add.image(x+offsetX,y+offsetY,'health-potion-pickup').setOrigin(.5,1)
+        .setDisplaySize(48,48).setDepth(y+1).setInteractive({useHandCursor:true});
       sprite.on('pointerdown',()=>void this.collectGift());return sprite;
     });
     this.gift={x,y,amount,owner:this.scene.presence.identity.playerId,sprites};
