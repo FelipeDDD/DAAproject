@@ -554,6 +554,15 @@ export class BossController {
     return true;
   }
 
+  canHealPlayer(){return !this.playerCombat.defeated&&this.playerCombat.hp<this.playerCombat.maxHp;}
+
+  healPlayer(amount){
+    const restored=this.playerCombat.heal(amount);if(!restored)return 0;
+    this.scene.gameHud?.setHealth(this.playerCombat.hp,this.playerCombat.maxHp);
+    this.scene.player.setCombatHealth(this.playerCombat.hp,this.playerCombat.maxHp);
+    return restored;
+  }
+
   hitBoss(projectile){
     if(!projectile?.active||[BOSS_STATES.DYING,BOSS_STATES.DEFEATED,BOSS_STATES.REWARD].includes(this.model.state)
       ||!this.hitRegistry.claim(projectile))return;

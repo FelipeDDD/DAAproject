@@ -42,3 +42,26 @@ test('leaving during transformation destroys sprite and prevents stale visual ch
   assert.equal(f.sprite.destroyed,true);assert.equal(f.player.visible,true);
   assert.equal(f.c.transforming,null);assert.equal(f.visuals.length,0);
 });
+
+test('full potion stack still opens the item card without collecting another potion',async()=>{
+  const f=fixture();const presentations=[];
+  f.c.onItemCollected=(item,options)=>presentations.push({item,options});
+  f.c.client={claim:async()=>({full:true,item:{itemId:CHARACTER_ITEM_IDS.HEALTH_POTION,quantity:10}})};
+  const pickup={kind:'dev',itemId:CHARACTER_ITEM_IDS.HEALTH_POTION,sprite:{active:true}};
+  assert.equal(await f.c.collectDevPickup(pickup),false);
+  assert.equal(presentations.length,1);
+  assert.equal(presentations[0].item.quantity,10);
+  assert.equal(presentations[0].options.eyebrow,'INVENTORY FULL');
+  assert.equal(pickup.sprite.active,true);
+});
+
+test('clearing potions removes only the potion from the local hotbar state',async()=>{
+  const f=fixture();
+  f.c.setItems([
+    {itemId:CHARACTER_ITEM_IDS.HEALTH_POTION,quantity:10},
+    {itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000,quantity:1},
+  ]);
+  f.c.client={devClearPotions:async()=>({removed:10})};
+  assert.equal(await f.c.clearHealthPotions(),10);
+  assert.deepEqual(f.c.items.map(item=>item.itemId),[CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000]);
+});

@@ -46,15 +46,6 @@ export const PLAYER_ATTACK_VARIANTS=Object.freeze({
         new:{down:[0,-35],left:[-12,-38],right:[12,-38],up:[0,-44]},
       }),
     }),
-    Object.freeze({
-      id:'tiramisu-attack2',texture:'sarina-tiramisu-attack2',animation:'sarina-tiramisu-attack2-fly',
-      asset:'assets/attacks/sarina-tiramisu-attack2.png',frameWidth:362,frameHeight:380,frameTop:185,
-      frames:6,frameRate:12,repeat:-1,scale:0.11,forward:10,spin:0,
-      offsets:Object.freeze({
-        old:{down:[0,-31],left:[-10,-34],right:[10,-34],up:[0,-40]},
-        new:{down:[0,-35],left:[-12,-38],right:[12,-38],up:[0,-44]},
-      }),
-    }),
   ]),
 });
 

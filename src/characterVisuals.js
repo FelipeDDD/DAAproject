@@ -59,6 +59,22 @@ export function localCharacterStyle(character,style,identity){
     ?'level3Preview':style;
 }
 
+// Image generation may produce a regular grid whose dimensions are not exact
+// multiples of Phaser's frame size. Normalize its cells into one fixed sheet.
+export function prepareExperimentalGridTexture(textures,visual,createCanvas=()=>document.createElement('canvas')){
+  if(!visual?.sourceGrid||textures.exists(visual.sprite))return;
+  const image=textures.get(visual.sourceImage).getSourceImage();
+  const {columns,rows}=visual.sourceGrid;
+  const {frameWidth,frameHeight}=visual;
+  const canvas=createCanvas();canvas.width=columns*frameWidth;canvas.height=rows*frameHeight;
+  const context=canvas.getContext('2d');context.imageSmoothingEnabled=false;
+  const sourceWidth=image.width/columns,sourceHeight=image.height/rows;
+  for(let row=0;row<rows;row++)for(let col=0;col<columns;col++)
+    context.drawImage(image,col*sourceWidth,row*sourceHeight,sourceWidth,sourceHeight,
+      col*frameWidth,row*frameHeight,frameWidth,frameHeight);
+  textures.addSpriteSheet(visual.sprite,canvas,{frameWidth,frameHeight});
+}
+
 export function preloadCharacterTextures(scene,characters,baseUrl,includeExperiments=import.meta.env?.DEV===true){
   const queued=new Set();
   for(const character of characters){
@@ -76,18 +92,22 @@ export function preloadCharacterTextures(scene,characters,baseUrl,includeExperim
     );
     if(character.lungCrusherVisual)queued.add(character.lungCrusherVisual.sprite);
     const experiment=includeExperiments&&character.experimentalVisual;
-    const sourceKey=experiment&&(experiment.recolorSource??experiment.sprite);
-    if(experiment&&!queued.has(sourceKey)&&!scene.textures.exists(sourceKey))scene.load.spritesheet(
-      sourceKey,`${baseUrl}${experiment.asset}`,
-      {frameWidth:experiment.frameWidth??NEW_CHARACTER_FRAME.width,frameHeight:experiment.frameHeight??NEW_CHARACTER_FRAME.height},
-    );
+    const sourceKey=experiment&&(experiment.recolorSource??experiment.sourceImage??experiment.sprite);
+    if(experiment&&!queued.has(sourceKey)&&!scene.textures.exists(sourceKey)){
+      if(experiment.sourceGrid)scene.load.image(sourceKey,`${baseUrl}${experiment.asset}`);
+      else scene.load.spritesheet(sourceKey,`${baseUrl}${experiment.asset}`,
+        {frameWidth:experiment.frameWidth??NEW_CHARACTER_FRAME.width,frameHeight:experiment.frameHeight??NEW_CHARACTER_FRAME.height});
+    }
     if(experiment)queued.add(sourceKey);
   }
 }
 
 export function createCharacterAnimations(scene,characters,includeExperiments=import.meta.env?.DEV===true){
   for(const character of characters){
-    if(includeExperiments&&character.experimentalVisual)prepareFelipeRecolorTexture(scene.textures,character.experimentalVisual);
+    if(includeExperiments&&character.experimentalVisual){
+      prepareFelipeRecolorTexture(scene.textures,character.experimentalVisual);
+      prepareExperimentalGridTexture(scene.textures,character.experimentalVisual);
+    }
     for(const style of ['new','lungCrusher',...(includeExperiments?['level3Preview']:[])]){
       const visual=characterVisual(character,style);
       if(!visual.animated)continue;

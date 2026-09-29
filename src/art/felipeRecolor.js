@@ -128,3 +128,17 @@ export function prepareFelipeRecolorTexture(textures,visual,createCanvas=createF
   const canvas=createCanvas(image);
   textures.addSpriteSheet(visual.sprite,canvas,{frameWidth:visual.frameWidth,frameHeight:visual.frameHeight});
 }
+
+// Keep the same spritesheet and animation keys while changing its canvas pixels.
+// The original, unmodified sheet is always the source, so repeated edits do not accumulate artifacts.
+export function updateFelipeRecolorTexture(textures,visual,palette,createCanvas=createFelipeRecolorCanvas){
+  if(!visual?.recolorSource||!textures.exists(visual.sprite))return false;
+  const source=textures.get(visual.recolorSource).getSourceImage();
+  const texture=textures.get(visual.sprite);
+  const canvas=texture.getSourceImage();
+  const recolored=createCanvas(source,palette);
+  canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+  canvas.getContext('2d').drawImage(recolored,0,0);
+  texture.source[0].update();
+  return true;
+}

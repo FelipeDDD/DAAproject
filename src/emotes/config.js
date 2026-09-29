@@ -61,6 +61,7 @@ export function isTextEntryTarget(target,activeElement=globalThis.document?.acti
 }
 
 export function shortcutSlot(event,activeElement=globalThis.document?.activeElement) {
-  if(event.repeat||event.ctrlKey||event.altKey||event.metaKey||isTextEntryTarget(event.target,activeElement))return -1;
-  return /^[1-6]$/.test(event.key)?Number(event.key)-1:-1;
+  if(event.repeat||!event.shiftKey||event.ctrlKey||event.altKey||event.metaKey||isTextEntryTarget(event.target,activeElement))return -1;
+  const match=/^Digit([1-6])$/.exec(event.code??'');
+  return match?Number(match[1])-1:-1;
 }

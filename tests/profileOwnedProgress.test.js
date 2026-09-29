@@ -74,6 +74,51 @@ test('profile items stay owned across characters but activation enforces visual 
   assert.equal(active.active,true);
 });
 
+test('DEV clear deletes only the active profile potion stack and rejects stale sessions',async()=>{
+  const previous=process.env.DEV_TOOLS_ENABLED;process.env.DEV_TOOLS_ENABLED='true';
+  try{
+    const ctx=memoryContext();const profileA=await addProfile(ctx,{name:'michael',character:'michael',token:TOKEN_A});
+    await addProfile(ctx,{name:'other',character:'sarina',token:TOKEN_B});
+    await items.claim._handler(ctx,{token:TOKEN_A,itemId:CHARACTER_ITEM_IDS.HEALTH_POTION});
+    await items.claim._handler(ctx,{token:TOKEN_A,itemId:CHARACTER_ITEM_IDS.HEALTH_POTION});
+    await items.claim._handler(ctx,{token:TOKEN_A,itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000});
+    await items.claim._handler(ctx,{token:TOKEN_B,itemId:CHARACTER_ITEM_IDS.HEALTH_POTION});
+    const playerId='live-dev-player',sessionId='active-dev-session-123456';
+    await ctx.db.insert('players',{profileId:profileA,playerId,sessionId,characterId:'michael',characterBaseId:'michael',lastSeen:Date.now(),room:'school'});
+    await assert.rejects(items.devClearPotions._handler(ctx,{token:TOKEN_A,playerId,sessionId:'stale-dev-session-123456'}),/CHARACTER_SESSION_LOST/);
+    assert.equal((await items.devClearPotions._handler(ctx,{token:TOKEN_A,playerId,sessionId})).removed,2);
+    assert.deepEqual(ctx.tables.characterItems.map(item=>[item.profileId,item.itemId]),[
+      [profileA,CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000],
+      [ctx.tables.profiles[1]._id,CHARACTER_ITEM_IDS.HEALTH_POTION],
+    ]);
+    assert.equal((await items.devClearPotions._handler(ctx,{token:TOKEN_A,playerId,sessionId})).removed,0);
+  }finally{
+    if(previous===undefined)delete process.env.DEV_TOOLS_ENABLED;
+    else process.env.DEV_TOOLS_ENABLED=previous;
+  }
+});
+
+test('Mysterious Man grants three shared potions atomically and respects the stack cap and live session',async()=>{
+  const ctx=memoryContext();const profileId=await addProfile(ctx,{name:'felipe',token:TOKEN_A});
+  const playerId='live-koetting-player',sessionId='koetting-session-123456789';
+  const rowId=await ctx.db.insert('players',{profileId,playerId,sessionId,characterId:'felipe',
+    characterBaseId:'felipe',lastSeen:Date.now(),room:'secret-path'});
+  const args={token:TOKEN_A,playerId,sessionId,amount:3};
+  const first=await items.claimKoettingPotions._handler(ctx,args);
+  assert.deepEqual([first.added,first.item.quantity],[3,3]);
+  await ctx.db.patch(profileId,{selectedCharacterId:'sarina'});
+  await ctx.db.patch(rowId,{characterId:'sarina',characterBaseId:'sarina'});
+  const second=await items.claimKoettingPotions._handler(ctx,args);
+  assert.deepEqual([second.added,second.item.quantity],[3,6]);
+  await items.claimKoettingPotions._handler(ctx,args);
+  const capped=await items.claimKoettingPotions._handler(ctx,args);
+  assert.deepEqual([capped.added,capped.item.quantity],[1,10]);
+  assert.equal((await items.claimKoettingPotions._handler(ctx,args)).added,0);
+  assert.equal(ctx.tables.characterItems.length,1);
+  await assert.rejects(items.claimKoettingPotions._handler(ctx,{...args,sessionId:'stale-session-123456789'}),/CHARACTER_SESSION_LOST/);
+  await assert.rejects(items.claimKoettingPotions._handler(ctx,{...args,amount:4}),/Invalid potion reward amount/);
+});
+
 test('presence cleanup and logout do not erase profile-owned progress',async()=>{
   const ctx=memoryContext();const profileId=await addProfile(ctx,{name:'felipe',token:TOKEN_A});
   await boss.recordVictory._handler(ctx,{token:TOKEN_A,bossId:DIRECTOR_BOSS_ID,victoryId:'victory-persistent-000001'});

@@ -1,10 +1,13 @@
 import { mutationGeneric as mutation,queryGeneric as query } from 'convex/server';
 import { v } from 'convex/values';
 import { requireSessionToken } from './profileStore.js';
-import { CHARACTER_ITEM_COOLDOWN_MS,canCharacterOwnItem,characterItemDefinition } from '../src/inventory/characterItems.js';
+import { CHARACTER_ITEM_COOLDOWN_MS,CHARACTER_ITEM_IDS,HEALTH_POTION_MAX_STACK,canCharacterOwnItem,characterItemDefinition } from '../src/inventory/characterItems.js';
 import { baseCharacterId, characterBaseIdFor } from '../src/characters.js';
 import { requireAuthenticatedLivePlayer } from './playerSessions.js';
 import { equippedItemId, findLoadout } from './characterLoadouts.js';
+
+const devToolsEnabled=()=>process.env.DEV_TOOLS_ENABLED==='true'
+  ||/^https?:\/\/(127\.0\.0\.1|localhost)(:|\/)/.test(process.env.CONVEX_CLOUD_URL??'');
 
 async function authenticatedProfile(ctx,token){
   const {profile}=await requireSessionToken(ctx,token);
@@ -18,7 +21,7 @@ async function findItem(ctx,profileId,itemId){
 function publicItem(item,active=false){
   if(!item)return null;
   return {itemId:item.itemId,characterBaseId:item.characterBaseId??baseCharacterId(item.characterId),active,
-    cooldownUntil:item.cooldownUntil,updatedAt:item.updatedAt};
+    quantity:item.quantity??1,cooldownUntil:item.cooldownUntil,updatedAt:item.updatedAt};
 }
 
 async function activeSession(ctx,{token,playerId,sessionId}){
@@ -49,11 +52,67 @@ export const claim=mutation({
     const characterBaseId=baseCharacterId(profile.selectedCharacterId);
     if(!canCharacterOwnItem(characterBaseId,args.itemId))throw new Error('This character cannot collect that item.');
     const existing=await findItem(ctx,profile._id,args.itemId);
-    if(existing)return {item:publicItem(existing,(await equippedItemId(ctx,profile._id,characterBaseId))===args.itemId),duplicate:true};
+    if(existing){
+      const definition=characterItemDefinition(args.itemId),quantity=existing.quantity??1;
+      if(!definition?.maxStack)return {item:publicItem(existing,(await equippedItemId(ctx,profile._id,characterBaseId))===args.itemId),duplicate:true};
+      if(quantity>=definition.maxStack)return {item:publicItem(existing),duplicate:true,full:true};
+      const next={quantity:quantity+1,updatedAt:Date.now()};await ctx.db.patch(existing._id,next);
+      return {item:publicItem({...existing,...next}),duplicate:false,stacked:true};
+    }
     const item={profileId:profile._id,characterBaseId,itemId:args.itemId,
-      cooldownUntil:0,updatedAt:Date.now()};
+      quantity:1,cooldownUntil:0,updatedAt:Date.now()};
     await ctx.db.insert('characterItems',item);
     return {item:publicItem(item),duplicate:false};
+  },
+});
+
+export const consume=mutation({
+  args:{token:v.string(),playerId:v.string(),sessionId:v.string(),itemId:v.string()},
+  handler:async(ctx,args)=>{
+    const {profile,player,characterBaseId}=await activeSession(ctx,args);
+    const definition=characterItemDefinition(args.itemId);
+    if(!definition?.consumable||!canCharacterOwnItem(characterBaseId,args.itemId))throw new Error('This item cannot be consumed.');
+    const existing=await findItem(ctx,profile._id,args.itemId),now=Date.now();
+    const quantity=existing?.quantity??0;
+    if(!existing||quantity<=0)throw new Error('Item has not been collected.');
+    if(existing.cooldownUntil>now)throw new Error('Item is cooling down.');
+    const next={quantity:quantity-1,cooldownUntil:now+(definition.cooldownMs??0),updatedAt:now};
+    await ctx.db.patch(existing._id,next);
+    await ctx.db.patch(player._id,{lastItemUseId:args.itemId,lastItemUseAt:now,lastSeen:now});
+    return {...publicItem({...existing,...next}),usedAt:now};
+  },
+});
+
+export const claimKoettingPotions=mutation({
+  args:{token:v.string(),playerId:v.string(),sessionId:v.string(),amount:v.number()},
+  handler:async(ctx,args)=>{
+    if(!Number.isInteger(args.amount)||args.amount<1||args.amount>3)throw new Error('Invalid potion reward amount.');
+    const {profile,characterBaseId}=await activeSession(ctx,args);
+    const itemId=CHARACTER_ITEM_IDS.HEALTH_POTION;
+    const existing=await findItem(ctx,profile._id,itemId);
+    const added=Math.min(args.amount,Math.max(0,HEALTH_POTION_MAX_STACK-(existing?.quantity??0)));
+    if(!added)return {item:publicItem(existing),added:0};
+    const now=Date.now();
+    if(existing){
+      const next={quantity:(existing.quantity??0)+added,updatedAt:now};
+      await ctx.db.patch(existing._id,next);
+      return {item:publicItem({...existing,...next}),added};
+    }
+    const item={profileId:profile._id,characterBaseId,itemId,quantity:added,cooldownUntil:0,updatedAt:now};
+    await ctx.db.insert('characterItems',item);
+    return {item:publicItem(item),added};
+  },
+});
+
+export const devClearPotions=mutation({
+  args:{token:v.string(),playerId:v.string(),sessionId:v.string()},
+  handler:async(ctx,args)=>{
+    if(!devToolsEnabled())throw new Error('DEV item tools are disabled on this deployment.');
+    const {profile}=await activeSession(ctx,args);
+    const potion=await findItem(ctx,profile._id,CHARACTER_ITEM_IDS.HEALTH_POTION);
+    if(!potion)return {removed:0};
+    await ctx.db.delete(potion._id);
+    return {removed:potion.quantity??1};
   },
 });
 

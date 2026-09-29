@@ -12,14 +12,14 @@ export class ItemRewardOverlay {
     this.onKey=event=>{if(isRewardDismissKey(event)&&this.dismiss())event.preventDefault();};
     this.onClick=()=>this.dismiss();document.addEventListener('keydown',this.onKey);this.root.addEventListener('click',this.onClick);document.body.append(this.root);
   }
-  show(item){
+  show(item,{eyebrow='NEW ITEM'}={}){
     this.close(true);this.state.begin();this.root.dataset.itemId=item.itemId;
     const panel=document.createElement('div');panel.className='boss-reward-panel';
-    const eyebrow=document.createElement('small');eyebrow.textContent='NEW ITEM';
+    const eyebrowLabel=document.createElement('small');eyebrowLabel.textContent=eyebrow;
     const image=document.createElement('img');image.className='boss-reward-image';image.src=publicAsset(inventoryPresentationAsset(item));image.alt=item.name;
     const title=document.createElement('h2');title.textContent=item.name;const description=document.createElement('p');description.textContent=item.description;
     const button=document.createElement('button');button.type='button';button.textContent='Continue';button.disabled=true;
-    button.addEventListener('click',event=>{event.stopPropagation();this.dismiss();});panel.append(eyebrow,image,title,description,button);this.root.replaceChildren(panel);this.root.hidden=false;
+    button.addEventListener('click',event=>{event.stopPropagation();this.dismiss();});panel.append(eyebrowLabel,image,title,description,button);this.root.replaceChildren(panel);this.root.hidden=false;
     clearTimeout(this.unlockTimer);this.unlockTimer=setTimeout(()=>{this.state.unlock();button.disabled=false;},500);
   }
   dismiss(){if(!this.state.canDismiss(true))return false;return this.close();}

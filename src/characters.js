@@ -9,6 +9,11 @@ const ORIGINAL_CHARACTERS = [
     // The cigarette extends far beyond Michael's body in the side views.
     // This wider canvas is visual only; Player keeps the same foot hitbox.
     lungCrusherVisual:{sprite:'character-michael-lung-crusher',asset:'assets/characters/michael-bigzig-normalized.png?v=2',frameWidth:96,frameHeight:72},
+    experimentalVisual:{sprite:'character-michael-hd-test',sourceImage:'character-michael-hd-test-source',
+      asset:'assets/characters/experimental/michael-hd-test.png',previewAsset:'assets/characters/michael-new-preview.png',
+      sourceGrid:{columns:6,rows:4},frameWidth:128,frameHeight:144,scale:0.5,frameRate:10,
+      walkColumns:{down:[1,2,3,4,5],left:[1,2,3,4,5],right:[1,2,3,4,5],up:[1,2,3,4,5]},
+    },
   },
   {
     id: 'jassine', name: 'Yassin', sprite: 'character-jassine', asset: 'assets/characters/jassine.svg',
@@ -32,7 +37,8 @@ export const CHARACTERS = ORIGINAL_CHARACTERS;
 // Preview cards reuse a real base. They never introduce a fifth class or claim ID.
 export function characterMenuOptions(includeExperiments=false){
   const options=CHARACTERS.map(c=>({c,label:c.name,previewStyle:null}));
-  if(includeExperiments)for(const c of CHARACTERS.filter(c=>c.experimentalVisual)){
+  if(includeExperiments)for(const c of CHARACTERS.filter(c=>c.experimentalVisual).sort((a,b)=>
+    Number(b.id==='felipe')-Number(a.id==='felipe'))){
     options.push({c,label:`${c.name} · Skin test`,previewStyle:'level3Preview'});
   }
   return options;

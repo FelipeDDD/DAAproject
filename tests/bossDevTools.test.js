@@ -17,8 +17,7 @@ test('Dev Tools can collapse and reopen without losing presets or blocking the t
   const tools=new BossDevTools({applyBossProgress:()=>applied++},null,{documentRef});
   tools.client.devSetPreset=()=>new Promise(done=>resolve=done);
   const buttons=tools.content.querySelectorAll('button');
-  assert.equal(buttons.length,6);
-  tools.toggleButton.events.click();
+  assert.equal(tools.content.children[0].querySelectorAll('button').length,6);
   assert.equal(tools.content.hidden,true);assert.equal(tools.toggleButton.attributes['aria-expanded'],'false');
   tools.toggleButton.events.click();
   assert.equal(tools.content.hidden,false);
@@ -31,4 +30,12 @@ test('Dev Tools can collapse and reopen without losing presets or blocking the t
   assert.equal(tools.content.querySelectorAll('button')[0],buttons[0]);
   assert.equal(tools.status.textContent,'DEV: Fresh state loaded');
   assert.ok(buttons.every(button=>!button.disabled));
+});
+
+test('clear potions action updates the status and re-enables Dev Tools',async()=>{
+  const documentRef={createElement:tag=>new Element(tag),body:new Element('body')};
+  const tools=new BossDevTools({devClearHealthPotions:async()=>10},null,{documentRef});
+  assert.equal(await tools.runAction('clearPotions','Clear my potions'),true);
+  assert.equal(tools.status.textContent,'DEV: removed 10 potions');
+  assert.ok(tools.content.querySelectorAll('button').every(button=>!button.disabled));
 });

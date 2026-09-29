@@ -5,7 +5,7 @@ import { applyDirectorRewardChoice,applyDirectorVictory,BOSS_REWARDS } from '../
 import {
   INVENTORY_SLOT_COUNT,ITEM_CATALOG,inventoryItemUseBehavior,inventoryItemsFromBossProgress,inventoryItemsFromSources,inventoryPresentationAsset,inventoryShortcutSlot,inventorySlots,normalizeInventoryItems,
 } from '../src/inventory/config.js';
-import { CHARACTER_ITEM_COOLDOWN_MS,CHARACTER_ITEM_IDS,canCharacterOwnItem,itemCooldownRemaining,normalizeCharacterItem } from '../src/inventory/characterItems.js';
+import { CHARACTER_ITEM_COOLDOWN_MS,CHARACTER_ITEM_IDS,canCharacterOwnItem,itemAppearanceForCharacter,itemCooldownRemaining,normalizeCharacterItem } from '../src/inventory/characterItems.js';
 
 test('inventory starts with six empty slots and the badge appears only after its real unlock',()=>{
   assert.deepEqual(inventorySlots(inventoryItemsFromBossProgress(null)),Array(INVENTORY_SLOT_COUNT).fill(null));
@@ -77,6 +77,21 @@ test('character-item cooldown is centralized and prevents immediate reactivation
   assert.equal(itemCooldownRemaining(item,10_000+CHARACTER_ITEM_COOLDOWN_MS),0);
 });
 
+test('health potion keeps shared behavior while Sarina gets her own sprite and card',()=>{
+  const item=ITEM_CATALOG[CHARACTER_ITEM_IDS.HEALTH_POTION];
+  const sarina=itemAppearanceForCharacter(item,'sarina');
+  const michael=itemAppearanceForCharacter(item,'michael');
+  assert.equal(sarina.icon,'assets/items/potion-sarina-inventory.png');
+  assert.equal(sarina.presentationImage,'assets/items/potion-sarina.png');
+  const icon=readFileSync(new URL(`../public/${sarina.icon}`,import.meta.url));
+  assert.equal(icon.readUInt32BE(16),430);assert.equal(icon.readUInt32BE(20),430);
+  assert.equal(michael.icon,'assets/items/potion-michael-inventory.png');
+  assert.equal(michael.presentationImage,'assets/items/potion-michael.png');
+  assert.equal(sarina.healAmount,michael.healAmount);
+  assert.equal(sarina.cooldownMs,michael.cooldownMs);
+  assert.equal(sarina.maxStack,michael.maxStack);
+});
+
 test('collected item survives repeated normalization when activated and deactivated',()=>{
   let item={characterId:'michael',itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000,active:false,cooldownUntil:0};
   for(const active of [false,true,false,true]){
@@ -90,10 +105,10 @@ test('collected item survives repeated normalization when activated and deactiva
   }
 });
 
-test('inventory shortcuts use Shift plus the top-row digits only',()=>{
-  const base={repeat:false,shiftKey:true,ctrlKey:false,altKey:false,metaKey:false,target:{closest:()=>null}};
+test('inventory shortcuts use unmodified top-row digits only',()=>{
+  const base={repeat:false,shiftKey:false,ctrlKey:false,altKey:false,metaKey:false,target:{closest:()=>null}};
   assert.equal(inventoryShortcutSlot({...base,code:'Digit1'},null),0);
   assert.equal(inventoryShortcutSlot({...base,code:'Digit6'},null),5);
-  assert.equal(inventoryShortcutSlot({...base,shiftKey:false,code:'Digit2'},null),-1);
+  assert.equal(inventoryShortcutSlot({...base,shiftKey:true,code:'Digit2'},null),-1);
   assert.equal(inventoryShortcutSlot({...base,code:'Numpad2'},null),-1);
 });

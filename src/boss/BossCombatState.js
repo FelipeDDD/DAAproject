@@ -152,6 +152,11 @@ export class PlayerCombatState {
     return previous-this.hp;
   }
 
+  heal(amount){
+    if(this.defeated||!Number.isFinite(amount)||amount<=0||this.hp>=this.maxHp)return 0;
+    const previous=this.hp;this.hp=Math.min(this.maxHp,this.hp+amount);return this.hp-previous;
+  }
+
   reset(){
     this.hp=this.maxHp;
     this.invulnerableUntil=0;

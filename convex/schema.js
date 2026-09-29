@@ -131,6 +131,7 @@ export default defineSchema({
     moving:v.optional(v.boolean()),velocityX:v.optional(v.number()),velocityY:v.optional(v.number()),
     equippedSkin:v.optional(v.union(v.literal('classic'),v.literal('remastered'))),
     activeCharacterItem:v.optional(v.union(v.string(),v.null())),lastSeen: v.number(),
+    lastItemUseId:v.optional(v.string()),lastItemUseAt:v.optional(v.number()),
   }).index('by_player', ['playerId']).index('by_character', ['characterId']).index('by_room', ['room']).index('by_lastSeen', ['lastSeen'])
     .index('by_presenceMode_lease',['presenceMode','terminalLeaseExpiresAt'])
     .index('by_presenceMode_stationaryLease',['presenceMode','stationaryLeaseExpiresAt']),
@@ -139,7 +140,7 @@ export default defineSchema({
     rewards:v.array(v.string()),equippedSkin:v.optional(v.union(v.literal('classic'),v.literal('remastered'))),updatedAt:v.number(),
   }).index('by_profile_boss',['profileId','bossId']).index('by_character_boss',['characterId','bossId']),
   characterItems: defineTable({
-    profileId:v.optional(v.id('profiles')),characterId:v.optional(v.string()),characterBaseId:v.optional(v.string()),itemId:v.string(),active:v.optional(v.boolean()),cooldownUntil:v.number(),updatedAt:v.number(),
+    profileId:v.optional(v.id('profiles')),characterId:v.optional(v.string()),characterBaseId:v.optional(v.string()),itemId:v.string(),quantity:v.optional(v.number()),active:v.optional(v.boolean()),cooldownUntil:v.number(),updatedAt:v.number(),
   }).index('by_profile_item',['profileId','itemId']).index('by_profile',['profileId'])
     .index('by_character_item',['characterId','itemId']).index('by_character',['characterId']),
   characterLoadouts: defineTable({

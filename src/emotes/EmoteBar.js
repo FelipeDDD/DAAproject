@@ -40,8 +40,15 @@ export class EmoteBar {
     this.slotsRoot.replaceChildren(...this.slots.map((emote,index)=>{
       const button=document.createElement('button');button.type='button';button.dataset.emoteSlot=String(index);
       const name=emoteDefinition(emote)?.name??emote;button.dataset.tooltip=name;
-      button.title=name;button.setAttribute('aria-label',`Emote ${index+1}: ${name}`);
-      button.innerHTML=`<span aria-hidden="true">${emote}</span><kbd>${index+1}</kbd>`;return button;
+      button.title=name;button.setAttribute('aria-label',`Shift + ${index+1}, emote: ${name}`);
+      const icon=document.createElement('span');icon.setAttribute('aria-hidden','true');icon.textContent=emote;
+      const shortcut=document.createElement('kbd');shortcut.textContent=String(index+1);
+      button.append(icon,shortcut);
+      if(index===0){
+        const prefix=document.createElement('span');prefix.className='emote-shortcut-prefix';
+        prefix.setAttribute('aria-hidden','true');prefix.textContent='Shift +';button.append(prefix);
+      }
+      return button;
     }));
     this.pickerTitle.textContent=`Choose emote for slot ${this.editingSlot+1}`;
     this.choices.replaceChildren(...AVAILABLE_EMOTES.map(emote=>{

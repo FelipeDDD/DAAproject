@@ -10,8 +10,9 @@ const TRANSFORM_ANIMATION='michael-lung-crusher-transform-v3';
 const TRANSFORMATION_DISPLAY_SIZE=67;
 
 export class CharacterItemController {
-  constructor(scene,presence,{onVisualChange=()=>{},onItemsChange=()=>{}}={}){
-    Object.assign(this,{scene,presence,onVisualChange,onItemsChange,client:new CharacterItemClient(presence),items:[]});
+  constructor(scene,presence,{onVisualChange=()=>{},onItemsChange=()=>{},onItemCollected=()=>{},onItemUsed=()=>{}}={}){
+    Object.assign(this,{scene,presence,onVisualChange,onItemsChange,onItemCollected,onItemUsed,
+      client:new CharacterItemClient(presence),items:[],devPickups:[]});
   }
   get characterId(){return this.presence?.identity?.characterId;}
   get characterBaseId(){return this.presence?.identity?.characterBaseId??baseCharacterId(this.characterId);}
@@ -24,7 +25,7 @@ export class CharacterItemController {
   setItems(rows,{applyVisual=true}={}){
     if(this.destroyed)return;
     this.revision=(this.revision??0)+1;
-    this.items=(rows??[]).map(row=>normalizeCharacterItem(row,this.characterBaseId)).filter(Boolean);this.onItemsChange(this.items);
+    this.items=(rows??[]).map(row=>normalizeCharacterItem(row,this.characterBaseId)).filter(item=>item?.quantity>0);this.onItemsChange(this.items);
     const item=this.lungCrusher;if(applyVisual)this.onVisualChange(item?.active?item.itemId:null,{instant:true});
     if(this.pickup)this.pickup.setVisible(LUNG_CRUSHER_PICKUP_ENABLED&&this.characterBaseId==='michael'&&!item);
   }
@@ -36,11 +37,16 @@ export class CharacterItemController {
     this.pickupPosition={x,y};
   }
   updatePrompt(){
-    if(!LUNG_CRUSHER_PICKUP_ENABLED||!this.pickup?.visible||this.characterBaseId!=='michael')return false;
-    return Phaser.Math.Distance.Between(this.scene.player.body.center.x,this.scene.player.body.center.y,this.pickupPosition.x,this.pickupPosition.y)<=PICKUP_DISTANCE;
+    const center=this.scene.player.body.center;
+    const dropped=this.devPickups.find(item=>item.sprite.active&&Phaser.Math.Distance.Between(center.x,center.y,item.x,item.y)<=PICKUP_DISTANCE);
+    if(dropped)return dropped;
+    if(!LUNG_CRUSHER_PICKUP_ENABLED||!this.pickup?.visible||this.characterBaseId!=='michael')return null;
+    return Phaser.Math.Distance.Between(center.x,center.y,this.pickupPosition.x,this.pickupPosition.y)<=PICKUP_DISTANCE?{kind:'lung'}:null;
   }
-  async collect(){
-    if(!this.updatePrompt()||this.collecting)return false;this.collecting=true;
+  async collect(pickup=this.updatePrompt()){
+    if(!pickup||this.collecting)return false;
+    if(pickup.kind==='dev')return this.collectDevPickup(pickup);
+    this.collecting=true;
     const before=this.items;
     const optimistic={...characterItemDefinition(CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000),characterBaseId:this.characterBaseId,active:false,cooldownUntil:0};
     this.setItems([...before,optimistic]);this.pickup?.setVisible(false);
@@ -55,6 +61,58 @@ export class CharacterItemController {
       this.scene.hint.textContent=`Could not save Lung Crusher 3000: ${error.message}`;
       console.warn('Character item pickup:',error);return false;
     }finally{this.collecting=false;}
+  }
+  spawnDevPickup(itemId=CHARACTER_ITEM_IDS.HEALTH_POTION){
+    const definition=characterItemDefinition(itemId);if(!definition||this.destroyed)return null;
+    const x=this.scene.player.x,y=this.scene.player.y;
+    const sprite=this.scene.add.image(x,y,'health-potion-pickup').setOrigin(.5,1).setDisplaySize(34,34).setDepth(y+1).setInteractive({useHandCursor:true});
+    const pickup={kind:'dev',itemId,x,y,sprite};this.devPickups.push(pickup);
+    sprite.on('pointerdown',()=>void this.collectDevPickup(pickup));return pickup;
+  }
+  async collectDevPickup(pickup){
+    if(this.collecting||!pickup?.sprite?.active)return false;this.collecting=true;
+    try{
+      const result=await this.client.claim(pickup.itemId);
+      if(this.destroyed)return false;
+      if(result.full){
+        this.scene.hint.textContent='Potion stack is already full (10 / 10).';
+        this.onItemCollected(normalizeCharacterItem(result.item,this.characterBaseId),{eyebrow:'INVENTORY FULL'});
+        return false;
+      }
+      const item=normalizeCharacterItem(result.item,this.characterBaseId);
+      this.setItems([...this.items.filter(row=>row.itemId!==item.itemId),item]);
+      pickup.sprite.destroy();this.devPickups=this.devPickups.filter(item=>item!==pickup);
+      this.onItemCollected(item);return true;
+    }catch(error){
+      this.scene.hint.textContent=`Could not collect ${characterItemDefinition(pickup.itemId)?.name??'item'}: ${error.message}`;
+      console.warn('DEV item pickup:',error);return false;
+    }finally{this.collecting=false;}
+  }
+  async use(item){
+    if(item?.consumable){
+      if(!this.scene.canConsumeCharacterItem?.(item))return false;
+      const result=await this.client.consume(item.itemId);
+      if(this.destroyed)return false;
+      this.scene.applyConsumedCharacterItem?.(item);
+      this.onItemUsed(item,{usedAt:result.usedAt});
+      const normalized=normalizeCharacterItem(result,this.characterBaseId);
+      this.setItems([...this.items.filter(row=>row.itemId!==item.itemId),...(normalized?.quantity>0?[normalized]:[])]);
+      return true;
+    }
+    return this.toggle(item);
+  }
+  async clearHealthPotions(){
+    const result=await this.client.devClearPotions();
+    if(!this.destroyed)this.setItems(this.items.filter(item=>item.itemId!==CHARACTER_ITEM_IDS.HEALTH_POTION),{applyVisual:false});
+    return result.removed;
+  }
+  async devGrantOffice2Key(){
+    const result=await this.client.claim(CHARACTER_ITEM_IDS.OFFICE2_KEY);
+    if(this.destroyed||!result?.item)return null;
+    const item=normalizeCharacterItem(result.item,this.characterBaseId);
+    this.setItems([...this.items.filter(existing=>existing.itemId!==item.itemId),item]);
+    if(!result.duplicate)this.onItemCollected(item,{eyebrow:'DEV ITEM'});
+    return {duplicate:Boolean(result.duplicate)};
   }
   async applyActiveItem(item){
     const normalized=normalizeCharacterItem(item,this.characterBaseId);if(!normalized)return;
@@ -92,5 +150,5 @@ export class CharacterItemController {
       sprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE,()=>this.finishTransformation?.());sprite.play(TRANSFORM_ANIMATION);
     });return this.transforming;
   }
-  destroy(){this.destroyed=true;this.finishTransformation?.();this.pickup?.destroy();}
+  destroy(){this.destroyed=true;this.finishTransformation?.();this.pickup?.destroy();for(const pickup of this.devPickups)pickup.sprite.destroy();this.devPickups=[];}
 }

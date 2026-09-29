@@ -8,8 +8,8 @@ test('arena attack visuals select each character and reference six source frames
   assert.equal(playerAttackVisual('jassine').id,'glasses');
   assert.equal(playerAttackVisual('felipe').id,'monster-attack1');
   assert.equal(playerAttackVisual('sarina',()=>0).id,'tiramisu-attack1');
-  assert.equal(playerAttackVisual('sarina',()=>.999).id,'tiramisu-attack2');
-  assert.equal(allPlayerAttackVisuals().length,5);
+  assert.equal(playerAttackVisual('sarina',()=>.999).id,'tiramisu-attack1');
+  assert.equal(allPlayerAttackVisuals().length,4);
   for(const visual of allPlayerAttackVisuals()){
     const png=fs.readFileSync(new URL(`../public/${visual.asset}`,import.meta.url));
     assert.equal(png.toString('ascii',1,4),'PNG');
@@ -20,9 +20,9 @@ test('arena attack visuals select each character and reference six source frames
   assert.ok(playerAttackVisual('jassine').spin>0);
 });
 
-test('Sarina chooses both tiramisu attacks across equal random halves',()=>{
-  assert.equal(playerAttackVisual('sarina',()=>0.49).id,'tiramisu-attack1');
-  assert.equal(playerAttackVisual('sarina',()=>0.5).id,'tiramisu-attack2');
+test('Sarina uses the remaining tiramisu attack after the defective variant is repurposed',()=>{
+  for(const random of [()=>0,()=>0.49,()=>0.5,()=>0.999])assert.equal(playerAttackVisual('sarina',random).id,'tiramisu-attack1');
+  assert.equal(allPlayerAttackVisuals().some(visual=>visual.texture==='sarina-tiramisu-attack2'),false);
 });
 
 test('attack spawn tracks cigarette and glasses by appearance and facing',()=>{

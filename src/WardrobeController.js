@@ -3,6 +3,15 @@ import { BossProgressClient } from './boss/BossProgressClient.js';
 import { BOSS_REWARDS,CHARACTER_SKINS,hasBossReward,normalizeBossProgress } from './boss/BossRewards.js';
 import { nearbyWardrobe } from './maps/wardrobes.js';
 import { WorldPrompt } from './ui/WorldPrompt.js';
+import { FELIPE_TEST_PALETTE } from './art/felipeRecolor.js';
+
+const PREVIEW_COLORS=Object.freeze({
+  hair:['#604333','#231e2b','#a57040','#d2b07a','#744878'],
+  shirt:['#276d7a','#3778bb','#873f85','#be5b54','#41846a'],
+  trousers:['#9a9fa5','#35485f','#654b70','#655b4d','#d3c29d'],
+  shoes:['#693340','#282b38','#5b402e','#75818a','#b78355'],
+});
+const PREVIEW_LABELS=Object.freeze({hair:'Hair',shirt:'Shirt',trousers:'Trousers',shoes:'Shoes'});
 
 export function wardrobeSkinOptions(progress){
   const normalized=normalizeBossProgress(progress);
@@ -31,6 +40,7 @@ export class WardrobeController {
   }
 
   async restore(){
+    if(!this.presence.identity.profileId)return 'classic';
     try{this.progress=normalizeBossProgress(await this.client.getProgress(),this.presence.identity.characterId);}
     catch{this.progress=normalizeBossProgress(null,this.presence.identity.characterId);}
     this.scene.applyCharacterSkin(this.progress.equippedSkin);
@@ -39,7 +49,10 @@ export class WardrobeController {
 
   async open(){
     if(this.loading||this.active)return;this.loading=true;
-    try{this.progress=normalizeBossProgress(await this.client.getProgress(),this.presence.identity.characterId);this.render();this.root.hidden=false;}
+    try{
+      if(this.presence.identity.profileId)this.progress=normalizeBossProgress(await this.client.getProgress(),this.presence.identity.characterId);
+      this.render();this.root.hidden=false;
+    }
     catch(error){this.render(error.message);this.root.hidden=false;}
     finally{this.loading=false;}
   }
@@ -49,7 +62,7 @@ export class WardrobeController {
     const title=document.createElement('h2');title.textContent='CHANGE APPEARANCE';panel.append(title);
     const list=document.createElement('div');list.className='wardrobe-skins';
     const character=characterById(this.presence.identity.characterId);
-    for(const option of wardrobeSkinOptions(this.progress)){
+    for(const option of this.presence.identity.profileId?wardrobeSkinOptions(this.progress):[]){
       const button=document.createElement('button');button.type='button';button.className='wardrobe-skin';button.disabled=!option.unlocked;
       if(!option.unlocked)button.classList.add('locked');
       if(this.progress?.equippedSkin===option.id)button.classList.add('equipped');
@@ -58,9 +71,38 @@ export class WardrobeController {
       const state=document.createElement('span');state.textContent=option.unlocked?(this.progress?.equippedSkin===option.id?'Equipped':'Available'):'Locked';
       button.append(image,label,state);button.addEventListener('click',()=>this.equip(option.id));list.append(button);
     }
+    if(list.childElementCount)panel.append(list);
+    if(this.presence.identity.visualPreview==='level3Preview'&&character?.experimentalVisual?.recolorSource){
+      const colors=document.createElement('div');colors.className='wardrobe-colors';
+      const heading=document.createElement('h3');heading.textContent='Felipe · Skin test colors';colors.append(heading);
+      const note=document.createElement('p');note.textContent='Local preview only. Colors reset when you leave the game.';colors.append(note);
+      const palette=this.presence.identity.previewPalette??FELIPE_TEST_PALETTE;
+      for(const [part,choices] of Object.entries(PREVIEW_COLORS)){
+        const row=document.createElement('div');row.className='wardrobe-color-row';
+        const label=document.createElement('label');label.textContent=PREVIEW_LABELS[part];
+        const picker=document.createElement('input');picker.type='color';picker.value=palette[part];picker.setAttribute('aria-label',`${PREVIEW_LABELS[part]} color`);
+        picker.addEventListener('change',()=>this.changePreviewColor(part,picker.value));label.append(picker);row.append(label);
+        const swatches=document.createElement('div');swatches.className='wardrobe-swatches';
+        for(const color of choices){
+          const swatch=document.createElement('button');swatch.type='button';swatch.className='wardrobe-swatch';
+          swatch.style.setProperty('--swatch-color',color);swatch.setAttribute('aria-label',`${PREVIEW_LABELS[part]} ${color}`);
+          swatch.setAttribute('aria-pressed',String(palette[part].toLowerCase()===color));
+          swatch.addEventListener('click',()=>this.changePreviewColor(part,color));swatches.append(swatch);
+        }
+        row.append(swatches);colors.append(row);
+      }
+      const reset=document.createElement('button');reset.type='button';reset.className='wardrobe-colors-reset';reset.textContent='Reset colors';
+      reset.addEventListener('click',()=>this.changePreviewColor(null,null));colors.append(reset);panel.append(colors);
+    }
     const status=document.createElement('p');status.className='wardrobe-status';status.setAttribute('role','status');status.textContent=error;
     const close=document.createElement('button');close.type='button';close.textContent='Close';close.addEventListener('click',()=>this.closePanel());
-    panel.append(list,status,close);this.root.append(panel);
+    panel.append(status,close);this.root.append(panel);
+  }
+
+  changePreviewColor(part,color){
+    const current=this.presence.identity.previewPalette??FELIPE_TEST_PALETTE;
+    const palette=part?{...current,[part]:color}:FELIPE_TEST_PALETTE;
+    if(this.scene.applyPreviewPalette(palette))this.render();
   }
 
   async equip(skin){

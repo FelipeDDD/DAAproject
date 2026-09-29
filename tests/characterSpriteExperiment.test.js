@@ -3,15 +3,16 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { CHARACTERS, characterById, characterMenuOptions } from '../src/characters.js';
 import { CharacterMenu } from '../src/CharacterMenu.js';
-import { characterVisual, createCharacterAnimations, footBodyForVisual, localCharacterStyle, preloadCharacterTextures, walkFrames } from '../src/characterVisuals.js';
+import { characterVisual, createCharacterAnimations, footBodyForVisual, localCharacterStyle, preloadCharacterTextures, prepareExperimentalGridTexture, walkFrames } from '../src/characterVisuals.js';
 
 const felipe=characterById('felipe');
 test('fifth development card reuses Felipe; normal selection still has four real bases',()=>{
   assert.equal(characterMenuOptions().length,4);
   const options=characterMenuOptions(true);
-  assert.equal(options.length,5);
+  assert.equal(options.length,6);
   assert.equal(options[4].c,felipe);
   assert.equal(options[4].previewStyle,'level3Preview');
+  assert.equal(options[5].c.id,'michael');
   assert.equal(CHARACTERS.length,4);
 });
 
@@ -31,6 +32,9 @@ test('preview selection claims the original base and normal reselection clears l
   assert.equal(menu.presence.identity.characterBaseId,'felipe');
   await menu.choose(felipe);
   assert.equal(menu.presence.identity.visualPreview,undefined);
+  await menu.choose(characterById('michael'),'level3Preview');
+  assert.equal(menu.presence.identity.characterBaseId,'michael');
+  assert.equal(menu.presence.identity.visualPreview,'level3Preview');
 });
 
 test('appearance restore keeps only the selected local Felipe in preview style',()=>{
@@ -52,13 +56,15 @@ test('appearance restore keeps only the selected local Felipe in preview style',
 
 test('experimental frames load once only when enabled and use five walk poses at 10 FPS',()=>{
   const loaded=[],animations=new Map();
-  const scene={textures:{exists:key=>key===felipe.experimentalVisual.sprite},load:{svg(){},spritesheet:(...args)=>loaded.push(args)},
+  const scene={textures:{exists:key=>key===felipe.experimentalVisual.sprite||key===characterById('michael').experimentalVisual.sprite},
+    load:{svg(){},spritesheet:(...args)=>loaded.push(args),image:(...args)=>loaded.push(args)},
     anims:{exists:key=>animations.has(key),create:config=>animations.set(config.key,config)}};
   preloadCharacterTextures(scene,CHARACTERS,'/',false);
   assert.ok(!loaded.some(([key])=>key===felipe.experimentalVisual.sprite));
   loaded.length=0;
   preloadCharacterTextures(scene,[...CHARACTERS,felipe],'/',true);
   assert.equal(loaded.filter(([key])=>key===felipe.experimentalVisual.recolorSource).length,1);
+  assert.equal(loaded.filter(([key])=>key===characterById('michael').experimentalVisual.sourceImage).length,1);
   assert.deepEqual(loaded.find(([key])=>key===felipe.experimentalVisual.recolorSource)[2],{frameWidth:128,frameHeight:144});
   createCharacterAnimations(scene,CHARACTERS,true);
   const visual=characterVisual(felipe,'level3Preview');
@@ -70,6 +76,25 @@ test('experimental frames load once only when enabled and use five walk poses at
   }
   assert.equal(animations.get('character-felipe-new-walk-down').frames.length,4);
   assert.equal(animations.get('character-felipe-new-walk-down').frameRate,8);
+});
+
+test('Michael HD test sheet is normalized to the same 6x4 frame grid without changing source art',()=>{
+  const visual=characterById('michael').experimentalVisual;
+  const png=readFileSync(new URL(`../public/${visual.asset}`,import.meta.url));
+  assert.equal(png.readUInt32BE(16),1448);assert.equal(png.readUInt32BE(20),1086);
+  const image={width:1448,height:1086};const draws=[];let registered;
+  const canvas={getContext:()=>({set imageSmoothingEnabled(value){assert.equal(value,false);},
+    drawImage:(...args)=>draws.push(args)})};
+  const textures={exists:()=>false,get:key=>{
+    assert.equal(key,visual.sourceImage);return {getSourceImage:()=>image};
+  },addSpriteSheet:(...args)=>{registered=args;}};
+  prepareExperimentalGridTexture(textures,visual,()=>canvas);
+  assert.equal(canvas.width,768);assert.equal(canvas.height,576);
+  assert.equal(draws.length,24);
+  assert.equal(draws[0][0],image);
+  assert.deepEqual(draws[0].slice(5),[0,0,128,144]);
+  assert.deepEqual(registered.slice(0,2),[visual.sprite,canvas]);
+  assert.deepEqual(registered[2],{frameWidth:128,frameHeight:144});
 });
 
 test('experimental texture dimensions fit all 24 registered frames',()=>{

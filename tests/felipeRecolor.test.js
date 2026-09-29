@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFileSync} from 'node:fs';
 import {inflateSync} from 'node:zlib';
-import {createFelipeMaterialMask,recolorFelipePixels,prepareFelipeRecolorTexture,FELIPE_TEST_PALETTE} from '../src/art/felipeRecolor.js';
+import {createFelipeMaterialMask,recolorFelipePixels,prepareFelipeRecolorTexture,updateFelipeRecolorTexture,FELIPE_TEST_PALETTE} from '../src/art/felipeRecolor.js';
 import {characterById} from '../src/characters.js';
 
 // Read the actual RGBA PNG so protection tests cover the shipped 24-frame asset.
@@ -90,6 +90,20 @@ test('registered texture is created once, is cached across scenes and uses the H
   assert.equal(generated,1);assert.equal(calls.length,1);
   assert.deepEqual(calls[0],{key:visual.sprite,source:canvas,grid:{frameWidth:128,frameHeight:144}});
   prepareFelipeRecolorTexture(textures,{sprite:'classic'},()=>assert.fail('classic art must not recolor'));
+});
+
+test('palette changes redraw the existing animated spritesheet from the original image',()=>{
+  const visual=characterById('felipe').experimentalVisual;
+  const sourceImage={};const draws=[];let uploads=0;
+  const canvas={width:768,height:576,getContext:()=>({clearRect(){},drawImage:image=>draws.push(image)})};
+  const texture={getSourceImage:()=>canvas,source:[{update:()=>uploads++}]};
+  const textures={exists:key=>key===visual.sprite,get:key=>key===visual.sprite?texture:{getSourceImage:()=>sourceImage}};
+  const palette={...FELIPE_TEST_PALETTE,shirt:'#be5b54'};
+  assert.equal(updateFelipeRecolorTexture(textures,visual,palette,(source,colors)=>{
+    assert.equal(source,sourceImage);assert.deepEqual(colors,palette);return {changed:true};
+  }),true);
+  assert.deepEqual(draws,[{changed:true}]);assert.equal(uploads,1);
+  assert.equal(updateFelipeRecolorTexture(textures,{sprite:'classic'},palette),false);
 });
 
 test('incompatible masks, sheets and invalid colors fail explicitly',()=>{

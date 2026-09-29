@@ -32,11 +32,14 @@ import { TerminalOverlayController } from '../terminal/TerminalOverlayController
 import { isMapTransitionLocked,nearbyMapTransition,readMapTransitions } from '../maps/transitions.js';
 import { readWardrobes } from '../maps/wardrobes.js';
 import { WardrobeController } from '../WardrobeController.js';
+import { FELIPE_TEST_PALETTE,updateFelipeRecolorTexture } from '../art/felipeRecolor.js';
 import { BossProgressClient } from '../boss/BossProgressClient.js';
 import { normalizeBossProgress } from '../boss/BossRewards.js';
 import { BossDevTools,shouldShowBossDevTools } from '../boss/BossDevTools.js';
 import { InventoryHotbar } from '../inventory/InventoryHotbar.js';
 import { CharacterItemController } from '../inventory/CharacterItemController.js';
+import { CHARACTER_ITEM_IDS } from '../inventory/characterItems.js';
+import { PotionUseEffectRenderer } from '../inventory/PotionUseEffectRenderer.js';
 import { WorldPrompt,centeredMessageViewport } from '../ui/WorldPrompt.js';
 import { getGameHud } from '../hud/GameHudController.js';
 import { hasProfileSession } from '../ProfileSessionClient.js';
@@ -70,6 +73,8 @@ export class MapScene extends Phaser.Scene {
     if(!this.textures.exists('michael-lung-transform'))this.load.spritesheet('michael-lung-transform',
       `${import.meta.env.BASE_URL}assets/items/michael-bigcig-normalized.png?v=3`,{frameWidth:160,frameHeight:160});
     if(!this.textures.exists('school-hanger'))this.load.image('school-hanger',`${import.meta.env.BASE_URL}assets/hanger.png`);
+    if(!this.textures.exists('health-potion-pickup'))this.load.image('health-potion-pickup',
+      `${import.meta.env.BASE_URL}assets/items/potion-michael-inventory.png`);
     const mapUrl = new URL(`${import.meta.env.BASE_URL}assets/maps/${this.filename}`, window.location.href);
     this.load.once(`filecomplete-json-${this.sourceKey}`, (_key, _type, data) => {
       data.tilesets.forEach((reference, index) => {
@@ -199,6 +204,7 @@ export class MapScene extends Phaser.Scene {
       this.devTools?.destroy();this.devTools=null;
       this.inventoryHotbar?.destroy();this.inventoryHotbar=null;
       this.characterItems?.destroy();this.characterItems=null;
+      this.potionEffects?.destroy();this.potionEffects=null;
       this.terminal?.destroy();this.terminal=null;
       this.wardrobe?.closePanel();
       this.emoteBar?.close();this.emoteBar=null;
@@ -234,19 +240,25 @@ export class MapScene extends Phaser.Scene {
         (destination.targetSpawn===undefined&&destination.targetX===undefined&&destination.targetY===undefined&&!destination.returnDestination);
       const saved=restoreClassState?classRestoreDestination(this.presence?.identity?.classState,this.mapKey,this.source):{};
       const spawn = resolveSpawn(this.source,{...destination,...saved});
-      this.player.body.reset(spawn.x, spawn.y);
+      this.player.body.reset(spawn.x+(destination.spawnOffsetX??0),spawn.y+(destination.spawnOffsetY??0));
       this.wardrobe?.destroy();
-      this.wardrobe=hasProfileSession(this.presence)&&this.wardrobeDefinitions.length
+      this.wardrobe=(hasProfileSession(this.presence)||
+        (this.presence?.identity?.visualPreview==='level3Preview'&&this.presence.identity.characterBaseId==='felipe'))&&this.wardrobeDefinitions.length
         ?new WardrobeController(this,this.presence,this.wardrobeDefinitions):null;
       this.appearanceRestoreToken=Symbol('appearance');
       const character=characterById(this.presence?.identity?.characterId);
+      if(character?.experimentalVisual&&this.presence?.identity?.visualPreview==='level3Preview')
+        updateFelipeRecolorTexture(this.textures,character.experimentalVisual,
+          this.presence.identity.previewPalette??FELIPE_TEST_PALETTE);
       this.equippedSkin='classic';
       this.activeCharacterItem=null;
       if(character)this.player.setCharacter(character,'old');
+      this.potionEffects?.destroy();
+      this.potionEffects=this.presence?new PotionUseEffectRenderer(this,this.presence.identity.playerId,this.remotes):null;
       this.presence?.enter(this.mapKey, () => ({
         x: this.player.x, y: this.player.y, direction: this.player.facing,equippedSkin:this.equippedSkin,
         activeCharacterItem:this.activeCharacterItem,
-      }), rows => this.remotes.receive(rows));
+      }), rows => {this.remotes.receive(rows);this.potionEffects?.receive(rows);});
       this.devTools?.destroy();
       this.devTools=shouldShowBossDevTools(import.meta.env)&&hasProfileSession(this.presence)
         ?new BossDevTools(this,this.presence):null;
@@ -259,9 +271,11 @@ export class MapScene extends Phaser.Scene {
       this.characterItems=hasProfileSession(this.presence)?new CharacterItemController(this,this.presence,{
         onVisualChange:(itemId,options)=>this.setActiveCharacterItem(itemId,options),
         onItemsChange:items=>this.inventoryHotbar?.setCharacterItems(items),
+        onItemCollected:(item,options)=>this.inventoryHotbar?.showItem(item,options),
+        onItemUsed:item=>{if(item.itemId===CHARACTER_ITEM_IDS.HEALTH_POTION)this.potionEffects?.show(this.presence.identity.playerId);},
       }):null;
       this.inventoryHotbar=hasProfileSession(this.presence)?new InventoryHotbar(this.presence,{
-        onToggleItem:item=>this.characterItems?.toggle(item),
+        onToggleItem:item=>this.characterItems?.use(item),
       }):null;
       void this.inventoryHotbar?.refresh();
       void this.characterItems?.restore();
@@ -294,6 +308,15 @@ export class MapScene extends Phaser.Scene {
     void this.presence?.send();
   }
 
+  applyPreviewPalette(palette){
+    const character=characterById(this.presence?.identity?.characterId);
+    if(this.presence?.identity?.visualPreview!=='level3Preview'||!character?.experimentalVisual)return false;
+    const next={...FELIPE_TEST_PALETTE,...palette};
+    if(!updateFelipeRecolorTexture(this.textures,character.experimentalVisual,next))return false;
+    this.presence.identity.previewPalette=next;
+    return true;
+  }
+
   setActiveCharacterItem(itemId,{instant=true,restoreSkin}={}){
     if(restoreSkin)this.equippedSkin=restoreSkin==='remastered'?'remastered':'classic';
     this.activeCharacterItem=itemId??null;
@@ -322,6 +345,35 @@ export class MapScene extends Phaser.Scene {
     this.boss?.applyProgressSnapshot?.(normalized);
   }
 
+  canConsumeCharacterItem(item){
+    if(item?.itemId!==CHARACTER_ITEM_IDS.HEALTH_POTION)return false;
+    if(this.boss?.canHealPlayer?.())return true;
+    this.hint.hidden=false;
+    this.hint.textContent=this.mapKey==='arena'?'HP is already full.':'The potion can only be used during combat.';
+    this.positionInteractionHint();return false;
+  }
+
+  applyConsumedCharacterItem(item){
+    if(item?.itemId!==CHARACTER_ITEM_IDS.HEALTH_POTION)return 0;
+    const restored=this.boss?.healPlayer?.(item.healAmount)??0;
+    if(restored){this.hint.hidden=false;this.hint.textContent=`Restored ${restored} HP.`;this.positionInteractionHint();}
+    return restored;
+  }
+
+  devTeleport(targetMap,targetSpawn,{offsetX=0,offsetY=0}={}){
+    const destination={targetMap,targetSpawn,spawnOffsetX:offsetX,spawnOffsetY:offsetY};
+    if(targetMap!==this.mapKey){this.travelTo(destination);return true;}
+    try{
+      const spawn=resolveSpawn(this.source,destination);this.player.setVelocity(0,0);
+      this.player.body.reset(spawn.x+offsetX,spawn.y+offsetY);
+      if(targetMap==='arena')this.boss?.reset();return true;
+    }catch(error){this.hint.textContent=error.message;return false;}
+  }
+
+  devDropHealthPotion(){return this.characterItems?.spawnDevPickup(CHARACTER_ITEM_IDS.HEALTH_POTION)??null;}
+  devClearHealthPotions(){return this.characterItems?.clearHealthPotions()??null;}
+  devGrantOffice2Key(){return this.characterItems?.devGrantOffice2Key()??null;}
+
   travelTo(destination) {
     const target = this.scene.manager.keys[destination.targetMap];
     if (!target) { this.doorMessage = `Unknown area: ${destination.targetMap}.`; return; }
@@ -349,6 +401,7 @@ export class MapScene extends Phaser.Scene {
     else this.player.update();
     if(this.terminal?.active||this.puzzleTerminal?.active||this.chat?.isInputActive||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active||this.characterItems?.transforming)this.hint.hidden=true;
     this.remotes.update(delta);
+    this.potionEffects?.update();
     this.emoteRenderer?.update();
     if(this.doorSync)for(const door of this.doors)door.updateBlocker(this.player.body);
     if(this.terminal?.active){this.terminalPrompt.setVisible(false);this.hint.textContent='Terminal · Esc: back to classroom';return;}
@@ -409,7 +462,7 @@ export class MapScene extends Phaser.Scene {
       void this.wardrobe.open();this.hint.textContent='Opening appearance selector…';return;
     }
     if(interact&&characterItemPickup){
-      void this.characterItems.collect();this.hint.textContent='Collecting Lung Crusher 3000…';return;
+      void this.characterItems.collect(characterItemPickup);this.hint.textContent='Collecting item…';return;
     }
     if(interact&&computer){
       this.terminalPrompt.setVisible(false);
@@ -457,7 +510,7 @@ export class MapScene extends Phaser.Scene {
       : computer
       ? '[E] Open Terminal'
       : characterItemPickup
-      ? '[E] Collect Lung Crusher 3000'
+      ? `[E] Collect ${characterItemPickup.kind==='dev'?'Medizinisch Fragwürdig':'Lung Crusher 3000'}`
       : wardrobe
       ? '[E] Change appearance'
       : mapTransition

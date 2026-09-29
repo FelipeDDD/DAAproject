@@ -341,8 +341,9 @@ html[data-viewport-size] #bottom-hud :is(#emote-slots button,#emote-settings) {
   font-size:clamp(11px,1.8cqw,23px);
 }
 html[data-viewport-size] #bottom-hud :is(#emote-slots,.hotbar-body) { gap:.2cqw; }
-html[data-viewport-size] #bottom-hud .school-hotbar-slot kbd,
-html[data-viewport-size] #bottom-hud #emote-slots kbd { font-size:clamp(6px,.7cqw,10px); }
+html[data-viewport-size] #bottom-hud .school-hotbar-slot kbd { font-size:clamp(8px,.8cqw,11px); }
+html[data-viewport-size] #bottom-hud #emote-slots kbd { top:2px; left:3px; width:auto; transform:none; font-size:clamp(7px,.55cqw,8px); }
+html[data-viewport-size] #bottom-hud .emote-shortcut-prefix { width:calc(2 * var(--hud-large-emote-size) + .2cqw); font-size:clamp(6px,.65cqw,9px); }
 html[data-viewport-size] #bottom-hud #emote-picker { left:auto; right:0; transform:none; max-width:80vw; }
 html[data-viewport-size] #game-frame .frame-edge--top,
 html[data-viewport-size] #game-frame .frame-edge--bottom { background-size:60px 11px; }

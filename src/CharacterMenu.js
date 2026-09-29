@@ -75,6 +75,19 @@ export class CharacterMenu {
       const visual=characterVisual(c,previewStyle??this.style);
       image.src=`${import.meta.env.BASE_URL}${visual.previewAsset}`;
       image.dataset.style=visual.style;
+      if(visual.sourceGrid){
+        const source=new Image();
+        source.onload=()=>{
+          if(image.dataset.style!==visual.style)return;
+          const canvas=document.createElement('canvas');
+          canvas.width=visual.frameWidth;canvas.height=visual.frameHeight;
+          const context=canvas.getContext('2d');context.imageSmoothingEnabled=false;
+          context.drawImage(source,0,0,source.width/visual.sourceGrid.columns,
+            source.height/visual.sourceGrid.rows,0,0,canvas.width,canvas.height);
+          image.src=canvas.toDataURL('image/png');
+        };
+        source.src=`${import.meta.env.BASE_URL}${visual.asset}`;
+      }
     }
   }
   setAuthentication(profile,token){
