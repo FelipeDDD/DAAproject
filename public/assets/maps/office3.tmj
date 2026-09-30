@@ -692,6 +692,25 @@
                  "width":98.5,
                  "x":641.5,
                  "y":246
+                }, 
+                {
+                 "height":0,
+                 "id":66,
+                 "name":"PC-User",
+                 "opacity":1,
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"interactionDistance",
+                         "type":"string",
+                         "value":"70"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":716.666666666667,
+                 "y":478.666666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -804,7 +823,7 @@
                  "width":0,
                  "x":390.666666666667,
                  "y":142
-                },
+                }, 
                 {
                  "height":28,
                  "id":64,
@@ -816,6 +835,18 @@
                  "width":31.75,
                  "x":494.25,
                  "y":171.5
+                }, 
+                {
+                 "height":56.9999999999999,
+                 "id":67,
+                 "name":"PC-USER-INTERACTION",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":121,
+                 "x":647.666666666667,
+                 "y":507.333333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -824,7 +855,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":66,
+ "nextobjectid":68,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.2",

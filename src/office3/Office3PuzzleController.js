@@ -1,10 +1,13 @@
 import { CHARACTER_ITEM_IDS, characterItemDefinition } from '../inventory/characterItems.js';
 import { hasProfileSession, requireProfileSessionToken } from '../ProfileSessionClient.js';
-import { createOffice3ComputerSession, runOfficeCommand } from './office3Computer.js';
+import { createComputerSession, runComputerCommand } from '../terminal/virtualComputer.js';
+import { createOffice3ComputerSession, OFFICE3_COMPUTER, runOfficeCommand } from './office3Computer.js';
 import { WorldPrompt } from '../ui/WorldPrompt.js';
 import { renderQuizMedia } from '../QuizMedia.js';
 import { office3PaperPlacement } from '../art/office3PaperHighlight.js';
 import { loadOffice3Questions } from '../quiz/quizBank.js';
+import { readNamedMapMarker } from '../maps/namedMapMarkers.js';
+import { pointInsideInteractionArea, readNamedInteractionArea } from '../maps/namedInteractionAreas.js';
 import {
   OFFICE3_FEEDBACK_MS, OFFICE3_PASSWORD_DENIED_MS, OFFICE3_MONITOR, OFFICE3_STREAK_TARGET,
   chooseOffice3Question, nextStreak, passwordIsCorrect,
@@ -18,8 +21,14 @@ function element(tag, className, text) {
 }
 
 export class Office3PuzzleController {
-  constructor(scene) {
+  constructor(scene,{computerMode='office3',computerConfig=OFFICE3_COMPUTER,markerName='PC-User',interactionAreaName=null}={}) {
     this.scene = scene;
+    this.computerMode=computerMode;
+    this.computerConfig=computerConfig;
+    this.pcMarker=computerMode==='office3'?null:readNamedMapMarker(scene.source,markerName);
+    this.pcInteractionRadius=this.pcMarker?.properties.interactionDistance??OFFICE3_MONITOR.radius;
+    this.pcInteractionArea=computerMode!=='office3'&&interactionAreaName
+      ?readNamedInteractionArea(scene.source,interactionAreaName):null;
     this.active = false;
     this.busy = false;
     this.streak = 0;
@@ -27,13 +36,17 @@ export class Office3PuzzleController {
     this.usedIds = [];
     this.generation = 0;
     this.correctAnswers = [];
-    this.safePrompt = new WorldPrompt(scene, 'Press E to open safe', {className:'office3-terminal-prompt'});
-    if(scene.officeSafe?.marker)this.safePrompt.setPosition(scene.officeSafe.x,scene.officeSafe.y-40);
-    this.paperMarker = office3PaperPlacement(scene.source);
-    this.prompt = new WorldPrompt(scene, 'Press E to access terminal', { className: 'office3-terminal-prompt' });
-    this.prompt.setPosition(OFFICE3_MONITOR.x, OFFICE3_MONITOR.y - 20);
-    this.paperPrompt = new WorldPrompt(scene, 'Press E to inspect paper', { className: 'office3-paper-prompt' });
-    if(this.paperMarker)this.paperPrompt.setPosition(this.paperMarker.x,this.paperMarker.y - 23);
+    this.safePrompt = computerMode==='office3'
+      ?new WorldPrompt(scene, 'Press E to open safe', {className:'office3-terminal-prompt'}):null;
+    if(scene.officeSafe?.marker)this.safePrompt?.setPosition(scene.officeSafe.x,scene.officeSafe.y-40);
+    this.paperMarker = computerMode==='office3'?office3PaperPlacement(scene.source):null;
+    this.prompt = new WorldPrompt(scene, computerMode==='director'
+      ?'Press E to inspect Director computer':'Press E to access terminal', { className: 'office3-terminal-prompt' });
+    if(computerMode==='office3')this.prompt.setPosition(OFFICE3_MONITOR.x,OFFICE3_MONITOR.y-20);
+    else if(this.pcMarker)this.prompt.setPosition(this.pcMarker.x,this.pcMarker.y-20);
+    this.paperPrompt = computerMode==='office3'
+      ?new WorldPrompt(scene, 'Press E to inspect paper', { className: 'office3-paper-prompt' }):null;
+    if(this.paperMarker)this.paperPrompt?.setPosition(this.paperMarker.x,this.paperMarker.y - 23);
 
     this.root = element('div', 'office3-puzzle-overlay');
     this.root.hidden = true;
@@ -44,29 +57,45 @@ export class Office3PuzzleController {
     this.panel = element('section', 'office3-puzzle-panel');
     this.root.append(this.panel);
     document.body.append(this.root);
-    this.onKeyDown = event => {
-      if (!this.active) return;
-      if (event.key === 'Escape') {
+    this.onKeyDown = event => this.handleKey(event);
+    window.addEventListener('keydown', this.onKeyDown, true);
+    window.addEventListener('keyup', this.onKeyDown, true);
+  }
+
+  handleKey(event) {
+      // Closing on keydown must also consume its keyup/repeats. Otherwise Esc
+      // escapes into browser/game shortcuts after the dialog has disappeared.
+      if (event.key === 'Escape' && (this.active || this.releaseEscape)) {
         event.preventDefault();
         event.stopImmediatePropagation();
-        this.close();
+        if (event.type === 'keydown') {
+          this.releaseEscape = true;
+          this.close();
+        } else {
+          this.releaseEscape = false;
+          this.restoreGameFocus();
+        }
         return;
       }
+      if (event.type === 'keydown') this.releaseEscape = false;
+      if (!this.active) return;
       // Suppress game/emote/hotbar shortcuts while this dialog has the keyboard.
       if(event.type==='keydown'&&event.key==='Enter'&&this.commandInput===document.activeElement){
         event.preventDefault();void this.executeCommand();
       }
       event.stopImmediatePropagation();
-    };
-    window.addEventListener('keydown', this.onKeyDown, true);
-    window.addEventListener('keyup', this.onKeyDown, true);
   }
 
   nearMonitor() {
     const body = this.scene.player?.body;
-    if (!body) return false;
-    return Math.hypot(body.center.x - OFFICE3_MONITOR.x,
-      body.center.y - OFFICE3_MONITOR.interactionY) <= OFFICE3_MONITOR.radius;
+    if(!body)return false;
+    if(this.computerMode==='office3')return Math.hypot(body.center.x-OFFICE3_MONITOR.x,
+      body.center.y-OFFICE3_MONITOR.interactionY)<=OFFICE3_MONITOR.radius;
+    if(!this.pcMarker)return false;
+    if(this.pcInteractionArea)
+      return pointInsideInteractionArea(this.pcInteractionArea,body.center.x,body.center.y);
+    return Math.hypot(body.center.x - this.pcMarker.x,
+      body.center.y - this.pcMarker.y) <= this.pcInteractionRadius;
   }
 
   nearPaper() {
@@ -83,9 +112,9 @@ export class Office3PuzzleController {
 
   updatePrompt(available) {
     this.prompt.setVisible(Boolean(available) && !this.active && this.nearMonitor());
-    this.paperPrompt.setVisible(Boolean(available) && !this.active && this.nearPaper());
-    this.safePrompt.setVisible(Boolean(available) && !this.active && this.nearSafe());
-    this.scene.officeSafe?.setOpen(Boolean(this.scene.characterItems?.items.some(item=>item.itemId===CHARACTER_ITEM_IDS.OFFICE2_KEY)));
+    this.paperPrompt?.setVisible(Boolean(available) && !this.active && this.nearPaper());
+    this.safePrompt?.setVisible(Boolean(available) && !this.active && this.nearSafe());
+    if(this.computerMode==='office3')this.scene.officeSafe?.setOpen(Boolean(this.scene.characterItems?.items.some(item=>item.itemId===CHARACTER_ITEM_IDS.OFFICE2_KEY)));
   }
 
   activate() {
@@ -94,8 +123,8 @@ export class Office3PuzzleController {
     this.generation++;
     this.busy = false;
     this.prompt.setVisible(false);
-    this.paperPrompt.setVisible(false);
-    this.safePrompt.setVisible(false);
+    this.paperPrompt?.setVisible(false);
+    this.safePrompt?.setVisible(false);
     this.scene.player.setVelocity(0, 0);
     this.scene.input.keyboard.resetKeys();
     this.keyboardWasEnabled = this.scene.input.keyboard.enabled;
@@ -106,6 +135,10 @@ export class Office3PuzzleController {
 
   open() {
     if (!this.nearMonitor() || !this.scene.presence || !this.activate()) return false;
+    if(this.computerMode!=='office3'){
+      this.safeCode='';this.folder='';this.computerSession=createComputerSession(this.computerConfig);
+      this.commandHistory=[];this.showComputer();return true;
+    }
     if(this.scene.registry.get('office3-computer-blocked')>Date.now())this.showComputerCooldown();
     else if (hasProfileSession(this.scene.presence)) this.showPassword();
     else this.showProfileRequired();
@@ -329,8 +362,12 @@ export class Office3PuzzleController {
   }
 
   showComputer() {
-    this.resetPanel('Command Prompt','computer');
-    this.panel.append(element('p','office3-command-banner','Office OS [Version 3.0]\nType help for commands. Use dir, cd and type to inspect files.'));
+    const title=this.computerMode==='office3'?'Command Prompt':`${this.computerConfig.hostname} · Command Prompt`;
+    this.resetPanel(title,'computer');
+    const banner=this.computerMode!=='office3'
+      ?`Office OS [Version 3.0]\nHost: ${this.computerConfig.hostname}\nType help for commands.`
+      :'Office OS [Version 3.0]\nType help for commands. Use dir, cd and type to inspect files.';
+    this.panel.append(element('p','office3-command-banner',banner));
     const output=element('div','office3-command-output');output.setAttribute('role','log');
     for(const line of this.commandHistory??[])output.append(element('pre',line.error?'office3-command-error':'',line.text));
     this.commandOutput=output;
@@ -347,8 +384,11 @@ export class Office3PuzzleController {
   async executeCommand() {
     if(this.busy||!this.commandInput||!this.active)return;
     const command=this.commandInput.value;if(!command.trim())return;
-    this.computerSession ??= createOffice3ComputerSession();
-    const result=runOfficeCommand(this.folder,command,this.safeCode,this.computerSession);
+    this.computerSession ??= this.computerMode!=='office3'
+      ?createComputerSession(this.computerConfig):createOffice3ComputerSession();
+    const result=this.computerMode!=='office3'
+      ?runComputerCommand(this.computerConfig,this.computerSession,command)
+      :runOfficeCommand(this.folder,command,this.safeCode,this.computerSession);
     this.commandHistory.push({text:`C:\\${this.folder}> ${command}`});
     if(result.message)this.commandHistory.push({text:result.message,error:result.error});
     this.commandHistory=this.commandHistory.slice(-80);this.folder=result.folder;
@@ -444,6 +484,16 @@ export class Office3PuzzleController {
     }
   }
 
+  restoreGameFocus() {
+    const scene=this.scene;
+    if(this.destroyed||this.active||
+      (scene.scene?.isActive&&!scene.scene.isActive())||scene.chat?.isInputActive||
+      scene.terminal?.active||scene.puzzleTerminal?.active||scene.networkTerminal?.active)return;
+    // Return focus while the input still exists, before hiding/removing it.
+    globalThis.window?.focus?.();
+    globalThis.document?.getElementById?.('game')?.focus?.({preventScroll:true});
+  }
+
   close() {
     if (!this.active) return;
     clearTimeout(this.delay);
@@ -454,19 +504,31 @@ export class Office3PuzzleController {
     this.safeCode=null;
     this.computerSession=null;
     this.busy = false;
+    this.restoreGameFocus();
     this.root.hidden = true;
     this.panel.replaceChildren();
     this.panel.classList.remove('paper', 'reward', 'computer', 'notepad');
     this.scene.input.keyboard.resetKeys();
-    this.scene.input.keyboard.enabled = this.keyboardWasEnabled !== false;
-    this.scene.game.canvas?.focus?.();
+    const restoreKeyboard=this.keyboardWasEnabled!==false;
+    this.scene.input.keyboard.enabled=restoreKeyboard;
+    // The browser can move focus again after the Esc event removes the focused input.
+    const generation=this.generation,scene=this.scene;
+    const afterEvent=globalThis.requestAnimationFrame??queueMicrotask;
+    afterEvent(()=>{
+      if(this.destroyed||this.active||this.generation!==generation||
+        (scene.scene?.isActive&&!scene.scene.isActive())||scene.chat?.isInputActive||
+        scene.terminal?.active||scene.puzzleTerminal?.active||scene.networkTerminal?.active)return;
+      scene.input.keyboard.enabled=restoreKeyboard;
+      this.restoreGameFocus();
+    });
   }
 
   destroy() {
+    this.destroyed=true;
     this.close();
     this.prompt.destroy();
-    this.paperPrompt.destroy();
-    this.safePrompt.destroy();
+    this.paperPrompt?.destroy();
+    this.safePrompt?.destroy();
     this.root.remove();
     window.removeEventListener('keydown', this.onKeyDown, true);
     window.removeEventListener('keyup', this.onKeyDown, true);

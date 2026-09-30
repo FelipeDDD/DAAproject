@@ -42,6 +42,7 @@ export class RoomChat {
       if(profileAuthOpen())return;
       if(this.scene.terminal?.active)return;
       if(this.scene.puzzleTerminal?.active)return;
+      if(this.scene.networkTerminal?.active)return;
       if(this.closed)return;
       if(this.visibility.state==='active'){
         // The panel stays in control even if the browser briefly moves focus away
@@ -60,7 +61,8 @@ export class RoomChat {
         event.preventDefault();event.stopImmediatePropagation();this.openInput();
       }
     };
-    this.keyUp=event=>{if(!profileAuthOpen()&&this.visibility.state==='active')event.stopImmediatePropagation();};
+    this.keyUp=event=>{if(!profileAuthOpen()&&!this.scene.networkTerminal?.active&&
+      this.visibility.state==='active')event.stopImmediatePropagation();};
     this.input.addEventListener('focus',this.focus);this.input.addEventListener('blur',this.blur);
     window.addEventListener('keydown',this.key,true);window.addEventListener('keyup',this.keyUp,true);
     this.unsubscribe=presence.client.onUpdate(presence.api.messages.inRoom,{room:this.room},rows=>{
@@ -123,7 +125,8 @@ export class RoomChat {
     // browsers move focus again when the chat input becomes display:none.
     const afterEvent=globalThis.requestAnimationFrame??queueMicrotask;
     afterEvent(()=>{
-      if(this.closed||this.isInputActive||this.scene.terminal?.active||profileAuthOpen())return;
+      if(this.closed||this.isInputActive||this.scene.terminal?.active||
+        this.scene.networkTerminal?.active||profileAuthOpen())return;
       const active=document.activeElement;
       if(active===document.body||active===this.input||active===this.pinButton||!active)
         document.getElementById('game')?.focus({preventScroll:true});

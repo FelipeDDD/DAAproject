@@ -6,6 +6,10 @@ import {
   office2LockedDoorPlacement,
 } from '../art/office2LockedDoor.js';
 import { OFFICE2_TRAPDOOR_RADIUS, drawOffice2Trapdoor, office2TrapdoorPlacement } from '../art/office2Trapdoor.js';
+import { Office3PuzzleController } from '../office3/Office3PuzzleController.js';
+import { DIRECTOR_COMPUTER,DIRECTOR_PC_STATUS_LIGHT } from '../office2/directorComputer.js';
+import { drawComputerStatusLight } from '../art/computerStatusLight.js';
+import '../office3/office3Puzzle.css';
 
 export class Office2Scene extends MapScene {
   constructor(){super('office2','office2.tmj');}
@@ -17,6 +21,14 @@ export class Office2Scene extends MapScene {
 
   create(destination={}){
     super.create(destination);
+    this.puzzleTerminal=new Office3PuzzleController(this,{
+      computerMode:'director',computerConfig:DIRECTOR_COMPUTER,markerName:'PC-DIRECTOR',
+      interactionAreaName:'PC-DIRECTOR-INTERACTION',
+    });
+    const monitor=this.puzzleTerminal.pcMarker;
+    this.directorPcLight=monitor?drawComputerStatusLight(this,
+      monitor.x+DIRECTOR_PC_STATUS_LIGHT.offsetX,monitor.y+DIRECTOR_PC_STATUS_LIGHT.offsetY,
+      {radius:DIRECTOR_PC_STATUS_LIGHT.radius,depth:monitor.y+1}):null;
     this.trapdoorPlacement=office2TrapdoorPlacement(this.source);
     this.trapdoor=drawOffice2Trapdoor(this,this.source);
     if(this.trapdoorPlacement){
@@ -33,10 +45,14 @@ export class Office2Scene extends MapScene {
       this.lockedDoorPrompt.setPosition(this.lockedDoorPlacement.x,this.lockedDoorPlacement.bottom-80);
     }
     this.events.on('sleep',()=>{
+      this.puzzleTerminal?.close();
+      this.puzzleTerminal?.updatePrompt(false);
       this.lockedDoorPrompt?.setVisible(false);
       this.trapdoorPrompt?.setVisible(false);
     });
     this.events.once('shutdown',()=>{
+      this.puzzleTerminal?.destroy();this.puzzleTerminal=null;
+      this.directorPcLight?.destroy();this.directorPcLight=null;
       this.lockedDoorPrompt?.destroy();this.lockedDoorPrompt=null;
       this.lockedDoor?.destroy();this.lockedDoor=null;
       this.trapdoorPrompt?.destroy();this.trapdoorPrompt=null;
@@ -47,9 +63,15 @@ export class Office2Scene extends MapScene {
   update(time,delta){
     const body=this.player?.body;
     const door=this.lockedDoorPlacement;
-    const available=Boolean(body&&!this.terminal?.active&&!this.chat?.isInputActive&&
+    const available=Boolean(body&&!this.terminal?.active&&!this.puzzleTerminal?.active&&!this.chat?.isInputActive&&
       !this.quiz?.seated&&!this.soloStudy?.active&&!this.wardrobe?.active&&
       !this.characterItems?.transforming&&this.inventoryHotbar?.overlay?.root?.hidden!==false);
+    this.puzzleTerminal?.updatePrompt(available);
+    const nearComputer=available&&this.puzzleTerminal?.nearMonitor();
+    if(nearComputer&&Phaser.Input.Keyboard.JustDown(this.interactKey)){
+      this.puzzleTerminal.open();
+      return;
+    }
     const trapdoor=this.trapdoorPlacement;
     const nearTrapdoor=available&&trapdoor&&Math.hypot(body.center.x-trapdoor.x,body.center.y-trapdoor.y)
       <=OFFICE2_TRAPDOOR_RADIUS;

@@ -62,12 +62,30 @@
                  "name":"PC-director",
                  "opacity":1,
                  "point":true,
+                 "properties":[
+                        {
+                         "name":"interactionDistance",
+                         "type":"string",
+                         "value":"65"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":0,
                  "x":348.333333333333,
                  "y":250
+                }, 
+                {
+                 "height":91.3333333333333,
+                 "id":50,
+                 "name":"PC-DIRECTOR-INTERACTION",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":104.666666666667,
+                 "x":291,
+                 "y":229.333333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -450,7 +468,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":50,
+ "nextobjectid":51,
  "orientation":"orthogonal",
  "properties":[
         {

@@ -6,7 +6,7 @@ import {
   OFFICE3_MONITOR, OFFICE3_STREAK_TARGET, chooseOffice3Question,
   OFFICE3_PASSWORD_DENIED_MS, nextStreak, passwordIsCorrect,
 } from '../src/office3/office3Puzzle.js';
-import { OFFICE3_MONITOR_STATUS, office3PaperPlacement } from '../src/art/office3PaperHighlight.js';
+import { OFFICE3_MONITOR_STATUS, drawOffice3PaperHighlight, office3PaperPlacement } from '../src/art/office3PaperHighlight.js';
 import { CHARACTER_ITEM_IDS, canCharacterOwnItem, normalizeCharacterItem } from '../src/inventory/characterItems.js';
 import { inventoryItemUseBehavior, inventoryItemsFromSources, inventorySlots } from '../src/inventory/config.js';
 import { isMapTransitionLocked, readMapTransitions } from '../src/maps/transitions.js';
@@ -22,6 +22,22 @@ test('monitor puzzle uses its existing green light and only accepts the negative
   assert.equal(passwordIsCorrect('48'), false);
   assert.equal(passwordIsCorrect(''), false);
   assert.ok(OFFICE3_PASSWORD_DENIED_MS > 1000);
+});
+
+test('original Office3 light stays at its authored position when the new PC marker moves',()=>{
+  const circles=[];
+  const image={setOrigin(){return this;},setDisplaySize(){return this;},setDepth(){return this;},destroy(){}};
+  const graphics={setDepth(){return this;},fillStyle(){return this;},
+    fillCircle(x,y){circles.push([x,y]);return this;},destroy(){}};
+  const scene={textures:{get(){return {has(){return true;}};}},
+    add:{image(){return image;},graphics(){return graphics;}},
+    tweens:{add(){return {stop(){}};}}};
+  const source={layers:[{name:'Notes',type:'objectgroup',objects:[
+    {name:'pintar-papel',x:10,y:20},{name:'PC-User',x:716,y:478,point:true},
+  ]}]};
+  const highlight=drawOffice3PaperHighlight(scene,source);
+  assert.deepEqual(circles[0],[OFFICE3_MONITOR_STATUS.x,OFFICE3_MONITOR_STATUS.y]);
+  highlight.destroy();
 });
 
 test('small paper and inspection use the moved Notes marker', () => {

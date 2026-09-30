@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {createComputerSession, parseComputerCommand, runComputerCommand} from '../src/terminal/virtualComputer.js';
 import {OFFICE3_COMPUTER, createOffice3ComputerSession, runOfficeCommand,
   NORMAL_FOLDER, PASSWORD_FOLDER, PASSWORD_FILE} from '../src/office3/office3Computer.js';
+import {OFFICE3_INVESTIGATION_COMPUTER} from '../src/office3/investigationComputer.js';
 
 const run = (session, command) => runComputerCommand(OFFICE3_COMPUTER, session, command, {code: '0123'});
 
@@ -60,6 +61,17 @@ test('Office3 old files and navigation work through reusable filesystem; nested 
   runComputerCommand(other, state, 'cd Absolutely_Not_Secrets\\notes');
   assert.equal(runComputerCommand(other, state, 'type clue.txt').note, 'A configurable clue');
   assert.equal(runComputerCommand(other, state, 'cd ..').folder, 'Absolutely_Not_Secrets');
+});
+
+test('separate investigation PC keeps network commands without exposing the old safe-code file',()=>{
+  const session=createComputerSession(OFFICE3_INVESTIGATION_COMPUTER);
+  assert.equal(runComputerCommand(OFFICE3_INVESTIGATION_COMPUTER,session,'hostname').message,'PC-USER');
+  assert.deepEqual(OFFICE3_INVESTIGATION_COMPUTER.filesystem.entries,{});
+  assert.equal(runComputerCommand(OFFICE3_INVESTIGATION_COMPUTER,session,`cd ${NORMAL_FOLDER}`).error,true);
+  assert.match(runComputerCommand(OFFICE3_INVESTIGATION_COMPUTER,session,'ipconfig /all').message,
+    /192\.168\.10\.20/);
+  assert.match(runOfficeCommand('',`cd ${PASSWORD_FOLDER}`,'0123').folder,/Definitely_not_important/,
+    'the original puzzle computer retains its files');
 });
 
 test('a different PC can add local puzzle flags, commands and harmless output noise through configuration', () => {

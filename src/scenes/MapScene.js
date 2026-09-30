@@ -424,15 +424,15 @@ export class MapScene extends Phaser.Scene {
   update(_time, delta) {
     // Previous physics step displacement includes wall/collision resolution.
     this.presence?.observeMovement(resolvedMovementState(this.player.body));
-    if(this.terminal?.active||this.puzzleTerminal?.active||this.chat?.isInputActive||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active||this.characterItems?.transforming)this.player.setVelocity(0,0);
+    if(this.terminal?.active||this.puzzleTerminal?.active||this.networkTerminal?.active||this.chat?.isInputActive||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active||this.characterItems?.transforming)this.player.setVelocity(0,0);
     else this.player.update();
-    if(this.terminal?.active||this.puzzleTerminal?.active||this.chat?.isInputActive||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active||this.characterItems?.transforming)this.hint.hidden=true;
+    if(this.terminal?.active||this.puzzleTerminal?.active||this.networkTerminal?.active||this.chat?.isInputActive||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active||this.characterItems?.transforming)this.hint.hidden=true;
     this.remotes.update(delta);
     this.potionEffects?.update();
     this.emoteRenderer?.update();
     if(this.doorSync)for(const door of this.doors)door.updateBlocker(this.player.body);
     if(this.terminal?.active){this.terminalPrompt.setVisible(false);this.hint.textContent='Terminal · Esc: back to classroom';return;}
-    if(this.puzzleTerminal?.active){this.terminalPrompt.setVisible(false);return;}
+    if(this.puzzleTerminal?.active||this.networkTerminal?.active){this.terminalPrompt.setVisible(false);return;}
     if(this.chat?.isInputActive){this.terminalPrompt.setVisible(false);this.quiz?.updateSeatPrompt(false);this.soloStudy?.updateSeatPrompt(false);return;}
     const interact = Phaser.Input.Keyboard.JustDown(this.interactKey);
     const escape = Phaser.Input.Keyboard.JustDown(this.escapeKey);
