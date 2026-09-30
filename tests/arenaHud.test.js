@@ -80,3 +80,10 @@ test('arena HUD does not reserve vertical layout space above the game',async()=>
   const rule=/\.arena-hud-space\s*\{([^}]*)\}/.exec(css)?.[1]??'';
   assert.equal(/margin(?:-top)?\s*:/.test(rule),false);
 });
+
+test('arena still attacks with space, top-row zero and numpad zero',async()=>{
+  const source=await import('node:fs/promises').then(fs=>fs.readFile(new URL('../src/boss/BossController.js',import.meta.url),'utf8'));
+  assert.match(source,/zero:Phaser\.Input\.Keyboard\.KeyCodes\.ZERO/);
+  assert.match(source,/numpadZero:Phaser\.Input\.Keyboard\.KeyCodes\.NUMPAD_ZERO/);
+  assert.match(source,/KeyCodes\.SPACE,Phaser\.Input\.Keyboard\.KeyCodes\.ZERO,Phaser\.Input\.Keyboard\.KeyCodes\.NUMPAD_ZERO/);
+});

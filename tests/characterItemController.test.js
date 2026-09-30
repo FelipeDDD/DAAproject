@@ -12,15 +12,17 @@ const Controller=new Function('Phaser','CHARACTER_ITEM_IDS','characterItemDefini
   {Animations:{Events:{ANIMATION_COMPLETE:'complete'}}},CHARACTER_ITEM_IDS,characterItemDefinition,normalizeCharacterItem,class {},class {destroy(){}},baseCharacterId);
 
 function fixture(){
-  let finish;const animations=[];const visuals=[];
-  const sprite={setOrigin(){return this;},setDisplaySize(width,height){this.displaySize={width,height};return this;},setDepth(){return this;},
-    once(event,fn){finish=fn;},play(){},destroy(){this.destroyed=true;}};
+  let finish;const animations=[];const visuals=[];const spawned=[];const labels=[];
+  const sprite={active:true,setOrigin(){return this;},setDisplaySize(width,height){this.displaySize={width,height};return this;},setDepth(){return this;},
+    setInteractive(){return this;},on(){return this;},once(event,fn){finish=fn;},play(){},destroy(){this.destroyed=true;this.active=false;}};
   const player={x:100,y:150,setVelocity(){},setVisible(value){this.visible=value;}};
-  const scene={player,equippedSkin:'remastered',hint:{},add:{sprite:()=>sprite},anims:{exists:()=>false,
+  const scene={player,source:{tilewidth:32,tileheight:32},equippedSkin:'remastered',hint:{},add:{sprite:()=>sprite,
+    image:(...args)=>{const image={...sprite,x:args[0],y:args[1]};spawned.push(image);return image;},
+    text:(x,y,text)=>{const label={x,y,text,destroyed:false,setOrigin(){return this;},setDepth(){return this;},setText(value){this.text=value;},destroy(){this.destroyed=true;}};labels.push(label);return label;}},anims:{exists:()=>false,
     create:config=>animations.push(config),generateFrameNumbers:(key,range)=>range}};
   const c=new Controller(scene,{identity:{characterId:'michael'}},{onVisualChange:(...args)=>visuals.push(args)});
   c.pickup={setVisible(value){this.visible=value;},destroy(){}};
-  return {c,player,sprite,animations,visuals,finish:()=>finish()};
+  return {c,player,sprite,animations,visuals,spawned,labels,finish:()=>finish()};
 }
 
 test('transformation keeps the owned item and hides pickup before and after completion',async()=>{
@@ -53,6 +55,45 @@ test('full potion stack still opens the item card without collecting another pot
   assert.equal(presentations[0].item.quantity,10);
   assert.equal(presentations[0].options.eyebrow,'INVENTORY FULL');
   assert.equal(pickup.sprite.active,true);
+});
+
+test('identical items spawned on the same tile merge into one pickup with a count',()=>{
+  const f=fixture();
+  const first=f.c.spawnDevPickup(CHARACTER_ITEM_IDS.HEALTH_POTION);
+  f.player.x=119;f.player.y=159;
+  const second=f.c.spawnDevPickup(CHARACTER_ITEM_IDS.HEALTH_POTION);
+  assert.equal(second,first);
+  assert.equal(first.amount,2);
+  assert.equal(f.c.devPickups.length,1);
+  assert.equal(f.spawned.length,1);
+  assert.equal(first.countLabel.text,'×2');
+  f.player.x=132;
+  assert.notEqual(f.c.spawnDevPickup(CHARACTER_ITEM_IDS.HEALTH_POTION),first,'a different tile has its own pickup');
+  f.player.x=100;
+  assert.notEqual(f.c.spawnDevPickup(CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000),first,'a different item never merges');
+});
+
+test('one interaction claims the whole same-tile potion stack',async()=>{
+  const f=fixture();const pickup=f.c.spawnDevPickup(CHARACTER_ITEM_IDS.HEALTH_POTION);
+  f.c.spawnDevPickup(CHARACTER_ITEM_IDS.HEALTH_POTION);
+  const calls=[];
+  f.c.client={claim:async(itemId,amount)=>{calls.push({itemId,amount});return {added:amount,item:{itemId,quantity:amount}};}};
+  assert.equal(await f.c.collectDevPickup(pickup),true);
+  assert.deepEqual(calls,[{itemId:CHARACTER_ITEM_IDS.HEALTH_POTION,amount:2}]);
+  assert.equal(pickup.sprite.destroyed,true);
+  assert.equal(f.c.devPickups.length,0);
+  assert.equal(f.c.items[0].quantity,2);
+});
+
+test('a stack above inventory capacity leaves its unclaimed remainder on the floor',async()=>{
+  const f=fixture();const pickup=f.c.spawnDevPickup(CHARACTER_ITEM_IDS.HEALTH_POTION);
+  f.c.spawnDevPickup(CHARACTER_ITEM_IDS.HEALTH_POTION);
+  f.c.client={claim:async(itemId,amount)=>({added:1,item:{itemId,quantity:10}})};
+  assert.equal(await f.c.collectDevPickup(pickup),true);
+  assert.equal(pickup.amount,1);
+  assert.equal(pickup.sprite.active,true);
+  assert.equal(pickup.countLabel, null);
+  assert.equal(f.c.devPickups.length,1);
 });
 
 test('clearing potions removes only the potion from the local hotbar state',async()=>{

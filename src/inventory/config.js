@@ -66,3 +66,9 @@ export function inventoryShortcutSlot(event,activeElement=globalThis.document?.a
   const match=/^Digit([1-6])$/.exec(event.code??'');
   return match?Number(match[1])-1:-1;
 }
+
+export function isHealthPotionShortcut(event,activeElement=globalThis.document?.activeElement){
+  const editable=element=>Boolean(element?.closest?.('input,textarea,select,[contenteditable="true"],[contenteditable=""]'));
+  return !event.repeat&&!event.shiftKey&&!event.ctrlKey&&!event.altKey&&!event.metaKey
+    &&!editable(event.target)&&!editable(activeElement)&&['Digit0','Numpad0'].includes(event.code);
+}

@@ -8,6 +8,7 @@ import { office3PaperPlacement } from '../art/office3PaperHighlight.js';
 import { loadOffice3Questions } from '../quiz/quizBank.js';
 import { readNamedMapMarker } from '../maps/namedMapMarkers.js';
 import { pointInsideInteractionArea, readNamedInteractionArea } from '../maps/namedInteractionAreas.js';
+import { devPuzzleOneAnswerEnabled } from '../boss/devPuzzleSettings.js';
 import {
   OFFICE3_FEEDBACK_MS, OFFICE3_PASSWORD_DENIED_MS, OFFICE3_MONITOR, OFFICE3_STREAK_TARGET,
   chooseOffice3Question, nextStreak, passwordIsCorrect,
@@ -243,7 +244,8 @@ export class Office3PuzzleController {
         this.scene.registry.set('office3-computer-blocked',status.blockedUntil);
         this.showComputerCooldown();return false;
       }
-      this.quizTarget=status.requiredAnswers;
+      this.proofAnswerCount=status.requiredAnswers;
+      this.quizTarget=devPuzzleOneAnswerEnabled()?1:status.requiredAnswers;
       this.questionBank=staticQuestions;
       this.showQuestion();
       return true;
@@ -347,7 +349,7 @@ export class Office3PuzzleController {
     this.busy=true;this.resetPanel('ACCESS CONFIRMED');
     this.panel.append(element('p','','Opening command prompt...'));
     try {
-      const result=await this.safeRequest('unlockComputer',{password:'488',answers:this.correctAnswers});
+      const result=await this.safeRequest('unlockComputer',{password:'488',answers:this.answersForUnlock()});
       if(!this.active||generation!==this.generation)return;
       if(result.blockedUntil){this.scene.registry.set('office3-computer-blocked',result.blockedUntil);this.showComputerCooldown();return;}
       this.safeCode=result.code;this.folder='';this.computerSession=createOffice3ComputerSession();
@@ -361,12 +363,25 @@ export class Office3PuzzleController {
     } finally {if(generation===this.generation)this.busy=false;}
   }
 
+  answersForUnlock(){
+    const answers=[...this.correctAnswers];
+    if(!devPuzzleOneAnswerEnabled()||answers.length>=this.proofAnswerCount)return answers;
+    const included=new Set(answers.map(answer=>answer.id));
+    for(const question of this.questionBank??[]){
+      if(included.has(question.id)||!question.answers?.[question.correctAnswer])continue;
+      answers.push({id:question.id,answer:question.answers[question.correctAnswer]});
+      included.add(question.id);
+      if(answers.length>=this.proofAnswerCount)break;
+    }
+    return answers;
+  }
+
   showComputer() {
     const title=this.computerMode==='office3'?'Command Prompt':`${this.computerConfig.hostname} · Command Prompt`;
     this.resetPanel(title,'computer');
     const banner=this.computerMode!=='office3'
       ?`Office OS [Version 3.0]\nHost: ${this.computerConfig.hostname}\nType help for commands.`
-      :'Office OS [Version 3.0]\nType help for commands. Use dir, cd and type to inspect files.';
+      :'Office OS [Version 3.0]\nType help for commands.';
     this.panel.append(element('p','office3-command-banner',banner));
     const output=element('div','office3-command-output');output.setAttribute('role','log');
     for(const line of this.commandHistory??[])output.append(element('pre',line.error?'office3-command-error':'',line.text));

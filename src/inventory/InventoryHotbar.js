@@ -1,6 +1,6 @@
 import { BossProgressClient } from '../boss/BossProgressClient.js';
-import { itemCooldownRemaining } from './characterItems.js';
-import { INVENTORY_POSITION_STORAGE_KEY,inventoryItemUseBehavior,inventoryItemsFromSources,inventoryShortcutSlot,inventorySlots } from './config.js';
+import { CHARACTER_ITEM_IDS,itemCooldownRemaining } from './characterItems.js';
+import { INVENTORY_POSITION_STORAGE_KEY,inventoryItemUseBehavior,inventoryItemsFromSources,inventoryShortcutSlot,inventorySlots,isHealthPotionShortcut } from './config.js';
 import { ItemRewardOverlay } from './ItemRewardOverlay.js';
 import { FloatingHotbar } from '../ui/FloatingHotbar.js';
 import { fixedHudEnabled,HUD_LAYOUT } from '../hud/config.js';
@@ -20,7 +20,7 @@ export class InventoryHotbar {
     this.slotsRoot=document.createElement('div');this.slotsRoot.className='school-hotbar-slots';
     this.root.append(header,this.slotsRoot);
     (document.getElementById('hud-inventory-mount')??document.body).append(this.root);this.render();
-    this.onKeyDown=event=>this.handleHotkey(event);window.addEventListener('keydown',this.onKeyDown);
+    this.onKeyDown=event=>this.handleHotkey(event);window.addEventListener('keydown',this.onKeyDown,true);
     this.floating=fixedHudEnabled(layout)?null:new FloatingHotbar({root:this.root,handle:header,resetButton:reset,
       storageKey:INVENTORY_POSITION_STORAGE_KEY,kind:'inventory',getSnapTargets:()=>[
         document.getElementById('emote-bar'),document.getElementById('game'),document.querySelector('.boss-dev-tools'),
@@ -48,9 +48,14 @@ export class InventoryHotbar {
   handleHotkey(event){
     if(document.querySelector('[data-block-game-shortcuts]:not([hidden])'))return;
     if(event.defaultPrevented)return;
-    const index=inventoryShortcutSlot(event);if(index<0)return;
+    const potionShortcut=isHealthPotionShortcut(event);
+    const index=potionShortcut
+      ?this.slots.findIndex(item=>item?.itemId===CHARACTER_ITEM_IDS.HEALTH_POTION)
+      :inventoryShortcutSlot(event);
+    if(index<0)return;
     const item=this.slots[index];if(!item||itemCooldownRemaining(item)>0)return;
-    event.preventDefault();void this.activate(item);
+    if(!potionShortcut)event.preventDefault();
+    void this.activate(item);
   }
   render(){
     this.slots=inventorySlots(this.items);
@@ -83,5 +88,5 @@ export class InventoryHotbar {
       wrapper.append(slot);if(consumableActions)wrapper.append(consumableActions);return wrapper;
     }));
   }
-  destroy(){clearTimeout(this.cooldownTimer);window.removeEventListener('keydown',this.onKeyDown);this.floating?.destroy();this.overlay.destroy();this.root.remove();}
+  destroy(){clearTimeout(this.cooldownTimer);window.removeEventListener('keydown',this.onKeyDown,true);this.floating?.destroy();this.overlay.destroy();this.root.remove();}
 }

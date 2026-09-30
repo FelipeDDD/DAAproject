@@ -1,4 +1,5 @@
 import { BossProgressClient } from './BossProgressClient.js';
+import { initializeDevPuzzleSettings,setDevPuzzleOneAnswerEnabled } from './devPuzzleSettings.js';
 
 export const shouldShowBossDevTools=env=>env?.DEV===true;
 
@@ -14,6 +15,7 @@ const ACTIONS=Object.freeze([
 export class BossDevTools {
   constructor(scene,presence,{documentRef=globalThis.document}={}){
     const document=documentRef;
+    const oneAnswerMode=initializeDevPuzzleSettings();
     this.scene=scene;this.client=new BossProgressClient(presence);this.busy=false;
     this.root=document.createElement('aside');this.root.className='boss-dev-tools';
     const title=document.createElement('strong');title.textContent='DEV TOOLS';
@@ -33,8 +35,17 @@ export class BossDevTools {
       const button=document.createElement('button');button.type='button';button.textContent=label;
       button.addEventListener('click',()=>this.runAction(action,label));actions.append(button);
     }
+    const puzzleOption=document.createElement('label');puzzleOption.className='boss-dev-tools-puzzle-option';
+    this.oneAnswerInput=document.createElement('input');this.oneAnswerInput.type='checkbox';
+    this.oneAnswerInput.checked=oneAnswerMode;
+    this.oneAnswerInput.addEventListener('change',()=>{
+      const enabled=setDevPuzzleOneAnswerEnabled(this.oneAnswerInput.checked);
+      this.status.textContent=enabled?'DEV: puzzles require 1 correct answer':'DEV: normal puzzle requirements restored';
+    });
+    const puzzleOptionText=document.createElement('span');puzzleOptionText.textContent='Answer only 1 question in puzzles';
+    puzzleOption.append(this.oneAnswerInput,puzzleOptionText);
     this.status=document.createElement('small');this.status.setAttribute('role','status');
-    this.content.append(buttons,actions,this.status);this.root.append(header,this.content);document.body.append(this.root);
+    this.content.append(buttons,actions,puzzleOption,this.status);this.root.append(header,this.content);document.body.append(this.root);
     this.setCollapsed(true);
   }
 

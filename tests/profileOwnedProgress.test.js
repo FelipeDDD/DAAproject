@@ -74,6 +74,20 @@ test('profile items stay owned across characters but activation enforces visual 
   assert.equal(active.active,true);
 });
 
+test('stacked pickup claims award the requested amount up to the item stack cap',async()=>{
+  const ctx=memoryContext();const profileId=await addProfile(ctx,{name:'michael',character:'michael',token:TOKEN_A});
+  const itemId=CHARACTER_ITEM_IDS.HEALTH_POTION;
+  const first=await items.claim._handler(ctx,{token:TOKEN_A,itemId,amount:3});
+  assert.deepEqual([first.added,first.item.quantity],[3,3]);
+  const second=await items.claim._handler(ctx,{token:TOKEN_A,itemId,amount:20});
+  assert.deepEqual([second.added,second.item.quantity],[7,10]);
+  const full=await items.claim._handler(ctx,{token:TOKEN_A,itemId,amount:2});
+  assert.equal(full.full,true);assert.equal(full.added,0);assert.equal(full.item.quantity,10);
+  await assert.rejects(items.claim._handler(ctx,{token:TOKEN_A,itemId,amount:1.5}),/Invalid item quantity/);
+  await assert.rejects(items.claim._handler(ctx,{token:TOKEN_A,itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000,amount:2}),/Invalid item quantity/);
+  assert.equal(ctx.tables.characterItems[0].profileId,profileId);
+});
+
 test('DEV clear deletes only the active profile potion stack and rejects stale sessions',async()=>{
   const previous=process.env.DEV_TOOLS_ENABLED;process.env.DEV_TOOLS_ENABLED='true';
   try{

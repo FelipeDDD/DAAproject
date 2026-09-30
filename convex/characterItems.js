@@ -46,24 +46,29 @@ export const forProfile=query({
 });
 
 export const claim=mutation({
-  args:{token:v.string(),itemId:v.string()},
+  args:{token:v.string(),itemId:v.string(),amount:v.optional(v.number())},
   handler:async(ctx,args)=>{
     const profile=await authenticatedProfile(ctx,args.token);
     const characterBaseId=baseCharacterId(profile.selectedCharacterId);
     if(args.itemId===CHARACTER_ITEM_IDS.OFFICE2_KEY)throw new Error('Use the office safe to collect this key.');
     if(!canCharacterOwnItem(characterBaseId,args.itemId))throw new Error('This character cannot collect that item.');
+    const definition=characterItemDefinition(args.itemId),amount=args.amount??1;
+    if(!Number.isInteger(amount)||amount<1||amount>1000||(!definition?.maxStack&&amount!==1))
+      throw new Error('Invalid item quantity.');
     const existing=await findItem(ctx,profile._id,args.itemId);
     if(existing){
-      const definition=characterItemDefinition(args.itemId),quantity=existing.quantity??1;
-      if(!definition?.maxStack)return {item:publicItem(existing,(await equippedItemId(ctx,profile._id,characterBaseId))===args.itemId),duplicate:true};
-      if(quantity>=definition.maxStack)return {item:publicItem(existing),duplicate:true,full:true};
-      const next={quantity:quantity+1,updatedAt:Date.now()};await ctx.db.patch(existing._id,next);
-      return {item:publicItem({...existing,...next}),duplicate:false,stacked:true};
+      const quantity=existing.quantity??1;
+      if(!definition?.maxStack)return {item:publicItem(existing,(await equippedItemId(ctx,profile._id,characterBaseId))===args.itemId),duplicate:true,added:0};
+      const added=Math.min(amount,Math.max(0,definition.maxStack-quantity));
+      if(!added)return {item:publicItem(existing),duplicate:true,full:true,added:0};
+      const next={quantity:quantity+added,updatedAt:Date.now()};await ctx.db.patch(existing._id,next);
+      return {item:publicItem({...existing,...next}),duplicate:false,stacked:true,added};
     }
+    const added=definition?.maxStack?Math.min(amount,definition.maxStack):1;
     const item={profileId:profile._id,characterBaseId,itemId:args.itemId,
-      quantity:1,cooldownUntil:0,updatedAt:Date.now()};
+      quantity:added,cooldownUntil:0,updatedAt:Date.now()};
     await ctx.db.insert('characterItems',item);
-    return {item:publicItem(item),duplicate:false};
+    return {item:publicItem(item),duplicate:false,added};
   },
 });
 

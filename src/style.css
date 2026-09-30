@@ -316,6 +316,8 @@ body { min-height:100vh; margin:0; color:#334550; background-color:var(--page-ba
 #boss-dev-tools-content { margin-top:8px; }
 .boss-dev-tools-presets { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 5px; }
 .boss-dev-tools-actions { display:grid; gap:5px; margin-top:8px; padding-top:8px; border-top:1px solid #3d7086; }
+.boss-dev-tools-puzzle-option { display:flex; align-items:center; gap:7px; margin-top:8px; cursor:pointer; }
+.boss-dev-tools-puzzle-option input { accent-color:#70dcff; }
 .boss-dev-tools button { padding: 6px 4px; color: #eafaff; border: 1px solid #3d7086; border-radius: 4px; background: #102d40; cursor: pointer; font: inherit; }
 .boss-dev-tools button:disabled { opacity: .45; cursor: wait; }
 .boss-dev-tools small { display: block; min-height: 16px; margin-top: 7px; color: #9edbad; }

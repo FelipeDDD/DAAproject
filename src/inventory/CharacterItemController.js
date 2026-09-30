@@ -65,14 +65,29 @@ export class CharacterItemController {
   spawnDevPickup(itemId=CHARACTER_ITEM_IDS.HEALTH_POTION){
     const definition=characterItemDefinition(itemId);if(!definition||this.destroyed)return null;
     const x=this.scene.player.x,y=this.scene.player.y;
+    const tileWidth=this.scene.source?.tilewidth??32,tileHeight=this.scene.source?.tileheight??32;
+    const tileKey=`${Math.floor(x/tileWidth)}:${Math.floor(y/tileHeight)}`;
+    const stacked=this.devPickups.find(item=>item.itemId===itemId&&item.tileKey===tileKey&&item.sprite.active);
+    if(stacked){stacked.amount++;this.updatePickupCount(stacked);return stacked;}
     const sprite=this.scene.add.image(x,y,'health-potion-pickup').setOrigin(.5,1).setDisplaySize(52,52).setDepth(y+1).setInteractive({useHandCursor:true});
-    const pickup={kind:'dev',itemId,x,y,sprite};this.devPickups.push(pickup);
+    const pickup={kind:'dev',itemId,x,y,tileKey,amount:1,sprite,countLabel:null};this.devPickups.push(pickup);
     sprite.on('pointerdown',()=>void this.collectDevPickup(pickup));return pickup;
+  }
+  updatePickupCount(pickup){
+    if(pickup.amount<2){pickup.countLabel?.destroy();pickup.countLabel=null;return;}
+    if(!pickup.countLabel&&this.scene.add.text){
+      pickup.countLabel=this.scene.add.text(pickup.x+18,pickup.y-42,`×${pickup.amount}`,{
+        fontFamily:'Arial,sans-serif',fontSize:'13px',color:'#ffffff',backgroundColor:'#152129',
+        padding:{x:3,y:1},stroke:'#000000',strokeThickness:2,
+      }).setOrigin(.5).setDepth(pickup.y+3);
+    }else pickup.countLabel?.setText(`×${pickup.amount}`);
   }
   async collectDevPickup(pickup){
     if(this.collecting||!pickup?.sprite?.active)return false;this.collecting=true;
     try{
-      const result=await this.client.claim(pickup.itemId);
+      const definition=characterItemDefinition(pickup.itemId);
+      const requestedAmount=definition?.maxStack?(pickup.amount??1):1;
+      const result=await this.client.claim(pickup.itemId,requestedAmount);
       if(this.destroyed)return false;
       if(result.full){
         this.scene.hint.textContent='Potion stack is already full (10 / 10).';
@@ -81,7 +96,10 @@ export class CharacterItemController {
       }
       const item=normalizeCharacterItem(result.item,this.characterBaseId);
       this.setItems([...this.items.filter(row=>row.itemId!==item.itemId),item]);
-      pickup.sprite.destroy();this.devPickups=this.devPickups.filter(item=>item!==pickup);
+      if(!definition?.maxStack||result.duplicate){pickup.amount=0;}
+      else pickup.amount=Math.max(0,(pickup.amount??1)-(result.added??1));
+      if(pickup.amount<=0){pickup.countLabel?.destroy();pickup.sprite.destroy();this.devPickups=this.devPickups.filter(item=>item!==pickup);}
+      else this.updatePickupCount(pickup);
       this.onItemCollected(item);return true;
     }catch(error){
       this.scene.hint.textContent=`Could not collect ${characterItemDefinition(pickup.itemId)?.name??'item'}: ${error.message}`;
@@ -150,5 +168,5 @@ export class CharacterItemController {
       sprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE,()=>this.finishTransformation?.());sprite.play(TRANSFORM_ANIMATION);
     });return this.transforming;
   }
-  destroy(){this.destroyed=true;this.finishTransformation?.();this.pickup?.destroy();for(const pickup of this.devPickups)pickup.sprite.destroy();this.devPickups=[];}
+  destroy(){this.destroyed=true;this.finishTransformation?.();this.pickup?.destroy();for(const pickup of this.devPickups){pickup.countLabel?.destroy();pickup.sprite.destroy();}this.devPickups=[];}
 }

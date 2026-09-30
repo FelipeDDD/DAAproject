@@ -183,10 +183,11 @@ export class BossController {
     }));
     this.attackKeys=scene.input.keyboard.addKeys({
       space:Phaser.Input.Keyboard.KeyCodes.SPACE,
+      zero:Phaser.Input.Keyboard.KeyCodes.ZERO,
       numpadZero:Phaser.Input.Keyboard.KeyCodes.NUMPAD_ZERO,
     });
     scene.input.keyboard.addCapture([
-      Phaser.Input.Keyboard.KeyCodes.SPACE,Phaser.Input.Keyboard.KeyCodes.NUMPAD_ZERO,
+      Phaser.Input.Keyboard.KeyCodes.SPACE,Phaser.Input.Keyboard.KeyCodes.ZERO,Phaser.Input.Keyboard.KeyCodes.NUMPAD_ZERO,
     ]);
     this.hud=new ArenaHudOverlay(scene);
     this.hud.setBossHealth(this.model.hp,this.model.maxHp);

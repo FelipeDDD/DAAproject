@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { Office3PuzzleController } from '../src/office3/Office3PuzzleController.js';
 import { NORMAL_FOLDER, OFFICE3_COMPUTER, PASSWORD_FOLDER, PASSWORD_FILE } from '../src/office3/office3Computer.js';
 import { OFFICE3_MONITOR } from '../src/office3/office3Puzzle.js';
+import { setDevPuzzleOneAnswerEnabled } from '../src/boss/devPuzzleSettings.js';
 
 function node(){return {children:[],classList:{add(){},remove(){}},append(...n){this.children.push(...n);},
   replaceChildren(...n){this.children=n;},setAttribute(){},addEventListener(){},focus(){}};}
@@ -123,4 +124,20 @@ test('delayed terminal focus does not steal focus from a newly opened dialog',t=
   c.close();assert.equal(focus,1);
   c.active=true;c.generation++;
   callback();assert.equal(focus,1);
+});
+
+test('one-answer dev mode still builds the full valid Office3 proof for the backend',()=>{
+  const c=controller();
+  c.proofAnswerCount=5;
+  c.questionBank=Array.from({length:6},(_,index)=>({id:`q${index}`,answers:[`right-${index}`,'wrong','wrong','wrong'],correctAnswer:0}));
+  c.correctAnswers=[{id:'q3',answer:'right-3'}];
+  setDevPuzzleOneAnswerEnabled(true,{setItem(){}});
+  try{
+    const proof=c.answersForUnlock();
+    assert.equal(proof.length,5);
+    assert.equal(new Set(proof.map(answer=>answer.id)).size,5);
+    assert.deepEqual(proof.map(({id,answer})=>[id,answer]),[
+      ['q3','right-3'],['q0','right-0'],['q1','right-1'],['q2','right-2'],['q4','right-4'],
+    ]);
+  }finally{setDevPuzzleOneAnswerEnabled(false,{setItem(){}});}
 });

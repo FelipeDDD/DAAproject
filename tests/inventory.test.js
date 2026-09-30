@@ -3,8 +3,9 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { applyDirectorRewardChoice,applyDirectorVictory,BOSS_REWARDS } from '../src/boss/BossRewards.js';
 import {
-  INVENTORY_SLOT_COUNT,ITEM_CATALOG,inventoryItemUseBehavior,inventoryItemsFromBossProgress,inventoryItemsFromSources,inventoryPresentationAsset,inventoryShortcutSlot,inventorySlots,normalizeInventoryItems,
+  INVENTORY_SLOT_COUNT,ITEM_CATALOG,inventoryItemUseBehavior,inventoryItemsFromBossProgress,inventoryItemsFromSources,inventoryPresentationAsset,inventoryShortcutSlot,inventorySlots,isHealthPotionShortcut,normalizeInventoryItems,
 } from '../src/inventory/config.js';
+import { InventoryHotbar } from '../src/inventory/InventoryHotbar.js';
 import { CHARACTER_ITEM_COOLDOWN_MS,CHARACTER_ITEM_IDS,canCharacterOwnItem,itemAppearanceForCharacter,itemCooldownRemaining,normalizeCharacterItem } from '../src/inventory/characterItems.js';
 
 test('inventory starts with six empty slots and the badge appears only after its real unlock',()=>{
@@ -111,4 +112,26 @@ test('inventory shortcuts use unmodified top-row digits only',()=>{
   assert.equal(inventoryShortcutSlot({...base,code:'Digit6'},null),5);
   assert.equal(inventoryShortcutSlot({...base,shiftKey:true,code:'Digit2'},null),-1);
   assert.equal(inventoryShortcutSlot({...base,code:'Numpad2'},null),-1);
+});
+
+test('1 remains the potion slot and top-row 0 or numpad 0 also activate only the potion',()=>{
+  const previousDocument=globalThis.document;
+  globalThis.document={activeElement:null,querySelector:()=>null};
+  try{
+    const potion=normalizeCharacterItem({characterBaseId:'felipe',itemId:CHARACTER_ITEM_IDS.HEALTH_POTION,quantity:2,cooldownUntil:0});
+    const hotbar=Object.create(InventoryHotbar.prototype);hotbar.slots=[potion];const used=[];
+    hotbar.activate=item=>used.push(item.itemId);
+    const key=code=>({code,repeat:false,shiftKey:false,ctrlKey:false,altKey:false,metaKey:false,target:{closest:()=>null},preventDefault(){this.prevented=true;}});
+    const one=key('Digit1'),zero=key('Digit0'),numpadZero=key('Numpad0');
+    hotbar.handleHotkey(one);hotbar.handleHotkey(zero);hotbar.handleHotkey(numpadZero);
+    assert.deepEqual(used,[CHARACTER_ITEM_IDS.HEALTH_POTION,CHARACTER_ITEM_IDS.HEALTH_POTION,CHARACTER_ITEM_IDS.HEALTH_POTION]);
+    assert.equal(one.prevented,true);assert.equal(zero.prevented,undefined);assert.equal(numpadZero.prevented,undefined);
+    assert.equal(isHealthPotionShortcut(key('Digit0')),true);
+    assert.equal(isHealthPotionShortcut(key('Digit0'),{closest:()=>({})}),false,'text inputs keep their own shortcuts');
+    hotbar.slots=[normalizeCharacterItem({characterBaseId:'felipe',itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000})];
+    const noPotion=key('Digit0');hotbar.handleHotkey(noPotion);
+    assert.equal(used.length,3,'zero does not activate unrelated slot items');
+  }finally{
+    if(previousDocument===undefined)delete globalThis.document;else globalThis.document=previousDocument;
+  }
 });

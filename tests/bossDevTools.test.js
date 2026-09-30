@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { BossDevTools } from '../src/boss/BossDevTools.js';
+import { devPuzzleOneAnswerEnabled,DEV_PUZZLE_ONE_ANSWER_KEY } from '../src/boss/devPuzzleSettings.js';
 
 class Element {
   constructor(tag){this.tag=tag;this.children=[];this.attributes={};this.events={};}
@@ -38,6 +39,23 @@ test('clear potions action updates the status and re-enables Dev Tools',async()=
   assert.equal(await tools.runAction('clearPotions','Clear my potions'),true);
   assert.equal(tools.status.textContent,'DEV: removed 10 potions');
   assert.ok(tools.content.querySelectorAll('button').every(button=>!button.disabled));
+});
+
+test('one-answer puzzle option persists and can be switched back off',()=>{
+  const saved=new Map();
+  const storage={getItem:key=>saved.get(key)??null,setItem:(key,value)=>saved.set(key,value)};
+  const previous=globalThis.localStorage;globalThis.localStorage=storage;
+  const documentRef={createElement:tag=>new Element(tag),body:new Element('body')};
+  const tools=new BossDevTools({},null,{documentRef});
+  const checkbox=tools.oneAnswerInput;
+  assert.equal(checkbox.checked,false);
+  checkbox.checked=true;checkbox.events.change();
+  assert.equal(devPuzzleOneAnswerEnabled(),true);
+  assert.equal(saved.get(DEV_PUZZLE_ONE_ANSWER_KEY),'true');
+  checkbox.checked=false;checkbox.events.change();
+  assert.equal(devPuzzleOneAnswerEnabled(),false);
+  assert.equal(saved.get(DEV_PUZZLE_ONE_ANSWER_KEY),'false');
+  globalThis.localStorage=previous;
 });
 
 test('All Skins enables the selected base preview only after the DEV preset succeeds',async()=>{

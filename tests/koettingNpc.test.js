@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { koettingMarker, KOETTING_REWARD_AMOUNT, KOETTING_STREAK_TARGET, nextKoettingStreak } from '../src/npc/koettingChallenge.js';
+import { koettingGiftOffsets, koettingMarker, KOETTING_REWARD_AMOUNT, KOETTING_STREAK_TARGET, nextKoettingStreak } from '../src/npc/koettingChallenge.js';
 
 test('Mysterious Man follows the Tiled marker used by the running map',()=>{
   const map=JSON.parse(readFileSync(new URL('../public/assets/maps/secret-path.tmj',import.meta.url),'utf8'));
@@ -22,4 +22,10 @@ test('three consecutive answers earn one two-potion stack; a mistake resets prog
   for(let index=0;index<3;index++)streak=nextKoettingStreak(streak,true);
   assert.equal(streak,KOETTING_STREAK_TARGET);
   assert.equal(KOETTING_REWARD_AMOUNT,2);
+  assert.equal(koettingGiftOffsets(KOETTING_REWARD_AMOUNT).length,2);
+});
+
+test('developer one-answer target completes after one correct response',()=>{
+  assert.equal(nextKoettingStreak(0,true,1),1);
+  assert.equal(nextKoettingStreak(0,false,1),0);
 });

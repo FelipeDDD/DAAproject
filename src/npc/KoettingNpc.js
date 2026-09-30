@@ -5,7 +5,8 @@ import { chooseOffice3Question, OFFICE3_FEEDBACK_MS } from '../office3/office3Pu
 import { CharacterItemClient } from '../inventory/CharacterItemClient.js';
 import { CHARACTER_ITEM_IDS, normalizeCharacterItem } from '../inventory/characterItems.js';
 import { hasProfileSession } from '../ProfileSessionClient.js';
-import { koettingMarker, KOETTING_REWARD_AMOUNT, KOETTING_STREAK_TARGET, nextKoettingStreak } from './koettingChallenge.js';
+import { koettingGiftOffsets, koettingMarker, KOETTING_REWARD_AMOUNT, KOETTING_STREAK_TARGET, nextKoettingStreak } from './koettingChallenge.js';
+import { devPuzzleOneAnswerEnabled } from '../boss/devPuzzleSettings.js';
 import './koettingNpc.css';
 
 const INTERACTION_DISTANCE=58;
@@ -138,6 +139,7 @@ export class KoettingNpc {
     if(this.busy)return;
     const generation=this.openGeneration;
     this.busy=true;this.streak=0;this.usedIds=[];
+    this.quizTarget=devPuzzleOneAnswerEnabled()?1:KOETTING_STREAK_TARGET;
     this.panel.dataset.stage='quiz';
     this.content.replaceChildren(element('h2','koetting-name','Mysterious Man'),
       element('p','koetting-status','Fragen werden geladen…'));
@@ -161,7 +163,7 @@ export class KoettingNpc {
     catch(error){this.content.replaceChildren(element('p','koetting-status','Keine Fragen verfügbar.'));return;}
     this.usedIds.push(this.question.id);
     const heading=element('h2','koetting-name','Mysterious Man');
-    const progress=element('p','koetting-progress',`${this.streak}/${KOETTING_STREAK_TARGET} richtig in Folge`);
+    const progress=element('p','koetting-progress',`${this.streak}/${this.quizTarget} richtig in Folge`);
     const media=element('div','koetting-media');renderQuizMedia(media,this.question.media);
     const prompt=element('p','koetting-question',this.question.question);
     const choices=element('div','koetting-choices');
@@ -177,16 +179,16 @@ export class KoettingNpc {
     if(!this.active||this.busy)return;
     this.busy=true;
     const correct=index===this.question.correctAnswer;
-    this.streak=nextKoettingStreak(this.streak,correct);
-    progress.textContent=`${this.streak}/${KOETTING_STREAK_TARGET} richtig in Folge`;
-    feedback.textContent=correct?'Richtig!':'Falsch! Zurück auf 0/3.';
+    this.streak=nextKoettingStreak(this.streak,correct,this.quizTarget);
+    progress.textContent=`${this.streak}/${this.quizTarget} richtig in Folge`;
+    feedback.textContent=correct?'Richtig!':`Falsch! Zurück auf 0/${this.quizTarget}.`;
     feedback.dataset.result=correct?'correct':'wrong';
     choices.querySelectorAll('button').forEach(button=>{button.disabled=true;});
     this.feedbackTimer=setTimeout(()=>{
       this.feedbackTimer=null;
       if(!this.active)return;
       this.busy=false;
-      if(this.streak===KOETTING_STREAK_TARGET)this.showReward(true);
+      if(this.streak===this.quizTarget)this.showReward(true);
       else this.showQuestion();
     },OFFICE3_FEEDBACK_MS);
   }
@@ -204,7 +206,7 @@ export class KoettingNpc {
 
   spawnGift(amount){
     const x=this.position.x,y=this.position.y+34;
-    const sprites=[[-15,0],[0,-7],[15,0]].map(([offsetX,offsetY])=>{
+    const sprites=koettingGiftOffsets(amount).map(([offsetX,offsetY])=>{
       const sprite=this.scene.add.image(x+offsetX,y+offsetY,'health-potion-pickup').setOrigin(.5,1)
         .setDisplaySize(48,48).setDepth(y+1).setInteractive({useHandCursor:true});
       sprite.on('pointerdown',()=>void this.collectGift());return sprite;

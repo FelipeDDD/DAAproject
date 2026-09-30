@@ -9,7 +9,7 @@ export class CharacterItemClient {
       token:requireProfileSessionToken(this.presence),playerId:this.identity.playerId,sessionId:this.identity.sessionId,
     });
   }
-  async claim(itemId){return this.mutate('claim',{itemId});}
+  async claim(itemId,amount=1){return this.mutate('claim',{itemId,amount});}
   async setActive(itemId,active){return this.mutate('setActive',{itemId,active});}
   async consume(itemId){return this.mutate('consume',{itemId});}
   async claimKoettingPotions(amount){return this.mutate('claimKoettingPotions',{amount});}
