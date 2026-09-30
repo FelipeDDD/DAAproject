@@ -4,6 +4,7 @@ import { Office3PuzzleController } from '../src/office3/Office3PuzzleController.
 import { NORMAL_FOLDER, OFFICE3_COMPUTER, PASSWORD_FOLDER, PASSWORD_FILE } from '../src/office3/office3Computer.js';
 import { OFFICE3_MONITOR } from '../src/office3/office3Puzzle.js';
 import { setDevPuzzleOneAnswerEnabled } from '../src/boss/devPuzzleSettings.js';
+import { OFFICE3_INVESTIGATION_COMPUTER } from '../src/office3/investigationComputer.js';
 
 function node(){return {children:[],classList:{add(){},remove(){}},append(...n){this.children.push(...n);},
   replaceChildren(...n){this.children=n;},setAttribute(){},addEventListener(){},focus(){}};}
@@ -14,6 +15,19 @@ function controller(){
     scene:{registry:{set(){}},input:{keyboard:{enabled:false,resetKeys(){}}},game:{canvas:{focus(){}}}},
   });
 }
+
+test('only a resolved Director hostname and correct port opens the recovery UI',async t=>{
+  const old=globalThis.document;globalThis.document={createElement:node};t.after(()=>{globalThis.document=old;});
+  const c=controller();c.computerMode='user';c.computerConfig=OFFICE3_INVESTIGATION_COMPUTER;
+  c.folder='';c.commandHistory=[];let opens=0;
+  c.directorRecovery={open(){opens++;}};
+  const run=async command=>{c.commandInput={value:command};await c.executeCommand();};
+  await run('connect director.daa.local 8443');assert.equal(opens,0);
+  await run('connect 192.168.10.42 8443');assert.equal(opens,0);
+  await run('ipconfig /flushdns');
+  await run('connect director.daa.local 8443');assert.equal(opens,1);
+  await run('connect director.daa.local:8443');assert.equal(opens,2);
+});
 test('closing an in-flight computer unlock cannot reopen the overlay on late success',async t=>{
   const old=globalThis.document;globalThis.document={createElement:node};t.after(()=>{globalThis.document=old;});
   const c=controller();let resolve,opened=0;
@@ -71,6 +85,18 @@ test('new marked PC uses its interaction rectangle',()=>{
   assert.equal(c.nearMonitor(),true,'rectangle edges are included');
   c.scene.player.body.center={x:61,y:55};
   assert.equal(c.nearMonitor(),false,'outside the rectangle is out of range even if circle radius differs');
+});
+
+test('Director PC starts security verification instead of opening the local shell',()=>{
+  const c=controller();c.computerMode='director';
+  c.scene.presence={identity:{playerId:'p',sessionId:'s'}};
+  c.nearMonitor=()=>true;c.activate=()=>{c.active=true;return true;};
+  let securityOpens=0,shellOpens=0;
+  c.directorSecurity={open(){securityOpens++;}};
+  c.showComputer=()=>shellOpens++;
+  assert.equal(c.open(),true);
+  assert.equal(securityOpens,1);
+  assert.equal(shellOpens,0);
 });
 
 test('missing interaction rectangle falls back to the existing radius',()=>{

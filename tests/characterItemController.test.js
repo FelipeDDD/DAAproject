@@ -3,21 +3,22 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { CHARACTER_ITEM_IDS,characterItemDefinition,normalizeCharacterItem } from '../src/inventory/characterItems.js';
 import { baseCharacterId } from '../src/characters.js';
+import { readNamedMapMarker } from '../src/maps/namedMapMarkers.js';
 
 // Exercise the real controller with a minimal scene; Phaser's renderer needs a browser.
 const source=readFileSync(new URL('../src/inventory/CharacterItemController.js',import.meta.url),'utf8')
   .replace(/^import .*;\r?\n/gm,'').replace('export const ','const ').replace('export class ','class ');
-const Controller=new Function('Phaser','CHARACTER_ITEM_IDS','characterItemDefinition','normalizeCharacterItem','CharacterItemClient','ItemRewardOverlay','baseCharacterId',
+const Controller=new Function('Phaser','CHARACTER_ITEM_IDS','characterItemDefinition','normalizeCharacterItem','CharacterItemClient','ItemRewardOverlay','baseCharacterId','readNamedMapMarker',
   `${source}\nreturn CharacterItemController;`)(
-  {Animations:{Events:{ANIMATION_COMPLETE:'complete'}}},CHARACTER_ITEM_IDS,characterItemDefinition,normalizeCharacterItem,class {},class {destroy(){}},baseCharacterId);
+  {Animations:{Events:{ANIMATION_COMPLETE:'complete'}}},CHARACTER_ITEM_IDS,characterItemDefinition,normalizeCharacterItem,class {},class {destroy(){}},baseCharacterId,readNamedMapMarker);
 
 function fixture(){
   let finish;const animations=[];const visuals=[];const spawned=[];const labels=[];
   const sprite={active:true,setOrigin(){return this;},setDisplaySize(width,height){this.displaySize={width,height};return this;},setDepth(){return this;},
-    setInteractive(){return this;},on(){return this;},once(event,fn){finish=fn;},play(){},destroy(){this.destroyed=true;this.active=false;}};
+    setInteractive(){return this;},setVisible(value){this.visible=value;return this;},on(){return this;},once(event,fn){finish=fn;},play(){},destroy(){this.destroyed=true;this.active=false;}};
   const player={x:100,y:150,setVelocity(){},setVisible(value){this.visible=value;}};
   const scene={player,source:{tilewidth:32,tileheight:32},equippedSkin:'remastered',hint:{},add:{sprite:()=>sprite,
-    image:(...args)=>{const image={...sprite,x:args[0],y:args[1]};spawned.push(image);return image;},
+    image:(...args)=>{const image={...sprite,x:args[0],y:args[1],texture:args[2]};spawned.push(image);return image;},
     text:(x,y,text)=>{const label={x,y,text,destroyed:false,setOrigin(){return this;},setDepth(){return this;},setText(value){this.text=value;},destroy(){this.destroyed=true;}};labels.push(label);return label;}},anims:{exists:()=>false,
     create:config=>animations.push(config),generateFrameNumbers:(key,range)=>range}};
   const c=new Controller(scene,{identity:{characterId:'michael'}},{onVisualChange:(...args)=>visuals.push(args)});
@@ -43,6 +44,24 @@ test('leaving during transformation destroys sprite and prevents stale visual ch
   f.c.destroy();await pending;
   assert.equal(f.sprite.destroyed,true);assert.equal(f.player.visible,true);
   assert.equal(f.c.transforming,null);assert.equal(f.visuals.length,0);
+});
+
+test('the Tiled cigarette pack pickup claims its own ID without granting Michael equipment',async()=>{
+  const f=fixture();f.c.scene.mapKey='school';const cards=[];f.c.onItemCollected=item=>cards.push(item);
+  const marker={layers:[{type:'objectgroup',name:'Notes',objects:[{id:17,name:'lung-crusher',point:true,x:320,y:240}]}]};
+  const pickup=f.c.createCollectiblePickup(marker);
+  assert.deepEqual([pickup.x,pickup.y],[320,240]);
+  assert.equal(pickup.itemId,CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK);
+  assert.equal(pickup.sprite.texture,'lung-crusher-pack-ground');
+  assert.deepEqual(pickup.sprite.displaySize,{width:8,height:9});
+  const claims=[];f.c.client={claim:async itemId=>{claims.push(itemId);return {item:{itemId,quantity:1}};}};
+  assert.equal(await f.c.collect(pickup),true);
+  assert.deepEqual(claims,[CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK]);
+  assert.equal(pickup.sprite.visible,false);
+  assert.equal(f.c.lungCrusher,undefined);
+  assert.equal(f.c.items[0].useBehavior,'presentation');
+  assert.equal(cards[0].itemId,CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK);
+  assert.equal(cards[0].presentationImage,'assets/items/lung-crusher-3000.png');
 });
 
 test('full potion stack still opens the item card without collecting another potion',async()=>{

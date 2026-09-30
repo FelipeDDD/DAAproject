@@ -106,6 +106,11 @@ export const devSetPreset=mutation({
     const progress=applyBossDevPreset(previous,args.preset,profile.selectedCharacterId);
     const stored=storedProgress(progress,profile);
     if(previous)await ctx.db.replace(previous._id,stored);else await ctx.db.insert('bossProgress',stored);
+    if(args.preset==='fresh'){
+      const workstation=await ctx.db.query('directorWorkstations')
+        .withIndex('by_profile',q=>q.eq('profileId',profile._id)).unique();
+      if(workstation)await ctx.db.delete(workstation._id);
+    }
     return normalizeBossProgress(stored,profile.selectedCharacterId);
   },
 });

@@ -9,6 +9,8 @@ import { loadOffice3Questions } from '../quiz/quizBank.js';
 import { readNamedMapMarker } from '../maps/namedMapMarkers.js';
 import { pointInsideInteractionArea, readNamedInteractionArea } from '../maps/namedInteractionAreas.js';
 import { devPuzzleOneAnswerEnabled } from '../boss/devPuzzleSettings.js';
+import { DirectorSecurityFlow } from '../office2/DirectorSecurityFlow.js';
+import { DirectorRecoveryFlow } from '../office2/DirectorRecoveryFlow.js';
 import {
   OFFICE3_FEEDBACK_MS, OFFICE3_PASSWORD_DENIED_MS, OFFICE3_MONITOR, OFFICE3_STREAK_TARGET,
   chooseOffice3Question, nextStreak, passwordIsCorrect,
@@ -26,6 +28,7 @@ export class Office3PuzzleController {
     this.scene = scene;
     this.computerMode=computerMode;
     this.computerConfig=computerConfig;
+    this.directorSecurity=computerMode==='director'?new DirectorSecurityFlow(this):null;
     this.pcMarker=computerMode==='office3'?null:readNamedMapMarker(scene.source,markerName);
     this.pcInteractionRadius=this.pcMarker?.properties.interactionDistance??OFFICE3_MONITOR.radius;
     this.pcInteractionArea=computerMode!=='office3'&&interactionAreaName
@@ -80,6 +83,7 @@ export class Office3PuzzleController {
       }
       if (event.type === 'keydown') this.releaseEscape = false;
       if (!this.active) return;
+      this.directorRecovery?.handleKey(event);
       // Suppress game/emote/hotbar shortcuts while this dialog has the keyboard.
       if(event.type==='keydown'&&event.key==='Enter'&&this.commandInput===document.activeElement){
         event.preventDefault();void this.executeCommand();
@@ -136,6 +140,7 @@ export class Office3PuzzleController {
 
   open() {
     if (!this.nearMonitor() || !this.scene.presence || !this.activate()) return false;
+    if(this.directorSecurity){void this.directorSecurity.open();return true;}
     if(this.computerMode!=='office3'){
       this.safeCode='';this.folder='';this.computerSession=createComputerSession(this.computerConfig);
       this.commandHistory=[];this.showComputer();return true;
@@ -329,7 +334,7 @@ export class Office3PuzzleController {
 
   resetPanel(title, kind='') {
     this.commandInput=null;
-    this.panel.classList.remove('quiz','paper','reward','computer','notepad');
+    this.panel.classList.remove('quiz','paper','reward','computer','notepad','director-security','director-compromised','director-recovery');
     if(kind)this.panel.classList.add(kind);
     this.root.setAttribute('aria-label',title);
     const close=element('button','office3-puzzle-close','×');close.type='button';
@@ -380,11 +385,12 @@ export class Office3PuzzleController {
     const title=this.computerMode==='office3'?'Command Prompt':`${this.computerConfig.hostname} · Command Prompt`;
     this.resetPanel(title,'computer');
     const banner=this.computerMode!=='office3'
-      ?`Office OS [Version 3.0]\nHost: ${this.computerConfig.hostname}\nType help for commands.`
-      :'Office OS [Version 3.0]\nType help for commands.';
+      ?`Office OS [Version 3.0]\nHost: ${this.computerConfig.hostname}`
+      :'Office OS [Version 3.0]';
     this.panel.append(element('p','office3-command-banner',banner));
     const output=element('div','office3-command-output');output.setAttribute('role','log');
-    for(const line of this.commandHistory??[])output.append(element('pre',line.error?'office3-command-error':'',line.text));
+    for(const line of this.commandHistory??[])output.append(element('pre',
+      line.error?'office3-command-error':line.success?'office3-command-success':'',line.text));
     this.commandOutput=output;
     const form=element('form','office3-command-form');
     const label=element('label','',`C:\\${this.folder}>`);
@@ -405,7 +411,7 @@ export class Office3PuzzleController {
       ?runComputerCommand(this.computerConfig,this.computerSession,command)
       :runOfficeCommand(this.folder,command,this.safeCode,this.computerSession);
     this.commandHistory.push({text:`C:\\${this.folder}> ${command}`});
-    if(result.message)this.commandHistory.push({text:result.message,error:result.error});
+    if(result.message)this.commandHistory.push({text:result.message,error:result.error,success:result.success});
     this.commandHistory=this.commandHistory.slice(-80);this.folder=result.folder;
     if(result.shutdown){
       const generation=this.generation;this.busy=true;
@@ -418,7 +424,10 @@ export class Office3PuzzleController {
       }finally{if(generation===this.generation)this.busy=false;}
       return;
     }
-    if(result.service){
+    if(result.service?.interaction==='director-recovery'){
+      this.directorRecovery??=new DirectorRecoveryFlow(this);
+      await this.directorRecovery.open();
+    }else if(result.service){
       this.resetPanel(result.service.title,'computer');
       this.panel.append(element('pre','office3-notepad-text',result.service.banner));
       const back=element('button','','Back to command prompt');back.type='button';
@@ -515,6 +524,8 @@ export class Office3PuzzleController {
     this.delay = null;
     this.active = false;
     this.generation++;
+    this.directorSecurity?.close();
+    this.directorRecovery?.close();
     this.commandInput=null;
     this.safeCode=null;
     this.computerSession=null;
@@ -522,7 +533,7 @@ export class Office3PuzzleController {
     this.restoreGameFocus();
     this.root.hidden = true;
     this.panel.replaceChildren();
-    this.panel.classList.remove('paper', 'reward', 'computer', 'notepad');
+    this.panel.classList.remove('paper', 'reward', 'computer', 'notepad','director-security','director-compromised','director-recovery');
     this.scene.input.keyboard.resetKeys();
     const restoreKeyboard=this.keyboardWasEnabled!==false;
     this.scene.input.keyboard.enabled=restoreKeyboard;

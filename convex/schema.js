@@ -6,6 +6,11 @@ export default defineSchema({
     profileId:v.id('profiles'),code:v.string(),createdAt:v.number(),openedAt:v.optional(v.number()),
     failures:v.optional(v.number()),blockedUntil:v.optional(v.number()),computerBlockedUntil:v.optional(v.number()),
   }).index('by_profile',['profileId']).index('by_code',['code']),
+  directorWorkstations: defineTable({
+    profileId:v.id('profiles'),failedAttempts:v.number(),updatedAt:v.number(),
+    compromisedAt:v.optional(v.number()),remoteApprovedAt:v.optional(v.number()),
+    physicalKeyVerifiedAt:v.optional(v.number()),recoveryCompletedAt:v.optional(v.number()),
+  }).index('by_profile',['profileId']),
   quizCleanupWorker: defineTable({
     key:v.string(),generation:v.number(),jobId:v.optional(v.id('_scheduled_functions')),
   }).index('by_key',['key']),

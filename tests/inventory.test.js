@@ -62,6 +62,21 @@ test('Lung Crusher uses its centered square hotbar icon',()=>{
   assert.equal(png.readUInt32BE(16),362);assert.equal(png.readUInt32BE(20),362);
 });
 
+test('the cigarette pack is a separate profile collectible in a presentation slot',()=>{
+  const equipment=normalizeCharacterItem({characterId:'michael',itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000});
+  const pack=normalizeCharacterItem({characterId:'michael',itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK},'sarina');
+  assert.notEqual(pack.itemId,equipment.itemId);
+  assert.equal(pack.type,'quest');assert.equal(pack.compatible,true);
+  assert.equal(inventoryItemUseBehavior(pack),'presentation');
+  assert.equal(inventoryItemUseBehavior(equipment),'functional');
+  assert.match(pack.description,/Eine mysteriöse Zigarettenschachtel/);
+  assert.match(pack.icon,/lung-crusher-floor\.png$/);
+  assert.match(pack.presentationImage,/lung-crusher-3000\.png$/);
+  const slots=inventorySlots([pack,equipment]);
+  assert.equal(slots[0].itemId,equipment.itemId);
+  assert.equal(slots[5].itemId,pack.itemId);
+});
+
 test('profile items remain owned across characters but activate only for their configured character',()=>{
   const itemId=CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000;
   assert.equal(canCharacterOwnItem('michael',itemId),true);assert.equal(canCharacterOwnItem('sarina',itemId),false);

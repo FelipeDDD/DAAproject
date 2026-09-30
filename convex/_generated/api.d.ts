@@ -12,6 +12,7 @@ import type * as bossProgress from "../bossProgress.js";
 import type * as characterItems from "../characterItems.js";
 import type * as characterLoadouts from "../characterLoadouts.js";
 import type * as crons from "../crons.js";
+import type * as directorWorkstation from "../directorWorkstation.js";
 import type * as doorDefinitions from "../doorDefinitions.js";
 import type * as doors from "../doors.js";
 import type * as emotes from "../emotes.js";
@@ -48,6 +49,7 @@ declare const fullApi: ApiFromModules<{
   characterItems: typeof characterItems;
   characterLoadouts: typeof characterLoadouts;
   crons: typeof crons;
+  directorWorkstation: typeof directorWorkstation;
   doorDefinitions: typeof doorDefinitions;
   doors: typeof doors;
   emotes: typeof emotes;

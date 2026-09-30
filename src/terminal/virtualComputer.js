@@ -47,7 +47,7 @@ function networkCommand(computer, session, verb, arg) {
   if (verb === 'ipconfig') {
     if (key(arg) === '/flushdns') {
       session.dnsCache = {};
-      return {message: 'Windows IP Configuration\n\nSuccessfully flushed the DNS Resolver Cache.'};
+      return {message: 'Windows IP Configuration\n\nSuccessfully flushed the DNS Resolver Cache.',success:true};
     }
     if (arg && key(arg) !== '/all') return {message: 'Usage: ipconfig [/all | /flushdns]', error: true};
     const lines = ['Windows IP Configuration', '', `   Host Name . . . . . . . . . . . . : ${computer.hostname}`,
@@ -76,10 +76,10 @@ function networkCommand(computer, session, verb, arg) {
       : `Pinging ${arg} [${ip}] with 32 bytes of data:\nRequest timed out.`, error: !reachable};
   }
   if (verb === 'connect') {
-    if (!arg || !arg.includes(':')) return {message: 'A destination port is required. Usage: connect <host>:<port>', error: true};
-    const match = /^([^:\s]+):(\d{1,5})$/.exec(arg);
+    if (!arg || !/[:\s]/.test(arg)) return {message: 'A destination port is required. Usage: connect <host>:<port> or connect <host> <port>', error: true};
+    const match = /^([^:\s]+)(?::|\s+)(\d{1,5})$/.exec(arg);
     if (!match || Number(match[2]) > 65535 || Number(match[2]) < 1)
-      return {message: 'Usage: connect <host>:<port>', error: true};
+      return {message: 'Usage: connect <host>:<port> or connect <host> <port>', error: true};
     const [, host, port] = match;
     const ip = targetIp(computer, session, host);
     if (!ip || !(computer.reachableIps ?? []).includes(ip)) return {message: `Could not connect to ${host}.`, error: true};
@@ -87,7 +87,8 @@ function networkCommand(computer, session, verb, arg) {
     if (!service) return {message: `Connection to ${host}:${port} refused.`, error: true};
     if (service.requireHostname && key(host) !== key(service.hostname))
       return {message: 'Unknown virtual host. Connect using the registered hostname.', error: true};
-    return {message: service.banner, service: {id: service.id, title: service.title, banner: service.banner}};
+    return {message: service.banner, service: {id: service.id, title: service.title, banner: service.banner,
+      ...(service.interaction?{interaction:service.interaction}:{})}};
   }
   return null;
 }
@@ -103,7 +104,9 @@ export function runComputerCommand(computer, session, input, context = {}) {
   if (verb === 'help') return result('Available commands: help, hostname, ipconfig, ping, nslookup, dir, cd, type, connect.\nUse connect <host>:<port> for a network service.');
   if (verb === 'cd..') return runComputerCommand(computer, session, 'cd ..', context);
   const network = networkCommand(computer, session, verb, arg);
-  if (network) return result(network.message, Boolean(network.error), network.service ? {service: network.service} : {});
+  if (network) return result(network.message, Boolean(network.error), {
+    ...(network.service?{service:network.service}:{}),...(network.success?{success:true}:{}),
+  });
   if (verb === 'dir') {
     const location = arg ? resolvePath(computer, session, arg) : {path: session.path};
     if (location.error) return result(location.error, true);

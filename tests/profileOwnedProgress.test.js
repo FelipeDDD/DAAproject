@@ -74,6 +74,17 @@ test('profile items stay owned across characters but activation enforces visual 
   assert.equal(active.active,true);
 });
 
+test('collectible cigarette pack and Michael equipment have independent persistent IDs',async()=>{
+  const ctx=memoryContext();const profileId=await addProfile(ctx,{name:'collector',character:'sarina',token:TOKEN_A});
+  const pack=await items.claim._handler(ctx,{token:TOKEN_A,itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK});
+  assert.equal(pack.item.itemId,CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK);
+  await ctx.db.patch(profileId,{selectedCharacterId:'michael'});
+  const cigarette=await items.claim._handler(ctx,{token:TOKEN_A,itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000});
+  assert.equal(cigarette.item.itemId,CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000);
+  assert.equal(ctx.tables.characterItems.length,2);
+  assert.equal((await items.claim._handler(ctx,{token:TOKEN_A,itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK})).duplicate,true);
+});
+
 test('stacked pickup claims award the requested amount up to the item stack cap',async()=>{
   const ctx=memoryContext();const profileId=await addProfile(ctx,{name:'michael',character:'michael',token:TOKEN_A});
   const itemId=CHARACTER_ITEM_IDS.HEALTH_POTION;

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="224" height="32" viewBox="0 0 224 32">
+  <!-- Small wall-mounted atlas; deliberately no floor-standing furniture. -->
+  <g id="noticeboard">
+    <rect x="1" y="4" width="62" height="27" rx="1" fill="#242a2d" opacity=".22"/>
+    <rect x="0" y="1" width="62" height="27" rx="1" fill="#665445"/>
+    <rect x="1" y="2" width="60" height="24" fill="#bd9b68"/>
+    <rect x="3" y="4" width="56" height="20" fill="#947a52"/>
+    <path d="M4 5h54M4 23h54" stroke="#c2a474" stroke-opacity=".6"/>
+    <path d="M7 6h12v15H7z" fill="#f0e9cd"/><path d="M23 8h14v13H23z" fill="#c4d3d2"/>
+    <path d="M41 5h13v17H41z" fill="#e5d7ac"/>
+    <path d="M9 11h8m-8 3h6m8-2h10m-10 3h8m10-5h9m-9 3h9m-9 3h6" stroke="#7f857e" stroke-width="1"/>
+    <path d="M11 7h3m14 2h3m14-3h3" stroke="#a95448" stroke-width="2"/>
+    <path d="M1 2h60" stroke="#dac49c"/>
+  </g>
+  <g id="clock" transform="translate(64)">
+    <circle cx="17" cy="17" r="13" fill="#242a2d" opacity=".2"/>
+    <circle cx="16" cy="15" r="13" fill="#47565b"/>
+    <circle cx="16" cy="15" r="11" fill="#ebe8d8" stroke="#9ba6a4"/>
+    <path d="M16 5v2m0 16v2M6 15h2m16 0h2M9 8l1 1m12-1-1 1M9 22l1-1m12 1-1-1" stroke="#717875"/>
+    <path d="M16 8v7l6 3" fill="none" stroke="#35464e" stroke-width="1.5"/>
+    <circle cx="16" cy="15" r="1.5" fill="#a66b50"/>
+  </g>
+  <g id="landscape" transform="translate(96)">
+    <rect x="2" y="3" width="28" height="27" fill="#242a2d" opacity=".2"/>
+    <rect x="0" y="1" width="28" height="27" fill="#6e5949"/>
+    <rect x="2" y="3" width="24" height="23" fill="#ddd1b3"/>
+    <rect x="4" y="5" width="20" height="19" fill="#9bbac1"/>
+    <circle cx="18" cy="9" r="3" fill="#e9d9a0"/>
+    <path d="m4 18 7-7 8 9 5-5v9H4z" fill="#668681"/>
+    <path d="m4 22 8-5 12 5v2H4z" fill="#435e58"/>
+    <path d="M1 2h26" stroke="#bda382"/>
+  </g>
+  <g id="poster" transform="translate(128)">
+    <rect x="3" y="3" width="24" height="28" fill="#242a2d" opacity=".2"/>
+    <rect x="1" y="1" width="24" height="28" fill="#53666b"/>
+    <rect x="3" y="3" width="20" height="24" fill="#e8e3cf"/>
+    <rect x="4" y="4" width="18" height="4" fill="#677f8a"/>
+    <path d="M7 13h6v5H7zm10 0h3v5h-3zM10 18v3h8v-3" fill="none" stroke="#6c8580"/>
+    <path d="M6 24h14" stroke="#a09983"/>
+  </g>
+  <g id="direction-sign" transform="translate(160)">
+    <rect x="2" y="10" width="61" height="16" rx="2" fill="#242a2d" opacity=".2"/>
+    <rect x="0" y="8" width="61" height="16" rx="2" fill="#576d72" stroke="#b2bcb4"/>
+    <path d="M7 16h10m-4-3 4 3-4 3" fill="none" stroke="#eef0df" stroke-width="1.5"/>
+    <text x="23" y="19" font-family="sans-serif" font-size="8" font-weight="bold" fill="#eef0df">IT LAB</text>
+  </g>
+</svg>

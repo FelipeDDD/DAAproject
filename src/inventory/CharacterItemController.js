@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { CHARACTER_ITEM_IDS,characterItemDefinition,normalizeCharacterItem } from './characterItems.js';
 import { CharacterItemClient } from './CharacterItemClient.js';
 import { baseCharacterId } from '../characters.js';
+import { readNamedMapMarker } from '../maps/namedMapMarkers.js';
 
 export const LUNG_CRUSHER_PICKUP_OFFSET=Object.freeze({x:128,y:0});
 const LUNG_CRUSHER_PICKUP_ENABLED=false;
@@ -28,6 +29,17 @@ export class CharacterItemController {
     this.items=(rows??[]).map(row=>normalizeCharacterItem(row,this.characterBaseId)).filter(item=>item?.quantity>0);this.onItemsChange(this.items);
     const item=this.lungCrusher;if(applyVisual)this.onVisualChange(item?.active?item.itemId:null,{instant:true});
     if(this.pickup)this.pickup.setVisible(LUNG_CRUSHER_PICKUP_ENABLED&&this.characterBaseId==='michael'&&!item);
+    if(this.mapPickup)this.mapPickup.sprite.setVisible(!this.items.some(row=>row.itemId===CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK));
+  }
+  createCollectiblePickup(source){
+    if(this.scene.mapKey!=='school')return null;
+    const marker=readNamedMapMarker(source,'lung-crusher');
+    if(!marker)return null;
+    const owned=this.items.some(item=>item.itemId===CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK);
+    const sprite=this.scene.add.image(marker.x,marker.y,'lung-crusher-pack-ground')
+      .setOrigin(.5,1).setDisplaySize(8,9).setDepth(marker.y+1).setVisible(!owned);
+    this.mapPickup={kind:'map',itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK,x:marker.x,y:marker.y,sprite};
+    return this.mapPickup;
   }
   createPickup(transition){
     if(!LUNG_CRUSHER_PICKUP_ENABLED||this.scene.mapKey!=='school'||!transition)return;
@@ -40,12 +52,15 @@ export class CharacterItemController {
     const center=this.scene.player.body.center;
     const dropped=this.devPickups.find(item=>item.sprite.active&&Phaser.Math.Distance.Between(center.x,center.y,item.x,item.y)<=PICKUP_DISTANCE);
     if(dropped)return dropped;
+    if(this.mapPickup?.sprite?.visible&&Phaser.Math.Distance.Between(center.x,center.y,this.mapPickup.x,this.mapPickup.y)<=PICKUP_DISTANCE)
+      return this.mapPickup;
     if(!LUNG_CRUSHER_PICKUP_ENABLED||!this.pickup?.visible||this.characterBaseId!=='michael')return null;
     return Phaser.Math.Distance.Between(center.x,center.y,this.pickupPosition.x,this.pickupPosition.y)<=PICKUP_DISTANCE?{kind:'lung'}:null;
   }
   async collect(pickup=this.updatePrompt()){
     if(!pickup||this.collecting)return false;
     if(pickup.kind==='dev')return this.collectDevPickup(pickup);
+    if(pickup.kind==='map')return this.collectMapPickup(pickup);
     this.collecting=true;
     const before=this.items;
     const optimistic={...characterItemDefinition(CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000),characterBaseId:this.characterBaseId,active:false,cooldownUntil:0};
@@ -60,6 +75,27 @@ export class CharacterItemController {
       this.setItems(before);this.pickup?.setVisible(true);
       this.scene.hint.textContent=`Could not save Lung Crusher 3000: ${error.message}`;
       console.warn('Character item pickup:',error);return false;
+    }finally{this.collecting=false;}
+  }
+  async collectMapPickup(pickup){
+    if(this.collecting||!pickup?.sprite?.active)return false;
+    if(this.items.some(item=>item.itemId===pickup.itemId)){pickup.sprite.setVisible(false);return false;}
+    this.collecting=true;const before=this.items;
+    const optimistic={...characterItemDefinition(pickup.itemId),characterBaseId:this.characterBaseId,active:false,cooldownUntil:0};
+    this.setItems([...before,optimistic]);
+    try{
+      const result=await this.client.claim(pickup.itemId);
+      if(this.destroyed)return false;
+      const item=normalizeCharacterItem(result.item,this.characterBaseId);
+      this.setItems([...this.items.filter(row=>row.itemId!==item.itemId),item]);
+      pickup.sprite.setVisible(false);
+      this.onItemCollected(item);
+      return true;
+    }catch(error){
+      if(this.destroyed)return false;
+      this.setItems(before);
+      this.scene.hint.textContent=`Could not collect ${characterItemDefinition(pickup.itemId)?.name??'item'}: ${error.message}`;
+      console.warn('Map item pickup:',error);return false;
     }finally{this.collecting=false;}
   }
   spawnDevPickup(itemId=CHARACTER_ITEM_IDS.HEALTH_POTION){
@@ -168,5 +204,5 @@ export class CharacterItemController {
       sprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE,()=>this.finishTransformation?.());sprite.play(TRANSFORM_ANIMATION);
     });return this.transforming;
   }
-  destroy(){this.destroyed=true;this.finishTransformation?.();this.pickup?.destroy();for(const pickup of this.devPickups){pickup.countLabel?.destroy();pickup.sprite.destroy();}this.devPickups=[];}
+  destroy(){this.destroyed=true;this.finishTransformation?.();this.pickup?.destroy();this.mapPickup?.sprite?.destroy();for(const pickup of this.devPickups){pickup.countLabel?.destroy();pickup.sprite.destroy();}this.devPickups=[];}
 }

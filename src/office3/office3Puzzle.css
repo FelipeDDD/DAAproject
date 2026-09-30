@@ -25,10 +25,25 @@
 .office3-puzzle-panel.quiz { width: min(100%, 680px); min-height: min(390px, 80vh); }
 .office3-puzzle-panel.computer { width: min(100%, 740px); min-height: min(410px, 80vh); border-color: #7f8996; border-radius: 4px; background: #101114; color: #eee; }
 .office3-puzzle-panel.computer h2 { color: #eee; }
+.office3-puzzle-panel.director-security { width: min(100%, 620px); border-color: #ba9153; background: #15140f; color: #f2e7d4; }
+.office3-puzzle-panel.director-security h2 { color: #f8cb7d; }
+.director-security-factor { margin: 8px 0; padding: 8px 10px; border-left: 3px solid #ba9153; background: #ffffff0a; font-size: 14px; white-space: pre-wrap; }
+.director-security-intro { margin: 24px 0 18px; font-size: 19px; font-weight: 700; }
+.director-security-choices { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.office3-puzzle-panel .director-security-choices .director-security-choice { min-height: 94px; padding: 16px; border-color: #b28a51; background: #392b1b; text-align: left; font-weight: 700; }
+.director-security-denied { color: #ff9292; font-weight: 700; white-space: pre-wrap; }
+.office3-puzzle-panel.director-compromised { width: min(100%, 650px); border: 2px solid #ff4956; background: #250b10; color: #ffe5e7; box-shadow: 0 0 32px #f92d4155,0 18px 60px #0009; animation: director-security-pulse 1.5s ease-in-out infinite alternate; }
+.office3-puzzle-panel.director-compromised h2,.director-security-alert { color: #ff666e; }
+.director-security-alert { display: block; margin: 10px 0 20px; font-size: clamp(20px,4vw,29px); line-height: 1.2; letter-spacing: .04em; }
+.office3-puzzle-panel.director-compromised .director-security-factor { border-color: #e65d63; }
+@keyframes director-security-pulse { to { box-shadow: 0 0 42px #f92d4190,0 18px 60px #0009; } }
+@media (max-width: 540px) { .director-security-choices { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .office3-puzzle-panel.director-compromised { animation: none; } }
 .office3-command-banner, .office3-command-output pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; }
 .office3-command-output { max-height: 40vh; overflow: auto; }
 .office3-command-output pre { margin: 6px 0; }
 .office3-command-error { color: #ff9292; }
+.office3-command-success { color: #82f59a; font-weight: 700; }
 .office3-command-form { display: flex; gap: 10px; align-items: center; }
 .office3-command-form label { display: flex; flex: 1; flex-wrap: wrap; align-items: center; }
 .office3-command-input { min-width: 120px; flex: 1; width: 100%; border: 0; border-bottom: 1px solid #777; border-radius: 0; padding: 8px; background: #101114; color: #fff; font: inherit; }
@@ -78,3 +93,40 @@
 @keyframes office3-denied-type { from { width: 0; } to { width: 13ch; } }
 @keyframes office3-denied-shake { 25%, 75% { transform: translateX(5px); } 50% { transform: translateX(-5px); } }
 @media (prefers-reduced-motion: reduce) { .office3-puzzle-feedback[data-result='wrong'] { animation: none; } }
+.office3-puzzle-panel.director-recovery {
+  width: min(100%, 780px);
+  background: #101c29;
+  border-color: #7ba5ad;
+  color: #d5e5ea;
+}
+.director-recovery-cable {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 90px;
+  background: linear-gradient(#58737c, #58737c) center / 100% 3px no-repeat;
+  overflow: hidden;
+}
+.director-recovery-cable span {
+  z-index: 1;
+  padding: 12px 6px;
+  background: #263e4c;
+  border: 1px solid #7ba5ad;
+  font-size: 12px;
+}
+.director-recovery-packet {
+  position: absolute;
+  width: 10px;
+  height: 7px;
+  background: #a0ffb6;
+  box-shadow: 0 0 8px #a0ffb6;
+  animation: director-packet 0.65s linear infinite;
+}
+@keyframes director-packet { from { left: 0; } to { left: 100%; } }
+.director-runner { display: block; width: 100%; height: auto; border: 1px solid #46616c; }
+.director-runner-status { min-height: 2.5em; font-size: 13px; }
+.director-recovery > button:not(.office3-puzzle-close) { margin: 4px 8px 4px 0; }
+@media (prefers-reduced-motion: reduce) {
+  .director-recovery-packet { animation: none; left: 50%; }
+}

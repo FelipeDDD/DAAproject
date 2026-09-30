@@ -1,7 +1,8 @@
 import { baseCharacterId } from '../characters.js';
 
 export const CHARACTER_ITEM_IDS=Object.freeze({
-  LUNG_CRUSHER_3000:'lung_crusher_3000',OFFICE2_KEY:'office2_key',HEALTH_POTION:'health_potion',
+  LUNG_CRUSHER_3000:'lung_crusher_3000',LUNG_CRUSHER_PACK:'lung_crusher_3000_pack',
+  OFFICE2_KEY:'office2_key',HEALTH_POTION:'health_potion',
 });
 export const CHARACTER_ITEM_COOLDOWN_MS=10_000;
 export const HEALTH_POTION_COOLDOWN_MS=5_000;
@@ -20,6 +21,13 @@ export const CHARACTER_ITEMS=Object.freeze({
     description:'A very large cigarette. Click to activate or deactivate.',
     icon:'assets/items/lung-crusher-slot-icon.png',presentationImage:'assets/items/lung-crusher-3000.png',
     activatable:true,useBehavior:'functional',
+  }),
+  [CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK]:Object.freeze({
+    itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK,type:'quest',quantity:1,
+    name:'Lung Crusher 3000 Pack',
+    description:'Eine mysteriöse Zigarettenschachtel. Steht vermutlich nicht im Lehrplan.',
+    icon:'assets/items/lung-crusher-floor.png',
+    presentationImage:'assets/items/lung-crusher-3000.png',useBehavior:'presentation',
   }),
   [CHARACTER_ITEM_IDS.HEALTH_POTION]:Object.freeze({
     itemId:CHARACTER_ITEM_IDS.HEALTH_POTION,type:'consumable',quantity:1,maxStack:HEALTH_POTION_MAX_STACK,
@@ -49,7 +57,7 @@ export function normalizeCharacterItem(row,currentCharacterBaseId=row?.character
   const compatible=canCharacterOwnItem(characterBaseId,row.itemId);
   return {...itemAppearanceForCharacter(item,characterBaseId),characterBaseId,compatible,
     quantity:Math.max(0,Math.min(item.maxStack??1,Number(row.quantity) || (item.maxStack?0:1))),
-    active:compatible&&Boolean(row.active),cooldownUntil:Math.max(0,Number(row.cooldownUntil)||0)};
+    active:compatible&&Boolean(item.activatable)&&Boolean(row.active),cooldownUntil:Math.max(0,Number(row.cooldownUntil)||0)};
 }
 export function characterInventoryItems(rows,characterBaseId){
   const unique=new Map();

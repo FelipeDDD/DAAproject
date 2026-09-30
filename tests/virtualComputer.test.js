@@ -39,6 +39,7 @@ test('connect requires a port, routes by configured service, and can require the
   const result = run(session, 'CONNECT director.daa.local:8443');
   assert.equal(result.service.id, 'director-archive');
   assert.match(result.service.banner, /Authentication required/);
+  assert.equal(run(session,'connect director.daa.local 8443').service.id,'director-archive');
 });
 
 test('Office3 old files and navigation work through reusable filesystem; nested folders can be configured', () => {
@@ -66,8 +67,17 @@ test('Office3 old files and navigation work through reusable filesystem; nested 
 test('separate investigation PC keeps network commands without exposing the old safe-code file',()=>{
   const session=createComputerSession(OFFICE3_INVESTIGATION_COMPUTER);
   assert.equal(runComputerCommand(OFFICE3_INVESTIGATION_COMPUTER,session,'hostname').message,'PC-USER');
-  assert.deepEqual(OFFICE3_INVESTIGATION_COMPUTER.filesystem.entries,{});
+  assert.match(runComputerCommand(OFFICE3_INVESTIGATION_COMPUTER,session,'dir').message,/Hacking_Class_Material/);
+  assert.equal(runComputerCommand(OFFICE3_INVESTIGATION_COMPUTER,session,'cd Hacking_Class_Material').folder,'Hacking_Class_Material');
+  assert.match(runComputerCommand(OFFICE3_INVESTIGATION_COMPUTER,session,'dir').message,/remote_access_notes\.txt/);
+  const notes=runComputerCommand(OFFICE3_INVESTIGATION_COMPUTER,session,'type remote_access_notes.txt').note;
+  assert.match(notes,/connect <host> <port>/);
+  assert.doesNotMatch(notes,/8443/);
+  assert.equal(runComputerCommand(OFFICE3_INVESTIGATION_COMPUTER,session,'cd ..').folder,'');
   assert.equal(runComputerCommand(OFFICE3_INVESTIGATION_COMPUTER,session,`cd ${NORMAL_FOLDER}`).error,true);
+  assert.match(runComputerCommand(OFFICE3_INVESTIGATION_COMPUTER,session,'ping director.daa.local').message,/192\.168\.10\.99/);
+  runComputerCommand(OFFICE3_INVESTIGATION_COMPUTER,session,'ipconfig /flushdns');
+  assert.match(runComputerCommand(OFFICE3_INVESTIGATION_COMPUTER,session,'ping director.daa.local').message,/Reply from 192\.168\.10\.42/);
   assert.match(runComputerCommand(OFFICE3_INVESTIGATION_COMPUTER,session,'ipconfig /all').message,
     /192\.168\.10\.20/);
   assert.match(runOfficeCommand('',`cd ${PASSWORD_FOLDER}`,'0123').folder,/Definitely_not_important/,

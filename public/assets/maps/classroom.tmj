@@ -60,7 +60,7 @@
                  "width":32,
                  "x":32,
                  "y":288
-                }, 
+                },
                 {
                  "gid":1629,
                  "height":32,
@@ -7443,6 +7443,19 @@
                  "width":0,
                  "x":361.333333333333,
                  "y":393.666666666667
+                },
+                {
+                 "height":0,
+                 "id":597,
+                 "name":"lung-crusher",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":295.75,
+                 "y":11
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -7451,7 +7464,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":596,
+ "nextobjectid":598,
  "orientation":"orthogonal",
  "properties":[
         {

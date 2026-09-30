@@ -285,6 +285,7 @@ export class MapScene extends Phaser.Scene {
       }):null;
       void this.inventoryHotbar?.refresh();
       void this.characterItems?.restore();
+      this.characterItems?.createCollectiblePickup(this.source);
       this.characterItems?.createPickup(objectsIn(this.source,'Spawns').find(object=>object.name==='arena'));
       this.quiz?.close();
       this.quiz=this.presence&&!MULTIPLAYER_QUIZ_DISABLED_MAPS.has(this.mapKey)
@@ -537,7 +538,7 @@ export class MapScene extends Phaser.Scene {
       : computer
       ? '[E] Open Terminal'
       : characterItemPickup
-      ? `[E] Collect ${characterItemPickup.kind==='dev'?'Medizinisch Fragwürdig':'Lung Crusher 3000'}`
+      ? `[E] Collect ${characterItemPickup.kind==='dev'?'Medizinisch Fragwürdig':characterItemPickup.kind==='map'?'Lung Crusher 3000 Pack':'Lung Crusher 3000'}`
       : wardrobe
       ? '[E] Change appearance'
       : mapTransition
