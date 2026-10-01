@@ -7,16 +7,28 @@ export const CHARACTER_ITEM_IDS=Object.freeze({
   OFFICE2_KEY:'office2_key',HEALTH_POTION:'health_potion',
 });
 export const CHARACTER_ITEM_COOLDOWN_MS=10_000;
+// Michael's old equipable cigarette is parked; the collectible pack has its own ID.
+export const LUNG_CRUSHER_CIGARETTE_ENABLED=false;
+export const isCharacterItemEnabled=itemId=>itemId!==CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000||LUNG_CRUSHER_CIGARETTE_ENABLED;
 export const HEALTH_POTION_COOLDOWN_MS=5_000;
 export const HEALTH_POTION_HEAL_AMOUNT=70;
 export const HEALTH_POTION_MAX_STACK=10;
+
+// The three edition icon PNGs have opaque black canvases. These silhouettes
+// keep only each pack visible in the small inventory views; card art is intact.
+const PACK_ICON_CLIPS=[
+  null,
+  'polygon(42.3% 39%,53% 36.8%,56% 37%,58% 39%,58% 58.8%,47% 61%,43% 60%,42.3% 59%)',
+  'polygon(43% 39%,54% 37.3%,57.5% 39%,57.5% 59%,47% 61%,43% 59.5%)',
+  'polygon(43.5% 39.7%,54% 37.5%,57.5% 39%,57.5% 59%,47% 61%,43.5% 59.5%)',
+];
 
 export const CHARACTER_ITEMS=Object.freeze({
   ...Object.fromEntries(CIGARETTE_QUEST.packIds.map((itemId, index) => [itemId, Object.freeze({
     itemId, type:'quest', quantity:1, questId:CIGARETTE_QUEST.id,
     name:cigarettePack(itemId)?.name??`Cigarette Pack ${index + 1}`, description:'A questionable delivery for the woman outside.',
     icon:cigarettePack(itemId).icon,presentationImage:cigarettePack(itemId).card,useBehavior:'presentation',
-    ...(index>0?{iconScale:3.4,iconClip:'inset(34% 37% 37% 37%)'}:{}),
+    ...(index>0?{iconScale:3.4,iconClip:PACK_ICON_CLIPS[index]}:{}),
   })])),
   [CHARACTER_ITEM_IDS.OFFICE2_KEY]:Object.freeze({
     itemId:CHARACTER_ITEM_IDS.OFFICE2_KEY,type:'key',quantity:1,
@@ -71,7 +83,7 @@ export function characterInventoryItems(rows,characterBaseId){
   const unique=new Map();
   for(const row of rows??[]){
     const item=normalizeCharacterItem(row,characterBaseId);
-    if(item&&item.quantity>0&&!unique.has(item.itemId))unique.set(item.itemId,item);
+    if(item&&item.quantity>0&&isCharacterItemEnabled(item.itemId)&&!unique.has(item.itemId))unique.set(item.itemId,item);
   }
   return [...unique.values()];
 }

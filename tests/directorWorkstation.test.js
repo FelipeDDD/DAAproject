@@ -48,8 +48,13 @@ test('Director key is required; two rejected answers persist the local lockout p
   assert.deepEqual(ctx.tables.bossProgress[0].rewards,[BOSS_REWARDS.DIRECTOR_ACCESS_BADGE],'key is not consumed');
   const first=await workstation.submitChoice._handler(ctx,{...user.args,choice:'left'});
   assert.equal(first.stage,'question');assert.equal(first.failedAttempts,1);
+  assert.deepEqual(first.attemptedChoices,['left']);
+  const duplicate=await workstation.submitChoice._handler(ctx,{...user.args,choice:'left'});
+  assert.equal(duplicate.failedAttempts,1,'repeating one statement does not count as another answer');
+  assert.deepEqual(duplicate.attemptedChoices,['left']);
   const second=await workstation.submitChoice._handler(ctx,{...user.args,choice:'right'});
   assert.equal(second.stage,'compromised');assert.equal(second.failedAttempts,2);
+  assert.deepEqual(second.attemptedChoices,['left','right']);
   assert.equal(ctx.tables.directorWorkstations.length,1);
   assert.ok(ctx.tables.directorWorkstations[0].compromisedAt);
   assert.equal((await workstation.submitChoice._handler(ctx,{...user.args,choice:'left'})).stage,'compromised');
@@ -103,7 +108,7 @@ test('missing key cannot verify and old compromise state does not implicitly ver
 
 function domNode(tag){return {tagName:tag.toUpperCase(),children:[],classList:{add(){},remove(){}},
   append(...children){this.children.push(...children);},addEventListener(_type,listener){this.click=listener;},
-  querySelector(){return null;},focus(){},textContent:''};}
+  querySelector(){return null;},focus(){},setAttribute(name,value){this[name]=value;},textContent:''};}
 
 test('Director UI rejects either choice, then shows a local lockout without shell access',async t=>{
   const previous=globalThis.document;globalThis.document={createElement:domNode};t.after(()=>{globalThis.document=previous;});
@@ -114,7 +119,8 @@ test('Director UI rejects either choice, then shows a local lockout without shel
       api:{directorWorkstation:{status:'status',submitChoice:'submitChoice',verifyPhysicalKey:'verifyPhysicalKey'}},
       client:{query:async()=>directorSecurityState(true),mutation:async method=>{
         if(method==='submitChoice')calls++;
-        return directorSecurityState(true,{physicalKeyVerifiedAt:1,failedAttempts:calls});}},
+        const attemptedChoices=calls===0?[]:calls===1?['left']:['left','right'];
+        return directorSecurityState(true,{physicalKeyVerifiedAt:1,failedAttempts:calls,attemptedChoices});}},
     }},
   };
   const flow=new DirectorSecurityFlow(host);
@@ -124,8 +130,15 @@ test('Director UI rejects either choice, then shows a local lockout without shel
   assert.equal(panel.children.some(node=>node.textContent?.includes('Confirmation ........ LOCKED')),true);
   await flow.verifyKey();
   assert.equal(panel.children.some(node=>node.className==='director-security-choices'),true);
+  assert.equal(panel.children.some(node=>node.textContent==='Select the correct answer to complete the examination.'),true);
+  assert.equal(panel.children.some(node=>node.textContent==='Both passwords are telling the truth.'),true);
   await flow.choose('left');
   assert.equal(panel.children.some(node=>node.textContent?.includes('Incorrect password.')),true);
+  const choices=panel.children.find(node=>node.className==='director-security-choices');
+  assert.equal(choices.children[0].disabled,true);
+  assert.equal(choices.children[1].disabled,false);
+  await flow.choose('left');
+  assert.equal(calls,1,'the answered choice cannot be submitted again from the current UI');
   await flow.choose('right');
   assert.equal(calls,2);
   assert.equal(panel.children.some(node=>node.textContent==='LOCAL ACCESS COMPROMISED'),true);

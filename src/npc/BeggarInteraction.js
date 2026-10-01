@@ -21,7 +21,14 @@ export class BeggarInteraction {
   canInteract() {
     return this.available() && proximityBand(this.distance(), this.scene.source.tilewidth) === 'interaction';
   }
-  show(pool, now) { this.speech.setText(this.dialogue.say(pool, now)).setVisible(true); }
+  lookAtPlayer(now) {
+    const position = this.scene.player.body.center;
+    this.npc.lookAtPlayer?.(position, now, BEGGAR_PROXIMITY.speechMs);
+  }
+  show(pool, now) {
+    this.lookAtPlayer(now);
+    this.speech.setText(this.dialogue.say(pool, now)).setVisible(true);
+  }
   update(time) {
     const npc = this.npc.sprite;
     if (!npc) return;
@@ -31,7 +38,10 @@ export class BeggarInteraction {
       const state = this.scene.collectibleQuest?.state;
       const text = this.dialogue.update(time, this.distance(), this.scene.source.tilewidth,
         {hasPack: state?.hasPack, completed: state?.completed, enabled: this.available()});
-      if (text) this.speech.setText(text).setVisible(true);
+      if (text) {
+        this.lookAtPlayer(time);
+        this.speech.setText(text).setVisible(true);
+      }
       this.prompt.setText(state?.hasPack ? '[E] Zigarettenschachtel geben' : '[E] Sprechen');
     }
     this.prompt.setVisible(this.inRange && this.available() && !this.pending)
@@ -41,6 +51,7 @@ export class BeggarInteraction {
   }
   async interact(time) {
     if (!this.canInteract() || this.pending) return;
+    this.lookAtPlayer(time);
     const quest = this.scene.collectibleQuest;
     if (!quest?.state?.hasPack) {
       this.show(quest?.state?.completed ? 'completed' : 'near', time); return;

@@ -42,11 +42,11 @@ async function harness() {
 }
 
 test('three exact proximity bands reserve the closest band for explicit interaction', () => {
-  assert.deepEqual([0,32,32.1,96,96.1,192,193].map(distance => proximityBand(distance,32)),
-    ['interaction','interaction','near','near','far','far','outside']);
+  assert.deepEqual([0,32,64,64.1,96,96.1,192,193].map(distance => proximityBand(distance,32)),
+    ['interaction','interaction','interaction','near','near','far','far','outside']);
   const dialogue = new NpcProximityDialogue({random:()=>0});
   assert.equal(dialogue.update(0,32,32),null);
-  assert.ok(BEGGAR_LINES.near.includes(dialogue.update(750,64,32)));
+  assert.ok(BEGGAR_LINES.near.includes(dialogue.update(750,80,32)));
 });
 test('far dialogue cooldown is longer, checks are throttled and failed rolls consume cooldown', () => {
   const dialogue = new NpcProximityDialogue({random:()=>0});
@@ -55,18 +55,18 @@ test('far dialogue cooldown is longer, checks are throttled and failed rolls con
   assert.ok(dialogue.update(12_000,128,32));
   let rolls=0;
   const silent = new NpcProximityDialogue({random:()=>{rolls++;return .99;}});
-  assert.equal(silent.update(0,64,32),null);
-  for (let now=1;now<11_960;now+=751) silent.update(now,64,32);
+  assert.equal(silent.update(0,80,32),null);
+  for (let now=1;now<11_960;now+=751) silent.update(now,80,32);
   assert.equal(rolls,2,'failed roll does not retry every proximity tick');
   assert.ok(BEGGAR_PROXIMITY.farCooldownMs[0] > BEGGAR_PROXIMITY.nearCooldownMs[0]);
 });
 test('near speech prefers the owned pack pool and avoids consecutive identical lines', () => {
   const dialogue = new NpcProximityDialogue({random:()=>0});
-  const first = dialogue.update(0,64,32,{hasPack:true});
-  const second = dialogue.update(8000,64,32,{hasPack:true});
+  const first = dialogue.update(0,80,32,{hasPack:true});
+  const second = dialogue.update(8000,80,32,{hasPack:true});
   assert.ok(BEGGAR_LINES.owned.includes(first));assert.ok(BEGGAR_LINES.owned.includes(second));
   assert.notEqual(first,second);
-  assert.equal(dialogue.update(16_000,64,32,{enabled:false}),null);
+  assert.equal(dialogue.update(16_000,80,32,{enabled:false}),null);
 });
 test('only the current pack can be collected; collecting does not advance the quest', async () => {
   const ctx = await harness();
@@ -158,15 +158,15 @@ test('missing spawns remain unplaced; other profiles start independently and inv
   assert.equal(chooseCollectibleSpawn([{},spawns[0],spawns[0]],undefined,()=>0),spawns[0].id);
   assert.equal(chooseCollectibleSpawn(spawns,'test-a',()=>0),'test-b');
 });
-test('NPC requires explicit action in one tile; proximity never submits hand-in', async () => {
+test('NPC requires explicit action within the expanded two-tile range; proximity never submits hand-in', async () => {
   let delivered=0;
   const interaction=Object.assign(Object.create(BeggarInteraction.prototype),{
     scene:{source:{tilewidth:32},player:{body:{center:{x:0,y:0}}},time:{now:0},
       collectibleQuest:{state:{hasPack:true},async handIn(){delivered++;return {completed:false};}}},
-    npc:{sprite:{x:64,y:0}},show(){},
+    npc:{sprite:{x:65,y:0}},show(){},
   });
   await interaction.interact(0);assert.equal(delivered,0);
-  interaction.npc.sprite.x=32;
+  interaction.npc.sprite.x=64;
   assert.equal(interaction.canInteract(),true);assert.equal(delivered,0);
   await interaction.interact(0);assert.equal(delivered,1);
 });

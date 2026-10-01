@@ -2,6 +2,12 @@ import { defineSchema, defineTable } from 'convex/server';
 import { v } from 'convex/values';
 
 export default defineSchema({
+  arenaLobbies:defineTable({
+    code:v.optional(v.string()),closedReason:v.optional(v.string()),
+    hostPlayerId:v.string(),status:v.union(v.literal('waiting'),v.literal('started'),v.literal('closed')),
+    participants:v.array(v.object({playerId:v.string(),sessionId:v.string()})),
+    maxParticipants:v.number(),createdAt:v.number(),expiresAt:v.number(),
+  }).index('by_host',['hostPlayerId']).index('by_status',['status']).index('by_code',['code']),
   npcCollectibleQuests: defineTable({
     profileId:v.id('profiles'),questId:v.string(),deliveredPackIds:v.array(v.string()),
     currentPackId:v.optional(v.string()),activeSpawnId:v.optional(v.string()),
@@ -14,6 +20,7 @@ export default defineSchema({
   }).index('by_profile',['profileId']).index('by_code',['code']),
   directorWorkstations: defineTable({
     profileId:v.id('profiles'),failedAttempts:v.number(),updatedAt:v.number(),
+    attemptedChoices:v.optional(v.array(v.union(v.literal('left'),v.literal('right')))),
     compromisedAt:v.optional(v.number()),remoteApprovedAt:v.optional(v.number()),
     physicalKeyVerifiedAt:v.optional(v.number()),recoveryCompletedAt:v.optional(v.number()),
   }).index('by_profile',['profileId']),

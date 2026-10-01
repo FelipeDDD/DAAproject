@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { BossDevTools } from '../src/boss/BossDevTools.js';
 import { devPuzzleOneAnswerEnabled,DEV_PUZZLE_ONE_ANSWER_KEY } from '../src/boss/devPuzzleSettings.js';
+import { coopArenaEnabled,setCoopArenaEnabled } from '../src/boss/devArenaSettings.js';
 
 class Element {
   constructor(tag){this.tag=tag;this.children=[];this.attributes={};this.events={};}
@@ -11,6 +12,23 @@ class Element {
   querySelectorAll(tag){const tags=tag.split(',').map(value=>value.trim());return this.children.flatMap(child=>[...(tags.includes(child.tag)?[child]:[]),...child.querySelectorAll(tag)]);}
   remove(){}
 }
+
+test('arena toggle works immediately and DEV diagnostics track lobby state separately from player UI',()=>{
+  setCoopArenaEnabled(false);
+  const documentRef={createElement:tag=>new Element(tag),body:new Element('body')};
+  const tools=new BossDevTools({arenaDiagnostics:{mode:'lobby',status:'waiting',lobbyId:'lobby-private',
+    hostPlayerId:'host-private',participantCount:2}},null,{documentRef});
+  assert.match(tools.arenaDiagnostics.textContent,/Lobby: lobby-private/);
+  assert.match(tools.arenaDiagnostics.textContent,/Players: 2/);
+  assert.equal(tools.coopArenaButton.textContent,'Co-op Arena: OFF');
+  tools.coopArenaButton.events.click();assert.equal(coopArenaEnabled({DEV:true}),true);
+  assert.equal(tools.coopArenaButton.textContent,'Co-op Arena: ON');
+  tools.setArenaDiagnostics({mode:'coop',status:'started',lobbyId:'same',hostPlayerId:'host',participantCount:3});
+  assert.match(tools.arenaDiagnostics.textContent,/Arena: coop.*State: started/);
+  tools.setArenaDiagnostics(null);assert.equal(tools.arenaDiagnostics.textContent,'Arena: none');
+  tools.coopArenaButton.events.click();assert.equal(coopArenaEnabled({DEV:true}),false);
+  tools.destroy();
+});
 
 test('Dev Tools can collapse and reopen without losing presets or blocking the toggle during requests',async()=>{
   const documentRef={createElement:tag=>new Element(tag),body:new Element('body')};

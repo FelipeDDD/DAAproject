@@ -5,7 +5,7 @@ const editionClip='polygon(19% .7%,89% 3.8%,90.5% 4.5%,90.5% 90.4%,89.3% 91.7%,1
 
 export function createPreviewCollections(){
   return [
-    {id:'cigarettes',name:'Cigarettes',icon:'pack',description:'Small packs. Questionable legends.',
+    {id:'cigarettes',name:'Cigarettes',icon:'pack',menuIcon:'pack',description:'Small packs. Questionable legends.',
       subtitle:'A cabinet of unusually bad ideas.',items:[
         {id:'lung-3000',name:'Lung Crusher 3000',description:'The original. Bigger puffs, brighter days — and absolutely no sensible decisions.',
           image:'assets/items/lung-crusher-3000.png',imageClip:originalClip,rarity:'normal',unlocked:true,edition:'Original edition'},
@@ -18,9 +18,9 @@ export function createPreviewCollections(){
         {id:'rare-variant',name:'Rare Variant',description:'A particularly unusual find. Its story is still a mystery.',
           image:'assets/items/lung-crusher-3000-green.png',imageClip:editionClip,rarity:'rare',unlocked:false,edition:'Rare discovery'},
       ]},
-    {id:'weird-food',name:'Weird Food',icon:'flask',description:'Best admired. Probably not tasted.',comingSoon:true,items:[]},
-    {id:'office-junk',name:'Office Junk',icon:'book',description:'Every desk has its little secrets.',comingSoon:true,items:[]},
-    {id:'director-secrets',name:'Director Secrets',icon:'diamond',description:'Strictly between you and this cabinet.',comingSoon:true,items:[]},
+    {id:'weird-food',name:'Potions',icon:'flask',menuIcon:'potion',description:'Best admired. Probably not tasted.',comingSoon:true,items:[]},
+    {id:'office-junk',name:'Office Junk',icon:'book',menuIcon:'files',description:'Every desk has its little secrets.',comingSoon:true,items:[]},
+    {id:'director-secrets',name:'Director Secrets',icon:'diamond',menuIcon:'diamond',description:'Strictly between you and this cabinet.',comingSoon:true,items:[]},
   ];
 }
 

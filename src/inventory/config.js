@@ -1,5 +1,5 @@
 import { BOSS_REWARDS,hasBossReward,normalizeBossProgress } from '../boss/BossRewards.js';
-import { CHARACTER_ITEMS,characterInventoryItems } from './characterItems.js';
+import { CHARACTER_ITEMS,characterInventoryItems,isCharacterItemEnabled } from './characterItems.js';
 
 export const INVENTORY_SLOT_COUNT=4;
 export const INVENTORY_POSITION_STORAGE_KEY='daa-inventory-bar-position';
@@ -16,7 +16,7 @@ export const ITEM_CATALOG=Object.freeze({
 export function normalizeInventoryItems(items){
   const unique=new Map();
   for(const item of items??[]){
-    if(!item?.itemId||!ITEM_TYPES.includes(item.type)||unique.has(item.itemId))continue;
+    if(!item?.itemId||!isCharacterItemEnabled(item.itemId)||!ITEM_TYPES.includes(item.type)||unique.has(item.itemId))continue;
     unique.set(item.itemId,{...item,quantity:Math.max(1,Number(item.quantity)||1)});
   }
   return [...unique.values()];
@@ -47,6 +47,7 @@ export function inventorySlots(items,count=INVENTORY_SLOT_COUNT){
 }
 
 export function inventoryItemUseBehavior(item){
+  if(!isCharacterItemEnabled(item?.itemId))return null;
   if(item?.useBehavior==='none')return null;
   if(item?.useBehavior==='functional'||item?.activatable)return 'functional';
   return item?.useBehavior==='presentation'||item?.presentationImage||item?.icon?'presentation':null;

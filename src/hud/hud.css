@@ -207,7 +207,7 @@ html[data-viewport-size] #game-shell {
   --hud-large-left-offset: -6px;
   --hud-large-z: 50;
   --hud-large-rail-bottom: 5%;
-  --hud-large-stone-width: 52%;
+  --hud-large-stone-width: 54%;
   --hud-large-slot-size: 4.5cqw;
   --hud-large-emote-size: 2.65cqw;
   --hud-large-slot-gap: .45cqw;
@@ -309,7 +309,8 @@ html[data-viewport-size] #hud-status-panel {
   width:var(--hud-large-stone-width);
   aspect-ratio:1;
   padding:0;
-  z-index:1;
+  /* Draw the stone over the emote frame's red corner at their junction. */
+  z-index:3;
 }
 html[data-viewport-size] .hud-status-content {
   position:absolute;

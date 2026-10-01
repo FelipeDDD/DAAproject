@@ -375,12 +375,12 @@ test('authenticated character changes preserve session and replace only presence
   assert.equal(ctx.tables.profiles[0].selectedCharacterId,'sarina');
 });
 
-test('boss progression and inventory remain profile-owned while item use follows the selected base',async()=>{
+test('boss progression and stored legacy item ownership survive base changes while cigarette use is disabled',async()=>{
   const ctx=memoryContext(),registered=await createAccount(ctx,'shared_progress','michael');
   const actions=actionContext(ctx);
   await claimCharacter._handler(actions,{token:registered.token,characterId:'michael',presenceSessionId:'michael-session-123456'});
-  const item=await claimCharacterItem._handler(ctx,{token:registered.token,itemId:'lung_crusher_3000'});
-  assert.equal(item.item.characterBaseId,'michael');
+  await ctx.db.insert('characterItems',{profileId:registered.profile.profileId,characterBaseId:'michael',
+    itemId:'lung_crusher_3000',quantity:1,updatedAt:Date.now()});
   await recordVictory._handler(ctx,{token:registered.token,bossId:'director',victoryId:'shared-victory-id-123456'});
   await claimCharacter._handler(actions,{token:registered.token,characterId:'sarina',presenceSessionId:'sarina-session-123456'});
   assert.equal((await getBossProgress._handler(ctx,{token:registered.token})).wins,1);
@@ -389,28 +389,29 @@ test('boss progression and inventory remain profile-owned while item use follows
   await assert.rejects(setCharacterItemActive._handler(ctx,{token:registered.token,playerId:sarina.playerId,sessionId:sarina.sessionId,itemId:'lung_crusher_3000',active:true}),/cannot use/);
   await claimCharacter._handler(actions,{token:registered.token,characterId:'michael',presenceSessionId:'michael-session-654321'});
   const michael=ctx.tables.players[0];
-  assert.equal((await setCharacterItemActive._handler(ctx,{token:registered.token,playerId:michael.playerId,sessionId:michael.sessionId,itemId:'lung_crusher_3000',active:true})).active,true);
+  await assert.rejects(setCharacterItemActive._handler(ctx,{token:registered.token,playerId:michael.playerId,sessionId:michael.sessionId,itemId:'lung_crusher_3000',active:true}),/cannot use/);
   assert.equal(ctx.tables.bossProgress[0].profileId,ctx.tables.profiles[0]._id);
   assert.equal(ctx.tables.characterItems[0].profileId,ctx.tables.profiles[0]._id);
 });
 
-test('class loadout restores on switch, remains profile-owned, and rejects stale sessions',async()=>{
+test('a saved cigarette loadout stays stored but never equips on claims or stale sessions',async()=>{
   const ctx=memoryContext();
   const alice=await createAccount(ctx,'loadout-alice','michael');
   const bob=await createAccount(ctx,'loadout-bob','michael');
   const actions=actionContext(ctx),itemId='lung_crusher_3000';
   const first=await claimCharacter._handler(actions,{token:alice.token,characterBaseId:'michael',presenceSessionId:'alice-first-session-123456'});
   const bobClaim=await claimCharacter._handler(actions,{token:bob.token,characterBaseId:'michael',presenceSessionId:'bob-first-session-123456'});
-  await claimCharacterItem._handler(ctx,{token:alice.token,itemId});
+  await ctx.db.insert('characterItems',{profileId:alice.profile.profileId,characterBaseId:'michael',itemId,quantity:1,updatedAt:Date.now()});
+  await ctx.db.insert('characterLoadouts',{profileId:alice.profile.profileId,characterBaseId:'michael',activeItemId:itemId,updatedAt:Date.now()});
   const firstAuth={token:alice.token,playerId:first.playerId,sessionId:'alice-first-session-123456'};
-  assert.equal((await setCharacterItemActive._handler(ctx,{...firstAuth,itemId,active:true})).active,true);
-  assert.equal(ctx.tables.players.find(row=>row.playerId===first.playerId).activeCharacterItem,itemId);
+  await assert.rejects(setCharacterItemActive._handler(ctx,{...firstAuth,itemId,active:true}),/cannot use/);
+  assert.equal(ctx.tables.players.find(row=>row.playerId===first.playerId).activeCharacterItem,null);
   assert.equal(ctx.tables.players.find(row=>row.playerId===bobClaim.playerId).activeCharacterItem,null);
   assert.equal(ctx.tables.characterItems[0].profileId,alice.profile.profileId);
   assert.equal(ctx.tables.characterItems[0].active,undefined,'ownership row must not store equipment');
   await ctx.db.patch(ctx.tables.characterItems[0]._id,{active:false});
-  assert.equal((await getCharacterItems._handler(ctx,firstAuth))[0].active,true,
-    'legacy active flag cannot override the loadout');
+  assert.equal((await getCharacterItems._handler(ctx,firstAuth))[0].active,false,
+    'a saved loadout cannot activate disabled equipment');
 
   const sarina=await claimCharacter._handler(actions,{token:alice.token,characterBaseId:'sarina',presenceSessionId:'alice-sarina-session-123456'});
   const sarinaAuth={token:alice.token,playerId:sarina.playerId,sessionId:'alice-sarina-session-123456'};
@@ -423,12 +424,12 @@ test('class loadout restores on switch, remains profile-owned, and rejects stale
 
   const back=await claimCharacter._handler(actions,{token:alice.token,characterBaseId:'michael',presenceSessionId:'alice-back-session-123456'});
   const backAuth={token:alice.token,playerId:back.playerId,sessionId:'alice-back-session-123456'};
-  assert.equal(ctx.tables.players.find(row=>row.playerId===back.playerId).activeCharacterItem,itemId);
-  assert.equal((await getCharacterItems._handler(ctx,backAuth))[0].active,true);
+  assert.equal(ctx.tables.players.find(row=>row.playerId===back.playerId).activeCharacterItem,null);
+  assert.equal((await getCharacterItems._handler(ctx,backAuth))[0].active,false);
   await update._handler(ctx,{playerId:back.playerId,characterId:'michael',sessionId:backAuth.sessionId,
     room:'school',x:20,y:30,direction:'right',activeCharacterItem:null});
-  assert.equal(ctx.tables.players.find(row=>row.playerId===back.playerId).activeCharacterItem,itemId,
-    'movement cannot overwrite the server loadout');
+  assert.equal(ctx.tables.players.find(row=>row.playerId===back.playerId).activeCharacterItem,null,
+    'movement cannot revive disabled equipment');
   assert.equal(ctx.tables.characterLoadouts.length,1);
   assert.equal(ctx.tables.characterLoadouts[0].characterBaseId,'michael');
 });

@@ -1,5 +1,6 @@
 import { BossProgressClient } from './BossProgressClient.js';
 import { initializeDevPuzzleSettings,setDevPuzzleOneAnswerEnabled } from './devPuzzleSettings.js';
+import { coopArenaEnabled,setCoopArenaEnabled } from './devArenaSettings.js';
 
 export const shouldShowBossDevTools=env=>env?.DEV===true;
 
@@ -50,8 +51,21 @@ export class BossDevTools {
     this.freeCollectInput.addEventListener('change',()=>this.setFreeCollect(this.freeCollectInput.checked));
     const freeCollectText=document.createElement('span');freeCollectText.textContent='Collect cigarette packs in any order';
     freeCollectOption.append(this.freeCollectInput,freeCollectText);
+    this.coopArenaButton=document.createElement('button');this.coopArenaButton.type='button';
+    const updateCoopLabel=()=>{
+      const enabled=coopArenaEnabled({DEV:true});
+      this.coopArenaButton.textContent=`Co-op Arena: ${enabled?'ON':'OFF'}`;
+      this.coopArenaButton.setAttribute('aria-pressed',String(enabled));
+    };
+    updateCoopLabel();
+    this.coopArenaButton.addEventListener('click',()=>{
+      setCoopArenaEnabled(!coopArenaEnabled({DEV:true}));updateCoopLabel();
+      this.status.textContent='DEV: arena setting applies to the next entrance.';
+    });
     this.status=document.createElement('small');this.status.setAttribute('role','status');
-    this.content.append(buttons,actions,puzzleOption,freeCollectOption,this.status);this.root.append(header,this.content);document.body.append(this.root);
+    this.arenaDiagnostics=document.createElement('small');this.arenaDiagnostics.className='boss-dev-arena-diagnostics';
+    this.content.append(buttons,actions,puzzleOption,freeCollectOption,this.coopArenaButton,this.arenaDiagnostics,this.status);this.root.append(header,this.content);document.body.append(this.root);
+    this.setArenaDiagnostics(scene.arenaDiagnostics);
     this.setCollapsed(true);
   }
 
@@ -65,6 +79,12 @@ export class BossDevTools {
     if(action==='potion')result=Boolean(this.scene.devDropHealthPotion?.());
     this.status.textContent=result?`DEV: ${label}`:`DEV: ${label} unavailable`;
     return result;
+  }
+
+  setArenaDiagnostics(state){
+    this.arenaDiagnostics.textContent=state
+      ?`Arena: ${state.mode} · State: ${state.status??'solo'} · Lobby: ${state.lobbyId??'—'} · Host: ${state.hostPlayerId??'—'} · Players: ${state.participantCount??1}`
+      :'Arena: none';
   }
 
   setFreeCollectEnabled(enabled){

@@ -12,6 +12,9 @@ import { BOSS_RETRY_DELAY_MS } from '../boss/config.js';
 import { resolveSpawn } from '../maps/tiledObjects.js';
 import { ArenaCrosshair } from '../boss/ArenaCrosshair.js';
 import { allPlayerAttackVisuals } from '../boss/PlayerAttackVisuals.js';
+import { getPresence } from '../multiplayer/client.js';
+import { arenaPresenceRoom } from '../boss/arenaRooms.js';
+import { ArenaEncounterController } from '../boss/ArenaEncounterController.js';
 
 export class ArenaScene extends MapScene {
   constructor(){super('arena','arena.tmj');}
@@ -49,22 +52,30 @@ export class ArenaScene extends MapScene {
     this.gate=new ArenaGateController(this);
     this.retryOverlay=new ArenaRetryOverlay(this,{delayMs:BOSS_RETRY_DELAY_MS,
       onRetry:()=>this.retryBossFight(),onReturn:()=>this.returnToSecretPath()});
-    this.boss=new BossController(this);
-    this.crosshair=new ArenaCrosshair(this);
+    this.encounter=new ArenaEncounterController(this,{
+      createBoss:()=>new BossController(this),createCrosshair:()=>new ArenaCrosshair(this),
+    });
+    this.encounter.start();
     this.events.on('sleep',this.handleBossSleep,this);
-    this.events.on('wake',this.handleBossWake,this);
     this.events.once('shutdown',()=>{
       this.events.off('sleep',this.handleBossSleep,this);
-      this.events.off('wake',this.handleBossWake,this);
-      this.boss?.destroy();this.boss=null;
+      this.encounter?.destroy();this.encounter=null;
       this.gate?.destroy();this.gate=null;
       this.retryOverlay?.destroy();this.retryOverlay=null;
       this.crosshair?.destroy();this.crosshair=null;
     });
   }
 
-  handleBossSleep(){this.crosshair?.suspend();this.retryOverlay?.close();this.boss?.suspend();}
-  handleBossWake(){this.crosshair?.resume();this.retryOverlay?.close();this.gate?.reset();this.boss?.reset();}
+  enter(destination={}){
+    this.encounter?.stop();
+    this.arenaMode=destination.arenaMode==='coop'?'coop':'solo';
+    this.arenaLobbyId=destination.arenaLobbyId??null;
+    this.presenceRoom=arenaPresenceRoom(getPresence()?.identity,destination);
+    super.enter(destination);
+    this.encounter?.start();
+  }
+
+  handleBossSleep(){this.retryOverlay?.close();this.encounter?.stop();}
 
   unlockBossExit(){this.gate?.open();}
   showBossRetry(){this.retryOverlay?.show();}
@@ -77,8 +88,14 @@ export class ArenaScene extends MapScene {
 
   returnToSecretPath(){this.travelTo({targetMap:'secret-path',targetSpawn:'arena-return'});}
 
+  returnFromCoopArena(message){
+    const destination=this.returnDestination??{targetMap:'secret-path',targetSpawn:'arena-return'};
+    this.travelTo({...destination,...(message?{arenaNotice:message}:{})});
+  }
+
   update(time,delta){
     super.update(time,delta);
+    if(this.arenaEntry?.active)return;
     this.boss?.update(time,delta);
     this.crosshair?.setBlocked(Boolean(this.boss?.rewardOpened||this.retryOverlay?.state.visible
       ||this.terminal?.active||this.chat?.focused||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active));

@@ -9,7 +9,7 @@ function profileAuthOpen(){
 // DOM chat; scene lifecycle owns the subscription and keyboard handlers.
 export class RoomChat {
   constructor(scene,presence) {
-    Object.assign(this,{scene,presence,room:scene.mapKey});
+    Object.assign(this,{scene,presence,room:scene.presenceRoom??scene.mapKey});
     this.root=document.getElementById('room-chat');
     this.list=document.getElementById('chat-messages');
     this.input=document.getElementById('chat-input');
@@ -44,6 +44,7 @@ export class RoomChat {
       if(this.scene.puzzleTerminal?.active)return;
       if(this.scene.networkTerminal?.active)return;
       if(this.closed)return;
+      if(this.scene.arenaEntry?.active)return;
       if(this.visibility.state==='active'){
         // The panel stays in control even if the browser briefly moves focus away
         // from the input (for example when the pin button is clicked).

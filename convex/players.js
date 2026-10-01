@@ -1,4 +1,6 @@
 import { findSessionPlayer } from './playerSessions.js';
+import { soloArenaRoom,arenaLobbyId,roomMapKey } from '../src/boss/arenaRooms.js';
+import { requireArenaRoomMembership } from './arenaLobbies.js';
 import { queryGeneric as query, mutationGeneric as mutation, internalMutationGeneric as internalMutation } from 'convex/server';
 import { v } from 'convex/values';
 import { baseCharacterId, characterBaseIdFor, characterById } from '../src/characters.js';
@@ -10,7 +12,7 @@ import {
   TERMINAL_LEASE_MS,
   STATIONARY_LEASE_MS,
 } from '../src/multiplayer/presencePolicy.js';
-import { canCharacterOwnItem } from '../src/inventory/characterItems.js';
+import { canCharacterOwnItem,isCharacterItemEnabled } from '../src/inventory/characterItems.js';
 import { publicProfile,requireSession } from './profileStore.js';
 import { MAX_PLAYER_CAPACITY } from '../src/multiplayer/playerCapacity.js';
 import { normalizeDisplayName } from '../src/displayName.js';
@@ -23,6 +25,7 @@ export const availability = query({
     const rows = await ctx.db.query('players').collect();
     return {maxPlayers:MAX_PLAYER_CAPACITY,players:rows.map(({sessionId,guestId,...player})=>({
       ...player,characterBaseId:characterBaseIdFor(player),
+      activeCharacterItem:isCharacterItemEnabled(player.activeCharacterItem)?player.activeCharacterItem:null,
     }))};
   },
 });
@@ -53,7 +56,8 @@ export const claim = internalMutation({
       await ctx.db.delete(row._id);
     }
     await ctx.db.patch(profile._id,{selectedCharacterId:c.id,updatedAt:now});
-    const activeCharacterItem=await equippedItemId(ctx,profile._id,baseCharacterId(c.id));
+    const savedItem=await equippedItemId(ctx,profile._id,baseCharacterId(c.id));
+    const activeCharacterItem=isCharacterItemEnabled(savedItem)?savedItem:null;
     const classState=publicClassState(await findProfileCharacterState(ctx,profile._id,baseCharacterId(c.id)));
     const state={profileId:profile._id,identityKind:'profile',playerId:'pending',characterId:c.id,
       characterBaseId:baseCharacterId(c.id),name:displayName,displayName,sessionId,room:'selection',x:0,y:0,direction:'down',presenceMode:'playing',
@@ -102,7 +106,9 @@ export const release = mutation({
 export const inRoom = query({
   args: { room: v.string() },
   handler: async (ctx, { room }) => (await ctx.db.query('players').withIndex('by_room', q => q.eq('room', room)).collect())
-    .map(({sessionId,guestId,...publicState})=>({...publicState,characterBaseId:characterBaseIdFor(publicState)})),
+    .map(({sessionId,guestId,...publicState})=>({...publicState,
+      activeCharacterItem:isCharacterItemEnabled(publicState.activeCharacterItem)?publicState.activeCharacterItem:null,
+      characterBaseId:characterBaseIdFor(publicState)})),
 });
 
 export const enterStationary = mutation({
@@ -170,7 +176,7 @@ export const update = mutation({
         (args.velocityY !== undefined && !Number.isFinite(args.velocityY)) ||
         args.playerId.length > 100 || (args.name!==undefined&&args.name.length > 40) ||
         (args.displayName!==undefined&&args.displayName.length>32) ||
-        !['school', 'outside', 'arena', 'office2', 'office3', 'secret-path', 'selection'].includes(args.room) ||
+        !['school', 'outside', 'arena', 'office2', 'office3', 'secret-path', 'selection'].includes(roomMapKey(args.room)) ||
         !['up', 'down', 'left', 'right'].includes(args.direction)) throw new Error('Invalid player state');
     if(args.activeCharacterItem&&!canCharacterOwnItem(baseCharacterId(args.characterId),args.activeCharacterItem))
       throw new Error('Invalid active character item');
@@ -178,12 +184,20 @@ export const update = mutation({
     if(!ownsCharacterSession(existing,args.characterId,args.sessionId)||!ownsPlayerSession(existing,args.playerId,args.sessionId)
       ||!isPlayerActive(existing))throw new Error('CHARACTER_SESSION_LOST');
     if(existing.presenceMode==='terminal')return;
-    if(existing.room!==args.room)await savePlayerClassState(ctx,existing);
+    // Older clients publishing bare `arena` are also isolated, never placed in a shared solo room.
+    const room=args.room==='arena'?soloArenaRoom(args.playerId):args.room;
+    if(roomMapKey(room)==='arena'){
+      const lobbyId=arenaLobbyId(room);
+      if(lobbyId)await requireArenaRoomMembership(ctx,existing,lobbyId);
+      else if(room!==soloArenaRoom(args.playerId))throw new Error('Invalid solo arena identity.');
+    }
+    if(existing.room!==room)await savePlayerClassState(ctx,existing);
+    const publishedItem=existing.profileId?existing.activeCharacterItem:args.activeCharacterItem;
     const state = {
-      room:args.room,x:args.x,y:args.y,direction:args.direction,
+      room,x:args.x,y:args.y,direction:args.direction,
       characterBaseId:baseCharacterId(args.characterId),
       moving:args.moving,velocityX:args.velocityX,velocityY:args.velocityY,
-      equippedSkin:args.equippedSkin,activeCharacterItem:existing.profileId?existing.activeCharacterItem??null:args.activeCharacterItem??null,
+      equippedSkin:args.equippedSkin,activeCharacterItem:isCharacterItemEnabled(publishedItem)?publishedItem??null:null,
       name:existing.displayName??existing.name,
       displayName:existing.displayName??existing.name,lastSeen:Date.now(),
       presenceMode:'playing',stationaryLeaseExpiresAt:undefined,

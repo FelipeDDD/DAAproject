@@ -45,6 +45,9 @@ import { getGameHud } from '../hud/GameHudController.js';
 import { hasProfileSession } from '../ProfileSessionClient.js';
 import { applySmoothDecorativeTextureFilters } from '../maps/decorativeTextureFilters.js';
 import { classRestoreDestination } from '../maps/classState.js';
+import { ArenaEntryController } from '../boss/ArenaEntryController.js';
+import { consumeArenaInvitation,setArenaDiagnostics } from '../boss/arenaLobbyUi.js';
+import '../boss/arenaEntry.css';
 import { CollectibleQuestController } from '../npc/CollectibleQuestController.js';
 import { CIGARETTE_PACKS } from '../npc/cigarettePacks.js';
 import '../terminal/terminal.css';
@@ -150,7 +153,7 @@ export class MapScene extends Phaser.Scene {
     createDoorTextures(this);
     createCharacterAnimations(this,CHARACTERS);
     drawMapPlaceholders(this, this.source);
-    drawTiledTextObjects(this,this.source);
+    this.tiledTextObjects=drawTiledTextObjects(this,this.source);
     const floorDetails = this.source.layers.find((layer) => layer.name === 'FloorDetails');
     if (floorDetails) {
       for (const object of objectsIn(this.source, 'FloorDetails').filter((item) => item.gid)) {
@@ -212,6 +215,7 @@ export class MapScene extends Phaser.Scene {
     const stop = () => { this.input.keyboard.resetKeys(); this.player.setVelocity(0, 0); };
     const wake = (_systems, arrival) => this.enter(arrival);
     const leave = () => {
+      this.arenaEntry?.destroy();this.arenaEntry=null;
       this.collectibleQuest?.destroy();this.collectibleQuest=null;
       this.npcQuestInteraction?.hide();
       this.hint.hidden=true;
@@ -230,7 +234,7 @@ export class MapScene extends Phaser.Scene {
       this.chat?.close();this.chat=null;
       this.doorSync?.close();
       this.doorSync = null;
-      if (this.presence?.active?.room === this.mapKey) this.presence.leave();
+      if (this.presence?.active?.room === (this.presenceRoom??this.mapKey)) this.presence.leave();
     };
     this.events.on(Phaser.Scenes.Events.SLEEP, leave);
     this.events.on(Phaser.Scenes.Events.WAKE, wake);
@@ -271,7 +275,7 @@ export class MapScene extends Phaser.Scene {
       if(character)this.player.setCharacter(character,'old');
       this.potionEffects?.destroy();
       this.potionEffects=this.presence?new PotionUseEffectRenderer(this,this.presence.identity.playerId,this.remotes):null;
-      this.presence?.enter(this.mapKey, () => ({
+      this.presence?.enter(this.presenceRoom??this.mapKey, () => ({
         x: this.player.x, y: this.player.y, direction: this.player.facing,equippedSkin:this.equippedSkin,
         activeCharacterItem:this.activeCharacterItem,
       }), rows => {this.remotes.receive(rows);this.potionEffects?.receive(rows);});
@@ -279,7 +283,7 @@ export class MapScene extends Phaser.Scene {
       this.devTools=shouldShowBossDevTools(import.meta.env)&&hasProfileSession(this.presence)
         ?new BossDevTools(this,this.presence):null;
       this.doorSync?.close();
-      this.doorSync = this.presence ? new DoorSync(this.presence,this.mapKey,this.doors,()=>this.player.body) : null;
+      this.doorSync = this.presence ? new DoorSync(this.presence,this.presenceRoom??this.mapKey,this.doors,()=>this.player.body) : null;
       this.chat?.close();
       this.chat=this.presence ? new RoomChat(this,this.presence) : null;
       this.inventoryHotbar?.destroy();
@@ -301,13 +305,13 @@ export class MapScene extends Phaser.Scene {
       this.characterItems?.createPickup(objectsIn(this.source,'Spawns').find(object=>object.name==='arena'));
       this.collectibleQuest=new CollectibleQuestController(this);
       this.quiz?.close();
-      this.quiz=this.presence&&!MULTIPLAYER_QUIZ_DISABLED_MAPS.has(this.mapKey)
+      this.quiz=this.presence&&this.mapKey!=='arena'&&!MULTIPLAYER_QUIZ_DISABLED_MAPS.has(this.mapKey)
         ? new QuizLobby(this,this.presence,this.quizSeats) : null;
       this.soloStudy?.close();
       this.soloStudy=this.presence ? new SoloStudyController(this,this.presence,this.soloStudySeats) : null;
       this.emoteBar?.close();this.emoteSync?.close();this.emoteRenderer?.close();
-      this.emoteRenderer=this.presence ? new EmoteRenderer(this,this.mapKey,this.presence.identity.playerId,this.remotes) : null;
-      this.emoteSync=this.presence ? new EmoteSync(this.presence,this.mapKey,this.emoteRenderer) : null;
+      this.emoteRenderer=this.presence ? new EmoteRenderer(this,this.presenceRoom??this.mapKey,this.presence.identity.playerId,this.remotes) : null;
+      this.emoteSync=this.presence ? new EmoteSync(this.presence,this.presenceRoom??this.mapKey,this.emoteRenderer) : null;
       this.emoteBar=this.presence ? new EmoteBar(this.presence.identity.characterId,emote=>this.emoteSync.trigger(emote)) : null;
       this.returnDestination = destination.returnDestination;
       this.input.keyboard.resetKeys();
@@ -316,6 +320,12 @@ export class MapScene extends Phaser.Scene {
       document.querySelector('h1').textContent = propertiesOf(this.source).label ?? this.mapKey;
       if(hasProfileSession(this.presence))void this.restoreEquippedSkin(this.appearanceRestoreToken);
       void this.wardrobe?.restore();
+      if(this.mapKey!=='arena'){
+        setArenaDiagnostics(this,null);
+        const invitation=consumeArenaInvitation();
+        if(destination.arenaNotice)this.showArenaNotice(destination.arenaNotice);
+        else if(invitation!==null)this.openArenaInvitation(invitation);
+      }
     } catch (error) {
       this.doorMessage = error.message;
       if (destination.returnDestination) this.travelTo(destination.returnDestination);
@@ -417,6 +427,18 @@ export class MapScene extends Phaser.Scene {
   devCollection(action){return this.collectibleQuest?.devCollection(action)??null;}
   devSetFreeCollect(enabled){return this.collectibleQuest?.setDevFreeCollect(enabled)??null;}
 
+  openArenaInvitation(code){
+    if(!this.presence?.identity||this.arenaEntry?.active)return false;
+    this.arenaEntry=new ArenaEntryController(this,{targetMap:'arena',targetSpawn:'arena-spawn'},
+      {env:import.meta.env,invitationCode:code});return true;
+  }
+
+  showArenaNotice(message){
+    if(!this.presence?.identity||this.scene.isActive()===false)return;
+    if(this.arenaEntry?.active){this.arenaEntry.showStatus(message);return;}
+    this.arenaEntry=new ArenaEntryController(this,{}, {env:import.meta.env,notice:message});
+  }
+
   travelTo(destination) {
     const target = this.scene.manager.keys[destination.targetMap];
     if (!target) { this.doorMessage = `Unknown area: ${destination.targetMap}.`; return; }
@@ -424,6 +446,11 @@ export class MapScene extends Phaser.Scene {
     if (target.source) {
       try { resolveSpawn(target.source, destination); }
       catch (error) { this.doorMessage = error.message; return; }
+    }
+    if(destination.targetMap==='arena'&&!destination.arenaMode){
+      if(!this.presence?.identity){this.doorMessage='Select a character before entering the arena.';return;}
+      if(!this.arenaEntry?.active)this.arenaEntry=new ArenaEntryController(this,destination,{env:import.meta.env});
+      return;
     }
     const arrival = { ...destination, returnDestination: {
       targetMap: this.mapKey, targetX: this.player.x, targetY: this.player.y,
@@ -441,6 +468,7 @@ export class MapScene extends Phaser.Scene {
     this.collectibleQuest?.update();
     // Previous physics step displacement includes wall/collision resolution.
     this.presence?.observeMovement(resolvedMovementState(this.player.body));
+    if(this.arenaEntry?.active){this.player.setVelocity(0,0);return;}
     if(this.terminal?.active||this.puzzleTerminal?.active||this.networkTerminal?.active||this.chat?.isInputActive||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active||this.characterItems?.transforming)this.player.setVelocity(0,0);
     else this.player.update();
     if(this.terminal?.active||this.puzzleTerminal?.active||this.networkTerminal?.active||this.chat?.isInputActive||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active||this.characterItems?.transforming)this.hint.hidden=true;

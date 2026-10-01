@@ -31,6 +31,21 @@ test('overview navigates to the item grid, selection updates preview, and back r
   assert.equal(doc.activeElement,menu.body.querySelector('button'));
 });
 
+test('Escape returns from a collection page to the directory, then closes the inventory',()=>{
+  const f=fixture();f.menu.open();f.menu.showCollection('cigarettes',false);
+  const firstEscape=key('Escape');f.menu.handleKey(firstEscape);
+  assert.equal(f.menu.active,true);assert.equal(f.menu.collectionId,null);
+  assert.equal(f.menu.panel.dataset.view,'overview');
+  f.menu.handleKey(key('Escape','keyup'));
+  f.menu.handleKey(key('Escape'));
+  assert.equal(f.menu.active,false);
+});
+
+test('the close button still closes immediately from a collection page',()=>{
+  const f=fixture();f.menu.open();f.menu.showCollection('cigarettes',false);
+  f.menu.closeButton.events.click();assert.equal(f.menu.active,false);
+});
+
 test('rare/locked items do not reveal their artwork, empty collections have a useful fallback',()=>{
   const {menu}=fixture();menu.open();menu.showCollection('cigarettes');menu.selectItem('rare-variant');
   assert.equal(menu.preview.dataset.rarity,'rare');assert.equal(menu.preview.querySelectorAll('img').length,0);

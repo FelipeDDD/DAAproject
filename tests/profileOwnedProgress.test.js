@@ -57,11 +57,11 @@ test('boss progress belongs to a profile, survives character changes, and is iso
   assert.equal(ctx.tables.players.length,0,'persistent reads must not require presence');
 });
 
-test('profile items stay owned across characters but activation enforces visual compatibility',async()=>{
+test('legacy cigarette ownership remains stored across bases but cannot be activated',async()=>{
   const ctx=memoryContext();const profileA=await addProfile(ctx,{name:'michael',character:'michael',token:TOKEN_A});
   await addProfile(ctx,{name:'other',character:'felipe',token:TOKEN_B});
   const itemId=CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000;
-  await items.claim._handler(ctx,{token:TOKEN_A,itemId});
+  await ctx.db.insert('characterItems',{profileId:profileA,characterBaseId:'michael',itemId,quantity:1,updatedAt:Date.now()});
   const sessionId='active-session-123456789',playerId='live-player-a';
   const playerRow=await ctx.db.insert('players',{profileId:profileA,playerId,sessionId,characterId:'sarina',characterBaseId:'sarina',lastSeen:Date.now(),room:'school'});
   const auth={token:TOKEN_A,playerId,sessionId};
@@ -71,11 +71,11 @@ test('profile items stay owned across characters but activation enforces visual 
   await assert.rejects(items.forProfile._handler(ctx,{...auth,token:TOKEN_B}),/CHARACTER_SESSION_LOST/);
   await ctx.db.patch(profileA,{selectedCharacterId:'michael'});
   await ctx.db.patch(playerRow,{characterId:'michael',characterBaseId:'michael'});
-  const active=await items.setActive._handler(ctx,{...auth,itemId,active:true});
-  assert.equal(active.active,true);
+  await assert.rejects(items.setActive._handler(ctx,{...auth,itemId,active:true}),/cannot use/);
+  assert.equal((await items.forProfile._handler(ctx,auth))[0].active,false);
 });
 
-test('collectible cigarette pack and Michael equipment have independent persistent IDs',async()=>{
+test('collectible cigarette pack remains available while Michael equipment is disabled',async()=>{
   const ctx=memoryContext();const profileId=await addProfile(ctx,{name:'collector',character:'sarina',token:TOKEN_A});
   const spawns=[{id:'test-school-pack',packId:'cigarette_pack_01',markerName:'lung-crusher',room:'school',x:100,y:100}];
   await startQuest(ctx,profileId,spawns);
@@ -83,11 +83,10 @@ test('collectible cigarette pack and Michael equipment have independent persiste
   await collectQuestPack(ctx,profileId,{room:'school',x:100,y:100},pickup,spawns);
   assert.equal(ctx.tables.characterItems[0].itemId,CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK);
   await ctx.db.patch(profileId,{selectedCharacterId:'michael'});
-  const cigarette=await items.claim._handler(ctx,{token:TOKEN_A,itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000});
-  assert.equal(cigarette.item.itemId,CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000);
-  assert.equal(ctx.tables.characterItems.length,2);
+  await assert.rejects(items.claim._handler(ctx,{token:TOKEN_A,itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000}),/temporarily unavailable/);
+  assert.equal(ctx.tables.characterItems.length,1);
   await collectQuestPack(ctx,profileId,{room:'school',x:100,y:100},pickup,spawns);
-  assert.equal(ctx.tables.characterItems.length,2,'repeated pickup does not duplicate the pack');
+  assert.equal(ctx.tables.characterItems.length,1,'repeated pickup does not duplicate the pack');
 });
 
 test('stacked pickup claims award the requested amount up to the item stack cap',async()=>{
@@ -100,7 +99,7 @@ test('stacked pickup claims award the requested amount up to the item stack cap'
   const full=await items.claim._handler(ctx,{token:TOKEN_A,itemId,amount:2});
   assert.equal(full.full,true);assert.equal(full.added,0);assert.equal(full.item.quantity,10);
   await assert.rejects(items.claim._handler(ctx,{token:TOKEN_A,itemId,amount:1.5}),/Invalid item quantity/);
-  await assert.rejects(items.claim._handler(ctx,{token:TOKEN_A,itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000,amount:2}),/Invalid item quantity/);
+  await assert.rejects(items.claim._handler(ctx,{token:TOKEN_A,itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000,amount:2}),/temporarily unavailable/);
   assert.equal(ctx.tables.characterItems[0].profileId,profileId);
 });
 
@@ -111,7 +110,7 @@ test('DEV clear deletes only the active profile potion stack and rejects stale s
     await addProfile(ctx,{name:'other',character:'sarina',token:TOKEN_B});
     await items.claim._handler(ctx,{token:TOKEN_A,itemId:CHARACTER_ITEM_IDS.HEALTH_POTION});
     await items.claim._handler(ctx,{token:TOKEN_A,itemId:CHARACTER_ITEM_IDS.HEALTH_POTION});
-    await items.claim._handler(ctx,{token:TOKEN_A,itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000});
+    await ctx.db.insert('characterItems',{profileId:profileA,characterBaseId:'michael',itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000,quantity:1,updatedAt:Date.now()});
     await items.claim._handler(ctx,{token:TOKEN_B,itemId:CHARACTER_ITEM_IDS.HEALTH_POTION});
     const playerId='live-dev-player',sessionId='active-dev-session-123456';
     await ctx.db.insert('players',{profileId:profileA,playerId,sessionId,characterId:'michael',characterBaseId:'michael',lastSeen:Date.now(),room:'school'});

@@ -19,8 +19,37 @@ test('popup uses existing callbacks and limits preview to eight items without hi
   const used=[];const f=menuFixture(BackpackPopup,{items:Array.from({length:10},(_,i)=>({...item,itemId:`potion-${i}`})),onUse:item=>used.push(item.itemId)});
   f.menu.open();assert.equal(f.menu.itemButtons.size,8);assert.equal(f.menu.items.length,10);
   await f.menu.useItem(f.menu.items[0]);assert.deepEqual(used,['potion-0']);
-  f.menu.setItems([{...item,cooldownUntil:Date.now()+5000}]);assert.equal(f.menu.itemButtons.get('potion').disabled,true);
+  f.menu.setItems([{...item,cooldownUntil:Date.now()+5000}]);
+  f.menu.itemButtons.get('potion').events.click();
+  assert.equal(f.menu.inspection.active,true);
+  assert.equal(f.menu.inspection.root.children[0].children.at(-1).disabled,true);
+  f.menu.requestClose();assert.equal(f.menu.inspection.active,false);
   await f.menu.useItem(f.menu.items[0]);assert.equal(used.length,1);f.menu.destroy();
+});
+test('clicking a small-inventory item examines it in place and Back restores the same popup',()=>{
+  let expanded=0;const pack={itemId:'lung_crusher_3000_pack',type:'quest',quantity:1,
+    name:'Lung Crusher 3000 Pack',icon:'assets/items/lung-crusher-floor.png',presentationImage:'assets/items/lung-crusher-3000.png'};
+  const f=menuFixture(BackpackPopup,{items:[pack],onExpand:()=>expanded++});
+  f.menu.open();f.menu.itemButtons.get(pack.itemId).events.click();
+  assert.equal(expanded,0);assert.equal(f.menu.active,true);assert.equal(f.menu.inspection.active,true);
+  assert.equal(f.menu.root.dataset.view,'inspection');
+  assert.equal(f.menu.inspection.root.children[0].children[1].src,'https://game.test/assets/items/lung-crusher-3000.png');
+  f.menu.setItems([pack,{...pack,itemId:'another-pack'}]);
+  assert.equal(f.menu.inspection.active,true,'inventory updates do not dismiss the card');
+  f.menu.inspection.backButton.events.click({stopPropagation(){}});
+  assert.equal(f.menu.active,true);assert.equal(f.menu.inspection.active,false);
+  assert.equal(f.menu.itemButtons.size,2);assert.equal(f.menu.root.dataset.view,'overview');
+  f.menu.itemButtons.get(pack.itemId).events.click();f.menu.close();
+  assert.equal(f.menu.inspection.active,false);f.menu.destroy();
+});
+test('a functional item can be examined while cooling down and used from its card when ready',async()=>{
+  const used=[];const f=menuFixture(BackpackPopup,{items:[item],onUse:entry=>used.push(entry.itemId)});
+  f.menu.open();f.menu.itemButtons.get(item.itemId).events.click();
+  assert.equal(f.menu.inspection.active,true);assert.deepEqual(used,[]);
+  f.menu.inspection.root.children[0].children.at(-1).events.click();
+  await Promise.resolve();assert.deepEqual(used,[item.itemId]);
+  assert.equal(f.menu.active,true);assert.equal(f.menu.inspection.active,false);
+  f.menu.destroy();
 });
 test('outside click and Escape close just the popup, consume the input, and restore gameplay',()=>{
   const f=menuFixture(BackpackPopup);f.menu.open();

@@ -31,6 +31,9 @@
 .director-security-intro { margin: 24px 0 18px; font-size: 19px; font-weight: 700; }
 .director-security-choices { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
 .office3-puzzle-panel .director-security-choices .director-security-choice { min-height: 94px; padding: 16px; border-color: #b28a51; background: #392b1b; text-align: left; font-weight: 700; }
+.office3-puzzle-panel .director-security-choices .director-security-choice:disabled,
+.office3-puzzle-panel .director-security-choices .director-security-choice:disabled:hover { opacity: .42; filter: grayscale(1); cursor: not-allowed; pointer-events: none; transform: none; box-shadow: none; }
+.director-security-next-choice { color: #d1b98e; font-size: 14px; }
 .director-security-denied { color: #ff9292; font-weight: 700; white-space: pre-wrap; }
 .office3-puzzle-panel.director-compromised { width: min(100%, 650px); border: 2px solid #ff4956; background: #250b10; color: #ffe5e7; box-shadow: 0 0 32px #f92d4155,0 18px 60px #0009; animation: director-security-pulse 1.5s ease-in-out infinite alternate; }
 .office3-puzzle-panel.director-compromised h2,.director-security-alert { color: #ff666e; }

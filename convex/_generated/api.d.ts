@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as arenaLobbies from "../arenaLobbies.js";
 import type * as bossProgress from "../bossProgress.js";
 import type * as characterItems from "../characterItems.js";
 import type * as characterLoadouts from "../characterLoadouts.js";
@@ -47,6 +48,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  arenaLobbies: typeof arenaLobbies;
   bossProgress: typeof bossProgress;
   characterItems: typeof characterItems;
   characterLoadouts: typeof characterLoadouts;

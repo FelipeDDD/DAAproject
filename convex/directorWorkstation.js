@@ -40,9 +40,11 @@ export const submitChoice=mutation({
     const progress=await findProgress(ctx,profile._id);
     const current=directorSecurityState(true,progress);
     if(current.stage!=='question')return current;
+    if(current.attemptedChoices.includes(args.choice))return current;
+    const attemptedChoices=[...current.attemptedChoices,args.choice];
     const failedAttempts=Math.min(DIRECTOR_SECURITY_FAILURES_REQUIRED,current.failedAttempts+1);
     const now=Date.now();
-    const update={failedAttempts,updatedAt:now};
+    const update={failedAttempts,attemptedChoices,updatedAt:now};
     if(failedAttempts===DIRECTOR_SECURITY_FAILURES_REQUIRED)update.compromisedAt=now;
     if(progress)await ctx.db.patch(progress._id,update);
     else await ctx.db.insert('directorWorkstations',{profileId:profile._id,...update});

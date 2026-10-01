@@ -1,6 +1,7 @@
 import { CHARACTER_STYLE_STORAGE_KEY } from './characters.js';
 import { NEW_PLAYER_SCALE, PLAYER_SCALE } from './game/settings.js';
 import { prepareFelipeRecolorTexture } from './art/felipeRecolor.js';
+import { isCharacterItemEnabled } from './inventory/characterItems.js';
 
 export const CHARACTER_STYLES=Object.freeze(['old','new','lungCrusher','level3Preview']);
 export const NEW_CHARACTER_FRAME=Object.freeze({width:64,height:72,columns:6,rows:4});
@@ -10,7 +11,8 @@ const DIRECTIONS=Object.freeze(['down','left','right','up']);
 export function normalizeCharacterStyle(value){return value==='new'?'new':'old';}
 export function visualStyleForEquippedSkin(skin){return skin==='remastered'?'new':'old';}
 export function visualStyleForActiveItem(activeItem,skin){
-  return activeItem==='lung_crusher_3000'?'lungCrusher':visualStyleForEquippedSkin(skin);
+  return activeItem==='lung_crusher_3000'&&isCharacterItemEnabled(activeItem)
+    ?'lungCrusher':visualStyleForEquippedSkin(skin);
 }
 export function loadCharacterStyle(storage=globalThis.localStorage){
   try{return normalizeCharacterStyle(storage?.getItem(CHARACTER_STYLE_STORAGE_KEY));}catch{return 'old';}

@@ -860,6 +860,7 @@ export class BossController {
     this.scene.input.off('pointerdown',this.handlePointerDown);
     for(const collider of this.colliders)collider?.destroy();
     this.bossProjectiles?.clear(true,true);this.playerProjectiles?.clear(true,true);
+    this.bossProjectiles?.destroy();this.playerProjectiles?.destroy();
     this.scene.player?.setCombatHudVisible(false);
     this.scene.gameHud?.resetHealth();
     this.sprite?.destroy();this.hud?.destroy();this.speechBubble?.destroy();this.rewardOverlay?.destroy();

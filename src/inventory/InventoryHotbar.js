@@ -52,7 +52,12 @@ export class InventoryHotbar {
     const button=document.createElement('button');button.type='button';
     button.className='inventory-menu-button';
     button.title=label;button.dataset.tooltip=label;button.setAttribute('aria-label',label);
-    button.setAttribute('aria-haspopup','dialog');button.append(icon(document,symbol));
+    button.setAttribute('aria-haspopup','dialog');
+    const spriteClass={backpack:'inventory-menu-sprite inventory-menu-sprite--backpack',book:'inventory-menu-sprite inventory-menu-sprite--book'}[symbol];
+    if(spriteClass){
+      const sprite=document.createElement('span');sprite.className=spriteClass;sprite.setAttribute('aria-hidden','true');
+      sprite.style.backgroundImage=`url("${publicAsset('assets/ui/menu-icons.png')}")`;button.append(sprite);
+    }else button.append(icon(document,symbol));
     button.addEventListener('click',onClick);return button;
   }
   setCollectionProgress(progress){

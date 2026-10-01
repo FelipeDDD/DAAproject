@@ -10,6 +10,8 @@ export function drawTiledTextObjects(scene,source,layerName='Entities') {
       backgroundColor:props.backgroundColor,
     });
     text.setDepth(props.depth??object.y).setAlpha(object.opacity??1);
+    text.setData('tiledObjectName',object.name);
+    text.setData('tiledObjectBounds',{x:object.x,y:object.y,width:object.width,height:object.height});
     return text;
   });
 }

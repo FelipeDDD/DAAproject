@@ -1,5 +1,5 @@
 export const BEGGAR_PROXIMITY = Object.freeze({
-  interactionTiles: 1, nearTiles: 3, farTiles: 6, checkMs: 750,
+  interactionTiles: 2, nearTiles: 3, farTiles: 6, checkMs: 750,
   nearCooldownMs: [8000, 12000], farCooldownMs: [12000, 20000],
   nearChance: .25, farChance: .15, speechMs: 6000,
 });

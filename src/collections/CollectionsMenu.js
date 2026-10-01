@@ -6,6 +6,16 @@ export class CollectionsMenu extends GameMenuModal {
     super(options);this.collections=options.collections??createPreviewCollections();
   }
 
+  handleKey(event){
+    if(event.key==='Escape'&&this.active&&this.collectionId){
+      event.preventDefault();event.stopImmediatePropagation();
+      if(event.type==='keydown'){this.releaseEscape=true;if(!event.repeat)this.showOverview();}
+      else{this.releaseEscape=false;this.restoreFocus();}
+      return;
+    }
+    super.handleKey(event);
+  }
+
   setCollections(collections){
     this.collections=Array.isArray(collections)?collections:[];
     if(this.active){
@@ -22,7 +32,13 @@ export class CollectionsMenu extends GameMenuModal {
     const grid=node(this.doc,'div','collections-directory');
     for(const collection of this.collections){
       const button=this.button('','collection-entry',()=>this.showCollection(collection.id));
-      const emblem=node(this.doc,'span','collection-emblem');emblem.append(icon(this.doc,collection.icon));
+      const emblem=node(this.doc,'span','collection-emblem');
+      if(collection.menuIcon){
+        const sprite=node(this.doc,'span',`collection-menu-sprite collection-menu-sprite--${collection.menuIcon}`);
+        sprite.setAttribute('aria-hidden','true');
+        sprite.style.backgroundImage=`url("${new URL(`${this.baseUrl}assets/ui/menu-icons.png`,this.doc.baseURI).href}")`;
+        emblem.append(sprite);
+      }else emblem.append(icon(this.doc,collection.icon));
       const copy=node(this.doc,'span','collection-entry-copy');
       copy.append(node(this.doc,'strong','',collection.name),node(this.doc,'span','',collection.description),
         node(this.doc,'small','',collection.comingSoon?'COMING SOON':'EXPLORE COLLECTION'));

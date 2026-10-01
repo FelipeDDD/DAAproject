@@ -1,0 +1,36 @@
+.arena-entry-overlay { position:fixed; inset:0; z-index:900; display:grid; place-items:center; padding:14px; background:#020610b8; }
+.arena-entry-panel { box-sizing:border-box; width:min(420px,92vw); max-height:calc(100dvh - 28px); overflow:auto; padding:22px; color:#efe7d5; background:linear-gradient(145deg,#17202b,#080d15); border:1px solid #ad9361; border-radius:12px; box-shadow:0 12px 35px #0009,inset 0 0 0 3px #aa8a4c12; }
+.arena-entry-panel h2 { margin:0 0 9px; color:#edd6a1; font-size:18px; letter-spacing:.08em; }
+.arena-entry-panel h3 { margin:16px 0 8px; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:#cabb9c; }
+.arena-entry-panel .arena-entry-subtitle { margin:0 0 18px; color:#bcb7aa; font-size:13px; line-height:1.5; }
+.arena-entry-panel .arena-action,.arena-coop-notice button { box-sizing:border-box; display:block; width:100%; margin-top:9px; padding:10px 12px; border:1px solid #7e6b49; border-radius:6px; color:#e8ddc5; background:#202631; font:inherit; font-size:13px; cursor:pointer; }
+.arena-entry-panel .arena-action-primary { color:#1a140b; background:linear-gradient(#e3c687,#b89956); border-color:#efd9a4; font-weight:700; }
+.arena-entry-panel .arena-action-danger { color:#e8b3a8; border-color:#7c4c46; background:#37211f; }
+.arena-entry-panel .arena-action-quiet,.arena-entry-panel .arena-action-link { border-color:transparent; background:transparent; color:#beb39c; }
+.arena-entry-panel .arena-action-link { font-size:12px; text-decoration:underline; text-underline-offset:3px; }
+.arena-entry-panel .arena-action:not(:disabled):hover,.arena-coop-notice button:hover { filter:brightness(1.14); }
+.arena-entry-panel :is(button,input):focus-visible { outline:2px solid #cbe6f3; outline-offset:3px; }
+.arena-entry-panel button:disabled { opacity:.5; cursor:default; }
+.arena-entry-panel [hidden] { display:none; }
+.arena-entry-panel input { width:100%; box-sizing:border-box; padding:10px; border:1px solid #83704d; border-radius:5px; color:#f3dfb2; background:#090e16; }
+.arena-entry-panel label { display:block; margin-bottom:7px; color:#c3b79a; font-size:12px; }
+.arena-entry-panel .arena-join-code,.arena-entry-panel .arena-lobby-code { font:700 25px monospace; letter-spacing:.22em; text-align:center; }
+.arena-lobby-code-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:6px 10px; align-items:center; }
+.arena-lobby-code-row label { grid-column:1/-1; margin:0; }
+.arena-entry-panel .arena-action-compact { width:auto; margin:0; padding:10px; }
+.arena-lobby-summary { display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; margin:12px 0 0; color:#c7c0af; font-size:12px; }
+.arena-lobby-summary>span:first-child { flex:1 1 150px; overflow-wrap:anywhere; }
+.arena-lobby-state,.arena-host-badge { padding:3px 6px; color:#ddc484; border:1px solid #8b7345; border-radius:4px; font-size:9px; letter-spacing:.06em; }
+.arena-lobby-players { padding:0; margin:0; list-style:none; display:grid; gap:6px; }
+.arena-lobby-player { min-height:42px; display:flex; align-items:center; gap:10px; padding:7px 10px; border:1px solid #d9c28b24; border-radius:6px; background:#ffffff03; }
+.arena-lobby-player>div { min-width:0; flex:1; }
+.arena-lobby-player strong { display:block; overflow-wrap:anywhere; font-size:13px; }
+.arena-lobby-player small { display:block; margin-top:3px; font-size:11px; color:#a79f8e; }
+.arena-player-number { color:#bb9e61; font:16px monospace; }
+.arena-lobby-vacancy { min-height:30px; color:#8b8790; font-size:12px; border-style:dashed; }
+.arena-entry-panel .arena-entry-status { min-height:18px; margin:12px 0 0; color:#cabd9c; font-size:12px; line-height:1.45; }
+.arena-entry-panel p { overflow-wrap:anywhere; }
+.arena-coop-notice { position:fixed; top:85px; left:50%; transform:translateX(-50%); z-index:130; max-width:440px; padding:10px 16px; color:#edf6ff; background:#101923ed; border:1px solid #8b795a; border-radius:8px; }
+.arena-coop-notice small { display:block; overflow-wrap:anywhere; }
+.arena-coop-notice button { margin-top:8px; }
+.boss-dev-arena-diagnostics { display:block; margin:8px 0; color:#bdc8d2; overflow-wrap:anywhere; }

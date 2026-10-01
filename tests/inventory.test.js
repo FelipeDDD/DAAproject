@@ -31,8 +31,8 @@ test('only consumables occupy the four quick slots; equipment, keys and quests r
   const badge=ITEM_CATALOG.director_access_badge;
   const quest={itemId:'class_photo',type:'quest',quantity:1,icon:'assets/photo.png'};
   const items=normalizeInventoryItems([badge,equipment,quest,potion]);
-  assert.equal(items.length,4);assert.deepEqual(inventorySlots(items),[potion,null,null,null]);
-  assert.equal(inventoryItemUseBehavior(equipment),'functional');assert.equal(inventoryItemUseBehavior(badge),'presentation');
+  assert.equal(items.length,3);assert.deepEqual(inventorySlots(items),[potion,null,null,null]);
+  assert.equal(inventoryItemUseBehavior(equipment),null);assert.equal(inventoryItemUseBehavior(badge),'presentation');
 });
 
 test('quick slots assign consumables automatically and do not impose backpack capacity',()=>{
@@ -65,12 +65,23 @@ test('the cigarette pack is a separate profile collectible in a presentation slo
   assert.notEqual(pack.itemId,equipment.itemId);
   assert.equal(pack.type,'quest');assert.equal(pack.compatible,true);
   assert.equal(inventoryItemUseBehavior(pack),'presentation');
-  assert.equal(inventoryItemUseBehavior(equipment),'functional');
+  assert.equal(inventoryItemUseBehavior(equipment),null);
   assert.match(pack.description,/Eine mysteriöse Zigarettenschachtel/);
   assert.match(pack.icon,/lung-crusher-floor\.png$/);
   assert.match(pack.presentationImage,/lung-crusher-3000\.png$/);
   assert.deepEqual(inventorySlots([pack,equipment]),[null,null,null,null]);
-  assert.equal(normalizeInventoryItems([pack,equipment]).length,2);
+  assert.equal(normalizeInventoryItems([pack,equipment]).length,1);
+});
+
+test('colored collectible pack icons clip their opaque background without changing card images',()=>{
+  for(const id of ['cigarette_pack_02','cigarette_pack_03','cigarette_pack_04']){
+    const pack=ITEM_CATALOG[id];
+    assert.match(pack.icon,/inv\.png$/);
+    assert.match(pack.iconClip,/^polygon\(/);
+    assert.match(pack.presentationImage,/\.png$/);
+    assert.equal(inventoryItemsFromSources(null,[{itemId:id,quantity:1}],'felipe')[0].iconClip,pack.iconClip);
+  }
+  assert.equal(ITEM_CATALOG[CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK].iconClip,undefined);
 });
 
 test('profile items remain owned across characters but activate only for their configured character',()=>{
@@ -80,7 +91,7 @@ test('profile items remain owned across characters but activate only for their c
   assert.equal(incompatible.compatible,false);assert.equal(incompatible.active,false);
   const item=normalizeCharacterItem({characterId:'michael',itemId,active:true,cooldownUntil:12_000});
   assert.equal(item.type,'character_item');assert.equal(item.active,true);
-  assert.equal(inventoryItemsFromSources(null,[item,{...item}], 'michael').filter(Boolean).length,1);
+  assert.equal(inventoryItemsFromSources(null,[item,{...item}], 'michael').filter(Boolean).length,0);
 });
 
 test('character-item cooldown is centralized and prevents immediate reactivation',()=>{
@@ -112,7 +123,7 @@ test('collected item survives repeated normalization when activated and deactiva
     assert.equal(controllerItems.length,1,'owned item must not become a ground pickup');
     assert.equal(controllerItems[0].characterBaseId,'michael');
     const owned=inventoryItemsFromSources(null,controllerItems,'michael');
-    assert.equal(owned.length,1);assert.equal(owned[0].active,active);
+    assert.equal(owned.length,0,'legacy ownership is retained in storage but disabled in the UI');
     assert.deepEqual(inventorySlots(owned),[null,null,null,null]);
   }
 });

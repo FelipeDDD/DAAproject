@@ -64,7 +64,7 @@ test('persistent equipped skin defaults to Classic and only Remastered selects n
   assert.equal(visualStyleForEquippedSkin(undefined),'old');
   assert.equal(visualStyleForEquippedSkin('classic'),'old');
   assert.equal(visualStyleForEquippedSkin('remastered'),'new');
-  assert.equal(visualStyleForActiveItem('lung_crusher_3000','classic'),'lungCrusher');
+  assert.equal(visualStyleForActiveItem('lung_crusher_3000','classic'),'old');
   assert.equal(visualStyleForActiveItem(null,'remastered'),'new');
 });
 

@@ -35,7 +35,8 @@ export class DirectorSecurityFlow {
   }
 
   async choose(choice){
-    if(this.busy||!this.host.active||this.state?.stage!=='question')return;
+    if(this.busy||!this.host.active||this.state?.stage!=='question'
+      ||this.state.attemptedChoices?.includes(choice))return;
     this.busy=true;
     const generation=this.host.generation;
     this.host.resetPanel('SECURITY VERIFICATION','director-security');
@@ -106,19 +107,27 @@ export class DirectorSecurityFlow {
     }
     this.host.resetPanel('SECURITY VERIFICATION','director-security');
     this.factors(state);
+    this.host.panel.append(element('p','director-security-instruction',
+      'Select the correct answer to complete the examination.'));
     this.host.panel.append(element('p','director-security-intro','Both passwords are telling the truth.'));
-    if(state.failedAttempts>0)this.host.panel.append(element('p','director-security-denied',
-      'ACCESS DENIED\nIncorrect password.\nProstate verification confidence: 100%\nMedical justification: 0%'));
+    if(state.failedAttempts>0){
+      this.host.panel.append(element('p','director-security-denied',
+        'ACCESS DENIED\nIncorrect password.\nProstate verification confidence: 100%\nMedical justification: 0%'));
+      this.host.panel.append(element('p','director-security-next-choice','One statement examined. Select the other statement.'));
+    }
     const choices=element('div','director-security-choices');
     for(const [choice,label] of [
       ['left','The password on the right is wrong.'],
       ['right','The password on the left is lying.'],
     ]){
-      const button=element('button','director-security-choice',label);
-      button.type='button';button.addEventListener('click',()=>void this.choose(choice));choices.append(button);
+      const answered=state.attemptedChoices?.includes(choice);
+      const button=element('button',`director-security-choice${answered?' is-answered':''}`,
+        answered?`${label} — ANSWERED`:label);
+      button.type='button';button.disabled=Boolean(answered);
+      if(answered)button.setAttribute('aria-label',`${label} (already answered)`);
+      button.addEventListener('click',()=>void this.choose(choice));choices.append(button);
     }
     this.host.panel.append(choices);
-    choices.querySelector('button')?.focus();
   }
 
   showUnavailable(){

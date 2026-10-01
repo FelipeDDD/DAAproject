@@ -1,6 +1,7 @@
 import { queryGeneric as query, mutationGeneric as mutation } from 'convex/server';
 import { v } from 'convex/values';
 import definitions from './doorDefinitions.js';
+import { roomMapKey } from '../src/boss/arenaRooms.js';
 import { PLAYER_SCALE } from '../src/game/settings.js';
 import { isPlayerActive } from '../src/multiplayer/presencePolicy.js';
 
@@ -8,7 +9,7 @@ export const inRoom=query({
   args:{room:v.string()},
   handler:async(ctx,{room})=>{
     const saved=await ctx.db.query('doors').withIndex('by_room_door',q=>q.eq('room',room)).collect();
-    return (definitions[room]??[]).map(d=>{
+    return (definitions[roomMapKey(room)]??[]).map(d=>{
       const state=saved.find(s=>s.doorId===d.id);
       return {doorId:d.id,open:state?.open??d.open,locked:state?.locked??d.locked};
     });
@@ -18,7 +19,7 @@ export const inRoom=query({
 export const setOpen=mutation({
   args:{room:v.string(),doorId:v.string(),playerId:v.string(),sessionId:v.string(),open:v.boolean()},
   handler:async(ctx,args)=>{
-    const d=definitions[args.room]?.find(d=>d.id===args.doorId);
+    const d=definitions[roomMapKey(args.room)]?.find(d=>d.id===args.doorId);
     if(!d)throw new Error('Unknown door.');
     const saved=await ctx.db.query('doors').withIndex('by_room_door',q=>q.eq('room',args.room).eq('doorId',args.doorId)).unique();
     if((saved?.locked??d.locked)||!d.interactive)throw new Error('Door locked or passage is fixed.');

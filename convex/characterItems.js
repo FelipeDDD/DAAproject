@@ -1,7 +1,7 @@
 import { mutationGeneric as mutation,queryGeneric as query } from 'convex/server';
 import { v } from 'convex/values';
 import { requireSessionToken } from './profileStore.js';
-import { CHARACTER_ITEM_COOLDOWN_MS,CHARACTER_ITEM_IDS,HEALTH_POTION_MAX_STACK,canCharacterOwnItem,characterItemDefinition } from '../src/inventory/characterItems.js';
+import { CHARACTER_ITEM_COOLDOWN_MS,CHARACTER_ITEM_IDS,HEALTH_POTION_MAX_STACK,canCharacterOwnItem,characterItemDefinition,isCharacterItemEnabled } from '../src/inventory/characterItems.js';
 import { baseCharacterId, characterBaseIdFor } from '../src/characters.js';
 import { requireAuthenticatedLivePlayer } from './playerSessions.js';
 import { equippedItemId, findLoadout } from './characterLoadouts.js';
@@ -41,7 +41,7 @@ export const forProfile=query({
     const rows=await ctx.db.query('characterItems').withIndex('by_profile',q=>q.eq('profileId',profile._id)).collect();
     const selectedBaseId=characterBaseId??baseCharacterId(profile.selectedCharacterId);
     const activeItemId=await equippedItemId(ctx,profile._id,selectedBaseId);
-    return rows.map(row=>publicItem(row,row.itemId===activeItemId));
+    return rows.map(row=>publicItem(row,row.itemId===activeItemId&&isCharacterItemEnabled(row.itemId)));
   },
 });
 
@@ -52,6 +52,7 @@ export const claim=mutation({
     const characterBaseId=baseCharacterId(profile.selectedCharacterId);
     if(characterItemDefinition(args.itemId)?.questId)throw new Error('Use the quest pickup to collect this item.');
     if(args.itemId===CHARACTER_ITEM_IDS.OFFICE2_KEY)throw new Error('Use the office safe to collect this key.');
+    if(!isCharacterItemEnabled(args.itemId))throw new Error('This item is temporarily unavailable.');
     if(!canCharacterOwnItem(characterBaseId,args.itemId))throw new Error('This character cannot collect that item.');
     const definition=characterItemDefinition(args.itemId),amount=args.amount??1;
     if(!Number.isInteger(amount)||amount<1||amount>1000||(!definition?.maxStack&&amount!==1))
@@ -142,7 +143,7 @@ export const setActive=mutation({
   handler:async(ctx,args)=>{
     const {profile,player,characterBaseId}=await activeSession(ctx,args);
     const definition=characterItemDefinition(args.itemId);
-    if(!definition?.activatable||!canCharacterOwnItem(characterBaseId,args.itemId))throw new Error('This character cannot use that item.');
+    if(!definition?.activatable||!isCharacterItemEnabled(args.itemId)||!canCharacterOwnItem(characterBaseId,args.itemId))throw new Error('This character cannot use that item.');
     const existing=await findItem(ctx,profile._id,args.itemId);
     if(!existing)throw new Error('Item has not been collected.');
     const loadout=await findLoadout(ctx,profile._id,characterBaseId);

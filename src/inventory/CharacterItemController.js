@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { CHARACTER_ITEM_IDS,characterItemDefinition,normalizeCharacterItem } from './characterItems.js';
+import { CHARACTER_ITEM_IDS,characterItemDefinition,isCharacterItemEnabled,normalizeCharacterItem } from './characterItems.js';
 import { CharacterItemClient } from './CharacterItemClient.js';
 import { baseCharacterId } from '../characters.js';
 import { readNamedMapMarker } from '../maps/namedMapMarkers.js';
@@ -26,7 +26,7 @@ export class CharacterItemController {
   setItems(rows,{applyVisual=true}={}){
     if(this.destroyed)return;
     this.revision=(this.revision??0)+1;
-    this.items=(rows??[]).map(row=>normalizeCharacterItem(row,this.characterBaseId)).filter(item=>item?.quantity>0);this.onItemsChange(this.items);
+    this.items=(rows??[]).map(row=>normalizeCharacterItem(row,this.characterBaseId)).filter(item=>item?.quantity>0&&isCharacterItemEnabled(item.itemId));this.onItemsChange(this.items);
     const item=this.lungCrusher;if(applyVisual)this.onVisualChange(item?.active?item.itemId:null,{instant:true});
     if(this.pickup)this.pickup.setVisible(LUNG_CRUSHER_PICKUP_ENABLED&&this.characterBaseId==='michael'&&!item);
     if(this.mapPickup)this.mapPickup.sprite.setVisible(!this.items.some(row=>row.itemId===CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK));
@@ -61,6 +61,7 @@ export class CharacterItemController {
     if(!pickup||this.collecting)return false;
     if(pickup.kind==='dev')return this.collectDevPickup(pickup);
     if(pickup.kind==='map')return this.collectMapPickup(pickup);
+    if(!LUNG_CRUSHER_PICKUP_ENABLED)return false;
     this.collecting=true;
     const before=this.items;
     const optimistic={...characterItemDefinition(CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000),characterBaseId:this.characterBaseId,active:false,cooldownUntil:0};
@@ -99,7 +100,7 @@ export class CharacterItemController {
     }finally{this.collecting=false;}
   }
   spawnDevPickup(itemId=CHARACTER_ITEM_IDS.HEALTH_POTION){
-    const definition=characterItemDefinition(itemId);if(!definition||this.destroyed)return null;
+    const definition=characterItemDefinition(itemId);if(!definition||!isCharacterItemEnabled(itemId)||this.destroyed)return null;
     const x=this.scene.player.x,y=this.scene.player.y;
     const tileWidth=this.scene.source?.tilewidth??32,tileHeight=this.scene.source?.tileheight??32;
     const tileKey=`${Math.floor(x/tileWidth)}:${Math.floor(y/tileHeight)}`;
@@ -119,7 +120,7 @@ export class CharacterItemController {
     }else pickup.countLabel?.setText(`×${pickup.amount}`);
   }
   async collectDevPickup(pickup){
-    if(this.collecting||!pickup?.sprite?.active)return false;this.collecting=true;
+    if(this.collecting||!pickup?.sprite?.active||!isCharacterItemEnabled(pickup.itemId))return false;this.collecting=true;
     try{
       const definition=characterItemDefinition(pickup.itemId);
       const requestedAmount=definition?.maxStack?(pickup.amount??1):1;
@@ -169,7 +170,7 @@ export class CharacterItemController {
     return {duplicate:Boolean(result.duplicate)};
   }
   async applyActiveItem(item){
-    const normalized=normalizeCharacterItem(item,this.characterBaseId);if(!normalized)return;
+    const normalized=normalizeCharacterItem(item,this.characterBaseId);if(!normalized||!isCharacterItemEnabled(normalized.itemId))return;
     if(normalized.active&&!this.previousSkin)this.previousSkin=this.scene.equippedSkin;
     this.setItems([...this.items.filter(existing=>existing.itemId!==normalized.itemId),normalized],{applyVisual:false});
     if(normalized.active){

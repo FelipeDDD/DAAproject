@@ -18,9 +18,45 @@ Do not reread it for routine isolated edits when the current session already has
 - The Office3 prompt uses reusable `src/terminal/virtualComputer.js` with per-PC configuration. Command parsing, nested virtual files, hostname/IP settings, DNS server versus local cache, ping, ipconfig, nslookup and hostname-sensitive `connect` services are simulated entirely on the client. PC-USER starts with stale Director DNS; `/flushdns` repairs it for that open session. Configured services may expose an `interaction` to the UI (Director recovery below); the parser does not contain puzzle/minigame logic. Port clue and a separate connect tutorial remain future work. Original Office3 quiz/safe progress still lives in Convex; ordinary simulated commands do not call it.
 - The original Office3 computer stays at its existing puzzle position and retains the password, five-question quiz, files, safe and key flow. A separate `PC-User` Tiled point in Office3 opens the network investigation shell directly, with its own configuration in `src/office3/investigationComputer.js` and no files or folders inherited from the puzzle computer. `PC-director` in Office2 opens the Director security screens. These named markers resolve via `src/maps/namedMapMarkers.js` in any visible object layer. Optional `PC-USER-INTERACTION` and `PC-DIRECTOR-INTERACTION` rectangles define their E interaction areas; without a rectangle, each marked PC uses its circular fallback.
 - The original Office3 computer keeps its green status light at `OFFICE3_MONITOR_STATUS` (122,107). The separate marked `PC-User` gets another green light at its Tiled point via `src/art/computerStatusLight.js`. Office2 offsets are adjustable through `DIRECTOR_PC_STATUS_LIGHT` in `src/office2/directorComputer.js`.
-- PC-DIRECTOR requires explicit **VERIFY PHYSICAL KEY** (`director_access_badge`, never consumed). Opening only reads progress. Factor 2 is **Prostate Examination Confirmation**; either impossible answer fails, and two failures persist local compromise. Remote recovery is an emergency fallback, never Factor 2. `directorWorkstations` stores profile-owned `physicalKeyVerifiedAt`, `failedAttempts`, `compromisedAt` and `recoveryCompletedAt`. Legacy `remoteApprovedAt` is tolerated but grants nothing; old compromised rows require explicit key verification once. DevTools `Fresh` clears the entire workstation row with boss rewards.
+- PC-DIRECTOR requires explicit **VERIFY PHYSICAL KEY** (`director_access_badge`, never consumed). Opening only reads progress. Factor 2 is **Prostate Examination Confirmation**; either impossible answer fails, and two distinct failed choices persist local compromise. `directorWorkstations.attemptedChoices` records which of the two statements has been answered; the UI disables/grays it and leaves the other active, while duplicate submissions do not count twice. Remote recovery is an emergency fallback, never Factor 2. `directorWorkstations` stores profile-owned `physicalKeyVerifiedAt`, `failedAttempts`, `attemptedChoices`, `compromisedAt` and `recoveryCompletedAt`. Legacy `remoteApprovedAt` is tolerated but grants nothing; old compromised rows require explicit key verification once. DevTools `Fresh` clears the entire workstation row with boss rewards.
 - After DNS repair, PC-USER `connect director.daa.local 8443` (also `host:port`) dispatches `DirectorRecoveryFlow`. One status query checks verified key + local compromise; a short local packet animation leads to the dinosaur runner in `src/office2/executiveRunner.js`. Four fixed obstacles, Space/Up/touch-button jumps, quick restart, then an automatic Gill Bates encounter (~14 seconds total). Frames/jumps/restarts make no Convex calls. One idempotent completion mutation validates the live profile/session in Office3 and saves recovery; a failed save can retry without replay. This client-side parody game is not an anti-cheat boundary. Closing cancels animation and ignores late UI responses. Reopening PC-DIRECTOR recognizes completion and offers **Open Director files**, through the same recovered-state gate. `Hacking_Class_Material` and its fictional connect jokes remain; the Director port clue is still deferred.
 - Director files/album metadata live in `src/office2/directorFiles.js`. `Private` contains `Endlich_Ferien.album`, six joke text files and a decoy album using the same photos. The shared virtual parser adds `open <file>` (including quoted/qualified paths); `type` continues reading text and rejects albums. `PhotoAlbumViewer` in `src/ui/` displays one configured photo at a time with an inert terminal underlay, bounded navigation, missing-photo fallback and Escape/close focus restoration. The host delegates keyboard events and consumes gallery Escape through keyup so it cannot close the PC too. Images go in `public/assets/director/vacation/`; its README lists expected filenames. No images have been provided yet. Opening/navigating photos makes no Convex calls and introduces no security/progression changes.
+
+## Arena solo / DEV co-op foundation (2026-10-01)
+
+- Arena map/physics identity remains `arena`; presence/chat/emotes/doors use
+  `arena:solo:<playerId>` for solo or `arena:coop:<arenaLobbies ID>` for co-op.
+  Solo keeps the existing local boss and retry/reward flow. Normal rooms and
+  noncombat class checkpoints are unchanged. Bare legacy `arena` publications
+  are normalized to the player's solo room; arbitrary solo-room entry is rejected.
+- DevTools **Co-op Arena: OFF / ON** uses `daa-dev-coop-arena` localStorage and
+  applies to the next entrance without reload. ON exposes Create/Join; OFF hides
+  normal co-op controls but permits an explicit invitation/code without changing
+  the flag. Production still cannot create/join on a backend without the existing
+  DEV deployment gate; this local toggle never bypasses backend security.
+- `arenaLobbies` stores host playerId, generation-bound participants, configurable
+  capacity (4), waiting/started/closed state and a fixed 30-minute lifetime. A
+  six-character invitation code uses `by_code` with transactional collision checks;
+  raw document/player IDs appear only in DevTools diagnostics. Older development
+  lobbies without codes remain readable but must be recreated to invite by code.
+  Host starts with 1+ players; participants enter the same room. Host departure/expiry closes
+  the encounter without host migration. Each created lobby schedules one bounded
+  GC callback at expiry, with no permanent cron or idle worker. Queries/local
+  expiry checks reject absent/expired hosts before physical deletion.
+- The compact navy/gold entrance/lobby shows display names, classes, host badge,
+  vacancies, count and Copy Code (Clipboard API or select + Ctrl+C fallback).
+  Join trims/uppercases codes, supports Enter and friendly errors. `?coop=CODE`
+  opens a prefilled confirmation after character selection, never autojoins, and
+  consumes only that URL parameter without hardcoded domains. Leaving closes the
+  local view immediately; host closure preserves a reason for guests and returns
+  arena participants to their saved entrance. Generations/busy guards prevent
+  stale callbacks and double-click creates/starts.
+- Co-op is preparation only: **no local BossController, combat or rewards**;
+  the arena shows a DEV notice and a leave button. Runtime flag changes do not
+  terminate existing lobbies. SessionId stays private; all mutations validate
+  playerId + session ownership. Subscription generations ignore stale callbacks.
+- Deferred: separate realtime host/WebSocket transport, boss authority/AI/events,
+  client combat interpolation, host migration and polished co-op gameplay.
 
 ## Local development commands
 
@@ -293,10 +329,10 @@ Local Convex config/database/storage are under `.convex/local/default/`, especia
   returning renders the latest owned state. Teardown suppresses return callbacks.
 - The backpack icon toggles `BackpackPopup`, a compact non-modal HTML dialog above
   the button, clamped horizontally to the viewport and repositioned on resize or
-  page scroll. It previews at most eight owned items, with quantity/cooldown and
-  existing functional-use callbacks. Keys/quest items open their selected full
-  Backpack details; Open Backpack expands the main modal. Nothing is persisted
-  or fetched just to open/use the popup.
+  page scroll. It previews at most eight owned items. Clicking any item now shows
+  its presentation card inside this same popup; Back returns to the mini grid,
+  and functional items expose Use/Equip there. Only Open Backpack expands the
+  main modal. Nothing is persisted or fetched just to inspect an item.
 - The popup reuses `GameMenuModal` input/focus/Escape lifecycle without a screen
   backdrop or scroll lock. X/Escape/outside pointer close only the popup; outside
   dismissal consumes that pointer so it cannot attack/interact in the world.
@@ -309,6 +345,13 @@ Local Convex config/database/storage are under `.convex/local/default/`, especia
   `characterLoadouts` by profile + characterBaseId. Keys/quests/equipment remain
   owned and usable in the backpack even though they no longer occupy quick slots.
   Login/class/map restoration is unchanged; guests keep their previous behavior.
+- Michael's old equippable cigarette `lung_crusher_3000` is temporarily disabled
+  by `LUNG_CRUSHER_CIGARETTE_ENABLED` in `src/inventory/characterItems.js`:
+  it cannot be newly claimed/equipped, appears in neither backpack, and saved
+  loadouts cannot revive its visual. Existing rows are retained for later reuse.
+  The separate collectible `lung_crusher_3000_pack` and colored quest packs keep
+  their pickup/card/quest behavior. Their colored mini icons use silhouette CSS
+  clipping to hide the black PNG canvas without changing the source art.
 - No reset or database migration needed. Manual quick assignment, drag/drop,
   sorting/filtering and an equipment UI redesign are intentionally deferred.
   Extend the quick projection or backpack renderer without changing ownership.

@@ -1,4 +1,5 @@
 import { characterBaseIdFor,characterById } from '../src/characters.js';
+import { roomMapKey } from '../src/boss/arenaRooms.js';
 import { findSessionPlayer } from './playerSessions.js';
 import { queryGeneric as query, mutationGeneric as mutation } from 'convex/server';
 import { v } from 'convex/values';
@@ -17,7 +18,7 @@ export const send = mutation({
     if(!text||text.length>200)throw new Error('Messages must contain between 1 and 200 characters.');
     const player=await findSessionPlayer(ctx,args.characterId,args.playerId);
     if(!ownsCharacterSession(player,args.characterId,args.sessionId)||(args.playerId!==undefined&&!ownsPlayerSession(player,args.playerId,args.sessionId))||!isPlayerActive(player)||
-       player.room!==args.room||!['school','outside','arena','office2','office3','secret-path'].includes(args.room))
+       player.room!==args.room||!['school','outside','arena','office2','office3','secret-path'].includes(roomMapKey(args.room)))
       throw new Error('Invalid session or room.');
     const characterBaseId=characterBaseIdFor(player);
     const characterName=characterById(characterBaseId)?.name??player.characterName??player.name;

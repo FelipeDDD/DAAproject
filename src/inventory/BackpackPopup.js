@@ -2,18 +2,20 @@ import { GameMenuModal,node } from '../ui/GameMenuModal.js';
 import { BackpackMenu } from './BackpackMenu.js';
 import { inventoryItemUseBehavior,normalizeInventoryItems } from './config.js';
 import { itemCooldownRemaining } from './characterItems.js';
+import { ItemRewardOverlay } from './ItemRewardOverlay.js';
 
 // A non-modal dialog anchored to the HUD, sharing the full menu's input lifecycle.
 export class BackpackPopup extends GameMenuModal {
   constructor({anchor,utilityGroup=null,items=[],onUse=()=>{},onExpand=()=>{},...options}={}){
     super({...options,modal:false,title:'Inventory',eyebrow:'QUICK BACKPACK',footerText:''});
     Object.assign(this,{anchor,utilityGroup,items:normalizeInventoryItems(items),onUse,onExpand});
+    this.inspection=new ItemRewardOverlay({documentRef:this.doc,baseUrl:this.baseUrl});
     this.root.className='backpack-popup';this.panel.className='backpack-popup-panel';
     this.header.className='backpack-popup-header';this.body.className='backpack-popup-body';
     this.panel.children[this.panel.children.length-1].hidden=true;
     this.onOutside=event=>{
       if(!this.active||this.root.contains(event.target)||this.utilityGroup?.contains(event.target)||this.anchor?.contains(event.target))return;
-      event.preventDefault();event.stopImmediatePropagation();this.close();
+      event.preventDefault();event.stopImmediatePropagation();this.requestClose();
     };
     this.onResize=()=>{if(this.active)this.position();};
     this.win?.addEventListener('pointerdown',this.onOutside,true);
@@ -32,7 +34,7 @@ export class BackpackPopup extends GameMenuModal {
   }
   setItems(items){
     this.items=normalizeInventoryItems(items);
-    if(this.active){
+    if(this.active&&!this.inspection.active){
       const id=this.doc.activeElement?.dataset?.itemId;
       const expandFocused=this.doc.activeElement===this.expandButton;
       this.showOverview();this.position();
@@ -40,16 +42,13 @@ export class BackpackPopup extends GameMenuModal {
     }
   }
   showOverview(){
+    this.root.dataset.view='overview';
     this.back.hidden=true;this.itemButtons=new Map();
     const grid=node(this.doc,'div','backpack-popup-grid');grid.setAttribute('aria-label','Quick inventory preview');
     for(const item of this.items.slice(0,8)){
-      const functional=inventoryItemUseBehavior(item)==='functional';
-      const button=this.button('','backpack-popup-item',()=>{
-        if(functional)void this.useItem(item);else this.expand(item.itemId);
-      });
-      const remaining=itemCooldownRemaining(item);
-      button.dataset.itemId=item.itemId;button.disabled=functional&&(item.compatible===false||remaining>0||this.using);
-      button.title=`${item.name}${remaining>0?` · Cooldown ${Math.ceil(remaining/1000)}s`:functional?' · Use':' · View in Backpack'}`;
+      const button=this.button('','backpack-popup-item',()=>this.inspectItem(item));
+      button.dataset.itemId=item.itemId;
+      button.title=`Examine ${item.name}`;
       button.setAttribute('aria-label',button.title);
       const art=node(this.doc,'span','backpack-slot-art');
       BackpackMenu.prototype.renderImage.call(this,art,item.icon,item.iconClip,item.iconScale);
@@ -57,9 +56,28 @@ export class BackpackPopup extends GameMenuModal {
       grid.append(button);this.itemButtons.set(item.itemId,button);
     }
     if(!this.items.length)grid.append(node(this.doc,'p','backpack-popup-empty','Your backpack is empty.'));
-    const summary=node(this.doc,'small','backpack-popup-summary',this.items.length>8?`${this.items.length-8} more items in Backpack`:'Quick use · full details in Backpack');
+    const summary=node(this.doc,'small','backpack-popup-summary',this.items.length>8?`${this.items.length-8} more items in Backpack`:'Select an item to examine it');
     this.expandButton=this.button('Open Backpack','backpack-action backpack-popup-expand',()=>this.expand());
     this.body.replaceChildren(grid,summary,this.expandButton);
+  }
+  inspectItem(item){
+    if(!this.active||!this.items.some(entry=>entry.itemId===item.itemId))return;
+    this.selectedId=item.itemId;this.root.dataset.view='inspection';
+    this.body.replaceChildren();
+    this.inspection.show(item,{source:'inventory',eyebrow:'ITEM INSPECTION',mount:this.body,onReturn:()=>{
+      if(!this.active||this.destroyed)return;
+      this.showOverview();this.position();
+      (this.itemButtons.get(item.itemId)??this.closeButton).focus({preventScroll:true});
+    }});
+    if(inventoryItemUseBehavior(item)==='functional'){
+      const remaining=itemCooldownRemaining(item);
+      const use=this.button(item.consumable?'Use item':item.active?'Unequip':'Equip','backpack-action',()=>{
+        this.inspection.dismiss();void this.useItem(item);
+      });
+      use.disabled=item.compatible===false||remaining>0||this.using;
+      this.inspection.root.children[0].append(use);
+    }
+    this.position();
   }
   async useItem(item){
     if(this.using||item.compatible===false||itemCooldownRemaining(item)>0)return;
@@ -67,9 +85,10 @@ export class BackpackPopup extends GameMenuModal {
     try{await this.onUse(item);}finally{this.using=false;if(this.active){this.showOverview();this.itemButtons.get(item.itemId)?.focus({preventScroll:true});}}
   }
   expand(itemId){this.close({restoreFocus:false});this.onExpand(itemId);}
-  close(options){super.close(options);this.anchor?.setAttribute('aria-expanded','false');}
+  requestClose(){if(this.inspection.active)this.inspection.dismiss();else super.requestClose();}
+  close(options){this.inspection.close(true);super.close(options);this.anchor?.setAttribute('aria-expanded','false');}
   destroy(){
-    super.destroy();this.win?.removeEventListener('pointerdown',this.onOutside,true);
+    super.destroy();this.inspection.destroy();this.win?.removeEventListener('pointerdown',this.onOutside,true);
     this.win?.removeEventListener('resize',this.onResize);this.win?.removeEventListener('scroll',this.onResize,true);
   }
 }
