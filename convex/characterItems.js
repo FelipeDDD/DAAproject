@@ -50,6 +50,7 @@ export const claim=mutation({
   handler:async(ctx,args)=>{
     const profile=await authenticatedProfile(ctx,args.token);
     const characterBaseId=baseCharacterId(profile.selectedCharacterId);
+    if(characterItemDefinition(args.itemId)?.questId)throw new Error('Use the quest pickup to collect this item.');
     if(args.itemId===CHARACTER_ITEM_IDS.OFFICE2_KEY)throw new Error('Use the office safe to collect this key.');
     if(!canCharacterOwnItem(characterBaseId,args.itemId))throw new Error('This character cannot collect that item.');
     const definition=characterItemDefinition(args.itemId),amount=args.amount??1;

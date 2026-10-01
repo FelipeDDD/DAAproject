@@ -19,7 +19,8 @@ Do not reread it for routine isolated edits when the current session already has
 - The original Office3 computer stays at its existing puzzle position and retains the password, five-question quiz, files, safe and key flow. A separate `PC-User` Tiled point in Office3 opens the network investigation shell directly, with its own configuration in `src/office3/investigationComputer.js` and no files or folders inherited from the puzzle computer. `PC-director` in Office2 opens the Director security screens. These named markers resolve via `src/maps/namedMapMarkers.js` in any visible object layer. Optional `PC-USER-INTERACTION` and `PC-DIRECTOR-INTERACTION` rectangles define their E interaction areas; without a rectangle, each marked PC uses its circular fallback.
 - The original Office3 computer keeps its green status light at `OFFICE3_MONITOR_STATUS` (122,107). The separate marked `PC-User` gets another green light at its Tiled point via `src/art/computerStatusLight.js`. Office2 offsets are adjustable through `DIRECTOR_PC_STATUS_LIGHT` in `src/office2/directorComputer.js`.
 - PC-DIRECTOR requires explicit **VERIFY PHYSICAL KEY** (`director_access_badge`, never consumed). Opening only reads progress. Factor 2 is **Prostate Examination Confirmation**; either impossible answer fails, and two failures persist local compromise. Remote recovery is an emergency fallback, never Factor 2. `directorWorkstations` stores profile-owned `physicalKeyVerifiedAt`, `failedAttempts`, `compromisedAt` and `recoveryCompletedAt`. Legacy `remoteApprovedAt` is tolerated but grants nothing; old compromised rows require explicit key verification once. DevTools `Fresh` clears the entire workstation row with boss rewards.
-- After DNS repair, PC-USER `connect director.daa.local 8443` (also `host:port`) dispatches `DirectorRecoveryFlow`. One status query checks verified key + local compromise; a short local packet animation leads to the dinosaur runner in `src/office2/executiveRunner.js`. Four fixed obstacles, Space/Up/touch-button jumps, quick restart, then an automatic Gill Bates encounter (~14 seconds total). Frames/jumps/restarts make no Convex calls. One idempotent completion mutation validates the live profile/session in Office3 and saves recovery; a failed save can retry without replay. This client-side parody game is not an anti-cheat boundary. Closing cancels animation and ignores late UI responses. Reopening PC-DIRECTOR recognizes completion and shows an unlocked-content placeholder; no new reward/files yet. `Hacking_Class_Material` and its fictional connect jokes remain; the Director port clue is still deferred.
+- After DNS repair, PC-USER `connect director.daa.local 8443` (also `host:port`) dispatches `DirectorRecoveryFlow`. One status query checks verified key + local compromise; a short local packet animation leads to the dinosaur runner in `src/office2/executiveRunner.js`. Four fixed obstacles, Space/Up/touch-button jumps, quick restart, then an automatic Gill Bates encounter (~14 seconds total). Frames/jumps/restarts make no Convex calls. One idempotent completion mutation validates the live profile/session in Office3 and saves recovery; a failed save can retry without replay. This client-side parody game is not an anti-cheat boundary. Closing cancels animation and ignores late UI responses. Reopening PC-DIRECTOR recognizes completion and offers **Open Director files**, through the same recovered-state gate. `Hacking_Class_Material` and its fictional connect jokes remain; the Director port clue is still deferred.
+- Director files/album metadata live in `src/office2/directorFiles.js`. `Private` contains `Endlich_Ferien.album`, six joke text files and a decoy album using the same photos. The shared virtual parser adds `open <file>` (including quoted/qualified paths); `type` continues reading text and rejects albums. `PhotoAlbumViewer` in `src/ui/` displays one configured photo at a time with an inert terminal underlay, bounded navigation, missing-photo fallback and Escape/close focus restoration. The host delegates keyboard events and consumes gallery Escape through keyup so it cannot close the PC too. Images go in `public/assets/director/vacation/`; its README lists expected filenames. No images have been provided yet. Opening/navigating photos makes no Convex calls and introduces no security/progression changes.
 
 ## Local development commands
 
@@ -176,3 +177,138 @@ Local Convex config/database/storage are under `.convex/local/default/`, especia
 
 
 - Experimental adaptive movement: `ADAPTIVE_MOVEMENT` in `src/multiplayer/presencePolicy.js` is enabled for comparison. Disable it to restore accepted 200 ms sending/render delay. Adaptive mode publishes resolved moving/stopped + velocity state; start/stop, direction/velocity (12 px/s), appearance/item and >160 px corrections bypass cruise throttling. A separate local deadline targets 300 ms cruise; requests remain serialized. Remote interpolation uses 300 ms, with no extrapolation. Stationary/terminal leases retain their existing rules. Long straight movement can reduce updates from 300 to approximately 200/min; visual comparison is still required.
+
+# NPC decorativa do pátio (outside)
+
+- `OutsideScene` usa `MendigaNpc`: caminhada local em quatro direções, sem
+  sincronização de movimento ou colisão dinâmica com jogadores.
+- `public/assets/npc/mendiga-walk.png`: 16 frames de 128×144, pés alinhados em
+  y=143, linhas down/right/left/up. Escala .5, 7 FPS e 32 px/s configuráveis
+  em `src/npc/mendigaPatrol.js`.
+- Trajeto autorado em `outside.tmj`, layer Notes, pontos `mendiga-patrol-1..4`.
+  Os segmentos devem permanecer livres de obstáculos; não há pathfinding.
+- Preview animado em `public/assets/npc/mendiga-walk-preview.html`.
+  O ciclo gerado é estilizado/arrastado; poses de passada aberta/passagem foram
+  diferenciadas, mas a alternância anatômica de pernas ainda pode ser refinada.
+
+## Beggar NPC: dialogue and collectible progression
+
+- `BeggarInteraction` adds German speech and explicit E interaction to the local
+  wandering NPC. `beggarDialogue.js` centralizes configurable bands: 0–1 tile
+  prompt/explicit interaction only, >1–3 normal speech, >3–6 occasional shouts.
+  Local checks every 750 ms; near cooldown 8–12 s / 25% chance, far 12–20 s /
+  15% chance. Failed rolls consume cooldown, active speech is never overwritten
+  by ambient lines, and consecutive identical lines are avoided. Speech stays
+  head-anchored/clamped for 6 s. No proximity/idle mutations or timers on Convex.
+- `npcCollectibleQuests` stores profile-wide `profileId + questId`, ordered
+  delivered IDs, current pack, active spawn, completed/rewardClaimed and timestamp.
+  Four progression IDs `cigarette_pack_01..04` track the sequence. Step 1 now uses
+  the existing profile inventory item `lung_crusher_3000_pack`, preserving prior
+  ownership and its original school position. Michael's activatable equipment,
+  keys and boss progression remain independent.
+- `npcQuests` exposes progress/start/collect/handIn. Mutations verify the current
+  authenticated profile/player/session. Pickup validates configured spawn and
+  realtime room/position; hand-in validates outside room, expected ID and owned
+  item. The moving NPC's one-tile range remains local. Item deletion and sequence
+  advancement are atomic; old/duplicate requests cannot advance again.
+- `CollectibleQuestController` subscribes only in outside or maps with configured
+  spawns, unsubscribes on sleep/shutdown and performs one start request on entry.
+  Persistent quest state survives login/class changes; guests get dialogue only.
+- Four temporary authored Notes spawns are connected: `lung-crusher` in classroom,
+  `lung-crusher-3000-red` in office3, `long-crusher-3000-green` in classroom,
+  `long-crusher-3000-blue` in secret-path. Blue was added in the authoring TMX and
+  copied into the runtime TMJ without changing the remaining map objects.
+  `cigarettePacks.js` centralizes ordered pack metadata, inventory ID mapping,
+  expected rooms, marker aliases and ground textures/sizes. The generator binds
+  each spawn to its packId so colors cannot spawn at another stage's location.
+  Additional globally unique `cigarette-spawn-*` points may use a string `packId`
+  property. Run `node scripts/sync-npc-collectible-spawns.mjs`; preconvex/prebuild
+  also regenerate positions. Existing undelivered test states get a valid matching
+  spawn on map entry, without resetting delivered progress.
+- The generic legacy school pickup is no longer mounted; the quest controller
+  owns that same first pickup, preventing duplicates/respawn after delivery.
+  Inventory ownership of the original pack is accepted immediately. Early test
+  `cigarette_pack_01` inventory is also accepted/removed on first delivery.
+  Original PNG cards/icons for red/green/blue are copied to public/assets/items;
+  hotbar-only iconScale/iconClip metadata handles the supplied large margins.
+  Small colored ground SVGs reuse the existing pack silhouette; red adds minor
+  non-colliding local litter. Cards remain static in the existing overlay.
+- Fourth delivery sets completion and clears current pack/spawn; future reward
+  is deliberately deferred (`rewardClaimed: false`). Setup: `src/npc/README.md`.
+- Dev Tools has **Reset cigarette collection** (reset this profile's deliveries
+  and remove only collection items/legacy aliases) and **Get all cigarette packs**
+  (grant the four inventory items idempotently without requiring prior hand-ins
+  or altering delivered progress). Sequential NPC delivery remains normal.
+  `npcQuests.devResetCollection/devGrantCollection` use the existing backend DEV
+  gate and active authenticated profile/player/session checks; no idle traffic.
+
+## Collections UI foundation
+
+- **Collections** beside the backpack opens one HTML dialog: collection directory,
+  then item grid + right preview; mobile stacks the preview below. Dark bronze/gold
+  CSS frame, rare and locked slots, empty/coming-soon states, no progress bar.
+- `src/collections/catalog.js` retains `createPreviewCollections()` for isolated
+  previews. Gameplay uses `collectionsFromQuestProgress(progress, ownedItems)`:
+  the four real pack IDs are discovered from owned packs/current quest pack or
+  persistent `deliveredPackIds`. Hand-in removes ownership but keeps discovery.
+  Rare/future slots remain locked; other collections remain coming-soon entries.
+- `CollectibleQuestController.receive()` reuses its existing subscription to pass
+  history into the HUD. Opening Collections also performs one existing
+  `npcQuests.progress` query for maps without that subscription. No new backend
+  functions, polling, persistent fields or mutations. Late query results cannot
+  replace a newer quest update or update a destroyed HUD.
+- `CollectionsMenu.setCollections(data)` remains the integration point for future
+  discovery sources. Explicit DEV collection reset clears the current cigarette
+  history; normal NPC hand-ins never clear it.
+- `InventoryHotbar` owns the button/dialog lifecycle. The dialog blocks game
+  keyboard/pointer input, handles focus/Tab/Escape and restores input on close;
+  scene sleep/logout destroys it. No changes to item ownership or quest rules.
+
+## Backpack and quick-use HUD
+
+- Previously the HUD projected ownership into six numbered slots: functional
+  items from the left, presentation/key/quest items from the right. Slot positions
+  were frontend-only; they never represented database ownership or loadouts.
+- `inventorySlots()` now projects only compatible consumables into four quick
+  slots, automatically assigned with existing `preferredSlot` support. `1–4`
+  use those slots; `5/6` no longer trigger inventory actions. `0`/numpad `0` still
+  use the potion. Emotes remain `Shift + 1–6`.
+- The existing rail contains a four-slot quick group and a separate utility group
+  (round backpack/book buttons, larger centered icons, gold divider after slot 4).
+  Utility buttons do not have item-slot classes or numbers. No HUD height, HP,
+  emote, settings or canvas resolution change.
+- `BackpackMenu.setItems(items)` receives the complete normalized owned inventory,
+  not the quick-slot projection. Its grid expands with ownership; empty cells are
+  cosmetic space, not capacity. Selection displays artwork, quantity, description
+  and current equipment state. Use/Equip/Unequip delegates to the existing
+  `InventoryHotbar.activate()` / `CharacterItemController.use()` logic, including
+  backend class checks, consumable cooldowns and class loadouts.
+- `ItemRewardOverlay` has explicit `source: 'pickup' | 'inventory'` presentation.
+  Ground pickups preserve Continue and the 500 ms dismissal lock. Backpack
+  inspection mounts the shared card inside the still-active native dialog with
+  Back instead of Continue. Back, header X or Escape returns to the current
+  inventory selection; only another close exits the backpack. Backdrop clicks
+  do nothing while inspecting, and repeated held Escape cannot dismiss both
+  views. Inventory updates are retained without rebuilding an active inspection;
+  returning renders the latest owned state. Teardown suppresses return callbacks.
+- The backpack icon toggles `BackpackPopup`, a compact non-modal HTML dialog above
+  the button, clamped horizontally to the viewport and repositioned on resize or
+  page scroll. It previews at most eight owned items, with quantity/cooldown and
+  existing functional-use callbacks. Keys/quest items open their selected full
+  Backpack details; Open Backpack expands the main modal. Nothing is persisted
+  or fetched just to open/use the popup.
+- The popup reuses `GameMenuModal` input/focus/Escape lifecycle without a screen
+  backdrop or scroll lock. X/Escape/outside pointer close only the popup; outside
+  dismissal consumes that pointer so it cannot attack/interact in the world.
+  Opening Backpack or Collections closes the popup without a pending game-focus
+  restore. Scene sleep/logout destroys all owned popup/card/dialog listeners.
+- `GameMenuModal` shares the HTML dialog frame/lifecycle between backpack and
+  Collections: input isolation, Tab, Escape keyup, focus restoration and teardown.
+  The close X is CSS geometry centered independently of font metrics.
+- Ownership remains `characterItems` by profile; equipment remains
+  `characterLoadouts` by profile + characterBaseId. Keys/quests/equipment remain
+  owned and usable in the backpack even though they no longer occupy quick slots.
+  Login/class/map restoration is unchanged; guests keep their previous behavior.
+- No reset or database migration needed. Manual quick assignment, drag/drop,
+  sorting/filtering and an equipment UI redesign are intentionally deferred.
+  Extend the quick projection or backpack renderer without changing ownership.

@@ -11,6 +11,7 @@ import { pointInsideInteractionArea, readNamedInteractionArea } from '../maps/na
 import { devPuzzleOneAnswerEnabled } from '../boss/devPuzzleSettings.js';
 import { DirectorSecurityFlow } from '../office2/DirectorSecurityFlow.js';
 import { DirectorRecoveryFlow } from '../office2/DirectorRecoveryFlow.js';
+import { PhotoAlbumViewer } from '../ui/PhotoAlbumViewer.js';
 import {
   OFFICE3_FEEDBACK_MS, OFFICE3_PASSWORD_DENIED_MS, OFFICE3_MONITOR, OFFICE3_STREAK_TARGET,
   chooseOffice3Question, nextStreak, passwordIsCorrect,
@@ -67,6 +68,18 @@ export class Office3PuzzleController {
   }
 
   handleKey(event) {
+      if(this.albumViewer?.active){
+        if(event.key==='Escape'&&event.type==='keydown')this.releaseAlbumEscape=true;
+        this.albumViewer.handleKey(event);
+        event.stopImmediatePropagation();
+        return;
+      }
+      if(event.key==='Escape'&&this.releaseAlbumEscape){
+        event.preventDefault();event.stopImmediatePropagation();
+        if(event.type==='keyup')this.releaseAlbumEscape=false;
+        return;
+      }
+      if(event.type==='keydown')this.releaseAlbumEscape=false;
       // Closing on keydown must also consume its keyup/repeats. Otherwise Esc
       // escapes into browser/game shortcuts after the dialog has disappeared.
       if (event.key === 'Escape' && (this.active || this.releaseEscape)) {
@@ -402,8 +415,20 @@ export class Office3PuzzleController {
     this.panel.append(output,form);this.commandInput=input;input.focus();output.scrollTop=output.scrollHeight;
   }
 
+  openDirectorFiles(){
+    if(!this.active||this.computerMode!=='director'||this.directorSecurity?.state?.stage!=='recovered')return false;
+    this.folder='';this.computerSession=createComputerSession(this.computerConfig);this.commandHistory=[];
+    this.showComputer();return true;
+  }
+
+  showAlbum(album,filename){
+    this.showComputer();
+    this.albumViewer??=new PhotoAlbumViewer({mount:this.root,baseUrl:import.meta.env.BASE_URL});
+    this.albumViewer.open(album,{filename,underlay:this.panel});
+  }
+
   async executeCommand() {
-    if(this.busy||!this.commandInput||!this.active)return;
+    if(this.busy||!this.commandInput||!this.active||this.albumViewer?.active)return;
     const command=this.commandInput.value;if(!command.trim())return;
     this.computerSession ??= this.computerMode!=='office3'
       ?createComputerSession(this.computerConfig):createOffice3ComputerSession();
@@ -432,6 +457,8 @@ export class Office3PuzzleController {
       this.panel.append(element('pre','office3-notepad-text',result.service.banner));
       const back=element('button','','Back to command prompt');back.type='button';
       back.addEventListener('click',()=>this.showComputer());this.panel.append(back);back.focus();
+    }else if(result.album){
+      this.showAlbum(result.album,result.title);
     }else if(result.note!==undefined){
       this.resetPanel(`${result.title} — Notepad`,'notepad');
       this.panel.append(element('pre','office3-notepad-text',result.note));
@@ -520,6 +547,7 @@ export class Office3PuzzleController {
 
   close() {
     if (!this.active) return;
+    this.albumViewer?.close({restoreFocus:false});
     clearTimeout(this.delay);
     this.delay = null;
     this.active = false;
@@ -552,6 +580,7 @@ export class Office3PuzzleController {
   destroy() {
     this.destroyed=true;
     this.close();
+    this.albumViewer?.destroy();
     this.prompt.destroy();
     this.paperPrompt?.destroy();
     this.safePrompt?.destroy();

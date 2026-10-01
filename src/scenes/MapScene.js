@@ -45,6 +45,8 @@ import { getGameHud } from '../hud/GameHudController.js';
 import { hasProfileSession } from '../ProfileSessionClient.js';
 import { applySmoothDecorativeTextureFilters } from '../maps/decorativeTextureFilters.js';
 import { classRestoreDestination } from '../maps/classState.js';
+import { CollectibleQuestController } from '../npc/CollectibleQuestController.js';
+import { CIGARETTE_PACKS } from '../npc/cigarettePacks.js';
 import '../terminal/terminal.css';
 
 // The main classroom quiz chairs are temporarily unavailable; remove `school`
@@ -74,6 +76,11 @@ export class MapScene extends Phaser.Scene {
 
   preload() {
     preloadCharacterTextures(this,CHARACTERS,import.meta.env.BASE_URL);
+    for(const pack of CIGARETTE_PACKS)if(!this.textures.exists(pack.groundTexture)){
+      const url=`${import.meta.env.BASE_URL}${pack.groundAsset}`;
+      if(pack.groundAsset.endsWith('.svg'))this.load.svg(pack.groundTexture,url);
+      else this.load.image(pack.groundTexture,url);
+    }
     if(!this.textures.exists('michael-lung-transform'))this.load.spritesheet('michael-lung-transform',
       `${import.meta.env.BASE_URL}assets/items/michael-bigcig-normalized.png?v=3`,{frameWidth:160,frameHeight:160});
     if(!this.textures.exists('school-hanger'))this.load.image('school-hanger',`${import.meta.env.BASE_URL}assets/hanger.png`);
@@ -205,6 +212,8 @@ export class MapScene extends Phaser.Scene {
     const stop = () => { this.input.keyboard.resetKeys(); this.player.setVelocity(0, 0); };
     const wake = (_systems, arrival) => this.enter(arrival);
     const leave = () => {
+      this.collectibleQuest?.destroy();this.collectibleQuest=null;
+      this.npcQuestInteraction?.hide();
       this.hint.hidden=true;
       this.terminalPrompt?.setVisible(false);
       this.devTools?.destroy();this.devTools=null;
@@ -238,6 +247,7 @@ export class MapScene extends Phaser.Scene {
 
   enter(destination = {}) {
     try {
+      this.collectibleQuest?.destroy();this.collectibleQuest=null;
       this.hint.hidden=true;
       this.terminal?.destroy();
       this.terminal=new TerminalOverlayController(this);
@@ -281,12 +291,15 @@ export class MapScene extends Phaser.Scene {
         onItemUsed:item=>{if(item.itemId===CHARACTER_ITEM_IDS.HEALTH_POTION)this.potionEffects?.show(this.presence.identity.playerId);},
       }):null;
       this.inventoryHotbar=hasProfileSession(this.presence)?new InventoryHotbar(this.presence,{
+        scene:this,
         onToggleItem:item=>this.characterItems?.use(item),
       }):null;
       void this.inventoryHotbar?.refresh();
       void this.characterItems?.restore();
-      this.characterItems?.createCollectiblePickup(this.source);
+      // The existing school pack now participates in the NPC sequence; the quest
+      // controller owns its pickup so it cannot respawn after being handed in.
       this.characterItems?.createPickup(objectsIn(this.source,'Spawns').find(object=>object.name==='arena'));
+      this.collectibleQuest=new CollectibleQuestController(this);
       this.quiz?.close();
       this.quiz=this.presence&&!MULTIPLAYER_QUIZ_DISABLED_MAPS.has(this.mapKey)
         ? new QuizLobby(this,this.presence,this.quizSeats) : null;
@@ -401,6 +414,8 @@ export class MapScene extends Phaser.Scene {
   devDropHealthPotion(){return this.characterItems?.spawnDevPickup(CHARACTER_ITEM_IDS.HEALTH_POTION)??null;}
   devClearHealthPotions(){return this.characterItems?.clearHealthPotions()??null;}
   devGrantOffice2Key(){return this.characterItems?.devGrantOffice2Key()??null;}
+  devCollection(action){return this.collectibleQuest?.devCollection(action)??null;}
+  devSetFreeCollect(enabled){return this.collectibleQuest?.setDevFreeCollect(enabled)??null;}
 
   travelTo(destination) {
     const target = this.scene.manager.keys[destination.targetMap];
@@ -423,6 +438,7 @@ export class MapScene extends Phaser.Scene {
   }
 
   update(_time, delta) {
+    this.collectibleQuest?.update();
     // Previous physics step displacement includes wall/collision resolution.
     this.presence?.observeMovement(resolvedMovementState(this.player.body));
     if(this.terminal?.active||this.puzzleTerminal?.active||this.networkTerminal?.active||this.chat?.isInputActive||this.quiz?.seated||this.soloStudy?.active||this.wardrobe?.active||this.characterItems?.transforming)this.player.setVelocity(0,0);
@@ -437,6 +453,12 @@ export class MapScene extends Phaser.Scene {
     if(this.chat?.isInputActive){this.terminalPrompt.setVisible(false);this.quiz?.updateSeatPrompt(false);this.soloStudy?.updateSeatPrompt(false);return;}
     const interact = Phaser.Input.Keyboard.JustDown(this.interactKey);
     const escape = Phaser.Input.Keyboard.JustDown(this.escapeKey);
+    if(interact&&this.npcQuestInteraction?.canInteract()){
+      void this.npcQuestInteraction.interact(_time);return;
+    }
+    if(interact&&this.collectibleQuest?.pickupNear()){
+      void this.collectibleQuest.collect();return;
+    }
     const quizSeat=this.quiz?.nearbySeat();
     const studySeat=this.soloStudy?.nearbySeat();
     const computer=nearbyTerminalComputer(this.terminalComputers,this.player.body);

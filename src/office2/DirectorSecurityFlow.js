@@ -87,7 +87,9 @@ export class DirectorSecurityFlow {
       this.host.panel.append(element('p','office3-command-success','Emergency Remote Recovery: COMPLETED'),
         element('p','','Local authentication: COMPROMISED (remote recovery authorized).'),
         element('p','','IDENTITY VERIFIED'),
-        element('p','','Director archive unlocked. Further content is not available yet.'));
+        element('p','','Director archive unlocked. Use dir, cd Private and open Endlich_Ferien.album.'));
+      const files=element('button','','Open Director files');files.type='button';
+      files.addEventListener('click',()=>this.host.openDirectorFiles());this.host.panel.append(files);files.focus();
       return;
     }
     if(state.stage==='compromised'){

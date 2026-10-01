@@ -7456,6 +7456,19 @@
                  "width":0,
                  "x":295.75,
                  "y":11
+                },
+                {
+                 "height":0,
+                 "id":598,
+                 "name":"long-crusher-3000-green",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1057.09090909091,
+                 "y":551.454545454545
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -7464,7 +7477,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":598,
+ "nextobjectid":599,
  "orientation":"orthogonal",
  "properties":[
         {

@@ -8,7 +8,7 @@ class Element {
   append(...children){this.children.push(...children);}
   addEventListener(name,callback){this.events[name]=callback;}
   setAttribute(name,value){this.attributes[name]=value;}
-  querySelectorAll(tag){return this.children.flatMap(child=>[...(child.tag===tag?[child]:[]),...child.querySelectorAll(tag)]);}
+  querySelectorAll(tag){const tags=tag.split(',').map(value=>value.trim());return this.children.flatMap(child=>[...(tags.includes(child.tag)?[child]:[]),...child.querySelectorAll(tag)]);}
   remove(){}
 }
 
@@ -72,4 +72,40 @@ test('All Skins enables the selected base preview only after the DEV preset succ
   assert.deepEqual(events,['all_skins','progress','preview']);
   await tools.apply('fresh','Fresh');
   assert.deepEqual(events.slice(3),['fresh','progress','disable']);
+});
+
+test('collection buttons grant/reset inventory and block repeated actions while pending',async()=>{
+  const documentRef={createElement:tag=>new Element(tag),body:new Element('body')};
+  const actions=[];let resolve;
+  const tools=new BossDevTools({devCollection:action=>{actions.push(action);return new Promise(done=>resolve=done);}},null,{documentRef});
+  const buttons=tools.content.querySelectorAll('button');
+  assert.ok(buttons.some(button=>button.textContent==='Reset cigarette collection'));
+  assert.ok(buttons.some(button=>button.textContent==='Get all cigarette packs'));
+  const pending=tools.runAction('grantCollection');
+  assert.ok(buttons.every(button=>button.disabled));
+  assert.equal(await tools.runAction('resetCollection'),false);
+  resolve({hasPack:true});assert.equal(await pending,true);
+  assert.equal(tools.status.textContent,'DEV: all 4 packs available in your inventory');
+  const reset=tools.runAction('resetCollection');resolve({hasPack:false});await reset;
+  assert.deepEqual(actions,['grant','reset']);assert.equal(tools.status.textContent,'DEV: collection reset; all packs removed');
+  assert.ok(buttons.every(button=>!button.disabled));
+});
+
+test('collection errors are visible and release the Dev Tools request lock',async()=>{
+  const documentRef={createElement:tag=>new Element(tag),body:new Element('body')};
+  const tools=new BossDevTools({devCollection:async()=>{throw new Error('CHARACTER_SESSION_LOST');}},null,{documentRef});
+  assert.equal(await tools.runAction('grantCollection'),false);
+  assert.equal(tools.status.textContent,'CHARACTER_SESSION_LOST');assert.equal(tools.busy,false);
+  assert.ok(tools.content.querySelectorAll('button').every(button=>!button.disabled));
+});
+
+test('free cigarette pickup checkbox persists the returned state and reports failures',async()=>{
+  const documentRef={createElement:tag=>new Element(tag),body:new Element('body')};
+  let requested;
+  const tools=new BossDevTools({devSetFreeCollect:async enabled=>{requested=enabled;return {devFreeCollect:enabled};}},null,{documentRef});
+  assert.equal(tools.freeCollectInput.checked,false);
+  tools.freeCollectInput.checked=true;await tools.freeCollectInput.events.change();
+  assert.equal(requested,true);assert.equal(tools.freeCollectInput.checked,true);
+  assert.match(tools.status.textContent,/any order/);
+  tools.setFreeCollectEnabled(false);assert.equal(tools.freeCollectInput.checked,false);
 });

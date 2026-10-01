@@ -5,6 +5,7 @@ import { NORMAL_FOLDER, OFFICE3_COMPUTER, PASSWORD_FOLDER, PASSWORD_FILE } from 
 import { OFFICE3_MONITOR } from '../src/office3/office3Puzzle.js';
 import { setDevPuzzleOneAnswerEnabled } from '../src/boss/devPuzzleSettings.js';
 import { OFFICE3_INVESTIGATION_COMPUTER } from '../src/office3/investigationComputer.js';
+import { DIRECTOR_COMPUTER } from '../src/office2/directorComputer.js';
 
 function node(){return {children:[],classList:{add(){},remove(){}},append(...n){this.children.push(...n);},
   replaceChildren(...n){this.children=n;},setAttribute(){},addEventListener(){},focus(){}};}
@@ -15,6 +16,31 @@ function controller(){
     scene:{registry:{set(){}},input:{keyboard:{enabled:false,resetKeys(){}}},game:{canvas:{focus(){}}}},
   });
 }
+
+test('Director shell remains gated by existing recovery and album commands dispatch to the viewer',async()=>{
+  const c=controller();c.computerMode='director';c.computerConfig=DIRECTOR_COMPUTER;
+  let opened=0;c.showComputer=()=>opened++;
+  c.directorSecurity={state:{stage:'locked'}};
+  assert.equal(c.openDirectorFiles(),false);assert.equal(opened,0);
+  c.directorSecurity.state.stage='compromised';assert.equal(c.openDirectorFiles(),false);
+  c.directorSecurity.state.stage='recovered';assert.equal(c.openDirectorFiles(),true);
+  c.commandInput={value:'cd Private'};await c.executeCommand();
+  let album;
+  c.showAlbum=(value,title)=>{album={value,title};};
+  c.commandInput={value:'open Endlich_Ferien.album'};await c.executeCommand();
+  assert.equal(album.title,'Endlich_Ferien.album');assert.equal(album.value.photos.length,7);
+});
+
+test('album keyboard input and Escape never close or execute the underlying terminal',async()=>{
+  const c=controller();let closed=0,handled=0;
+  c.close=()=>closed++;
+  c.albumViewer={active:true,handleKey(event){handled++;if(event.key==='Escape')this.active=false;}};
+  const event=(key,type='keydown')=>({key,type,preventDefault(){},stopImmediatePropagation(){this.stopped=true;}});
+  const enter=event('Enter');c.handleKey(enter);assert.equal(enter.stopped,true);
+  c.commandInput={value:'dir'};await c.executeCommand();assert.equal(c.computerSession,undefined);
+  c.handleKey(event('Escape'));c.handleKey(event('Escape'));c.handleKey(event('Escape','keyup'));
+  assert.equal(handled,2);assert.equal(closed,0);assert.equal(c.active,true);
+});
 
 test('only a resolved Director hostname and correct port opens the recovery UI',async t=>{
   const old=globalThis.document;globalThis.document={createElement:node};t.after(()=>{globalThis.document=old;});

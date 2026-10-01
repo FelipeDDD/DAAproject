@@ -8,7 +8,7 @@ import {
 import { InventoryHotbar } from '../src/inventory/InventoryHotbar.js';
 import { CHARACTER_ITEM_COOLDOWN_MS,CHARACTER_ITEM_IDS,canCharacterOwnItem,itemAppearanceForCharacter,itemCooldownRemaining,normalizeCharacterItem } from '../src/inventory/characterItems.js';
 
-test('inventory starts with six empty slots and the badge appears only after its real unlock',()=>{
+test('inventory starts with four empty quick slots and the badge appears only after its real unlock',()=>{
   assert.deepEqual(inventorySlots(inventoryItemsFromBossProgress(null)),Array(INVENTORY_SLOT_COUNT).fill(null));
   const victory=applyDirectorVictory(null,'michael').progress;
   const skin=applyDirectorRewardChoice(victory,BOSS_REWARDS.REMASTERED_SKIN).progress;
@@ -22,28 +22,25 @@ test('unique inventory items cannot occupy duplicate hotbar slots',()=>{
   const badge=ITEM_CATALOG.director_access_badge;
   const items=normalizeInventoryItems([badge,{...badge,quantity:4}]);
   assert.equal(items.length,1);assert.equal(items[0].quantity,1);
-  assert.equal(inventorySlots(items).filter(Boolean).length,1);
+  assert.equal(inventorySlots(items).filter(Boolean).length,0);
 });
 
-test('functional items fill from slot one while presentation items fill backward from slot six',()=>{
-  const cigarette=normalizeCharacterItem({characterId:'michael',itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000,active:false});
+test('only consumables occupy the four quick slots; equipment, keys and quests remain owned',()=>{
+  const equipment=normalizeCharacterItem({characterBaseId:'michael',itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000});
+  const potion=normalizeCharacterItem({characterBaseId:'michael',itemId:CHARACTER_ITEM_IDS.HEALTH_POTION,quantity:2});
   const badge=ITEM_CATALOG.director_access_badge;
-  const slots=inventorySlots([badge,cigarette]);
-  assert.equal(slots[0].itemId,CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000);
-  assert.equal(slots[5].itemId,BOSS_REWARDS.DIRECTOR_ACCESS_BADGE);
-  assert.deepEqual(slots.slice(1,5),[null,null,null,null]);
-  assert.equal(inventoryItemUseBehavior(cigarette),'functional');
-  assert.equal(inventoryItemUseBehavior(badge),'presentation');
-  assert.equal(inventoryPresentationAsset(badge),badge.presentationImage);
+  const quest={itemId:'class_photo',type:'quest',quantity:1,icon:'assets/photo.png'};
+  const items=normalizeInventoryItems([badge,equipment,quest,potion]);
+  assert.equal(items.length,4);assert.deepEqual(inventorySlots(items),[potion,null,null,null]);
+  assert.equal(inventoryItemUseBehavior(equipment),'functional');assert.equal(inventoryItemUseBehavior(badge),'presentation');
 });
 
-test('additional presentation items descend from the last inventory slot',()=>{
-  const first=ITEM_CATALOG.director_access_badge;
-  const second={itemId:'class_photo',type:'quest',quantity:1,icon:'assets/photo.png',name:'Class photo',description:'A memory.'};
-  const slots=inventorySlots([first,second]);
-  assert.equal(slots[5].itemId,first.itemId);assert.equal(slots[4].itemId,second.itemId);
-  assert.equal(inventoryItemUseBehavior(second),'presentation');
-  assert.equal(inventoryPresentationAsset(second),second.icon);
+test('quick slots assign consumables automatically and do not impose backpack capacity',()=>{
+  const items=Array.from({length:9},(_,index)=>({itemId:'potion-'+index,type:'consumable',consumable:true,quantity:1}));
+  const slots=inventorySlots(items);assert.equal(slots.length,4);
+  assert.deepEqual(slots.map(item=>item.itemId),items.slice(0,4).map(item=>item.itemId));
+  assert.equal(normalizeInventoryItems(items).length,9);
+  assert.deepEqual(inventorySlots([{...items[0],compatible:false}]),[null,null,null,null]);
 });
 
 test('badge metadata provides its key type, icon and tooltip copy',()=>{
@@ -72,9 +69,8 @@ test('the cigarette pack is a separate profile collectible in a presentation slo
   assert.match(pack.description,/Eine mysteriöse Zigarettenschachtel/);
   assert.match(pack.icon,/lung-crusher-floor\.png$/);
   assert.match(pack.presentationImage,/lung-crusher-3000\.png$/);
-  const slots=inventorySlots([pack,equipment]);
-  assert.equal(slots[0].itemId,equipment.itemId);
-  assert.equal(slots[5].itemId,pack.itemId);
+  assert.deepEqual(inventorySlots([pack,equipment]),[null,null,null,null]);
+  assert.equal(normalizeInventoryItems([pack,equipment]).length,2);
 });
 
 test('profile items remain owned across characters but activate only for their configured character',()=>{
@@ -115,16 +111,17 @@ test('collected item survives repeated normalization when activated and deactiva
     const controllerItems=[item].map(normalizeCharacterItem).filter(Boolean);
     assert.equal(controllerItems.length,1,'owned item must not become a ground pickup');
     assert.equal(controllerItems[0].characterBaseId,'michael');
-    const slots=inventorySlots(inventoryItemsFromSources(null,controllerItems,'michael'));
-    assert.equal(slots.filter(Boolean).length,1);
-    assert.equal(slots[0].active,active);
+    const owned=inventoryItemsFromSources(null,controllerItems,'michael');
+    assert.equal(owned.length,1);assert.equal(owned[0].active,active);
+    assert.deepEqual(inventorySlots(owned),[null,null,null,null]);
   }
 });
 
 test('inventory shortcuts use unmodified top-row digits only',()=>{
   const base={repeat:false,shiftKey:false,ctrlKey:false,altKey:false,metaKey:false,target:{closest:()=>null}};
   assert.equal(inventoryShortcutSlot({...base,code:'Digit1'},null),0);
-  assert.equal(inventoryShortcutSlot({...base,code:'Digit6'},null),5);
+  assert.equal(inventoryShortcutSlot({...base,code:'Digit4'},null),3);
+  for(const code of ['Digit5','Digit6'])assert.equal(inventoryShortcutSlot({...base,code},null),-1);
   assert.equal(inventoryShortcutSlot({...base,shiftKey:true,code:'Digit2'},null),-1);
   assert.equal(inventoryShortcutSlot({...base,code:'Numpad2'},null),-1);
 });

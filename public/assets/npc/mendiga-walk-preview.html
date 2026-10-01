@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NPC · teste de caminhada</title>
+<style>
+body{margin:0;background:#171d27;color:#e0e7ef;font:16px system-ui;padding:32px}
+main{max-width:850px;margin:auto}section{display:flex;flex-wrap:wrap;gap:24px}
+figure{margin:0;padding:20px;background:#283140;border-radius:12px;text-align:center}
+.sprite{width:128px;height:144px;background-image:url(mendiga-walk.png);image-rendering:pixelated;
+background-position-y:var(--row);animation:walk .571428s steps(4) infinite}
+figcaption{padding-top:12px}@keyframes walk{from{background-position-x:0}to{background-position-x:-512px}}
+button{padding:10px 18px;margin-top:20px}body.paused .sprite{animation-play-state:paused}
+</style>
+<main><h1>Teste de caminhada</h1><p>Quatro frames por direção · 7 FPS. Preview ampliado (no jogo, metade deste tamanho).</p>
+<section>
+<figure><div class="sprite" style="--row:0px"></div><figcaption>Frente</figcaption></figure>
+<figure><div class="sprite" style="--row:-144px"></div><figcaption>Direita</figcaption></figure>
+<figure><div class="sprite" style="--row:-288px"></div><figcaption>Esquerda</figcaption></figure>
+<figure><div class="sprite" style="--row:-432px"></div><figcaption>Costas</figcaption></figure>
+</section><button type="button" id="pause">Pausar / continuar</button></main>
+<script>document.querySelector('#pause').addEventListener('click',()=>document.body.classList.toggle('paused'));</script>
+</html>

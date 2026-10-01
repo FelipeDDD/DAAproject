@@ -1,0 +1,157 @@
+﻿{
+    "source":  "mendiga-walk-raw-v2.png",
+    "sourceSha256":  "726EAA4D3351672152EDBE9BA00930AAF5A7011B0318BB654FEB200F7127972F",
+    "columns":  4,
+    "rows":  4,
+    "frameWidth":  128,
+    "frameHeight":  144,
+    "baseline":  143,
+    "uniformScale":  0.4631578947368421,
+    "alphaThreshold":  96,
+    "frames":  [
+                   {
+                       "row":  0,
+                       "column":  0,
+                       "x":  110,
+                       "y":  11,
+                       "width":  184,
+                       "height":  284,
+                       "headCenterX":  214.5
+                   },
+                   {
+                       "row":  0,
+                       "column":  1,
+                       "x":  398,
+                       "y":  12,
+                       "width":  181,
+                       "height":  282,
+                       "headCenterX":  497
+                   },
+                   {
+                       "row":  0,
+                       "column":  2,
+                       "x":  699,
+                       "y":  12,
+                       "width":  189,
+                       "height":  283,
+                       "headCenterX":  806.5
+                   },
+                   {
+                       "row":  0,
+                       "column":  3,
+                       "x":  1004,
+                       "y":  12,
+                       "width":  178,
+                       "height":  283,
+                       "headCenterX":  1097.5
+                   },
+                   {
+                       "row":  1,
+                       "column":  0,
+                       "x":  79,
+                       "y":  309,
+                       "width":  208,
+                       "height":  279,
+                       "headCenterX":  206
+                   },
+                   {
+                       "row":  1,
+                       "column":  1,
+                       "x":  397,
+                       "y":  309,
+                       "width":  173,
+                       "height":  278,
+                       "headCenterX":  505.5
+                   },
+                   {
+                       "row":  1,
+                       "column":  2,
+                       "x":  696,
+                       "y":  310,
+                       "width":  194,
+                       "height":  279,
+                       "headCenterX":  810
+                   },
+                   {
+                       "row":  1,
+                       "column":  3,
+                       "x":  1013,
+                       "y":  311,
+                       "width":  171,
+                       "height":  278,
+                       "headCenterX":  1119.5
+                   },
+                   {
+                       "row":  2,
+                       "column":  0,
+                       "x":  100,
+                       "y":  600,
+                       "width":  208,
+                       "height":  269,
+                       "headCenterX":  188.5
+                   },
+                   {
+                       "row":  2,
+                       "column":  1,
+                       "x":  429,
+                       "y":  599,
+                       "width":  181,
+                       "height":  275,
+                       "headCenterX":  495.5
+                   },
+                   {
+                       "row":  2,
+                       "column":  2,
+                       "x":  729,
+                       "y":  599,
+                       "width":  203,
+                       "height":  273,
+                       "headCenterX":  812
+                   },
+                   {
+                       "row":  2,
+                       "column":  3,
+                       "x":  1048,
+                       "y":  601,
+                       "width":  187,
+                       "height":  274,
+                       "headCenterX":  1117
+                   },
+                   {
+                       "row":  3,
+                       "column":  0,
+                       "x":  119,
+                       "y":  884,
+                       "width":  209,
+                       "height":  285,
+                       "headCenterX":  206.5
+                   },
+                   {
+                       "row":  3,
+                       "column":  1,
+                       "x":  422,
+                       "y":  886,
+                       "width":  199,
+                       "height":  283,
+                       "headCenterX":  507
+                   },
+                   {
+                       "row":  3,
+                       "column":  2,
+                       "x":  726,
+                       "y":  887,
+                       "width":  204,
+                       "height":  283,
+                       "headCenterX":  813.5
+                   },
+                   {
+                       "row":  3,
+                       "column":  3,
+                       "x":  1028,
+                       "y":  886,
+                       "width":  197,
+                       "height":  284,
+                       "headCenterX":  1111.5
+                   }
+               ]
+}

@@ -6,9 +6,10 @@ import { attachLegacyCharacterData } from '../convex/profileDataMigration.js';
 import { sessionTokenHash } from '../convex/profileStore.js';
 import { BOSS_REWARDS,DIRECTOR_BOSS_ID } from '../src/boss/BossRewards.js';
 import { CHARACTER_ITEM_IDS } from '../src/inventory/characterItems.js';
+import {startQuest,collectQuestPack} from '../convex/npcCollectibleQuestStore.js';
 
 function memoryContext(){
-  const tables={profiles:[],profileSessions:[],players:[],bossProgress:[],bossVictoryReceipts:[],characterItems:[],characterLoadouts:[]};
+  const tables={profiles:[],profileSessions:[],players:[],bossProgress:[],bossVictoryReceipts:[],characterItems:[],characterLoadouts:[],npcCollectibleQuests:[]};
   let nextId=1;
   const query=table=>({
     collect:async()=>[...tables[table]],
@@ -76,13 +77,17 @@ test('profile items stay owned across characters but activation enforces visual 
 
 test('collectible cigarette pack and Michael equipment have independent persistent IDs',async()=>{
   const ctx=memoryContext();const profileId=await addProfile(ctx,{name:'collector',character:'sarina',token:TOKEN_A});
-  const pack=await items.claim._handler(ctx,{token:TOKEN_A,itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK});
-  assert.equal(pack.item.itemId,CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK);
+  const spawns=[{id:'test-school-pack',packId:'cigarette_pack_01',markerName:'lung-crusher',room:'school',x:100,y:100}];
+  await startQuest(ctx,profileId,spawns);
+  const pickup={packId:'cigarette_pack_01',spawnId:'test-school-pack'};
+  await collectQuestPack(ctx,profileId,{room:'school',x:100,y:100},pickup,spawns);
+  assert.equal(ctx.tables.characterItems[0].itemId,CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK);
   await ctx.db.patch(profileId,{selectedCharacterId:'michael'});
   const cigarette=await items.claim._handler(ctx,{token:TOKEN_A,itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000});
   assert.equal(cigarette.item.itemId,CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000);
   assert.equal(ctx.tables.characterItems.length,2);
-  assert.equal((await items.claim._handler(ctx,{token:TOKEN_A,itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK})).duplicate,true);
+  await collectQuestPack(ctx,profileId,{room:'school',x:100,y:100},pickup,spawns);
+  assert.equal(ctx.tables.characterItems.length,2,'repeated pickup does not duplicate the pack');
 });
 
 test('stacked pickup claims award the requested amount up to the item stack cap',async()=>{

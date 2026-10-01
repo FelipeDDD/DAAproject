@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="56" viewBox="0 0 40 56">
+  <path d="M3 5 8 2v49l-5 3z" fill="#302316" stroke="#69b6ee" stroke-width="1.5"/>
+  <path d="M8 2h29v49H8z" fill="#1b2b48" stroke="#69b6ee" stroke-width="2"/>
+  <path d="M9 4h27v10H9z" fill="#211914" stroke="#9b6626"/>
+  <path d="M11 17h23v2H11zm0 14h23v2H11z" fill="#386791"/>
+  <text x="22.5" y="26" fill="#69b6ee" font-family="serif" font-size="6.5" font-weight="bold" text-anchor="middle">LUNG</text>
+  <text x="22.5" y="31" fill="#69b6ee" font-family="serif" font-size="5.2" font-weight="bold" text-anchor="middle">CRUSHER</text>
+  <path d="M13 36h19v11H13z" fill="#48321c" stroke="#386791"/>
+  <path d="M15 43h15m-12 2h9" stroke="#69b6ee"/>
+  <text x="22.5" y="11" fill="#eed690" font-family="serif" font-size="5" text-anchor="middle">3000</text>
+</svg>

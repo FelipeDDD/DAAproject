@@ -2,6 +2,12 @@ import { defineSchema, defineTable } from 'convex/server';
 import { v } from 'convex/values';
 
 export default defineSchema({
+  npcCollectibleQuests: defineTable({
+    profileId:v.id('profiles'),questId:v.string(),deliveredPackIds:v.array(v.string()),
+    currentPackId:v.optional(v.string()),activeSpawnId:v.optional(v.string()),
+    devFreeCollect:v.optional(v.boolean()),
+    completed:v.boolean(),rewardClaimed:v.boolean(),updatedAt:v.number(),
+  }).index('by_profile_quest',['profileId','questId']),
   office3Safes: defineTable({
     profileId:v.id('profiles'),code:v.string(),createdAt:v.number(),openedAt:v.optional(v.number()),
     failures:v.optional(v.number()),blockedUntil:v.optional(v.number()),computerBlockedUntil:v.optional(v.number()),

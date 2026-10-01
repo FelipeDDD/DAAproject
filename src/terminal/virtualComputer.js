@@ -101,7 +101,7 @@ export function runComputerCommand(computer, session, input, context = {}) {
   if (!verb) return result();
   const custom = computer.commandHandlers?.[verb]?.({computer, session, arg, context});
   if (custom) return result(custom.message, Boolean(custom.error), custom);
-  if (verb === 'help') return result('Available commands: help, hostname, ipconfig, ping, nslookup, dir, cd, type, connect.\nUse connect <host>:<port> for a network service.');
+  if (verb === 'help') return result('Available commands: help, hostname, ipconfig, ping, nslookup, dir, cd, type, open, connect.\nUse open <file.album> for a photo album.\nUse connect <host>:<port> for a network service.');
   if (verb === 'cd..') return runComputerCommand(computer, session, 'cd ..', context);
   const network = networkCommand(computer, session, verb, arg);
   if (network) return result(network.message, Boolean(network.error), {
@@ -111,7 +111,7 @@ export function runComputerCommand(computer, session, input, context = {}) {
     const location = arg ? resolvePath(computer, session, arg) : {path: session.path};
     if (location.error) return result(location.error, true);
     const folder = currentFolder(computer, location.path);
-    return result(Object.entries(folder.entries ?? {}).map(([name, item]) => item.type === 'file' || item.type === 'action' ? name : `<DIR>  ${name}`).join('\n'));
+    return result(Object.entries(folder.entries ?? {}).map(([name, item]) => ['dir','denied'].includes(item.type) ? `<DIR>  ${name}` : name).join('\n'));
   }
   if (verb === 'cd') {
     if (!arg) return result(pathLabel(session.path));
@@ -120,9 +120,25 @@ export function runComputerCommand(computer, session, input, context = {}) {
     session.path = location.path;
     return result();
   }
+  if (verb === 'open') {
+    if (!arg) return result('Usage: open <file>', true);
+    const filename=arg.replace(/^"(.*)"$/, '$1').replaceAll('/', '\\');
+    const separator=filename.lastIndexOf('\\');
+    const location=separator<0?{path:session.path}:resolvePath(computer,session,filename.slice(0,separator+1));
+    if(location.error)return result(location.error,true);
+    const found=entry(currentFolder(computer,location.path),filename.slice(separator+1));
+    if(!found)return result('The system cannot find the file specified.',true);
+    if(found[1].type==='album')return result('',false,{album:found[1].album,title:found[0]});
+    if(found[1].type==='file'){
+      const content=found[1].content;
+      return result('',false,{note:typeof content==='function'?content(context):content,title:found[0]});
+    }
+    return result('The system cannot open this file.',true);
+  }
   const filename = verb === 'type' ? arg.replace(/^"(.*)"$/, '$1') : String(input).trim();
   if (verb === 'type' && !filename) return result('Usage: type <file>', true);
   const found = entry(currentFolder(computer, session.path), filename);
+  if(found?.[1].type==='album'&&verb!=='type')return result(`Use open ${found[0]} to view this album.`,true);
   if (found?.[1].type === 'file') {
     const content = found[1].content;
     const note = typeof content === 'function' ? content(context) : content;

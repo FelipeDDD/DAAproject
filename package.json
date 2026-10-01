@@ -19,8 +19,8 @@
     "predev": "node scripts/sync-quiz-data.mjs",
     "dev": "vite",
     "convex": "convex dev --local-backend-version precompiled-2026-09-21-0cf49cb",
-    "preconvex": "node scripts/sync-quiz-data.mjs && node scripts/sync-door-definitions.mjs",
-    "prebuild": "node scripts/sync-quiz-data.mjs && node scripts/sync-door-definitions.mjs",
+    "preconvex": "node scripts/sync-quiz-data.mjs && node scripts/sync-door-definitions.mjs && node scripts/sync-npc-collectible-spawns.mjs",
+    "prebuild": "node scripts/sync-quiz-data.mjs && node scripts/sync-door-definitions.mjs && node scripts/sync-npc-collectible-spawns.mjs",
     "build": "vite build",
     "deploy:prod": "npx vercel@latest --prod",
     "preview": "vite preview"

@@ -1,4 +1,6 @@
 import { baseCharacterId } from '../characters.js';
+import { CIGARETTE_QUEST } from '../npc/cigaretteQuest.js';
+import { cigarettePack } from '../npc/cigarettePacks.js';
 
 export const CHARACTER_ITEM_IDS=Object.freeze({
   LUNG_CRUSHER_3000:'lung_crusher_3000',LUNG_CRUSHER_PACK:'lung_crusher_3000_pack',
@@ -10,6 +12,12 @@ export const HEALTH_POTION_HEAL_AMOUNT=70;
 export const HEALTH_POTION_MAX_STACK=10;
 
 export const CHARACTER_ITEMS=Object.freeze({
+  ...Object.fromEntries(CIGARETTE_QUEST.packIds.map((itemId, index) => [itemId, Object.freeze({
+    itemId, type:'quest', quantity:1, questId:CIGARETTE_QUEST.id,
+    name:cigarettePack(itemId)?.name??`Cigarette Pack ${index + 1}`, description:'A questionable delivery for the woman outside.',
+    icon:cigarettePack(itemId).icon,presentationImage:cigarettePack(itemId).card,useBehavior:'presentation',
+    ...(index>0?{iconScale:3.4,iconClip:'inset(34% 37% 37% 37%)'}:{}),
+  })])),
   [CHARACTER_ITEM_IDS.OFFICE2_KEY]:Object.freeze({
     itemId:CHARACTER_ITEM_IDS.OFFICE2_KEY,type:'key',quantity:1,
     name:'Office 2 Key',description:"Opens the Director's office.",
@@ -23,7 +31,7 @@ export const CHARACTER_ITEMS=Object.freeze({
     activatable:true,useBehavior:'functional',
   }),
   [CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK]:Object.freeze({
-    itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK,type:'quest',quantity:1,
+    itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_PACK,type:'quest',quantity:1,questId:CIGARETTE_QUEST.id,
     name:'Lung Crusher 3000 Pack',
     description:'Eine mysteriöse Zigarettenschachtel. Steht vermutlich nicht im Lehrplan.',
     icon:'assets/items/lung-crusher-floor.png',

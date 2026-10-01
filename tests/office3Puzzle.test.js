@@ -98,7 +98,7 @@ test('terminal shuffles each question while preserving its correct answer and so
   assert.deepEqual(source.answers, originalAnswers);
 });
 
-test('the persistent office key occupies one inventory slot and unlocks only office2', () => {
+test('the persistent office key stays in the backpack and unlocks only office2', () => {
   const id = CHARACTER_ITEM_IDS.OFFICE2_KEY;
   assert.equal(canCharacterOwnItem('felipe', id), true);
   assert.equal(canCharacterOwnItem('sarina', id), true);
@@ -112,7 +112,8 @@ test('the persistent office key occupies one inventory slot and unlocks only off
   assert.equal(keyImage.readUInt32BE(16), keyImage.readUInt32BE(20) * 3);
   const items = inventoryItemsFromSources(null, [row, row], 'felipe');
   assert.equal(items.length, 1);
-  assert.equal(inventorySlots(items).filter(Boolean).length, 1);
+  assert.equal(items.length,1);
+  assert.equal(inventorySlots(items).filter(Boolean).length, 0);
   assert.equal(isMapTransitionLocked({ locked: true, targetMap: 'office2' }, []), true);
   assert.equal(isMapTransitionLocked({ locked: true, targetMap: 'office2' }, items), false);
   assert.equal(isMapTransitionLocked({ locked: true, targetMap: 'arena' }, items), true);

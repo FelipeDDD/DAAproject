@@ -17,8 +17,6 @@ export class SchoolScene extends MapScene {
       `${import.meta.env.BASE_URL}assets/doors/door-office2.png`);
     this.load.image('office3-door',
       `${import.meta.env.BASE_URL}assets/doors/door1.png`);
-    this.load.image('lung-crusher-pack-ground',
-      `${import.meta.env.BASE_URL}assets/items/lung-crusher-floor.png`);
     this.load.image('school-secretary',
       `${import.meta.env.BASE_URL}assets/npc/secretary.png`);
   }

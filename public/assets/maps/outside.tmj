@@ -11,7 +11,7 @@
   "version": "1.10",
   "tiledversion": "1.12.2",
   "nextlayerid": 9,
-  "nextobjectid": 53,
+  "nextobjectid": 57,
   "properties": [
     {
       "name": "defaultSpawn",
@@ -264,6 +264,10 @@
       "visible": true,
       "opacity": 1,
       "objects": [
+        {"id":53,"name":"mendiga-patrol-1","type":"","x":400,"y":416,"width":0,"height":0,"rotation":0,"visible":true,"point":true},
+        {"id":54,"name":"mendiga-patrol-2","type":"","x":560,"y":416,"width":0,"height":0,"rotation":0,"visible":true,"point":true},
+        {"id":55,"name":"mendiga-patrol-3","type":"","x":560,"y":640,"width":0,"height":0,"rotation":0,"visible":true,"point":true},
+        {"id":56,"name":"mendiga-patrol-4","type":"","x":400,"y":640,"width":0,"height":0,"rotation":0,"visible":true,"point":true},
         {"id":51,"name":"Referência exterior","type":"","x":32,"y":640,"width":250,"height":48,"rotation":0,"visible":true,"text":{"text":"Fachada DAA / pátio simplificado.\nPosições e colisões editáveis.","pixelsize":12,"color":"#315b9c"}}
       ]
     }

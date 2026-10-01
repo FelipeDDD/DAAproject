@@ -278,7 +278,7 @@ test('a newly registered profile starts without boss progress or inventory items
   });
   assert.deepEqual(items,[]);
   assert.deepEqual(inventorySlots(inventoryItemsFromSources(progress,items,'michael')),
-    [null,null,null,null,null,null]);
+    [null,null,null,null]);
 });
 
 test('profile names are case-insensitively unique',async()=>{

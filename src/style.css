@@ -1,5 +1,8 @@
 @import './calculator/CalculatorWidget.css';
 @import './hud/hud.css';
+@import './ui/photoAlbum.css';
+@import './collections/collections.css';
+@import './inventory/backpack.css';
 
 :root {
   --app-stylesheet-ready: 1;
@@ -269,13 +272,21 @@ body { min-height:100vh; margin:0; color:#334550; background-color:var(--page-ba
   image-rendering:auto; filter:none; animation:none; transform:none;
 }
 .boss-reward-presentation.item[data-item-id='office2_key'] img { width: min(260px,60vw); height: min(260px,60vw); object-fit: cover; object-position: 61% center; clip-path: inset(0 7% 0 14%); animation:none; transform:none; filter:none; }
-.boss-reward-presentation.item[data-item-id='lung_crusher_3000_pack'] .boss-reward-panel {
+.boss-reward-presentation.item:is([data-item-id='lung_crusher_3000_pack'],[data-item-id='cigarette_pack_01'],[data-item-id='cigarette_pack_02'],[data-item-id='cigarette_pack_03'],[data-item-id='cigarette_pack_04']) .boss-reward-panel {
   background:radial-gradient(ellipse at 50% 42%,#614322 0%,#281d13 62%,#121519 100%);
   border-color:#d3a253;
 }
-.boss-reward-presentation.item[data-item-id='lung_crusher_3000_pack'] img {
+.boss-reward-presentation.item:is([data-item-id='lung_crusher_3000_pack'],[data-item-id='cigarette_pack_01'],[data-item-id='cigarette_pack_02'],[data-item-id='cigarette_pack_03'],[data-item-id='cigarette_pack_04']) img {
   width:min(43vw,430px,43vh);height:auto;image-rendering:auto;
+  animation:none;transform:none;filter:drop-shadow(0 0 10px #ffd56d99);
+}
+.boss-reward-presentation.item:is([data-item-id='lung_crusher_3000_pack'],[data-item-id='cigarette_pack_01']) img {
   clip-path:polygon(19% .5%,90% 3.5%,92% 4.5%,92% 87%,90.5% 89.5%,19% 89.5%,9.5% 86%,9.5% 8%);
+}
+/* The color editions share a slightly wider source image: trim their backdrop
+   along the package outline without changing the art or cropping its labels. */
+.boss-reward-presentation.item:is([data-item-id='cigarette_pack_02'],[data-item-id='cigarette_pack_03'],[data-item-id='cigarette_pack_04']) img {
+  clip-path:polygon(19% .7%,89% 3.8%,90.5% 4.5%,90.5% 90.4%,89.3% 91.7%,19% 91.7%,9% 89.5%,9% 7%);
 }
 .boss-reward-presentation.skin img { width: min(45vw,360px); }
 .boss-reward-presentation small { color: #ffd36b; font-weight: 900; letter-spacing: .28em; }

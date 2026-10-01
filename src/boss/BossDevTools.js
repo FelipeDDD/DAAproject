@@ -10,6 +10,7 @@ const PRESETS=Object.freeze([
 const ACTIONS=Object.freeze([
   ['boss','Teleport to boss'],['classroom','Teleport to classroom'],['potion','Drop health potion'],
   ['clearPotions','Clear my potions'],['office2Key','Get Office2 key'],
+  ['resetCollection','Reset cigarette collection'],['grantCollection','Get all cigarette packs'],
 ]);
 
 export class BossDevTools {
@@ -44,20 +45,43 @@ export class BossDevTools {
     });
     const puzzleOptionText=document.createElement('span');puzzleOptionText.textContent='Answer only 1 question in puzzles';
     puzzleOption.append(this.oneAnswerInput,puzzleOptionText);
+    const freeCollectOption=document.createElement('label');freeCollectOption.className='boss-dev-tools-puzzle-option';
+    this.freeCollectInput=document.createElement('input');this.freeCollectInput.type='checkbox';this.freeCollectInput.checked=false;
+    this.freeCollectInput.addEventListener('change',()=>this.setFreeCollect(this.freeCollectInput.checked));
+    const freeCollectText=document.createElement('span');freeCollectText.textContent='Collect cigarette packs in any order';
+    freeCollectOption.append(this.freeCollectInput,freeCollectText);
     this.status=document.createElement('small');this.status.setAttribute('role','status');
-    this.content.append(buttons,actions,puzzleOption,this.status);this.root.append(header,this.content);document.body.append(this.root);
+    this.content.append(buttons,actions,puzzleOption,freeCollectOption,this.status);this.root.append(header,this.content);document.body.append(this.root);
     this.setCollapsed(true);
   }
 
   runAction(action,label){
     if(action==='clearPotions')return this.clearPotions();
     if(action==='office2Key')return this.grantOffice2Key(label);
+    if(action==='resetCollection'||action==='grantCollection')return this.collectionAction(action);
     let result=false;
     if(action==='boss')result=this.scene.devTeleport?.('arena','boss-spawn',{offsetX:-260});
     if(action==='classroom')result=this.scene.devTeleport?.('school','default');
     if(action==='potion')result=Boolean(this.scene.devDropHealthPotion?.());
     this.status.textContent=result?`DEV: ${label}`:`DEV: ${label} unavailable`;
     return result;
+  }
+
+  setFreeCollectEnabled(enabled){
+    if(this.freeCollectInput)this.freeCollectInput.checked=Boolean(enabled);
+  }
+
+  async setFreeCollect(enabled){
+    if(this.busy)return false;
+    this.busy=true;this.setDisabled(true);this.status.textContent=enabled?'Enabling free cigarette pickups...':'Restoring normal cigarette order...';
+    try{
+      const result=await this.scene.devSetFreeCollect?.(enabled);
+      if(!result)throw new Error('DEV: collection unavailable');
+      this.setFreeCollectEnabled(result.devFreeCollect);
+      this.status.textContent=result.devFreeCollect?'DEV: cigarette packs can be collected in any order':'DEV: cigarette pickup order restored';
+      return true;
+    }catch(error){this.setFreeCollectEnabled(!enabled);this.status.textContent=error.message;return false;}
+    finally{this.busy=false;this.setDisabled(false);}
   }
 
   async clearPotions(){
@@ -84,6 +108,19 @@ export class BossDevTools {
     finally{this.busy=false;this.setDisabled(false);}
   }
 
+  async collectionAction(action){
+    if(this.busy)return false;
+    const reset=action==='resetCollection';
+    this.busy=true;this.setDisabled(true);this.status.textContent=reset?'Resetting collection...':'Adding cigarette packs...';
+    try{
+      const result=await this.scene.devCollection?.(reset?'reset':'grant');
+      this.status.textContent=result===null||result===undefined?'DEV: collection unavailable'
+        :reset?'DEV: collection reset; all packs removed':'DEV: all 4 packs available in your inventory';
+      return result!==null&&result!==undefined;
+    }catch(error){this.status.textContent=error.message;return false;}
+    finally{this.busy=false;this.setDisabled(false);}
+  }
+
   async apply(preset,label){
     if(this.busy)return;this.busy=true;this.setDisabled(true);this.status.textContent='Applying…';
     try{
@@ -102,6 +139,6 @@ export class BossDevTools {
     this.toggleButton.setAttribute('aria-expanded',String(!this.collapsed));
     this.toggleButton.setAttribute('aria-label',this.collapsed?'Expand developer tools':'Collapse developer tools');
   }
-  setDisabled(disabled){for(const button of this.content.querySelectorAll('button'))button.disabled=disabled;}
+  setDisabled(disabled){for(const control of this.content.querySelectorAll('button,input'))control.disabled=disabled;}
   destroy(){this.root.remove();}
 }

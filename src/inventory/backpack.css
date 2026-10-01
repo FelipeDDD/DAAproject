@@ -1,0 +1,48 @@
+/* Six controls occupy the same rail: four consumables, backpack, album. */
+.inventory-quick-group,.inventory-utility-group { display:flex; align-items:center; gap:var(--hud-large-slot-gap,4px); }
+.inventory-utility-group { margin-left:clamp(3px,.5cqw,7px); padding-left:clamp(5px,.65cqw,9px); border-left:1px solid #c0a27070; }
+.inventory-menu-button { display:grid; place-items:center; flex-shrink:0; width:var(--hud-large-slot-size,40px); height:var(--hud-large-slot-size,40px); padding:0; border:1px solid #b59660; border-radius:50%; background:radial-gradient(ellipse at 45% 30%,#484032,#151919 80%); box-shadow:inset 0 0 0 3px #131919,0 1px 3px #0009; color:#e3c58e; cursor:pointer; }
+.inventory-menu-button svg { width:66%; height:66%; fill:none; stroke:currentColor; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
+.inventory-menu-button:hover { color:#ffe5b0; border-color:#dab574; background-color:#302a20; }
+.inventory-menu-button:focus-visible { outline:2px solid #f3cf8a; outline-offset:2px; }
+.backpack-detail { padding:8px 0; }
+.backpack-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; align-content:start; padding:3px; }
+.backpack-slot { position:relative; min-width:0; min-height:115px; padding:12px 8px; border:1px solid #6c5839; border-radius:7px; color:#ded0b4; background:linear-gradient(135deg,#2e2c2455,#0c1215); box-shadow:inset 0 0 0 3px #0b1012; }
+.backpack-slot[aria-pressed=true] { border-color:#eac681; background:#302d22; box-shadow:0 0 0 1px #9f7a41,inset 0 0 0 3px #171b19; }
+.backpack-slot-art { position:relative; display:block; height:65px; overflow:hidden; }
+.backpack-slot-name { display:block; margin-top:10px; font-size:11px; line-height:1.3; }
+.backpack-slot-empty { opacity:.45; }
+.backpack-quantity { position:absolute; right:8px; top:5px; color:#fff0cf; font-weight:bold; }
+.backpack-equipped { display:block; color:#d7b974; font-size:8px; margin-top:6px; letter-spacing:.1em; }
+.backpack-metadata { color:#b5a180; font-size:12px; text-transform:capitalize; }
+.backpack-actions { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:20px; }
+.backpack-action { padding:10px 18px; border:1px solid #b29159; border-radius:5px; background:linear-gradient(#51422b,#28251c); color:#f4deae; }
+.backpack-action-secondary { background:#171e20; }
+.backpack-action:hover:not(:disabled) { border-color:#ffe0a2; }
+.backpack-action:disabled { opacity:.5; cursor:default; }
+.backpack-panel[data-view=inspection] .item[data-source=inventory] { position:static; display:block; width:100%; min-height:0; padding:8px 0; background:none; backdrop-filter:none; }
+.backpack-panel[data-view=inspection] .item[data-source=inventory][hidden] { display:none; }
+.backpack-panel[data-view=inspection] .boss-reward-panel { width:100%; max-height:none; padding:14px 24px 20px; border:0; background:none; box-shadow:none; }
+.backpack-panel[data-view=inspection] .boss-reward-image { max-width:100%; height:min(46dvh,420px); width:auto; object-fit:contain; margin:12px auto; }
+.backpack-popup[hidden] { display:none; }
+.backpack-popup { position:fixed; inset:auto; z-index:12000; width:min(285px,calc(100vw - 16px)); max-width:none; max-height:calc(100dvh - 16px); overflow:auto; padding:0; margin:0; border:1px solid #b4955d; border-radius:10px; color:#eee0c4; background:#11181bf7; box-shadow:0 7px 25px #000b,inset 0 0 0 3px #29291f; font:13px/1.4 "Segoe UI",system-ui,sans-serif; box-sizing:border-box; }
+.backpack-popup * { box-sizing:border-box; }
+.backpack-popup button { cursor:pointer; font:inherit; }
+.backpack-popup button:focus-visible { outline:2px solid #efd099; outline-offset:2px; }
+.backpack-popup-panel { padding:14px; }
+.backpack-popup-header { position:relative; padding:0 30px 12px 0; border-bottom:1px solid #79644166; }
+.backpack-popup .collections-heading h2 { margin:2px 0 0; font:22px/1.2 Georgia,serif; }
+.backpack-popup .collections-heading h2::before,.backpack-popup .collections-heading h2::after { display:none; }
+.backpack-popup .collections-eyebrow { font-size:8px; letter-spacing:.13em; }
+.backpack-popup .collections-close { right:0; top:2px; width:26px; height:26px; }
+.backpack-popup-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; padding:13px 0 8px; }
+.backpack-popup-item { position:relative; padding:5px; border:1px solid #695b42; border-radius:5px; color:#e8d4aa; background:#0c1216; }
+.backpack-popup-item:hover { border-color:#d9b97c; background:#302d24; }
+.backpack-popup-item:disabled { opacity:.5; cursor:default; }
+.backpack-popup-item .backpack-slot-art { height:43px; }
+.backpack-popup-item .backpack-quantity { font-size:11px; top:1px; right:3px; }
+.backpack-popup-summary { display:block; margin:4px 0 12px; color:#aa9c81; font-size:10px; }
+.backpack-popup-expand { display:block; width:100%; }
+.backpack-popup-empty { grid-column:1/-1; margin:6px 0; color:#baad94; }
+@media(max-width:740px){.backpack-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.backpack-slot{min-height:105px}}
+@media(max-width:490px){.backpack-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.backpack-slot-art{height:53px}.backpack-slot-name{font-size:10px}.backpack-slot{padding:10px 5px}.backpack-preview .collection-preview-art{height:190px}}

@@ -847,6 +847,19 @@
                  "width":121,
                  "x":647.666666666667,
                  "y":507.333333333333
+                },
+                {
+                 "height":0,
+                 "id":68,
+                 "name":"lung-crusher-3000-red",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":499.75,
+                 "y":349.5
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -855,7 +868,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":68,
+ "nextobjectid":69,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.2",

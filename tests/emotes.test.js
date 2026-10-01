@@ -11,11 +11,12 @@ import {
 
 function editable(selector){return {closest:query=>query.includes(selector)?{}:null};}
 
-test('number shortcuts trigger slots but stay inactive in text inputs',()=>{
-  const base={repeat:false,ctrlKey:false,altKey:false,metaKey:false,target:{closest:()=>null}};
-  assert.equal(shortcutSlot({...base,key:'1'},null),0);assert.equal(shortcutSlot({...base,key:'6'},null),5);
-  assert.equal(shortcutSlot({...base,key:'7'},null),-1);assert.equal(shortcutSlot({...base,key:'2',target:editable('input')},null),-1);
-  assert.equal(shortcutSlot({...base,key:'3'},editable('textarea')),-1);
+test('Shift + 1–6 retains all emote slots without taking inventory shortcuts or text input',()=>{
+  const base={repeat:false,shiftKey:true,ctrlKey:false,altKey:false,metaKey:false,target:{closest:()=>null}};
+  assert.equal(shortcutSlot({...base,code:'Digit1'},null),0);assert.equal(shortcutSlot({...base,code:'Digit6'},null),5);
+  assert.equal(shortcutSlot({...base,shiftKey:false,code:'Digit1'},null),-1);
+  assert.equal(shortcutSlot({...base,code:'Digit7'},null),-1);assert.equal(shortcutSlot({...base,code:'Digit2',target:editable('input')},null),-1);
+  assert.equal(shortcutSlot({...base,code:'Digit3'},editable('textarea')),-1);
 });
 
 test('six customizable slots are stored independently for each character',()=>{
