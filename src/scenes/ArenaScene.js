@@ -15,6 +15,7 @@ import { allPlayerAttackVisuals } from '../boss/PlayerAttackVisuals.js';
 import { getPresence } from '../multiplayer/client.js';
 import { arenaPresenceRoom } from '../boss/arenaRooms.js';
 import { ArenaEncounterController } from '../boss/ArenaEncounterController.js';
+import { ARENA_MODES } from '../boss/ArenaEncounter.js';
 
 export class ArenaScene extends MapScene {
   constructor(){super('arena','arena.tmj');}
@@ -53,13 +54,14 @@ export class ArenaScene extends MapScene {
     this.retryOverlay=new ArenaRetryOverlay(this,{delayMs:BOSS_RETRY_DELAY_MS,
       onRetry:()=>this.retryBossFight(),onReturn:()=>this.returnToSecretPath()});
     this.encounter=new ArenaEncounterController(this,{
-      createBoss:()=>new BossController(this),createCrosshair:()=>new ArenaCrosshair(this),
+      createBoss:authority=>new BossController(this,authority),createCrosshair:()=>new ArenaCrosshair(this),
     });
     this.encounter.start();
     this.events.on('sleep',this.handleBossSleep,this);
     this.events.once('shutdown',()=>{
       this.events.off('sleep',this.handleBossSleep,this);
       this.encounter?.destroy();this.encounter=null;
+      this.arenaEncounter=null;
       this.gate?.destroy();this.gate=null;
       this.retryOverlay?.destroy();this.retryOverlay=null;
       this.crosshair?.destroy();this.crosshair=null;
@@ -81,9 +83,11 @@ export class ArenaScene extends MapScene {
   showBossRetry(){this.retryOverlay?.show();}
 
   retryBossFight(){
+    if(this.arenaEncounter?.mode!==ARENA_MODES.SOLO)return false;
     const spawn=resolveSpawn(this.source,{targetSpawn:'arena-spawn'});
     this.player.clearTint().setVelocity(0,0);this.player.body.reset(spawn.x,spawn.y);
     this.gate?.reset();this.boss?.reset();
+    return true;
   }
 
   returnToSecretPath(){this.travelTo({targetMap:'secret-path',targetSpawn:'arena-return'});}

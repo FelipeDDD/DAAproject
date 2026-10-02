@@ -214,6 +214,40 @@ Local Convex config/database/storage are under `.convex/local/default/`, especia
 
 - Experimental adaptive movement: `ADAPTIVE_MOVEMENT` in `src/multiplayer/presencePolicy.js` is enabled for comparison. Disable it to restore accepted 200 ms sending/render delay. Adaptive mode publishes resolved moving/stopped + velocity state; start/stop, direction/velocity (12 px/s), appearance/item and >160 px corrections bypass cruise throttling. A separate local deadline targets 300 ms cruise; requests remain serialized. Remote interpolation uses 300 ms, with no extrapolation. Stationary/terminal leases retain their existing rules. Long straight movement can reduce updates from 300 to approximately 200/min; visual comparison is still required.
 
+## Arena encounter foundation
+
+- `ArenaEncounter` holds a local encounter ID, Solo/Co-op mode, lifecycle
+  (`waiting -> active -> defeated -> completed`), optional host player ID,
+  participant count and a boss configuration. Repeated defeat/completion calls
+  are ignored. Solo retry and scene re-entry reset the lifecycle.
+- `LocalSoloBossAuthority` owns the Director's HP, phase, attack choice/start,
+  attack event sequence and defeat/completion transitions. `BossController`
+  still owns Phaser sprites, projectiles, timings, HUD, dialogue and effects;
+  it consumes locally created attack events with type, sequence ID, start time,
+  phase, target/origin and attack parameters. No event is sent remotely.
+- `encounterConfig.js` keeps proposed 1–4 participant HP multipliers
+  (1/1.75/2.40/3) and outgoing damage multipliers (1/1.10/1.20/1.30).
+  Solo always uses 1 player: 100 boss HP, 4 player attack damage and current
+  16/19/31 Director damage values. Co-op scaling is configuration only.
+- `ArenaScene` keeps the existing `arenaPresenceRoom` identity and entry/lobby
+  flow above. `ArenaEncounterController` owns scene entry/sleep/re-entry and
+  exposes the lifecycle model as `scene.arenaEncounter`. Solo creates or resets
+  a `LocalSoloBossAuthority` and passes it into `BossController`; each Solo player
+  retains its isolated `arena:solo:<playerId>` presence room and local boss.
+- Co-op destinations use the existing `arenaLobbyId` from `ArenaEntryController`,
+  which becomes `ArenaEncounter.encounterId` without another lobby/room scheme.
+  The existing `ArenaLobbyClient` subscription supplies authoritative host and
+  active participant count to the model; count changes update the future scaling
+  configuration only. Lobby `started` means entry is permitted, while combat
+  remains `waiting`: no local boss, crosshair, damage or reward is created.
+  `arena:coop:<arenaLobbies ID>` still isolates lobbies; leave/host-close behavior,
+  DEV toggle and code invitations are unchanged. A future realtime host authority
+  can use the encounter identity/events; no transport or shared boss is enabled.
+- Solo boss completion passes once through the local authority before opening
+  the exit, dropping loot and recording the existing profile victory. The
+  existing Convex victory ID and pending reward recovery are unchanged; guest
+  fights still open the exit without a persistent reward.
+
 # NPC decorativa do pátio (outside)
 
 - `OutsideScene` usa `MendigaNpc`: caminhada local em quatro direções, sem

@@ -209,7 +209,7 @@ test('local host/deadline expiry closes lobby view without network polling, and 
 test('solo resets its own boss on reentry; co-op never creates one and repeated cycles have no duplicate subscriptions',t=>{
   const {scene,documentRef,callbacks,state,subscriptions}=uiFixture(t);let bosses=0,destroyed=0,crosshairs=0;
   const encounter=new ArenaEncounterController(scene,{documentRef,
-    createBoss:()=>{bosses++;return {reset(){},suspend(){},destroy(){destroyed++;}};},
+    createBoss:authority=>{bosses++;return {authority,reset(){authority.reset();},suspend(){},destroy(){destroyed++;}};},
     createCrosshair:()=>{crosshairs++;return {resume(){},suspend(){},destroy(){}};}});
   scene.arenaMode='solo';encounter.start();assert.equal(bosses,1);
   encounter.stop();encounter.start();assert.equal(bosses,1);assert.equal(destroyed,0);
@@ -238,7 +238,7 @@ test('Presence receives only its instance and ignores callbacks from a prior sol
 test('two solo clients own different bosses, and switching co-op back to solo restores local combat',t=>{
   const a=uiFixture(t),b=uiFixture(t);
   const configure=f=>new ArenaEncounterController(f.scene,{documentRef:f.documentRef,
-    createBoss:()=>({suspend(){},reset(){},destroy(){}}),createCrosshair:()=>({suspend(){},resume(){},destroy(){}})});
+    createBoss:authority=>({authority,suspend(){},reset(){authority.reset();},destroy(){}}),createCrosshair:()=>({suspend(){},resume(){},destroy(){}})});
   const first=configure(a),second=configure(b);a.scene.arenaMode=b.scene.arenaMode='solo';
   first.start();second.start();assert.notEqual(a.scene.boss,b.scene.boss);
   a.scene.arenaMode='coop';a.scene.arenaLobbyId='lobby-a';first.start();assert.equal(a.scene.boss,null);
@@ -425,6 +425,13 @@ test('two independent clients: host ON, guest OFF, leave/rejoin/host closure the
     encounter.start();return encounter;
   });
   await flush();assert.equal(bosses,0);assert.equal(watchers.size,2);
+  for(const f of [a,b]){
+    assert.equal(f.scene.arenaEncounter.encounterId,a.travel[0].arenaLobbyId);
+    assert.equal(f.scene.arenaEncounter.hostPlayerId,'p0');
+    assert.equal(f.scene.arenaEncounter.participantCount,2);
+    assert.equal(f.scene.arenaEncounter.state,'waiting');
+    assert.equal(f.scene.boss,null);
+  }
   for(const encounter of encounters)encounter.stop();
   await Promise.resolve();assert.equal(watchers.size,0);
 });
@@ -441,4 +448,51 @@ test('in-arena host closure returns to saved entrance once with clear notice and
   encounter.returnToEntrance();assert.equal(f.travel.length,1);
   f.callbacks[0]({...f.state,status:'closed'});assert.equal(f.travel.length,1);
   encounter.stop();
+});
+
+test('Solo authority survives retry/re-entry; its encounter and combat are independent from another Solo player',t=>{
+  const a=uiFixture(t),b=uiFixture(t);
+  const configure=f=>new ArenaEncounterController(f.scene,{documentRef:f.documentRef,
+    createBoss:authority=>({authority,reset(){authority.reset();},suspend(){},destroy(){}}),
+    createCrosshair:()=>({suspend(){},resume(){},destroy(){}})});
+  const first=configure(a),second=configure(b);
+  first.start();second.start();
+  const authority=a.scene.boss.authority;
+  assert.equal(authority.encounter,a.scene.arenaEncounter);
+  assert.notEqual(a.scene.arenaEncounter.encounterId,b.scene.arenaEncounter.encounterId);
+  assert.equal(authority.stats.maxHp,100);
+  authority.start();authority.applyDamage(34);
+  assert.equal(authority.phaseState.phase,2);
+  assert.equal(b.scene.boss.authority.model.hp,100);
+  a.scene.boss.reset();
+  assert.equal(a.scene.arenaEncounter.state,'waiting');
+  assert.equal(authority.model.hp,100);
+  const oldEncounter=a.scene.arenaEncounter;
+  first.stop();assert.equal(a.scene.arenaEncounter,null);
+  first.start();
+  assert.equal(a.scene.boss.authority,authority);
+  assert.notEqual(a.scene.arenaEncounter,oldEncounter);
+  assert.equal(authority.encounter,a.scene.arenaEncounter);
+  assert.equal(authority.model.hp,100);
+  assert.equal(authority.phaseState.phase,1);
+  first.destroy();second.destroy();
+});
+
+test('Co-op lobby snapshots update host/count only for the same encounter and never activate combat',t=>{
+  const f=uiFixture(t);f.scene.arenaMode='coop';f.scene.arenaLobbyId='lobby-a';
+  const controller=new ArenaEncounterController(f.scene,{documentRef:f.documentRef,
+    createBoss:()=>assert.fail('no local co-op boss'),createCrosshair:()=>assert.fail('no co-op crosshair')});
+  controller.start();
+  const encounter=f.scene.arenaEncounter;
+  assert.equal(encounter.encounterId,'lobby-a');assert.equal(encounter.participantCount,0);
+  f.callbacks[0]({...f.state,status:'started',participants:[
+    ...f.state.participants,{...f.state.participants[0],playerId:'guest'}]});
+  assert.equal(encounter.hostPlayerId,'a');assert.equal(encounter.participantCount,2);
+  assert.equal(encounter.bossConfig.maxHp,175);
+  assert.equal(encounter.state,'waiting');
+  assert.equal(encounter.updateFromLobby({...f.state,lobbyId:'other'}),false);
+  assert.equal(encounter.participantCount,2);
+  f.callbacks[0]({...f.state,status:'started'});assert.equal(encounter.participantCount,1);
+  controller.stop();f.callbacks[0]({...f.state,status:'started'});
+  assert.equal(f.scene.arenaEncounter,null);assert.equal(f.subscriptions(),0);
 });

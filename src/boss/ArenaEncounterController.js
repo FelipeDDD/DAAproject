@@ -1,5 +1,7 @@
 import { ArenaLobbyClient } from './ArenaLobbyClient.js';
 import { arenaClosureMessage,setArenaDiagnostics } from './arenaLobbyUi.js';
+import { arenaEncounterFromDestination,ARENA_MODES } from './ArenaEncounter.js';
+import { createLocalBossAuthority } from './LocalSoloBossAuthority.js';
 
 // Boss creation is isolated here so no co-op path can instantiate local combat.
 export class ArenaEncounterController {
@@ -9,10 +11,17 @@ export class ArenaEncounterController {
   start(){
     this.stop();this.returning=false;const scene=this.scene;
     scene.retryOverlay?.close();scene.gate?.reset();
-    if(scene.arenaMode!=='coop'){
+    const encounter=arenaEncounterFromDestination({arenaMode:scene.arenaMode,arenaLobbyId:scene.arenaLobbyId});
+    scene.arenaEncounter=encounter;
+    if(encounter.mode===ARENA_MODES.SOLO){
       setArenaDiagnostics(scene,{mode:'solo'});
-      if(scene.boss){scene.boss.reset();scene.crosshair?.resume();}
-      else{scene.boss=this.createBoss();scene.crosshair=this.createCrosshair();}
+      if(scene.boss){
+        scene.boss.authority.encounter=encounter;
+        scene.boss.reset();scene.crosshair?.resume();
+      }else{
+        const authority=createLocalBossAuthority(encounter,scene.time?.now??0);
+        scene.boss=this.createBoss(authority);scene.crosshair=this.createCrosshair();
+      }
       return;
     }
     scene.boss?.destroy();scene.boss=null;scene.crosshair?.destroy();scene.crosshair=null;
@@ -26,6 +35,7 @@ export class ArenaEncounterController {
     this.notice.append(text,this.details,leave);this.document.body.append(this.notice);
     this.lobby=new ArenaLobbyClient(scene.presence,scene.arenaLobbyId,state=>{
       if(!state||state.status==='closed'){this.returnToEntrance(arenaClosureMessage(state?.closedReason));return;}
+      encounter.updateFromLobby(state);
       const host=state.participants.find(p=>p.playerId===state.hostPlayerId);
       this.details.textContent=`${state.participants.length}/${state.maxParticipants} players · Host: ${host?.displayName??'Player'}`;
       setArenaDiagnostics(scene,{mode:'coop',lobbyId:state.lobbyId,status:state.status,
@@ -50,6 +60,7 @@ export class ArenaEncounterController {
     this.notice?.remove();this.notice=null;
     setArenaDiagnostics(this.scene,null);
     this.scene.boss?.suspend();this.scene.crosshair?.suspend();
+    this.scene.arenaEncounter=null;
   }
   destroy(){this.stop();this.scene.boss?.destroy();this.scene.boss=null;this.scene.crosshair?.destroy();this.scene.crosshair=null;}
 }

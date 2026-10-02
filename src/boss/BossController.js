@@ -4,32 +4,33 @@ import { readBossPositions } from '../maps/bossPositions.js';
 import { BOSS_FIXED_SPEECH,speechForPhase } from './BossDialogue.js';
 import { BossEncounterState,BossTutorialState,isWithinActivationRange } from './BossEncounterState.js';
 import {
-  aimedVelocity,BossCombatState,BossPhaseState,BOSS_STATES,PlayerCombatState,
+  aimedVelocity,BOSS_STATES,PlayerCombatState,
   ProjectileHitRegistry,projectileFromCollision,projectileVelocityToward,
 } from './BossCombatState.js';
 import {
-  AreaAttackTarget,BossAttackSequence,BossMovementPlan,BOSS_ATTACK_TYPES,BOSS_PROJECTILE_VISUALS,
+  AreaAttackTarget,BossMovementPlan,BOSS_ATTACK_TYPES,BOSS_PROJECTILE_VISUALS,
   fanProjectileVelocities,homingVelocity,projectileVisualForAttack,
 } from './BossAttackPattern.js';
 import {
-  BOSS_ACTIVATION_RANGE,BOSS_AREA_DAMAGE,BOSS_AREA_IMPACT_MS,BOSS_AREA_RADIUS,BOSS_ATTACK_COOLDOWN_MS,
+  BOSS_ACTIVATION_RANGE,BOSS_AREA_IMPACT_MS,BOSS_AREA_RADIUS,
   BOSS_AREA_IMPACT_FRAME_RATE,BOSS_AREA_TELEGRAPH_FRAME_RATE,BOSS_AREA_VISUAL_SCALE,
   BOSS_ATTACK_TUTORIAL_DELAY_MS,BOSS_ATTACK_TUTORIAL_MS,BOSS_DEFEAT_SPRITE_SCALE,
   BOSS_ATTACK_STATE_MS,BOSS_FIGHT_START_DELAY_MS,
   BOSS_FAN_PROJECTILE_BODY_HEIGHT,BOSS_FAN_PROJECTILE_BODY_OFFSET_X,BOSS_FAN_PROJECTILE_BODY_OFFSET_Y,
   BOSS_FAN_PROJECTILE_BODY_WIDTH,BOSS_HURT_STATE_MS,BOSS_INTRO_COMBAT_DELAY_MS,
-  BOSS_INTRO_FOLLOWUP_DELAY_MS,BOSS_MAX_HP,
-  BOSS_PHASES,BOSS_PHASE_THRESHOLDS,BOSS_PHASE_TRANSITION_MS,BOSS_RANDOM_SPEECH_MAX_MS,
+  BOSS_INTRO_FOLLOWUP_DELAY_MS,
+  BOSS_PHASES,BOSS_PHASE_TRANSITION_MS,BOSS_RANDOM_SPEECH_MAX_MS,
   BOSS_RANDOM_SPEECH_MIN_MS,BOSS_SPEECH_DURATION_MS,BOSS_IMPORTANT_SPEECH_DURATION_MS,
   BOSS_DEATH_COLLAPSE_MS,BOSS_DEATH_FADE_MS,BOSS_LOOT_INTERACTION_RADIUS,
   BOSS_SPRITE_BODY_HEIGHT,BOSS_SPRITE_BODY_OFFSET_X,
   BOSS_SPRITE_BODY_OFFSET_Y,BOSS_SPRITE_BODY_WIDTH,BOSS_SPRITE_SCALE,
-  BOSS_HOMING_DAMAGE,BOSS_HOMING_LIFETIME_MS,BOSS_PROJECTILE_LIFETIME_MS,
-  PLAYER_ATTACK_COOLDOWN_MS,PLAYER_HIT_DAMAGE,
+  BOSS_HOMING_LIFETIME_MS,BOSS_PROJECTILE_LIFETIME_MS,
+  PLAYER_ATTACK_COOLDOWN_MS,
   BOSS_SINGLE_PROJECTILE_FRAME_RATE,BOSS_SINGLE_PROJECTILE_FRAME_SIZE,
   PLAYER_INVULNERABILITY_MS,PLAYER_MAX_HP,
-  PLAYER_ATTACK_DAMAGE,PLAYER_PROJECTILE_LIFETIME_MS,PLAYER_PROJECTILE_SPEED,
+  PLAYER_PROJECTILE_LIFETIME_MS,PLAYER_PROJECTILE_SPEED,
 } from './config.js';
+import { LocalSoloBossAuthority } from './LocalSoloBossAuthority.js';
 import {
   BOSS_VISUAL_ANIMATIONS,BOSS_VISUAL_TEXTURES,createBossVisualAnimations,phaseVisual,
 } from './BossVisualState.js';
@@ -37,7 +38,7 @@ import { BossProgressClient } from './BossProgressClient.js';
 import { BossRewardOverlay } from './BossRewardOverlay.js';
 import { WorldPrompt } from '../ui/WorldPrompt.js';
 import {
-  BOSS_REWARDS,DIRECTOR_BOSS_ID,hasPendingDirectorReward,shouldClearDirectorLoot,
+  BOSS_REWARDS,hasPendingDirectorReward,shouldClearDirectorLoot,
 } from './BossRewards.js';
 import { ArenaHudOverlay } from './ArenaHudOverlay.js';
 import { allPlayerAttackVisuals,playerAttackSpawn,playerAttackVisual } from './PlayerAttackVisuals.js';
@@ -119,16 +120,16 @@ function textInputActive(){
 const newVictoryId=()=>globalThis.crypto?.randomUUID?.()??`${Date.now()}-${Math.random().toString(36).slice(2)}-director`;
 
 export class BossController {
-  constructor(scene){
+  constructor(scene,authority=new LocalSoloBossAuthority({now:scene.time.now})){
     this.scene=scene;
-    this.model=new BossCombatState({maxHp:BOSS_MAX_HP,attackCooldownMs:BOSS_ATTACK_COOLDOWN_MS,now:scene.time.now});
-    this.phaseState=new BossPhaseState({maxHp:BOSS_MAX_HP,thresholds:BOSS_PHASE_THRESHOLDS});
+    this.authority=authority;
+    this.model=authority.model;
+    this.phaseState=authority.phaseState;
     this.encounter=new BossEncounterState({
       followupDelayMs:BOSS_INTRO_FOLLOWUP_DELAY_MS,combatStartDelayMs:BOSS_INTRO_COMBAT_DELAY_MS,
     });
     this.tutorialState=new BossTutorialState();
     this.playerCombat=new PlayerCombatState({maxHp:PLAYER_MAX_HP,invulnerabilityMs:PLAYER_INVULNERABILITY_MS});
-    this.attackSequence=new BossAttackSequence();
     this.movementPlan=new BossMovementPlan(readBossPositions(scene.source));
     this.hitRegistry=new ProjectileHitRegistry();
     this.nextPlayerAttackAt=0;this.stateEndsAt=0;this.moveDueAt=0;this.destroyed=false;this.suspended=false;
@@ -234,7 +235,7 @@ export class BossController {
 
   activateEncounter(time){
     if(this.model.state===BOSS_STATES.DEFEATED||!this.encounter.activate(time))return false;
-    this.model.nextAttackAt=Math.max(this.model.nextAttackAt,time+BOSS_FIGHT_START_DELAY_MS);
+    this.authority.start(time,BOSS_FIGHT_START_DELAY_MS);
     this.showBossSpeech(BOSS_FIXED_SPEECH.activation,{important:true});
     this.scheduleRandomSpeech(time);
     return true;
@@ -292,18 +293,23 @@ export class BossController {
   startBossAttack(time,{type:forcedType=null,force=false,advanceSequence=true}={}){
     if(this.suspended||!this.encounter.canFight(time)||this.playerCombat.defeated
       ||this.model.state!==BOSS_STATES.IDLE||(!force&&!this.model.canAttack(time)))return false;
-    const type=forcedType??this.attackSequence.peek();
+    const type=forcedType??this.authority.peekAttackType();
     const fan=type===BOSS_ATTACK_TYPES.FAN;
     const area=type===BOSS_ATTACK_TYPES.AREA;
     const homing=type===BOSS_ATTACK_TYPES.HOMING;
     const config=this.phaseConfig;
-    if(!this.model.startAttack(time,{
-      type,cooldownMs:fan?config.fanCooldownMs:area?config.areaCooldownMs:homing?config.homingCooldownMs:config.singleCooldownMs,
-      telegraphMs:fan?config.fanTelegraphMs:area?config.areaTelegraphMs:0,force,
-    }))return false;
-    if(advanceSequence)this.attackSequence.advance();
     const target=this.scene.player.body.center;
-    this.pendingAim={x:target.x,y:target.y};
+    const event=this.authority.startAttack(time,{
+      type,force,advanceSequence,
+      cooldownMs:fan?config.fanCooldownMs:area?config.areaCooldownMs:homing?config.homingCooldownMs:config.singleCooldownMs,
+      telegraphMs:fan?config.fanTelegraphMs:area?config.areaTelegraphMs:0,
+      origin:this.sprite.body.center,target,
+      parameters:{projectileSpeed:config.projectileSpeed,fanProjectiles:fan?config.fanProjectiles:undefined,
+        fanSpreadDegrees:fan?config.fanSpreadDegrees:undefined,
+        areaRadius:area?BOSS_AREA_RADIUS:undefined,homingSpeed:homing?config.homingSpeed:undefined},
+    });
+    if(!event)return false;
+    this.pendingAim={...event.target};
     if(fan||area)this.beginBossTelegraph();
     if(area)this.beginAreaTelegraph(this.pendingAim);
     return true;
@@ -320,8 +326,8 @@ export class BossController {
 
   executeBossAttack(time){
     if(!this.model.attackReady(time)||this.suspended||this.playerCombat.defeated)return 0;
-    const attack=this.model.activeAttack;
-    if(!this.model.markAttackExecuted())return 0;
+    const attack=this.authority.executeAttack(time);
+    if(!attack)return 0;
     const origin={x:this.sprite.body.center.x,y:this.sprite.body.center.y};
     if(attack.type===BOSS_ATTACK_TYPES.AREA){
       const playerCenter=this.scene.player.body.center;
@@ -331,7 +337,7 @@ export class BossController {
       })??false;
       this.endBossTelegraph();
       this.showAreaImpact();
-      if(hit)this.applyPlayerDamage(time,BOSS_AREA_DAMAGE);
+      if(hit)this.applyPlayerDamage(time,this.authority.stats.damage.area);
       this.stateEndsAt=time+BOSS_AREA_IMPACT_MS;
       this.scheduleMovement();
       return 0;
@@ -362,7 +368,8 @@ export class BossController {
         .setData('projectileBehavior',homing?'homing':'straight')
         .setData('homingSpeed',homing?config.homingSpeed:null)
         .setData('homingTurnRate',homing?config.homingTurnRateDegrees*Math.PI/180:null)
-        .setData('damage',homing?BOSS_HOMING_DAMAGE:PLAYER_HIT_DAMAGE);
+        .setData('damage',homing?this.authority.stats.damage.homing
+          :fan?this.authority.stats.damage.fan:this.authority.stats.damage.single);
       if(animatedPaper){
         projectile.setRotation(Math.atan2(velocity.y,velocity.x)+Math.PI/2);
         projectile.play(visual===BOSS_PROJECTILE_VISUALS.HOMING_PAPER
@@ -386,7 +393,7 @@ export class BossController {
     this.moveDueAt=0;
     const destination=this.movementPlan.begin({x:this.sprite.x,y:this.sprite.y});
     if(!destination)return false;
-    if(!this.model.startMoving()){this.movementPlan.cancel();return false;}
+    if(!this.authority.startMoving()){this.movementPlan.cancel();return false;}
     this.movementTween=this.scene.tweens.add({
       targets:this.sprite,x:destination.x,y:destination.y,duration:this.phaseConfig.moveDurationMs,
       ease:'Sine.InOut',
@@ -401,7 +408,7 @@ export class BossController {
     this.sprite.setPosition(destination.x,destination.y).setDepth(destination.y);
     this.positionAnchor={x:destination.x,y:destination.y};
     this.movementPlan.complete();this.movementTween=null;
-    return this.model.finishMoving();
+    return this.authority.finishMoving();
   }
 
   cancelMovement(){
@@ -466,8 +473,7 @@ export class BossController {
   }
 
   startPhaseTransition(time){
-    if(!this.phaseState.transitionPending||!this.model.startPhaseTransition())return false;
-    this.phaseState.consumeTransition();
+    if(!this.authority.beginPhaseTransition())return false;
     this.cancelMovement();this.endBossTelegraph();this.clearAreaVisual();
     this.phaseTransitionEndsAt=time+BOSS_PHASE_TRANSITION_MS;
     const phaseThree=this.phaseState.phase===3;
@@ -495,7 +501,7 @@ export class BossController {
     this.hud.hideNotice();
     this.applyBossVisual(this.phaseState.phase);
     this.sprite.clearTint();
-    return this.model.finishPhaseTransition();
+    return this.authority.finishPhaseTransition();
   }
 
   clearPhaseTransition(){
@@ -541,7 +547,7 @@ export class BossController {
   hitPlayer(projectile){
     if(!projectile?.active||!this.hitRegistry.claim(projectile))return;
     this.disableProjectile(projectile);
-    this.applyPlayerDamage(this.scene.time.now,projectile.getData('damage')??PLAYER_HIT_DAMAGE);
+    this.applyPlayerDamage(this.scene.time.now,projectile.getData('damage')??this.authority.stats.damage.single);
   }
 
   applyPlayerDamage(time,damage){
@@ -572,10 +578,10 @@ export class BossController {
     const wasMoving=this.model.state===BOSS_STATES.MOVING;
     const wasTransitioning=this.model.state===BOSS_STATES.PHASE_TRANSITION;
     this.disableProjectile(projectile);
-    if(!this.model.takeDamage(PLAYER_ATTACK_DAMAGE))return;
+    const hit=this.authority.applyDamage(this.authority.stats.playerAttackDamage);
+    if(!hit.damage)return;
     this.drawHp();
-    if(this.model.state===BOSS_STATES.DYING){this.beginDeathSequence();return;}
-    this.phaseState.update(this.model.hp);
+    if(hit.dying){this.beginDeathSequence();return;}
     if(wasTransitioning)return;
     this.endBossTelegraph();this.clearAreaVisual();
     if(wasMoving){
@@ -594,6 +600,7 @@ export class BossController {
   }
 
   beginDeathSequence(){
+    if(!this.authority.defeat())return false;
     this.encounter.defeat();
     this.cancelPendingAttack();
     this.cancelMovement();
@@ -612,17 +619,19 @@ export class BossController {
       this.deathTween=this.scene.tweens.add({targets:this.sprite,alpha:0,duration:BOSS_DEATH_FADE_MS,
         onComplete:()=>this.finishBossDeath()});
     });
+    return true;
   }
 
   finishBossDeath(){
-    if(this.destroyed||this.suspended||!this.model.finishDying())return false;
-    this.sprite.setVisible(false);this.hud.hideBoss();this.hud.showNotice('BOSS DEFEATED','victory');
-    this.defeatTimer=this.scene.time.delayedCall(2200,()=>this.hud?.hideNotice());
-    this.scene.unlockBossExit?.();
-    if(this.progressClient){
-      this.spawnLoot({x:this.sprite.x,y:this.sprite.y});this.recordVictory();
-    }
-    return true;
+    if(this.destroyed||this.suspended)return false;
+    return this.authority.complete(()=>{
+      this.sprite.setVisible(false);this.hud.hideBoss();this.hud.showNotice('BOSS DEFEATED','victory');
+      this.defeatTimer=this.scene.time.delayedCall(2200,()=>this.hud?.hideNotice());
+      this.scene.unlockBossExit?.();
+      if(this.progressClient){
+        this.spawnLoot({x:this.sprite.x,y:this.sprite.y});this.recordVictory();
+      }
+    });
   }
 
   recordVictory(){
@@ -677,7 +686,7 @@ export class BossController {
   }
 
   async openReward(){
-    if(this.rewardOpened)return;this.rewardOpened=true;this.model.beginReward();
+    if(this.rewardOpened)return;this.rewardOpened=true;this.authority.beginReward();
     try{
       const result=this.pendingRewardResult??await this.recordVictory();
       if(this.destroyed||this.suspended)return;
@@ -703,7 +712,7 @@ export class BossController {
   }
 
   finishReward(){
-    this.rewardOpened=false;this.model.finishReward();
+    this.rewardOpened=false;this.authority.finishReward();
     this.lootTween?.stop();this.lootTween=null;this.loot?.destroy();this.loot=null;
     this.lootPrompt?.destroy();this.lootPrompt=null;
   }
@@ -789,7 +798,7 @@ export class BossController {
     this.updateEncounter(time);
     if(this.playerCombat.defeated)this.scene.player.setVelocity(0,0);
     if(this.model.state===BOSS_STATES.PHASE_TRANSITION&&time>=this.phaseTransitionEndsAt)this.finishPhaseTransition();
-    if(time>=this.stateEndsAt&&this.stateEndsAt){this.model.finishAction();this.stateEndsAt=0;this.sprite.clearTint();}
+    if(time>=this.stateEndsAt&&this.stateEndsAt){this.authority.finishAction();this.stateEndsAt=0;this.sprite.clearTint();}
     const phaseTransitionStarted=this.encounter.active&&this.startPhaseTransition(time);
     const scriptedAttackStarted=!phaseTransitionStarted&&this.model.state!==BOSS_STATES.PHASE_TRANSITION
       &&this.startScriptedHoming(time);
@@ -829,8 +838,8 @@ export class BossController {
     this.progressClient=hasProfileSession(this.scene.presence)?new BossProgressClient(this.scene.presence):null;
     this.suspended=false;this.clearProjectiles();
     this.cancelMovement();
-    this.model.reset(this.scene.time.now);this.phaseState.reset();this.encounter.reset();this.tutorialState.reset();this.playerCombat.reset();
-    this.attackSequence.reset();this.movementPlan.reset();
+    this.authority.reset(this.scene.time.now);this.encounter.reset();this.tutorialState.reset();this.playerCombat.reset();
+    this.movementPlan.reset();
     this.nextPlayerAttackAt=0;this.stateEndsAt=0;this.victoryId=newVictoryId();this.victoryPromise=null;this.rewardOpened=false;this.pendingRewardResult=null;
     this.scriptedHomingPending=false;this.nextRandomSpeechAt=Infinity;
     this.positionAnchor={...this.home};
@@ -848,7 +857,7 @@ export class BossController {
   }
 
   cancelPendingAttack(){
-    this.model.cancelAttack();this.pendingAim=null;this.stateEndsAt=0;
+    this.authority.cancelAttack();this.pendingAim=null;this.stateEndsAt=0;
     this.endBossTelegraph();this.clearAreaVisual();
   }
 
