@@ -4,6 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "db:push": "node scripts/convex-db-push.mjs",
+    "db:pull": "node scripts/convex-db-pull.mjs",
     "pretest": "node scripts/sync-quiz-data.mjs",
     "test": "node --test \"tests/*.test.js\"",
     "test:multiplayer": "node --env-file=.env.local scripts/check-multiplayer.mjs",

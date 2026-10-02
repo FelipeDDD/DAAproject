@@ -30,6 +30,7 @@ import type * as profileCharacterState from "../profileCharacterState.js";
 import type * as profileDataMigration from "../profileDataMigration.js";
 import type * as profileStore from "../profileStore.js";
 import type * as profiles from "../profiles.js";
+import type * as pvpMatches from "../pvpMatches.js";
 import type * as quizCleanupWorker from "../quizCleanupWorker.js";
 import type * as quizGeneratedQuestions from "../quizGeneratedQuestions.js";
 import type * as quizHistory from "../quizHistory.js";
@@ -71,6 +72,7 @@ declare const fullApi: ApiFromModules<{
   profileDataMigration: typeof profileDataMigration;
   profileStore: typeof profileStore;
   profiles: typeof profiles;
+  pvpMatches: typeof pvpMatches;
   quizCleanupWorker: typeof quizCleanupWorker;
   quizGeneratedQuestions: typeof quizGeneratedQuestions;
   quizHistory: typeof quizHistory;

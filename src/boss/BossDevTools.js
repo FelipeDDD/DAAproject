@@ -1,6 +1,7 @@
 import { BossProgressClient } from './BossProgressClient.js';
 import { initializeDevPuzzleSettings,setDevPuzzleOneAnswerEnabled } from './devPuzzleSettings.js';
 import { coopArenaEnabled,setCoopArenaEnabled } from './devArenaSettings.js';
+import { pvpEnabled,setPvpEnabled } from '../pvp/config.js';
 
 export const shouldShowBossDevTools=env=>env?.DEV===true;
 
@@ -66,6 +67,12 @@ export class BossDevTools {
     this.arenaDiagnostics=document.createElement('small');this.arenaDiagnostics.className='boss-dev-arena-diagnostics';
     this.content.append(buttons,actions,puzzleOption,freeCollectOption,this.coopArenaButton,this.arenaDiagnostics,this.status);this.root.append(header,this.content);document.body.append(this.root);
     this.setArenaDiagnostics(scene.arenaDiagnostics);
+    this.pvpButton=document.createElement('button');this.pvpButton.type='button';
+    const pvpLabel=()=>{this.pvpButton.textContent=`PvP Arena: ${pvpEnabled({DEV:true})?'ON':'OFF'}`;};
+    pvpLabel();this.pvpButton.addEventListener('click',()=>{setPvpEnabled(!pvpEnabled({DEV:true}));pvpLabel();});
+    const openPvp=document.createElement('button');openPvp.type='button';openPvp.textContent='Open PvP Lobby';
+    openPvp.addEventListener('click',()=>{if(!scene.openPvpLobby?.())this.status.textContent='Close the current activity before opening PvP.';});
+    this.content.append(this.pvpButton,openPvp);
     this.setCollapsed(true);
   }
 

@@ -1,6 +1,8 @@
 import { findSessionPlayer } from './playerSessions.js';
 import { soloArenaRoom,arenaLobbyId,roomMapKey } from '../src/boss/arenaRooms.js';
 import { requireArenaRoomMembership } from './arenaLobbies.js';
+import { requirePvpMembership } from './pvpMatches.js';
+import { PVP_MAP,pvpMatchId } from '../src/pvp/config.js';
 import { queryGeneric as query, mutationGeneric as mutation, internalMutationGeneric as internalMutation } from 'convex/server';
 import { v } from 'convex/values';
 import { baseCharacterId, characterBaseIdFor, characterById } from '../src/characters.js';
@@ -176,7 +178,7 @@ export const update = mutation({
         (args.velocityY !== undefined && !Number.isFinite(args.velocityY)) ||
         args.playerId.length > 100 || (args.name!==undefined&&args.name.length > 40) ||
         (args.displayName!==undefined&&args.displayName.length>32) ||
-        !['school', 'outside', 'arena', 'office2', 'office3', 'secret-path', 'selection'].includes(roomMapKey(args.room)) ||
+        !['school', 'outside', 'arena', 'office2', 'office3', 'secret-path', 'selection',PVP_MAP].includes(roomMapKey(args.room)) ||
         !['up', 'down', 'left', 'right'].includes(args.direction)) throw new Error('Invalid player state');
     if(args.activeCharacterItem&&!canCharacterOwnItem(baseCharacterId(args.characterId),args.activeCharacterItem))
       throw new Error('Invalid active character item');
@@ -186,6 +188,10 @@ export const update = mutation({
     if(existing.presenceMode==='terminal')return;
     // Older clients publishing bare `arena` are also isolated, never placed in a shared solo room.
     const room=args.room==='arena'?soloArenaRoom(args.playerId):args.room;
+    if(roomMapKey(room)===PVP_MAP){
+      const matchId=pvpMatchId(room);if(!matchId)throw new Error('Missing PvP match.');
+      await requirePvpMembership(ctx,existing,matchId);
+    }
     if(roomMapKey(room)==='arena'){
       const lobbyId=arenaLobbyId(room);
       if(lobbyId)await requireArenaRoomMembership(ctx,existing,lobbyId);

@@ -3,8 +3,36 @@ import assert from 'node:assert/strict';
 import { BackpackPopup } from '../src/inventory/BackpackPopup.js';
 import { ItemRewardOverlay } from '../src/inventory/ItemRewardOverlay.js';
 import { menuFixture } from './helpers/menuFixture.js';
+import { CHARACTER_ITEMS,CHARACTER_ITEM_IDS } from '../src/inventory/characterItems.js';
+import { BackpackMenu } from '../src/inventory/BackpackMenu.js';
 
 const item={itemId:'potion',type:'consumable',consumable:true,useBehavior:'functional',quantity:2,name:'Potion',icon:'assets/items/potion-felipe-inventory.png'};
+test('real office key and ordinary items open in both backpacks and closing restores movement',()=>{
+  const key=CHARACTER_ITEMS[CHARACTER_ITEM_IDS.OFFICE2_KEY];
+  for(const Menu of [BackpackPopup,BackpackMenu]){
+    const f=menuFixture(Menu,{items:[item,key]});
+    for(let cycle=0;cycle<3;cycle++){
+      assert.equal(f.menu.open(),true);
+      const art=f.menu.itemButtons.get(key.itemId).querySelector('svg');
+      assert.equal(art.viewBox,'320 0 620 724');
+      assert.equal(art.querySelector('image').href,'https://game.test/assets/items/key-office.png');
+      assert.equal(f.scene.input.keyboard.enabled,false);
+      f.menu.close();assert.equal(f.scene.input.enabled,true);assert.equal(f.scene.input.keyboard.enabled,true);
+    }
+    f.menu.destroy();
+  }
+});
+test('failed inventory rendering cannot latch dialog state or disable movement on a later close',()=>{
+  const f=menuFixture(BackpackPopup,{items:[item]});
+  const render=f.menu.showOverview;
+  f.menu.showOverview=()=>{throw new Error('render failed');};
+  assert.throws(()=>f.menu.open(),/render failed/);
+  assert.equal(f.menu.active,false);assert.equal(f.menu.root.hidden,true);
+  f.menu.close();assert.equal(f.scene.input.enabled,true);assert.equal(f.scene.input.keyboard.enabled,true);
+  f.menu.showOverview=render;assert.equal(f.menu.open(),true);
+  f.menu.close();assert.equal(f.scene.input.enabled,true);assert.equal(f.scene.input.keyboard.enabled,true);
+  f.menu.destroy();
+});
 test('mini backpack toggles, positions above its anchor and expands after restoring input',()=>{
   const anchor={setAttribute(){},contains:()=>false,getBoundingClientRect:()=>({x:650,top:500,width:40,height:40})};
   let expanded=false;

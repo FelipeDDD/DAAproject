@@ -2,7 +2,7 @@ import { GameMenuModal,node } from '../ui/GameMenuModal.js';
 import { inventoryItemUseBehavior,inventoryPresentationAsset,normalizeInventoryItems } from './config.js';
 import { itemCooldownRemaining } from './characterItems.js';
 import { ItemRewardOverlay } from './ItemRewardOverlay.js';
-import { createItemPresentationImage } from './itemPresentation.js';
+import { createItemIconImage,createItemPresentationImage } from './itemPresentation.js';
 
 // Owns only selection/presentation. Item actions still use the existing controller.
 export class BackpackMenu extends GameMenuModal {
@@ -36,7 +36,7 @@ export class BackpackMenu extends GameMenuModal {
       });
       button.dataset.itemId=item.itemId;button.setAttribute('aria-pressed','false');
       button.setAttribute('aria-label',`${item.name}, quantity ${item.quantity}`);
-      const art=node(this.doc,'span','backpack-slot-art');this.renderImage(art,item.icon,item.iconClip,item.iconScale);
+      const art=node(this.doc,'span','backpack-slot-art');this.renderItemIcon(art,item);
       button.append(art,node(this.doc,'span','backpack-slot-name',item.name));
       if(item.quantity>1)button.append(node(this.doc,'span','backpack-quantity',String(item.quantity)));
       if(item.active)button.append(node(this.doc,'small','backpack-equipped','EQUIPPED'));
@@ -59,6 +59,10 @@ export class BackpackMenu extends GameMenuModal {
     if(clip)image.style.clipPath=clip;if(scale)image.style.transform=`scale(${scale})`;
     image.addEventListener('error',()=>target.replaceChildren(node(this.doc,'span','collection-art-missing','Image unavailable')),{once:true});
     image.src=new URL(`${this.baseUrl}${path}`,this.doc.baseURI).href;target.append(image);
+  }
+  renderItemIcon(target,item){
+    if(!item.iconFrame){BackpackMenu.prototype.renderImage.call(this,target,item.icon,item.iconClip,item.iconScale);return;}
+    const image=createItemIconImage(this.doc,item,this.baseUrl);image.setAttribute('class','collection-image');target.append(image);
   }
   selectItem(id){
     const item=this.items.find(entry=>entry.itemId===id);if(!item)return;

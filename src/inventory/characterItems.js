@@ -21,6 +21,9 @@ export const HEALTH_POTION_MAX_STACK=10;
 const OFFICE_KEY_PRESENTATION=Object.freeze({
   presentationImage:'assets/items/key-office.png',
   presentationFrame:Object.freeze({x:320,y:0,width:620,height:724,sourceWidth:2172,sourceHeight:724}),
+  // The source PNG is a three-size sheet; small inventory views need the same
+  // single large-key crop used by the presentation card.
+  iconFrame:Object.freeze({x:320,y:0,width:620,height:724,sourceWidth:2172,sourceHeight:724}),
 });
 
 // The three edition icon PNGs have opaque black canvases. These silhouettes

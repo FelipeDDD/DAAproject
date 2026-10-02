@@ -56,14 +56,18 @@ export class GameMenuModal {
       ||s.soloStudy?.active||s.quiz?.seated||s.wardrobe?.active))return false;
     if(this.doc.querySelector('[data-block-game-shortcuts]:not([hidden]),.boss-reward-overlay:not([hidden])'))return false;
     this.focusTarget=this.doc.activeElement;this.active=true;this.generation++;
-    this.previousOverflow=this.doc.body.style.overflow;if(this.modal)this.doc.body.style.overflow='hidden';
-    this.showOverview(false);this.root.hidden=false;
-    if(this.modal)this.root.showModal();else this.root.show();
-    // Clear held keys and stop Phaser pointer input as well as keyboard input.
+    // Capture controls before rendering: a failed render must not leave an
+    // active, hidden dialog whose close would restore undefined input flags.
     this.keyboardWasEnabled=s?.input?.keyboard?.enabled;this.inputWasEnabled=s?.input?.enabled;
-    s?.input?.keyboard?.resetKeys();s?.player?.setVelocity(0,0);
-    if(s?.input){s.input.enabled=false;if(s.input.keyboard)s.input.keyboard.enabled=false;}
-    this.closeButton.focus({preventScroll:true});return true;
+    this.previousOverflow=this.doc.body.style.overflow;if(this.modal)this.doc.body.style.overflow='hidden';
+    try{
+      this.showOverview(false);this.root.hidden=false;
+      if(this.modal)this.root.showModal();else this.root.show();
+      // Clear held keys and stop Phaser pointer input as well as keyboard input.
+      s?.input?.keyboard?.resetKeys();s?.player?.setVelocity(0,0);
+      if(s?.input){s.input.enabled=false;if(s.input.keyboard)s.input.keyboard.enabled=false;}
+      this.closeButton.focus({preventScroll:true});return true;
+    }catch(error){this.close();throw error;}
   }
 
   handleKey(event){

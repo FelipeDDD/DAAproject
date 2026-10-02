@@ -46,6 +46,7 @@ import { hasProfileSession } from '../ProfileSessionClient.js';
 import { applySmoothDecorativeTextureFilters } from '../maps/decorativeTextureFilters.js';
 import { classRestoreDestination } from '../maps/classState.js';
 import { ArenaEntryController } from '../boss/ArenaEntryController.js';
+import { PvpLobbyController } from '../pvp/PvpLobbyController.js';
 import { consumeArenaInvitation,setArenaDiagnostics } from '../boss/arenaLobbyUi.js';
 import '../boss/arenaEntry.css';
 import { CollectibleQuestController } from '../npc/CollectibleQuestController.js';
@@ -320,6 +321,7 @@ export class MapScene extends Phaser.Scene {
       this.emoteSync=this.presence ? new EmoteSync(this.presence,this.presenceRoom??this.mapKey,this.emoteRenderer) : null;
       this.emoteBar=this.presence ? new EmoteBar(this.presence.identity.characterId,emote=>this.emoteSync.trigger(emote)) : null;
       this.returnDestination = destination.returnDestination;
+      if(destination.pvpLobbyId)this.openPvpLobby(destination.pvpLobbyId);
       this.input.keyboard.resetKeys();
       this.doorMessage = '';
       this.nearbyDoor = null;
@@ -439,6 +441,13 @@ export class MapScene extends Phaser.Scene {
       {env:import.meta.env,invitationCode:code});return true;
   }
 
+  openPvpLobby(resumeMatchId=null){
+    if(!import.meta.env.DEV||!this.presence?.identity||this.arenaEntry?.active||this.mapKey==='arena'||this.mapKey==='pvp-arena-test'
+      ||this.terminal?.active||this.puzzleTerminal?.active||this.networkTerminal?.active||this.quiz?.seated
+      ||this.soloStudy?.active||this.wardrobe?.active||this.chat?.isInputActive||this.characterItems?.transforming)return false;
+    this.arenaEntry=new PvpLobbyController(this,{env:import.meta.env,resumeMatchId});return true;
+  }
+
   showArenaNotice(message){
     if(!this.presence?.identity||this.scene.isActive()===false)return;
     if(this.arenaEntry?.active){this.arenaEntry.showStatus(message);return;}
@@ -458,7 +467,7 @@ export class MapScene extends Phaser.Scene {
       if(!this.arenaEntry?.active)this.arenaEntry=new ArenaEntryController(this,destination,{env:import.meta.env});
       return;
     }
-    const arrival = { ...destination, returnDestination: {
+    const arrival = { ...destination, returnDestination: this.mapKey==='pvp-arena-test'?undefined:{
       targetMap: this.mapKey, targetX: this.player.x, targetY: this.player.y,
     } };
     this.player.setVelocity(0, 0);

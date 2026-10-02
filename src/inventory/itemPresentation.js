@@ -19,3 +19,21 @@ export function createItemPresentationImage(doc,item,baseUrl='/'){
   image.setAttribute('href',src);image.setAttribute('width',frame.sourceWidth);image.setAttribute('height',frame.sourceHeight);
   svg.append(image);return svg;
 }
+
+export function createItemIconImage(doc,item,baseUrl='/'){
+  const frame=item.iconFrame;
+  if(!frame){
+    const image=doc.createElement('img');image.className='inventory-slot-icon';
+    image.src=new URL(`${baseUrl}${item.icon}`,doc.baseURI).href;image.alt='';return image;
+  }
+  const src=new URL(`${baseUrl}${item.icon}`,doc.baseURI).href;
+  const svg=doc.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('class','inventory-slot-icon inventory-slot-icon--frame');
+  svg.setAttribute('viewBox',`${frame.x} ${frame.y} ${frame.width} ${frame.height}`);
+  svg.setAttribute('width',frame.width);svg.setAttribute('height',frame.height);
+  svg.setAttribute('preserveAspectRatio','xMidYMid meet');svg.setAttribute('overflow','hidden');
+  svg.setAttribute('role','img');svg.setAttribute('aria-label',item.name);
+  const image=doc.createElementNS('http://www.w3.org/2000/svg','image');
+  image.setAttribute('href',src);image.setAttribute('width',frame.sourceWidth);image.setAttribute('height',frame.sourceHeight);
+  svg.append(image);return svg;
+}

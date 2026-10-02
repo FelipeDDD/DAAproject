@@ -74,6 +74,66 @@ Do not reread it for routine isolated edits when the current session already has
 - Deferred: separate realtime host/WebSocket transport, boss authority/AI/events,
   client combat interpolation, host migration and polished co-op gameplay.
 
+## PvP test foundation (2026-10-02)
+
+- Separate **Team Deathmatch** scene/map `pvp-arena-test`, room `pvp-arena-test:<pvpMatches ID>`.
+  DevTools **PvP Arena: ON** enables creation; **Open PvP Lobby** opens create/join. The
+  existing arena entrance also has a DEV-only **PvP Arena (test)** link, usable by
+  guests. Code-based joining does not enable the local toggle. Backend create/join
+  retains the DEV deployment gate. Boss Solo/Co-op semantics are unchanged.
+- `pvpMatches` owns a short code, host, generation-bound player membership and
+  temporary match state. Teams A/B hold at most 2 players each, 4 total; 1v1, 2v1,
+  1v2 and 2v2 may start. Host-only start locks teams/membership. Non-host departure
+  removes only that participant; countdown/active matches continue with at least
+  one member per team (dead players awaiting respawn still count). Empty teams
+  end with `team_empty`; host departure ends with `host_left`, without migration.
+  Each match has one 30-minute GC callback, no permanent cron/polling/history.
+- Rules live in `src/pvp/config.js`: score limit **5**, time **180s**, countdown
+  **3s**, respawn **2.5s**, HP **100**, test projectile damage **25**, cooldown **400ms**.
+  `matchState.js` owns waiting/countdown/active/ended, friendly-fire rejection,
+  kill/death attribution, life generations, respawns and winner/draw. Deadlines
+  are checked logically even before any write; local UI clock ticks make no calls.
+- `PvpMatchClient` is the replaceable transport boundary. This prototype uses the
+  existing Convex transport for lobby snapshots and discrete hit/end events;
+  hits are serialized and validated for session, team, life and cooldown. Projectile
+  geometry is local and attacker-reported, **not anti-cheat or final network combat**.
+  Other players' projectiles are not synchronized yet. Existing room Presence and
+  interpolation are reused unchanged; a match query also reads member presence,
+  so this DEV prototype adds reactive work during movement.
+- `public/assets/maps/pvp-arena-test.tmj` uses existing campus tiles, a compact
+  mirrored 26x18 layout and authored Collision rectangles. `Spawns/teamA_spawn1`,
+  `teamA_spawn2`, `teamB_spawn1`, `teamB_spawn2` own spawn positions; `teamSpawn`
+  falls back to the sole marker if a team has only one. Missing team markers fail
+  clearly. Replace/edit the Tiled map without duplicating coordinates in JS.
+- Compact HUD shows scores, time, team, HP/K/D, countdown, respawn and final result;
+  **Leave Arena** returns to the saved entrance, with host-only DEV End Match.
+  The dedicated scene reuses Tiled loading/player visuals but creates no inventory,
+  quest, study, boss or reward controllers. PvP rooms are excluded from persistent
+  class checkpoints. No profile progression or inventory tables are written.
+- Lobby cards highlight the local team in blue (A) or warm red (B), with **YOUR
+  TEAM** and a separate **YOU** marker on the local row; HOST remains independent.
+  Interrupted matches show their reason and a **10-second return countdown**.
+  `PvpReturnFlow` uses the scene clock and one `returnToLobby` command: survivors
+  reuse the same code/document if the host remains; missing/closed/expired lobbies
+  return to the saved pre-PvP map. A stalled return request falls back after five
+  more seconds; late results cannot travel twice and release unused membership.
+  Normal score/time results keep their existing manual exit. No polling is added.
+- An optional `pvpMatches.round` (legacy default 0) increments when an interrupted
+  round returns to waiting. Round/session/life checks reject delayed combat,
+  end and leave commands. Return resets fighters/scores once, removes departed
+  members, and blocks starting until survivors have left the arena presence room.
+  Public member lease deadlines permit local disconnect detection without new
+  calls; `finish` persists the projected interruption through a discrete command.
+- Local **direct** projectiles now collide with teammates and are consumed without
+  a hit request, damage or score. This adapter has no AoE attacks; boss area attacks
+  are untouched. Future PvP AoE needs a separate target filter, not body blocking.
+  Remote projectile visuals remain intentionally unsynchronized. No Vivaldi
+  Alt+Tab investigation or modal keyboard changes were made for this PvP polish.
+- Deferred: realtime transport/authority, synchronized projectile visuals,
+  lag compensation/prediction, host migration, anti-cheat, CTF and rematch voting.
+  No deployment or existing data reset is needed to keep developing; apply the new
+  schema/functions only to the intended local/dev backend when running the test.
+
 ## Local development commands
 
 Run in separate terminals from the repository root:
@@ -96,6 +156,26 @@ The local Convex CLI may ask whether to link the anonymous deployment to an acco
 `.env.local` is ignored by Git and machine-specific. Never copy it between computers or commit it. On this machine it points Vite at `http://127.0.0.1:3210` and the Convex site URL at `http://127.0.0.1:3211`. Recheck all deployment values when changing machines.
 
 Local Convex config/database/storage are under `.convex/local/default/`, especially `convex_local_backend.sqlite3` and `convex_local_storage/`. This directory contains persistent local test data; do not delete or recreate it casually.
+
+On 2026-10-02 the disposable local deployment was reset with explicit approval. After confirmation that the fresh deployment works, `.convex-old-20261002-233558/` was deleted with explicit approval. Fresh schema/functions/indexes initialized on the same anonymous deployment name and loopback ports, with new local credentials and all 27 application tables initially empty. Initial size: ~0.87 MB SQLite + ~0.70 MB modules, versus ~324 MB + ~145 MB before. Old browser tokens/profiles are invalid: reload and register again; `.env.local` URLs and the pinned backend version remain unchanged. No cloud deployment or data was modified.
+
+## Transfer local database between machines
+
+Keep `npm run convex` running; close the game before restoring. Both commands verify the local configuration and running loopback instance, then pin the installed Convex CLI to that URL/key. Cloud/prod targets and URL overrides are rejected. `db:push` exports logical application data plus file storage (not SQLite/history) and atomically replaces `convex-latest.zip` only after a successful export. `db:pull` makes a local `backups/convex/convex-before-restore-*.zip` safety backup, then imports with `--replace-all` and reload is required. Deployment environment variables/functions are not transferred; initialize the other machine's local backend first.
+
+Set `CONVEX_BACKUP_DIR` in each machine's `.env.local` or shell to a shared/synchronized folder. Without it, snapshots stay in Git-ignored `backups/convex/` and must be copied manually to the other machine. Relative paths resolve from the project root. Snapshots contain accounts/progress; do not commit them. Safety backups are retained until manually removed.
+
+End work on the authoritative machine:
+```powershell
+git push
+npm run db:push
+```
+Start on the other machine, after the shared ZIP finishes syncing:
+```powershell
+git pull
+npm run db:pull
+```
+This is snapshot replacement, **not merge/sync**. Pull the latest snapshot before database edits and push a new one when finished. Simultaneous divergent edits are unsupported. Use the same current code/schema on both machines; incompatible snapshots fail import. Once Convex starts an import, it continues server-side even if the CLI is interrupted: check completion before retrying. The local round-trip test restored a changed test profile's original displayName, ID and session successfully.
 
 ## DEV_TOOLS_ENABLED
 

@@ -10,6 +10,7 @@ import { BackpackMenu } from './BackpackMenu.js';
 import { BackpackPopup } from './BackpackPopup.js';
 import { icon } from '../ui/GameMenuModal.js';
 import { hasProfileSession,requireProfileSessionToken } from '../ProfileSessionClient.js';
+import { createItemIconImage } from './itemPresentation.js';
 
 const publicAsset=path=>new URL(`${import.meta.env.BASE_URL}${path}`,document.baseURI).href;
 
@@ -115,7 +116,7 @@ export class InventoryHotbar {
       slot.dataset.itemId=item.itemId;
       if(!item.consumable)slot.dataset.tooltip=`${item.name}\n${item.description}`;
       slot.setAttribute('aria-label',`${item.name}. ${item.description}`);
-      const image=document.createElement('img');image.src=publicAsset(item.icon);image.alt='';slot.append(image);
+      const image=createItemIconImage(document,item,import.meta.env.BASE_URL);slot.append(image);
       // Some supplied single-icon images have large baked-in margins. Crop their
       // display region only; preserve the original assets and other item styles.
       if(item.iconScale)image.style.transform=`scale(${item.iconScale})`;

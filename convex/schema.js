@@ -2,6 +2,17 @@ import { defineSchema, defineTable } from 'convex/server';
 import { v } from 'convex/values';
 
 export default defineSchema({
+  pvpMatches:defineTable({
+    round:v.optional(v.number()),
+    code:v.string(),mode:v.literal('tdm'),state:v.union(v.literal('waiting'),v.literal('countdown'),v.literal('active'),v.literal('ended')),
+    hostPlayerId:v.string(),participants:v.array(v.object({
+      playerId:v.string(),sessionId:v.string(),displayName:v.string(),characterBaseId:v.string(),team:v.union(v.literal('A'),v.literal('B')),
+      hp:v.number(),kills:v.number(),deaths:v.number(),life:v.number(),respawnAt:v.union(v.null(),v.number()),lastShot:v.number(),lastHitAt:v.number(),
+    })),scores:v.object({A:v.number(),B:v.number()}),scoreLimit:v.number(),timeLimitMs:v.number(),respawnMs:v.number(),
+    startedAt:v.union(v.null(),v.number()),endsAt:v.union(v.null(),v.number()),endedAt:v.union(v.null(),v.number()),
+    winner:v.union(v.null(),v.literal('A'),v.literal('B'),v.literal('draw')),reason:v.union(v.null(),v.string()),
+    createdAt:v.number(),expiresAt:v.number(),
+  }).index('by_code',['code']).index('by_state',['state']),
   directorInvestigations:defineTable({
     profileId:v.id('profiles'),discoveredAt:v.number(),investigatedClueIds:v.array(v.string()),
     discoveryCount:v.union(v.literal(5),v.literal(6)),keyFoundAt:v.optional(v.number()),doorUnlockedAt:v.optional(v.number()),updatedAt:v.number(),

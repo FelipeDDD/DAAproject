@@ -67,6 +67,7 @@ export class ArenaEntryController {
     }
     // An explicit invitation is distinct from experimental discovery/creation.
     if(!coopArenaEnabled(this.env,this.storage))this.button('Have an invitation code?',()=>this.renderJoin(),{kind:'link'});
+    if(this.env?.DEV&&this.scene.openPvpLobby)this.button('PvP Arena (test)',()=>{this.close();this.scene.openPvpLobby();},{kind:'link'});
     this.createStatus();this.button('Cancel',()=>this.close(),{kind:'quiet',allowBusy:true});first?.focus();
   }
   renderJoin(prefill=''){

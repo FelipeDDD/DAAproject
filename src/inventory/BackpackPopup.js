@@ -51,7 +51,7 @@ export class BackpackPopup extends GameMenuModal {
       button.title=`Examine ${item.name}`;
       button.setAttribute('aria-label',button.title);
       const art=node(this.doc,'span','backpack-slot-art');
-      BackpackMenu.prototype.renderImage.call(this,art,item.icon,item.iconClip,item.iconScale);
+      BackpackMenu.prototype.renderItemIcon.call(this,art,item);
       button.append(art);if(item.quantity>1)button.append(node(this.doc,'span','backpack-quantity',String(item.quantity)));
       grid.append(button);this.itemButtons.set(item.itemId,button);
     }

@@ -1,0 +1,15 @@
+.pvp-teams { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+.pvp-teams section { border:1px solid #85724d; padding:8px; border-radius:6px; min-width:0; }
+.pvp-teams p { font-size:12px; overflow-wrap:anywhere; }
+.pvp-team-A h3 { color:#86caed; }.pvp-team-B h3 { color:#efa491; }
+.pvp-team-A.pvp-team-selected { border-color:#78b9de; background:#233c542e; box-shadow:inset 0 0 12px #69b8e51a,0 0 8px #69b8e52b; }
+.pvp-team-B.pvp-team-selected { border-color:#dd907e; background:#5430272e; box-shadow:inset 0 0 12px #e58b731a,0 0 8px #e58b732b; }
+.pvp-member-self { padding:5px; border-radius:4px; font-weight:600; }
+.pvp-team-A .pvp-member-self { background:#6ebded22; color:#bce6ff; }
+.pvp-team-B .pvp-member-self { background:#ed9d8122; color:#ffd5c9; }
+.pvp-return { color:#edc87e; }
+.pvp-hud { position:fixed; top:85px; left:50%; transform:translateX(-50%); z-index:130; width:min(330px,85vw); padding:12px; text-align:center; background:#101923f2; color:#eee0bf; border:1px solid #ab8d51; border-radius:8px; }
+.pvp-hud strong { font-size:17px; }.pvp-hud small { display:block; margin:5px; font-size:11px; }
+.pvp-hud button { padding:6px 12px; margin:4px; color:#eee0bf; background:#202733; border:1px solid #84734f; border-radius:4px; cursor:pointer; }
+.pvp-hud .pvp-result { font-size:20px; color:#efd18e; margin:8px; }.pvp-hud .pvp-result:empty { display:none; }
+.pvp-diagnostics { color:#aaa; overflow-wrap:anywhere; }.pvp-hud [hidden] { display:none; }
