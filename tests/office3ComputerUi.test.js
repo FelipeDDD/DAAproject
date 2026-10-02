@@ -19,16 +19,28 @@ function controller(){
 
 test('Director shell remains gated by existing recovery and album commands dispatch to the viewer',async()=>{
   const c=controller();c.computerMode='director';c.computerConfig=DIRECTOR_COMPUTER;
+  c.scene.directorInvestigation={activate(){throw new Error('Album must not activate the quest');}};
   let opened=0;c.showComputer=()=>opened++;
   c.directorSecurity={state:{stage:'locked'}};
   assert.equal(c.openDirectorFiles(),false);assert.equal(opened,0);
   c.directorSecurity.state.stage='compromised';assert.equal(c.openDirectorFiles(),false);
   c.directorSecurity.state.stage='recovered';assert.equal(c.openDirectorFiles(),true);
-  c.commandInput={value:'cd Private'};await c.executeCommand();
   let album;
   c.showAlbum=(value,title)=>{album={value,title};};
-  c.commandInput={value:'open Endlich_Ferien.album'};await c.executeCommand();
-  assert.equal(album.title,'Endlich_Ferien.album');assert.equal(album.value.photos.length,7);
+  c.commandInput={value:'open Endlich Ferien.album'};await c.executeCommand();
+  assert.equal(album.title,'Endlich Ferien.album');assert.equal(album.value.photos.length,7);
+  c.commandInput={value:'hostname'};await c.executeCommand();
+  assert.equal(c.commandHistory.at(-1).text,'PC-DIRECTOR');
+});
+
+test('reading Lost key in the Director shell invokes the investigation; dir does not',async t=>{
+  const old=globalThis.document;globalThis.document={createElement:node};t.after(()=>{globalThis.document=old;});
+  const c=controller();c.computerMode='director';c.computerConfig=DIRECTOR_COMPUTER;
+  c.folder='';c.commandHistory=[];c.showComputer=()=>{};c.resetPanel=()=>{};
+  let activations=0;c.scene.directorInvestigation={async activate(){activations++;return {active:true};}};
+  c.commandInput={value:'dir'};await c.executeCommand();assert.equal(activations,0);
+  c.commandInput={value:'type Lost key.txt'};await c.executeCommand();assert.equal(activations,1);
+  assert.equal(c.busy,false);
 });
 
 test('album keyboard input and Escape never close or execute the underlying terminal',async()=>{

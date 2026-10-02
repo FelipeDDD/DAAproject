@@ -49,6 +49,7 @@ import { ArenaEntryController } from '../boss/ArenaEntryController.js';
 import { consumeArenaInvitation,setArenaDiagnostics } from '../boss/arenaLobbyUi.js';
 import '../boss/arenaEntry.css';
 import { CollectibleQuestController } from '../npc/CollectibleQuestController.js';
+import { DirectorInvestigationController } from '../office2/DirectorInvestigationController.js';
 import { CIGARETTE_PACKS } from '../npc/cigarettePacks.js';
 import '../terminal/terminal.css';
 
@@ -215,6 +216,7 @@ export class MapScene extends Phaser.Scene {
     const stop = () => { this.input.keyboard.resetKeys(); this.player.setVelocity(0, 0); };
     const wake = (_systems, arrival) => this.enter(arrival);
     const leave = () => {
+      this.directorInvestigation?.destroy();this.directorInvestigation=null;
       this.arenaEntry?.destroy();this.arenaEntry=null;
       this.collectibleQuest?.destroy();this.collectibleQuest=null;
       this.npcQuestInteraction?.hide();
@@ -251,6 +253,8 @@ export class MapScene extends Phaser.Scene {
 
   enter(destination = {}) {
     try {
+      this.directorInvestigation?.destroy();this.directorInvestigation=null;
+      if(this.mapKey==='office2'){this.lockedDoorOpen=false;this.lockedDoor?.setOpen(false);}
       this.collectibleQuest?.destroy();this.collectibleQuest=null;
       this.hint.hidden=true;
       this.terminal?.destroy();
@@ -300,6 +304,8 @@ export class MapScene extends Phaser.Scene {
       }):null;
       void this.inventoryHotbar?.refresh();
       void this.characterItems?.restore();
+      if(hasProfileSession(this.presence)&&['office2','office3'].includes(this.mapKey))
+        this.directorInvestigation=new DirectorInvestigationController(this);
       // The existing school pack now participates in the NPC sequence; the quest
       // controller owns its pickup so it cannot respawn after being handed in.
       this.characterItems?.createPickup(objectsIn(this.source,'Spawns').find(object=>object.name==='arena'));

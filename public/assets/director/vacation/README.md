@@ -1,24 +1,27 @@
 # Director vacation album
 
-Copy the photos into this folder. The initial configuration expects:
+Runtime copies of assets-drafts/director-album, with originals retained:
 
-- `endlich_ferien.png` — cover, caption: `Endlich ein bisschen Erholung.`
-- `pisa.png`
-- `beach.png`
-- `tourist.png`
-- `pool_office.png`
-- `pigeons.png`
-- `monkeys.png`
+1. cover.png — Endlich ein bisschen Erholung.
+2. foto1.png
+3. foto2.png
+4. foto3.png
+5. foto4.png
+6. foto5.png
+7. foto6.png
 
-Images are not included yet. Missing photos show a friendly placeholder. PNG,
-JPEG and WebP work; if you choose another filename/extension, change its `src` in
-`src/office2/directorFiles.js`. Add/reorder entries in `DIRECTOR_VACATION_ALBUM.photos`
-to extend the album. Each entry accepts `src`, `caption` and optional `filename`.
-Only the currently displayed image is loaded, with its proportions preserved.
+After Director recovery, choose Open Director files, then run:
 
-After the existing Director recovery unlock: **Open Director files**, `cd Private`,
-then `open Endlich_Ferien.album`. `type` opens the nearby fictional text files.
-Their editable contents are also in `directorFiles.js`; these are configuration
-files, not writes to the user's disk. Gallery arrows/previous/next stay within
-the first/last photo. Escape or Close returns to the inactive underlying terminal.
-The terminal becomes active again on gallery close. Navigation makes no Convex calls.
+    open Endlich Ferien.album
+
+The album is at the root alongside Lost key.txt. The older
+Private/Endlich_Ferien.album remains a compatible alias.
+
+To add photos, copy them here and extend DIRECTOR_VACATION_ALBUM.photos in
+src/office2/directorFiles.js. Entries accept src, optional caption and optional
+filename. Only the selected photo loads, with its proportions preserved.
+Previous/Next and arrow keys stay within the first/last photo. Escape/Close
+restores terminal input. Missing images show a fallback.
+
+Opening and navigating the album makes no Convex calls and does not activate
+or alter the hidden-key investigation.

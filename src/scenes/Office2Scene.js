@@ -38,10 +38,8 @@ export class Office2Scene extends MapScene {
     this.lockedDoorPlacement=office2LockedDoorPlacement(this.source);
     this.lockedDoor=drawOffice2LockedDoor(this,this.source);
     this.lockedDoorOpen=false;
-    this.lockedDoorFeedback='';
-    this.lockedDoorFeedbackUntil=0;
     if(this.lockedDoorPlacement){
-      this.lockedDoorPrompt=new WorldPrompt(this,"Door locked·",{clamp:true});
+      this.lockedDoorPrompt=new WorldPrompt(this,'[E] Examine wall',{clamp:true});
       this.lockedDoorPrompt.setPosition(this.lockedDoorPlacement.x,this.lockedDoorPlacement.bottom-80);
     }
     this.events.on('sleep',()=>{
@@ -63,7 +61,7 @@ export class Office2Scene extends MapScene {
   update(time,delta){
     const body=this.player?.body;
     const door=this.lockedDoorPlacement;
-    const available=Boolean(body&&!this.terminal?.active&&!this.puzzleTerminal?.active&&!this.chat?.isInputActive&&
+    const available=Boolean(body&&this.input.keyboard.enabled&&!this.terminal?.active&&!this.puzzleTerminal?.active&&!this.chat?.isInputActive&&
       !this.quiz?.seated&&!this.soloStudy?.active&&!this.wardrobe?.active&&
       !this.characterItems?.transforming&&this.inventoryHotbar?.overlay?.root?.hidden!==false);
     this.puzzleTerminal?.updatePrompt(available);
@@ -80,28 +78,21 @@ export class Office2Scene extends MapScene {
       this.travelTo({targetMap:'secret-path',targetSpawn:'secret-path-spawn'});
       return;
     }
-    const near=available&&door&&Math.hypot(body.center.x-door.x,body.center.y-door.bottom)
+    const clue=this.directorInvestigation?.updatePrompt(available&&!nearComputer&&!nearTrapdoor);
+    if(clue&&Phaser.Input.Keyboard.JustDown(this.interactKey))void this.directorInvestigation.investigate(clue);
+    const near=available&&door&&Math.hypot(this.player.x-door.x,this.player.y-door.bottom)
       <=OFFICE2_LOCKED_DOOR.interactionRadius;
     const hasKey=canUnlockOffice2Door(this.inventoryHotbar?.items);
     if(near&&!this.lockedDoorOpen){
-      const label=hasKey?'E to open door':"Door locked·";
+      const label=hasKey?'[E] Unlock':'[E] Examine wall';
       if(this.lockedDoorPrompt.root.textContent!==label)this.lockedDoorPrompt.setText(label);
     }
     this.lockedDoorPrompt?.setVisible(near&&!this.lockedDoorOpen);
     if(near&&!this.lockedDoorOpen&&Phaser.Input.Keyboard.JustDown(this.interactKey)){
-      if(hasKey){
-        this.lockedDoorOpen=true;
-        this.lockedDoor.setOpen(true);
-        this.lockedDoorFeedback='The door is open.';
-        this.lockedDoorPrompt.setVisible(false);
-      }else this.lockedDoorFeedback="Door locked";
-      this.lockedDoorFeedbackUntil=time+3000;
+      if(hasKey)void this.directorInvestigation?.unlock();
+      else this.directorInvestigation?.feedback('This wall appears to have a suspiciously lock-shaped problem.');
     }
     super.update(time,delta);
-    if(time<this.lockedDoorFeedbackUntil){
-      this.hint.hidden=false;
-      this.hint.textContent=this.lockedDoorFeedback;
-      this.positionInteractionHint();
-    }
+    if(available)this.directorInvestigation?.renderFeedback();
   }
 }

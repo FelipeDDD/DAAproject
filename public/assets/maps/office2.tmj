@@ -86,6 +86,19 @@
                  "width":104.666666666667,
                  "x":291,
                  "y":229.333333333333
+                }, 
+                {
+                 "height":0,
+                 "id":51,
+                 "name":"clue6",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":320.333333333333,
+                 "y":103.666666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -468,7 +481,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":51,
+ "nextobjectid":52,
  "orientation":"orthogonal",
  "properties":[
         {

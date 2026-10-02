@@ -54,7 +54,8 @@ export class PhotoAlbumViewer {
     this.counter.textContent=this.photos.length?`${this.index+1} / ${this.photos.length}`:'0 / 0';
     this.previous.disabled=this.index===0;this.next.disabled=this.index>=this.photos.length-1;
     this.caption.textContent=photo?.caption??'';
-    this.filename.textContent=photo?.filename??photo?.src?.split('/').at(-1)??'';
+    this.filename.textContent=photo?.filename??'';
+    this.filename.hidden=!photo?.filename;
     const status=element(this.doc,'p','photo-album-status',photo?.src?'Loading photo...':'No photos available yet.');
     status.setAttribute('role','status');this.stage.replaceChildren(status);this.image=null;
     if(!photo?.src)return;

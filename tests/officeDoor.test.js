@@ -73,9 +73,12 @@ test('locked office2 door follows its Tiled point and keeps the seam adjustable'
   assert.equal(office2LockedDoorPlacement(moved), null);
 });
 
-test('only the Director badge permits opening the hidden door', () => {
+test('only the investigated hidden key permits opening the hidden wall', () => {
   assert.equal(canUnlockOffice2Door([]), false);
   assert.equal(canUnlockOffice2Door([{ itemId: CHARACTER_ITEM_IDS.OFFICE2_KEY }]), false);
   assert.equal(canUnlockOffice2Door([{ itemId: BOSS_REWARDS.DIRECTOR_ACCESS_BADGE, compatible: false }]), false);
-  assert.equal(canUnlockOffice2Door([{ itemId: BOSS_REWARDS.DIRECTOR_ACCESS_BADGE }]), true);
+  assert.equal(canUnlockOffice2Door([{ itemId: BOSS_REWARDS.DIRECTOR_ACCESS_BADGE }]), false);
+  assert.equal(canUnlockOffice2Door([{ itemId: CHARACTER_ITEM_IDS.DIRECTOR_HIDDEN_KEY,compatible:false }]), false);
+  assert.equal(canUnlockOffice2Door([{ itemId: CHARACTER_ITEM_IDS.DIRECTOR_HIDDEN_KEY,quantity:0 }]), false);
+  assert.equal(canUnlockOffice2Door([{ itemId: CHARACTER_ITEM_IDS.DIRECTOR_HIDDEN_KEY }]), true);
 });

@@ -1,5 +1,5 @@
 import { objectsIn } from '../maps/tiledObjects.js';
-import { BOSS_REWARDS } from '../boss/BossRewards.js';
+import { DIRECTOR_HIDDEN_KEY_ITEM_ID } from '../office2/directorInvestigation.js';
 
 // The Tiled point controls the door's location; offsetY places its bottom on
 // the wall/floor seam. These values can be tuned without changing the map.
@@ -13,8 +13,8 @@ export const OFFICE2_LOCKED_DOOR = Object.freeze({
 });
 
 export function canUnlockOffice2Door(items) {
-  return Boolean(items?.some(item => item?.itemId === BOSS_REWARDS.DIRECTOR_ACCESS_BADGE &&
-    item.compatible !== false));
+  return Boolean(items?.some(item => item?.itemId === DIRECTOR_HIDDEN_KEY_ITEM_ID &&
+    item.compatible !== false && (item.quantity??1)>0));
 }
 
 export function office2LockedDoorPlacement(source) {

@@ -1,10 +1,12 @@
 import { baseCharacterId } from '../characters.js';
 import { CIGARETTE_QUEST } from '../npc/cigaretteQuest.js';
 import { cigarettePack } from '../npc/cigarettePacks.js';
+import { DIRECTOR_HIDDEN_KEY_ITEM_ID } from '../office2/directorInvestigation.js';
 
 export const CHARACTER_ITEM_IDS=Object.freeze({
   LUNG_CRUSHER_3000:'lung_crusher_3000',LUNG_CRUSHER_PACK:'lung_crusher_3000_pack',
   OFFICE2_KEY:'office2_key',HEALTH_POTION:'health_potion',
+  DIRECTOR_HIDDEN_KEY:DIRECTOR_HIDDEN_KEY_ITEM_ID,
 });
 export const CHARACTER_ITEM_COOLDOWN_MS=10_000;
 // Michael's old equipable cigarette is parked; the collectible pack has its own ID.
@@ -13,6 +15,13 @@ export const isCharacterItemEnabled=itemId=>itemId!==CHARACTER_ITEM_IDS.LUNG_CRU
 export const HEALTH_POTION_COOLDOWN_MS=5_000;
 export const HEALTH_POTION_HEAL_AMOUNT=70;
 export const HEALTH_POTION_MAX_STACK=10;
+
+// key-office.png is a sheet with large/medium/small variants. Cards show only
+// the large left-hand variant; the original asset and icon paths stay intact.
+const OFFICE_KEY_PRESENTATION=Object.freeze({
+  presentationImage:'assets/items/key-office.png',
+  presentationFrame:Object.freeze({x:320,y:0,width:620,height:724,sourceWidth:2172,sourceHeight:724}),
+});
 
 // The three edition icon PNGs have opaque black canvases. These silhouettes
 // keep only each pack visible in the small inventory views; card art is intact.
@@ -24,6 +33,11 @@ const PACK_ICON_CLIPS=[
 ];
 
 export const CHARACTER_ITEMS=Object.freeze({
+  [CHARACTER_ITEM_IDS.DIRECTOR_HIDDEN_KEY]:Object.freeze({
+    itemId:CHARACTER_ITEM_IDS.DIRECTOR_HIDDEN_KEY,type:'key',quantity:1,questId:'director-hidden-key',
+    name:"Director's Hidden Key",description:'A forgotten key, recovered from an unusually safe hiding place.',
+    icon:'assets/items/key-office.png',...OFFICE_KEY_PRESENTATION,useBehavior:'presentation',
+  }),
   ...Object.fromEntries(CIGARETTE_QUEST.packIds.map((itemId, index) => [itemId, Object.freeze({
     itemId, type:'quest', quantity:1, questId:CIGARETTE_QUEST.id,
     name:cigarettePack(itemId)?.name??`Cigarette Pack ${index + 1}`, description:'A questionable delivery for the woman outside.',
@@ -33,7 +47,7 @@ export const CHARACTER_ITEMS=Object.freeze({
   [CHARACTER_ITEM_IDS.OFFICE2_KEY]:Object.freeze({
     itemId:CHARACTER_ITEM_IDS.OFFICE2_KEY,type:'key',quantity:1,
     name:'Office 2 Key',description:"Opens the Director's office.",
-    icon:'assets/items/key-office.png',useBehavior:'presentation',
+    icon:'assets/items/key-office.png',...OFFICE_KEY_PRESENTATION,useBehavior:'presentation',
   }),
   [CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000]:Object.freeze({
     itemId:CHARACTER_ITEM_IDS.LUNG_CRUSHER_3000,type:'character_item',quantity:1,

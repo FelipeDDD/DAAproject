@@ -2,6 +2,7 @@ import { GameMenuModal,node } from '../ui/GameMenuModal.js';
 import { inventoryItemUseBehavior,inventoryPresentationAsset,normalizeInventoryItems } from './config.js';
 import { itemCooldownRemaining } from './characterItems.js';
 import { ItemRewardOverlay } from './ItemRewardOverlay.js';
+import { createItemPresentationImage } from './itemPresentation.js';
 
 // Owns only selection/presentation. Item actions still use the existing controller.
 export class BackpackMenu extends GameMenuModal {
@@ -62,7 +63,11 @@ export class BackpackMenu extends GameMenuModal {
   selectItem(id){
     const item=this.items.find(entry=>entry.itemId===id);if(!item)return;
     this.selectedId=id;for(const [key,button]of this.itemButtons)button.setAttribute('aria-pressed',String(key===id));
-    const art=node(this.doc,'div','collection-preview-art');this.renderImage(art,inventoryPresentationAsset(item));
+    const art=node(this.doc,'div','collection-preview-art');
+    if(item.presentationFrame){
+      const image=createItemPresentationImage(this.doc,item,this.baseUrl);
+      image.setAttribute('class','collection-image');art.append(image);
+    }else this.renderImage(art,inventoryPresentationAsset(item));
     const title=node(this.doc,'h3','collection-preview-title',item.name);title.setAttribute('aria-live','polite');
     const description=node(this.doc,'p','collection-preview-description',item.description);
     const metadata=node(this.doc,'p','backpack-metadata',`${item.type.replaceAll('_',' ')} · Quantity: ${item.quantity}${item.active?' · Equipped':''}`);

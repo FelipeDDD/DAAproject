@@ -259,6 +259,7 @@ body { min-height:100vh; margin:0; color:#334550; background-color:var(--page-ba
 .boss-reward-card:hover,.boss-reward-card:focus-visible { border-color: #ffe09a; box-shadow: 0 0 24px #ffc75b55; transform: translateY(-2px); }
 .boss-reward-card img { width: 180px; height: 190px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(0 0 13px #f5bd55aa); }
 .boss-reward-image { display: block; opacity: 1; visibility: visible; }
+.boss-reward-presentation.item .boss-reward-image--frame { display:block; width:min(70vw,360px); height:min(55dvh,420px); max-width:100%; margin:12px auto; filter:drop-shadow(0 0 12px #f5bd5555); }
 .boss-reward-card strong { color: #ffe09a; font-size: 18px; }
 .boss-reward-card span { line-height: 1.5; }
 .boss-reward-presentation .boss-reward-panel { width: min(900px,94vw); max-height: 94vh; overflow: hidden; animation: boss-reward-enter .45s ease-out both; }

@@ -2,6 +2,10 @@ import { defineSchema, defineTable } from 'convex/server';
 import { v } from 'convex/values';
 
 export default defineSchema({
+  directorInvestigations:defineTable({
+    profileId:v.id('profiles'),discoveredAt:v.number(),investigatedClueIds:v.array(v.string()),
+    discoveryCount:v.union(v.literal(5),v.literal(6)),keyFoundAt:v.optional(v.number()),doorUnlockedAt:v.optional(v.number()),updatedAt:v.number(),
+  }).index('by_profile',['profileId']),
   arenaLobbies:defineTable({
     code:v.optional(v.string()),closedReason:v.optional(v.string()),
     hostPlayerId:v.string(),status:v.union(v.literal('waiting'),v.literal('started'),v.literal('closed')),

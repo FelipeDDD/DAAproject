@@ -1,21 +1,21 @@
 import { createComputerSession, runComputerCommand } from '../terminal/virtualComputer.js';
 
 export const COMPUTER_COOLDOWN_MS = 10_000;
-export const NORMAL_FOLDER = 'Totally_normal_files';
+export const NORMAL_FOLDER = 'Totally normal files';
 export const PASSWORD_FOLDER = 'Definitely_not_important';
-export const PASSWORD_FILE = 'Definitely_not_a_password.txt';
+export const PASSWORD_FILE = 'Definitely not a password.txt';
 export const ROOT_FOLDERS = ['Windows', 'Program Files', 'pc-user', NORMAL_FOLDER, PASSWORD_FOLDER];
 export const OFFICE_FILES = Object.freeze({
   'very_safe_program.exe': null,
-  'where_is_the_director.txt': 'If I knew, this file would have a much better name.',
-  'i_have_no_idea_where_he_is.txt': 'Update: I still have no idea where he is.',
+  'where is the director.txt': 'If I knew, this file would have a much better name.',
+  'i have no idea where he is.txt': 'Update: I still have no idea where he is.',
   'secret_plan.txt': 'Step 1: Make a plan.\nStep 2: Keep it secret.\nStep 3: Remember the plan.',
-  'secret_plan_but_more_secret.txt': 'See secret_plan.txt. But quietly.',
-  'super_secret_plan.txt': 'This plan is so secret that even I cannot access it.',
-  'please_stop_making_secret_plans.txt': 'We have a meeting at 9. Please make a normal agenda.',
+  'secret plan but more secret.txt': 'See secret_plan.txt. But quietly.',
+  'super-ecret-plan.txt': 'This plan is so secret that even I cannot access it.',
+  'please_stop-making secret--plans.txt': 'We have a meeting at 9. Please make a normal agenda.',
   'excel_exercises_unnecessarily_difficult.xlsx': 'Spreadsheet viewer is not installed. Please contact IT. Preferably someone else.',
   'printer_threats.txt': 'Print this page or I will replace you with a pencil.',
-  'things_the_printer_has_done.txt': 'Ate the report.\nPrinted 47 blank pages.\nClaimed to be offline while standing right here.',
+  'things the printer has done.txt': 'Ate the report.\nPrinted 47 blank pages.\nClaimed to be offline while standing right here.',
   'proof_the_printer_is_alive.txt': 'It only jams when I am in a hurry. This cannot be a coincidence.',
 });
 

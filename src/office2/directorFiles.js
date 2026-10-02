@@ -1,18 +1,24 @@
+import { DIRECTOR_INVESTIGATION_FILE,DIRECTOR_INVESTIGATION_EVENT } from './directorInvestigation.js';
+
 // Local fictional files; edit captions, paths and joke text here.
 export const DIRECTOR_VACATION_ALBUM=Object.freeze({
   title:'Endlich Ferien',
   photos:[
-    {src:'assets/director/vacation/endlich_ferien.png',caption:'Endlich ein bisschen Erholung.'},
-    {src:'assets/director/vacation/pisa.png',caption:'Der Turm steht schief. Meine Pose ist korrekt.'},
-    {src:'assets/director/vacation/beach.png',caption:'Keine Meetings. Nur Sand im Dienstlaptop.'},
-    {src:'assets/director/vacation/tourist.png',caption:'Unauffällige Dienstkleidung für Außentermine.'},
-    {src:'assets/director/vacation/pool_office.png',caption:'Homeoffice. Sehr weit von zu Hause.'},
-    {src:'assets/director/vacation/pigeons.png',caption:'Die lokale Bevölkerung hat mein Mittagessen übernommen.'},
-    {src:'assets/director/vacation/monkeys.png',caption:'Die Verpflegung wurde erfolgreich delegiert.'},
+    {src:'assets/director/vacation/cover.png',caption:'Endlich ein bisschen Erholung.'},
+    // Authored sequence in assets-drafts/director-album: foto1 through foto6.
+    {src:'assets/director/vacation/foto1.png',caption:'Homeoffice mit Poolblick. Die Kleiderordnung prüfen wir später.'},
+    {src:'assets/director/vacation/foto2.png',caption:'Ich halte den Turm. Er hält sich erstaunlich schlecht.'},
+    {src:'assets/director/vacation/foto3.png',caption:'Die Karte ist falsch herum. Die Laune stimmt.'},
+    {src:'assets/director/vacation/foto4.png',caption:'Das Mittagessen wurde erfolgreich delegiert. An die Affen.'},
+    {src:'assets/director/vacation/foto5.png',caption:'Sonnenbrand: 1. Erholungsplan: 0.'},
+    {src:'assets/director/vacation/foto6.png',caption:'Die lokale Presse stellt unangenehme Fragen.'},
   ],
 });
 
 export const DIRECTOR_FILESYSTEM={type:'dir',entries:{
+  'Endlich Ferien.album':{type:'album',album:DIRECTOR_VACATION_ALBUM},
+  [DIRECTOR_INVESTIGATION_FILE]:{type:'file',interaction:DIRECTOR_INVESTIGATION_EVENT,
+    content:'Note to myself:\n\nI hid the key somewhere safe.\nUnfortunately, I made it so safe that I no longer remember where it is.\n\nI was still somewhere around the offices.\nI remember moving something.\nIt seemed like a brilliant idea at the time.\n\nFuture me will figure it out.'},
   Private:{type:'dir',entries:{
     'Endlich_Ferien.album':{type:'album',album:DIRECTOR_VACATION_ALBUM},
     'Urlaubsplanung_FINAL.txt':{type:'file',content:'Montag: nichts. Dienstag: das Gleiche, aber am Pool.'},

@@ -48,17 +48,21 @@ export class Office3Scene extends MapScene {
   update(time,delta){
     const puzzle=this.puzzleTerminal;
     const network=this.networkTerminal;
-    const available=Boolean(puzzle&&network&&!puzzle.active&&!network.active&&
+    const available=Boolean(puzzle&&network&&this.input.keyboard.enabled&&!puzzle.active&&!network.active&&
       !this.terminal?.active&&!this.chat?.isInputActive&&
       !this.quiz?.seated&&!this.soloStudy?.active&&!this.wardrobe?.active&&
-      !this.characterItems?.transforming);
-    puzzle?.updatePrompt(available);
-    network?.updatePrompt(available);
+      !this.characterItems?.transforming&&this.inventoryHotbar?.overlay?.root?.hidden!==false);
+    // The precise painting hitbox takes priority over the safe/PC's wider
+    // radius only while this uninspected quest spot is under the player.
+    const clue=this.directorInvestigation?.updatePrompt(available);
+    puzzle?.updatePrompt(available&&!clue);
+    network?.updatePrompt(available&&!clue);
     const nearPaper=available&&puzzle.nearPaper();
     const nearMonitor=available&&puzzle.nearMonitor();
     const nearSafe=available&&puzzle.nearSafe();
     const nearNetwork=available&&network.nearMonitor();
-    if((nearPaper||nearMonitor||nearSafe||nearNetwork)&&Phaser.Input.Keyboard.JustDown(this.interactKey)){
+    if(clue&&Phaser.Input.Keyboard.JustDown(this.interactKey))void this.directorInvestigation.investigate(clue);
+    else if((nearPaper||nearMonitor||nearSafe||nearNetwork)&&Phaser.Input.Keyboard.JustDown(this.interactKey)){
       if(nearSafe)puzzle.openSafe();
       else if(nearPaper)puzzle.openPaper();
       else if(nearMonitor)puzzle.open();
@@ -66,5 +70,6 @@ export class Office3Scene extends MapScene {
     }
     super.update(time,delta);
     if(nearPaper||nearMonitor||nearSafe||nearNetwork)this.hint.hidden=true;
+    if(available)this.directorInvestigation?.renderFeedback();
   }
 }

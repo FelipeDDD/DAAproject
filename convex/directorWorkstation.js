@@ -23,6 +23,10 @@ async function hasDirectorKey(ctx,profileId){
   return hasBossReward(boss,BOSS_REWARDS.DIRECTOR_ACCESS_BADGE);
 }
 
+export async function directorFilesUnlocked(ctx,profileId){
+  return directorSecurityState(await hasDirectorKey(ctx,profileId),await findProgress(ctx,profileId)).stage==='recovered';
+}
+
 export const status=query({
   args:authArgs,
   handler:async(ctx,args)=>{

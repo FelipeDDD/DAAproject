@@ -23,7 +23,8 @@ test('gallery loads only the selected photo, preserves boundaries and supports b
   const doc=fakeDocument(),viewer=new PhotoAlbumViewer({documentRef:doc,baseUrl:'/game/'});
   viewer.open(album);
   assert.equal(viewer.counter.textContent,'1 / 2');assert.equal(viewer.previous.disabled,true);
-  assert.equal(viewer.caption.textContent,'First photo');assert.equal(viewer.filename.textContent,'one.png');
+  assert.equal(viewer.caption.textContent,'First photo');assert.equal(viewer.filename.textContent,'');
+  assert.equal(viewer.filename.hidden,true);
   assert.deepEqual(doc.requests,['https://example.test/game/assets/one.png']);
   viewer.navigate(-1);assert.equal(doc.requests.length,1);
   viewer.image.events.load();assert.equal(viewer.image.hidden,false);

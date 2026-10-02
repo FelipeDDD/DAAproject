@@ -12,6 +12,7 @@ import { devPuzzleOneAnswerEnabled } from '../boss/devPuzzleSettings.js';
 import { DirectorSecurityFlow } from '../office2/DirectorSecurityFlow.js';
 import { DirectorRecoveryFlow } from '../office2/DirectorRecoveryFlow.js';
 import { PhotoAlbumViewer } from '../ui/PhotoAlbumViewer.js';
+import { DIRECTOR_INVESTIGATION_EVENT } from '../office2/directorInvestigation.js';
 import {
   OFFICE3_FEEDBACK_MS, OFFICE3_PASSWORD_DENIED_MS, OFFICE3_MONITOR, OFFICE3_STREAK_TARGET,
   chooseOffice3Question, nextStreak, passwordIsCorrect,
@@ -464,6 +465,16 @@ export class Office3PuzzleController {
       this.panel.append(element('pre','office3-notepad-text',result.note));
       const back=element('button','','Back to command prompt');back.type='button';
       back.addEventListener('click',()=>this.showComputer());this.panel.append(back);back.focus();
+      if(this.computerMode==='director'&&result.interaction===DIRECTOR_INVESTIGATION_EVENT){
+        const generation=this.generation;this.busy=true;
+        try{
+          const state=await this.scene.directorInvestigation?.activate();
+          if(!state)throw new Error('Investigation unavailable');
+        }catch{
+          if(this.active&&generation===this.generation)this.panel.append(element('p','office3-command-error',
+            'Could not save the investigation. Open this note again to retry.'));
+        }finally{if(generation===this.generation)this.busy=false;}
+      }
     }else this.showComputer();
   }
 

@@ -131,7 +131,8 @@ export function runComputerCommand(computer, session, input, context = {}) {
     if(found[1].type==='album')return result('',false,{album:found[1].album,title:found[0]});
     if(found[1].type==='file'){
       const content=found[1].content;
-      return result('',false,{note:typeof content==='function'?content(context):content,title:found[0]});
+      return result('',false,{note:typeof content==='function'?content(context):content,title:found[0],
+        ...(found[1].interaction?{interaction:found[1].interaction}:{})});
     }
     return result('The system cannot open this file.',true);
   }
@@ -142,7 +143,8 @@ export function runComputerCommand(computer, session, input, context = {}) {
   if (found?.[1].type === 'file') {
     const content = found[1].content;
     const note = typeof content === 'function' ? content(context) : content;
-    return result('', false, {note, title: found[0]});
+    return result('', false, {note, title: found[0],
+      ...(found[1].interaction?{interaction:found[1].interaction}:{})});
   }
   if (found?.[1].type === 'action' && verb !== 'type') return result(found[1].message, false, {action: found[1].action, shutdown: found[1].action === 'shutdown'});
   if (found?.[1].type === 'unsupported' && verb !== 'type') return result(found[1].message, true);

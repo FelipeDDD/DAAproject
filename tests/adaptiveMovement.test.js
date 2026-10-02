@@ -25,6 +25,14 @@ function fixture(t, adaptiveMovement=true) {
   return {p,calls,state,step,movement,advance(ms){now+=ms;t.mock.timers.tick(ms);}};
 }
 
+test('explicit close-range interaction flushes position once without changing the normal movement throttle',async t=>{
+  const f=fixture(t);f.movement(true);await f.step(0);
+  await f.step(100,{x:1});assert.equal(f.calls.length,1);
+  await f.p.send(Date.now(),{forcePosition:true});
+  assert.equal(f.calls.length,2);assert.equal(f.calls[1].args.x,1);
+  await f.p.send(Date.now(),{forcePosition:true});assert.equal(f.calls.length,2);
+});
+
 test('adaptive start/turn/velocity/stop/appearance/item/teleport events bypass cruise throttle',async t=>{
   const f=fixture(t);f.movement(false);await f.step(0);
   f.movement(true);await f.step(16,{x:2.3});

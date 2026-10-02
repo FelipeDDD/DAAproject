@@ -141,7 +141,7 @@ export class Presence {
       Math.max(1, active.sentAt + ADAPTIVE_CRUISE_INTERVAL_MS - Date.now()));
   }
 
-  async send(now = Date.now()) {
+  async send(now = Date.now(), {forcePosition=false}={}) {
     const active = this.active;
     if(this.terminalLease){
       if(now-this.terminalLease.clockOffset>=this.terminalLease.terminalLeaseExpiresAt)this.fail(new Error('CHARACTER_SESSION_LOST'));
@@ -175,8 +175,11 @@ export class Presence {
       Math.hypot(state.x-previousState.x,state.y-previousState.y) > 160));
     const stateChanged=adaptive ? moved || eventChanged
       : moved||JSON.stringify({...state,x:previousState.x,y:previousState.y})!==active.previous;
-    if (adaptive && stateChanged && !eventChanged && now < active.sentAt + ADAPTIVE_CRUISE_INTERVAL_MS) return;
-    const shouldUpdate = stateChanged && (!this.terminalMode || moved);
+    // Explicit close-range interactions may flush the feet position once, even
+    // within the movement throttle. Regular movement/heartbeats are unchanged.
+    const forcedPosition=forcePosition&&(state.x!==previousState?.x||state.y!==previousState?.y);
+    if (!forcedPosition && adaptive && stateChanged && !eventChanged && now < active.sentAt + ADAPTIVE_CRUISE_INTERVAL_MS) return;
+    const shouldUpdate = forcedPosition || stateChanged && (!this.terminalMode || moved);
     if(shouldUpdate||active.idleSince===undefined)active.idleSince=now;
     const enterStationary=!shouldUpdate&&!this.stationaryLease&&!this.terminalMode
       &&now-active.idleSince>=STATIONARY_IDLE_DWELL_MS;
