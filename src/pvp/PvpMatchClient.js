@@ -1,13 +1,14 @@
-import { advanceMatch,endMatch,reconcileParticipants,interruptedMatch } from './matchState.js';
+import { endMatch,reconcileParticipants,interruptedMatch } from './matchState.js';
 
 // Temporary transport adapter. UI/combat consume snapshots and discrete commands.
-// Clock projection is local; the interval performs no Convex requests.
+// The local timer expires membership only. It never advances combat/respawn/results.
 export class PvpMatchClient {
   constructor(presence,matchId,onState,onError=()=>{}){
     Object.assign(this,{presence,matchId,onState,onError});this.closed=false;this.queue=Promise.resolve();
     this.identity={playerId:presence.identity.playerId,sessionId:presence.identity.sessionId};
     this.unsubscribe=presence.client.onUpdate(presence.api.pvpMatches.current,this.args(),state=>{
       if(this.closed)return;
+      if(state&&this.snapshot&&(state.round??0)<(this.snapshot.round??0))return;
       if(state&&this.snapshot?.state==='ended'&&state.state!=='ended'&&(state.round??0)===(this.snapshot.round??0))return;
       if(state?.state==='ended'&&this.snapshot?.state==='ended'&&(state.round??0)===(this.snapshot.round??0)){
         // A delayed result must not erase a host departure in the same round.
@@ -30,7 +31,7 @@ export class PvpMatchClient {
   tick(){
     if(this.closed||!this.received)return;
     if(!this.snapshot){this.onState(null);return;}
-    const now=Date.now(),state=advanceMatch(this.snapshot,now);
+    const now=Date.now(),state=this.snapshot;
     const next=now>=state.expiresAt?endMatch(state,now,'expired'):reconcileParticipants(state,
       state.participants.filter(p=>p.presenceExpiresAt===undefined||now<p.presenceExpiresAt),now);
     if(next.state==='ended')this.snapshot=next;

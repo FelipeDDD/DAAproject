@@ -76,7 +76,7 @@ Do not reread it for routine isolated edits when the current session already has
 
 ## PvP test foundation (2026-10-02)
 
-- Separate **Team Deathmatch** scene/map `pvp-arena-test`, room `pvp-arena-test:<pvpMatches ID>`.
+- Shared **TDM/Payload** scene `pvp-arena-test` loading `payload-map.tmj`, room `pvp-arena-test:<pvpMatches ID>`.
   DevTools **PvP Arena: ON** enables creation; **Open PvP Lobby** opens create/join. The
   existing arena entrance also has a DEV-only **PvP Arena (test)** link, usable by
   guests. Code-based joining does not enable the local toggle. Backend create/join
@@ -120,7 +120,7 @@ Do not reread it for routine isolated edits when the current session already has
   shutdown disconnect and remove listeners. `src/pvp/movementConfig.js` owns the
   movement Hz (20 initially, tested at 25/30/40/50); frame scheduling skips overdue
   slots. Convex receives only the entry position and existing heartbeats/leases,
-  while retaining lobby, teams, metadata and death/respawn/score/lifecycle.
+  while retaining lobby, teams, metadata and a mirror of relay combat state.
   Default `/pvp-realtime` uses the Vite WS proxy to 8787, including WSS through
   the existing single Quick Tunnel with `VITE_QUICK_TUNNEL=true`; optional
   `VITE_REALTIME_URL` selects a separate endpoint. See `src/pvp/README.md` for
@@ -140,7 +140,7 @@ Do not reread it for routine isolated edits when the current session already has
   `scripts/pvp-convex-bridge.mjs` reuses the database-transfer local/loopback/instance
   guard; local admin credential stays in Node, never the frontend. Cloud/prod are
   refused. `pvp-authorize` validates playerId/sessionId/round; one internal reactive
-  match subscription per room follows membership, teams, presence and life.
+  match subscription per room follows membership, teams and presence leases.
   `PvpDamageAuthority` validates projectile ownership/TTL/replay/life, active enemy
   target in the same arena, fixed speed/cooldown, origin and first-body/cover
   intersection against current realtime positions and authored Collision.
@@ -148,17 +148,170 @@ Do not reread it for routine isolated edits when the current session already has
   server damage is 25. Immediate HP comes from versioned `pvp-combat-state`;
   `PvpDamageClient` rejects stale HP/life and overlays older Convex snapshots.
   Public `pvpMatches.hit` is disabled. Each accepted hit is mirrored by one
-  serialized, internal `applyRealtimeDamage` mutation with `damageRevision`;
-  existing Convex death/respawn/score/winner and host recovery remain intact.
+  serialized, internal `mirrorRealtimeCombat` snapshot with `damageRevision`;
+  combat death/respawn/score/winner now belong to the relay, not Convex.
+  Lobby ownership/departure and the existing host recovery remain intact.
   Persistence failure stops combat, without client fallback. No new client timer,
   socket or polling. One relay per local deployment; no production setup/deploy.
   No lag compensation: latest-position checks allow 12 px body/80 ms trajectory
   tolerance; high latency may reject visual hits. Movement remains client-reported.
-- `public/assets/maps/pvp-arena-test.tmj` uses existing campus tiles, a compact
-  mirrored 26x18 layout and authored Collision rectangles. `Spawns/teamA_spawn1`,
-  `teamA_spawn2`, `teamB_spawn1`, `teamB_spawn2` own spawn positions; `teamSpawn`
-  falls back to the sole marker if a team has only one. Missing team markers fail
-  clearly. Replace/edit the Tiled map without duplicating coordinates in JS.
+- PvP death/respawn correction (2026-10-04): relay clock reconciliation keeps
+  `advanceMatch`'s NEW participants (previously it restored dead/old-life rows).
+  `life` increments once at the existing 2.5s deadline; the same room/player/session/
+  socket/listeners stay alive. Authoritative HP/life updates reach movement and
+  projectile adapters immediately, even before a delayed browser Convex snapshot.
+  Per-life movement/shot high-water marks accept new-life sequences; old/future
+  rejected movement cannot poison relay caches. Transport envelope seq stays global.
+  Respawn resets lastShot/lastHitAt, local firing serial/cooldown and movement buffer.
+  Already registered flights survive shooter death/respawn and can cause posthumous
+  kills; only their original TTL/ownership/target life/room/cover/consumption govern
+  hits. Dead shooters cannot create NEW flights. Target life is captured at spawn,
+  so a previous-life flight cannot hit a newly respawned target. Distinct flights
+  may land out of order. No extra client timers, subscriptions or reconnects.
+  Relay logs death/respawn,
+  first post-respawn movement/spawn/hit and explicit rejection reasons; browser
+  logs use the existing `daa-pvp-movement-debug` flag. Restart relay/reload both
+  clients after changes; keep local Convex dev running. Boss/solo unchanged.
+- PvP full combat authority (2026-10-04): `PvpDamageAuthority` owns HP,
+  death/K/D/team score, 2.5s respawn with HP 100 and life+1, score-limit victory
+  (5), 180s timeout and final result. One local deadline timer per match handles
+  countdown/respawn/timeout/presence expiry without traffic or polling; end/leave/
+  close cancel pending respawns. Already-fired shots survive death until TTL/hit/
+  cover/end; double kills award both points while both hits are valid in active
+  play. Once victory ends the match, later hits cannot add points.
+  Versioned `pvp-combat-state` includes full scores/timing/result and fighter state,
+  plus explicit death/respawn/match-ended events. Clients never advance combat by
+  their own clock; local timers only render clocks and expire lobby membership.
+  Convex `acquireRealtimeCombat` binds one authorityId per round transactionally;
+  concurrent joins share one initialization/subscription. Internal
+  `mirrorRealtimeCombat` copies sequential snapshots, acknowledges duplicate
+  revisions without writes and preserves concurrent lobby departure. It never
+  computes damage/death/score/respawn/victory. Legacy public hit and internal
+  hit-only mirror are disabled; public force-finish is refused. DEV End Match
+  goes through authenticated `pvp-end-request` (host only).
+  Convex keeps create/join/teams/session ownership, world presence, lobby
+  departure/return/expiry and combat persistence. No profile rewards added.
+  Start local Convex, restart relay, reload clients and create a fresh lobby.
+  Active-match relay failover is deliberately unsupported: after restart/loss,
+  recreate the lobby rather than transferring a bound round to another authority.
+  No lag compensation/rollback or authoritative movement physics. Focused tests:
+  `pvpLifecycle`, `pvpDamage`, `pvpRespawn`, `pvp`, `pvpMovement`, `pvpProjectiles`.
+- PvP Retry (2026-10-04): final relay snapshots carry `retry` with a fixed 10s
+  deadline, connected/lease-valid participant IDs and individual votes.
+  `PvpRetryCoordinator` on the relay owns one decision/timer per ended round;
+  authenticated `pvp-retry` is idempotent and round-bound. Unanimity resolves early;
+  otherwise only voters survive the deadline. Leave/disconnect/lease expiry remove
+  participants from unanimity. The host has no special vote.
+  The relay waits for queued combat mirrors, then internal `advanceRealtimeRound`
+  validates remaining sessions and saves the same match/code with round+1,
+  zero scores/K/D/shot counters, HP100, life+1 and cleared respawns/result/authority.
+  Opposing teams start a fresh 3s countdown +180s match; one survivor or a single
+  team returns to waiting. Teams persist; lobby host transfers only if needed.
+  Zero voters delete the abandoned lobby and all clients leave normally.
+  `retryDeadline` prevents legacy `returnToLobby` competing with the relay;
+  `retryFromAuthorityId` makes the generation transaction idempotent.
+  `pvp-round-transition` hands off clients before gameplay resumes. They reuse the
+  same socket/adapters/listeners, join the next round's room and reauthenticate;
+  the old relay subscription/timers are closed and one new authority is acquired.
+  Interpolation/projectiles/sequence caches reset, players return to team spawns,
+  and old room/round/life/revision messages cannot alter the next round.
+  Convex echoes/removal errors during the decision cannot bypass the relay handoff.
+  Relay errors retain the existing safe departure countdown; no polling, jobs,
+  boss/solo or profile progression changes. HUD shows Retry/Leave, confirmations
+  and countdown. Restart relay/reload clients for this protocol change.
+  Focused regression suite: `tests/pvpRetry.test.js`, including repeated real
+  two-WebSocket rounds, no votes, disconnect, same-team/solo waiting and Leave races.
+- Payload MVP (2026-10-04): DEV PvP lobby offers **Create TDM Lobby** and
+  **Create Payload Lobby**. `pvpMatches.mode` accepts `tdm | payload`; shared
+  membership/session/team/combat/Retry lifecycle remains unchanged. Mode tuning
+  and HUD labels live in `src/pvp/gameModes.js`; `modeAuthority.js` / `modeView.js`
+  select separate objective rules/presentation, with no Payload controller for TDM.
+  `src/pvp/payload/config.js` owns speed **10 px/s**, radius **64 px**, objective
+  cadence **100 ms**, respawn **3s**, time **180s**. TDM keeps 2.5s respawn/5 kills.
+  `PayloadRoute/payload-route` is an optional authored Tiled polyline, ordered
+  BLUE/A first -> RED/B last, with `initialFraction` defaulting to 0.5. Until it is
+  authored in the new map, the isolated fallback in `PVP_MAP_LAYOUT` connects the
+  two team base markers; client and relay use the same `routeFromMap` helper.
+  `PayloadAuthority` uses existing authenticated realtime positions, current
+  life/HP/presence/connection and Euclidean radius. A alone pushes towards RED,
+  B alone towards BLUE; both contested, none neutral; escorts never stack speed.
+  Stale moving samples cannot continue pushing. Physical arc-length progress
+  follows bends/clamps endpoints. Endpoint delivery selects the pushing winner;
+  kills only update K/D/score, never end Payload. Timeout without delivery draws.
+  The shared relay timer drives the objective; versioned `pvp-combat-state` adds
+  optional `payload` with x/y/distance/routeLength/radius/control/contested/moving.
+  Updates use the same socket at up to 10Hz plus immediate control changes.
+  Objective ticks do NOT invoke Convex; state is mirrored only with existing
+  combat/lifecycle writes. `pvpMatches.payload` is optional persistence metadata.
+  `PayloadView` draws route/cart and gray/blue/red/amber ground circle using
+  Phaser Graphics, with visual interpolation only and configurable visibility.
+  No image assets/new collision bodies. Retry clears saved objective, creates a
+  fresh centered authority, resets visuals/spawns, and rejects old room/round/life
+  events. No checkpoints, overtime, sabotage, repair, buffs or dynamic respawn.
+  Focused tests: `tests/pvpPayload.test.js` plus shared TDM/lifecycle/Retry checks,
+  including two real WebSocket clients completing delivery and the next round.
+  Restart relay/reload clients with local Convex running after this change.
+- PvP main map (2026-10-04): `src/pvp/config.js` selects
+  `public/assets/maps/payload-map.tmj` for both TDM/Payload, the walking inspection
+  scene and realtime relay. Logical scene/room prefix `pvp-arena-test` remains
+  stable for session/membership compatibility; the old physical map is unused.
+  Current map is 46x34 tiles at 32px = 1472x1088 world pixels. Physics/camera bounds
+  derive from Tiled dimensions with player follow. `PVP_MAP_LAYOUT.cameraZoom`
+  applies to both the live `pvp-arena-test` scene and walking `payload-map`
+  inspection scene; other maps use their own camera zoom settings.
+  Background images retain authored position/size; no PNG/TMJ/collision edits.
+  `PVP_MAP_LAYOUT` owns Notes marker names: A/blue `spawnBlue` currently
+  (1323,495), B/red `spawnRed` (130.25,495.75), facing inward. Teammates use
+  temporary offsets (0,0)/(0,32), shared by scene, relay, respawn and Retry.
+  Prefer numbered points `Spawns/teamA_spawn1`, `teamA_spawn2`,
+  `teamB_spawn1`, `teamB_spawn2` when ready; these override Notes/offsets.
+  Optional string property `direction` on a marker overrides default facing.
+  Temporary Payload route runs blue -> red, starts midway at (726.625,495.375).
+  To replace it, add `PayloadRoute` object layer + unrotated `payload-route`
+  polyline; no scene/relay code change needed. Keep its path clear of collisions.
+  Layer convention: image `background` underneath (-3); image or tile layer
+  `Overlay`/`Foreground` (case-insensitive) above avatars by default
+  (map pixel height + 100). Numeric layer property `depth` overrides this;
+  existing `overlay` keeps 1200. Tile `Floor`/`Decoration`/`Walls` keep
+  current lower depths. Only exact `Collision` object layer creates blockers;
+  `Notes`, `Spawns`, `PayloadRoute` points/polylines do not. Rotated Collision
+  rectangles/polygons use the same one-pixel scanline conversion on client/relay,
+  honoring Tiled rotation around x/y; no collision objects were changed. Images remain
+  under `public/assets/maps/`, referenced relative to the TMJ. Restart
+  `npm run realtime:server` after map edits, then reload both clients: the relay
+  reads collisions/spawns/route at startup, while clients load the same TMJ.
+  Optional Pac-Man flanks use a `Teleport` object layer with unrotated rectangle
+  objects `top` and `bottom`; both markers now exist in the map. Put each in
+  its safe upper/lower passage and keep the arrival foot body clear of Collision. Areas are
+  triggers, not blockers. A 650 ms cooldown and a lock until exiting the destination
+  prevent ping-pong. One normal realtime movement sample carries a one-shot
+  `teleport` flag, clearing remote interpolation for a snap. No TMJ was edited.
+  Entry consistency correction: `PVP_MAP_DEFINITION` (id/file/revision) is the single
+  physical map source; Convex publishes `arenaMap` to host/joiners/relay/Retry.
+  Entry/Retry and relay authorization reject missing/mismatched definitions;
+  `pvp-authorize` includes mapId/mapRevision so old clients cannot silently join.
+  `PvpMapScene` shares map loading and teleport triggers between live PvP and
+  DEV inspection. Cache keys include physical identity; new entry reloads slept
+  scenes/map caches (DEV cache-busted URL). Retry keeps that same map and resets
+  the trigger lock. The old TMJ is an unused reference, with no runtime fallback.
+  DEV inspection now has an accepted regular presence room. Both narrow authored
+  teleports center feet inward and synchronize Arcade offsets/previous positions,
+  avoiding wall overlap or postUpdate drift; map/collision objects were untouched.
+  Restart local Convex watcher/realtime relay and reload both browsers for the
+  new map contract. No production deployment or localStorage reset is required.
+- PvP combat bootstrap (2026-10-05): relay discards pre-authorization movement.
+  On `pvp-authorized`, the movement adapter publishes one reliable current pose
+  through its existing sequence/socket before the damage listener enables fire;
+  this bypasses the next movement deadline and is idempotent per connection/round.
+  Arena fire requires authorization, an active relay snapshot and that pose sent,
+  preventing local shots whose spawn was never registered during initialization.
+  Normal cadence, combat rules, life/HP and respawn remain unchanged. Diagnostics
+  cover initial player registration, match activation, first movement/spawn/hit
+  per life, and rejection reasons with position source/age, HP, life, ownership,
+  room and round (no secret sessionId). Focused tests reproduce the discarded-pose
+  window and verify first hits in both directions with two actual sockets, plus
+  initial-vs-respawn state equivalence. The reported intermittent browser case
+  still needs a manual retest; do not assume every rejection has this cause.
 - Compact HUD shows scores, time, team, HP/K/D, countdown, respawn and final result;
   **Leave Arena** returns to the saved entrance, with host-only DEV End Match.
   The dedicated scene reuses Tiled loading/player visuals but creates no inventory,
@@ -171,7 +324,8 @@ Do not reread it for routine isolated edits when the current session already has
   reuse the same code/document if the host remains; missing/closed/expired lobbies
   return to the saved pre-PvP map. A stalled return request falls back after five
   more seconds; late results cannot travel twice and release unused membership.
-  Normal score/time results keep their existing manual exit. No polling is added.
+  This remains the fallback for relay failure/expired lobbies; ordinary realtime
+  ends now use the shared Retry/Leave deadline described above. No polling is added.
 - An optional `pvpMatches.round` (legacy default 0) increments when an interrupted
   round returns to waiting. Round/session/life checks reject delayed combat,
   end and leave commands. Return resets fighters/scores once, removes departed
@@ -183,8 +337,8 @@ Do not reread it for routine isolated edits when the current session already has
   are untouched. Future PvP AoE needs a separate target filter, not body blocking.
   Remote projectile visuals are replicated through the adapter above. No Vivaldi
   Alt+Tab investigation or modal keyboard changes were made for this PvP polish.
-- Deferred: movement authority, lag compensation/prediction, host migration,
-  full anti-cheat, CTF and rematch voting.
+- Deferred: movement authority, lag compensation/prediction, active-match host
+  migration, full anti-cheat and CTF.
   No deployment or existing data reset is needed to keep developing; apply the new
   schema/functions only to the intended local/dev backend when running the test.
 

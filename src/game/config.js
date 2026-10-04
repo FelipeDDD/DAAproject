@@ -3,13 +3,16 @@ import { SchoolScene } from '../scenes/SchoolScene.js';
 import { OutsideScene } from '../scenes/OutsideScene.js';
 import { ArenaScene } from '../scenes/ArenaScene.js';
 import { PvpArenaScene } from '../scenes/PvpArenaScene.js';
+import { PayloadMapScene } from '../scenes/PayloadMapScene.js';
 import { Office2Scene } from '../scenes/Office2Scene.js';
 import { Office3Scene } from '../scenes/Office3Scene.js';
 import { SecretPathScene } from '../scenes/SecretPathScene.js';
 import { GAME_LOGICAL_SIZE } from '../ui/displaySettings.js';
+import { PVP_MAP,PVP_INSPECTION_SCENE } from '../pvp/config.js';
 
 export const GAME_SCENES_BY_KEY=Object.freeze({
-  school:SchoolScene,outside:OutsideScene,arena:ArenaScene,office2:Office2Scene,office3:Office3Scene,'secret-path':SecretPathScene,'pvp-arena-test':PvpArenaScene,
+  school:SchoolScene,outside:OutsideScene,arena:ArenaScene,office2:Office2Scene,office3:Office3Scene,'secret-path':SecretPathScene,
+  [PVP_MAP]:PvpArenaScene,[PVP_INSPECTION_SCENE]:PayloadMapScene,
 });
 
 export const gameConfig = {

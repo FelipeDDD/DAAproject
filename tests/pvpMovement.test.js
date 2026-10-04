@@ -13,8 +13,11 @@ import { RemotePlayers } from '../src/multiplayer/RemotePlayers.js';
 import { Presence } from '../src/multiplayer/Presence.js';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
+import { readPvpTeleportAreas,PvpTeleportController } from '../src/pvp/teleports.js';
+import { PVP_MAP_DEFINITION } from '../src/pvp/config.js';
+import { requirePvpMap } from '../src/pvp/mapConfig.js';
 
-const match=()=>({round:2,state:'active',participants:[
+const match=()=>({arenaMap:PVP_MAP_DEFINITION,round:2,state:'active',participants:[
   {playerId:'alice',displayName:'Alice',characterBaseId:'michael',team:'A',life:0,hp:100},
   {playerId:'bob',displayName:'Bob',characterBaseId:'michael',team:'B',life:0,hp:100},
 ]});
@@ -54,8 +57,48 @@ test('PvP room includes match and round; default URL follows localhost or HTTPS 
 test('PvP validation allows arena coordinates beyond lab bounds but rejects malformed movement',()=>{
   assert.ok(validPvpMovement(movement()));
   assert.ok(validClientMessage({type:'pvp-movement',payload:movement(),roomId:'pvp-a-0',seq:1,sentAt:1000,channel:'unreliable'}));
-  for(const extra of [{x:NaN},{x:Infinity},{vx:1001},{direction:'invalid'},{moving:0},{sampleSeq:0},{life:-1},{playerId:''}])
+  assert.ok(validPvpMovement(movement({teleport:true})));
+  for(const extra of [{x:NaN},{x:Infinity},{vx:1001},{direction:'invalid'},{moving:0},{sampleSeq:0},{life:-1},{playerId:''},{teleport:'yes'}])
     assert.equal(validPvpMovement(movement(extra)),false);
+});
+
+test('authorization publishes the initial pose before enabling hits, bypasses an already advanced deadline, and is idempotent',t=>{
+  const f=fixture(t);f.join();f.client.update(); // Relay discards this pre-auth tick.
+  let damage;const beforeAuthorized=[];
+  const send=f.transport.sendReliable.bind(f.transport);
+  f.transport.sendReliable=(type,payload)=>{
+    if(type==='pvp-movement')beforeAuthorized.push(damage.authorized);
+    return send(type,payload);
+  };
+  damage=new PvpDamageClient(f.client,{matchId:'match-a',sessionId:'session-a',onState(){}});
+  t.after(()=>damage.close());
+  f.setTime(5);f.emit('pvp-authorized',{playerId:'alice',round:2});
+  const sent=f.transport.sent.filter(m=>m.type==='pvp-movement');
+  assert.equal(sent.length,2);assert.equal(sent[1].channel,'reliable');
+  assert.equal(sent[1].payload.sampleSeq,2);assert.equal(sent[1].payload.life,0);
+  assert.deepEqual(beforeAuthorized,[false]);assert.equal(damage.authorized,true);
+  assert.equal(f.client.authorizedPoseSent,true);
+  f.emit('pvp-authorized',{playerId:'alice',round:2});f.client.update(5);
+  assert.equal(f.transport.sent.filter(m=>m.type==='pvp-movement').length,2);
+  f.client.update(55);assert.equal(f.transport.sent.filter(m=>m.type==='pvp-movement').length,3);
+  f.client.switchRound({...match(),round:3,state:'countdown',matchId:'match-a'});
+  assert.equal(f.client.authorizedPoseSent,false);
+  f.emit('room-state',{peers:[]});f.emit('pvp-authorized',{playerId:'alice',round:2});
+  assert.equal(f.client.authorizedPoseSent,false,'old-round auth cannot initialize a new round');
+  f.emit('pvp-authorized',{playerId:'alice',round:3});assert.equal(f.client.authorizedPoseSent,true);
+});
+
+test('teleport marks the next realtime position for immediate remote snapping',t=>{
+  const {remotes}=rendererFixture(),f=fixture(t,{remotes});f.join();
+  f.client.receiveRoster([{playerId:'bob',x:100,y:200,displayName:'Bob',characterBaseId:'michael'}]);
+  f.remote(movement({x:300,y:200,sampleSeq:1}));
+  const remote=remotes.players.get('bob');assert.equal(remote.buffer.snapshots.length,1);
+  f.client.markTeleport();f.setTime(50);f.client.update(50);
+  const sent=f.transport.sent.filter(message=>message.type==='pvp-movement').at(-1);
+  assert.equal(sent.payload.teleport,true);assert.equal(sent.payload.x,950);
+  f.remote(movement({x:950,y:200,sampleSeq:2,teleport:true}));
+  assert.equal(remote.buffer.snapshots.length,1,'teleport clears old interpolation snapshots');
+  assert.equal(remote.sprite.x,950,'remote sprite snaps to the new position');
 });
 
 for(const hz of [20,25,30,40,50])test(`movement cadence ${hz} Hz uses one configuration and skips missed slots`,t=>{
@@ -102,6 +145,20 @@ test('metadata cannot overwrite movement; peer departure/reconnection resets ord
   f.remote(movement({sampleSeq:2}),{senderId:'new-peer'});assert.equal(f.calls.length,2);
   f.remote(movement({sampleSeq:3,life:1}),{senderId:'new-peer'});
   assert.equal(f.calls.at(-1)[2].reset,true);
+});
+
+test('explicit teleport movement clears remote interpolation and snaps the sprite immediately',t=>{
+  const {remotes}=rendererFixture(),f=fixture(t,{remotes});f.join();
+  f.client.receiveRoster([{playerId:'bob',x:100,y:200,displayName:'Bob',characterBaseId:'michael'}]);
+  f.remote(movement({x:300,y:200,sampleSeq:1}));
+  const remote=remotes.players.get('bob');assert.equal(remote.buffer.snapshots.length,1);
+  f.remote(movement({x:950,y:200,sampleSeq:2,teleport:true}));
+  assert.equal(remote.buffer.snapshots.length,1,'pre-teleport snapshots are discarded');
+  assert.equal(remote.sprite.x,950);assert.equal(remote.sprite.y,200);
+
+  const local=fixture(t);local.join();local.client.markTeleport();local.client.update(0);
+  const sent=local.transport.sent.filter(message=>message.type==='pvp-movement').at(-1);
+  assert.equal(sent.payload.teleport,true);assert.equal(sent.payload.x,950);
 });
 
 test('remote renderer interpolates the realtime stream and holds on underrun without Convex positions',t=>{
@@ -215,6 +272,7 @@ test('actual PvP scene keeps local input immediate and Convex presence fixed whi
   const chain=function(){return this;};
   class MapScene {
     constructor(){
+      this.cameras={main:{setZoom(){return this;}}};this.source={layers:[]};
       this.player={x:100,y:200,facing:'right',body:{enable:true,velocity:{x:0,y:0},
         reset:(x,y)=>{this.player.x=x;this.player.y=y;},deltaX:()=>1,deltaY:()=>0},
         setVelocity:(x,y)=>{this.player.body.velocity={x,y};return this.player;},
@@ -225,6 +283,8 @@ test('actual PvP scene keeps local input immediate and Convex presence fixed whi
       this.hint={};this.input={keyboard:{resetKeys(){}}};
     }
     travelTo(destination){this.destination=destination;}
+    initializePvpTeleports(){this.teleports=new PvpTeleportController(readPvpTeleportAreas(this.source));}
+    updatePvpTeleports(){return null;}
   }
   class MatchClient {close(){}request(){return Promise.resolve();}}
   class Hud {constructor(){this.status={};}destroy(){}render(){}}
@@ -233,10 +293,10 @@ test('actual PvP scene keeps local input immediate and Convex presence fixed whi
   const source=readFileSync(new URL('../src/scenes/PvpArenaScene.js',import.meta.url),'utf8')
     .replace(/^import .*;\r?\n/gm,'').replace('export class PvpArenaScene','class PvpArenaScene')
     .replaceAll('import.meta.env','({DEV:true})');
-  const Scene=runInNewContext(`${source}\nPvpArenaScene`,{MapScene,getPresence:()=>presence,
-    PVP_MAP:'pvp-arena-test',PVP_RULES:{maxHp:100},pvpRoom:id=>`pvp-arena-test:${id}`,
+  const Scene=runInNewContext(`${source}\nPvpArenaScene`,{PvpMapScene:MapScene,requirePvpMap,getPresence:()=>presence,createModeView:()=>null,
+    PVP_MAP:'pvp-arena-test',PVP_MAP_FILE:'payload-map.tmj',PVP_RULES:{maxHp:100},pvpRoom:id=>`pvp-arena-test:${id}`,
     characterById:()=>({}),teamSpawn:()=>({x:100,y:200}),pvpRealtimeUrl:()=> 'ws://localhost:8787',
-    pvpMovementDebugEnabled:()=>false,
+    pvpMovementDebugEnabled:()=>false,cameraZoomForMap:()=>1.25,readPvpTeleportAreas,PvpTeleportController,
     resolvedMovementState:body=>({moving:true,velocityX:body.velocity.x,velocityY:body.velocity.y}),
     PvpMovementClient:class extends PvpMovementClient {constructor(options){super({...options,transport,now:()=>at,log:()=>{}});}},
     PvpDamageClient,PvpProjectileClient,PvpMatchClient:MatchClient,PvpHud:Hud,PvpCombatController:Combat,PvpReturnFlow:ReturnFlow,endMatch:()=>state,Date});
@@ -311,6 +371,11 @@ test('real WebSocket PvP clients relay movement only within a match; no echo, st
     a.transport.sendUnreliable('pvp-movement',movement({playerId:'alice',sampleSeq:1,x:1}));
     a.transport.sendUnreliable('pvp-movement',movement({playerId:'alice',sampleSeq:2,x:980}));
     await waitFor(()=>b.calls.length===2);assert.equal(b.calls[1][1].x,980);
+    // Keep the client-side sequence aligned with the two packets injected
+    // directly above so the teleport packet remains newer at the relay.
+    a.client.sampleSeq=2;
+    a.client.markTeleport();a.client.update();
+    await waitFor(()=>b.calls.length===3);assert.equal(b.calls[2][2].reset,true);
     a.client.close();await waitFor(()=>b.client.peers.size===0);
     const reconnected=create('alice');await waitFor(()=>reconnected.client.joined&&b.client.peers.size===1);
     reconnected.client.update();await waitFor(()=>b.calls.length===3);assert.equal(b.calls[2][2].reset,true);

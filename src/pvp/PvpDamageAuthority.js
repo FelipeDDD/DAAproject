@@ -1,75 +1,219 @@
 import { PVP_RULES } from './config.js';
-import { advanceMatch,reconcileParticipants,endMatch } from './matchState.js';
+import { advanceMatch,reconcileParticipants,endMatch,registerPlayerDeath,interruptedMatch } from './matchState.js';
+import { combatSnapshot,fighterFields } from './combatSnapshot.js';
 import { segmentRect } from './projectiles.js';
+import { PvpRetryCoordinator } from './PvpRetryCoordinator.js';
 
 // One instance per authenticated room/round, owned only by the relay process.
 // Latest positions + straight segment checks, without historical rewind/rollback.
 export class PvpDamageAuthority {
-  constructor(state,{now=Date.now,walls=[],getSpawn=()=>({x:0,y:0}),authorityId,onState=()=>{},commit,onFailure=()=>{},log=()=>{}}){
-    Object.assign(this,{state:structuredClone(state),now,walls,getSpawn,authorityId,onState,commit,onFailure,log});
+  constructor(state,{now=Date.now,walls=[],getSpawn=()=>({x:0,y:0}),authorityId,onState=()=>{},commit,onFailure=()=>{},onRetryResolve,modeAuthority=null,log=()=>{},schedule=setTimeout,cancel=clearTimeout}){
+    Object.assign(this,{state:structuredClone(state),now,walls,getSpawn,authorityId,onState,commit,onFailure,log,schedule,cancel,mode:modeAuthority});
+    if(this.mode)this.state.payload=this.mode.current;
     this.round=state.round??0;this.revision=state.damageRevision??0;this.version=0;this.closed=false;this.failed=false;
-    this.members=new Map();this.positions=new Map();this.projectiles=new Map();this.fired=new Map();this.queue=Promise.resolve();
+    this.members=new Map();this.positions=new Map();this.projectiles=new Map();this.fired=new Map();this.diagnostics=new Map();this.queue=Promise.resolve();
+    if(onRetryResolve)this.retry=new PvpRetryCoordinator({now,schedule,cancel,onChange:()=>this.emit(),onResolve:async playerIds=>{
+      await this.queue;if(this.closed||this.failed)return;
+      try{await onRetryResolve(playerIds);}catch{this.retry.close();this.onFailure('Retry synchronization failed. Leave and rejoin the lobby.');}
+    }});
+    this.events=[];this.arm();
   }
   register(playerId,peerId){
     if(this.closed||!this.state.participants.some(p=>p.playerId===playerId))return false;
     if(this.members.has(playerId)&&this.members.get(playerId)!==peerId)return false;
-    this.members.set(playerId,peerId);return true;
+    this.members.set(playerId,peerId);
+    this.log({event:'combat player initialized',...this.combatContext(this.fighter(peerId)),peerId});
+    this.updateRetry();return true;
   }
   remove(peerId){
-    for(const [playerId,id] of this.members)if(id===peerId){this.members.delete(playerId);this.positions.delete(playerId);}
+    const departed=[];
+    for(const [playerId,id] of this.members)if(id===peerId){departed.push(playerId);this.members.delete(playerId);this.positions.delete(playerId);}
     for(const [id,p] of this.projectiles)if(p.peerId===peerId)this.projectiles.delete(id);
+    // During play a disconnect cancels that fighter's pending respawn. During
+    // the end window it removes their vote/member without changing the result.
+    if(departed.length&&['countdown','active'].includes(this.state.state)){
+      const previous=this.state;
+      this.state=reconcileParticipants(previous,previous.participants.filter(p=>!departed.includes(p.playerId)),this.now());
+      this.publish(previous,'peer left');
+    }
+    if(departed.length)this.updateRetry();
   }
   sync(state){
     if(this.closed)return;
-    if(!state||(state.round??0)!==this.round){this.closed=true;this.onFailure('PvP round unavailable.');return;}
-    // Do not let a reactive commit of an earlier queued hit restore newer HP.
-    const old=this.state;
-    const incoming=advanceMatch(structuredClone(state),this.now());
-    this.state={...incoming,participants:incoming.participants.map(p=>{
-      const current=old.participants.find(q=>q.playerId===p.playerId);
-      if(current&&current.life>p.life)return {...p,life:current.life,hp:current.hp,respawnAt:current.respawnAt,lastShot:current.lastShot};
-      return current&&current.life===p.life&&(state.damageRevision??0)<this.revision?
-        {...p,hp:current.hp,lastShot:Math.max(p.lastShot??0,current.lastShot??0)}:p;
-    })};
-    this.revision=Math.max(this.revision,state.damageRevision??0);this.emit();
+    // Freeze the decided round while draining mirrors and saving its successor.
+    // The transaction still validates concurrent Leave/session expiry; an echo
+    // must not enqueue another old-round mirror or precede the room handoff.
+    if(this.retry?.resolving)return;
+    if(!state||(state.round??0)!==this.round){this.close();this.onFailure('PvP round unavailable.');return;}
+    // Convex echoes supply membership/leases ONLY, never combat decisions.
+    const previous=this.state;
+    const participants=state.participants.filter(p=>previous.participants.some(q=>q.playerId===p.playerId)).map(p=>{
+      const current=previous.participants.find(q=>q.playerId===p.playerId);
+      return current?{...p,...Object.fromEntries(fighterFields.map(k=>[k,current[k]]))}:p;
+    });
+    this.state=reconcileParticipants({...previous,participants},participants,this.now());
+    if(interruptedMatch(state)&&!interruptedMatch(this.state)){
+      this.state=endMatch(this.state,this.now(),state.reason);
+      this.state={...this.state,reason:state.reason,endedAt:state.endedAt??this.now()};
+    }
+    if(this.changed(previous))this.publish(previous,'membership');
+    this.updateRetry();
+    this.advance();
+  }
+  changed(previous){return JSON.stringify(combatSnapshot(previous))!==JSON.stringify(combatSnapshot(this.state));}
+  arm(){
+    let deadline=null;
+    if(!this.closed&&!['waiting','ended'].includes(this.state.state)){
+      const m=this.state,deadlines=[m.endsAt,m.expiresAt,...m.participants.map(p=>p.presenceExpiresAt),...m.participants.map(p=>p.respawnAt)];
+      if(m.state==='countdown')deadlines.push(m.startedAt);
+      if(this.mode)deadlines.push(this.mode.nextDeadline(m));
+      const finite=deadlines.filter(Number.isFinite);if(finite.length)deadline=Math.min(...finite);
+    }
+    if(deadline===this.deadline)return;
+    if(this.timer!==undefined)this.cancel(this.timer);
+    this.timer=undefined;this.deadline=deadline;
+    if(deadline!==null){
+      this.timer=this.schedule(()=>{this.timer=undefined;this.deadline=null;if(!this.closed)this.advance();},Math.max(0,deadline-this.now()));
+      this.timer?.unref?.();
+    }
+  }
+  publish(previous,source,detail={}){
+    if(this.state.state==='ended')this.advanceObjective(this.now());
+    this.revision++;this.transitions(previous,source);
+    const events=[];
+    for(const p of this.state.participants){
+      const old=previous.participants.find(q=>q.playerId===p.playerId);if(!old)continue;
+      if(old.hp>0&&p.hp===0){
+        const event={type:'death',playerId:p.playerId,life:p.life,...detail,respawnAt:p.respawnAt};events.push(event);
+        this.log({event:'death accepted',...event,scoreBefore:previous.scores,scoreAfter:this.state.scores});
+        if(p.respawnAt!==null)this.log({event:'respawn scheduled',playerId:p.playerId,life:p.life,respawnAt:p.respawnAt});
+      }else if(p.life>old.life)events.push({type:'respawn',playerId:p.playerId,life:p.life,hp:p.hp});
+    }
+    if(previous.state!=='ended'&&this.state.state==='ended'){
+      events.push({type:'match-ended',reason:this.state.reason,winner:this.state.winner});
+      this.log({event:'match ended',reason:this.state.reason,winner:this.state.winner,scores:this.state.scores});
+      this.projectiles.clear();
+      if(this.retry&&this.state.reason!=='expired')this.retry.begin(this.state.endedAt,this.retryParticipants());
+    }
+    this.events=events;this.arm();this.emit();
+    const args={matchId:this.state.matchId,round:this.round,authorityId:this.authorityId,
+      expectedRevision:this.revision-1,revision:this.revision,snapshot:combatSnapshot(this.state)};
+    if(this.retry?.deadline!==undefined)args.retryDeadline=this.retry.deadline;
+    this.queue=this.queue.then(()=>{if(this.failed)throw new Error('Authority failed.');return this.commit(args);}).then(response=>{
+      if(!response?.applied)throw new Error('Combat mirror rejected.');
+    }).catch(()=>{this.failed=true;if(!this.closed){const ended=this.state.state==='ended';this.close();
+      this.log({event:'combat mirror rejected',round:this.round,revision:this.revision,reason:'persistence_failed'});
+      if(!ended||this.retry?.deadline!==undefined)this.onFailure('Realtime combat synchronization failed. Rejoin the match.');
+    }});
+  }
+  requestEnd(peerId){
+    const member=this.fighter(peerId);
+    if(this.closed||member?.playerId!==this.state.hostPlayerId||!['countdown','active'].includes(this.state.state)){
+      this.log({event:'end rejected',playerId:member?.playerId,reason:'inactive_or_not_host'});return false;
+    }
+    const previous=this.state;this.state=endMatch(previous,this.now(),'dev-ended');this.publish(previous,'host request');return true;
+  }
+  retryParticipants(){return this.state.participants.filter(p=>this.members.has(p.playerId)
+    &&(p.presenceExpiresAt===undefined||this.now()<p.presenceExpiresAt));}
+  updateRetry(){if(this.retry?.deadline!==undefined)this.retry.update(this.retryParticipants());}
+  requestRetry(peerId,round){
+    const member=this.fighter(peerId);
+    if(this.closed||this.state.state!=='ended'||round!==this.round||!member)return false;
+    this.updateRetry();return this.retry?.vote(member.playerId)??false;
+  }
+  transitions(previous,source){
+    if(previous.state==='countdown'&&this.state.state==='active')
+      this.log({event:'match active',round:this.round,room:this.state.room,
+        players:this.state.participants.map(p=>this.combatContext(p))});
+    for(const p of this.state.participants){
+      const old=previous.participants.find(q=>q.playerId===p.playerId);if(!old)continue;
+      if(p.life>old.life){this.positions.delete(p.playerId);
+        this.log({event:'respawn applied',source,playerId:p.playerId,lifeBefore:old.life,lifeAfter:p.life,hp:p.hp});}
+      else if(old.hp>0&&p.hp===0)this.log({event:'death applied',source,playerId:p.playerId,lifeBefore:old.life,lifeAfter:p.life,hpBefore:old.hp,hpAfter:p.hp});
+    }
+  }
+  firstAfterRespawn(event,member,extra={}){
+    if(!member)return;
+    const seen=this.diagnostics.get(member.playerId)??{};
+    if(seen[event]===member.life)return;
+    seen[event]=member.life;this.diagnostics.set(member.playerId,seen);
+    this.log({event:`first ${event} ${member.life===0?'after match start':'after respawn'}`,...this.combatContext(member),...extra});
+  }
+  combatContext(member){
+    const position=member&&this.position(member);
+    return {matchId:this.state.matchId,room:this.state.room,round:this.round,state:this.state.state,
+      playerId:member?.playerId,life:member?.life,hp:member?.hp,alive:Boolean(member&&member.hp>0),
+      sessionOwned:Boolean(member&&this.members.has(member.playerId)),presenceRoom:member?.presenceRoom,
+      lastShot:member?.lastShot,position:position&&{x:position.x,y:position.y,life:position.life,
+        source:this.positions.has(member.playerId)?'movement':'spawn',ageMs:this.now()-position.at}};
   }
   advance(){
+    if(this.closed||this.retry?.resolving)return;
     const now=this.now(),previous=this.state;
-    this.state=now>=previous.expiresAt?endMatch(previous,now,'expired'):reconcileParticipants(advanceMatch(previous,now),
-      previous.participants.filter(p=>p.presenceExpiresAt===undefined||now<p.presenceExpiresAt),now);
+    const modeChanged=this.advanceObjective(Math.min(now,previous.endsAt??now));
+    const source=this.state;
+    const advanced=advanceMatch(source,now,this.mode?{finish:(m,at)=>this.mode.finishTimeout(m,at)}:undefined);
+    this.state=now>=previous.expiresAt?endMatch(advanced,now,'expired'):reconcileParticipants(advanced,
+      advanced.participants.filter(p=>p.presenceExpiresAt===undefined||now<p.presenceExpiresAt),now);
     let changed=this.state.state!==previous.state||this.state.participants.length!==previous.participants.length;
     for(const p of this.state.participants)if(previous.participants.find(q=>q.playerId===p.playerId)?.life!==p.life){
       this.positions.delete(p.playerId);changed=true;
     }
     for(const [id,p] of this.projectiles)if(now>p.expiresAt+6000)this.projectiles.delete(id);
-    if(changed)this.emit();
+    const broadcast=this.mode?.shouldBroadcast(now,previous.payload);
+    if(changed)this.publish(previous,'realtime clock');else{if(modeChanged&&broadcast)this.emit();this.arm();}
+  }
+  advanceObjective(at){
+    if(!this.mode)return false;
+    let source=this.state;
+    if(source.state==='countdown'&&at>=source.startedAt)source=advanceMatch(source,source.startedAt);
+    const result=this.mode.advance(at,source,this.positions,this.members,this.getSpawn);
+    const changed=JSON.stringify(result.payload)!==JSON.stringify(this.state.payload);
+    this.state={...source,payload:result.payload};
+    if(result.winner)this.state={...endMatch(this.state,result.endedAt,'payload-delivered'),winner:result.winner};
+    return changed;
   }
   fighter(peerId){return this.state.participants.find(p=>this.members.get(p.playerId)===peerId);}
   position(p){return this.positions.get(p.playerId)??{...this.getSpawn(p,this.state),at:this.now(),life:p.life};}
   movement(peerId,p){
     this.advance();const member=this.fighter(peerId);
-    if(this.closed||!member||member.playerId!==p.playerId||member.life!==p.life)return false;
-    this.positions.set(p.playerId,{x:p.x,y:p.y,life:p.life,moving:p.moving,at:this.now()});return true;
+    const reason=this.closed?'authority_closed':this.state.state==='ended'?'match_ended':!member?'unowned_player':member.playerId!==p.playerId?'player_mismatch':member.life!==p.life?'stale_life':null;
+    if(reason){this.log({event:'movement rejected',playerId:p.playerId,life:p.life,expectedLife:member?.life,reason});return false;}
+    this.positions.set(p.playerId,{x:p.x,y:p.y,life:p.life,moving:p.moving,at:this.now()});
+    this.firstAfterRespawn('movement',member,{sampleSeq:p.sampleSeq});
+    if(this.mode)this.advance();return true;
   }
   spawn(peerId,p){
     this.advance();const member=this.fighter(peerId),now=this.now(),previous=this.fired.get(p.playerId);
-    if(this.closed||this.state.state!=='active'||!member||member.playerId!==p.playerId||member.hp<=0||member.life!==p.life
-      ||this.projectiles.has(p.projectileId)||p.shotSeq<=Math.max(member.lastShot??0,previous?.seq??0)
-      ||(previous&&now-previous.at<PVP_RULES.attackCooldownMs))return false;
+    const reject=reason=>{this.log({event:'projectile rejected',...this.combatContext(member),reason,playerId:p.playerId,
+      projectileId:p.projectileId,life:p.life,expectedLife:member?.life,shotSeq:p.shotSeq,previousShot:previous,
+      origin:{x:p.x,y:p.y}});return false;};
+    if(this.closed||this.state.state!=='active')return reject('inactive_authority_or_match');
+    if(!member||member.playerId!==p.playerId)return reject('unowned_player');
+    if(member.life!==p.life)return reject('stale_life');
+    if(member.hp<=0)return reject('dead_shooter');
+    if(this.projectiles.has(p.projectileId)||p.shotSeq<=Math.max(member.lastShot??0,previous?.life===p.life?previous.seq:0))return reject('duplicate_or_stale_sequence');
+    if(previous&&now-previous.at<PVP_RULES.attackCooldownMs)return reject('cooldown');
     const position=this.position(member),speed=Math.hypot(p.vx,p.vy);
     if(Math.hypot(p.x-position.x,p.y-(position.y-22))>64||Math.abs(speed-PVP_RULES.projectileSpeed)>1
-      ||p.ttlMs!==PVP_RULES.projectileLifetimeMs)return false;
-    this.fired.set(p.playerId,{seq:p.shotSeq,at:now});
-    this.projectiles.set(p.projectileId,{...p,peerId,createdAt:now,expiresAt:now+PVP_RULES.projectileLifetimeMs,consumed:false});return true;
+      ||p.ttlMs!==PVP_RULES.projectileLifetimeMs)return reject('invalid_origin_speed_or_ttl');
+    this.fired.set(p.playerId,{life:p.life,seq:p.shotSeq,at:now});
+    this.projectiles.set(p.projectileId,{...p,peerId,createdAt:now,expiresAt:now+PVP_RULES.projectileLifetimeMs,consumed:false,
+      targetLives:Object.fromEntries(this.state.participants.map(q=>[q.playerId,q.life]))});
+    this.firstAfterRespawn('projectile spawn',member,{projectileId:p.projectileId,shotSeq:p.shotSeq,registered:true});return true;
   }
   destroy(peerId,p){const projectile=this.projectiles.get(p.projectileId);
-    if(projectile?.peerId===peerId){projectile.consumed=true;return true;}return false;}
+    if(projectile?.peerId===peerId&&projectile.playerId===p.playerId&&projectile.life===p.life&&projectile.shotSeq===p.shotSeq){projectile.consumed=true;return true;}return false;}
   attempt(peerId,p){
     this.advance();const now=this.now(),shot=this.projectiles.get(p.projectileId),shooter=this.fighter(peerId);
     const target=this.state.participants.find(member=>member.playerId===p.targetId);
+    const context={shooter:this.combatContext(shooter),target:this.combatContext(target),projectileRegistered:Boolean(shot),
+      projectileLife:shot?.life,requestedTargetLife:p.targetLife,peerId};
     const reject=reason=>{const result={projectileId:p.projectileId,shooterId:shooter?.playerId??'unknown',targetId:p.targetId,
-      accepted:false,reason,damage:0,hpBefore:target?.hp??null,hpAfter:target?.hp??null};this.log(result);return result;};
-    if(this.closed||this.state.state!=='active'||!shooter||shooter.hp<=0)return reject('inactive_shooter');
+      accepted:false,reason,damage:0,hpBefore:target?.hp??null,hpAfter:target?.hp??null};
+      this.log({event:'hit rejected',...result,...context,shooterLife:shooter?.life,targetLife:target?.life});return result;};
+    this.firstAfterRespawn('hit attempt',shooter,{projectileId:p.projectileId,targetId:p.targetId,...context});
+    if(this.closed||this.state.state!=='active'||!shooter)return reject('inactive_shooter');
     if(!target||!this.members.has(target.playerId)||target.hp<=0)return reject('inactive_target');
     if(!this.state.room||shooter.presenceRoom!==this.state.room||target.presenceRoom!==this.state.room)return reject('wrong_presence_room');
     if(shooter.playerId===target.playerId)return reject('self_hit');
@@ -78,9 +222,11 @@ export class PvpDamageAuthority {
     if(shot.peerId!==peerId||shot.playerId!==shooter.playerId)return reject('wrong_projectile_owner');
     if(now>=shot.expiresAt)return reject('expired_projectile');
     if(shot.consumed)return reject('projectile_consumed');
-    if(shot.life!==shooter.life||target.life!==p.targetLife)return reject('stale_life');
-    if(shot.shotSeq<=(shooter.lastShot??0))return reject('stale_shot');
-    if([shooter,target].some(member=>{const pos=this.positions.get(member.playerId);return pos?.moving&&now-pos.at>1000;}))return reject('stale_position');
+    // Spawn was accepted while alive. Death/respawn cannot invalidate that
+    // registered flight; TTL, target life, room and single consumption still apply.
+    if(shot.life>shooter.life||target.life!==p.targetLife||shot.targetLives[target.playerId]!==target.life)return reject('stale_life');
+    const targetPosition=this.positions.get(target.playerId);
+    if(targetPosition?.moving&&now-targetPosition.at>1000)return reject('stale_position');
     const elapsed=Math.min(PVP_RULES.projectileLifetimeMs,now-shot.createdAt+80)/1000;
     const end={x:shot.x+shot.vx*elapsed,y:shot.y+shot.vy*elapsed};
     let first=Infinity,victim=null;
@@ -91,22 +237,21 @@ export class PvpDamageAuthority {
       if(t!==null&&t<first){first=t;victim=member;}
     }
     if(victim?.playerId!==target.playerId)return reject('trajectory_or_cover');
-    const hpBefore=target.hp,hpAfter=Math.max(0,hpBefore-PVP_RULES.damage),expectedRevision=this.revision++;
-    shot.consumed=true;target.hp=hpAfter;shooter.lastShot=shot.shotSeq;
+    const previous=structuredClone(this.state),hpBefore=target.hp,hpAfter=Math.max(0,hpBefore-PVP_RULES.damage);
+    shot.consumed=true;target.hp=hpAfter;
+    if(shooter.life===shot.life)shooter.lastShot=Math.max(shooter.lastShot??0,shot.shotSeq);
+    shooter.lastHitAt=now;
+    if(hpAfter===0)this.state=registerPlayerDeath(this.state,shooter.playerId,target.playerId,now,{scoreVictory:this.mode?.scoreVictory??true});
+    this.advanceObjective(now);
     const result={projectileId:p.projectileId,shooterId:shooter.playerId,targetId:target.playerId,accepted:true,
-      reason:'accepted',damage:hpBefore-hpAfter,hpBefore,hpAfter};this.log(result);this.emit();
-    const args={matchId:this.state.matchId,round:this.round,expectedRevision,shooterId:shooter.playerId,targetId:target.playerId,
-      attackerLife:shooter.life,targetLife:target.life,shotSeq:shot.shotSeq,hpBefore,hpAfter,acceptedAt:now};
-    this.queue=this.queue.then(()=>{if(this.failed)throw new Error('Authority failed.');return this.commit(args);}).then(response=>{
-      if(!response?.applied)throw new Error('Damage commit rejected.');
-    }).catch(()=>{this.failed=true;if(!this.closed){this.closed=true;
-      // An end/host departure can win the transaction race against a queued hit.
-      // Keep the existing match-end recovery instead of replacing its reason.
-      if(this.state.state!=='ended')this.onFailure('Realtime damage synchronization failed. Rejoin the match.');
-    }});
+      reason:'accepted',damage:hpBefore-hpAfter,hpBefore,hpAfter};this.log({event:'hit accepted',...result,...context});
+    this.publish(previous,'hit',{projectileId:p.projectileId,shooterId:shooter.playerId});
     return result;
   }
   emit(){if(!this.closed)this.onState({authorityId:this.authorityId,version:++this.version,round:this.round,
-    damageRevision:this.revision,players:this.state.participants.map(({playerId,life,hp})=>({playerId,life,hp}))});}
-  close(){this.closed=true;this.members.clear();this.positions.clear();this.projectiles.clear();this.fired.clear();}
+    damageRevision:this.revision,...combatSnapshot(this.state),events:this.events,
+    ...(this.retry?.deadline!==undefined?{retry:this.retry.snapshot()}: {})});}
+  close(){if(this.timer!==undefined)this.cancel(this.timer);this.timer=undefined;this.deadline=null;
+    this.retry?.close();
+    this.closed=true;this.members.clear();this.positions.clear();this.projectiles.clear();this.fired.clear();this.diagnostics.clear();}
 }

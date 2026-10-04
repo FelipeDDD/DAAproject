@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { resolvedMovementState } from '../multiplayer/movementState.js';
-import { CAMERA_ZOOM,CAMERA_ZOOM_TRANSITION_MS,cameraZoomForMap } from '../game/settings.js';
+import { CAMERA_ZOOM,CAMERA_ZOOM_TRANSITION_MS,cameraZoomForMap,usesPvpCameraZoom } from '../game/settings.js';
 import { Player } from '../entities/Player.js';
 import { Door } from '../entities/Door.js';
 import { createPlaceholderTextures } from '../art/placeholders.js';
@@ -9,6 +9,7 @@ import { drawMapPlaceholders } from '../art/mapPlaceholders.js';
 import { readDoors } from '../maps/doors.js';
 import { addMapCollision } from '../maps/collision.js';
 import { objectsIn, propertiesOf, resolveSpawn } from '../maps/tiledObjects.js';
+import { isForegroundLayer,mapLayerDepth } from '../maps/layerDepth.js';
 import { getPresence } from '../multiplayer/client.js';
 import { RemotePlayers } from '../multiplayer/RemotePlayers.js';
 import { DoorSync } from '../multiplayer/DoorSync.js';
@@ -92,6 +93,7 @@ export class MapScene extends Phaser.Scene {
     if(!this.textures.exists('health-potion-pickup'))this.load.image('health-potion-pickup',
       `${import.meta.env.BASE_URL}assets/items/loot-drop.png`);
     const mapUrl = new URL(`${import.meta.env.BASE_URL}assets/maps/${this.filename}`, window.location.href);
+    if(this.mapLoadVersion!==undefined)mapUrl.searchParams.set('v',String(this.mapLoadVersion));
     this.load.once(`filecomplete-json-${this.sourceKey}`, (_key, _type, data) => {
       data.tilesets.forEach((reference, index) => {
         const key = `${this.mapKey}-tileset-${index}`;
@@ -128,7 +130,7 @@ export class MapScene extends Phaser.Scene {
     const map = this.make.tilemap({ key: this.mapKey });
     for(const layer of data.layers.filter(item=>item.type==='imagelayer'&&item.image)){
       this.add.image((layer.offsetx??0)+(layer.x??0),(layer.offsety??0)+(layer.y??0),`${this.mapKey}-image-layer-${layer.id}`)
-        .setOrigin(0).setDepth(propertiesOf(layer).depth??-3)
+        .setOrigin(0).setDepth(mapLayerDepth(layer,data))
         .setVisible(layer.visible!==false).setAlpha(layer.opacity??1);
     }
     const tilesets = data.tilesets.map((definition, index) => {
@@ -150,6 +152,10 @@ export class MapScene extends Phaser.Scene {
     });
     for (const [name, depth] of [['Floor', -2], ['Decoration', -1.5], ['Walls', -0.5]]) {
       if (map.getLayer(name)) map.createLayer(name, tilesets).setDepth(depth);
+    }
+    for(const layer of data.layers.filter(item=>item.type==='tilelayer'&&isForegroundLayer(item))){
+      map.createLayer(layer.name,tilesets).setDepth(mapLayerDepth(layer,data))
+        .setVisible(layer.visible!==false).setAlpha(layer.opacity??1);
     }
     createPlaceholderTextures(this);
     createDoorTextures(this);
@@ -209,9 +215,11 @@ export class MapScene extends Phaser.Scene {
     this.interactionHintOffset=map.tileHeight*2.5;
     this.terminalPrompt=new WorldPrompt(this,TERMINAL_PROMPT.text,{className:'terminal-world-prompt'});
     const targetZoom=cameraZoomForMap(this.mapKey);
-    this.cameras.main.setBounds(0,0,map.widthInPixels,map.heightInPixels).setZoom(CAMERA_ZOOM.default);
+    const initialZoom=usesPvpCameraZoom(this.mapKey)?targetZoom:CAMERA_ZOOM.default;
+    this.cameras.main.setBounds(0,0,map.widthInPixels,map.heightInPixels).setZoom(initialZoom);
     this.cameras.main.startFollow(this.player, true, 1, 1);
-    if(targetZoom!==CAMERA_ZOOM.default)this.cameras.main.zoomTo(targetZoom,CAMERA_ZOOM_TRANSITION_MS,'Sine.easeOut');
+    if(!usesPvpCameraZoom(this.mapKey)&&targetZoom!==CAMERA_ZOOM.default)
+      this.cameras.main.zoomTo(targetZoom,CAMERA_ZOOM_TRANSITION_MS,'Sine.easeOut');
     this.enter(destination);
 
     const stop = () => { this.input.keyboard.resetKeys(); this.player.setVelocity(0, 0); };
@@ -458,7 +466,7 @@ export class MapScene extends Phaser.Scene {
     const target = this.scene.manager.keys[destination.targetMap];
     if (!target) { this.doorMessage = `Unknown area: ${destination.targetMap}.`; return; }
     // Validate already-loaded destinations before leaving the current playable map.
-    if (target.source) {
+    if (target.source&&!target.reloadMapOnEntry) {
       try { resolveSpawn(target.source, destination); }
       catch (error) { this.doorMessage = error.message; return; }
     }
@@ -472,9 +480,13 @@ export class MapScene extends Phaser.Scene {
     } };
     this.player.setVelocity(0, 0);
     this.input.keyboard.resetKeys();
-    if (destination.targetMap === this.mapKey) { this.enter(arrival); return; }
+    if (destination.targetMap === this.mapKey) {
+      if(this.reloadMapOnEntry)this.scene.restart(arrival);else this.enter(arrival);
+      return;
+    }
     // Sleep retains local door states; wake repositions using the destination's Spawns.
     this.scene.sleep();
+    if(target.reloadMapOnEntry&&this.scene.isSleeping(destination.targetMap))this.scene.stop(destination.targetMap);
     if (this.scene.isSleeping(destination.targetMap)) this.scene.wake(destination.targetMap, arrival);
     else this.scene.launch(destination.targetMap, arrival);
   }

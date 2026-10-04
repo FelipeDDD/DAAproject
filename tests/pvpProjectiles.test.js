@@ -63,6 +63,14 @@ test('local shot is rendered before network send and works without a joined rela
   f.client.close();assert.equal(f.combat.fire({x:500,y:700},1800),true);
 });
 
+test('arena readiness gate blocks unregistered initial shots without consuming cooldown or sequence',t=>{
+  const f=setup(t);let ready=false;f.combat.canFire=()=>ready;
+  assert.equal(f.combat.fire({x:500,y:700},1000),false);
+  assert.equal(f.dots.length,0);assert.equal(f.combat.serial,0);assert.equal(f.combat.nextShotAt,0);
+  ready=true;assert.equal(f.combat.fire({x:500,y:700},1000),true);
+  assert.equal(f.combat.shots[0].event.life,0);assert.equal(f.combat.shots[0].event.shotSeq,1);
+});
+
 test('spawn duplicates, stale sequences, self echo, wrong rooms/peers/lives and unknown players are ignored',t=>{
   const f=setup(t);f.join();f.receive();f.receive();
   assert.equal(f.combat.remoteShots.size,1);assert.equal(f.dots.length,1);
@@ -109,6 +117,23 @@ test('local collision requests realtime validation before destroying the project
   assert.equal(f.transport.sent[0].payload.projectileId,f.transport.sent[1].payload.projectileId);
 });
 
+test('death keeps a local flight alive and reporting collision while new fire remains blocked',t=>{
+  const f=setup(t);f.join();f.scene.remotes.players.get('bob').sprite.x=300;
+  assert.ok(f.combat.fire({x:400,y:700},1000));const dot=f.dots[0];
+  f.self.hp=0;f.combat.update(f.state,f.self,100,1100);
+  assert.equal(f.combat.shots.length,1);assert.equal(dot.destroyed,undefined);assert.ok(dot.x>100);
+  assert.equal(f.combat.fire({x:400,y:700},1500),false);
+  f.combat.update(f.state,f.self,400,1500);
+  assert.equal(f.hits.length,1);assert.equal(f.hits[0].victimId,'bob');assert.equal(dot.destroyed,true);
+});
+
+test('dead shooter local flight expires at its original TTL instead of death time',t=>{
+  const f=setup(t);f.join();f.combat.fire({x:600,y:700},1000);f.self.hp=0;
+  f.combat.update(f.state,f.self,100,1100);assert.equal(f.combat.shots.length,1);
+  f.combat.update(f.state,f.self,0,2199);assert.equal(f.combat.shots.length,1);
+  f.combat.update(f.state,f.self,0,2200);assert.equal(f.combat.shots.length,0);assert.equal(f.hits.length,0);
+});
+
 test('destroy before spawn leaves a tombstone; removed IDs cannot be replayed',t=>{
   const f=setup(t);f.join();f.emit('pvp-projectile-destroy',projectile());f.receive();assert.equal(f.dots.length,0);
   f.receive(projectile({projectileId:'new',shotSeq:2}),{seq:2});
@@ -126,10 +151,12 @@ test('relay-clock delivery age rejects expired shots and accounts for remaining 
   f.combat.update(f.state,f.self,0,5000);assert.equal(shot.x,942);
 });
 
-test('dead local players still see remote shots; stale shooter life is cleared on respawn',t=>{
+test('dead local players still see remote shots; registered flights survive shooter respawn until TTL',t=>{
+  t.mock.method(Date,'now',()=>1000);
   const f=setup(t);f.join();f.receive();f.self.hp=0;
   f.combat.update(f.state,f.self,50,Date.now());assert.equal(f.combat.remoteShots.size,1);
-  f.state.participants[1].life=1;f.client.setMatch(f.state);assert.equal(f.combat.remoteShots.size,0);
+  f.state.participants[1].life=1;f.client.setMatch(f.state);assert.equal(f.combat.remoteShots.size,1);
+  f.combat.update(f.state,f.self,0,2200);assert.equal(f.combat.remoteShots.size,0);
 });
 
 test('peer disconnect, reconnect, end/exit and repeated cleanup remove visuals and listeners',t=>{

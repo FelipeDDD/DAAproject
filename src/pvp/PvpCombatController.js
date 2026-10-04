@@ -6,8 +6,8 @@ import { segmentRect } from './projectiles.js';
 
 // Local projectile geometry is a disposable test adapter, not combat authority.
 export class PvpCombatController {
-  constructor(scene,onHit,{onSpawn=()=>{},onRemove=()=>{}}={}){
-    Object.assign(this,{scene,onHit,onSpawn,onRemove});this.shots=[];this.remoteShots=new Map();this.nextShotAt=0;this.serial=0;
+  constructor(scene,onHit,{onSpawn=()=>{},onRemove=()=>{},canFire=()=>true}={}){
+    Object.assign(this,{scene,onHit,onSpawn,onRemove,canFire});this.shots=[];this.remoteShots=new Map();this.nextShotAt=0;this.serial=0;
     this.walls=collisionAreas(objectsIn(scene.source,'Collision'));
     this.pointer=pointer=>{
       if(pointer.button!==0)return;
@@ -18,7 +18,7 @@ export class PvpCombatController {
   }
   fire(target,now){
     const self=this.self;
-    if(this.state?.state!=='active'||!self||self.hp<=0||now<this.nextShotAt)return false;
+    if(this.state?.state!=='active'||!self||self.hp<=0||now<this.nextShotAt||!this.canFire())return false;
     const origin={x:this.scene.player.x,y:this.scene.player.y-22};
     if(Math.hypot(target.x-origin.x,target.y-origin.y)<1)return false;
     this.nextShotAt=now+PVP_RULES.attackCooldownMs;
@@ -34,9 +34,11 @@ export class PvpCombatController {
     return true;
   }
   update(state,self,delta,now){
+    if(self&&this.life!==self.life){this.serial=0;this.nextShotAt=0;this.life=self.life;}
     this.state=state;this.self=self;
     if(state.state!=='active'||!self){this.clear();return;}
-    if(self.hp<=0){this.clearLocal();this.updateRemote(delta,now);return;}
+    // Existing shots belong to their spawn, not the shooter's current health/life.
+    // fire() still blocks dead players from creating new shots.
     for(const shot of [...this.shots]){
       const target={x:shot.x+shot.velocity.x*delta/1000,y:shot.y+shot.velocity.y*delta/1000};
       let first=Infinity,victim=null;

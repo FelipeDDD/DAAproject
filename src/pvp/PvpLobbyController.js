@@ -2,21 +2,26 @@ import { ArenaEntryController } from '../boss/ArenaEntryController.js';
 import { normalizeArenaCode,validArenaCode } from '../boss/arenaLobbyUi.js';
 import { characterById } from '../characters.js';
 import { PvpMatchClient } from './PvpMatchClient.js';
-import { pvpEnabled,PVP_MAP,PVP_TEAMS } from './config.js';
+import { pvpEnabled,PVP_TEAMS } from './config.js';
+import { pvpArenaDestination } from './mapConfig.js';
 import { canStartMatch } from './matchState.js';
+import { gameMode } from './gameModes.js';
 
 // Reuse the entrance modal's input/focus locking, buttons, busy and generation guards.
 export class PvpLobbyController extends ArenaEntryController {
   constructor(scene,options={}){
-    super(scene,{},options);this.root.setAttribute('aria-label','PvP Team Deathmatch');
+    super(scene,{},options);this.root.setAttribute('aria-label','PvP Arena');
     if(options.resumeMatchId){
       this.matchId=options.resumeMatchId;this.buildLobby('');
       this.matchClient=new PvpMatchClient(scene.presence,this.matchId,state=>this.receive(state),error=>this.reportError(error));
     }
   }
   renderChoices(){
-    this.header('PVP ARENA','Team Deathmatch · up to 2 players per team.');
-    if(pvpEnabled(this.env,this.storage))this.button('Create PvP Lobby',()=>void this.acquire('create'),{kind:'primary'});
+    this.header('PVP ARENA','Choose a mode · up to 2 players per team.');
+    if(pvpEnabled(this.env,this.storage)){
+      this.button('Create TDM Lobby',()=>void this.acquire('create',undefined,'tdm'),{kind:'primary'});
+      this.button('Create Payload Lobby',()=>void this.acquire('create',undefined,'payload'),{kind:'primary'});
+    }
     this.button('Join PvP by Code',()=>this.renderJoin());
     this.createStatus();this.button('Cancel',()=>this.close(),{kind:'quiet',allowBusy:true});
   }
@@ -29,13 +34,13 @@ export class PvpLobbyController extends ArenaEntryController {
     this.panel.children[0].textContent='JOIN PVP LOBBY';
     this.panel.children[1].textContent='Enter the code shared by the host.';
   }
-  async acquire(action,rawCode){
+  async acquire(action,rawCode,mode='tdm'){
     if(!this.active||this.busy||(action==='create'&&!pvpEnabled(this.env,this.storage)))return;
     const code=normalizeArenaCode(rawCode);
     if(action==='join'&&!validArenaCode(code)){this.showStatus('Enter a valid six-character PvP code.');return;}
     const generation=this.generation,p=this.scene.presence;this.setBusy(true);this.showStatus('Connecting...');
     try{
-      const result=await p.client.mutation(p.api.pvpMatches[action],{...this.identity,...(action==='join'?{code}:{})});
+      const result=await p.client.mutation(p.api.pvpMatches[action],{...this.identity,...(action==='join'?{code}:mode==='tdm'?{}:{mode})});
       if(!this.active||generation!==this.generation){
         void p.client.mutation(p.api.pvpMatches.leave,{...this.identity,matchId:result.matchId,round:result.round??0}).catch(()=>{});return;
       }
@@ -57,14 +62,18 @@ export class PvpLobbyController extends ArenaEntryController {
   }
   receive(state){
     if(!this.active)return;this.matchState=state;
+    if(state)this.panel.children[1].textContent=`${gameMode(state.mode).label} · uneven teams allowed.`;
     if(!state){this.endLobby('This PvP lobby is no longer available.');return;}
     if(this.copyInput)this.copyInput.value=state.code;
     if(state.state==='ended'){
       this.endLobby(['host_left','host-left'].includes(state.reason)?'The host closed the PvP lobby.':'This PvP lobby is no longer available.');return;
     }
     if(state.state!=='waiting'){
-      this.transferred=true;const matchId=this.matchId;this.close();
-      this.scene.travelTo({targetMap:PVP_MAP,pvpMatchId:matchId,pvpSnapshot:state});return;
+      let destination;
+      try{destination=pvpArenaDestination(this.matchId,state);}
+      catch(error){this.showStatus(error.message);return;}
+      this.transferred=true;this.close();
+      this.scene.travelTo(destination);return;
     }
     // Do not rebuild DOM every local timer tick or steal keyboard focus.
     const signature=JSON.stringify([state.hostPlayerId,state.participants.map(({presenceExpiresAt,...p})=>p)]);

@@ -1,4 +1,18 @@
+// Logical scene/room identity is deliberately separate from the physical map.
 export const PVP_MAP='pvp-arena-test';
+export const PVP_INSPECTION_SCENE='payload-map';
+export const PVP_MAP_DEFINITION=Object.freeze({id:'payload-map',file:'payload-map.tmj',revision:1});
+export const PVP_MAP_FILE=PVP_MAP_DEFINITION.file;
+export const PVP_MAP_LAYOUT=Object.freeze({
+  cameraZoom:1.25,
+  spawnLayer:'Spawns',
+  teamMarkers:Object.freeze({A:{layer:'Notes',name:'spawnBlue',direction:'left'},B:{layer:'Notes',name:'spawnRed',direction:'right'}}),
+  // Temporary separation for teammates sharing one base marker. Numbered markers override this.
+  spawnOffsets:Object.freeze([{x:0,y:0},{x:0,y:32}]),
+  // Used only until PayloadRoute/payload-route is authored. Blue first, red last.
+  temporaryPayloadRoute:Object.freeze({fromTeam:'A',toTeam:'B',initialFraction:0.5}),
+  teleports:Object.freeze({layer:'Teleport',top:'top',bottom:'bottom',cooldownMs:650}),
+});
 export const PVP_RULES=Object.freeze({teamSize:2,scoreLimit:5,timeLimitMs:180_000,
   countdownMs:3000,returnMs:10_000,respawnMs:2500,maxHp:100,damage:25,attackCooldownMs:400,
   projectileSpeed:420,projectileLifetimeMs:1200,lobbyLifetimeMs:30*60_000});

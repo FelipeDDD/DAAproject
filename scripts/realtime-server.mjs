@@ -5,6 +5,9 @@ import { readFileSync } from 'node:fs';
 import { REALTIME_CONFIG } from '../src/realtime/config.js';
 import { decodeMessage,validClientMessage } from '../src/realtime/realtimeMessages.js';
 import { PvpDamageAuthority } from '../src/pvp/PvpDamageAuthority.js';
+import { PVP_RULES,PVP_MAP_FILE,PVP_MAP_DEFINITION } from '../src/pvp/config.js';
+import { requirePvpMap } from '../src/pvp/mapConfig.js';
+import { createModeAuthority } from '../src/pvp/modeAuthority.js';
 import { pvpRealtimeRoom } from '../src/pvp/movementConfig.js';
 import { teamSpawn } from '../src/pvp/spawns.js';
 import { collisionAreas } from '../src/maps/collision.js';
@@ -19,8 +22,8 @@ export function createRealtimeServer(options={}){
   const config={...REALTIME_CONFIG,...options};const now=options.now??Date.now;
   const wss=new WebSocketServer({host:config.host,port:config.port,maxPayload:config.maxMessageBytes,perMessageDeflate:false});
   const clients=new Map(),rooms=new Map();
-  const authorities=new Map(),bridge=options.pvpBridge;
-  const map=JSON.parse(readFileSync(new URL('../public/assets/maps/pvp-arena-test.tmj',import.meta.url),'utf8'));
+  const authorities=new Map(),pendingMirrors=new Set(),bridge=options.pvpBridge;
+  const map=JSON.parse(readFileSync(new URL(`../public/assets/maps/${PVP_MAP_FILE}`,import.meta.url),'utf8'));
   const send=(client,type,payload,extra={})=>{
     if(client.ws.readyState!==WebSocket.OPEN)return;
     if(client.ws.bufferedAmount>config.maxBufferedBytes){client.ws.close(1013,'Backpressure');return;}
@@ -36,28 +39,55 @@ export function createRealtimeServer(options={}){
     const generation=++client.authGeneration,roomId=client.roomId;
     try{
       if(!bridge||roomId!==pvpRealtimeRoom(args.matchId,args.round))throw new Error('No local PvP authority.');
+      if(args.mapId!==PVP_MAP_DEFINITION.id||args.mapRevision!==PVP_MAP_DEFINITION.revision)
+        throw new Error('PvP map configuration mismatch. Reload both browsers and restart the realtime server.');
       if(client.pvpPlayerId&&client.pvpPlayerId!==args.playerId)throw new Error('PvP player changed.');
       const state=await bridge.authenticate(args);
+      requirePvpMap(state);
       if(generation!==client.authGeneration||client.roomId!==roomId||client.ws.readyState!==WebSocket.OPEN)return;
       let entry=authorities.get(roomId);
       if(!entry){
-        const authority=new PvpDamageAuthority(state,{now,authorityId:randomUUID(),walls:collisionAreas(objectsIn(map,'Collision')),
-          getSpawn:(p,m)=>teamSpawn(map,p.team,m.participants.filter(q=>q.team===p.team).findIndex(q=>q.playerId===p.playerId)),
-          commit:args=>bridge.commit(args),onState:state=>combatBroadcast(roomId,'pvp-combat-state',state),
-          onFailure:reason=>combatBroadcast(roomId,'pvp-combat-error',{reason}),
-          log:result=>console.debug('[PvP hit]',{roomId,...result})});
-        entry={authority};authorities.set(roomId,entry);
-        entry.off=bridge.subscribe(args.matchId,state=>authority.sync(state),()=>{
-          authority.closed=true;combatBroadcast(roomId,'pvp-combat-error',{reason:'Local PvP state unavailable.'});
-        });
+        entry={};authorities.set(roomId,entry);
+        entry.ready=(async()=>{
+          const authorityId=randomUUID();
+          const initial=bridge.acquire?await bridge.acquire({matchId:args.matchId,round:args.round,authorityId}):state;
+          requirePvpMap(initial);
+          if(authorities.get(roomId)!==entry)return;
+          const authority=new PvpDamageAuthority(initial,{now,authorityId,walls:collisionAreas(objectsIn(map,'Collision')),
+            modeAuthority:createModeAuthority(initial.mode,map,{now}),
+            getSpawn:(p,m)=>teamSpawn(map,p.team,m.participants.filter(q=>q.team===p.team).findIndex(q=>q.playerId===p.playerId)),
+            commit:args=>bridge.commit(args),onState:state=>combatBroadcast(roomId,'pvp-combat-state',state),
+            ...(bridge.nextRound?{onRetryResolve:async playerIds=>{
+              const retained=authority.retryParticipants().filter(p=>playerIds.includes(p.playerId));
+              const startedAt=retained.length>=2&&['A','B'].every(team=>retained.some(p=>p.team===team))?now()+PVP_RULES.countdownMs:null;
+              const match=await bridge.nextRound({matchId:args.matchId,round:args.round,authorityId,
+                playerIds:retained.map(p=>p.playerId),startedAt});
+              if(authority.closed)return;
+              // The old subscription is finished before clients join the next room.
+              entry.off?.();entry.off=null;
+              combatBroadcast(roomId,'pvp-round-transition',{fromRound:args.round,match});
+              authority.close();
+            }}:{}),
+            onFailure:reason=>combatBroadcast(roomId,'pvp-combat-error',{reason}),
+            log:result=>console.debug('[PvP combat]',{roomId,...result})});
+          entry.authority=authority;
+          entry.off=bridge.subscribe(args.matchId,state=>authority.sync(state),()=>{
+            authority.close();combatBroadcast(roomId,'pvp-combat-error',{reason:'Local PvP state unavailable.'});
+          });
+        })().catch(error=>{entry.off?.();entry.authority?.close();
+          if(authorities.get(roomId)===entry)authorities.delete(roomId);throw error;});
       }
+      await entry.ready;
+      if(generation!==client.authGeneration||client.roomId!==roomId||client.ws.readyState!==WebSocket.OPEN)return;
+      if(!entry.authority)throw new Error('PvP room unavailable.');
       if(!entry.authority.register(args.playerId,client.id))throw new Error('PvP player already connected or inactive.');
       client.combat=entry;client.pvpPlayerId=args.playerId;
       send(client,'pvp-authorized',{playerId:args.playerId,round:args.round},{roomId});
-      entry.authority.emit();
-    }catch{
+      entry.authority.advance();entry.authority.emit();
+    }catch(error){
       if(generation===client.authGeneration&&client.roomId===roomId)
-        send(client,'pvp-combat-error',{reason:'PvP session/authority unavailable. Start local Convex and rejoin.'},{roomId});
+        send(client,'pvp-combat-error',{reason:error.message?.startsWith('PvP map configuration mismatch')
+          ?error.message:'PvP session/authority unavailable. Start local Convex and rejoin.'},{roomId});
     }
   };
   const leave=client=>{
@@ -65,7 +95,9 @@ export function createRealtimeServer(options={}){
     ++client.authGeneration;client.combat?.authority.remove(client.id);client.combat=null;
     broadcast(client,'peer-left',{clientId:client.id});const room=rooms.get(client.roomId);room?.delete(client.id);
     if(!room?.size){rooms.delete(client.roomId);const entry=authorities.get(client.roomId);
-      entry?.off?.();entry?.authority.close();authorities.delete(client.roomId);}
+      entry?.off?.();entry?.authority?.close();
+      if(entry?.authority){const pending=entry.authority.queue;pendingMirrors.add(pending);void pending.finally(()=>pendingMirrors.delete(pending));}
+      authorities.delete(client.roomId);}
     client.roomId=null;client.position=null;client.movement=null;client.pvpPlayerId=null;
   };
   const remove=client=>{leave(client);clients.delete(client.id);};
@@ -95,6 +127,8 @@ export function createRealtimeServer(options={}){
       if(!client.roomId||m.roomId!==client.roomId){ws.close(1008,'Not a room member');return;}
       if(m.type==='leave-room'){leave(client);send(client,'room-left',{}, {roomId:m.roomId});return;}
       if(m.type==='pvp-authorize'){void authorize(client,m.payload);return;}
+      if(m.type==='pvp-end-request'){client.combat?.authority.requestEnd(client.id);return;}
+      if(m.type==='pvp-retry'){client.combat?.authority.requestRetry(client.id,m.payload.round);return;}
       if(m.type==='pvp-hit-attempt'){
         console.debug('[PvP hit] attempt',{roomId:client.roomId,projectileId:m.payload.projectileId,shooterId:client.pvpPlayerId,targetId:m.payload.targetId});
         const result=client.combat?.authority.attempt(client.id,m.payload);
@@ -116,16 +150,16 @@ export function createRealtimeServer(options={}){
         client.pvpPlayerId=m.payload.playerId;
       }
       if(m.type==='pvp-movement'){
-        const {playerId,x,y,vx,vy,direction,moving,sampleSeq,life}=m.payload;
-        payload={playerId,x,y,vx,vy,direction,moving,sampleSeq,life};
+        const {playerId,x,y,vx,vy,direction,moving,sampleSeq,life,teleport}=m.payload;
+        payload={playerId,x,y,vx,vy,direction,moving,sampleSeq,life,...(teleport===true?{teleport:true}:{})};
         // A peer cannot switch players mid-room. With the local PvP bridge,
         // membership is also authenticated before samples are forwarded.
         if(client.movement&&playerId!==client.movement.playerId){ws.close(1008,'Movement player changed');return;}
-        if(client.movement&&sampleSeq<=client.movement.sampleSeq){
-          console.debug('[PvP movement] discarded stale', {roomId:client.roomId,peerId:client.id,playerId,sampleSeq});return;
+        if(client.movement&&(life<client.movement.life||(life===client.movement.life&&sampleSeq<=client.movement.sampleSeq))){
+          console.debug('[PvP movement] discarded stale', {roomId:client.roomId,peerId:client.id,playerId,sampleSeq,life,previousLife:client.movement.life});return;
         }
-        client.movement=payload;
         if(bridge&&!client.combat?.authority.movement(client.id,payload))return;
+        client.movement=payload;
       }else if(m.type==='pvp-projectile-spawn'){
         const {projectileId,playerId,life,shotSeq,x,y,vx,vy,ttlMs}=m.payload;
         payload={projectileId,playerId,life,shotSeq,x,y,vx,vy,ttlMs};
@@ -150,8 +184,8 @@ export function createRealtimeServer(options={}){
   });
   const ready=new Promise((resolve,reject)=>{wss.once('listening',resolve);wss.once('error',reject);});
   return {wss,clients,rooms,authorities,ready,sweep,close:async()=>{clearInterval(interval);
-    const pending=[...authorities.values()].map(entry=>entry.authority.queue);
-    for(const entry of authorities.values()){entry.off?.();entry.authority.close();}authorities.clear();
+    const pending=[...pendingMirrors,...[...authorities.values()].map(async entry=>{await entry.ready;return entry.authority?.queue;})];
+    for(const entry of authorities.values()){entry.off?.();entry.authority?.close();}authorities.clear();
     for(const c of clients.values())c.ws.terminate();await new Promise(resolve=>wss.close(resolve));
     await Promise.allSettled(pending);await bridge?.close?.();}};
 }

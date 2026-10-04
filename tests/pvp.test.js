@@ -2,9 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import * as backend from '../convex/pvpMatches.js';
+import { combatSnapshot } from '../src/pvp/combatSnapshot.js';
 import { update,inRoom } from '../convex/players.js';
 import { newFighter,startMatch,advanceMatch,applyPlayerDamage,registerPlayerDeath,canStartMatch,endMatch } from '../src/pvp/matchState.js';
-import { PVP_RULES,pvpRoom,PVP_MAP,setPvpEnabled,pvpEnabled } from '../src/pvp/config.js';
+import { PVP_RULES,pvpRoom,PVP_MAP,PVP_MAP_FILE,PVP_MAP_DEFINITION,PVP_INSPECTION_SCENE,setPvpEnabled,pvpEnabled } from '../src/pvp/config.js';
 import { teamSpawn } from '../src/pvp/spawns.js';
 import { collisionAreas } from '../src/maps/collision.js';
 import { objectsIn } from '../src/maps/tiledObjects.js';
@@ -15,8 +16,9 @@ import { PvpCombatController } from '../src/pvp/PvpCombatController.js';
 import { PvpHud } from '../src/pvp/PvpHud.js';
 import { PvpReturnFlow } from '../src/pvp/PvpReturnFlow.js';
 import { segmentRect } from '../src/pvp/projectiles.js';
+import { pvpArenaDestination,requirePvpMap } from '../src/pvp/mapConfig.js';
 
-const source=JSON.parse(readFileSync(new URL('../public/assets/maps/pvp-arena-test.tmj',import.meta.url)));
+const source=JSON.parse(readFileSync(new URL(`../public/assets/maps/${PVP_MAP_FILE}`,import.meta.url)));
 function match(){return {mode:'tdm',state:'waiting',participants:[newFighter({playerId:'a',team:'A'}),newFighter({playerId:'b',team:'B'})],
   scores:{A:0,B:0},scoreLimit:5,timeLimitMs:180_000,respawnMs:2500,startedAt:null,endsAt:null,endedAt:null,winner:null};}
 function fixture(t){
@@ -47,6 +49,30 @@ test('PvP lifecycle waits, counts down for 3s, starts a 180s match, and draws at
   assert.equal(advanceMatch(countdown,4000).state,'active');
   const ended=advanceMatch(countdown,184000);assert.equal(ended.state,'ended');assert.equal(ended.winner,'draw');
   assert.equal(ended.endedAt,184000);assert.equal(advanceMatch(ended,999999),ended);
+});
+
+test('host and joiner receive the same authoritative map for TDM and Payload; browser overrides cannot select the old map',async t=>{
+  const f=fixture(t);
+  for(const mode of ['tdm','payload']){
+    const lobby=await backend.create._handler(f.ctx,{...f.args(0),mode});
+    await backend.join._handler(f.ctx,{...f.args(1),code:lobby.code});
+    const member=i=>({...f.args(i),matchId:lobby.matchId});
+    await backend.start._handler(f.ctx,{...member(0),round:0});
+    const host=await backend.current._handler(f.ctx,member(0)),joiner=await backend.current._handler(f.ctx,member(1));
+    assert.deepEqual(host.arenaMap,PVP_MAP_DEFINITION);assert.deepEqual(joiner.arenaMap,host.arenaMap);
+    assert.deepEqual(pvpArenaDestination(lobby.matchId,host),pvpArenaDestination(lobby.matchId,joiner));
+    assert.equal(pvpArenaDestination(lobby.matchId,{...joiner,mapId:'old',arenaId:'old',targetMap:'old'}).targetMap,PVP_MAP);
+    assert.equal(requirePvpMap(host).file,PVP_MAP_FILE);
+  }
+});
+
+test('DEV inspection room accepts ordinary presence while real PvP still requires match membership',async t=>{
+  const f=fixture(t);
+  await update._handler(f.ctx,f.move(0,PVP_INSPECTION_SCENE));
+  assert.equal(f.tables.players[0].room,PVP_INSPECTION_SCENE);
+  const visible=await inRoom._handler(f.ctx,{room:PVP_INSPECTION_SCENE});
+  assert.equal(visible[0].playerId,'p0');
+  await assert.rejects(update._handler(f.ctx,f.move(0,PVP_MAP)),/Missing PvP match/);
 });
 
 test('friendly fire blocked, enemy hits reduce health, replayed hits and old lives are ignored',()=>{
@@ -164,29 +190,26 @@ test('guest leave releases only owned membership; stale generation cannot leave,
   assert.equal((await backend.current._handler(f.ctx,member(1))).reason,'host_left');
 });
 
-function serverHit(f,shooterId,targetId,shotSeq,extra={}){
+// Test-only relay decision fixture. Production Convex does not execute these rules.
+async function serverHit(f,shooterId,targetId,shotSeq,extra={}){
   const m=f.tables.pvpMatches[0],shooter=m.participants.find(p=>p.playerId===shooterId),target=m.participants.find(p=>p.playerId===targetId);
-  return backend.applyRealtimeDamage._handler(f.ctx,{matchId:m._id,round:m.round??0,expectedRevision:m.damageRevision??0,
-    shooterId,targetId,attackerLife:shooter?.life??0,targetLife:target?.life??0,shotSeq,
-    hpBefore:target?.hp??100,hpAfter:Math.max(0,(target?.hp??100)-25),acceptedAt:Date.now(),...extra});
+  const next=applyPlayerDamage(m,{attackerId:shooterId,victimId:targetId,attackerLife:extra.attackerLife??shooter?.life??0,
+    victimLife:extra.targetLife??target?.life??0,shot:shotSeq},Date.now());
+  if(!target||next.participants.find(p=>p.playerId===targetId)?.hp===target.hp)return {applied:false};
+  if(!m.combatAuthorityId)await backend.acquireRealtimeCombat._handler(f.ctx,{matchId:m._id,round:m.round??0,authorityId:'test-relay'});
+  return backend.mirrorRealtimeCombat._handler(f.ctx,{matchId:m._id,round:extra.round??m.round??0,authorityId:'test-relay',
+    expectedRevision:extra.expectedRevision??m.damageRevision??0,revision:(extra.expectedRevision??m.damageRevision??0)+1,snapshot:combatSnapshot(next)});
 }
 
-test('internal realtime damage preserves active match/team/life checks; public attacker damage is disabled',async t=>{
-  const f=fixture(t),a=await backend.create._handler(f.ctx,f.args(0)),member=i=>({...f.args(i),matchId:a.matchId});
-  for(const i of [1,2])await backend.join._handler(f.ctx,{...f.args(i),code:a.code});
-  await backend.start._handler(f.ctx,member(0));
-  for(const i of [0,1,2])await update._handler(f.ctx,f.move(i,pvpRoom(a.matchId)));
-  const hit={...member(0),victimId:'p1',victimLife:0,attackerLife:0,shot:1};
-  await assert.rejects(backend.hit._handler(f.ctx,hit),/realtime server/);
-  assert.equal((await serverHit(f,'p0','p1',1)).applied,false); // countdown
-  f.setTime(104000);f.writes.length=0;
-  assert.equal((await serverHit(f,'p0','p2',1)).applied,false);
-  assert.equal((await serverHit(f,'p0','p1',1)).applied,true);assert.equal(f.tables.pvpMatches[0].participants[1].hp,75);
-  f.setTime(104500);assert.equal((await serverHit(f,'p0','p1',1)).applied,false);assert.equal(f.tables.pvpMatches[0].participants[1].hp,75);
-  assert.ok(f.writes.every(id=>id===a.matchId));
-  assert.equal(isPersistentClassRoom(pvpRoom(a.matchId)),false);assert.equal(isPersistentClassRoom(PVP_MAP),false);
-  f.setTime(283000);await backend.finish._handler(f.ctx,member(1));assert.equal(f.tables.pvpMatches[0].state,'ended');
-  assert.equal((await serverHit(f,'p0','p1',2)).applied,false);assert.equal(f.tables.pvpMatches[0].participants[1].hp,75);
+test('legacy attacker and hit-only mirror are disabled; Convex clocks never decide timeout',async t=>{
+  const f=await runningFixture(t,2);
+  await assert.rejects(backend.hit._handler(f.ctx,{...f.member(0),victimId:'p1',victimLife:0,attackerLife:0,shot:1}),/realtime server/);
+  assert.deepEqual(await backend.applyRealtimeDamage._handler(f.ctx,{}),{applied:false});
+  f.setTime(283000);const state=await backend.current._handler(f.ctx,f.member(0));
+  assert.equal(state.state,'active');assert.equal(state.participants[1].hp,100);
+  await backend.finish._handler(f.ctx,f.member(0));assert.equal(f.tables.pvpMatches[0].state,'active');
+  await assert.rejects(backend.finish._handler(f.ctx,{...f.member(0),force:true}),/realtime server/);
+  assert.equal(isPersistentClassRoom(pvpRoom(f.lobby.matchId)),false);
 });
 
 test('host disconnect and expiry end logically before GC; physical GC is bounded to match lifetime',async t=>{
@@ -207,19 +230,17 @@ test('PvP create/join retain the deployment DEV guard',async t=>{
   await assert.rejects(backend.join._handler(f.ctx,{...f.args(1),code:'ABC234'}),/disabled/);
 });
 
-test('Tiled arena owns team spawns, matching visual covers, collision and paths between teams',()=>{
+test('configured PvP map owns team spawns, collision and the clear central path between bases',()=>{
   const walls=collisionAreas(objectsIn(source,'Collision'));
-  assert.equal(walls.length,10);assert.ok(source.layers.find(l=>l.name==='Walls').data.some(tile=>tile===3));
+  assert.ok(walls.length>0);assert.ok(source.layers.some(l=>l.type==='imagelayer'&&l.image));
   for(const team of ['A','B'])for(const index of [0,1]){
-    const spawn=teamSpawn(source,team,index);assert.match(spawn.name,new RegExp(`^team${team}_spawn`));
+    const spawn=teamSpawn(source,team,index);assert.match(spawn.name,/^spawn(Blue|Red)$/);
     assert.equal(walls.some(r=>spawn.x>=r.x&&spawn.x<=r.x+r.width&&spawn.y>=r.y&&spawn.y<=r.y+r.height),false);
   }
-  const single=structuredClone(source);single.layers.find(l=>l.name==='Spawns').objects=objectsIn(source,'Spawns').filter(s=>s.name.endsWith('1'));
+  const single=structuredClone(source);single.layers.find(l=>l.name==='Spawns').objects=[{name:'teamA_spawn1',x:1323,y:495}];
   assert.equal(teamSpawn(single,'A',1).name,'teamA_spawn1');
   assert.throws(()=>teamSpawn(single,'Z'),/marker/);
-  const floor=source.layers.find(l=>l.name==='Floor');assert.equal(floor.data.length,source.width*source.height);
-  // Horizontal central route and both flanking routes remain open.
-  for(const y of [80,288,496])assert.equal(walls.filter(r=>r.x>32&&r.x<768).some(r=>segmentRect({x:96,y},{x:736,y},r)!==null),false);
+  assert.equal(walls.some(r=>segmentRect(teamSpawn(source,'A'),teamSpawn(source,'B'),r)!==null),false);
 });
 
 class Element {
@@ -236,7 +257,7 @@ function ui(t){
   const presence={identity:{playerId:'a',sessionId:'sa'},api:{pvpMatches:{current:'current',create:'create',join:'join',leave:'leave',start:'start',chooseTeam:'chooseTeam'}},
     client:{onUpdate(_fn,_args,cb){callbacks.push(cb);subscriptions++;return()=>subscriptions--;},async mutation(fn,args){calls.push({fn,args});return {matchId:'match-a',code:'ABC234'};}}};
   const scene={presence,input:{enabled:true,keyboard:{enabled:true,resetKeys(){}}},player:{setVelocity(){}},travelTo:dest=>travel.push(dest)};
-  const state={...match(),matchId:'match-a',hostPlayerId:'a',code:'ABC234',expiresAt:Date.now()+1800000};
+  const state={...match(),arenaMap:PVP_MAP_DEFINITION,matchId:'match-a',hostPlayerId:'a',code:'ABC234',expiresAt:Date.now()+1800000};
   state.participants.forEach((p,i)=>Object.assign(p,{displayName:`Player ${i}`,characterBaseId:'felipe'}));
   return {documentRef,presence,scene,state,callbacks,calls,travel,ticks,subscriptions:()=>subscriptions};
 }
@@ -254,6 +275,16 @@ test('lobby UI creates once, displays two teams, keeps guest Start hidden and tr
   f.callbacks[0]({...f.state,state:'countdown',startedAt:Date.now()+3000,endsAt:Date.now()+183000});await Promise.resolve();
   assert.equal(f.travel.length,1);assert.equal(f.travel[0].pvpMatchId,'match-a');assert.equal(f.subscriptions(),0);
   f.callbacks[0](f.state);await Promise.resolve();assert.equal(f.travel.length,1);setPvpEnabled(false);
+});
+
+test('lobby with missing or old authoritative map keeps Leave available and reports mismatch instead of entering a fallback arena',async t=>{
+  const f=ui(t),lobby=new PvpLobbyController(f.scene,{env:{DEV:true},documentRef:f.documentRef,resumeMatchId:'match-a'});
+  t.after(()=>lobby.close());
+  for(const arenaMap of [undefined,{id:'pvp-arena-test',file:'pvp-arena-test.tmj',revision:1}]){
+    f.callbacks[0]({...f.state,state:'countdown',arenaMap});await Promise.resolve();
+    assert.equal(f.travel.length,0);assert.equal(lobby.active,true);
+    assert.match(lobby.status.textContent,/map configuration mismatch/);
+  }
 });
 
 test('team-change subscription snapshots move the HOST badge and preserve host Start in the lobby UI',async t=>{
@@ -315,13 +346,13 @@ test('PvP join works with toggle OFF without enabling it; cancelled pending crea
   setPvpEnabled(false);
 });
 
-test('client projection/respawn/countdown timers make no requests and closed callbacks stay ignored',async t=>{
+test('client timer cannot start, respawn or finish combat; closed callbacks stay ignored',async t=>{
   const f=ui(t);let state;
   const client=new PvpMatchClient(f.presence,'match-a',s=>state=s);
   const now=Date.now();f.callbacks[0]({...f.state,state:'countdown',startedAt:now+3000,endsAt:now+183000});await Promise.resolve();
   assert.equal(state.state,'countdown');t.mock.method(Date,'now',()=>now+3100);
-  for(const tick of f.ticks)tick();assert.equal(state.state,'active');assert.equal(f.calls.length,0);
-  client.close();f.callbacks[0](f.state);await Promise.resolve();assert.equal(state.state,'active');assert.equal(f.subscriptions(),0);
+  for(const tick of f.ticks)tick();assert.equal(state.state,'countdown');assert.equal(f.calls.length,0);
+  client.close();f.callbacks[0](f.state);await Promise.resolve();assert.equal(state.state,'countdown');assert.equal(f.subscriptions(),0);
 });
 
 test('match adapter serializes hit commands and cancels queued combat after leaving',async t=>{
@@ -368,38 +399,32 @@ async function runningFixture(t,count){
   for(let i=1;i<count;i++)await backend.join._handler(f.ctx,{...f.args(i),code:lobby.code});
   await backend.start._handler(f.ctx,f.member(0));
   for(let i=0;i<count;i++)await update._handler(f.ctx,f.move(i,pvpRoom(lobby.matchId)));
-  f.setTime(104000);return f;
+  f.setTime(104000);await f.ctx.db.patch(lobby.matchId,advanceMatch(f.tables.pvpMatches[0],104000));return f;
 }
 
-test('internal HP mirror is revision-idempotent and preserves death, respawn, life and score rules',async t=>{
-  const f=await runningFixture(t,2);
-  for(let shot=1;shot<=4;shot++){
-    f.setTime(104000+shot*500);
-    assert.equal((await serverHit(f,'p0','p1',shot)).applied,true);
-    assert.equal((await serverHit(f,'p0','p1',shot,{expectedRevision:shot-1})).applied,false);
-  }
-  const killed=f.tables.pvpMatches[0];assert.deepEqual(killed.scores,{A:1,B:0});
-  assert.equal(killed.damageRevision,4);assert.equal(killed.participants[1].deaths,1);
-  f.setTime(108500);const live=await backend.realtimeState._handler(f.ctx,{matchId:killed._id});
-  assert.equal(JSON.stringify(live).includes('sessionId'),false);
-  assert.equal(live.participants[1].hp,100);assert.equal(live.participants[1].life,1);
-  assert.equal(live.participants[1].presenceRoom,pvpRoom(killed._id));
-  assert.equal((await serverHit(f,'p0','p1',5,{targetLife:0})).applied,false);
-  assert.equal((await serverHit(f,'p0','p1',5,{hpBefore:100,hpAfter:75,targetLife:1})).applied,true);
-  assert.equal(killed.participants[1].hp,75);assert.equal(killed.participants[1].life,1);
+test('full combat mirror copies authoritative death/score/respawn once, without recomputing',async t=>{
+  const f=await runningFixture(t,2),m=f.tables.pvpMatches[0];
+  await backend.acquireRealtimeCombat._handler(f.ctx,{matchId:m._id,round:0,authorityId:'test-relay'});
+  const snapshot=combatSnapshot({...m,scores:{A:1,B:0},participants:m.participants.map(p=>p.playerId==='p1'?{...p,hp:0,deaths:1,respawnAt:106500}:p)});
+  const args={matchId:m._id,round:0,authorityId:'test-relay',expectedRevision:0,revision:1,snapshot};
+  assert.equal((await backend.mirrorRealtimeCombat._handler(f.ctx,args)).applied,true);
+  const writes=f.writes.length;assert.deepEqual(await backend.mirrorRealtimeCombat._handler(f.ctx,args),{applied:true,duplicate:true});
+  assert.equal(f.writes.length,writes);assert.deepEqual(m.scores,{A:1,B:0});assert.equal(m.participants[1].deaths,1);
+  f.setTime(108500);let state=await backend.realtimeState._handler(f.ctx,{matchId:m._id});
+  assert.equal(state.participants[1].hp,0,'time passing in Convex cannot respawn');
+  snapshot.players[1]={...snapshot.players[1],hp:100,life:1,respawnAt:null};
+  assert.equal((await backend.mirrorRealtimeCombat._handler(f.ctx,{...args,expectedRevision:1,revision:2})).applied,true);
+  state=await backend.realtimeState._handler(f.ctx,{matchId:m._id});assert.equal(state.participants[1].life,1);
+  assert.equal(JSON.stringify(state).includes('sessionId'),false);assert.equal(state.participants[1].presenceRoom,pvpRoom(m._id));
 });
 
-test('internal HP mirror rejects wrong damage, room, round and replaced/expired session',async t=>{
-  const f=await runningFixture(t,2);
-  assert.equal((await serverHit(f,'p0','p1',1,{hpAfter:0})).applied,false);
-  assert.equal((await serverHit(f,'p0','p1',1,{round:1})).applied,false);
-  f.tables.players[1].room='school';assert.equal((await serverHit(f,'p0','p1',1)).applied,false);
-  f.tables.players[1].room=pvpRoom(f.lobby.matchId);
-  f.tables.players[1].sessionId='replacement';assert.equal((await serverHit(f,'p0','p1',1)).applied,false);
-  f.tables.players[1].sessionId='s1';f.tables.players[1].lastSeen=0;
-  assert.equal((await serverHit(f,'p0','p1',1)).applied,false);
-  assert.equal(f.tables.pvpMatches[0].participants[1].hp,100);
-  assert.equal(backend.applyRealtimeDamage.isInternal,true);assert.equal(backend.realtimeState.isInternal,true);
+test('combat mirror requires the bound relay and round; competing authority and revision gaps are rejected',async t=>{
+  const f=await runningFixture(t,2),m=f.tables.pvpMatches[0],args={matchId:m._id,round:0,authorityId:'test-relay'};
+  await backend.acquireRealtimeCombat._handler(f.ctx,args);
+  await assert.rejects(backend.acquireRealtimeCombat._handler(f.ctx,{...args,authorityId:'other'}),/authority/);
+  for(const extra of [{authorityId:'other'},{round:1},{expectedRevision:1,revision:2}])
+    assert.equal((await backend.mirrorRealtimeCombat._handler(f.ctx,{...args,expectedRevision:0,revision:1,snapshot:combatSnapshot(m),...extra})).applied,false);
+  assert.equal(m.damageRevision,0);assert.equal(backend.mirrorRealtimeCombat.isInternal,true);
 });
 
 for(const [count,leaving,expected,reason,a,b] of [
@@ -520,7 +545,7 @@ test('return flow handles absent lobby, server-reset waiting state and skips ord
 test('client presence deadlines detect disconnect without polling and cached active results cannot restart an ended round',async t=>{
   const f=ui(t);let now=5000,state;
   t.mock.method(Date,'now',()=>now);
-  const active={...startMatch(f.state,0),round:0};
+  const active={...advanceMatch(startMatch(f.state,0),5000),round:0};
   active.participants[0].presenceExpiresAt=100000;active.participants[1].presenceExpiresAt=6000;
   const client=new PvpMatchClient(f.presence,'match-a',s=>state=s);
   f.callbacks[0](active);await Promise.resolve();assert.equal(state.state,'active');

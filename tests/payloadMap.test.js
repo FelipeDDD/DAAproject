@@ -1,0 +1,102 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { existsSync,readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { collisionAreas } from '../src/maps/collision.js';
+import { objectsIn,resolveSpawn } from '../src/maps/tiledObjects.js';
+import { PAYLOAD_MAP_TEST_PORTAL } from '../src/maps/payloadMapTest.js';
+import { PLAYER_SCALE } from '../src/game/settings.js';
+import { PVP_MAP_FILE,PVP_MAP_LAYOUT } from '../src/pvp/config.js';
+import { teamSpawn } from '../src/pvp/spawns.js';
+import { routeFromMap,pointAt } from '../src/pvp/payload/route.js';
+import { mapLayerDepth } from '../src/maps/layerDepth.js';
+import { segmentRect } from '../src/pvp/projectiles.js';
+
+const repoRoot=resolve(fileURLToPath(new URL('..',import.meta.url)));
+const map=JSON.parse(readFileSync(resolve(repoRoot,'public/assets/maps',PVP_MAP_FILE),'utf8'));
+const overlaps=(a,b)=>a.x<b.x+b.width&&a.x+a.width>b.x&&a.y<b.y+b.height&&a.y+a.height>b.y;
+
+test('Payload map loads its image and defines a clear arrival point',()=>{
+  assert.equal(PVP_MAP_FILE,'payload-map.tmj');
+  for(const imageLayer of map.layers.filter(layer=>layer.type==='imagelayer')){
+    assert.ok(imageLayer.image);
+    assert.ok(existsSync(resolve(repoRoot,'public/assets/maps',imageLayer.image)));
+  }
+  assert.deepEqual(resolveSpawn(map,{targetSpawn:PAYLOAD_MAP_TEST_PORTAL.targetSpawn}),{x:736,y:495});
+  const feet={x:736-10*PLAYER_SCALE,y:495-12*PLAYER_SCALE,width:20*PLAYER_SCALE,height:12*PLAYER_SCALE};
+  assert.ok(!collisionAreas(objectsIn(map,'Collision')).some(area=>overlaps(feet,area)));
+});
+
+test('authored Payload collisions load without depending on a fixed count while the map is edited',()=>{
+  const source=objectsIn(map,'Collision'),areas=collisionAreas(source);
+  assert.ok(source.length>0);assert.ok(areas.length>0);
+  assert.ok(areas.every(area=>area.shape==='rectangle'&&area.width>0&&area.height>0));
+});
+
+test('both teams use authored base markers with clear distinct teammate spawns inside map bounds',()=>{
+  const walls=collisionAreas(objectsIn(map,'Collision'));
+  for(const team of ['A','B']){
+    const definition=PVP_MAP_LAYOUT.teamMarkers[team];
+    const marker=objectsIn(map,definition.layer).find(p=>p.name===definition.name);
+    for(const index of [0,1]){
+      const spawn=teamSpawn(map,team,index),offset=PVP_MAP_LAYOUT.spawnOffsets[index];
+      assert.equal(spawn.x,marker.x+offset.x);assert.equal(spawn.y,marker.y+offset.y);
+      assert.equal(spawn.direction,definition.direction);
+      assert.ok(spawn.x>0&&spawn.x<map.width*map.tilewidth&&spawn.y>0&&spawn.y<map.height*map.tileheight);
+      const feet={x:spawn.x-10*PLAYER_SCALE,y:spawn.y-12*PLAYER_SCALE,width:20*PLAYER_SCALE,height:12*PLAYER_SCALE};
+      assert.ok(!walls.some(area=>overlaps(feet,area)),`${team}/${index} feet must not overlap authored collision`);
+    }
+    assert.notDeepEqual(teamSpawn(map,team,0),teamSpawn(map,team,1));
+  }
+});
+
+test('numbered team Spawns override temporary Notes markers and support authored direction/offsets',()=>{
+  const source=structuredClone(map),layer=source.layers.find(p=>p.name==='Spawns');
+  layer.offsetx=5;layer.offsety=7;
+  layer.objects.push({name:'teamA_spawn2',x:200,y:300,properties:[{name:'direction',value:'up'}]},
+    {name:'teamA_spawn1',x:150,y:300});
+  assert.equal(teamSpawn(source,'A',0).x,155);
+  assert.deepEqual({x:teamSpawn(source,'A',1).x,y:teamSpawn(source,'A',1).y,direction:teamSpawn(source,'A',1).direction},
+    {x:205,y:307,direction:'up'});
+  assert.equal(teamSpawn(source,'A',2).name,'teamA_spawn1');
+  assert.throws(()=>teamSpawn(source,'Z'),/marker/);
+});
+
+test('temporary Payload route connects the base markers; authored polyline supersedes it without silent repair',()=>{
+  const route=routeFromMap(map);
+  assert.deepEqual(route.points,['A','B'].map(team=>{const {x,y}=teamSpawn(map,team);return {x,y};}));
+  assert.deepEqual(pointAt(route,route.length/2),{x:(route.points[0].x+route.points[1].x)/2,y:(route.points[0].y+route.points[1].y)/2});
+  for(const wall of collisionAreas(objectsIn(map,'Collision')))
+    assert.equal(segmentRect(route.points[0],route.points[1],wall),null,'temporary centerline must be clear');
+  const source=structuredClone(map);
+  source.layers.push({name:'PayloadRoute',type:'objectgroup',offsetx:10,offsety:20,objects:[{name:'payload-route',x:100,y:100,
+    polyline:[{x:0,y:0},{x:30,y:0},{x:30,y:40}],properties:[{name:'initialFraction',value:0.25}]}]});
+  const authored=routeFromMap(source);
+  assert.deepEqual(authored.points,[{x:110,y:120},{x:140,y:120},{x:140,y:160}]);assert.equal(authored.initialFraction,0.25);
+  source.layers.at(-1).objects[0].polyline=undefined;
+  assert.throws(()=>routeFromMap(source),/polyline/);
+});
+
+test('image and tile foreground conventions stay above player depths while authored depth wins',()=>{
+  assert.equal(mapLayerDepth({name:'background'},map),-3);
+  for(const name of ['Overlay','overlay','Foreground','FOREGROUND'])for(const type of ['imagelayer','tilelayer'])
+    assert.ok(mapLayerDepth({name,type},map)>map.height*map.tileheight);
+  const overlay=map.layers.find(l=>l.name.toLowerCase()==='overlay');
+  assert.equal(mapLayerDepth(overlay,map),1200);
+  assert.equal(mapLayerDepth({name:'Foreground',properties:[{name:'depth',value:1300}]},map),1300);
+  assert.equal(mapLayerDepth({name:'Floor'},map,-2),-2);
+});
+
+test('rotated authored rectangles preserve the Tiled origin and angle through shared collision conversion',()=>{
+  const areas=collisionAreas([{x:100,y:200,width:20,height:10,rotation:90}]);
+  assert.ok(areas.length>0);
+  const bounds={x:Math.min(...areas.map(p=>p.x)),y:Math.min(...areas.map(p=>p.y)),
+    right:Math.max(...areas.map(p=>p.x+p.width)),bottom:Math.max(...areas.map(p=>p.y+p.height))};
+  for(const [key,value] of Object.entries({x:90,y:200,right:100,bottom:220}))
+    assert.ok(Math.abs(bounds[key]-value)<1e-8);
+  assert.deepEqual(collisionAreas([{x:10,y:20,width:30,height:40,rotation:0}]),
+    [{shape:'rectangle',x:10,y:20,width:30,height:40}]);
+  const polygon=collisionAreas([{x:100,y:200,width:0,height:0,rotation:90,polygon:[{x:0,y:0},{x:20,y:0},{x:20,y:10},{x:0,y:10}]}]);
+  assert.deepEqual(polygon,areas);
+});

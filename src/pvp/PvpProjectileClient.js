@@ -8,7 +8,7 @@ export class PvpProjectileClient {
       movement.transport.onConnectionState(state=>{if(state!=='connected')this.reset();})];
   }
   debug(event,p,reason){if(this.movement.config.debug)this.log(event,{roomId:this.movement.roomId,
-    projectileId:p?.projectileId,shooterId:p?.playerId,reason});}
+    projectileId:p?.projectileId,shooterId:p?.playerId,life:p?.life,shotSeq:p?.shotSeq,reason});}
   sendSpawn(p){
     const m=this.movement;if(this.closed||m.closed||!m.joined||m.match.state!=='active')return false;
     const sent=m.transport.sendReliable('pvp-projectile-spawn',p);
@@ -37,7 +37,7 @@ export class PvpProjectileClient {
     if(!(spawn?validPvpProjectile(p):validPvpProjectileIdentity(p))){discard('invalid_payload');return;}
     if(p.playerId===m.playerId){discard('self_player');return;}
     const participant=m.match.participants.find(member=>member.playerId===p.playerId);
-    if(!participant||participant.life!==p.life){discard('stale_participant_life');return;}
+    if(!participant||(spawn&&participant.life!==p.life)){discard('stale_participant_life');return;}
     const owner=m.playerPeers.get(p.playerId);
     if((owner&&owner!==message.senderId)||[...m.playerPeers].some(([id,peer])=>peer===message.senderId&&id!==p.playerId)){
       discard('peer_owner_mismatch');return;
@@ -45,7 +45,8 @@ export class PvpProjectileClient {
     m.playerPeers.set(p.playerId,message.senderId);
     const at=this.now();for(const [id,expiry] of this.seen)if(at>=expiry)this.seen.delete(id);
     const key=message.senderId,last=this.latest.get(key);
-    if(spawn&&(this.seen.has(p.projectileId)||(last&&(p.shotSeq<=last.shotSeq||message.seq<=last.seq)))){
+    if(spawn&&(this.seen.has(p.projectileId)||(last&&(p.life<last.life||message.seq<=last.seq
+      ||(p.life===last.life&&p.shotSeq<=last.shotSeq))))){
       discard('duplicate_or_stale');return;
     }
     const offset=m.transport.getStats().serverOffsetMs;
@@ -57,13 +58,14 @@ export class PvpProjectileClient {
     this.seen.set(p.projectileId,at+6000);
     while(this.seen.size>256)this.seen.delete(this.seen.keys().next().value);
     if(!spawn){this.combat.removeRemote(p.projectileId,p.playerId);return;}
-    this.latest.set(key,{playerId:p.playerId,shotSeq:p.shotSeq,seq:message.seq});
+    this.latest.set(key,{playerId:p.playerId,life:p.life,shotSeq:p.shotSeq,seq:message.seq});
     this.combat.receiveProjectile(p,participant,age);
   }
   setMatch(match){
     if(this.closed)return;
-    if(this.movement.closed||!match||match.state==='ended'){this.close();return;}
-    for(const [id,shot] of this.combat.remoteShots)if(!match.participants.some(p=>p.playerId===shot.playerId&&p.life===shot.life))
+    if(this.movement.closed||!match||(match.state==='ended'&&!match.retry)){this.close();return;}
+    if(match.state==='ended'){this.reset();return;}
+    for(const [id,shot] of this.combat.remoteShots)if(!match.participants.some(p=>p.playerId===shot.playerId))
       this.combat.removeRemote(id,shot.playerId);
     for(const peer of this.latest.keys())if(!this.movement.peers.has(peer))this.latest.delete(peer);
   }

@@ -1,11 +1,15 @@
 import { REALTIME_CONFIG as config } from './config.js';
+import { validPayloadState } from '../pvp/payload/state.js';
 
 const plain=p=>p!==null&&typeof p==='object'&&!Array.isArray(p);
 const number=(n,min,max)=>Number.isFinite(n)&&n>=min&&n<=max;
 const id=s=>typeof s==='string'&&/^[a-zA-Z0-9_-]{1,64}$/.test(s);
 export const validRoomId=id;
-export const CLIENT_TYPES=new Set(['join-room','leave-room','ping','peer-ping','peer-pong','position','pvp-authorize','pvp-hit-attempt','pvp-movement','pvp-projectile-spawn','pvp-projectile-destroy','projectile-spawn','projectile-destroy','test-event','pulse-start','pulse-end','pulse-summary']);
+export const CLIENT_TYPES=new Set(['join-room','leave-room','ping','peer-ping','peer-pong','position','pvp-authorize','pvp-end-request','pvp-retry','pvp-hit-attempt','pvp-movement','pvp-projectile-spawn','pvp-projectile-destroy','projectile-spawn','projectile-destroy','test-event','pulse-start','pulse-end','pulse-summary']);
 const integer=n=>Number.isSafeInteger(n)&&n>=0;
+const retryState=p=>plain(p)&&number(p.deadline,0,Number.MAX_SAFE_INTEGER)&&typeof p.resolving==='boolean'
+  &&['activePlayerIds','playerIds'].every(k=>Array.isArray(p[k])&&p[k].length<=4&&p[k].every(id)&&new Set(p[k]).size===p[k].length)
+  &&p.playerIds.every(playerId=>p.activePlayerIds.includes(playerId));
 export function validPvpProjectileIdentity(p){return plain(p)&&id(p.projectileId)&&id(p.playerId)
   &&Number.isSafeInteger(p.life)&&p.life>=0&&Number.isSafeInteger(p.shotSeq)&&p.shotSeq>=1;}
 export function validPvpProjectile(p){return validPvpProjectileIdentity(p)
@@ -18,7 +22,7 @@ export function validPvpMovement(p){return plain(p)&&id(p.playerId)
   &&number(p.vx,-1000,1000)&&number(p.vy,-1000,1000)&&typeof p.moving==='boolean'
   &&['up','down','left','right'].includes(p.direction)
   &&Number.isSafeInteger(p.sampleSeq)&&p.sampleSeq>=1
-  &&Number.isSafeInteger(p.life)&&p.life>=0;}
+  &&Number.isSafeInteger(p.life)&&p.life>=0&&(p.teleport===undefined||typeof p.teleport==='boolean');}
 export function validPosition(p){return plain(p)&&number(p.x,0,config.width)&&number(p.y,0,config.height)&&number(p.vx,-1000,1000)&&number(p.vy,-1000,1000)
   &&(p.sampleSeq===undefined||(Number.isSafeInteger(p.sampleSeq)&&p.sampleSeq>=0));}
 const timing=p=>plain(p)&&id(p.runId)&&Number.isSafeInteger(p.sequence)&&p.sequence>=1
@@ -37,12 +41,14 @@ export function validClientMessage(m){
     ||!number(m.sentAt,0,Number.MAX_SAFE_INTEGER)||!['reliable','unreliable'].includes(m.channel)||!plain(m.payload))return false;
   const p=m.payload;
   switch(m.type){
-    case 'join-room':case 'leave-room':return Object.keys(p).length===0;
+    case 'pvp-retry':return integer(p.round)&&Object.keys(p).length===1;
+    case 'pvp-end-request':case 'join-room':case 'leave-room':return Object.keys(p).length===0;
     case 'ping':return id(p.probeId);
     case 'peer-ping':case 'peer-pong':return id(p.peerId)&&id(p.pingId);
     case 'position':return validPosition(p);
     case 'pvp-movement':return validPvpMovement(p);
-    case 'pvp-authorize':return id(p.playerId)&&id(p.sessionId)&&id(p.matchId)&&integer(p.round);
+    case 'pvp-authorize':return id(p.playerId)&&id(p.sessionId)&&id(p.matchId)&&integer(p.round)
+      &&(p.mapId===undefined||id(p.mapId))&&(p.mapRevision===undefined||integer(p.mapRevision));
     case 'pvp-hit-attempt':return id(p.projectileId)&&id(p.targetId)&&integer(p.targetLife)
       &&Object.keys(p).every(key=>['projectileId','targetId','targetLife'].includes(key));
     case 'pvp-projectile-spawn':return validPvpProjectile(p);
@@ -60,11 +66,27 @@ export function validServerMessage(m){
   if(!plain(m)||typeof m.type!=='string'||!plain(m.payload)||!number(m.serverTime,0,Number.MAX_SAFE_INTEGER))return false;
   if(CLIENT_TYPES.has(m.type))return validClientMessage(m)&&id(m.senderId);
   switch(m.type){
+    case 'pvp-round-transition':{
+      const p=m.payload,s=p.match;
+      return validRoomId(m.roomId)&&integer(p.fromRound)&&(s===null||(plain(s)&&id(s.matchId)&&s.round===p.fromRound+1
+        &&['waiting','countdown'].includes(s.state)&&id(s.hostPlayerId)&&Array.isArray(s.participants)
+        &&s.participants.length>=1&&s.participants.length<=4&&new Set(s.participants.map(p=>p.playerId)).size===s.participants.length
+        &&s.participants.every(p=>id(p.playerId)&&['A','B'].includes(p.team)&&integer(p.life)&&p.hp===100)
+        &&s.participants.some(p=>p.playerId===s.hostPlayerId)&&plain(s.scores)&&s.scores.A===0&&s.scores.B===0));
+    }
     case 'pvp-authorized':return validRoomId(m.roomId)&&id(m.payload.playerId)&&integer(m.payload.round);
     case 'pvp-combat-error':return validRoomId(m.roomId)&&typeof m.payload.reason==='string'&&m.payload.reason.length<=200;
     case 'pvp-combat-state':return validRoomId(m.roomId)&&id(m.payload.authorityId)&&integer(m.payload.version)
+      &&(m.payload.retry===undefined||retryState(m.payload.retry))
+      &&(m.payload.payload===undefined||validPayloadState(m.payload.payload))
       &&integer(m.payload.round)&&integer(m.payload.damageRevision)&&Array.isArray(m.payload.players)&&m.payload.players.length<=4
-      &&m.payload.players.every(p=>id(p.playerId)&&integer(p.life)&&number(p.hp,0,100));
+      &&['countdown','active','ended'].includes(m.payload.state)
+      &&plain(m.payload.scores)&&integer(m.payload.scores.A)&&integer(m.payload.scores.B)
+      &&['startedAt','endsAt','endedAt'].every(k=>m.payload[k]===null||number(m.payload[k],0,Number.MAX_SAFE_INTEGER))
+      &&[null,'A','B','draw'].includes(m.payload.winner)&&(m.payload.reason===null||typeof m.payload.reason==='string')
+      &&m.payload.players.every(p=>id(p.playerId)&&integer(p.life)&&number(p.hp,0,100)&&integer(p.kills)&&integer(p.deaths)
+        &&integer(p.lastShot)&&number(p.lastHitAt,0,Number.MAX_SAFE_INTEGER)&&(p.respawnAt===null||number(p.respawnAt,0,Number.MAX_SAFE_INTEGER)))
+      &&Array.isArray(m.payload.events)&&m.payload.events.length<=5&&m.payload.events.every(e=>plain(e)&&['death','respawn','match-ended'].includes(e.type));
     case 'pvp-hit-result':return validRoomId(m.roomId)&&id(m.payload.projectileId)&&id(m.payload.shooterId)&&id(m.payload.targetId)
       &&typeof m.payload.accepted==='boolean'&&typeof m.payload.reason==='string'
       &&number(m.payload.damage,0,100)&&[m.payload.hpBefore,m.payload.hpAfter].every(n=>n===null||number(n,0,100));

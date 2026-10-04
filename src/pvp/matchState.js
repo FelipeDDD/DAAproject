@@ -1,6 +1,6 @@
 import { PVP_RULES,PVP_TEAMS } from './config.js';
 
-// Pure rules shared by the temporary Convex authority and client clock projection.
+// Pure combat rules executed by the realtime authority. Convex uses lobby/membership helpers only.
 // No Phaser, profile rewards, network transport or UI code belongs here.
 export const newFighter=member=>({...member,hp:PVP_RULES.maxHp,kills:0,deaths:0,life:0,
   respawnAt:null,lastShot:0,lastHitAt:0});
@@ -40,21 +40,21 @@ export function startMatch(match,now){
   const startedAt=now+PVP_RULES.countdownMs;
   return {...match,state:'countdown',startedAt,endsAt:startedAt+match.timeLimitMs};
 }
-export function respawnPlayer(player){return {...player,hp:PVP_RULES.maxHp,life:player.life+1,respawnAt:null};}
-export function advanceMatch(match,now){
+export function respawnPlayer(player){return {...player,hp:PVP_RULES.maxHp,life:player.life+1,respawnAt:null,lastShot:0,lastHitAt:0};}
+export function advanceMatch(match,now,{finish=endMatch}={}){
   if(!match||match.state==='waiting'||match.state==='ended')return match;
-  if(now>=match.endsAt)return endMatch(match,match.endsAt);
+  if(now>=match.endsAt)return finish(match,match.endsAt);
   if(now<match.startedAt)return match;
   return {...match,state:'active',participants:match.participants.map(p=>
     p.respawnAt!==null&&now>=p.respawnAt?respawnPlayer(p):p)};
 }
-export function registerPlayerDeath(match,killerId,victimId,now){
+export function registerPlayerDeath(match,killerId,victimId,now,{scoreVictory=true}={}){
   const killer=match.participants.find(p=>p.playerId===killerId),victim=match.participants.find(p=>p.playerId===victimId);
   if(match.state!=='active'||!killer||!victim||killer.team===victim.team||victim.hp>0||victim.respawnAt!==null)return match;
   const next={...match,scores:{...match.scores,[killer.team]:match.scores[killer.team]+1},
     participants:match.participants.map(p=>p===victim?{...p,hp:0,deaths:p.deaths+1,respawnAt:now+match.respawnMs}:
       p===killer?{...p,kills:p.kills+1}:p)};
-  return next.scores[killer.team]>=match.scoreLimit?endMatch(next,now,'score-limit'):next;
+  return scoreVictory&&next.scores[killer.team]>=match.scoreLimit?endMatch(next,now,'score-limit'):next;
 }
 export function applyPlayerDamage(source,{attackerId,victimId,attackerLife,victimLife,shot},now){
   const match=advanceMatch(source,now);

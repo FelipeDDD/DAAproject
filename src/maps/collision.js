@@ -29,7 +29,16 @@ function polygonStrips(area){
 
 export function collisionAreas(objects){
   return objects.flatMap(area=>{
-    if(area.rotation)throw new Error('Collision: rotated objects are not supported.');
+    if(area.rotation){
+      // Tiled rotates around object x/y, not the rectangle's center. Feed the
+      // transformed outline into the existing polygon scanlines on both client
+      // and relay, preserving the authored geometry without editing the map.
+      const points=area.polygon??(!area.ellipse&&!area.polyline&&!area.gid&&area.width>0&&area.height>0
+        ?[{x:0,y:0},{x:area.width,y:0},{x:area.width,y:area.height},{x:0,y:area.height}]:null);
+      if(!points)throw new Error('Collision: rotation is supported for rectangles and polygons only.');
+      const radians=area.rotation*Math.PI/180,cos=Math.cos(radians),sin=Math.sin(radians);
+      return polygonStrips({...area,polygon:points.map(p=>({x:p.x*cos-p.y*sin,y:p.x*sin+p.y*cos}))});
+    }
     if(area.polygon)return polygonStrips(area);
     if(area.ellipse&&area.width>0&&area.height>0){
       const diameter=Math.min(area.width,area.height);

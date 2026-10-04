@@ -10,8 +10,8 @@
   "type": "map",
   "version": "1.10",
   "tiledversion": "1.12.2",
-  "nextlayerid": 9,
-  "nextobjectid": 15,
+  "nextlayerid": 10,
+  "nextobjectid": 16,
   "properties": [
     {
       "name": "defaultSpawn",
@@ -1688,6 +1688,50 @@
       "visible": true,
       "opacity": 1,
       "objects": []
+    },
+    {
+      "id": 9,
+      "name": "PayloadRoute",
+      "type": "objectgroup",
+      "draworder": "topdown",
+      "x": 0,
+      "y": 0,
+      "visible": true,
+      "opacity": 1,
+      "objects": [
+        {
+          "id": 15,
+          "name": "payload-route",
+          "type": "",
+          "x": 96,
+          "y": 288,
+          "width": 0,
+          "height": 0,
+          "rotation": 0,
+          "visible": true,
+          "polyline": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 320,
+              "y": 0
+            },
+            {
+              "x": 640,
+              "y": 0
+            }
+          ],
+          "properties": [
+            {
+              "name": "initialFraction",
+              "type": "float",
+              "value": 0.5
+            }
+          ]
+        }
+      ]
     }
   ]
 }

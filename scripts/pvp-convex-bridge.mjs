@@ -17,7 +17,9 @@ export async function createLocalPvpBridge(){
       return state;
     },
     subscribe(matchId,onState,onError){return reactive.onUpdate(anyApi.pvpMatches.realtimeState,{matchId},onState,onError);},
-    commit(args){return http.mutation(anyApi.pvpMatches.applyRealtimeDamage,args);},
+    acquire(args){return http.mutation(anyApi.pvpMatches.acquireRealtimeCombat,args);},
+    commit(args){return http.mutation(anyApi.pvpMatches.mirrorRealtimeCombat,args);},
+    nextRound(args){return http.mutation(anyApi.pvpMatches.advanceRealtimeRound,args);},
     close(){return reactive.close();},
   };
 }

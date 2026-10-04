@@ -1,10 +1,12 @@
 import { defineSchema, defineTable } from 'convex/server';
 import { v } from 'convex/values';
+import { pvpModeValidator,payloadStateValidator } from './pvpModeValidators.js';
 
 export default defineSchema({
   pvpMatches:defineTable({
-    round:v.optional(v.number()),damageRevision:v.optional(v.number()),
-    code:v.string(),mode:v.literal('tdm'),state:v.union(v.literal('waiting'),v.literal('countdown'),v.literal('active'),v.literal('ended')),
+    round:v.optional(v.number()),damageRevision:v.optional(v.number()),combatAuthorityId:v.optional(v.string()),
+    retryDeadline:v.optional(v.number()),retryFromAuthorityId:v.optional(v.string()),
+    code:v.string(),mode:pvpModeValidator,payload:v.optional(payloadStateValidator),state:v.union(v.literal('waiting'),v.literal('countdown'),v.literal('active'),v.literal('ended')),
     hostPlayerId:v.string(),participants:v.array(v.object({
       playerId:v.string(),sessionId:v.string(),displayName:v.string(),characterBaseId:v.string(),team:v.union(v.literal('A'),v.literal('B')),
       hp:v.number(),kills:v.number(),deaths:v.number(),life:v.number(),respawnAt:v.union(v.null(),v.number()),lastShot:v.number(),lastHitAt:v.number(),
