@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DEV Realtime Lab</title></head>
+<body><main id="lab" hidden>
+  <header><h1>Realtime Lab <small>DEV · WebSocket relay</small></h1><p>Isolated experiment. No Convex, progression, PvP or boss combat.</p></header>
+  <section class="controls">
+    <label>Transport <select id="transport"><option value="websocket">WebSocket (TCP)</option></select></label>
+    <label>Socket URL <input id="url" value="ws://127.0.0.1:8787" size="29" aria-describedby="socket-url-help"></label>
+    <small id="socket-url-help">Paste the WebSocket tunnel URL here. HTTPS URLs are converted to WSS automatically.</small>
+    <label>Room <input id="room" value="lab-room" maxlength="64"></label>
+    <button id="connect">Connect</button><button id="disconnect">Disconnect</button>
+    <span id="status" role="status" aria-live="polite">Start npm run realtime:server, then connect.</span>
+    <span>Active Socket: <code id="socket-target">Not connected</code></span>
+    <label>Snapshots <select id="hz"><option>10</option><option selected>20</option><option>30</option><option>60</option></select> Hz</label>
+    <label><input id="interpolate" type="checkbox" checked> Interpolation</label>
+    <label>Buffer <input id="buffer" type="number" min="0" max="1000" value="100"> ms</label>
+  </section>
+  <section class="controls">
+    <label>Simulated delay / direction <input id="latency" type="number" list="latencies" min="0" max="2000" value="0"> ms</label>
+    <datalist id="latencies"><option value="0"><option value="50"><option value="100"><option value="150"><option value="250"></datalist>
+    <label>Jitter ± <input id="jitter" type="number" min="0" max="1000" value="0"> ms</label>
+    <label>Simulated message loss <select id="loss"><option value="0">0%</option><option value=".01">1%</option><option value=".05">5%</option><option value=".1">10%</option><option value=".3">30%</option></select></label>
+    <label><input id="ordering" type="checkbox"> Numbered-message experiment (10 Hz)</label>
+  </section>
+  <p class="hint">WASD / arrows: move · Space: shoot · click field: aim and shoot. Click the field first for keyboard controls. Open a second tab in the same room.</p>
+  <section class="controls">
+    <button id="auto-fire" aria-pressed="false">Auto Fire: OFF</button>
+    <label>Interval <input id="fire-interval" type="number" min="50" max="2000" value="100" list="fire-presets"> ms</label>
+    <datalist id="fire-presets"><option value="50"><option value="100"><option value="200"><option value="500"></datalist>
+    <label>Shots <select id="fire-count"><option>10</option><option>50</option><option value="continuous">Continuous</option></select></label>
+    <button id="burst">Burst Test (10 × 100 ms)</button><button id="copy-results">Copy Results</button>
+    <span id="pulse-dot" aria-label="Shot timing indicator">●</span>
+  </section>
+  <pre id="pulse-stats">Auto Fire is off. Connect two clients for local and remote timing comparisons.</pre>
+  <section class="controls">
+    <label>Benchmark <select id="benchmark-preset"><option value="standard">Standard (10 × 100 ms)</option><option value="stress20">Stress 20 Hz (20 × 50 ms)</option><option value="stress50">Stress 50 Hz (50 × 20 ms)</option></select></label>
+    <label>Runs <select id="benchmark-runs"><option>10</option><option>50</option><option>100</option></select></label>
+    <button id="run-benchmark">Run Benchmark</button><button id="cancel-benchmark" disabled>Cancel Benchmark</button><button id="copy-benchmark">Copy Benchmark</button>
+  </section>
+  <pre id="benchmark-stats">No benchmark yet. Use a second client in the same room for receiver metrics.</pre>
+  <p>Benchmark visuals: at most 24 projectiles, with a 500 ms visual lifetime. Percentiles pool individual samples; interval variation means absolute deviation from the requested interval. Remote results wait for receiver settling (up to 8.5 s), followed by a 500 ms pause. Missing peer reports mean unknown delivery, not zero loss. Copy Benchmark includes per-run and sender-foreground results; receiver visibility is reported separately. Scrolling does not mean backgrounding. Receive-to-render needs an actual first draw; hidden receivers or expired/capped visuals may yield no samples.</p>
+  <textarea id="copy-fallback" hidden readonly aria-label="Pulse results JSON; press Ctrl+C to copy" rows="8" style="width:100%"></textarea>
+  <p>Pulse timings measure the local browser/event loop separately from application arrival intervals. Missing sequences are not TCP packet loss. Severe stalls skip obsolete schedule slots (no catch-up burst). Receiver summaries settle after simulated delays plus 500 ms; exceptionally late messages may miss that deadline. Continuous stats use bounded 512-shot detail storage; very old reordered messages are ignored.</p>
+  <canvas id="field" width="800" height="500" tabindex="0" aria-label="Realtime test field"></canvas>
+  <pre id="stats" aria-live="off"></pre>
+  <p>Reliable and unreliable APIs both use ordered TCP/WebSocket here. Lab simulation delays/drops whole gameplay messages in both directions, including reliable projectile events; it never changes TCP. Welcome, membership and RTT probes bypass simulation. Server RTT measures client to relay only. Peer RTT measures client to relay to remote browser to relay to client, once per second per peer, bypassing simulated delay/loss. Both are application round trips, not packet loss. The numbered experiment shows application ordering/staleness, not TCP head-of-line blocking.</p>
+</main><p id="unavailable">This laboratory is available only through the Vite development server.</p>
+<script type="module" src="/src/realtime/lab/main.js"></script></body></html>

@@ -1,10 +1,10 @@
-import { mutationGeneric as mutation,queryGeneric as query,internalMutationGeneric as internalMutation,anyApi } from 'convex/server';
+import { mutationGeneric as mutation,queryGeneric as query,internalQueryGeneric as internalQuery,internalMutationGeneric as internalMutation,anyApi } from 'convex/server';
 import { v,ConvexError } from 'convex/values';
 import { findSessionPlayer } from './playerSessions.js';
 import { ownsPlayerSession,isPlayerActive,PRESENCE_TIMEOUT_MS } from '../src/multiplayer/presencePolicy.js';
 import { normalizeArenaCode,validArenaCode,ARENA_CODE_ALPHABET } from '../src/boss/arenaLobbyUi.js';
 import { PVP_RULES,pvpRoom } from '../src/pvp/config.js';
-import { newFighter,startMatch,advanceMatch,endMatch,applyPlayerDamage,reconcileParticipants } from '../src/pvp/matchState.js';
+import { newFighter,startMatch,advanceMatch,endMatch,registerPlayerDeath,reconcileParticipants } from '../src/pvp/matchState.js';
 
 const identity={playerId:v.string(),sessionId:v.string()},member={...identity,matchId:v.id('pvpMatches')},command={...member,round:v.optional(v.number())};
 const team=v.union(v.literal('A'),v.literal('B'));
@@ -20,9 +20,10 @@ async function player(ctx,args){
 }
 const owns=(m,args)=>m?.participants.some(p=>p.playerId===args.playerId&&p.sessionId===args.sessionId);
 function requireRound(m,args){if((m.round??0)!==(args.round??0))fail('This match round is no longer active.');}
-async function live(ctx,m,deadlines={}){
+async function live(ctx,m,deadlines={},rooms={}){
   const members=await Promise.all(m.participants.map(async p=>{
     const row=await findSessionPlayer(ctx,undefined,p.playerId);
+    rooms[p.playerId]=row?.room??null;
     deadlines[p.playerId]=row?.presenceMode==='terminal'?row.terminalLeaseExpiresAt:
       row?.presenceMode==='stationary'?row.stationaryLeaseExpiresAt:(row?.lastSeen??0)+PRESENCE_TIMEOUT_MS;
     return ownsPlayerSession(row,p.playerId,p.sessionId)&&isPlayerActive(row)?p:null;
@@ -38,8 +39,9 @@ async function read(ctx,args,allowMissing=false){
   else state=reconcileParticipants(state,state.participants.filter(p=>active.some(a=>a.playerId===p.playerId)),Date.now());
   return {p,m:state,deadlines};
 }
-function publicMatch(m,deadlines){
-  return m?{...m,round:m.round??0,matchId:m._id,room:pvpRoom(m._id),participants:m.participants.map(({sessionId,...p})=>({...p,presenceExpiresAt:deadlines[p.playerId]}))}:null;
+function publicMatch(m,deadlines,rooms){
+  return m?{...m,round:m.round??0,matchId:m._id,room:pvpRoom(m._id),participants:m.participants.map(({sessionId,...p})=>
+    ({...p,presenceExpiresAt:deadlines[p.playerId],...(rooms?{presenceRoom:rooms[p.playerId]}:{})}))}:null;
 }
 async function save(ctx,m){
   const {_id,_creationTime,...data}=m;await ctx.db.patch(_id,data);
@@ -65,7 +67,7 @@ export const create=mutation({args:identity,handler:async(ctx,args)=>{
     code=null;
   }
   if(!code)fail('Could not create a code. Try again.');
-  const now=Date.now(),match={code,round:0,mode:'tdm',state:'waiting',hostPlayerId:p.playerId,
+  const now=Date.now(),match={code,round:0,damageRevision:0,mode:'tdm',state:'waiting',hostPlayerId:p.playerId,
     participants:[newFighter({...args,displayName:p.displayName??p.name,characterBaseId:p.characterBaseId??p.characterId,team:'A'})],
     scores:{A:0,B:0},scoreLimit:PVP_RULES.scoreLimit,timeLimitMs:PVP_RULES.timeLimitMs,respawnMs:PVP_RULES.respawnMs,
     startedAt:null,endsAt:null,endedAt:null,winner:null,reason:null,createdAt:now,expiresAt:now+PVP_RULES.lobbyLifetimeMs};
@@ -111,15 +113,42 @@ export const leave=mutation({args:command,handler:async(ctx,args)=>{
   const m=await ctx.db.get(args.matchId);if(m)await remove(ctx,m,args);
 }});
 export const hit=mutation({args:{...command,victimId:v.string(),victimLife:v.number(),attackerLife:v.number(),shot:v.number()},handler:async(ctx,args)=>{
-  const {p,m}=await read(ctx,args);
+  const {m}=await read(ctx,args);
   requireRound(m,args);
-  if(p.room!==pvpRoom(m._id))fail('Enter the PvP arena first.');
-  const victim=await findSessionPlayer(ctx,undefined,args.victimId);
-  if(victim?.room!==p.room||!owns(m,victim)||!isPlayerActive(victim))return;
-  // Test-only hit reports. Server enforces ownership/teams/lives/cooldown/scoring;
-  // projectile geometry remains client-side until realtime authority is added.
-  const next=applyPlayerDamage(m,{...args,attackerId:args.playerId},Date.now());
-  if(JSON.stringify(next)!==JSON.stringify(m))await save(ctx,next);
+  fail('PvP damage is handled by the realtime server.');
+}});
+// The local relay uses admin authentication. Neither function is browser-callable.
+export const realtimeState=internalQuery({args:{matchId:v.id('pvpMatches')},handler:async(ctx,{matchId})=>{
+  requireDev();const m=await ctx.db.get(matchId);if(!m)return null;
+  const deadlines={},rooms={},participants=await live(ctx,m,deadlines,rooms),now=Date.now();
+  const advanced=advanceMatch(m,now);
+  const state=m.expiresAt<=now?endMatch(advanced,now,'expired'):reconcileParticipants(advanced,
+    advanced.participants.filter(p=>participants.some(active=>active.playerId===p.playerId)),now);
+  return publicMatch(state,deadlines,rooms);
+}});
+export const applyRealtimeDamage=internalMutation({args:{matchId:v.id('pvpMatches'),round:v.number(),expectedRevision:v.number(),
+  shooterId:v.string(),targetId:v.string(),attackerLife:v.number(),targetLife:v.number(),shotSeq:v.number(),
+  hpBefore:v.number(),hpAfter:v.number(),acceptedAt:v.number()},handler:async(ctx,args)=>{
+  requireDev();const saved=await ctx.db.get(args.matchId);if(!saved)return {applied:false};
+  const deadlines={},active=await live(ctx,saved,deadlines),now=Date.now();
+  const advanced=advanceMatch(saved,now),m=reconcileParticipants(advanced,
+    advanced.participants.filter(p=>active.some(member=>member.playerId===p.playerId)),now);
+  if(m.state!=='active'||(m.round??0)!==args.round)return {applied:false};
+  // Revision also makes a retried server commit idempotent and rejects competing relays.
+  if((m.damageRevision??0)!==args.expectedRevision)return {applied:false};
+  const shooter=m.participants.find(p=>p.playerId===args.shooterId),target=m.participants.find(p=>p.playerId===args.targetId);
+  if(!shooter||!target||shooter===target||shooter.team===target.team||shooter.hp<=0||target.hp<=0
+    ||shooter.life!==args.attackerLife||target.life!==args.targetLife||target.hp!==args.hpBefore
+    ||!Number.isSafeInteger(args.shotSeq)||args.shotSeq<=shooter.lastShot
+    ||args.hpAfter!==Math.max(0,args.hpBefore-PVP_RULES.damage))return {applied:false};
+  for(const p of [shooter,target]){
+    const row=await findSessionPlayer(ctx,undefined,p.playerId);
+    if(row?.room!==pvpRoom(m._id))return {applied:false};
+  }
+  let next={...m,damageRevision:args.expectedRevision+1,participants:m.participants.map(p=>p===target?{...p,hp:args.hpAfter}:
+    p===shooter?{...p,lastShot:args.shotSeq,lastHitAt:args.acceptedAt}:p)};
+  if(args.hpAfter===0)next=registerPlayerDeath(next,args.shooterId,args.targetId,now);
+  await save(ctx,next);return {applied:true};
 }});
 export const finish=mutation({args:{...command,force:v.optional(v.boolean())},handler:async(ctx,args)=>{
   const {m}=await read(ctx,args);

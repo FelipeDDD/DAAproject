@@ -19,9 +19,19 @@ export function endMatch(match,now,reason='timer'){
 // Membership is independent of health: a dead player awaiting respawn still belongs to a team.
 export function reconcileParticipants(match,participants,now){
   const next={...match,participants};
-  if(match.state==='ended')return next;
-  if(!participants.some(p=>p.playerId===match.hostPlayerId))return endMatch(next,now,'host_left');
-  if(match.state!=='waiting'&&PVP_TEAMS.some(team=>!participants.some(p=>p.team===team)))return endMatch(next,now,'team_empty');
+  if(!participants.some(p=>p.playerId===match.hostPlayerId)){
+    if(match.state!=='ended')return endMatch(next,now,'host_left');
+    if(['host_left','host-left'].includes(match.reason))return next;
+    // A finished round can still lose its lobby host. Preserve its scores/winner,
+    // but begin departure recovery now, rather than at the earlier victory time.
+    return {...next,reason:'host_left',endedAt:interruptedMatch(match)?match.endedAt:now};
+  }
+  if(match.state!=='waiting'&&PVP_TEAMS.some(team=>!participants.some(p=>p.team===team))){
+    if(match.state!=='ended')return endMatch(next,now,'team_empty');
+    // The last opponent may leave after victory. Keep that result, but give the
+    // remaining host the same recovery countdown as an empty team during play.
+    if(!interruptedMatch(match))return {...next,reason:'team_empty',endedAt:now};
+  }
   return next;
 }
 export const interruptedMatch=match=>match?.state==='ended'&&['team_empty','host_left','host-left','expired','lobby_unavailable'].includes(match.reason);

@@ -73,6 +73,11 @@ export class BossDevTools {
     const openPvp=document.createElement('button');openPvp.type='button';openPvp.textContent='Open PvP Lobby';
     openPvp.addEventListener('click',()=>{if(!scene.openPvpLobby?.())this.status.textContent='Close the current activity before opening PvP.';});
     this.content.append(this.pvpButton,openPvp);
+    if(import.meta.env?.DEV){
+      const openLab=document.createElement('button');openLab.type='button';openLab.textContent='Open Realtime Lab';
+      openLab.addEventListener('click',()=>globalThis.open('/tools/realtime-lab/','_blank','noopener,noreferrer'));
+      this.content.append(openLab);
+    }
     this.setCollapsed(true);
   }
 

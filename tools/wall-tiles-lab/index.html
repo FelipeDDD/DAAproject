@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Classroom — inspeção de paredes</title>
+<style>
+  *{box-sizing:border-box}body{margin:0;background:#20272c;color:#edf1f3;font:15px system-ui}header,section{padding:16px 24px}h1{font-size:22px}p{max-width:1000px;line-height:1.5}label{display:inline-block;margin-right:20px}button,select{padding:6px;margin:4px;background:#35434d;color:white;border:1px solid #71828c;border-radius:4px}#map{width:100%;height:640px;max-height:75vh}#status{color:#e7c77e}.reference{overflow:auto;max-height:85vh;border:1px solid #65727a}.reference img{display:block;max-width:none}small{display:block;margin:10px 0;color:#bccbd4}a{color:#a8dce9}
+</style>
+<header>
+  <h1>Classroom — bancada isolada de paredes</h1>
+  <p>Cópia do mapa, sem jogadores, autenticação ou Convex. As paredes abaixo ainda são as originais; os desenhos de referência não formam um atlas pronto. Edite apenas <code>classroom-wall-lab.tmj</code> no Tiled e recarregue para testar.</p>
+  <label><input id="grid" type="checkbox" checked> Grade 32×32</label>
+  <label><input id="collision" type="checkbox"> Colisões existentes</label>
+  <label>Zoom <select id="zoom"><option value="0.75">0,75×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
+  <button id="center">Centralizar</button>
+  <small>Arraste o mapa para inspecionar corredores e salas. Prévia de camadas Tiled + placeholders; não reproduz NPCs, HUD ou decorações extras da SchoolScene.</small>
+  <div id="status">Carregando a cópia do mapa…</div>
+</header>
+<div id="map"></div>
+<section>
+  <h2>Referências em resolução original</h2>
+  <select id="reference"><option>Atlas de Paredes Escolares em Azulejos.png</option><option>Conjunto Modular de Paredes Pixel Art.png</option><option>Tileset de Paredes e Portas em Pixel Art.png</option></select>
+  <p>Os três arquivos são imagens opacas de 1448×1086, com peças em escalas diferentes. O texto “32×32” desenhado na primeira imagem não corresponde a células reais de 32 pixels.</p>
+  <div class="reference"><img id="reference-image" alt="Referência original de paredes"></div>
+  <small>Referências locais em assets-drafts/tilesets (ignoradas pelo Git). Veja o diagnóstico e a lista de peças em <a href="./README.md">README.md</a>.</small>
+</section>
+<script type="module" src="./main.js"></script>
+</html>

@@ -95,6 +95,38 @@ test('lobby creates short code, joins idempotently, caps 4 players / 2 per team 
   assert.equal(f.tables.pvpMatches[0].state,'countdown'); // 2v2 uses the same start rule.
 });
 
+test('waiting host keeps identity and start authority across A/B/A team changes',async t=>{
+  const f=fixture(t),created=await backend.create._handler(f.ctx,f.args(0));
+  const member=i=>({...f.args(i),matchId:created.matchId});
+  const initial=await backend.current._handler(f.ctx,member(0));
+  const host=structuredClone(f.tables.pvpMatches[0].participants[0]);
+  assert.equal(initial.hostPlayerId,'p0');assert.equal(initial.participants[0].team,'A');
+  for(const team of ['B','A','B']){
+    await backend.chooseTeam._handler(f.ctx,{...member(0),team});
+    const state=await backend.current._handler(f.ctx,member(0));
+    assert.equal(state.state,'waiting');assert.equal(state.hostPlayerId,'p0');
+    assert.deepEqual(f.tables.pvpMatches[0].participants[0],{...host,team});
+  }
+  await backend.join._handler(f.ctx,{...f.args(1),code:created.code});
+  await backend.start._handler(f.ctx,member(0));
+  assert.equal(f.tables.pvpMatches[0].state,'countdown');
+  assert.equal(f.tables.pvpMatches[0].hostPlayerId,'p0');
+});
+
+test('non-host team changes and stale sessions cannot take host authority',async t=>{
+  const f=fixture(t),created=await backend.create._handler(f.ctx,f.args(0));
+  const member=i=>({...f.args(i),matchId:created.matchId});
+  await backend.join._handler(f.ctx,{...f.args(1),code:created.code});
+  for(const team of ['A','B']){
+    await backend.chooseTeam._handler(f.ctx,{...member(1),team});
+    assert.equal(f.tables.pvpMatches[0].hostPlayerId,'p0');
+    await assert.rejects(backend.start._handler(f.ctx,member(1)),/Only the host/);
+  }
+  const before=structuredClone(f.tables.pvpMatches[0]);
+  await assert.rejects(backend.chooseTeam._handler(f.ctx,{...member(0),sessionId:'old',team:'B'}),/CHARACTER_SESSION_LOST/);
+  assert.deepEqual(f.tables.pvpMatches[0],before);
+});
+
 test('host starts 2v1; teams freeze; all members enter one room and outsiders cannot enter',async t=>{
   const f=fixture(t),a=await backend.create._handler(f.ctx,f.args(0)),member=i=>({...f.args(i),matchId:a.matchId});
   for(const i of [1,2])await backend.join._handler(f.ctx,{...f.args(i),code:a.code});
@@ -132,21 +164,29 @@ test('guest leave releases only owned membership; stale generation cannot leave,
   assert.equal((await backend.current._handler(f.ctx,member(1))).reason,'host_left');
 });
 
-test('backend damage uses active match/team/life ownership and only writes transient match state',async t=>{
+function serverHit(f,shooterId,targetId,shotSeq,extra={}){
+  const m=f.tables.pvpMatches[0],shooter=m.participants.find(p=>p.playerId===shooterId),target=m.participants.find(p=>p.playerId===targetId);
+  return backend.applyRealtimeDamage._handler(f.ctx,{matchId:m._id,round:m.round??0,expectedRevision:m.damageRevision??0,
+    shooterId,targetId,attackerLife:shooter?.life??0,targetLife:target?.life??0,shotSeq,
+    hpBefore:target?.hp??100,hpAfter:Math.max(0,(target?.hp??100)-25),acceptedAt:Date.now(),...extra});
+}
+
+test('internal realtime damage preserves active match/team/life checks; public attacker damage is disabled',async t=>{
   const f=fixture(t),a=await backend.create._handler(f.ctx,f.args(0)),member=i=>({...f.args(i),matchId:a.matchId});
   for(const i of [1,2])await backend.join._handler(f.ctx,{...f.args(i),code:a.code});
   await backend.start._handler(f.ctx,member(0));
   for(const i of [0,1,2])await update._handler(f.ctx,f.move(i,pvpRoom(a.matchId)));
   const hit={...member(0),victimId:'p1',victimLife:0,attackerLife:0,shot:1};
-  await backend.hit._handler(f.ctx,hit);assert.equal(f.tables.pvpMatches[0].participants[1].hp,100); // countdown
+  await assert.rejects(backend.hit._handler(f.ctx,hit),/realtime server/);
+  assert.equal((await serverHit(f,'p0','p1',1)).applied,false); // countdown
   f.setTime(104000);f.writes.length=0;
-  await backend.hit._handler(f.ctx,{...hit,victimId:'p2'});assert.equal(f.tables.pvpMatches[0].participants[2].hp,100);
-  await backend.hit._handler(f.ctx,hit);assert.equal(f.tables.pvpMatches[0].participants[1].hp,75);
-  f.setTime(104500);await backend.hit._handler(f.ctx,hit);assert.equal(f.tables.pvpMatches[0].participants[1].hp,75);
+  assert.equal((await serverHit(f,'p0','p2',1)).applied,false);
+  assert.equal((await serverHit(f,'p0','p1',1)).applied,true);assert.equal(f.tables.pvpMatches[0].participants[1].hp,75);
+  f.setTime(104500);assert.equal((await serverHit(f,'p0','p1',1)).applied,false);assert.equal(f.tables.pvpMatches[0].participants[1].hp,75);
   assert.ok(f.writes.every(id=>id===a.matchId));
   assert.equal(isPersistentClassRoom(pvpRoom(a.matchId)),false);assert.equal(isPersistentClassRoom(PVP_MAP),false);
   f.setTime(283000);await backend.finish._handler(f.ctx,member(1));assert.equal(f.tables.pvpMatches[0].state,'ended');
-  await backend.hit._handler(f.ctx,{...hit,shot:2});assert.equal(f.tables.pvpMatches[0].participants[1].hp,75);
+  assert.equal((await serverHit(f,'p0','p1',2)).applied,false);assert.equal(f.tables.pvpMatches[0].participants[1].hp,75);
 });
 
 test('host disconnect and expiry end logically before GC; physical GC is bounded to match lifetime',async t=>{
@@ -214,6 +254,52 @@ test('lobby UI creates once, displays two teams, keeps guest Start hidden and tr
   f.callbacks[0]({...f.state,state:'countdown',startedAt:Date.now()+3000,endsAt:Date.now()+183000});await Promise.resolve();
   assert.equal(f.travel.length,1);assert.equal(f.travel[0].pvpMatchId,'match-a');assert.equal(f.subscriptions(),0);
   f.callbacks[0](f.state);await Promise.resolve();assert.equal(f.travel.length,1);setPvpEnabled(false);
+});
+
+test('team-change subscription snapshots move the HOST badge and preserve host Start in the lobby UI',async t=>{
+  const f=fixture(t),u=ui(t);u.presence.identity=f.args(0);
+  u.presence.client.mutation=async(action,args)=>{
+    u.calls.push({fn:action,args});
+    const result=await backend[action]._handler(f.ctx,args);
+    if(action==='chooseTeam')u.callbacks[0](await backend.current._handler(f.ctx,args));
+    return result;
+  };
+  const lobby=new PvpLobbyController(u.scene,{env:{DEV:true},documentRef:u.documentRef});
+  setPvpEnabled(true);t.after(()=>setPvpEnabled(false));
+  await lobby.acquire('create');
+  const snapshot=()=>backend.current._handler(f.ctx,{...f.args(0),matchId:lobby.matchId});
+  u.callbacks[0](await snapshot());await Promise.resolve();
+  const check=team=>{
+    const index=team==='A'?0:1;
+    assert.equal(lobby.matchState.hostPlayerId,'p0');
+    assert.match(lobby.teams.children[index].children[1].textContent,/Name 0.*HOST.*YOU/);
+    const rows=lobby.teams.children.flatMap(section=>section.children);
+    assert.equal(rows.filter(row=>row.textContent.includes('HOST')).length,1);
+    assert.equal(lobby.startButton.hidden,false);
+    assert.equal(lobby.matchState.state,'waiting');
+  };
+  check('A');
+  for(const team of ['B','A','B']){await lobby.chooseTeam(team);check(team);}
+  await backend.join._handler(f.ctx,{...f.args(1),code:lobby.copyInput.value});
+  u.callbacks[0](await snapshot());await Promise.resolve();
+  assert.equal(lobby.startButton.disabled,false);
+  await lobby.start();assert.equal(f.tables.pvpMatches[0].state,'countdown');
+  lobby.transferred=true;lobby.close();assert.equal(u.subscriptions(),0);
+});
+
+test('non-host switching teams remains a guest in the lobby UI',async t=>{
+  const u=ui(t);u.presence.identity={playerId:'b',sessionId:'sb'};
+  const lobby=new PvpLobbyController(u.scene,{documentRef:u.documentRef,resumeMatchId:'match-a'});
+  for(const team of ['B','A','B']){
+    u.callbacks[0]({...u.state,participants:u.state.participants.map(p=>p.playerId==='b'?{...p,team}:p)});
+    await Promise.resolve();
+    const rows=lobby.teams.children.flatMap(section=>section.children);
+    assert.equal(rows.filter(row=>row.textContent.includes('HOST')).length,1);
+    assert.match(rows.find(row=>row.textContent.includes('HOST')).textContent,/Player 0/);
+    assert.doesNotMatch(rows.find(row=>row.textContent.includes('YOU')).textContent,/HOST/);
+    assert.equal(lobby.startButton.hidden,true);
+  }
+  await lobby.start();assert.equal(u.calls.length,0);lobby.close();
 });
 
 test('PvP join works with toggle OFF without enabling it; cancelled pending create releases late result',async t=>{
@@ -285,6 +371,37 @@ async function runningFixture(t,count){
   f.setTime(104000);return f;
 }
 
+test('internal HP mirror is revision-idempotent and preserves death, respawn, life and score rules',async t=>{
+  const f=await runningFixture(t,2);
+  for(let shot=1;shot<=4;shot++){
+    f.setTime(104000+shot*500);
+    assert.equal((await serverHit(f,'p0','p1',shot)).applied,true);
+    assert.equal((await serverHit(f,'p0','p1',shot,{expectedRevision:shot-1})).applied,false);
+  }
+  const killed=f.tables.pvpMatches[0];assert.deepEqual(killed.scores,{A:1,B:0});
+  assert.equal(killed.damageRevision,4);assert.equal(killed.participants[1].deaths,1);
+  f.setTime(108500);const live=await backend.realtimeState._handler(f.ctx,{matchId:killed._id});
+  assert.equal(JSON.stringify(live).includes('sessionId'),false);
+  assert.equal(live.participants[1].hp,100);assert.equal(live.participants[1].life,1);
+  assert.equal(live.participants[1].presenceRoom,pvpRoom(killed._id));
+  assert.equal((await serverHit(f,'p0','p1',5,{targetLife:0})).applied,false);
+  assert.equal((await serverHit(f,'p0','p1',5,{hpBefore:100,hpAfter:75,targetLife:1})).applied,true);
+  assert.equal(killed.participants[1].hp,75);assert.equal(killed.participants[1].life,1);
+});
+
+test('internal HP mirror rejects wrong damage, room, round and replaced/expired session',async t=>{
+  const f=await runningFixture(t,2);
+  assert.equal((await serverHit(f,'p0','p1',1,{hpAfter:0})).applied,false);
+  assert.equal((await serverHit(f,'p0','p1',1,{round:1})).applied,false);
+  f.tables.players[1].room='school';assert.equal((await serverHit(f,'p0','p1',1)).applied,false);
+  f.tables.players[1].room=pvpRoom(f.lobby.matchId);
+  f.tables.players[1].sessionId='replacement';assert.equal((await serverHit(f,'p0','p1',1)).applied,false);
+  f.tables.players[1].sessionId='s1';f.tables.players[1].lastSeen=0;
+  assert.equal((await serverHit(f,'p0','p1',1)).applied,false);
+  assert.equal(f.tables.pvpMatches[0].participants[1].hp,100);
+  assert.equal(backend.applyRealtimeDamage.isInternal,true);assert.equal(backend.realtimeState.isInternal,true);
+});
+
 for(const [count,leaving,expected,reason,a,b] of [
   [4,3,'active',null,2,1],[3,2,'active',null,1,1],
   [3,1,'ended','team_empty',2,0],[2,1,'ended','team_empty',1,0],
@@ -319,16 +436,16 @@ test('expired non-host presence prunes only that participant, while host expiry 
 });
 
 test('death/leave race removes pending respawn and cannot grant a second kill or late damage',async t=>{
-  const f=await runningFixture(t,4),hit={...f.member(0),victimId:'p3',attackerLife:0,victimLife:0};
-  for(let shot=1;shot<=4;shot++){f.setTime(104000+shot*500);await backend.hit._handler(f.ctx,{...hit,shot});}
+  const f=await runningFixture(t,4);
+  for(let shot=1;shot<=4;shot++){f.setTime(104000+shot*500);assert.equal((await serverHit(f,'p0','p3',shot)).applied,true);}
   assert.equal(f.tables.pvpMatches[0].scores.A,1);
   assert.ok(f.tables.pvpMatches[0].participants.find(p=>p.playerId==='p3').respawnAt);
   await backend.leave._handler(f.ctx,f.member(3));
-  await backend.hit._handler(f.ctx,{...hit,shot:5});
+  assert.equal((await serverHit(f,'p0','p3',5)).applied,false);
   assert.equal(f.tables.pvpMatches[0].scores.A,1);
   assert.equal(f.tables.pvpMatches[0].participants.some(p=>p.playerId==='p3'),false);
   await backend.leave._handler(f.ctx,f.member(1));
-  await backend.hit._handler(f.ctx,{...hit,victimId:'p1',shot:6});
+  assert.equal((await serverHit(f,'p0','p1',6)).applied,false);
   assert.equal(f.tables.pvpMatches[0].reason,'team_empty');
   assert.equal(f.tables.pvpMatches[0].scores.A,1);
 });
@@ -433,4 +550,105 @@ test('interruption HUD explains the empty team and displays a visible return cou
   assert.match(hud.result.textContent,/Team B has no remaining players/);assert.doesNotMatch(hud.result.textContent,/WINS/);
   assert.equal(hud.returnTimer.textContent,'Returning in 10...');assert.equal(hud.leave.textContent,'Leave now');
   hud.render(m,m.participants[0],11000,0);assert.equal(hud.returnTimer.textContent,'Returning in 0...');hud.destroy();
+});
+
+for(const endedReason of [null,'score-limit','timer','dev-ended'])
+test(`host departure ${endedReason?'after '+endedReason:'during active match'} reaches survivor, freezes clock and returns once`,async t=>{
+  const f=await runningFixture(t,2);
+  if(endedReason){
+    const ended=endMatch({...f.tables.pvpMatches[0],scores:{A:2,B:5}},104000,endedReason);
+    await f.ctx.db.patch(f.lobby.matchId,ended);
+  }
+  const initial=await backend.current._handler(f.ctx,f.member(1));
+  const u=ui(t);u.presence.identity={playerId:'p1',sessionId:'s1'};
+  let state,cleanups=0;const returnCalls=[],returns=[],cleared=[];
+  t.mock.method(globalThis,'clearInterval',id=>cleared.push(id));
+  const client=new PvpMatchClient(u.presence,f.lobby.matchId,next=>state=next);
+  const hud=new PvpHud({documentRef:u.documentRef,onLeave(){}});
+  const flow=new PvpReturnFlow(async(action,args)=>{
+    returnCalls.push({action,args});return backend.returnToLobby._handler(f.ctx,{...f.member(1),...args});
+  },id=>{returns.push(id);client.close();flow.close();hud.destroy();cleanups++;});
+  t.after(()=>{client.close();flow.close();hud.destroy();});
+  u.callbacks[0](initial);await Promise.resolve();flow.update(state,104000);
+  assert.equal(flow.remaining(104000),null);assert.equal(u.subscriptions(),1);
+  f.setTime(109000);await backend.leave._handler(f.ctx,f.member(0));
+  const departed=await backend.current._handler(f.ctx,f.member(1));
+  assert.equal(departed.state,'ended');assert.equal(departed.reason,'host_left');assert.equal(departed.endedAt,109000);
+  assert.deepEqual(departed.scores,initial.scores);assert.equal(departed.winner,initial.winner);
+  u.callbacks[0](departed);await Promise.resolve();flow.update(state,109000);
+  assert.equal(flow.remaining(109000),10);assert.equal(u.subscriptions(),1,'match listener survives the result');
+  hud.render(state,state.participants[0],109000,flow.remaining(109000));
+  assert.match(hud.result.textContent,/host left/);assert.equal(hud.returnTimer.textContent,'Returning in 10...');
+  const frozenTimer=hud.timer.textContent;
+  // A cached active or ordinary-result callback cannot undo host departure.
+  u.callbacks[0](initial);await Promise.resolve();assert.equal(state.reason,'host_left');
+  f.setTime(114000);await backend.leave._handler(f.ctx,f.member(0));
+  u.callbacks[0](await backend.current._handler(f.ctx,f.member(1)));await Promise.resolve();
+  flow.update(state,114000);hud.render(state,state.participants[0],114000,flow.remaining(114000));
+  assert.equal(flow.remaining(114000),5);assert.equal(hud.timer.textContent,frozenTimer);
+  assert.equal(returnCalls.length,0);
+  f.setTime(119000);flow.update(state,119000);flow.update(state,119000);await flow.pending;
+  assert.deepEqual(returns,[null]);assert.equal(returnCalls.length,1);assert.equal(cleanups,1);
+  assert.equal(u.subscriptions(),0);assert.equal(cleared.length,1);
+  client.close();flow.update(state,125000);u.callbacks[0](initial);await Promise.resolve();
+  assert.equal(returnCalls.length,1);assert.equal(cleanups,1);assert.equal(cleared.length,1);
+});
+
+for(const reason of ['score-limit','timer','dev-ended'])
+test(`last opponent leaves after ${reason}: winning host gets one full return countdown`,async t=>{
+  const f=await runningFixture(t,2);
+  await f.ctx.db.patch(f.lobby.matchId,endMatch({...f.tables.pvpMatches[0],scores:{A:5,B:0}},104000,reason));
+  const initial=await backend.current._handler(f.ctx,f.member(0)),u=ui(t);
+  u.presence.identity=f.args(0);let state,cleanups=0;const returns=[],calls=[];
+  const client=new PvpMatchClient(u.presence,f.lobby.matchId,next=>state=next);
+  const hud=new PvpHud({documentRef:u.documentRef,onLeave(){}});
+  const flow=new PvpReturnFlow(async(action,args)=>{
+    calls.push(action);return backend.returnToLobby._handler(f.ctx,{...f.member(0),...args});
+  },id=>{returns.push(id);client.close();flow.close();cleanups++;});
+  t.after(()=>{client.close();flow.close();hud.destroy();});
+  u.callbacks[0](initial);await Promise.resolve();flow.update(state,104000);
+  assert.equal(flow.remaining(104000),null,'ordinary victory alone keeps the existing manual-exit flow');
+  f.setTime(109000);await backend.leave._handler(f.ctx,f.member(1));
+  const departed=await backend.current._handler(f.ctx,f.member(0));
+  assert.equal(departed.reason,'team_empty');assert.equal(departed.endedAt,109000);
+  assert.equal(departed.hostPlayerId,'p0');assert.equal(departed.participants.length,1);
+  assert.deepEqual(departed.scores,initial.scores);assert.equal(departed.winner,initial.winner);
+  u.callbacks[0](departed);await Promise.resolve();flow.update(state,109000);
+  hud.render(state,state.participants[0],109000,flow.remaining(109000));
+  assert.equal(hud.returnTimer.textContent,'Returning in 10...');
+  const frozenClock=hud.timer.textContent;
+  u.callbacks[0](initial);await Promise.resolve();
+  assert.equal(state.reason,'team_empty');assert.equal(state.participants.length,1);
+  f.setTime(114000);await backend.leave._handler(f.ctx,f.member(1));
+  u.callbacks[0](await backend.current._handler(f.ctx,f.member(0)));await Promise.resolve();
+  flow.update(state,114000);hud.render(state,state.participants[0],114000,flow.remaining(114000));
+  assert.equal(flow.remaining(114000),5);assert.equal(hud.timer.textContent,frozenClock);
+  assert.equal(calls.length,0);assert.equal(u.subscriptions(),1);
+  f.setTime(119000);flow.update(state,119000);flow.update(state,119000);await flow.pending;
+  assert.deepEqual(returns,[f.lobby.matchId]);assert.equal(cleanups,1);assert.deepEqual(calls,['returnToLobby']);
+  assert.equal(u.subscriptions(),0);assert.equal(f.tables.pvpMatches[0].state,'waiting');
+  assert.equal(f.tables.pvpMatches[0].round,1);assert.equal(f.tables.pvpMatches[0].hostPlayerId,'p0');
+  flow.update(state,125000);u.callbacks[0](initial);await Promise.resolve();assert.equal(cleanups,1);
+});
+
+test('non-host departure after victory does not interrupt when both teams still have members',async t=>{
+  const f=await runningFixture(t,4);
+  await f.ctx.db.patch(f.lobby.matchId,endMatch({...f.tables.pvpMatches[0],scores:{A:5,B:0}},104000,'score-limit'));
+  f.setTime(109000);await backend.leave._handler(f.ctx,f.member(3));
+  const state=await backend.current._handler(f.ctx,f.member(0));
+  assert.equal(state.reason,'score-limit');assert.equal(state.endedAt,104000);assert.equal(state.winner,'A');
+});
+
+test('host presence expiry after a completed match starts one stable departure countdown without polling',async t=>{
+  const f=await runningFixture(t,2);
+  await f.ctx.db.patch(f.lobby.matchId,endMatch(f.tables.pvpMatches[0],104000,'score-limit'));
+  const initial=await backend.current._handler(f.ctx,f.member(1)),u=ui(t);let state;
+  const client=new PvpMatchClient(u.presence,f.lobby.matchId,s=>state=s);
+  t.after(()=>client.close());
+  u.callbacks[0](initial);await Promise.resolve();
+  f.setTime(164000);f.tables.players[0].lastSeen=104000;
+  client.tick();assert.equal(state.reason,'host_left');assert.equal(state.endedAt,164000);
+  f.setTime(165000);client.tick();assert.equal(state.endedAt,164000);
+  u.callbacks[0](await backend.current._handler(f.ctx,f.member(1)));await Promise.resolve();
+  assert.equal(state.reason,'host_left');assert.equal(state.endedAt,164000);assert.equal(u.calls.length,0);
 });

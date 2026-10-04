@@ -5,6 +5,10 @@ import { resolvedMovementState } from '../multiplayer/movementState.js';
 import { PVP_MAP,PVP_RULES,pvpRoom } from '../pvp/config.js';
 import { teamSpawn } from '../pvp/spawns.js';
 import { PvpMatchClient } from '../pvp/PvpMatchClient.js';
+import { PvpMovementClient } from '../pvp/PvpMovementClient.js';
+import { PvpProjectileClient } from '../pvp/PvpProjectileClient.js';
+import { PvpDamageClient } from '../pvp/PvpDamageClient.js';
+import { pvpRealtimeUrl,pvpMovementDebugEnabled } from '../pvp/movementConfig.js';
 import { PvpCombatController } from '../pvp/PvpCombatController.js';
 import { PvpHud } from '../pvp/PvpHud.js';
 import { PvpReturnFlow } from '../pvp/PvpReturnFlow.js';
@@ -32,16 +36,33 @@ export class PvpArenaScene extends MapScene {
     this.placeAtSpawn(me);this.lastLife=me.life;
     this.hint.hidden=true;this.input.keyboard.enabled=true;this.input.enabled=true;
     this.input.keyboard.resetKeys();this.player.setCombatHudVisible(true);
-    this.presence.enter(this.presenceRoom,()=>({x:this.player.x,y:this.player.y,direction:this.player.facing,
-      equippedSkin:this.presence.identity.equippedSkin??'classic',activeCharacterItem:null}),rows=>this.remotes.receive(rows));
+    this.movementState={moving:false,velocityX:0,velocityY:0};
+    this.movementClient=new PvpMovementClient({matchId:this.matchId,match:this.matchState,
+      playerId:this.presence.identity.playerId,url:pvpRealtimeUrl(import.meta.env),remotes:this.remotes,
+      config:{debug:pvpMovementDebugEnabled(import.meta.env)},
+      getSpawn:(p,state)=>teamSpawn(this.source,p.team,state.participants.filter(member=>member.team===p.team).findIndex(member=>member.playerId===p.playerId)),
+      snapshot:()=>{
+        const self=this.matchState?.participants.find(p=>p.playerId===this.presence.identity.playerId);
+        if(!self)return null;
+        const moving=this.matchState.state==='active'&&self.hp>0&&!this.networkFailed&&this.movementState.moving;
+        return {x:this.player.x,y:this.player.y,direction:this.player.facing,life:self.life,moving,
+          vx:moving?this.movementState.velocityX:0,vy:moving?this.movementState.velocityY:0};
+      }});
+    // Keep the arena membership and existing heartbeat/lease flow in Convex.
+    // A fixed entry snapshot avoids sending the movement stream to both servers.
+    const entryPresence={x:this.player.x,y:this.player.y,direction:this.player.facing,
+      equippedSkin:this.presence.identity.equippedSkin??'classic',activeCharacterItem:null};
+    this.presence.enter(this.presenceRoom,()=>entryPresence,rows=>this.movementClient?.receiveRoster(rows));
     this.pvpHud=new PvpHud({onLeave:()=>this.leavePvp(),onEnd:()=>this.forceEnd(),dev:import.meta.env.DEV});
-    this.combat=new PvpCombatController(this,hit=>{
-      const client=this.matchClient,round=this.matchState?.round??0;
-      void client.request('hit',hit).catch(error=>{if(this.matchClient===client&&(this.matchState?.round??0)===round)this.showPvpError(error);});
-    });
+    this.combat=new PvpCombatController(this,hit=>this.damageClient?.attempt(hit),
+      {onSpawn:event=>this.projectileClient?.sendSpawn(event),onRemove:event=>this.projectileClient?.sendDestroy(event)});
+    this.projectileClient=new PvpProjectileClient(this.movementClient,this.combat);
+    this.damageClient=new PvpDamageClient(this.movementClient,{matchId:this.matchId,sessionId:this.presence.identity.sessionId,
+      onState:state=>{if(!this.networkFailed)this.matchState=state;},onError:error=>this.showPvpError(error)});
     this.matchClient=new PvpMatchClient(this.presence,this.matchId,state=>{
       if(!state){this.showPvpError(new Error('PvP lobby unavailable'));return;}
-      if(!this.networkFailed)this.matchState=state;
+      if(!this.networkFailed){this.matchState=this.damageClient?.project(state)??state;
+        this.movementClient?.setMatch(this.matchState);this.projectileClient?.setMatch(this.matchState);}
     },error=>this.showPvpError(error));
     const client=this.matchClient;
     this.returnFlow=new PvpReturnFlow((action,args)=>client.request(action,args),matchId=>this.leavePvp(matchId));
@@ -57,6 +78,9 @@ export class PvpArenaScene extends MapScene {
     if(!this.networkFailed&&this.matchState)this.matchState={...endMatch(this.matchState,Date.now(),'lobby_unavailable'),
       reason:'lobby_unavailable',endedAt:Date.now()};
     this.networkFailed=true;
+    this.damageClient?.close();
+    this.projectileClient?.close();
+    this.movementClient?.close();
     if(String(error).includes('CHARACTER_SESSION_LOST'))this.presence.fail(error);
   }
   forceEnd(){
@@ -75,8 +99,9 @@ export class PvpArenaScene extends MapScene {
     this.player.body.enable=me.hp>0;
     if(me.life!==this.lastLife){this.lastLife=me.life;this.placeAtSpawn(me);}
     this.player.setAlpha(me.hp>0?1:.25).setCombatHealth(me.hp,PVP_RULES.maxHp);
-    this.presence.observeMovement(resolvedMovementState(this.player.body));
+    this.movementState=resolvedMovementState(this.player.body);
     if(playable)this.player.update();else{this.player.setVelocity(0,0);this.player.setFacing(this.player.facing,false);}
+    this.movementClient?.update();
     this.remotes.update();
     for(const p of state.participants){
       const remote=this.remotes.players.get(p.playerId);if(!remote)continue;
@@ -93,10 +118,16 @@ export class PvpArenaScene extends MapScene {
   }
   leavePvp(lobbyId=null){
     if(this.leaving)return;this.leaving=true;this.returnFlow?.close();
+    this.damageClient?.close();
+    this.projectileClient?.close();
+    this.movementClient?.close();
     this.preservePvpMembership=Boolean(lobbyId);this.player.setVelocity(0,0);
     this.travelTo({...this.returnDestination,...(lobbyId?{pvpLobbyId:lobbyId}:{})});
   }
   stopPvp(){
+    this.damageClient?.close();this.damageClient=null;
+    this.projectileClient?.close();this.projectileClient=null;
+    this.movementClient?.close();this.movementClient=null;
     this.returnFlow?.close();this.returnFlow=null;
     this.combat?.destroy();this.combat=null;this.pvpHud?.destroy();this.pvpHud=null;
     if(this.matchClient){const client=this.matchClient;this.matchClient=null;client.close();if(!this.preservePvpMembership)void client.request('leave').catch(()=>{});}

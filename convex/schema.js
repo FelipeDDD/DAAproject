@@ -3,7 +3,7 @@ import { v } from 'convex/values';
 
 export default defineSchema({
   pvpMatches:defineTable({
-    round:v.optional(v.number()),
+    round:v.optional(v.number()),damageRevision:v.optional(v.number()),
     code:v.string(),mode:v.literal('tdm'),state:v.union(v.literal('waiting'),v.literal('countdown'),v.literal('active'),v.literal('ended')),
     hostPlayerId:v.string(),participants:v.array(v.object({
       playerId:v.string(),sessionId:v.string(),displayName:v.string(),characterBaseId:v.string(),team:v.union(v.literal('A'),v.literal('B')),

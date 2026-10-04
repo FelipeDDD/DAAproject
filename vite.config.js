@@ -1,4 +1,6 @@
 import { defineConfig } from 'vite';
+import { PVP_MOVEMENT_CONFIG } from './src/pvp/movementConfig.js';
+import { REALTIME_CONFIG } from './src/realtime/config.js';
 
 export default defineConfig({
   build: {
@@ -11,15 +13,19 @@ export default defineConfig({
     allowedHosts: process.env.VITE_QUICK_TUNNEL === 'true' ? ['.trycloudflare.com'] : [],
     // In Quick Tunnel mode, share the Vite hostname for both the UI and Convex.
     // Convex uses /api for HTTP calls and its realtime WebSocket.
-    proxy: process.env.VITE_QUICK_TUNNEL === 'true'
-      ? {
+    proxy: {
+      [PVP_MOVEMENT_CONFIG.proxyPath]: {
+        target: `http://${REALTIME_CONFIG.host}:${REALTIME_CONFIG.port}`,
+        ws: true,
+      },
+      ...(process.env.VITE_QUICK_TUNNEL === 'true' ? {
           '/api': {
             target: 'http://127.0.0.1:3210',
             changeOrigin: true,
             ws: true,
           },
-        }
-      : undefined,
+        } : {}),
+    },
     watch: {
       // Tiled locks this file while the editor is open. Watching it can crash
       // Vite on Windows with EBUSY, even though it is not part of the game.

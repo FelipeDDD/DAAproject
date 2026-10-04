@@ -1,4 +1,4 @@
-import { advanceMatch,endMatch,reconcileParticipants } from './matchState.js';
+import { advanceMatch,endMatch,reconcileParticipants,interruptedMatch } from './matchState.js';
 
 // Temporary transport adapter. UI/combat consume snapshots and discrete commands.
 // Clock projection is local; the interval performs no Convex requests.
@@ -9,9 +9,18 @@ export class PvpMatchClient {
     this.unsubscribe=presence.client.onUpdate(presence.api.pvpMatches.current,this.args(),state=>{
       if(this.closed)return;
       if(state&&this.snapshot?.state==='ended'&&state.state!=='ended'&&(state.round??0)===(this.snapshot.round??0))return;
-      // Keep the first observed interruption time stable until it is persisted.
-      if(state?.state==='ended'&&this.snapshot?.state==='ended'&&(state.round??0)===(this.snapshot.round??0))
-        state={...state,endedAt:Math.min(state.endedAt,this.snapshot.endedAt)};
+      if(state?.state==='ended'&&this.snapshot?.state==='ended'&&(state.round??0)===(this.snapshot.round??0)){
+        // A delayed result must not erase a host departure in the same round.
+        if(['host_left','host-left'].includes(this.snapshot.reason))state={...state,reason:this.snapshot.reason,
+          participants:state.participants.filter(p=>p.playerId!==state.hostPlayerId),endedAt:this.snapshot.endedAt};
+        else if(this.snapshot.reason==='team_empty'&&!interruptedMatch(state))state={...state,reason:'team_empty',
+          participants:state.participants.filter(p=>this.snapshot.participants.some(member=>member.playerId===p.playerId)),
+          endedAt:this.snapshot.endedAt};
+        // Stabilize equivalent end clocks, but don't backdate a NEW interruption
+        // to an earlier ordinary victory: survivors need their full exit countdown.
+        if(interruptedMatch(state)===interruptedMatch(this.snapshot))
+          state={...state,endedAt:Math.min(state.endedAt,this.snapshot.endedAt)};
+      }
       this.snapshot=state;this.received=true;
       queueMicrotask(()=>this.tick());
     },error=>{if(!this.closed)onError(error);});

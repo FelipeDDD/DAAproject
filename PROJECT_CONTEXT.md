@@ -93,13 +93,67 @@ Do not reread it for routine isolated edits when the current session already has
   `matchState.js` owns waiting/countdown/active/ended, friendly-fire rejection,
   kill/death attribution, life generations, respawns and winner/draw. Deadlines
   are checked logically even before any write; local UI clock ticks make no calls.
-- `PvpMatchClient` is the replaceable transport boundary. This prototype uses the
-  existing Convex transport for lobby snapshots and discrete hit/end events;
-  hits are serialized and validated for session, team, life and cooldown. Projectile
-  geometry is local and attacker-reported, **not anti-cheat or final network combat**.
-  Other players' projectiles are not synchronized yet. Existing room Presence and
-  interpolation are reused unchanged; a match query also reads member presence,
-  so this DEV prototype adds reactive work during movement.
+- Host departure recovery (2026-10-04): shared `reconcileParticipants` detects
+  missing hosts even after an ordinary ended round, preserves scores/winner and
+  changes the exit reason to `host_left`. A new departure gets its own 10-second
+  return countdown; an existing interruption countdown remains stable. Convex
+  match subscription stays alive until arena exit, independently of realtime
+  movement cleanup. Delayed same-round results cannot erase host departure or
+  backdate it to a victory; the HUD freezes match time at `endedAt`. Existing
+  `PvpReturnFlow` returns/cleans up once, with no new polling or timers.
+- Empty-team recovery also applies after score/time victory: when the last
+  opponent leaves, the surviving host gets a fresh 10-second return countdown
+  and can reuse the same lobby. Scores/winner are preserved until lobby reset;
+  delayed victory snapshots cannot restore departed members or erase recovery.
+- `PvpMatchClient` retains Convex lobby snapshots and discrete lifecycle commands.
+  Client collision only requests a realtime hit; the relay validates it and owns HP
+  (see authority section below). This is still **not complete anti-cheat**.
+  Arena membership/metadata
+  still use room Presence; movement now follows the separate adapter below.
+- PvP movement (2026-10-04): `PvpMovementClient` uses the existing realtime factory
+  and adapter, with a dedicated `pvp-movement` message (playerId, x/y, direction,
+  vx/vy, moving, sampleSeq, life; envelope seq/sentAt and server-authored senderId).
+  Room `pvp-<Convex matchId>-<round>` isolates matches and reused documents. Input
+  stays local/immediate; remote sprites reuse `RemoteSnapshotBuffer` at 100 ms.
+  Self, stale sequences, unknown peers/participants, other rooms and old-life
+  movement are ignored. Reconnection resets peer bindings/buffers. Exit/end/sleep/
+  shutdown disconnect and remove listeners. `src/pvp/movementConfig.js` owns the
+  movement Hz (20 initially, tested at 25/30/40/50); frame scheduling skips overdue
+  slots. Convex receives only the entry position and existing heartbeats/leases,
+  while retaining lobby, teams, metadata and death/respawn/score/lifecycle.
+  Default `/pvp-realtime` uses the Vite WS proxy to 8787, including WSS through
+  the existing single Quick Tunnel with `VITE_QUICK_TUNNEL=true`; optional
+  `VITE_REALTIME_URL` selects a separate endpoint. See `src/pvp/README.md` for
+  two-client/tunnel steps and local-only relay authentication.
+- PvP projectile visuals (2026-10-04): `PvpProjectileClient` shares the movement
+  adapter's existing socket/room. Reliable `pvp-projectile-spawn` publishes UUID,
+  playerId, life, shotSeq, x/y, vx/vy and ttlMs; `pvp-projectile-destroy` removes
+  the same visual on shooter impact/expiry. Local shots render before sending;
+  remote shots simulate the trajectory/collisions locally and never submit hits.
+  Peer/participant/life/round filters, bounded tombstones and sequence checks
+  reject echoes/replays. Relay clock-offset estimates shorten delayed visuals'
+  lifetime; no browser clocks are compared. End/leave/disconnect remove visuals
+  and listeners. Projectile replication adds no sockets/timers or Convex calls.
+  Damage/HP authority now uses the relay below. Restart the relay after updating
+  its protocol, reload both browsers; existing tunnel/proxy configuration applies.
+- PvP hit authority (2026-10-04): start **local Convex before realtime:server**.
+  `scripts/pvp-convex-bridge.mjs` reuses the database-transfer local/loopback/instance
+  guard; local admin credential stays in Node, never the frontend. Cloud/prod are
+  refused. `pvp-authorize` validates playerId/sessionId/round; one internal reactive
+  match subscription per room follows membership, teams, presence and life.
+  `PvpDamageAuthority` validates projectile ownership/TTL/replay/life, active enemy
+  target in the same arena, fixed speed/cooldown, origin and first-body/cover
+  intersection against current realtime positions and authored Collision.
+  Client `pvp-hit-attempt` carries only projectileId/targetId/targetLife; fixed
+  server damage is 25. Immediate HP comes from versioned `pvp-combat-state`;
+  `PvpDamageClient` rejects stale HP/life and overlays older Convex snapshots.
+  Public `pvpMatches.hit` is disabled. Each accepted hit is mirrored by one
+  serialized, internal `applyRealtimeDamage` mutation with `damageRevision`;
+  existing Convex death/respawn/score/winner and host recovery remain intact.
+  Persistence failure stops combat, without client fallback. No new client timer,
+  socket or polling. One relay per local deployment; no production setup/deploy.
+  No lag compensation: latest-position checks allow 12 px body/80 ms trajectory
+  tolerance; high latency may reject visual hits. Movement remains client-reported.
 - `public/assets/maps/pvp-arena-test.tmj` uses existing campus tiles, a compact
   mirrored 26x18 layout and authored Collision rectangles. `Spawns/teamA_spawn1`,
   `teamA_spawn2`, `teamB_spawn1`, `teamB_spawn2` own spawn positions; `teamSpawn`
@@ -127,14 +181,38 @@ Do not reread it for routine isolated edits when the current session already has
 - Local **direct** projectiles now collide with teammates and are consumed without
   a hit request, damage or score. This adapter has no AoE attacks; boss area attacks
   are untouched. Future PvP AoE needs a separate target filter, not body blocking.
-  Remote projectile visuals remain intentionally unsynchronized. No Vivaldi
+  Remote projectile visuals are replicated through the adapter above. No Vivaldi
   Alt+Tab investigation or modal keyboard changes were made for this PvP polish.
-- Deferred: realtime transport/authority, synchronized projectile visuals,
-  lag compensation/prediction, host migration, anti-cheat, CTF and rematch voting.
+- Deferred: movement authority, lag compensation/prediction, host migration,
+  full anti-cheat, CTF and rematch voting.
   No deployment or existing data reset is needed to keep developing; apply the new
   schema/functions only to the intended local/dev backend when running the test.
 
 ## Local development commands
+
+### Realtime Lab (isolated development experiment)
+
+- Peer RTT (2026-10-03): `peer-ping` / `peer-pong` are directed to same-room peers through the relay, with server-authored sender identity. The existing one-second probe timer samples each peer; immediate responses bypass simulated gameplay delays/loss. Only sender `performance.now()` measures elapsed time. Correlation rejects wrong/duplicate/out-of-order/expired pongs (10 s timeout); disconnect/reconnect clears pending state. Panel shows separate **Server RTT** and per-peer **Peer RTT** (current, rolling 30-sample average, mean successive variation). Copy Benchmark adds per-peer pooled `peerRtt` distributions plus per-run data; samples before benchmark start are excluded, missing timings are null. Existing `aggregate.rtt` remains Server RTT for JSON compatibility. Restart the realtime server and reload both tabs after this protocol change; tunnels need no restart if ports remain unchanged.
+
+- Internet tests: editable **Socket URL** accepts `ws://` / `wss://`, defaults to `ws://127.0.0.1:8787` (or `VITE_REALTIME_URL`), and restores the last valid URL from browser-local `realtime-lab.socket-url`. Connect/Reconnect uses the entered URL; **Active Socket** shows the actual connection rather than unsaved edits. Storage failure does not prevent manual connection. Use `cloudflared tunnel --url http://127.0.0.1:8787`; paste the generated HTTPS URL directly into Socket URL on both clients; HTTP/HTTPS are converted to WS/WSS automatically and the final URL is saved. Existing WS/WSS URLs remain unchanged. For a friend without the repo, also tunnel Vite on 5173 and share that HTTPS URL plus `/tools/realtime-lab/`. In Vite's PowerShell terminal set `$env:__VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS='.trycloudflare.com'` before `npm run dev -- --host 127.0.0.1 --port 5173 --strictPort`. This allows only tunnel hosts without enabling the existing Convex proxy. Both clients must use the same socket URL/room. Stop tunnels with Ctrl+C after testing; URLs change on a new Quick Tunnel. No `.env.local` changes or deployment needed.
+
+- Benchmark visibility distinguishes `senderBackgrounded` and `receiverBackgrounded` per run and in JSON counters. `foregroundAggregate` filters **only sender visibility**; receiver-hidden runs retain valid foreground sender timings. Generic background flags remain compatibility aliases, not aggregation criteria. Only `document.visibilityState`/`visibilitychange` affects classification; scrolling does not. Receive-to-render requires an actual first canvas draw: hidden receivers or expired/capped visuals can legitimately have count 0 with null timings. Older exports are not rewritten; use their local sender visibility for manual browser comparisons.
+
+- Repeatable benchmark is lab-only (`src/realtime/lab/Benchmark.js`): 10/50/100 runs; Standard 10 ×100 ms, Stress 20 Hz 20 ×50 ms, Stress 50 Hz 50 ×20 ms. Each run waits for expected peer summaries (8.5 s timeout with missing reports marked **unknown**), then pauses 500 ms. Cancel/disconnect stops the chain; cancellation preserves the connection and partial report. Copy Benchmark stays local and includes per-run samples, metadata, pooled percentiles and foreground-only aggregate. Interval-jitter percentiles mean absolute deviation from the requested interval; per-run standard deviation remains available separately. RTT is the rolling probe average at run end. Benchmark visuals use the same projectile path but are capped at 24 with a 500 ms visual lifetime; normal manual shots are unchanged. Receiver summaries carry at most 50 values per timing series. Restart `npm run realtime:server` after protocol edits (not hot-reloaded); reload both lab tabs. Keep receiver settings fixed and avoid simultaneous benchmark senders for comparisons.
+
+- Browser timer APIs must be called through global wrappers (`globalThis.setTimeout` / `globalThis.clearTimeout`), not stored as native methods on Lab/transport instances. Node timers tolerate a foreign receiver and can hide browser-only invocation failures. The UI regression test models strict receiver checks; connection status stays beside Connect and initialization explicitly shows **Ready**.
+
+- Auto Fire / Pulse Generator is lab-only: 50/100/200/500 ms presets (custom 50–2000), 10/50/continuous shots and **Burst Test** (10 ×100 ms). Manual and auto shots share the same spawn/simulation/relay path; only auto bypasses the manual 150 ms cooldown. One deadline `setTimeout` uses `performance.now()` and an anchored intended schedule. A stall skips obsolete slots, emits at most one shot per callback, then resumes the original time grid; finite runs still emit their requested count with contiguous shot sequences. Skipped slots and worst wake lateness are reported separately from emitted-shot schedule error. OFF stops generation immediately; previously fired messages may still arrive through simulated/network delay. Disconnect/close cancels timers and queued simulation work; reconnect resets the experiment.
+- Pulse summaries distinguish sender browser scheduling, receiver application-arrival intervals (including lab impairment), and receiver arrival-to-first-draw delay. Jitter is population standard deviation; no cross-browser `performance.now()` subtraction is used. Missing sequence counts are provisional until completion, count missing tail events, and never imply TCP packet loss. Control start/end/report messages bypass simulation; receiver summaries settle for both sides' maximum configured simulated delay plus 500 ms (cap 6.5 s). Exceptionally late messages can miss that cutoff. Detail/dedup storage is bounded to 512 shots; very old reordered messages in continuous runs are ignored. Hidden-tab changes produce a warning for each affected sender/receiver test. **Copy Results** exports local JSON with user agent, transport/settings/RTT, summaries and available per-shot scheduled/fired/sent/received/rendered timestamps; receiver summaries are relayed only to room peers, with no external analytics or persistence.
+
+- Run `npm run realtime:server` and `npm run dev` in separate terminals. Open DEV Tools → **Open Realtime Lab**, or `http://localhost:5173/tools/realtime-lab/` directly; use two tabs with the same room ID. The standalone lab needs no Convex. The game/DevTools path still needs its normal local backend/login.
+- `scripts/realtime-server.mjs` is a test WebSocket relay, default `127.0.0.1:8787`; override `REALTIME_HOST` / `REALTIME_PORT` in its shell. Lab rooms remain unauthenticated; PvP combat uses local Convex authentication/authority described above. Stop it with Ctrl+C. Lab supports `wss://` tunnels; HTTPS pages require WSS. No tunnel was created here.
+- `src/realtime/config.js` centralizes defaults: 20 Hz, 100 ms interpolation, 15-second ping/pong sweep (dead peer removed on a missed next sweep), 8 KiB messages, 120 messages/client/second, 16 clients/room, 64 total, 64 KiB outbound backpressure. JSON/type/payload/room/sequence checks and server-generated IDs are enforced; only authenticated PvP has hit validation, not authoritative movement physics.
+- `RealtimeTransport`, `WebSocketTransport`, `realtimeMessages`, `realtimeStats` and `createTransport` are independent of Phaser/UI/Convex. Reliable/unreliable APIs currently both use ordered WebSocket; a future WebTransport/WebRTC adapter implements the same interface/envelope and is selected in the factory. A compatible server endpoint is also required; no additional protocol is implemented yet.
+- Lab-only canvas controls: WASD/arrows, Space or click to shoot; 10/20/30/60 Hz; interpolation ON/OFF and configurable buffer; per-direction simulated delay/jitter/application-message loss; optional 10 Hz numbered-state experiment. Simulation affects only lab gameplay messages (including reliable projectile events), not membership or RTT probes, and never TCP. Local input remains immediate.
+- Remote snapshots interpolate linearly on local arrival timestamps, reject stale sample sequences, hold on underrun, and use bounded buffers. Projectiles use one spawn event with ID/origin/velocity/server-clock-estimated start/TTL, then local simulation; destroy events/TTL remove them and IDs are deduplicated. Clock offset uses welcome/probe timing and is approximate, not synchronized physics authority.
+- Stats show connection/identity/room, latest and 30-sample-average RTT, successive-RTT jitter estimate, rolling one-second message/JSON-byte rates, configured simulation loss and stale numbered updates. They do not measure packet loss or TCP head-of-line blocking. Reconnection backs off 0.5–10 seconds, rejoins once, and clears transient entities/queued simulation callbacks.
+- Vite serves this HTML only in development; it is not a production build entry and has a DEV guard. No PvP/co-op combat, current Presence, persistent state or Convex function was changed. Live two-client transport tests pass; browser visual playtesting is still required.
 
 Run in separate terminals from the repository root:
 
@@ -485,3 +563,8 @@ This is snapshot replacement, **not merge/sync**. Pull the latest snapshot befor
 - No reset or database migration needed. Manual quick assignment, drag/drop,
   sorting/filtering and an equipment UI redesign are intentionally deferred.
   Extend the quick projection or backpack renderer without changing ownership.
+
+## Wall tiles inspection sandbox (2026-10-03)
+
+- tools/wall-tiles-lab/ is an isolated, dev-only Phaser map viewer without gameplay/Convex. It loads public/assets/maps/classroom-wall-lab.tmj, initially an exact copy of classroom.tmj. Edit only the copy and NEW tileset resources: existing TSX/images are shared with the live map.
+- The three assets-drafts/tilesets references are opaque 1448x1086 concept sheets, not 32x32 atlases. North-south top caps and orthogonal corners need registration/reconstruction before replacement. No new walls are applied yet. See tools/wall-tiles-lab/README.md for diagnosis and proposed minimal kit.
