@@ -11,7 +11,7 @@ function fixture(t,extra={}){
   let now=10000,nextId=0;const jobs=new Map(),commits=[],states=[],logs=[];
   const state={matchId:'match-a',room:'pvp-arena-test:match-a',round:0,damageRevision:0,state:'active',hostPlayerId:'alice',
     expiresAt:999999,startedAt:0,endsAt:180000,endedAt:null,winner:null,reason:null,scores:{A:0,B:0},scoreLimit:5,respawnMs:2500,
-    participants:['alice','bob'].map((playerId,i)=>({...newFighter({playerId,team:i?'B':'A'}),hp:25,presenceRoom:'pvp-arena-test:match-a'})),...extra};
+    participants:['alice','bob'].map((playerId,i)=>({...newFighter({playerId,team:i?'B':'A'}),hp:10,presenceRoom:'pvp-arena-test:match-a'})),...extra};
   const authority=new PvpDamageAuthority(state,{now:()=>now,authorityId:'relay-a',getSpawn:p=>({x:p.playerId==='alice'?100:200,y:222}),
     schedule(fn,delay){const id=++nextId;jobs.set(id,{fn,at:now+delay});return id;},cancel:id=>jobs.delete(id),
     commit:async args=>{commits.push(structuredClone(args));return {applied:true};},onState:s=>states.push(s),log:l=>logs.push(l)});

@@ -39,6 +39,7 @@ export default defineSchema({
     profileId:v.id('profiles'),failedAttempts:v.number(),updatedAt:v.number(),
     attemptedChoices:v.optional(v.array(v.union(v.literal('left'),v.literal('right')))),
     compromisedAt:v.optional(v.number()),remoteApprovedAt:v.optional(v.number()),
+    portClueRevealedAt:v.optional(v.number()),
     physicalKeyVerifiedAt:v.optional(v.number()),recoveryCompletedAt:v.optional(v.number()),
   }).index('by_profile',['profileId']),
   quizCleanupWorker: defineTable({

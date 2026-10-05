@@ -10,12 +10,12 @@ export const PVP_MAP_LAYOUT=Object.freeze({
   // Temporary separation for teammates sharing one base marker. Numbered markers override this.
   spawnOffsets:Object.freeze([{x:0,y:0},{x:0,y:32}]),
   // Used only until PayloadRoute/payload-route is authored. Blue first, red last.
-  temporaryPayloadRoute:Object.freeze({fromTeam:'A',toTeam:'B',initialFraction:0.5}),
+  temporaryPayloadRoute:Object.freeze({fromTeam:'A',toTeam:'B'}),
   teleports:Object.freeze({layer:'Teleport',top:'top',bottom:'bottom',cooldownMs:650}),
 });
 export const PVP_RULES=Object.freeze({teamSize:2,scoreLimit:5,timeLimitMs:180_000,
-  countdownMs:3000,returnMs:10_000,respawnMs:2500,maxHp:100,damage:25,attackCooldownMs:400,
-  projectileSpeed:420,projectileLifetimeMs:1200,lobbyLifetimeMs:30*60_000});
+  countdownMs:3000,returnMs:10_000,respawnMs:3000,maxHp:100,damage:15,attackCooldownMs:800,
+  projectileSpeed:420,projectileLifetimeMs:800,lobbyLifetimeMs:30*60_000});
 export const PVP_TEAMS=Object.freeze(['A','B']);
 export const pvpRoom=id=>`${PVP_MAP}:${id}`;
 export const pvpMatchId=room=>room?.startsWith(`${PVP_MAP}:`)?room.slice(PVP_MAP.length+1):null;

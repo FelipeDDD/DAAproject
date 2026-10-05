@@ -11,7 +11,7 @@ import { ArenaRetryOverlay } from '../boss/ArenaRetryOverlay.js';
 import { BOSS_RETRY_DELAY_MS } from '../boss/config.js';
 import { resolveSpawn } from '../maps/tiledObjects.js';
 import { ArenaCrosshair } from '../boss/ArenaCrosshair.js';
-import { allPlayerAttackVisuals } from '../boss/PlayerAttackVisuals.js';
+import { preloadPlayerAttackVisuals } from '../boss/PlayerAttackVisuals.js';
 import { getPresence } from '../multiplayer/client.js';
 import { arenaPresenceRoom } from '../boss/arenaRooms.js';
 import { ArenaEncounterController } from '../boss/ArenaEncounterController.js';
@@ -25,9 +25,7 @@ export class ArenaScene extends MapScene {
   preload(){
     super.preload();
     this.load.image(BOSS_AREA_TEXTURE,`${import.meta.env.BASE_URL}assets/boss/attack-area.png`);
-    for(const visual of allPlayerAttackVisuals()){
-      this.load.image(visual.texture,`${import.meta.env.BASE_URL}${visual.asset}`);
-    }
+    preloadPlayerAttackVisuals(this,import.meta.env.BASE_URL);
     this.load.spritesheet(BOSS_SINGLE_PROJECTILE_TEXTURE,
       `${import.meta.env.BASE_URL}assets/boss/director-paper-projectile.png`,{
         frameWidth:BOSS_SINGLE_PROJECTILE_FRAME_SIZE,

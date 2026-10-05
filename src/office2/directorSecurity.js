@@ -15,5 +15,6 @@ export function directorSecurityState(hasKey,progress=null){
     recoveryComplete,
     failedAttempts,
     attemptedChoices,
+    portClueRevealed:Boolean(progress?.portClueRevealedAt||compromised),
   };
 }

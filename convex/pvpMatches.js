@@ -97,7 +97,7 @@ export const join=mutation({args:{...identity,code:v.string()},handler:async(ctx
     characterBaseId:p.characterBaseId??p.characterId,team:assigned}));
   await ctx.db.patch(m._id,{participants});return {matchId:m._id,code:m.code,round:m.round??0};
 }});
-export const current=query({args:member,handler:async(ctx,args)=>{const {m,deadlines}=await read(ctx,args,true);return publicMatch(m,deadlines);}});
+export const current=query({args:member,handler:async(ctx,args)=>{const {m,deadlines}=await read(ctx,args,true),state=publicMatch(m,deadlines);return state?{...state,serverNow:Date.now()}:null;}});
 export const chooseTeam=mutation({args:{...command,team},handler:async(ctx,args)=>{
   const {m}=await read(ctx,args);requireRound(m,args);if(m.state!=='waiting')fail('Teams are locked after starting.');
   if(m.participants.filter(p=>p.team===args.team&&p.playerId!==args.playerId).length>=PVP_RULES.teamSize)fail('That team is full (2 players).');

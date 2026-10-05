@@ -13,14 +13,23 @@ import { pvpRealtimeUrl,pvpMovementDebugEnabled } from '../pvp/movementConfig.js
 import { PvpCombatController } from '../pvp/PvpCombatController.js';
 import { PvpHud } from '../pvp/PvpHud.js';
 import { PvpReturnFlow } from '../pvp/PvpReturnFlow.js';
+import { preparePlayerAttackVisuals,preloadPlayerAttackVisuals } from '../boss/PlayerAttackVisuals.js';
 import { createModeView } from '../pvp/modeView.js';
 import { endMatch } from '../pvp/matchState.js';
 import { cameraZoomForMap } from '../game/settings.js';
+import { PlayerHealthBar } from '../ui/PlayerHealthBar.js';
 import '../pvp/pvp.css';
 
 export class PvpArenaScene extends PvpMapScene {
-  constructor(){super(PVP_MAP);}
+  constructor(){super(PVP_MAP);this.remoteNameLabelFontSize='12px';this.remoteNameLabelResolution=2;}
+  preload(){
+    super.preload();
+    preloadPlayerAttackVisuals(this,import.meta.env.BASE_URL);
+  }
   create(destination){
+    // MapScene.create() calls this.enter(), which opens the realtime listeners.
+    // Register attack animations first so the very first remote shot can use them.
+    preparePlayerAttackVisuals(this);
     super.create(destination);
     this.events.on('sleep',this.stopPvp,this);
     this.events.once('shutdown',()=>{this.events.off('sleep',this.stopPvp,this);this.stopPvp();});
@@ -31,6 +40,7 @@ export class PvpArenaScene extends PvpMapScene {
     // PvP scenes can be reused after sleep; always re-read the map-only setting.
     this.cameras.main.setZoom(cameraZoomForMap(PVP_MAP));
     this.stopPvp();this.leaving=false;this.networkFailed=false;this.ending=false;this.preservePvpMembership=false;
+    this.pvpRemoteHealthBars=new Map();
     this.presence=getPresence();this.returnDestination=destination.returnDestination??{targetMap:'school'};
     this.matchId=destination.pvpMatchId;this.presenceRoom=pvpRoom(this.matchId);
     this.matchState=destination.pvpSnapshot;
@@ -44,7 +54,7 @@ export class PvpArenaScene extends PvpMapScene {
     this.player.setCharacter(characterById(me.characterBaseId),'old');
     this.placeAtSpawn(me);this.lastLife=me.life;
     this.hint.hidden=true;this.input.keyboard.enabled=true;this.input.enabled=true;
-    this.input.keyboard.resetKeys();this.player.setCombatHudVisible(true);
+    this.input.keyboard.resetKeys();this.player.setCombatHudVisible(true);this.updatePvpHudHealth(me.hp);
     this.movementState={moving:false,velocityX:0,velocityY:0};
     this.movementClient=new PvpMovementClient({matchId:this.matchId,match:this.matchState,
       playerId:this.presence.identity.playerId,url:pvpRealtimeUrl(import.meta.env),remotes:this.remotes,
@@ -107,7 +117,8 @@ export class PvpArenaScene extends PvpMapScene {
   }
   showPvpError(error){
     if(!this.pvpHud)return;
-    this.pvpHud.status.textContent=typeof error?.data==='string'?error.data:'Connection failed. Leave and rejoin the test.';
+    this.pvpHud.status.textContent='Connection failed. Leave and rejoin the arena.';
+    this.pvpHud.errorDetail=typeof error?.data==='string'?error.data:String(error);
     if(!this.networkFailed&&this.matchState){
       const {retry,...state}=this.matchState;
       this.matchState={...endMatch(state,Date.now(),'lobby_unavailable'),reason:'lobby_unavailable',endedAt:Date.now()};
@@ -126,6 +137,7 @@ export class PvpArenaScene extends PvpMapScene {
     if(!this.matchState||this.leaving)return;
     const now=Date.now(),state=this.matchState,me=state.participants.find(p=>p.playerId===this.presence.identity.playerId);
     if(!me){this.leavePvp();return;}
+    this.updatePvpHudHealth(me.hp);
     if(!state.retry)this.returnFlow?.update(state,now);
     if(this.leaving)return;
     const playable=state.state==='active'&&me.hp>0&&!this.networkFailed;
@@ -137,16 +149,36 @@ export class PvpArenaScene extends PvpMapScene {
     if(playable)this.updatePvpTeleports(now);
     this.movementClient?.update();
     this.remotes.update();
+    const renderedRemoteIds=new Set();
     for(const p of state.participants){
       const remote=this.remotes.players.get(p.playerId);if(!remote)continue;
+      renderedRemoteIds.add(p.playerId);
       remote.sprite.setAlpha(p.hp>0?1:.2);
       remote.label.setColor(p.team==='A'?'#27698b':'#a33f30');
-      remote.label.setText(`${p.displayName} · ${p.team} · ${p.hp} HP`);
+      remote.label.setText(p.displayName??p.playerId);
+      this.updateRemoteHealthBar(p,remote);
     }
+    for(const [playerId,bar] of this.pvpRemoteHealthBars)if(!renderedRemoteIds.has(playerId)){bar.destroy();this.pvpRemoteHealthBars.delete(playerId);}
     this.combat?.update(this.networkFailed?{...state,state:'ended'}:state,me,delta,now);
     this.modeView?.render(state);
     this.pvpHud?.render(state,me,now,this.returnFlow?.remaining(now)??null);
 
+  }
+  updateRemoteHealthBar(participant,remote){
+    let entry=this.pvpRemoteHealthBars.get(participant.playerId);
+    if(!entry){
+      const anchor={scene:this,x:remote.sprite.x,y:remote.sprite.y};
+      entry={anchor,bar:new PlayerHealthBar(anchor)};entry.bar.setVisible(true);
+      this.pvpRemoteHealthBars.set(participant.playerId,entry);
+    }
+    const hp=Number.isFinite(participant.hp)?participant.hp:PVP_RULES.maxHp;
+    entry.anchor.x=remote.sprite.x;entry.anchor.y=remote.sprite.y;
+    entry.bar.setHealth(hp,PVP_RULES.maxHp).updatePosition();
+  }
+  updatePvpHudHealth(hp){
+    if(this.pvpHudHealth===hp)return;
+    this.pvpHudHealth=hp;
+    this.gameHud?.setHealth(hp,PVP_RULES.maxHp);
   }
   leavePvp(lobbyId=null){
     if(this.leaving)return;this.leaving=true;this.returnFlow?.close();
@@ -157,6 +189,8 @@ export class PvpArenaScene extends PvpMapScene {
     this.travelTo({...this.returnDestination,...(lobbyId?{pvpLobbyId:lobbyId}:{})});
   }
   stopPvp(){
+    for(const entry of this.pvpRemoteHealthBars?.values?.()??[])entry.bar.destroy();
+    this.pvpRemoteHealthBars?.clear();this.pvpRemoteHealthBars=null;
     this.teleports?.reset();this.teleports=null;
     this.modeView?.destroy();this.modeView=null;
     this.damageClient?.close();this.damageClient=null;
@@ -166,6 +200,7 @@ export class PvpArenaScene extends PvpMapScene {
     this.combat?.destroy();this.combat=null;this.pvpHud?.destroy();this.pvpHud=null;
     if(this.matchClient){const client=this.matchClient;this.matchClient=null;client.close();if(!this.preservePvpMembership)void client.request('leave',{round:this.matchState?.round??client.snapshot?.round??0}).catch(()=>{});}
     this.matchId=null;this.matchState=null;this.remotes?.receive([]);
+    if(this.pvpHudHealth!==undefined){this.gameHud?.resetHealth();this.pvpHudHealth=undefined;}
     this.player?.setCombatHudVisible(false);if(this.player?.body)this.player.body.enable=true;
   }
 }

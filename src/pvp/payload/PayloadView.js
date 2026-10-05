@@ -1,6 +1,8 @@
 import { PAYLOAD_RULES } from './config.js';
 import { routeFromMap,pointAt } from './route.js';
-import { PAYLOAD_VIEW_CONFIG,payloadTheme } from './visualConfig.js';
+import { PAYLOAD_VIEW_CONFIG,payloadTheme,payloadCartFrame } from './visualConfig.js';
+import { PayloadDialogue } from './PayloadDialogue.js';
+import { PayloadCollider } from './PayloadCollider.js';
 
 export const PAYLOAD_COLORS=payloadTheme().colors;
 // Presentation consumes snapshots only. No local progress, control or win logic.
@@ -18,15 +20,19 @@ export class PayloadView {
     this.ring=scene.add.graphics().setDepth(-.7);
     const center=pointAt(this.route,this.route.length*this.route.initialFraction);
     const useSprite=Boolean(this.theme.sprite&&scene.textures?.exists(this.theme.sprite));
-    this.cart=useSprite?scene.add.image(center.x,center.y,this.theme.sprite).setOrigin(.5,1).setScale(this.theme.scale)
+    this.cart=useSprite?scene.add.image(center.x,center.y,this.theme.sprite).setOrigin(.5,this.theme.originY??1).setScale(this.theme.scale)
       :scene.add.graphics();
     this.usesSprite=useSprite;
-    this.label=scene.add.text(0,0,'PAYLOAD',{fontSize:'10px',color:'#f0e7cb',backgroundColor:'#17202bcc'}).setOrigin(.5,1);
+    if(this.config.collision?.enabled&&scene.physics?.add&&scene.player?.body)
+      this.obstacle=new PayloadCollider(scene,this.config.collision);
+    this.dialogue=useSprite&&this.theme.speech&&globalThis.document&&scene.game?.canvas?new PayloadDialogue(scene,{now}):null;
     this.reset();
   }
   reset(){
+    this.dialogue?.reset();
     this.key=null;this.visualKey=null;const center=pointAt(this.route,this.route.length*this.route.initialFraction);
     this.from={...center};this.target={...center};this.position={...center};this.receivedAt=this.now()-PAYLOAD_RULES.tickMs;
+    this.obstacle?.update({x:center.x+this.theme.offsetX,y:center.y+this.theme.offsetY});
   }
   render(match){
     const state=match.payload??{...this.target,radius:PAYLOAD_RULES.radius,control:null,contested:false,moving:false};
@@ -53,8 +59,9 @@ export class PayloadView {
     const visualX=this.position.x+this.theme.offsetX,visualY=this.position.y+this.theme.offsetY;
     const depth=this.theme.depth==='y'?visualY+this.theme.depthOffset:this.theme.depth;
     this.cart.setVisible(visible).setPosition(visualX,visualY).setDepth(depth);
-    this.label.setVisible(visible).setPosition(visualX,visualY+this.theme.labelOffsetY).setDepth(depth+1)
-      .setText(state.contested?'CONTESTED':state.control==='A'?'BLUE → RED':state.control==='B'?'RED → BLUE':'PAYLOAD');
+    this.obstacle?.update({x:visualX,y:visualY},visible);
+    if(this.usesSprite&&this.theme.animation)this.cart.setFrame(payloadCartFrame(at,state.moving));
+    this.dialogue?.update({x:visualX,y:visualY},visible,match.state==='active');
   }
-  destroy(){for(const object of [this.path,this.ring,this.cart,this.label])object?.destroy();}
+  destroy(){this.obstacle?.destroy();this.dialogue?.destroy();for(const object of [this.path,this.ring,this.cart])object?.destroy();}
 }

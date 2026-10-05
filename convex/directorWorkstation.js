@@ -49,7 +49,10 @@ export const submitChoice=mutation({
     const failedAttempts=Math.min(DIRECTOR_SECURITY_FAILURES_REQUIRED,current.failedAttempts+1);
     const now=Date.now();
     const update={failedAttempts,attemptedChoices,updatedAt:now};
-    if(failedAttempts===DIRECTOR_SECURITY_FAILURES_REQUIRED)update.compromisedAt=now;
+    if(failedAttempts===DIRECTOR_SECURITY_FAILURES_REQUIRED){
+      update.compromisedAt=now;
+      update.portClueRevealedAt=progress?.portClueRevealedAt??now;
+    }
     if(progress)await ctx.db.patch(progress._id,update);
     else await ctx.db.insert('directorWorkstations',{profileId:profile._id,...update});
     return directorSecurityState(true,{...progress,...update});

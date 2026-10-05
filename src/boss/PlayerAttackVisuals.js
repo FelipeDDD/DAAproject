@@ -1,5 +1,8 @@
 import { baseCharacterId } from '../characters.js';
 
+export const PLAYER_ATTACK_INITIAL_FRAME='attack-0';
+export const PLAYER_ATTACK_DEPTH=10_001;
+
 // Source sheets have six 362px columns with generous transparent padding.
 // Phaser crops the same central strip from each column; the original PNGs stay untouched.
 export const PLAYER_ATTACK_VISUALS=Object.freeze({
@@ -53,6 +56,28 @@ export function allPlayerAttackVisuals(){
   return [...Object.values(PLAYER_ATTACK_VISUALS),...Object.values(PLAYER_ATTACK_VARIANTS).flat()];
 }
 
+export function preloadPlayerAttackVisuals(scene,baseUrl){
+  for(const visual of allPlayerAttackVisuals())
+    if(!scene.textures.exists(visual.texture))scene.load.image(visual.texture,`${baseUrl}${visual.asset}`);
+}
+
+export function preparePlayerAttackVisuals(scene){
+  for(const visual of allPlayerAttackVisuals()){
+    if(!scene.textures.exists(visual.texture))continue;
+    const texture=scene.textures.get(visual.texture);
+    for(let index=0;index<visual.frames;index++){
+      const frame=index===0?PLAYER_ATTACK_INITIAL_FRAME:`attack-${index}`;
+      if(!texture.has(frame))texture.add(frame,0,index*visual.frameWidth,visual.frameTop,
+        visual.frameWidth,visual.frameHeight);
+    }
+    if(!scene.anims.exists(visual.animation))scene.anims.create({
+      key:visual.animation,
+      frames:Array.from({length:visual.frames},(_,index)=>({key:visual.texture,frame:`attack-${index}`})),
+      frameRate:visual.frameRate,repeat:visual.repeat,
+    });
+  }
+}
+
 export function playerAttackVisual(characterId,random=Math.random){
   characterId=baseCharacterId(characterId);
   const variants=PLAYER_ATTACK_VARIANTS[characterId];
@@ -60,8 +85,13 @@ export function playerAttackVisual(characterId,random=Math.random){
   return PLAYER_ATTACK_VISUALS[characterId]??null;
 }
 
+export function playerAttackVisualOffset(visual,facing,direction,style='old'){
+  const offsets=visual.offsets[style]??visual.offsets.old;
+  const [x,y]=offsets[facing]??offsets.down;
+  return {x:x+direction.x*visual.forward,y:y+direction.y*visual.forward};
+}
+
 export function playerAttackSpawn(player,visual,direction){
-  const offsets=visual.offsets[player.visual?.style]??visual.offsets.old;
-  const [x,y]=offsets[player.facing]??offsets.down;
-  return {x:player.x+x+direction.x*visual.forward,y:player.y+y+direction.y*visual.forward};
+  const offset=playerAttackVisualOffset(visual,player.facing,direction,player.visual?.style);
+  return {x:player.x+offset.x,y:player.y+offset.y};
 }

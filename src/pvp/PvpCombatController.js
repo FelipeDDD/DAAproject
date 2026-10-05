@@ -2,12 +2,18 @@ import { PVP_RULES } from './config.js';
 import { aimedVelocity } from '../boss/BossCombatState.js';
 import { collisionAreas } from '../maps/collision.js';
 import { objectsIn } from '../maps/tiledObjects.js';
-import { segmentRect } from './projectiles.js';
+import { pvpPlayerHitboxAt,segmentRect } from './projectiles.js';
+import {
+  createPvpProjectileVisual,positionPvpProjectileVisual,pvpAttackVisual,
+  PVP_PROJECTILE_VISUAL,
+} from './projectileVisual.js';
 
 // Local projectile geometry is a disposable test adapter, not combat authority.
 export class PvpCombatController {
-  constructor(scene,onHit,{onSpawn=()=>{},onRemove=()=>{},canFire=()=>true}={}){
-    Object.assign(this,{scene,onHit,onSpawn,onRemove,canFire});this.shots=[];this.remoteShots=new Map();this.nextShotAt=0;this.serial=0;
+  constructor(scene,onHit,{onSpawn=()=>{},onRemove=()=>{},canFire=()=>true,visual=PVP_PROJECTILE_VISUAL}={}){
+    const projectileVisual={...PVP_PROJECTILE_VISUAL,...visual,
+      colors:{...PVP_PROJECTILE_VISUAL.colors,...visual?.colors}};
+    Object.assign(this,{scene,onHit,onSpawn,onRemove,canFire,visual:projectileVisual});this.shots=[];this.remoteShots=new Map();this.nextShotAt=0;this.serial=0;
     this.walls=collisionAreas(objectsIn(scene.source,'Collision'));
     this.pointer=pointer=>{
       if(pointer.button!==0)return;
@@ -19,16 +25,20 @@ export class PvpCombatController {
   fire(target,now){
     const self=this.self;
     if(this.state?.state!=='active'||!self||self.hp<=0||now<this.nextShotAt||!this.canFire())return false;
-    const origin={x:this.scene.player.x,y:this.scene.player.y-22};
-    if(Math.hypot(target.x-origin.x,target.y-origin.y)<1)return false;
+    const aimOrigin={x:this.scene.player.x,y:this.scene.player.y-22};
+    if(Math.hypot(target.x-aimOrigin.x,target.y-aimOrigin.y)<1)return false;
     this.nextShotAt=now+PVP_RULES.attackCooldownMs;
     this.serial=Math.max(this.serial,self.lastShot)+1;
-    const dot=this.scene.add.circle(origin.x,origin.y,4,self.team==='A'?0x80d2fa:0xf4a290).setDepth(10000);
-    const velocity=aimedVelocity(origin,target,PVP_RULES.projectileSpeed);
+    const velocity=aimedVelocity(aimOrigin,target,PVP_RULES.projectileSpeed);
+    const attackVisual=pvpAttackVisual(self.characterBaseId);
+    // Keep the animated sprite centered on the projectile's hit-test path.
+    const origin=aimOrigin;
     const event={projectileId:globalThis.crypto?.randomUUID?.()??`shot-${now.toString(36)}-${Math.random().toString(36).slice(2)}`,
       playerId:self.playerId,life:self.life,shotSeq:this.serial,...origin,vx:velocity.x,vy:velocity.y,ttlMs:PVP_RULES.projectileLifetimeMs};
+    const visualOffset={x:0,y:0};
+    const dot=createPvpProjectileVisual(this.scene,{...event,team:self.team},attackVisual,this.visual,visualOffset);
     this.shots.push({...origin,velocity,dot,event,
-      shot:this.serial,attackerLife:self.life,expiresAt:now+PVP_RULES.projectileLifetimeMs});
+      attackVisual,visualOffset,shot:this.serial,attackerLife:self.life,expiresAt:now+PVP_RULES.projectileLifetimeMs});
     // Render first. Transport failure must never cancel the local shot/hit flow.
     try{this.onSpawn(event);}catch(error){console.debug('[PvP projectile] send failed',String(error));}
     return true;
@@ -48,7 +58,7 @@ export class PvpCombatController {
         // shot locally without submitting a damage event. This is not an AoE rule.
         if(p.playerId===self.playerId||p.hp<=0)continue;
         const remote=this.scene.remotes.players.get(p.playerId);if(!remote)continue;
-        const t=segmentRect(shot,target,{x:remote.sprite.x-13,y:remote.sprite.y-46,width:26,height:44});
+        const t=segmentRect(shot,target,pvpPlayerHitboxAt(remote.sprite.x,remote.sprite.y));
         if(t!==null&&t<first){first=t;victim=p;}
       }
       if(first!==Infinity||now>=shot.expiresAt){
@@ -57,14 +67,28 @@ export class PvpCombatController {
         if(victim&&victim.team!==self.team&&now<shot.expiresAt)this.onHit({projectileId:shot.event.projectileId,
           victimId:victim.playerId,victimLife:victim.life,attackerLife:shot.attackerLife,shot:shot.shot});
         this.removeLocal(shot);
-      }else{shot.x=target.x;shot.y=target.y;shot.dot.setPosition(shot.x,shot.y);}
+      }else{shot.x=target.x;shot.y=target.y;positionPvpProjectileVisual(shot.dot,shot.x,shot.y,this.visual,shot.visualOffset);
+        if(shot.attackVisual?.spin)shot.dot.rotation+=shot.attackVisual.spin*delta/1000;}
     }
     this.updateRemote(delta,now);
   }
-  receiveProjectile(p,participant,ageMs=0){
-    if(this.remoteShots.has(p.projectileId)||this.remoteShots.size>=64)return false;
-    const dot=this.scene.add.circle(p.x,p.y,4,participant.team==='A'?0x80d2fa:0xf4a290).setDepth(10000);
-    this.remoteShots.set(p.projectileId,{...p,dot,pendingAgeMs:ageMs,expiresAt:Date.now()+p.ttlMs-ageMs});return true;
+  receiveProjectile(p,participant,ageMs=0,onVisualResult=()=>{}){
+    if(this.remoteShots.has(p.projectileId))return false;
+    // Bound retained visuals without dropping a newly received projectile.
+    if(this.remoteShots.size>=64)this.removeRemote(this.remoteShots.keys().next().value,undefined,'capacity');
+    let attackVisual=null,visualOffset={x:0,y:0};
+    try{
+      attackVisual=pvpAttackVisual(participant.characterBaseId);
+      // Projectile position is the shared visual and authoritative center.
+    }catch(error){
+      // Bad/missing character metadata affects only the art. It must never
+      // suppress the remote projectile's neutral visual.
+      console.info('[PVP projectile remote] character visual lookup failed',{playerId:p.playerId,
+        characterBaseId:participant.characterBaseId,error:String(error)});
+      attackVisual=null;visualOffset={x:0,y:0};
+    }
+    const dot=createPvpProjectileVisual(this.scene,{...p,team:participant.team},attackVisual,this.visual,visualOffset,onVisualResult);
+    this.remoteShots.set(p.projectileId,{...p,dot,attackVisual,visualOffset,pendingAgeMs:ageMs,expiresAt:Date.now()+p.ttlMs-ageMs});return true;
   }
   updateRemote(delta,now){
     // Mirrors visual collision only; received shots never invoke onHit.
@@ -75,14 +99,18 @@ export class PvpCombatController {
       for(const p of this.state.participants){
         if(collided||p.playerId===shot.playerId||p.hp<=0)continue;
         const sprite=p.playerId===this.self.playerId?this.scene.player:this.scene.remotes.players.get(p.playerId)?.sprite;
-        if(sprite&&segmentRect(shot,target,{x:sprite.x-13,y:sprite.y-46,width:26,height:44})!==null)collided=true;
+        if(sprite&&segmentRect(shot,target,pvpPlayerHitboxAt(sprite.x,sprite.y))!==null)collided=true;
       }
-      if(collided||now>=shot.expiresAt)this.removeRemote(id);
-      else{shot.x=target.x;shot.y=target.y;shot.dot.setPosition(shot.x,shot.y);}
+      if(collided||now>=shot.expiresAt)this.removeRemote(id,undefined,collided?'collision':'expired');
+      else{shot.x=target.x;shot.y=target.y;positionPvpProjectileVisual(shot.dot,shot.x,shot.y,this.visual,shot.visualOffset);
+        if(shot.attackVisual?.spin)shot.dot.rotation+=shot.attackVisual.spin*delta/1000;}
     }
   }
-  removeRemote(id,playerId){
+  removeRemote(id,playerId,reason='realtime'){
     const shot=this.remoteShots.get(id);if(!shot||(playerId!==undefined&&shot.playerId!==playerId))return;
+    if(['collision','expired','capacity'].includes(reason))console.info('[PVP projectile remote] visual removed',{
+      projectileId:id,playerId:shot.playerId,reason,
+    });
     shot.dot.destroy();this.remoteShots.delete(id);
   }
   removeLocal(shot){

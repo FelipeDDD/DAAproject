@@ -3,8 +3,8 @@ import { endMatch,reconcileParticipants,interruptedMatch } from './matchState.js
 // Temporary transport adapter. UI/combat consume snapshots and discrete commands.
 // The local timer expires membership only. It never advances combat/respawn/results.
 export class PvpMatchClient {
-  constructor(presence,matchId,onState,onError=()=>{}){
-    Object.assign(this,{presence,matchId,onState,onError});this.closed=false;this.queue=Promise.resolve();
+  constructor(presence,matchId,onState,onError=()=>{}, {monotonicNow=()=>globalThis.performance?.now?.()??Date.now()}={}){
+    Object.assign(this,{presence,matchId,onState,onError,monotonicNow});this.closed=false;this.queue=Promise.resolve();
     this.identity={playerId:presence.identity.playerId,sessionId:presence.identity.sessionId};
     this.unsubscribe=presence.client.onUpdate(presence.api.pvpMatches.current,this.args(),state=>{
       if(this.closed)return;
@@ -22,16 +22,19 @@ export class PvpMatchClient {
         if(interruptedMatch(state)===interruptedMatch(this.snapshot))
           state={...state,endedAt:Math.min(state.endedAt,this.snapshot.endedAt)};
       }
+      if(Number.isFinite(state?.serverNow))this.syncServerClock(state.serverNow);
       this.snapshot=state;this.received=true;
       queueMicrotask(()=>this.tick());
     },error=>{if(!this.closed)onError(error);});
     this.timer=setInterval(()=>this.tick(),100);
   }
   args(){return {...this.identity,matchId:this.matchId};}
+  syncServerClock(serverNow){this.serverClock={serverNow,monotonicNow:this.monotonicNow()};}
+  now(){return this.serverClock?this.serverClock.serverNow+(this.monotonicNow()-this.serverClock.monotonicNow):Date.now();}
   tick(){
     if(this.closed||!this.received)return;
     if(!this.snapshot){this.onState(null);return;}
-    const now=Date.now(),state=this.snapshot;
+    const now=this.now(),state=this.snapshot;
     const next=now>=state.expiresAt?endMatch(state,now,'expired'):reconcileParticipants(state,
       state.participants.filter(p=>p.presenceExpiresAt===undefined||now<p.presenceExpiresAt),now);
     if(next.state==='ended')this.snapshot=next;

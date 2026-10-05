@@ -41,7 +41,9 @@ import {
   BOSS_REWARDS,hasPendingDirectorReward,shouldClearDirectorLoot,
 } from './BossRewards.js';
 import { ArenaHudOverlay } from './ArenaHudOverlay.js';
-import { allPlayerAttackVisuals,playerAttackSpawn,playerAttackVisual } from './PlayerAttackVisuals.js';
+import {
+  PLAYER_ATTACK_DEPTH,PLAYER_ATTACK_INITIAL_FRAME,preparePlayerAttackVisuals,playerAttackSpawn,playerAttackVisual,
+} from './PlayerAttackVisuals.js';
 import { hasProfileSession } from '../ProfileSessionClient.js';
 
 const BOSS_PROJECTILE_TEXTURE='arena-boss-projectile';
@@ -94,20 +96,7 @@ function createTextures(scene){
       frameRate:BOSS_SINGLE_PROJECTILE_FRAME_RATE,repeat:-1,
     });
   }
-  for(const visual of allPlayerAttackVisuals()){
-    if(!scene.textures.exists(visual.texture))continue;
-    const texture=scene.textures.get(visual.texture);
-    for(let index=0;index<visual.frames;index++){
-      const frame=`attack-${index}`;
-      if(!texture.has(frame))texture.add(frame,0,index*visual.frameWidth,visual.frameTop,
-        visual.frameWidth,visual.frameHeight);
-    }
-    if(!scene.anims.exists(visual.animation))scene.anims.create({
-      key:visual.animation,
-      frames:Array.from({length:visual.frames},(_,index)=>({key:visual.texture,frame:`attack-${index}`})),
-      frameRate:visual.frameRate,repeat:visual.repeat,
-    });
-  }
+  preparePlayerAttackVisuals(scene);
   createBossVisualAnimations(scene);
 }
 
@@ -530,7 +519,7 @@ export class BossController {
       visual?.texture??PLAYER_PROJECTILE_TEXTURE,'player');
     if(!projectile)return false;
     if(visual){
-      projectile.setFrame('attack-0').setScale(visual.scale);
+      projectile.setFrame(PLAYER_ATTACK_INITIAL_FRAME).setScale(visual.scale);
       const bodyRadius=5/visual.scale;
       projectile.body.setCircle(bodyRadius,(visual.frameWidth-bodyRadius*2)/2,
         (visual.frameHeight-bodyRadius*2)/2);
@@ -739,7 +728,7 @@ export class BossController {
     if(!projectile)return null;
     projectile.anims?.stop();
     projectile.enableBody(true,x,y,true,true).setTexture(texture).setScale(1).setRotation(0)
-      .clearTint().setDepth(kind==='boss'?10000:10001);
+      .clearTint().setDepth(kind==='boss'?10000:PLAYER_ATTACK_DEPTH);
     projectile.setData('projectileKind',kind);
     this.hitRegistry.prepare(projectile);
     return projectile;

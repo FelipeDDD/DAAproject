@@ -2,9 +2,15 @@ import { characterBaseIdFor, characterById } from '../characters.js';
 import { applyCharacterVisual,updateCharacterVisual,visualStyleForActiveItem } from '../characterVisuals.js';
 import { RemoteSnapshotBuffer } from './remoteMovement.js';
 
+// Rasterize nameplates above their displayed size so camera zoom does not
+// magnify a low-resolution text canvas. Logical font size/scale stay unchanged.
+export const REMOTE_NAME_LABEL_STYLE=Object.freeze({
+  fontSize:'10px',color:'#152c42',backgroundColor:'#ffffffcc',
+});
+
 export class RemotePlayers {
-  constructor(scene, { clock = () => performance.now(), ...bufferOptions } = {}) {
-    this.scene = scene; this.players = new Map();
+  constructor(scene, { clock = () => performance.now(),labelResolution=1,labelFontSize=REMOTE_NAME_LABEL_STYLE.fontSize, ...bufferOptions } = {}) {
+    this.scene = scene; this.players = new Map();this.labelResolution=labelResolution;this.labelFontSize=labelFontSize;
     this.clock = clock; this.bufferOptions = bufferOptions;
   }
 
@@ -21,7 +27,8 @@ export class RemotePlayers {
         const sprite = this.scene.add.sprite(row.x,row.y,'student').setOrigin(0.5,1);
         const style=visualStyleForActiveItem(row.activeCharacterItem,row.equippedSkin);
         const visual=applyCharacterVisual(sprite,character,style);
-        const label = this.scene.add.text(row.x, row.y, row.displayName??row.name, { fontSize: '10px', color: '#152c42', backgroundColor: '#ffffffcc' }).setOrigin(0.5, 1);
+        const label = this.scene.add.text(row.x, row.y, row.displayName??row.name,
+          {...REMOTE_NAME_LABEL_STYLE,fontSize:this.labelFontSize,resolution:this.labelResolution}).setOrigin(0.5, 1);
         remote = { sprite,label,visual,character,characterBaseId:characterBaseIdFor(row),style,buffer:new RemoteSnapshotBuffer(this.bufferOptions) };
         this.players.set(row.playerId, remote);
         if(!movement){sprite.setDepth(row.y);label.setPosition(row.x,row.y-visual.labelOffset).setDepth(row.y+1);}

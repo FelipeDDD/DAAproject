@@ -1,6 +1,7 @@
 import { MapScene } from './MapScene.js';
 import { PVP_MAP_FILE,PVP_MAP_DEFINITION } from '../pvp/config.js';
 import { readPvpTeleportAreas,PvpTeleportController,pvpTeleportArrival } from '../pvp/teleports.js';
+import { PAYLOAD_CART_ASSET } from '../pvp/payload/visualConfig.js';
 
 // Both live combat and the DEV walking inspection use the same physical map,
 // cache policy and triggers. A slept arena never resurrects an old map snapshot.
@@ -18,6 +19,8 @@ export class PvpMapScene extends MapScene{
       if(key.startsWith(`${this.mapKey}-tileset-`)||key.startsWith(`${this.mapKey}-image-layer-`))this.textures.remove(key);
     this.mapLoadVersion=import.meta.env.DEV?Date.now():PVP_MAP_DEFINITION.revision;
     super.preload();
+    const asset=PAYLOAD_CART_ASSET;
+    if(!this.textures.exists(asset.key))this.load.spritesheet(asset.key,`${import.meta.env.BASE_URL}${asset.path}`,{frameWidth:asset.frameWidth,frameHeight:asset.frameHeight});
   }
   initializePvpTeleports(){
     this.teleports?.reset();

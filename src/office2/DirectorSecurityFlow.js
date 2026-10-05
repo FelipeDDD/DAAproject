@@ -95,8 +95,8 @@ export class DirectorSecurityFlow {
     }
     if(state.stage==='compromised'){
       this.host.resetPanel('SECURITY ALERT','director-compromised');
-      if(rejected)this.host.panel.append(element('p','director-security-denied',
-        'ACCESS DENIED — Also incorrect. Please stop trying to understand the security system.'));
+      if(rejected||state.portClueRevealed)this.host.panel.append(element('p','director-security-denied',
+        'ACCESS ON PORT 8443 DENIED — Also incorrect. Please stop trying to understand the security system.'));
       this.host.panel.append(element('strong','director-security-alert','LOCAL ACCESS COMPROMISED'),
         element('p','','This workstation can no longer be accessed locally.'),
         element('p','','Emergency Remote Recovery is required.'),

@@ -36,9 +36,9 @@ test('initial countdown state and post-respawn state have equivalent alive HP/ow
     assert.ok(authority.spawn(peerId,{projectileId:`first-${playerId}`,playerId,life:0,shotSeq:1,x,y:200,vx,vy:0,ttlMs:1200}));
     now+=200;assert.equal(authority.attempt(peerId,{projectileId:`first-${playerId}`,targetId,targetLife:0}).accepted,true);
   }
-  assert.ok(authority.state.participants.every(p=>p.hp===75));
+  assert.ok(authority.state.participants.every(p=>p.hp===90));
   // Exercise the real authoritative death/respawn flow, not a manual state reset.
-  for(let shotSeq=2;shotSeq<=4;shotSeq++){
+  for(let shotSeq=2;shotSeq<=10;shotSeq++){
     now+=400;
     for(const [playerId,peerId,x,vx] of [['alice','peer-a',100,420],['bob','peer-b',200,-420]])
       assert.ok(authority.spawn(peerId,{projectileId:`${playerId}-${shotSeq}`,playerId,life:0,shotSeq,x,y:200,vx,vy:0,ttlMs:1200}));
@@ -85,7 +85,7 @@ test('two sockets: discarded pre-auth positions are republished before the first
       const remotes={bufferOptions:{},players:new Map([[remoteId,remote]]),receive(){},
         receiveMovement(_id,p){Object.assign(remote.sprite,{x:p.x,y:p.y});}};
       const scene={player:{x:i?1000:900,y:722},remotes,source:{layers:[]},input:{on(){},off(){}},
-        add:{circle(){return {setDepth(){return this;},setPosition(){},destroy(){}};}}};
+        add:{circle(){return {setDepth(){return this;},setScale(){return this;},setRotation(){return this;},setPosition(){return this;},destroy(){}};}}};
       peer.transport=new WebSocketTransport({url:`ws://127.0.0.1:${server.wss.address().port}`,roomId:'pvp-match-a-0',WebSocketImpl:WebSocket});
       peer.movement=new PvpMovementClient({matchId:'match-a',match:peer.state,playerId,transport:peer.transport,remotes,
         getSpawn:()=>({x:0,y:0}),snapshot:()=>({x:scene.player.x,y:scene.player.y,direction:i?'left':'right',moving:false,vx:0,vy:0,life:0}),
@@ -118,7 +118,7 @@ test('two sockets: discarded pre-auth positions are republished before the first
       now+=250;peer.combat.update(peer.state,peer.combat.self,250,now);
       await waitFor(()=>peer.messages.some(m=>m.type==='pvp-hit-result'&&m.payload.projectileId===shot.projectileId&&m.payload.accepted));
     }
-    assert.ok(authority.state.participants.every(p=>p.hp===75&&p.life===0));
+    assert.ok(authority.state.participants.every(p=>p.hp===90&&p.life===0));
     assert.ok(peers.every(p=>p.damage.authorized&&!p.movement.closed));
     await authority.queue;
   }finally{

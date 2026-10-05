@@ -1,4 +1,9 @@
 // Segment test avoids tunnelling through small covers on slow frames.
+// Sprite feet are the anchor in both Phaser and the relay movement samples.
+// Keep the local collision probe and authoritative hit test on one body box.
+export const PVP_PLAYER_HITBOX=Object.freeze({offsetX:-25,offsetY:-58,width:50,height:68});
+export const pvpPlayerHitboxAt=(x,y)=>({...PVP_PLAYER_HITBOX,x:x+PVP_PLAYER_HITBOX.offsetX,y:y+PVP_PLAYER_HITBOX.offsetY});
+
 export function segmentRect(from,to,rect){
   let lo=0,hi=1;
   for(const [axis,size] of [['x','width'],['y','height']]){

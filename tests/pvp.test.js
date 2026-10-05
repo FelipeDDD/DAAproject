@@ -59,6 +59,7 @@ test('host and joiner receive the same authoritative map for TDM and Payload; br
     const member=i=>({...f.args(i),matchId:lobby.matchId});
     await backend.start._handler(f.ctx,{...member(0),round:0});
     const host=await backend.current._handler(f.ctx,member(0)),joiner=await backend.current._handler(f.ctx,member(1));
+    assert.ok(Number.isFinite(host.serverNow));
     assert.deepEqual(host.arenaMap,PVP_MAP_DEFINITION);assert.deepEqual(joiner.arenaMap,host.arenaMap);
     assert.deepEqual(pvpArenaDestination(lobby.matchId,host),pvpArenaDestination(lobby.matchId,joiner));
     assert.equal(pvpArenaDestination(lobby.matchId,{...joiner,mapId:'old',arenaId:'old',targetMap:'old'}).targetMap,PVP_MAP);
@@ -79,27 +80,27 @@ test('friendly fire blocked, enemy hits reduce health, replayed hits and old liv
   let m=advanceMatch(startMatch(match(),1000),5000);m.participants.push(newFighter({playerId:'friend',team:'A'}));
   const hit={attackerId:'a',victimId:'friend',attackerLife:0,victimLife:0,shot:1};
   m=applyPlayerDamage(m,hit,5000);assert.equal(m.participants[2].hp,100);
-  hit.victimId='b';m=applyPlayerDamage(m,hit,5000);assert.equal(m.participants[1].hp,75);
-  m=applyPlayerDamage(m,hit,5500);assert.equal(m.participants[1].hp,75);
-  m=applyPlayerDamage(m,{...hit,shot:2,victimLife:99},6000);assert.equal(m.participants[1].hp,75);
-  m=applyPlayerDamage(m,{...hit,shot:2,attackerLife:99},6000);assert.equal(m.participants[1].hp,75);
+  hit.victimId='b';m=applyPlayerDamage(m,hit,5000);assert.equal(m.participants[1].hp,90);
+  m=applyPlayerDamage(m,hit,5500);assert.equal(m.participants[1].hp,90);
+  m=applyPlayerDamage(m,{...hit,shot:2,victimLife:99},6000);assert.equal(m.participants[1].hp,90);
+  m=applyPlayerDamage(m,{...hit,shot:2,attackerLife:99},6000);assert.equal(m.participants[1].hp,90);
 });
 
 test('death and kill score once, respawn after 2.5s restores HP and rejects projectiles from the old life',()=>{
   let m=advanceMatch(startMatch(match(),1000),5000);
   const hit={attackerId:'a',victimId:'b',attackerLife:0,victimLife:0};
-  for(let shot=1;shot<=4;shot++)m=applyPlayerDamage(m,{...hit,shot},5000+shot*500);
+  for(let shot=1;shot<=10;shot++)m=applyPlayerDamage(m,{...hit,shot},5000+shot*500);
   assert.deepEqual(m.scores,{A:1,B:0});assert.equal(m.participants[0].kills,1);assert.equal(m.participants[1].deaths,1);
-  assert.equal(m.participants[1].respawnAt,9500);
-  assert.equal(registerPlayerDeath(m,'a','b',7500),m);
-  assert.equal(advanceMatch(m,9499).participants[1].hp,0);
-  m=advanceMatch(m,9500);assert.equal(m.participants[1].hp,100);assert.equal(m.participants[1].life,1);
-  m=applyPlayerDamage(m,{...hit,shot:5},10000);assert.equal(m.participants[1].hp,100);
-  m=applyPlayerDamage(m,{...hit,victimLife:1,shot:5},10000);assert.equal(m.participants[1].hp,75);
+  assert.equal(m.participants[1].respawnAt,12500);
+  assert.equal(registerPlayerDeath(m,'a','b',10500),m);
+  assert.equal(advanceMatch(m,12499).participants[1].hp,0);
+  m=advanceMatch(m,12500);assert.equal(m.participants[1].hp,100);assert.equal(m.participants[1].life,1);
+  m=applyPlayerDamage(m,{...hit,shot:5},13000);assert.equal(m.participants[1].hp,100);
+  m=applyPlayerDamage(m,{...hit,victimLife:1,shot:11},13000);assert.equal(m.participants[1].hp,90);
 });
 
 test('fifth kill ends the match immediately; timer chooses higher score and ended games cannot score',()=>{
-  let m=advanceMatch(startMatch(match(),0),4000);m.scores.A=4;m.participants[1].hp=25;
+  let m=advanceMatch(startMatch(match(),0),4000);m.scores.A=4;m.participants[1].hp=10;
   m=applyPlayerDamage(m,{attackerId:'a',victimId:'b',attackerLife:0,victimLife:0,shot:1},5000);
   assert.equal(m.state,'ended');assert.equal(m.winner,'A');assert.equal(m.reason,'score-limit');assert.equal(m.scores.A,5);
   assert.equal(applyPlayerDamage(m,{attackerId:'a',victimId:'b',shot:2},8000),m);
@@ -366,7 +367,7 @@ test('match adapter serializes hit commands and cancels queued combat after leav
 
 test('direct shots are consumed by teammates without hit reports; enemies and cover still collide',()=>{
   const hits=[],handlers={};
-  const dot=()=>({setDepth(){return this;},setPosition(){},destroy(){}});
+  const dot=()=>({setDepth(){return this;},setScale(){return this;},setRotation(){return this;},setPosition(){return this;},destroy(){}});
   const scene={source:{layers:[{name:'Collision',type:'objectgroup',objects:[]}]},player:{x:0,y:22},
     input:{on:(name,fn)=>handlers[name]=fn,off:name=>delete handlers[name]},add:{circle:dot},
     remotes:{players:new Map([['b',{sprite:{x:70,y:22}}],['friend',{sprite:{x:30,y:22}}]])}};
@@ -462,15 +463,15 @@ test('expired non-host presence prunes only that participant, while host expiry 
 
 test('death/leave race removes pending respawn and cannot grant a second kill or late damage',async t=>{
   const f=await runningFixture(t,4);
-  for(let shot=1;shot<=4;shot++){f.setTime(104000+shot*500);assert.equal((await serverHit(f,'p0','p3',shot)).applied,true);}
+  for(let shot=1;shot<=10;shot++){f.setTime(104000+shot*500);assert.equal((await serverHit(f,'p0','p3',shot)).applied,true);}
   assert.equal(f.tables.pvpMatches[0].scores.A,1);
   assert.ok(f.tables.pvpMatches[0].participants.find(p=>p.playerId==='p3').respawnAt);
   await backend.leave._handler(f.ctx,f.member(3));
-  assert.equal((await serverHit(f,'p0','p3',5)).applied,false);
+  assert.equal((await serverHit(f,'p0','p3',11)).applied,false);
   assert.equal(f.tables.pvpMatches[0].scores.A,1);
   assert.equal(f.tables.pvpMatches[0].participants.some(p=>p.playerId==='p3'),false);
   await backend.leave._handler(f.ctx,f.member(1));
-  assert.equal((await serverHit(f,'p0','p1',6)).applied,false);
+  assert.equal((await serverHit(f,'p0','p1',12)).applied,false);
   assert.equal(f.tables.pvpMatches[0].reason,'team_empty');
   assert.equal(f.tables.pvpMatches[0].scores.A,1);
 });
@@ -554,6 +555,17 @@ test('client presence deadlines detect disconnect without polling and cached act
   f.callbacks[0](active);await Promise.resolve();assert.equal(state.state,'ended');
   f.callbacks[0]({...f.state,round:1,participants:[active.participants[0]]});await Promise.resolve();
   assert.equal(state.state,'waiting');client.close();
+});
+
+test('client uses Convex server time for match deadlines when the local wall clock is ahead',async t=>{
+  const f=ui(t);let state,monotonic=1000;t.mock.method(Date,'now',()=>500000);
+  const active={...advanceMatch(startMatch(f.state,0),4000),state:'active',round:0,serverNow:100000,
+    expiresAt:700000,participants:f.state.participants.map(p=>({...p,presenceExpiresAt:p.playerId==='a'?300000:160000}))};
+  const client=new PvpMatchClient(f.presence,'match-a',next=>state=next,()=>{}, {monotonicNow:()=>monotonic});
+  f.callbacks[0](active);await Promise.resolve();
+  assert.equal(state.state,'active');
+  monotonic+=61000;client.tick();
+  assert.equal(state.state,'ended');assert.equal(state.reason,'team_empty');client.close();
 });
 
 test('resumed lobby keeps code/counts and highlights selected Team B and YOU independently of HOST',async t=>{

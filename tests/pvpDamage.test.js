@@ -35,10 +35,10 @@ function fixture(options={}){
 
 test('valid hit applies fixed server damage once and serializes one lifecycle commit',async()=>{
   const f=fixture();assert.ok(f.spawn());f.setTime(10200);
-  assert.deepEqual(f.hit(),{projectileId:'shot-one',shooterId:'alice',targetId:'bob',accepted:true,reason:'accepted',damage:25,hpBefore:100,hpAfter:75});
+  assert.deepEqual(f.hit(),{projectileId:'shot-one',shooterId:'alice',targetId:'bob',accepted:true,reason:'accepted',damage:10,hpBefore:100,hpAfter:90});
   assert.equal(f.hit().reason,'projectile_consumed');
   await f.authority.queue;assert.equal(f.commits.length,1);assert.equal(f.commits[0].expectedRevision,0);
-  assert.equal(f.states.at(-1).players.find(p=>p.playerId==='bob').hp,75);
+  assert.equal(f.states.at(-1).players.find(p=>p.playerId==='bob').hp,90);
   assert.equal(f.logs.filter(log=>['hit accepted','hit rejected'].includes(log.event)).length,2);
 });
 
@@ -69,11 +69,28 @@ test('server rejects untrusted speed, lifetime, origin, fire cadence and replaye
 
 test('pending hits keep newer HP/shot sequence when an earlier Convex result arrives',async()=>{
   const f=fixture(),old=match();f.spawn();f.setTime(10200);assert.ok(f.hit().accepted);
-  f.authority.sync(old);assert.equal(f.authority.state.participants[1].hp,75);
+  f.authority.sync(old);assert.equal(f.authority.state.participants[1].hp,90);
   assert.equal(f.authority.state.participants[0].lastShot,1);
   f.setTime(10400);f.spawn({projectileId:'second',shotSeq:2});f.setTime(10600);
   assert.ok(f.hit({projectileId:'second'}).accepted);await f.authority.queue;
-  assert.deepEqual(f.commits.map(c=>[c.expectedRevision,c.snapshot.players.find(p=>p.playerId==='bob').hp]),[[0,75],[1,50]]);
+  assert.deepEqual(f.commits.map(c=>[c.expectedRevision,c.snapshot.players.find(p=>p.playerId==='bob').hp]),[[0,90],[1,80]]);
+});
+
+test('realtime authority applies exactly 10 HP per accepted hit through death',async()=>{
+  const f=fixture();
+  for(let hit=1;hit<=10;hit++){
+    const firedAt=10000+(hit-1)*400;
+    f.setTime(firedAt);
+    assert.ok(f.spawn({projectileId:`shot-${hit}`,shotSeq:hit}));
+    f.setTime(firedAt+200);
+    const result=f.hit({projectileId:`shot-${hit}`});
+    assert.equal(result.damage,10);
+    if(hit===1)assert.equal(result.hpAfter,90);
+    if(hit===5)assert.equal(result.hpAfter,50);
+    if(hit===10)assert.equal(result.hpAfter,0);
+  }
+  assert.equal(f.authority.state.participants.find(p=>p.playerId==='bob').hp,0);
+  await f.authority.queue;
 });
 
 test('distinct registered flights can land out of order without being mistaken for replays',async()=>{
@@ -153,7 +170,7 @@ test('client cannot choose damage or forge server HP/result messages',()=>{
   const hp=packet({players:[{playerId:'bob',life:0,hp:75}]});
   assert.equal(validClientMessage(envelope('pvp-combat-state',hp)),false);
   assert.ok(validServerMessage({...envelope('pvp-combat-state',hp),serverTime:1}));
-  const f=fixture();f.spawn();f.setTime(10200);assert.equal(f.hit({damage:9999}).damage,25);
+  const f=fixture();f.spawn();f.setTime(10200);assert.equal(f.hit({damage:9999}).damage,10);
 });
 
 class Transport extends RealtimeTransport{
@@ -167,12 +184,12 @@ test('authoritative HP updates client, ignores stale HP/lives, and sends only a 
   const emit=(type,payload)=>transport.emitMessage({type,payload,roomId:movement.roomId});
   assert.equal(client.attempt({projectileId:'shot-one',victimId:'bob',victimLife:0}),false);
   emit('pvp-authorized',{playerId:'alice',round:0});
-  const hp=packet({version:2,players:[{playerId:'bob',life:0,hp:75}]});
-  emit('pvp-combat-state',hp);assert.equal(updates.at(-1).participants[1].hp,75);
-  assert.equal(client.project(match()).participants[1].hp,75,'stale Convex query cannot restore HP');
+  const hp=packet({version:2,players:[{playerId:'bob',life:0,hp:90}]});
+  emit('pvp-combat-state',hp);assert.equal(updates.at(-1).participants[1].hp,90);
+  assert.equal(client.project(match()).participants[1].hp,90,'stale Convex query cannot restore HP');
   emit('pvp-combat-state',{...hp,version:1,players:[{playerId:'bob',life:0,hp:100}]});assert.equal(updates.length,1);
   const next=match();next.damageRevision=2;next.participants[1].life=1;
-  assert.equal(client.project(next).participants[1].hp,75,'Convex never overrides relay combat');
+  assert.equal(client.project(next).participants[1].hp,90,'Convex never overrides relay combat');
   assert.ok(client.attempt({projectileId:'shot-one',victimId:'bob',victimLife:0,damage:9999}));
   assert.deepEqual(transport.sent.at(-1),{type:'pvp-hit-attempt',payload:attempt()});
   client.close();client.close();assert.equal(transport.messageHandlers.size,0);assert.equal(transport.stateHandlers.size,0);
@@ -227,7 +244,7 @@ test('real WebSocket authenticates peers once per room, broadcasts authoritative
     await waitFor(()=>b.messages.some(m=>m.type==='pvp-projectile-spawn'));now=10200;
     a.transport.sendReliable('pvp-hit-attempt',attempt());
     await waitFor(()=>b.messages.some(m=>m.type==='pvp-hit-result'&&m.payload.accepted));
-    assert.equal(b.messages.filter(m=>m.type==='pvp-combat-state').at(-1).payload.players.find(p=>p.playerId==='bob').hp,75);
+    assert.equal(b.messages.filter(m=>m.type==='pvp-combat-state').at(-1).payload.players.find(p=>p.playerId==='bob').hp,90);
     a.transport.sendReliable('pvp-hit-attempt',attempt());
     await waitFor(()=>a.messages.some(m=>m.payload.reason==='projectile_consumed'));
     assert.equal(commits.length,1);assert.ok(other.messages.every(m=>!m.type.startsWith('pvp-')));

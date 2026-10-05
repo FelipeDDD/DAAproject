@@ -1,19 +1,40 @@
 import { gameMode } from './gameModes.js';
 
+const payloadStatus=payload=>payload?.contested?'CONTESTED':payload?.control==='A'?'BLUE PUSHING':payload?.control==='B'?'RED PUSHING':'NEUTRAL';
+
 export class PvpHud {
   constructor({onLeave,onEnd,onRetry=()=>{},documentRef=globalThis.document,dev=false}){
+    const node=(parent,tag,cls)=>{const n=documentRef.createElement(tag);n.className=cls;parent.append(n);return n;};
     this.root=documentRef.createElement('aside');this.root.className='pvp-hud';
-    const node=(tag,cls)=>{const n=documentRef.createElement(tag);n.className=cls;this.root.append(n);return n;};
-    this.score=node('strong','');this.timer=node('div','');this.personal=node('small','');
-    this.result=node('p','pvp-result');this.help=node('small','');this.help.textContent='WASD / arrows · Click to fire';
-    this.returnTimer=node('p','pvp-return');
-    this.retryStatus=node('small','');
-    this.retry=node('button','');this.retry.textContent='Retry';this.retry.hidden=true;
+    this.root.setAttribute('aria-label','PvP match');
+
+    const match=node(this.root,'section','pvp-hud-match');
+    this.mode=node(match,'span','pvp-hud-mode');
+    this.score=node(match,'strong','pvp-hud-score');
+    this.phase=node(match,'span','pvp-hud-phase');
+    this.timer=node(match,'time','pvp-hud-timer');
+    this.payloadProgress=node(match,'span','pvp-hud-progress');
+
+    const player=node(this.root,'section','pvp-hud-player');
+    this.team=node(player,'span','pvp-hud-team');
+    this.personal=node(player,'small','pvp-hud-personal');
+    this.leave=node(player,'button','pvp-hud-leave');this.leave.type='button';this.leave.textContent='Leave';this.leave.onclick=onLeave;
+    if(dev){
+      const details=node(player,'details','pvp-hud-dev');
+      const summary=node(details,'summary','');summary.textContent='DEV';
+      this.diagnostics=node(details,'small','pvp-diagnostics');
+      this.end=node(details,'button','');this.end.type='button';this.end.textContent='End match';this.end.onclick=onEnd;
+    }
+
+    const feedback=node(this.root,'section','pvp-hud-feedback');
+    this.result=node(feedback,'p','pvp-result');
+    this.returnTimer=node(feedback,'p','pvp-return');
+    this.retryStatus=node(feedback,'small','pvp-retry-status');
+    this.retry=node(feedback,'button','pvp-retry');this.retry.type='button';this.retry.textContent='Retry';this.retry.hidden=true;
     this.retry.onclick=()=>{if(this.retry.disabled)return;if(onRetry()!==false){this.retry.disabled=true;this.retryPendingRound=this.renderedRound;}};
-    this.status=node('p','');this.status.setAttribute('role','status');
-    this.leave=node('button','');this.leave.textContent='Leave Arena';this.leave.onclick=onLeave;
-    if(dev){this.diagnostics=node('small','pvp-diagnostics');this.end=node('button','');this.end.textContent='DEV: End Match';this.end.onclick=onEnd;}
-    documentRef.body.append(this.root);
+    this.status=node(feedback,'p','pvp-hud-status');this.status.setAttribute('role','status');
+    // The shell is relative to the canvas, so the rails track viewport presets.
+    (documentRef.getElementById?.('game-shell')??documentRef.body).append(this.root);
   }
   render(state,self,now,returnSeconds=null){
     const retry=state.state==='ended'?state.retry:null;
@@ -22,12 +43,19 @@ export class PvpHud {
     this.retry.disabled=!retry||retry.resolving||retry.playerIds.includes(self?.playerId)||this.retryPendingRound===this.renderedRound;
     this.retry.textContent=retry?.playerIds.includes(self?.playerId)?'Retry confirmed':'Retry';
     this.retryStatus.textContent=retry?`Retry: ${retry.playerIds.length}/${retry.activePlayerIds.length} · ${state.participants
-      .filter(p=>retry.playerIds.includes(p.playerId)).map(p=>p.displayName??p.playerId).join(', ')}`:'';
-    this.score.textContent=gameMode(state.mode).summary(state);
+      .filter(p=>retry.playerIds.includes(p.playerId)).map(p=>p.displayName??'Player').join(', ')}`:'';
+    this.mode.textContent=state.mode==='payload'?'PAYLOAD':'TDM';
+    this.score.textContent=state.mode==='payload'?payloadStatus(state.payload):gameMode(state.mode).summary(state);
+    this.phase.textContent=state.mode==='payload'&&state.state==='active'?'':state.state.toUpperCase();
+    const distance=state.payload?.distance,routeLength=state.payload?.routeLength;
+    this.payloadProgress.textContent=state.mode==='payload'&&Number.isFinite(distance)&&Number.isFinite(routeLength)&&routeLength>0
+      ?`${Math.round(Math.max(0,Math.min(100,distance/routeLength*100)))}%`:'';
     const clockNow=state.state==='ended'?(state.endedAt??now):now;
     const seconds=Math.max(0,Math.ceil(((state.endsAt??clockNow)-clockNow)/1000));
     this.timer.textContent=`${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;
-    this.personal.textContent=`Team ${self?.team??'?'} · HP ${self?.hp??0} · K ${self?.kills??0} / D ${self?.deaths??0}`;
+    this.team.textContent=self?.team==='A'?'BLUE':self?.team==='B'?'RED':'TEAM ?';
+    this.team.setAttribute('data-team',self?.team??'');
+    this.personal.textContent=`K ${self?.kills??0} / D ${self?.deaths??0} · HP ${self?.hp??0}`;
     this.result.textContent=state.state==='ended'
       ?(['timer','score-limit','payload-delivered'].includes(state.reason)?state.winner==='draw'?'DRAW':`TEAM ${state.winner} WINS`:
         ['host_left','host-left'].includes(state.reason)?'MATCH ENDED · The host left.':
@@ -37,8 +65,8 @@ export class PvpHud {
       :now-state.startedAt<1000?'FIGHT':'';
     this.returnTimer.textContent=retry?(retry.resolving?'Preparing next round...':`Retry or leave in ${Math.max(0,Math.ceil((retry.deadline-now)/1000))}s`)
       :returnSeconds===null?'':`Returning in ${returnSeconds}...`;
-    this.leave.textContent=returnSeconds===null?'Leave Arena':'Leave now';
-    if(this.diagnostics)this.diagnostics.textContent=`DEV · ${state.matchId} · ${state.state} · Team ${self?.team}`;
+    this.leave.textContent=returnSeconds===null?'Leave':'Leave now';
+    if(this.diagnostics)this.diagnostics.textContent=`Match ${state.matchId} · ${state.state} · Round ${this.renderedRound} · Team ${self?.team}${this.errorDetail?` · ${this.errorDetail}`:''}`;
     if(this.end)this.end.hidden=state.hostPlayerId!==self?.playerId||state.state==='ended';
   }
   destroy(){this.root.remove();}

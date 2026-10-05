@@ -4,6 +4,8 @@ import { WebSocket } from 'ws';
 import { PvpMovementClient } from '../src/pvp/PvpMovementClient.js';
 import { PvpProjectileClient } from '../src/pvp/PvpProjectileClient.js';
 import { PvpCombatController } from '../src/pvp/PvpCombatController.js';
+import { PVP_PROJECTILE_VISUAL } from '../src/pvp/projectileVisual.js';
+import { PLAYER_ATTACK_DEPTH,PLAYER_ATTACK_VISUALS,PLAYER_ATTACK_VARIANTS } from '../src/boss/PlayerAttackVisuals.js';
 import { RealtimeTransport } from '../src/realtime/RealtimeTransport.js';
 import { WebSocketTransport } from '../src/realtime/WebSocketTransport.js';
 import { validPvpProjectile,validClientMessage } from '../src/realtime/realtimeMessages.js';
@@ -11,8 +13,8 @@ import { createRealtimeServer } from '../scripts/realtime-server.mjs';
 import { pvpRealtimeRoom } from '../src/pvp/movementConfig.js';
 
 const match=()=>({round:0,state:'active',participants:[
-  {playerId:'alice',team:'A',life:0,hp:100,lastShot:0},
-  {playerId:'bob',team:'B',life:0,hp:100,lastShot:0},
+  {playerId:'alice',characterBaseId:'michael',team:'A',life:0,hp:100,lastShot:0},
+  {playerId:'bob',characterBaseId:'felipe',team:'B',life:0,hp:100,lastShot:0},
 ]});
 const projectile=(extra={})=>({projectileId:'projectile-one',playerId:'bob',life:0,shotSeq:1,x:900,y:700,vx:420,vy:0,ttlMs:1200,...extra});
 class Transport extends RealtimeTransport {
@@ -23,19 +25,21 @@ class Transport extends RealtimeTransport {
   sendUnreliable(){return true;}
   getStats(){return {clientId:'local-peer'};}
 }
-function setup(t,{transport=new Transport(),playerId='alice',matchId='match-a'}={}){
+function setup(t,{transport=new Transport(),playerId='alice',matchId='match-a',visual=PVP_PROJECTILE_VISUAL}={}){
   const state=match(),hits=[],dots=[];
   const self=state.participants.find(p=>p.playerId===playerId);
   const sprite={x:playerId==='alice'?100:700,y:722};
   const remotes={bufferOptions:{},players:new Map([[playerId==='alice'?'bob':'alice',{sprite:{x:playerId==='alice'?700:100,y:722}}]]),
     receive(){},receiveMovement(){}};
   const scene={player:sprite,remotes,source:{layers:[{name:'Collision',type:'objectgroup',objects:[]}]},input:{on(){},off(){}},
-    add:{circle(x,y,r,color){const dot={x,y,r,color,setDepth(){return this;},setPosition(x,y){this.x=x;this.y=y;},destroy(){this.destroyed=true;}};
+    add:{circle(x,y,r,color){const dot={x,y,r,color,scene,active:true,visible:true,setDepth(depth){this.depth=depth;return this;},setScale(scale){this.scale=scale;return this;},
+      setRotation(rotation){this.rotation=rotation;return this;},setPosition(x,y){this.x=x;this.y=y;return this;},destroy(){this.destroyed=true;}};
       dots.push(dot);return dot;}}};
+  scene.children={exists:object=>object.scene===scene&&!object.destroyed};
   const movement=new PvpMovementClient({matchId,match:state,playerId,transport,remotes,getSpawn:()=>({x:100,y:722}),
     snapshot:()=>null,log:()=>{},config:{debug:true}});
   let client;const combat=new PvpCombatController(scene,hit=>hits.push(hit),{
-    onSpawn:p=>client.sendSpawn(p),onRemove:p=>client.sendDestroy(p)});
+    onSpawn:p=>client.sendSpawn(p),onRemove:p=>client.sendDestroy(p),visual});
   const logs=[];client=new PvpProjectileClient(movement,combat,{log:(...args)=>logs.push(args)});
   combat.update(state,self,0,Date.now());
   const emit=(type,payload,extra={})=>transport.emitMessage({type,payload,roomId:movement.roomId,senderId:'remote-peer',seq:1,...extra});
@@ -44,6 +48,102 @@ function setup(t,{transport=new Transport(),playerId='alice',matchId='match-a'}=
   t.after(()=>{client.close();movement.close();combat.destroy();});
   return {state,self,hits,dots,scene,combat,client,movement,transport,logs,emit,join,receive};
 }
+
+test('projectile visual scale and offsets never alter the realtime spawn or local trajectory',t=>{
+  const f=setup(t,{visual:{...PVP_PROJECTILE_VISUAL,scale:3,offsetX:17,offsetY:-9,rotation:0.4,depth:123}});
+  f.join();assert.equal(f.combat.fire({x:500,y:700},1000),true);
+  const shot=f.combat.shots[0],visual=f.dots[0],sent=f.transport.sent.find(m=>m.type==='pvp-projectile-spawn').payload;
+  assert.equal(visual.scale,3);assert.equal(visual.rotation,0.4);assert.equal(visual.depth,123);
+  assert.equal(visual.x,shot.x+17);assert.equal(visual.y,shot.y-9);
+  assert.equal(sent.x,shot.x);assert.equal(sent.y,shot.y);
+  assert.equal(sent.vx,shot.velocity.x);assert.equal(sent.vy,shot.velocity.y);
+  assert.equal(shot.x,100);assert.equal(shot.y,700);
+});
+
+test('PvP renders the shared class attack sprites and animation configs for all four characters',t=>{
+  const entries=[['michael',PLAYER_ATTACK_VISUALS.michael],['jassine',PLAYER_ATTACK_VISUALS.jassine],
+    ['felipe',PLAYER_ATTACK_VISUALS.felipe],['sarina',PLAYER_ATTACK_VARIANTS.sarina[0]]];
+  for(const [characterBaseId,definition] of entries){
+    const f=setup(t);f.self.characterBaseId=characterBaseId;
+    f.join();
+    const rendered=[];
+    f.scene.textures={exists:key=>key===definition.texture,get:()=>({has:frame=>/^attack-[0-5]$/.test(frame)})};
+    f.scene.anims={exists:key=>key===definition.animation};
+    f.scene.add.sprite=(x,y,texture,frame)=>{
+      const sprite={x,y,texture,frame,setDepth(value){this.depth=value;return this;},setScale(value){this.scale=value;return this;},
+        setRotation(value){this.rotation=value;return this;},setTint(value){this.tint=value;return this;},play(value){this.animation=value;return this;},
+        destroy(){this.destroyed=true;}};
+      rendered.push(sprite);return sprite;
+    };
+    f.combat.fire({x:500,y:700},1000);
+    const shot=f.combat.shots[0],sprite=rendered[0];
+    assert.equal(sprite.texture,definition.texture);assert.equal(sprite.frame,'attack-0');
+    assert.equal(sprite.animation,definition.animation);assert.equal(sprite.scale,definition.scale);
+    assert.equal(sprite.depth,PLAYER_ATTACK_DEPTH);
+    assert.ok(Math.abs(sprite.rotation-Math.atan2(shot.velocity.y,shot.velocity.x))<1e-9);
+    assert.equal(sprite.x,shot.x+shot.visualOffset.x);assert.equal(sprite.y,shot.y+shot.visualOffset.y);
+    if(definition.tint)assert.equal(sprite.tint,definition.tint);
+    assert.deepEqual(f.transport.sent.find(m=>m.type==='pvp-projectile-spawn').payload,shot.event);
+  }
+});
+
+test('remote projectiles received through realtime use each remote player class visual',t=>{
+  const entries=[['michael',PLAYER_ATTACK_VISUALS.michael],['jassine',PLAYER_ATTACK_VISUALS.jassine],
+    ['felipe',PLAYER_ATTACK_VISUALS.felipe],['sarina',PLAYER_ATTACK_VARIANTS.sarina[0]]];
+  const traces=[];t.mock.method(console,'info',(...args)=>traces.push(args));
+  for(const [characterBaseId,definition] of entries){
+    const f=setup(t);f.state.participants[1].characterBaseId=characterBaseId;
+    f.scene.textures={exists:key=>key===definition.texture,get:()=>({has:frame=>/^attack-[0-5]$/.test(frame)})};
+    f.scene.anims={exists:key=>key===definition.animation};
+    const rendered=[];
+    f.scene.add.sprite=(x,y,texture,frame)=>{
+      const sprite={x,y,texture,frame,scene:f.scene,active:true,visible:true,setDepth(value){this.depth=value;return this;},setScale(value){this.scale=value;return this;},
+        setRotation(value){this.rotation=value;return this;},setTint(value){this.tint=value;return this;},play(value){this.animation=value;return this;},
+        setPosition(x,y){this.x=x;this.y=y;return this;},destroy(){this.destroyed=true;}};
+      rendered.push(sprite);return sprite;
+    };
+    f.join();f.receive();
+    const shot=f.combat.remoteShots.get('projectile-one');
+    assert.ok(shot,`${characterBaseId}: remote shot is tracked`);assert.equal(rendered.length,1);
+    assert.equal(shot.dot,rendered[0]);assert.equal(shot.dot.texture,definition.texture);
+    assert.equal(shot.dot.animation,definition.animation);assert.equal(shot.dot.scale,definition.scale);
+    assert.ok(f.logs.some(([event])=>event==='spawn received'));
+    const created=traces.find(([label,data])=>label==='[PVP projectile remote] visual created'
+      &&data.projectileId==='projectile-one'&&data.characterBaseId===characterBaseId);
+    assert.ok(created,`${characterBaseId}: remote visual diagnostics were emitted`);
+    assert.equal(created[1].playerId,'bob');assert.equal(created[1].characterBaseId,characterBaseId);
+    assert.equal(created[1].texture,definition.texture);assert.equal(created[1].textureExists,true);
+    assert.equal(created[1].animationKey,definition.animation);assert.equal(created[1].animationExists,true);
+    assert.equal(created[1].visualCreated,true);assert.equal(created[1].fallbackUsed,false);
+    assert.equal(created[1].active,true);assert.equal(created[1].visible,true);assert.equal(created[1].addedToScene,true);
+    f.client.close();f.movement.close();f.combat.destroy();
+  }
+});
+
+test('remote projectile falls back when its attack art, animation or sprite creation is unavailable',t=>{
+  const traces=[];t.mock.method(console,'info',(...args)=>traces.push(args));
+  for(const unavailable of ['texture','animation','sprite-creation']){
+    const f=setup(t),definition=PLAYER_ATTACK_VISUALS.michael;
+    f.state.participants[1].characterBaseId='michael';
+    const textureAvailable=unavailable!=='texture',animationAvailable=unavailable!=='animation';
+    f.scene.textures={exists:key=>textureAvailable&&key===definition.texture,get:()=>({has:frame=>/^attack-[0-5]$/.test(frame)})};
+    f.scene.anims={exists:key=>animationAvailable&&key===definition.animation};
+    let spriteAttempts=0;
+    f.scene.add.sprite=()=>{spriteAttempts++;throw new Error('Phaser rejected attack sprite');};
+    f.join();f.receive(projectile({projectileId:`missing-${unavailable}`}));
+    const shot=f.combat.remoteShots.get(`missing-${unavailable}`);
+    assert.ok(shot,`${unavailable}: the remote shot remains tracked`);
+    assert.equal(spriteAttempts,unavailable==='sprite-creation'?1:0,`${unavailable}: sprite readiness is respected`);
+    assert.equal(shot.dot.r,PVP_PROJECTILE_VISUAL.circleRadius);
+    assert.equal(shot.dot.depth,PVP_PROJECTILE_VISUAL.depth);
+    assert.equal(shot.dot.destroyed,undefined);
+    const created=traces.find(([label,data])=>label==='[PVP projectile remote] visual created'
+      &&data.projectileId===`missing-${unavailable}`);
+    assert.ok(created);assert.equal(created[1].visualCreated,true);assert.equal(created[1].fallbackUsed,true);
+    assert.equal(created[1].visible,true);assert.equal(created[1].addedToScene,true);
+    f.client.close();f.movement.close();f.combat.destroy();
+  }
+});
 
 test('PvP projectile validation is separate from Lab bounds and rejects invalid vectors/identity',()=>{
   assert.ok(validPvpProjectile(projectile()));
@@ -178,6 +278,7 @@ async function waitFor(predicate){const until=Date.now()+3000;while(!predicate()
   if(Date.now()>until)throw new Error('Projectile relay test timeout');await new Promise(resolve=>setTimeout(resolve,5));}}
 
 test('real WebSocket peers share one projectile once, without echo, cross-room traffic or duplicated damage',async t=>{
+  const traces=[];t.mock.method(console,'info',(...args)=>traces.push(args));
   const server=createRealtimeServer({port:0,heartbeatMs:60000});await server.ready;
   const url=`ws://127.0.0.1:${server.wss.address().port}`,fixtures=[];
   const create=(playerId,matchId='match-a')=>{
@@ -190,6 +291,13 @@ test('real WebSocket peers share one projectile once, without echo, cross-room t
     a.combat.fire({x:500,y:700},Date.now());assert.equal(a.combat.shots.length,1);
     const p=a.combat.shots[0].event;
     await waitFor(()=>b.combat.remoteShots.has(p.projectileId));
+    const received=traces.find(([label,data])=>label==='[PVP projectile remote] spawn received'
+      &&data.projectileId===p.projectileId);
+    const created=traces.find(([label,data])=>label==='[PVP projectile remote] visual created'
+      &&data.projectileId===p.projectileId);
+    assert.equal(received?.[1].playerId,'alice');assert.equal(created?.[1].characterBaseId,'michael');
+    assert.equal(created?.[1].visualCreated,true);assert.equal(created?.[1].fallbackUsed,true);
+    assert.equal(created?.[1].addedToScene,true);assert.equal(created?.[1].visible,true);
     assert.equal(a.combat.remoteShots.size,0);assert.equal(other.combat.remoteShots.size,0);
     a.transport.sendReliable('pvp-projectile-spawn',p);
     a.transport.sendReliable('test-event',{value:1});let delivered=false;

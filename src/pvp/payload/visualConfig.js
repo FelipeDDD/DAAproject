@@ -2,16 +2,24 @@
 // not depend on these themes, Phaser assets, or draw depths.
 export const PAYLOAD_THEMES=Object.freeze({
   equipmentCart:Object.freeze({
-    id:'equipmentCart',sprite:null,scale:1,offsetX:0,offsetY:0,depth:'y',depthOffset:0,
-    radiusScale:1,labelOffsetY:-28,
+    id:'equipmentCart',sprite:'payload-cart-pixel-v3',scale:1,offsetX:0,offsetY:0,depth:'y',depthOffset:0,
+    animation:false,speech:true,originY:.95,radiusScale:1,labelOffsetY:-65,
     colors:Object.freeze({neutral:0xcbd0d5,A:0x67bfff,B:0xf17b70,contested:0xf5c65a}),
     cart:Object.freeze({base:0x79878e,outline:0xc9d3d7,wheel:0x171e28,detail:0x303d46}),
   }),
 });
 
+export const PAYLOAD_CART_ASSET=Object.freeze({key:'payload-cart-pixel-v3',path:'assets/pvp/equipment-cart-pixel-v3.png',frameWidth:128,frameHeight:64});
+
+export function payloadCartFrame(time,moving){
+  const sequence=moving?[0,1,2,3,2,1]:[0,0,1,0];
+  return sequence[Math.floor(Math.max(0,time)/(moving?200:900))%sequence.length];
+}
+
 export const PAYLOAD_VIEW_CONFIG=Object.freeze({
   theme:'equipmentCart',showRoute:true,routeDepth:-1.8,
   routeColor:0xc7ccd1,routeAlpha:.18,routeWidth:2,routeEndpointRadius:10,
+  collision:Object.freeze({enabled:true,width:64,height:22,offsetX:0,offsetY:-20}),
 });
 
 export function payloadTheme(nameOrTheme=PAYLOAD_VIEW_CONFIG.theme){
@@ -22,6 +30,7 @@ export function payloadTheme(nameOrTheme=PAYLOAD_VIEW_CONFIG.theme){
   }
   if(!nameOrTheme||typeof nameOrTheme!=='object')throw new Error('Invalid Payload visual theme.');
   const base=PAYLOAD_THEMES[PAYLOAD_VIEW_CONFIG.theme];
-  return {...base,...nameOrTheme,colors:{...base.colors,...nameOrTheme.colors},cart:{...base.cart,...nameOrTheme.cart}};
+  return {...base,...nameOrTheme,animation:nameOrTheme.animation??(!nameOrTheme.sprite||nameOrTheme.sprite===base.sprite?base.animation:false),
+    colors:{...base.colors,...nameOrTheme.colors},cart:{...base.cart,...nameOrTheme.cart}};
 }
 

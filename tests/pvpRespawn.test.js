@@ -21,7 +21,7 @@ test('two actual sockets: posthumous double kill, realtime deaths with Convex sn
   const rows=ids.map((playerId,i)=>({_id:`row-${i}`,playerId,sessionId:`session-${playerId}`,lastSeen:now,room}));
   const saved={_id:'match-a',mode:'tdm',round:0,damageRevision:0,state:'active',hostPlayerId:'alice',expiresAt:999999,
     startedAt:0,endsAt:999999,endedAt:null,winner:null,reason:null,scores:{A:0,B:0},scoreLimit:5,respawnMs:2500,
-    participants:ids.map((playerId,i)=>({...newFighter({playerId,sessionId:`session-${playerId}`,team:i?'B':'A'}),hp:25,lastShot:8}))};
+    participants:ids.map((playerId,i)=>({...newFighter({playerId,sessionId:`session-${playerId}`,team:i?'B':'A'}),hp:10,lastShot:8}))};
   const ctx={db:{async get(id){return id==='match-a'?saved:rows.find(row=>row._id===id)??null;},
     async patch(_id,data){Object.assign(saved,structuredClone(data));},
     query(){let filter;const query={withIndex(_name,build){const q={eq(key,value){filter=row=>row[key]===value;return q;}};build(q);return query;},
@@ -47,7 +47,7 @@ test('two actual sockets: posthumous double kill, realtime deaths with Convex sn
       const remotes={bufferOptions:{},players:new Map([[remoteId,{sprite}]]),receive(){},
         receiveMovement(id,state){peer.movementCalls.push({id,...state});Object.assign(sprite,{x:state.x,y:state.y});}};
       const scene={player:{x:i?1000:900,y:722},remotes,source:{layers:[{name:'Collision',type:'objectgroup',objects:[]}]},
-        input:{on(){},off(){}},add:{circle(x,y){return {x,y,setDepth(){return this;},setPosition(x,y){Object.assign(this,{x,y});},destroy(){this.destroyed=true;}};}}};
+        input:{on(){},off(){}},add:{circle(x,y){return {x,y,setDepth(){return this;},setScale(){return this;},setRotation(){return this;},setPosition(x,y){Object.assign(this,{x,y});},destroy(){this.destroyed=true;}};}}};
       peer.transport=new WebSocketTransport({url,roomId:'pvp-match-a-0',WebSocketImpl:WebSocket});
       peer.transport.onMessage(m=>peer.messages.push(m));
       peer.movement=new PvpMovementClient({matchId:'match-a',match:peer.state,playerId,transport:peer.transport,remotes,
@@ -102,7 +102,7 @@ test('two actual sockets: posthumous double kill, realtime deaths with Convex sn
     await waitFor(()=>a.messages.some(m=>m.type==='pvp-hit-result'&&m.payload.reason==='expired_projectile'));
     assert.equal(server.authorities.get('pvp-match-a-0').authority.projectiles.has('stale-new-id'),false);
     now=13000;a.tick(250);
-    await waitFor(()=>saved.damageRevision===4&&b.state.participants[1].hp===75);
+    await waitFor(()=>saved.damageRevision===4&&b.state.participants[1].hp===90);
     assert.equal(commits.length,4);assert.deepEqual(saved.scores,{A:1,B:1});
     assert.equal(subscriptions,1);assert.equal(acquisitions,1);assert.equal(server.rooms.size,1);assert.equal(server.clients.size,2);
     clients.forEach((c,i)=>{assert.equal(c.transport.getStats().clientId,peerIds[i]);

@@ -1,7 +1,8 @@
-import { PVP_RULES } from './config.js';
+import { PVP_RULES,PVP_MAP_DEFINITION } from './config.js';
+import { PAYLOAD_REGEN } from './payload/config.js';
 import { advanceMatch,reconcileParticipants,endMatch,registerPlayerDeath,interruptedMatch } from './matchState.js';
 import { combatSnapshot,fighterFields } from './combatSnapshot.js';
-import { segmentRect } from './projectiles.js';
+import { segmentRect,pvpPlayerHitboxAt } from './projectiles.js';
 import { PvpRetryCoordinator } from './PvpRetryCoordinator.js';
 
 // One instance per authenticated room/round, owned only by the relay process.
@@ -11,6 +12,9 @@ export class PvpDamageAuthority {
     Object.assign(this,{state:structuredClone(state),now,walls,getSpawn,authorityId,onState,commit,onFailure,log,schedule,cancel,mode:modeAuthority});
     if(this.mode)this.state.payload=this.mode.current;
     this.round=state.round??0;this.revision=state.damageRevision??0;this.version=0;this.closed=false;this.failed=false;
+    this.regenEnabled=state.mode==='payload'&&state.arenaMap?.id===PVP_MAP_DEFINITION.id
+      &&state.arenaMap?.file===PVP_MAP_DEFINITION.file&&state.arenaMap?.revision===PVP_MAP_DEFINITION.revision;
+    this.regen=new Map();
     this.members=new Map();this.positions=new Map();this.projectiles=new Map();this.fired=new Map();this.diagnostics=new Map();this.queue=Promise.resolve();
     if(onRetryResolve)this.retry=new PvpRetryCoordinator({now,schedule,cancel,onChange:()=>this.emit(),onResolve:async playerIds=>{
       await this.queue;if(this.closed||this.failed)return;
@@ -67,6 +71,10 @@ export class PvpDamageAuthority {
       const m=this.state,deadlines=[m.endsAt,m.expiresAt,...m.participants.map(p=>p.presenceExpiresAt),...m.participants.map(p=>p.respawnAt)];
       if(m.state==='countdown')deadlines.push(m.startedAt);
       if(this.mode)deadlines.push(this.mode.nextDeadline(m));
+      if(this.regenEnabled&&m.state==='active')for(const [playerId,entry] of this.regen){
+        const player=m.participants.find(p=>p.playerId===playerId);
+        if(player?.life===entry.life&&player.hp>0&&player.hp<PVP_RULES.maxHp)deadlines.push(entry.nextAt);
+      }
       const finite=deadlines.filter(Number.isFinite);if(finite.length)deadline=Math.min(...finite);
     }
     if(deadline===this.deadline)return;
@@ -147,6 +155,24 @@ export class PvpDamageAuthority {
       lastShot:member?.lastShot,position:position&&{x:position.x,y:position.y,life:position.life,
         source:this.positions.has(member.playerId)?'movement':'spawn',ageMs:this.now()-position.at}};
   }
+  advanceRegen(now){
+    if(!this.regenEnabled||this.state.state!=='active')return false;
+    let changed=false;
+    const participants=this.state.participants.map(player=>{
+      const entry=this.regen.get(player.playerId);
+      if(!entry)return player;
+      if(player.life!==entry.life||player.hp<=0||player.hp>=PVP_RULES.maxHp){this.regen.delete(player.playerId);return player;}
+      if(now<entry.nextAt)return player;
+      const intervals=Math.floor((now-entry.nextAt)/PAYLOAD_REGEN.intervalMs)+1;
+      const hp=Math.min(PVP_RULES.maxHp,player.hp+intervals*PAYLOAD_REGEN.hpPerInterval);
+      entry.nextAt+=intervals*PAYLOAD_REGEN.intervalMs;
+      if(hp===PVP_RULES.maxHp)this.regen.delete(player.playerId);
+      changed=true;return {...player,hp};
+    });
+    for(const playerId of this.regen.keys())if(!participants.some(p=>p.playerId===playerId))this.regen.delete(playerId);
+    if(changed)this.state={...this.state,participants};
+    return changed;
+  }
   advance(){
     if(this.closed||this.retry?.resolving)return;
     const now=this.now(),previous=this.state;
@@ -155,7 +181,8 @@ export class PvpDamageAuthority {
     const advanced=advanceMatch(source,now,this.mode?{finish:(m,at)=>this.mode.finishTimeout(m,at)}:undefined);
     this.state=now>=previous.expiresAt?endMatch(advanced,now,'expired'):reconcileParticipants(advanced,
       advanced.participants.filter(p=>p.presenceExpiresAt===undefined||now<p.presenceExpiresAt),now);
-    let changed=this.state.state!==previous.state||this.state.participants.length!==previous.participants.length;
+    const regenerated=this.advanceRegen(now);
+    let changed=regenerated||this.state.state!==previous.state||this.state.participants.length!==previous.participants.length;
     for(const p of this.state.participants)if(previous.participants.find(q=>q.playerId===p.playerId)?.life!==p.life){
       this.positions.delete(p.playerId);changed=true;
     }
@@ -233,12 +260,16 @@ export class PvpDamageAuthority {
     for(const wall of this.walls){const t=segmentRect(shot,end,wall);if(t!==null&&t<first)first=t;}
     for(const member of this.state.participants){
       if(member.playerId===shooter.playerId||member.hp<=0)continue;
-      const pos=this.position(member),t=segmentRect(shot,end,{x:pos.x-25,y:pos.y-58,width:50,height:68});
+      const pos=this.position(member),t=segmentRect(shot,end,pvpPlayerHitboxAt(pos.x,pos.y));
       if(t!==null&&t<first){first=t;victim=member;}
     }
     if(victim?.playerId!==target.playerId)return reject('trajectory_or_cover');
     const previous=structuredClone(this.state),hpBefore=target.hp,hpAfter=Math.max(0,hpBefore-PVP_RULES.damage);
     shot.consumed=true;target.hp=hpAfter;
+    if(this.regenEnabled){
+      if(hpAfter>0)this.regen.set(target.playerId,{life:target.life,nextAt:now+PAYLOAD_REGEN.delayMs});
+      else this.regen.delete(target.playerId);
+    }
     if(shooter.life===shot.life)shooter.lastShot=Math.max(shooter.lastShot??0,shot.shotSeq);
     shooter.lastHitAt=now;
     if(hpAfter===0)this.state=registerPlayerDeath(this.state,shooter.playerId,target.playerId,now,{scoreVictory:this.mode?.scoreVictory??true});
@@ -253,5 +284,5 @@ export class PvpDamageAuthority {
     ...(this.retry?.deadline!==undefined?{retry:this.retry.snapshot()}: {})});}
   close(){if(this.timer!==undefined)this.cancel(this.timer);this.timer=undefined;this.deadline=null;
     this.retry?.close();
-    this.closed=true;this.members.clear();this.positions.clear();this.projectiles.clear();this.fired.clear();this.diagnostics.clear();}
+    this.closed=true;this.members.clear();this.positions.clear();this.projectiles.clear();this.fired.clear();this.diagnostics.clear();this.regen.clear();}
 }

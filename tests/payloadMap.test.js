@@ -63,19 +63,23 @@ test('numbered team Spawns override temporary Notes markers and support authored
   assert.throws(()=>teamSpawn(source,'Z'),/marker/);
 });
 
-test('temporary Payload route connects the base markers; authored polyline supersedes it without silent repair',()=>{
+test('temporary Payload route connects Blue to Red; an authored polyline is loaded in the same order at 50%',()=>{
   const route=routeFromMap(map);
   assert.deepEqual(route.points,['A','B'].map(team=>{const {x,y}=teamSpawn(map,team);return {x,y};}));
+  assert.equal(route.initialFraction,0.5);
   assert.deepEqual(pointAt(route,route.length/2),{x:(route.points[0].x+route.points[1].x)/2,y:(route.points[0].y+route.points[1].y)/2});
   for(const wall of collisionAreas(objectsIn(map,'Collision')))
     assert.equal(segmentRect(route.points[0],route.points[1],wall),null,'temporary centerline must be clear');
   const source=structuredClone(map);
-  source.layers.push({name:'PayloadRoute',type:'objectgroup',offsetx:10,offsety:20,objects:[{name:'payload-route',x:100,y:100,
-    polyline:[{x:0,y:0},{x:30,y:0},{x:30,y:40}],properties:[{name:'initialFraction',value:0.25}]}]});
+  const blue=teamSpawn(source,'A'),red=teamSpawn(source,'B');
+  source.layers.push({name:'PayloadRoute',type:'objectgroup',offsetx:10,offsety:20,objects:[{name:'payload-route',x:blue.x-20,y:blue.y-40,
+    polyline:[{x:10,y:20},{x:-490,y:-60},{x:red.x-blue.x+10,y:red.y-blue.y+20}]}]});
   const authored=routeFromMap(source);
-  assert.deepEqual(authored.points,[{x:110,y:120},{x:140,y:120},{x:140,y:160}]);assert.equal(authored.initialFraction,0.25);
-  source.layers.at(-1).objects[0].polyline=undefined;
-  assert.throws(()=>routeFromMap(source),/polyline/);
+  assert.deepEqual(authored.points,[{x:blue.x,y:blue.y},{x:blue.x-500,y:blue.y-80},{x:red.x,y:red.y}]);
+  assert.equal(authored.initialFraction,0.5);
+  source.layers.at(-1).objects[0].polyline=[{x:red.x-blue.x+10,y:red.y-blue.y+20},{x:10,y:20}];
+  const reversed=routeFromMap(source);
+  assert.deepEqual(reversed.points,[{x:blue.x,y:blue.y},{x:red.x,y:red.y}],'reversed authored route is rejected for the temporary safe route');
 });
 
 test('image and tile foreground conventions stay above player depths while authored depth wins',()=>{

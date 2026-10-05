@@ -199,7 +199,7 @@ export class MapScene extends Phaser.Scene {
     }
     this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     this.player = new Player(this, 0, 0);
-    this.remotes = new RemotePlayers(this);
+    this.remotes = new RemotePlayers(this,{labelFontSize:this.remoteNameLabelFontSize,labelResolution:this.remoteNameLabelResolution??1});
     this.collisionLayer = addMapCollision(this, map, this.player,this.collisionOptions?.()??{});
     this.doors = readDoors(this.source).map((definition) => new Door(this, definition));
     this.quizSeats = readQuizSeats(this.source);
@@ -486,9 +486,14 @@ export class MapScene extends Phaser.Scene {
     }
     // Sleep retains local door states; wake repositions using the destination's Spawns.
     this.scene.sleep();
-    if(target.reloadMapOnEntry&&this.scene.isSleeping(destination.targetMap))this.scene.stop(destination.targetMap);
-    if (this.scene.isSleeping(destination.targetMap)) this.scene.wake(destination.targetMap, arrival);
-    else this.scene.launch(destination.targetMap, arrival);
+    if(target.reloadMapOnEntry){
+      // ScenePlugin queues stop until the next update. Rechecking isSleeping
+      // here still sees the old state and would queue wake on a shut-down scene,
+      // leaving an active but empty canvas. Reload always needs start/launch.
+      if(this.scene.isSleeping(destination.targetMap))this.scene.stop(destination.targetMap);
+      this.scene.launch(destination.targetMap,arrival);
+    }else if(this.scene.isSleeping(destination.targetMap))this.scene.wake(destination.targetMap,arrival);
+    else this.scene.launch(destination.targetMap,arrival);
   }
 
   update(_time, delta) {

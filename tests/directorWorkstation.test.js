@@ -54,6 +54,10 @@ test('Director key is required; two rejected answers persist the local lockout p
   assert.deepEqual(duplicate.attemptedChoices,['left']);
   const second=await workstation.submitChoice._handler(ctx,{...user.args,choice:'right'});
   assert.equal(second.stage,'compromised');assert.equal(second.failedAttempts,2);
+  assert.equal(second.portClueRevealed,true);
+  assert.ok(ctx.tables.directorWorkstations[0].portClueRevealedAt);
+  assert.equal((await workstation.status._handler(ctx,user.args)).portClueRevealed,true,
+    'the revealed port clue survives closing/reopening the screen');
   assert.deepEqual(second.attemptedChoices,['left','right']);
   assert.equal(ctx.tables.directorWorkstations.length,1);
   assert.ok(ctx.tables.directorWorkstations[0].compromisedAt);
@@ -117,7 +121,8 @@ test('Director UI rejects either choice, then shows a local lockout without shel
     resetPanel(title){panel.children=[];panel.append(domNode('button'),Object.assign(domNode('h2'),{textContent:title}));},
     scene:{presence:{identity:{playerId:'p',sessionId:'s'},profileSessionToken:'token',
       api:{directorWorkstation:{status:'status',submitChoice:'submitChoice',verifyPhysicalKey:'verifyPhysicalKey'}},
-      client:{query:async()=>directorSecurityState(true),mutation:async method=>{
+      client:{query:async()=>calls>=2?directorSecurityState(true,{physicalKeyVerifiedAt:1,failedAttempts:2,
+        attemptedChoices:['left','right'],compromisedAt:1,portClueRevealedAt:1}):directorSecurityState(true),mutation:async method=>{
         if(method==='submitChoice')calls++;
         const attemptedChoices=calls===0?[]:calls===1?['left']:['left','right'];
         return directorSecurityState(true,{physicalKeyVerifiedAt:1,failedAttempts:calls,attemptedChoices});}},
@@ -142,6 +147,11 @@ test('Director UI rejects either choice, then shows a local lockout without shel
   await flow.choose('right');
   assert.equal(calls,2);
   assert.equal(panel.children.some(node=>node.textContent==='LOCAL ACCESS COMPROMISED'),true);
+  const clue=()=>panel.children.find(node=>node.className==='director-security-denied'
+    &&node.textContent.includes('8443'));
+  assert.ok(clue(),'the port clue appears when it is revealed');
   assert.equal(panel.children.some(node=>node.textContent==='Emergency Remote Recovery is required.'),true);
   assert.equal(panel.children.some(node=>node.className==='director-security-choices'),false);
+  flow.close();await flow.open();
+  assert.ok(clue(),'reopening the security screen restores the persistent clue');
 });

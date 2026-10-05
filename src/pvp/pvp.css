@@ -8,8 +8,49 @@
 .pvp-team-A .pvp-member-self { background:#6ebded22; color:#bce6ff; }
 .pvp-team-B .pvp-member-self { background:#ed9d8122; color:#ffd5c9; }
 .pvp-return { color:#edc87e; }
-.pvp-hud { position:fixed; top:85px; left:50%; transform:translateX(-50%); z-index:130; width:min(330px,85vw); padding:12px; text-align:center; background:#101923f2; color:#eee0bf; border:1px solid #ab8d51; border-radius:8px; }
-.pvp-hud strong { font-size:17px; }.pvp-hud small { display:block; margin:5px; font-size:11px; }
-.pvp-hud button { padding:6px 12px; margin:4px; color:#eee0bf; background:#202733; border:1px solid #84734f; border-radius:4px; cursor:pointer; }
-.pvp-hud .pvp-result { font-size:20px; color:#efd18e; margin:8px; }.pvp-hud .pvp-result:empty { display:none; }
-.pvp-diagnostics { color:#aaa; overflow-wrap:anywhere; }.pvp-hud [hidden] { display:none; }
+.payload-speech-prompt { max-width:240px; padding:8px 11px; white-space:normal; text-align:center; font-size:12px; line-height:1.4; color:#f8edcf; background:#17212af2; border:1px solid #bda16a; border-radius:9px; pointer-events:none; }
+.payload-speech-prompt::after { content:''; position:absolute; top:100%; left:50%; width:9px; height:9px; background:#17212a; border-right:1px solid #bda16a; border-bottom:1px solid #bda16a; transform:translate(-50%,-5px) rotate(45deg); }
+/* Reserve room above the frame only while PvP is open. Tune this with --pvp-hud-top. */
+#play-toolbar:has(+ #game-shell > .pvp-hud) { margin-bottom:24px; }
+.pvp-hud { --pvp-hud-top:-24px; position:absolute; inset:0 0 auto; z-index:130; height:0; color:#eee0bf; font:600 12px/1.2 "Segoe UI",system-ui,sans-serif; pointer-events:none; }
+.pvp-hud :is(.pvp-hud-match,.pvp-hud-player) { position:absolute; top:var(--pvp-hud-top); display:flex; align-items:center; gap:8px; min-height:31px; padding:4px 9px; border:1px solid #a38a5b; background:#101923e8; box-shadow:0 2px 8px #02070a55,inset 0 1px #e1c99321; pointer-events:auto; white-space:nowrap; }
+.pvp-hud-match { left:50%; transform:translateX(-50%); max-width:min(430px,calc(100% - 255px)); border-radius:0 0 6px 6px; }
+.pvp-hud-player { right:12px; border-radius:0 0 6px 6px; }
+.pvp-hud-mode { color:#c6ab74; font-size:10px; letter-spacing:.1em; }
+.pvp-hud-score { color:#f5e4c0; font-size:12px; letter-spacing:.025em; overflow:hidden; text-overflow:ellipsis; }
+.pvp-hud-phase { color:#aebdcc; font-size:10px; letter-spacing:.07em; }
+.pvp-hud :is(.pvp-hud-phase,.pvp-hud-progress):empty { display:none; }
+.pvp-hud-timer { padding-left:8px; border-left:1px solid #957b4e75; color:#fff1cd; font:700 14px/1 ui-monospace,Consolas,monospace; font-variant-numeric:tabular-nums; }
+.pvp-hud-progress { color:#c9b991; font:600 10px/1 ui-monospace,Consolas,monospace; }
+.pvp-hud-team { color:#8dd0ef; font-size:10px; letter-spacing:.08em; }
+.pvp-hud-team[data-team="B"] { color:#efa491; }
+.pvp-hud-personal { color:#e8e0ce; font-size:11px; font-variant-numeric:tabular-nums; }
+.pvp-hud button { padding:3px 6px; color:#cbbd9f; background:#202a34; border:1px solid #77694d; border-radius:3px; font:inherit; font-size:10px; line-height:1.1; cursor:pointer; }
+.pvp-hud button:hover,.pvp-hud button:focus-visible { color:#fff0cd; border-color:#d2b775; background:#35404a; }
+.pvp-hud button:focus-visible,.pvp-hud summary:focus-visible { outline:2px solid #f0ce86; outline-offset:2px; }
+.pvp-hud-dev { position:relative; color:#b7a786; font-size:10px; }
+.pvp-hud-dev summary { cursor:pointer; list-style:none; }
+.pvp-hud-dev summary::-webkit-details-marker { display:none; }
+.pvp-hud-dev[open] { z-index:2; }
+.pvp-diagnostics { position:absolute; top:21px; right:0; min-width:215px; max-width:280px; padding:7px; color:#c7c3b8; background:#101923f5; border:1px solid #8f7950; white-space:normal; overflow-wrap:anywhere; }
+.pvp-hud-dev button { position:absolute; top:55px; right:0; white-space:nowrap; }
+.pvp-hud-feedback { position:absolute; top:12px; left:50%; transform:translateX(-50%); display:flex; align-items:center; flex-direction:column; gap:3px; max-width:min(420px,calc(100% - 20px)); text-align:center; }
+.pvp-hud-feedback :is(p,small) { margin:0; padding:3px 8px; border:1px solid #8e794f8a; border-radius:3px; background:#101923e8; }
+.pvp-hud-feedback :is(p,small):empty { display:none; }
+.pvp-hud-feedback .pvp-result { color:#f2d08f; font-size:13px; }
+.pvp-hud-feedback .pvp-return { color:#edc87e; }
+.pvp-hud-feedback .pvp-retry-status { color:#d5c7ad; font-size:11px; }
+.pvp-hud-feedback .pvp-hud-status { color:#ffc4ae; }
+.pvp-hud-feedback button { pointer-events:auto; }
+.pvp-hud [hidden] { display:none; }
+@container (max-width:860px) {
+  .pvp-hud-match { max-width:calc(100% - 16px); }
+  .pvp-hud-player { top:10px; right:8px; }
+  .pvp-hud-feedback { top:43px; }
+}
+@container (max-width:450px) {
+  .pvp-hud-match { gap:5px; padding-inline:6px; }
+  .pvp-hud-progress { display:none; }
+  .pvp-hud-player { gap:5px; padding:3px 5px; }
+  .pvp-hud-personal { font-size:10px; }
+}

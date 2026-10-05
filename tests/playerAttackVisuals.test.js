@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
-import { allPlayerAttackVisuals,playerAttackSpawn,playerAttackVisual } from '../src/boss/PlayerAttackVisuals.js';
+import { allPlayerAttackVisuals,playerAttackSpawn,playerAttackVisual,preparePlayerAttackVisuals } from '../src/boss/PlayerAttackVisuals.js';
 
 test('arena attack visuals select each character and reference six source frames',()=>{
   assert.equal(playerAttackVisual('michael').id,'smoke');
@@ -38,4 +38,23 @@ test('attack spawn tracks cigarette and glasses by appearance and facing',()=>{
   assert.deepEqual(playerAttackSpawn(player,yassin,{x:0,y:1}),{x:100,y:157});
   const felipe=playerAttackVisual('felipe');player.visual.style='new';player.facing='right';
   assert.deepEqual(playerAttackSpawn(player,felipe,{x:1,y:0}),{x:122,y:162});
+});
+
+test('shared attack preparation registers the same cropped frames and animation settings for PvP and Arena',()=>{
+  const definitions=allPlayerAttackVisuals(),textures=new Map(),animations=[];
+  for(const visual of definitions){
+    const frames=new Set();textures.set(visual.texture,{has:frame=>frames.has(frame),add(name,_source,x,y,width,height){
+      frames.add(name);this.rectangles??=[];this.rectangles.push({name,x,y,width,height});
+    }});
+  }
+  preparePlayerAttackVisuals({textures:{exists:key=>textures.has(key),get:key=>textures.get(key)},
+    anims:{exists:key=>animations.some(animation=>animation.key===key),create:animation=>animations.push(animation)}});
+  for(const visual of definitions){
+    assert.equal(textures.get(visual.texture).rectangles.length,visual.frames);
+    assert.deepEqual(textures.get(visual.texture).rectangles[0],{name:'attack-0',x:0,y:visual.frameTop,
+      width:visual.frameWidth,height:visual.frameHeight});
+    const animation=animations.find(item=>item.key===visual.animation);
+    assert.equal(animation.frames.length,visual.frames);assert.equal(animation.frameRate,visual.frameRate);
+    assert.equal(animation.repeat,visual.repeat);
+  }
 });

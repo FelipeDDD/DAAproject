@@ -9,6 +9,7 @@ import { PvpTeleportController,readPvpTeleportAreas,pvpTeleportArrival } from '.
 import { collisionAreas } from '../src/maps/collision.js';
 import { objectsIn } from '../src/maps/tiledObjects.js';
 import { PLAYER_SCALE } from '../src/game/settings.js';
+import { PAYLOAD_CART_ASSET } from '../src/pvp/payload/visualConfig.js';
 
 const read=path=>readFileSync(new URL(`../${path}`,import.meta.url),'utf8');
 const source=JSON.parse(read(`public/assets/maps/${PVP_MAP_FILE}`));
@@ -24,7 +25,7 @@ function mapSceneFixture(){
     update(){calls.push(['update']);}
   }
   const Shared=evaluate('src/scenes/PvpMapScene.js',{MapScene,PVP_MAP_FILE,PVP_MAP_DEFINITION,
-    PvpTeleportController,readPvpTeleportAreas,pvpTeleportArrival,Date},'PvpMapScene');
+    PvpTeleportController,readPvpTeleportAreas,pvpTeleportArrival,PAYLOAD_CART_ASSET,Date},'PvpMapScene');
   return {Shared,calls};
 }
 
@@ -57,7 +58,7 @@ test('new entry evicts only map caches and reloads the same configured asset ins
   const {Shared,calls}=mapSceneFixture(),scene=new Shared(PVP_MAP),removed=[];
   scene.cache={json:{remove:key=>removed.push(key)},tilemap:{remove:key=>removed.push(key)},
     xml:{getKeys:()=>[`${PVP_MAP}-tileset-0`,'office3-tileset-0'],remove:key=>removed.push(key)}};
-  scene.textures={getTextureKeys:()=>[`${PVP_MAP}-tileset-0`,`${PVP_MAP}-image-layer-1`,'student'],remove:key=>removed.push(key)};
+  scene.textures={exists:()=>true,getTextureKeys:()=>[`${PVP_MAP}-tileset-0`,`${PVP_MAP}-image-layer-1`,'student'],remove:key=>removed.push(key)};
   scene.preload();
   assert.deepEqual(calls,[['preload',PVP_MAP_FILE]]);assert.ok(Number.isFinite(scene.mapLoadVersion));
   assert.ok(removed.includes(scene.sourceKey));assert.ok(removed.includes(PVP_MAP));
@@ -69,7 +70,8 @@ test('travelling from either browser restarts a slept PvP scene without validati
   const calls=[],scene=Object.create(Map.prototype),arrival=pvpArenaDestination('match-a',{arenaMap:PVP_MAP_DEFINITION});
   Object.assign(scene,{mapKey:'school',player:{x:50,y:60,setVelocity(){}},input:{keyboard:{resetKeys(){}}},
     scene:{manager:{keys:{[PVP_MAP]:{source:{layers:[]},reloadMapOnEntry:true}}},sleep:()=>calls.push('sleep'),
-      isSleeping:()=>!calls.includes('stop'),stop:()=>calls.push('stop'),launch:(key,args)=>calls.push([key,args]),wake:()=>calls.push('wake')}});
+      // Phaser queues stop; the scene remains sleeping until the next update.
+      isSleeping:()=>true,stop:()=>calls.push('stop'),launch:(key,args)=>calls.push([key,args]),wake:()=>calls.push('wake')}});
   scene.travelTo(arrival);
   assert.equal(scene.doorMessage,undefined);assert.deepEqual(calls.slice(0,2),['sleep','stop']);
   assert.equal(calls[2][0],PVP_MAP);assert.equal(calls.includes('wake'),false);

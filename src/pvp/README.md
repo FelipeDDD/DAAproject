@@ -303,10 +303,10 @@ Realtime sends the destination in the next normal movement packet with a one-sho
 `teleport` flag; remote clients clear old interpolation and snap to that sample.
 
 The physical route is an unrotated Tiled polyline `PayloadRoute/payload-route`:
-BLUE/A first, RED/B last; numeric `initialFraction` defaults to 0.5. Until this
-polyline exists, `PVP_MAP_LAYOUT.temporaryPayloadRoute` connects the base spawns
-and starts halfway. This fallback is temporary, shared by client and relay, and
-never replaces a malformed authored route. Keep the route clear of collisions.
+BLUE/A first, RED/B last; the cart always starts halfway (50%). If the route is
+missing or invalid, client and relay log a warning and temporarily connect the
+blue and red base spawns. Author the polyline in Tiled and keep it clear of
+collisions; a reversed or malformed route is never silently accepted.
 
 Layers: image `background` below tiles/players; image or tile `Overlay` or
 `Foreground` (case-insensitive) above all player foot-y depths. A numeric layer

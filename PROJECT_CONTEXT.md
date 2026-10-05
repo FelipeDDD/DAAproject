@@ -1,5 +1,15 @@
 # Project context
 
+## Payload cart presentation (2026-10-05)
+
+- The selected theme now displays `equipment-cart-pixel-v3.png`, the approved transparent **128 x 64** single-frame blue-monitor sprite, at scale 1. Speech is configured independently from frame animation; the older four-frame sheet remains available but is not selected.
+- Fixed a reproducible blank arena on reentry: Phaser ScenePlugin queues `stop`, so immediately reading `isSleeping` still returns true. The previous flow queued `stop` then `wake`, reviving an empty scene after shutdown. `MapScene.travelTo` now always queues `launch` for `reloadMapOnEntry` destinations, following `stop` when needed. Ordinary sleeping maps still use `wake`. Three consecutive real lobby entries were checked in an isolated Chrome session; the regression test models deferred stop rather than a synchronous mock.
+
+- `equipmentCart` now uses four transparent 512 x 256 frames in `public/assets/pvp/equipment-cart.png`. `scripts/build-payload-cart.ps1` reproduces the sheet from the four drafts: removes only border-connected black background, keeps enclosed artwork, and applies identical cropping/scaling. Drafts remain intact.
+- `src/pvp/payload/visualConfig.js` controls sprite scale, feet origin, offsets, Y depth and frame cadence. Moving cycles at 5 fps; idle uses slower expression changes. The route, control circle and authority position remain independent of art.
+- `PayloadDialogue.js` holds editable German monitor/printer lines, face offsets and local cooldowns. One HTML world-anchored bubble speaks at a time during active rounds; Retry resets it and leaving destroys it. No backend calls or speech synchronization. TDM does not create the Payload view or bubbles.
+- Cart preparation explicitly converts RGB source images to ARGB before background removal; checks all four frames for transparent background and preserved artwork. `PAYLOAD_VIEW_CONFIG.collision` defines a local 64 x 22 player obstacle centered at offset (0,-20). `PayloadCollider` updates its static Arcade body with the rendered cart, resets with Retry and destroys its collider on exit. It does not block projectiles or change authority/routing.
+
 **Read this file when:**
 
 - starting a new Codex session;
@@ -228,10 +238,12 @@ Do not reread it for routine isolated edits when the current session already has
   select separate objective rules/presentation, with no Payload controller for TDM.
   `src/pvp/payload/config.js` owns speed **10 px/s**, radius **64 px**, objective
   cadence **100 ms**, respawn **3s**, time **180s**. TDM keeps 2.5s respawn/5 kills.
-  `PayloadRoute/payload-route` is an optional authored Tiled polyline, ordered
-  BLUE/A first -> RED/B last, with `initialFraction` defaulting to 0.5. Until it is
-  authored in the new map, the isolated fallback in `PVP_MAP_LAYOUT` connects the
-  two team base markers; client and relay use the same `routeFromMap` helper.
+  `PayloadRoute/payload-route` is the intended authored Tiled polyline, ordered
+  BLUE/A first -> RED/B last; Payload always starts at 50%. The current
+  `payload-map.tmj` still lacks that layer/object, so `routeFromMap` warns and uses
+  the isolated spawn-to-spawn fallback until it is authored. Client and relay use
+  the same route resolver; missing, reversed or malformed routes are not silently
+  accepted as authored data.
   `PayloadAuthority` uses existing authenticated realtime positions, current
   life/HP/presence/connection and Euclidean radius. A alone pushes towards RED,
   B alone towards BLUE; both contested, none neutral; escorts never stack speed.

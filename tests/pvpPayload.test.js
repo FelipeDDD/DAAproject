@@ -48,7 +48,9 @@ function fixture(t,{match=state(),tuning={}}={}){
 }
 for(const [id,team,sign] of [['alice','A',1],['bob','B',-1]])
 test(`${team} alone moves toward the opposite base at configured constant speed`,t=>{
-  const f=fixture(t);f.move(id,center.x);f.time.tick(11000);
+  const f=fixture(t);assert.equal(f.authority.state.payload.distance,route.length/2);
+  assert.deepEqual({x:f.authority.state.payload.x,y:f.authority.state.payload.y},center);
+  f.move(id,center.x);f.time.tick(11000);
   const expected=pointAt(route,route.length/2+sign*PAYLOAD_RULES.speed);
   assert.ok(Math.abs(f.authority.state.payload.x-expected.x)<1e-8);
   assert.ok(Math.abs(f.authority.state.payload.y-expected.y)<1e-8);
@@ -138,6 +140,15 @@ test('Payload fifth kill records stats without victory and respawns after exactl
   assert.equal(f.authority.state.scores.A,5);assert.equal(f.authority.state.state,'active');assert.equal(f.authority.state.participants[1].respawnAt,13200);
   f.time.tick(13199);assert.equal(f.authority.state.participants[1].hp,0);f.time.tick(13200);assert.equal(f.authority.state.participants[1].hp,100);
   assert.equal(f.authority.state.participants[1].life,1);await f.authority.queue;
+});
+test('the relay uses the post-teleport movement sample for Payload proximity immediately',t=>{
+  const f=fixture(t);f.move('alice',center.x);assert.equal(f.authority.state.payload.control,'A');
+  const destination=teamSpawn(map,'A');
+  assert.equal(f.authority.movement('peer-alice',{playerId:'alice',life:0,sampleSeq:2,x:destination.x,y:destination.y,
+    moving:false,vx:0,vy:0,direction:'left',teleport:true}),true);
+  assert.deepEqual({x:f.authority.positions.get('alice').x,y:f.authority.positions.get('alice').y},
+    {x:destination.x,y:destination.y});
+  assert.equal(f.authority.state.payload.control,null);
 });
 test('Payload state is validated independently and render colors/geometry are separate from server rules',()=>{
   const payload=new PayloadAuthority(route,{now:()=>0}).current;
