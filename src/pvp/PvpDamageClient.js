@@ -69,6 +69,9 @@ export class PvpDamageClient {
     const projected=mergeCombatSnapshot(state,this.hp);
     projected.participants=projected.participants.filter(p=>this.hp.players.some(q=>q.playerId===p.playerId));
     projected.damageRevision=this.hp.damageRevision;
+    // Pickup availability is round-scoped relay state, not a Convex timer.
+    if(this.hp.pickups!==undefined)projected.pickups=this.hp.pickups;
+    if(this.hp.skills!==undefined)projected.skills=this.hp.skills;
     if(this.hp.retry)projected.retry=this.hp.retry;
     // Convex still owns participant departure. Preserve the established return
     // countdown even after the ended relay snapshot closed the combat socket.

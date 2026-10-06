@@ -13,6 +13,11 @@ const PREVIEW_COLORS=Object.freeze({
 });
 const PREVIEW_LABELS=Object.freeze({hair:'Hair',shirt:'Shirt',trousers:'Trousers',shoes:'Shoes'});
 
+export function canPreviewCharacterSkin(character,identity,dev=import.meta.env?.DEV===true){
+  return Boolean(character?.experimentalVisual&&(character.experimentalVisual.menuPreview===true
+    ||(dev&&identity?.devAllSkins)));
+}
+
 export function wardrobeSkinOptions(progress,{experimental=false}={}){
   const normalized=normalizeBossProgress(progress);
   return [
@@ -63,8 +68,10 @@ export class WardrobeController {
     const title=document.createElement('h2');title.textContent='CHANGE APPEARANCE';panel.append(title);
     const list=document.createElement('div');list.className='wardrobe-skins';
     const character=characterById(this.presence.identity.characterId);
-    const experimental=import.meta.env.DEV===true&&this.presence.identity.devAllSkins&&Boolean(character?.experimentalVisual);
-    for(const option of this.presence.identity.profileId?wardrobeSkinOptions(this.progress,{experimental}):[]){
+    const experimental=canPreviewCharacterSkin(character,this.presence.identity);
+    const options=this.presence.identity.profileId?wardrobeSkinOptions(this.progress,{experimental})
+      :experimental?[{id:'level3Preview',label:'Skin test',unlocked:true}]:[];
+    for(const option of options){
       const button=document.createElement('button');button.type='button';button.className='wardrobe-skin';button.disabled=!option.unlocked;
       if(!option.unlocked)button.classList.add('locked');
       const selected=option.id==='level3Preview'
@@ -115,7 +122,8 @@ export class WardrobeController {
     if(this.loading)return;this.loading=true;
     try{
       if(skin==='level3Preview'){
-        if(import.meta.env.DEV!==true||!this.presence.identity.devAllSkins)throw new Error('Skin test is unavailable.');
+        const character=characterById(this.presence.identity.characterId);
+        if(!canPreviewCharacterSkin(character,this.presence.identity))throw new Error('Skin test is unavailable.');
         this.presence.identity.visualPreview='level3Preview';
         this.scene.applyCharacterSkin(this.progress?.equippedSkin);
       }else{

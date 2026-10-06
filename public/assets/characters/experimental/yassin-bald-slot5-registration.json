@@ -1,0 +1,229 @@
+﻿{
+    "source":  "yassin-bald-slot5-source.png",
+    "sourceSha256":  "6C4229D4477F89DD1B486D2D621B9B5208ED20DBF26E10941B9A22C18529CC92",
+    "columns":  6,
+    "rows":  4,
+    "frameWidth":  64,
+    "frameHeight":  72,
+    "baseline":  71,
+    "uniformScale":  0.25663716814159293,
+    "alphaThreshold":  128,
+    "frames":  [
+                   {
+                       "row":  0,
+                       "column":  0,
+                       "x":  53,
+                       "y":  60,
+                       "width":  129,
+                       "height":  212,
+                       "headCenterX":  116.5
+                   },
+                   {
+                       "row":  0,
+                       "column":  1,
+                       "x":  297,
+                       "y":  60,
+                       "width":  129,
+                       "height":  212,
+                       "headCenterX":  362.5
+                   },
+                   {
+                       "row":  0,
+                       "column":  2,
+                       "x":  541,
+                       "y":  60,
+                       "width":  128,
+                       "height":  214,
+                       "headCenterX":  601
+                   },
+                   {
+                       "row":  0,
+                       "column":  3,
+                       "x":  777,
+                       "y":  60,
+                       "width":  124,
+                       "height":  214,
+                       "headCenterX":  843.5
+                   },
+                   {
+                       "row":  0,
+                       "column":  4,
+                       "x":  1024,
+                       "y":  60,
+                       "width":  129,
+                       "height":  214,
+                       "headCenterX":  1086.5
+                   },
+                   {
+                       "row":  0,
+                       "column":  5,
+                       "x":  1262,
+                       "y":  60,
+                       "width":  127,
+                       "height":  212,
+                       "headCenterX":  1327.5
+                   },
+                   {
+                       "row":  1,
+                       "column":  0,
+                       "x":  64,
+                       "y":  321,
+                       "width":  102,
+                       "height":  222,
+                       "headCenterX":  113.5
+                   },
+                   {
+                       "row":  1,
+                       "column":  1,
+                       "x":  304,
+                       "y":  321,
+                       "width":  106,
+                       "height":  222,
+                       "headCenterX":  353
+                   },
+                   {
+                       "row":  1,
+                       "column":  2,
+                       "x":  541,
+                       "y":  321,
+                       "width":  135,
+                       "height":  225,
+                       "headCenterX":  593
+                   },
+                   {
+                       "row":  1,
+                       "column":  3,
+                       "x":  780,
+                       "y":  321,
+                       "width":  114,
+                       "height":  222,
+                       "headCenterX":  835
+                   },
+                   {
+                       "row":  1,
+                       "column":  4,
+                       "x":  1025,
+                       "y":  321,
+                       "width":  129,
+                       "height":  225,
+                       "headCenterX":  1073.5
+                   },
+                   {
+                       "row":  1,
+                       "column":  5,
+                       "x":  1271,
+                       "y":  321,
+                       "width":  102,
+                       "height":  222,
+                       "headCenterX":  1319.5
+                   },
+                   {
+                       "row":  2,
+                       "column":  0,
+                       "x":  70,
+                       "y":  591,
+                       "width":  110,
+                       "height":  224,
+                       "headCenterX":  128
+                   },
+                   {
+                       "row":  2,
+                       "column":  1,
+                       "x":  312,
+                       "y":  591,
+                       "width":  107,
+                       "height":  224,
+                       "headCenterX":  367
+                   },
+                   {
+                       "row":  2,
+                       "column":  2,
+                       "x":  528,
+                       "y":  591,
+                       "width":  134,
+                       "height":  225,
+                       "headCenterX":  607.5
+                   },
+                   {
+                       "row":  2,
+                       "column":  3,
+                       "x":  785,
+                       "y":  591,
+                       "width":  117,
+                       "height":  226,
+                       "headCenterX":  847.5
+                   },
+                   {
+                       "row":  2,
+                       "column":  4,
+                       "x":  1010,
+                       "y":  591,
+                       "width":  134,
+                       "height":  226,
+                       "headCenterX":  1092
+                   },
+                   {
+                       "row":  2,
+                       "column":  5,
+                       "x":  1277,
+                       "y":  591,
+                       "width":  109,
+                       "height":  226,
+                       "headCenterX":  1333.5
+                   },
+                   {
+                       "row":  3,
+                       "column":  0,
+                       "x":  53,
+                       "y":  851,
+                       "width":  132,
+                       "height":  217,
+                       "headCenterX":  118.5
+                   },
+                   {
+                       "row":  3,
+                       "column":  1,
+                       "x":  292,
+                       "y":  851,
+                       "width":  139,
+                       "height":  217,
+                       "headCenterX":  360.5
+                   },
+                   {
+                       "row":  3,
+                       "column":  2,
+                       "x":  538,
+                       "y":  851,
+                       "width":  130,
+                       "height":  217,
+                       "headCenterX":  599
+                   },
+                   {
+                       "row":  3,
+                       "column":  3,
+                       "x":  780,
+                       "y":  851,
+                       "width":  127,
+                       "height":  217,
+                       "headCenterX":  845
+                   },
+                   {
+                       "row":  3,
+                       "column":  4,
+                       "x":  1024,
+                       "y":  851,
+                       "width":  129,
+                       "height":  215,
+                       "headCenterX":  1085
+                   },
+                   {
+                       "row":  3,
+                       "column":  5,
+                       "x":  1260,
+                       "y":  851,
+                       "width":  134,
+                       "height":  217,
+                       "headCenterX":  1326
+                   }
+               ]
+}

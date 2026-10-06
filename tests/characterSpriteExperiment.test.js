@@ -3,17 +3,60 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { CHARACTERS, characterById, characterMenuOptions } from '../src/characters.js';
 import { CharacterMenu } from '../src/CharacterMenu.js';
+import { canPreviewCharacterSkin, WardrobeController } from '../src/WardrobeController.js';
 import { characterVisual, createCharacterAnimations, footBodyForVisual, localCharacterStyle, preloadCharacterTextures, prepareExperimentalGridTexture, walkFrames } from '../src/characterVisuals.js';
 
 const felipe=characterById('felipe');
-test('character selection shows only four real bases; test textures remain available to DEV tools',()=>{
-  assert.equal(characterMenuOptions().length,4);
-  const options=characterMenuOptions(true);
-  assert.equal(options.length,4);
-  assert.deepEqual(options.map(option=>option.c.id),['michael','jassine','sarina','felipe']);
-  assert.ok(options.every(option=>option.previewStyle===null));
+test('Yassin can select the approved skin in the wardrobe without DEV tools',async()=>{
+  const yassin=characterById('jassine');
+  assert.equal(canPreviewCharacterSkin(yassin,{},false),true);
+  assert.equal(canPreviewCharacterSkin(felipe,{},false),false);
+  assert.equal(canPreviewCharacterSkin(felipe,{devAllSkins:true},false),false);
+  assert.equal(canPreviewCharacterSkin(felipe,{devAllSkins:true},true),true);
+  for(const kind of ['guest','profile']){
+    const identity={kind,characterId:'jassine',characterBaseId:'jassine'};
+    const applied=[],errors=[];
+    const wardrobe=Object.assign(Object.create(WardrobeController.prototype),{
+      presence:{identity},scene:{applyCharacterSkin:skin=>applied.push(skin)},
+      progress:{equippedSkin:'classic'},render:error=>{if(error)errors.push(error);},
+    });
+    await wardrobe.equip('level3Preview');
+    assert.deepEqual(errors,[]);
+    assert.equal(identity.visualPreview,'level3Preview');
+    assert.deepEqual(applied,['classic']);
+  }
+});
+test('the fifth menu card previews approved Yassin using the existing base',()=>{
+  const options=characterMenuOptions();
+  assert.equal(options.length,5);
+  assert.deepEqual(options.slice(0,4).map(option=>option.c.id),['michael','jassine','sarina','felipe']);
+  assert.ok(options.slice(0,4).every(option=>option.previewStyle===null));
+  assert.equal(options[4].c,characterById('jassine'));
+  assert.equal(options[4].label,'Yassin — TEST');
+  assert.equal(options[4].previewStyle,'level3Preview');
+  assert.match(options[4].c.experimentalVisual.asset,/yassin-bald-slot5-hd-v3\.png$/);
   assert.ok(CHARACTERS.every(character=>character.experimentalVisual));
   assert.equal(CHARACTERS.length,4);
+});
+
+test('the visible Yassin preview loads and animates with DEV experiments disabled',()=>{
+  const loaded=[],animations=new Map();
+  const scene={textures:{exists:()=>false},
+    load:{svg(){},spritesheet:(...args)=>loaded.push(args),image:(...args)=>loaded.push(args)},
+    anims:{exists:key=>animations.has(key),create:config=>animations.set(config.key,config)}};
+  preloadCharacterTextures(scene,CHARACTERS,'/',false);
+  createCharacterAnimations(scene,CHARACTERS,false);
+  const visual=characterVisual(characterById('jassine'),'level3Preview');
+  assert.deepEqual(loaded.find(([key])=>key===visual.sprite),[visual.sprite,`/${visual.asset}`,{frameWidth:128,frameHeight:144}]);
+  for(const direction of ['down','left','right','up']){
+    assert.ok(animations.has(`${visual.sprite}-idle-${direction}`));
+    assert.equal(animations.get(`${visual.sprite}-walk-${direction}`).frames.length,5);
+  }
+  for(const id of ['michael','sarina','felipe']){
+    const other=characterById(id).experimentalVisual;
+    assert.ok(!loaded.some(([key])=>key===(other.recolorSource??other.sprite)));
+    assert.ok(!animations.has(`${other.sprite}-walk-down`));
+  }
 });
 
 test('preview selection claims the original base and normal reselection clears local override',async()=>{

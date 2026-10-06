@@ -31,6 +31,7 @@ export class PvpHud {
     const player=node(this.root,'section','pvp-hud-player');
     this.team=node(player,'span','pvp-hud-team');
     this.personal=node(player,'small','pvp-hud-personal');
+    this.skillMount=node(player,'span','pvp-hud-skills');
     this.leave=node(player,'button','pvp-hud-leave');this.leave.type='button';this.leave.textContent='Leave';this.leave.onclick=onLeave;
     if(dev){
       const details=node(player,'details','pvp-hud-dev');

@@ -1,5 +1,6 @@
 node_modules/
 dist/
+builds/test/
 *.local
 *.tiled-session
 .map-recovery/
@@ -10,6 +11,7 @@ backups/convex/
 
 .vercel
 .env*
+!config/pvp-test/.env.test.example
 /public/assets/sprites-test/
 /assets-drafts/
 /debug.log

@@ -5,35 +5,43 @@ import { combatSnapshot,fighterFields } from './combatSnapshot.js';
 import { segmentRect,pvpPlayerHitboxAt } from './projectiles.js';
 import { PvpRetryCoordinator } from './PvpRetryCoordinator.js';
 import { matchSettingsFor,pvpMovementSpeed,effectiveMatchSettings } from './matchSettings.js';
+import { PvpPickupAuthority } from './pickups/PvpPickupAuthority.js';
+import { SkillAuthority } from './skills/SkillAuthority.js';
 
 // One instance per authenticated room/round, owned only by the relay process.
 // Latest positions + straight segment checks, without historical rewind/rollback.
 export class PvpDamageAuthority {
-  constructor(state,{now=Date.now,walls=[],getSpawn=()=>({x:0,y:0}),authorityId,onState=()=>{},commit,onFailure=()=>{},onRetryResolve,modeAuthority=null,log=()=>{},schedule=setTimeout,cancel=clearTimeout}){
+  constructor(state,{now=Date.now,walls=[],getSpawn=()=>({x:0,y:0}),authorityId,onState=()=>{},commit,onFailure=()=>{},onRetryResolve,modeAuthority=null,pickupSpots=[],skillRegistry,log=()=>{},schedule=setTimeout,cancel=clearTimeout}){
     Object.assign(this,{state:structuredClone(state),now,walls,getSpawn,authorityId,onState,commit,onFailure,log,schedule,cancel,mode:modeAuthority});
     this.settings=matchSettingsFor(state);
     if(this.settings.teamOverrides){for(const fields of Object.values(this.settings.teamOverrides))Object.freeze(fields);Object.freeze(this.settings.teamOverrides);}
     Object.freeze(this.settings);this.state.matchSettings=this.settings;
     if(this.mode)this.state.payload=this.mode.current;
     this.round=state.round??0;this.revision=state.damageRevision??0;this.version=0;this.closed=false;this.failed=false;
+    this.pickups=new PvpPickupAuthority(pickupSpots,this.round);
     this.regenEnabled=state.mode==='payload'&&state.arenaMap?.id===PVP_MAP_DEFINITION.id
       &&state.arenaMap?.file===PVP_MAP_DEFINITION.file&&state.arenaMap?.revision===PVP_MAP_DEFINITION.revision;
     this.regen=new Map();
     this.members=new Map();this.positions=new Map();this.projectiles=new Map();this.fired=new Map();this.diagnostics=new Map();this.queue=Promise.resolve();
+    this.skills=new SkillAuthority(this.round,{state:()=>this.state,fighter:peerId=>this.fighter(peerId),
+      position:player=>this.position(player),connected:playerId=>this.members.has(playerId),
+      damage:(instance,target,amount,at)=>this.applySkillDamage(instance,target,amount,at)},{registry:skillRegistry});
     if(onRetryResolve)this.retry=new PvpRetryCoordinator({now,schedule,cancel,onChange:()=>this.emit(),onResolve:async playerIds=>{
       await this.queue;if(this.closed||this.failed)return;
       try{await onRetryResolve(playerIds);}catch{this.retry.close();this.onFailure('Retry synchronization failed. Leave and rejoin the lobby.');}
     }});
     this.events=[];this.arm();
   }
-  register(playerId,peerId){
+  register(playerId,peerId,sessionId){
     if(this.closed||!this.state.participants.some(p=>p.playerId===playerId))return false;
     if(this.members.has(playerId)&&this.members.get(playerId)!==peerId)return false;
     this.members.set(playerId,peerId);
+    this.skills.register(playerId,peerId,sessionId);
     this.log({event:'combat player initialized',...this.combatContext(this.fighter(peerId)),peerId});
     this.updateRetry();return true;
   }
   remove(peerId){
+    this.skills.remove(peerId);
     const departed=[];
     for(const [playerId,id] of this.members)if(id===peerId){departed.push(playerId);this.members.delete(playerId);this.positions.delete(playerId);}
     if(departed.includes(this.state.hostPlayerId)){
@@ -86,6 +94,8 @@ export class PvpDamageAuthority {
       const m=this.state,deadlines=[m.endsAt,m.expiresAt,...m.participants.map(p=>p.presenceExpiresAt),...m.participants.map(p=>p.respawnAt)];
       if(m.state==='countdown')deadlines.push(m.startedAt);
       if(this.mode)deadlines.push(this.mode.nextDeadline(m));
+      deadlines.push(this.pickups.nextDeadline(m));
+      deadlines.push(this.skills.nextDeadline());
       if(this.regenEnabled&&m.state==='active')for(const [playerId,entry] of this.regen){
         const player=m.participants.find(p=>p.playerId===playerId);
         if(player?.life===entry.life&&player.hp>0&&player.hp<effectiveMatchSettings(this.state,player.team).maxHp)deadlines.push(entry.nextAt);
@@ -102,6 +112,8 @@ export class PvpDamageAuthority {
   }
   publish(previous,source,detail={}){
     if(this.state.state==='ended')this.advanceObjective(this.now());
+    if(this.state.state==='ended')this.pickups.stop();
+    this.skills.reconcile();
     this.revision++;this.transitions(previous,source);
     const events=[];
     for(const p of this.state.participants){
@@ -201,13 +213,16 @@ export class PvpDamageAuthority {
     this.state=now>=previous.expiresAt?endMatch(advanced,now,'expired'):reconcileParticipants(advanced,
       advanced.participants.filter(p=>p.presenceExpiresAt===undefined||now<p.presenceExpiresAt),now);
     const regenerated=this.advanceRegen(now);
-    let changed=regenerated||this.state.state!==previous.state||this.state.participants.length!==previous.participants.length;
+    const pickupsChanged=this.pickups.advance(now,this.state);
+    this.skillDamageChanged=false;
+    const skillsChanged=this.skills.advance(now);
+    let changed=regenerated||this.skillDamageChanged||this.state.state!==previous.state||this.state.participants.length!==previous.participants.length;
     for(const p of this.state.participants)if(previous.participants.find(q=>q.playerId===p.playerId)?.life!==p.life){
       this.positions.delete(p.playerId);changed=true;
     }
     for(const [id,p] of this.projectiles)if(now>p.expiresAt+6000)this.projectiles.delete(id);
     const broadcast=this.mode?.shouldBroadcast(now,previous.payload);
-    if(changed)this.publish(previous,'realtime clock');else{if(modeChanged&&broadcast)this.emit();this.arm();}
+    if(changed)this.publish(previous,'realtime clock');else{if(pickupsChanged||skillsChanged||modeChanged&&broadcast)this.emit();this.arm();}
   }
   advanceObjective(at){
     if(!this.mode)return false;
@@ -231,9 +246,46 @@ export class PvpDamageAuthority {
     if(Math.hypot(p.vx??0,p.vy??0)>maxSpeed+1){
       this.log({event:'movement rejected',playerId:p.playerId,life:p.life,reason:'movement_speed',maxSpeed});return false;
     }
-    this.positions.set(p.playerId,{x:p.x,y:p.y,life:p.life,moving:p.moving,at:this.now()});
+    this.positions.set(p.playerId,{x:p.x,y:p.y,direction:p.direction,life:p.life,moving:p.moving,at:this.now()});
     this.firstAfterRespawn('movement',member,{sampleSeq:p.sampleSeq});
-    if(this.mode)this.advance();return true;
+    if(this.mode)this.advance();
+    this.collectPickups(peerId);return true;
+  }
+  collectPickups(peerId){
+    if(this.closed||this.failed||this.state.state!=='active')return false;
+    const player=this.fighter(peerId),position=player&&this.positions.get(player.playerId);
+    if(!player||!position)return false;
+    const result=this.pickups.collectAt(player,position,this.state,this.now());if(!result)return false;
+    const previous=this.state;
+    this.state={...previous,participants:previous.participants.map(p=>p===player?{...p,...result.changes}:p)};
+    this.log({event:'pickup collected',round:this.round,pickupId:result.pickupId,playerId:player.playerId,
+      hpBefore:player.hp,hpAfter:result.changes.hp});
+    this.publish(previous,'pickup');return true;
+  }
+  useSkill(peerId,request){
+    this.advance();
+    const result=this.skills.use(peerId,request,this.now());
+    if(result.accepted){this.events=[];this.arm();this.emit();}
+    return result;
+  }
+  applySkillDamage(instance,target,amount,now){
+    // Reuse established HP, regen, death/score and respawn rules through a
+    // separate adapter. Normal character projectiles stay on their own path.
+    const owner=this.state.participants.find(p=>p.playerId===instance.ownerId);
+    const victim=this.state.participants.find(p=>p.playerId===target.playerId);
+    if(this.closed||this.state.state!=='active'||instance.round!==this.round
+      ||!owner||owner.life!==instance.ownerLife||owner.hp<=0||!this.members.has(owner.playerId)
+      ||!victim||victim.life!==target.life||victim.hp<=0||!this.members.has(victim.playerId)
+      ||owner.playerId===victim.playerId||owner.team===victim.team
+      ||victim.presenceRoom!==this.state.room||!Number.isFinite(amount)||amount<=0)return false;
+    const hp=Math.max(0,victim.hp-amount);
+    this.state={...this.state,participants:this.state.participants.map(p=>p===victim?{...p,hp}:p)};
+    if(this.regenEnabled){
+      if(hp>0)this.regen.set(victim.playerId,{life:victim.life,nextAt:now+PAYLOAD_REGEN.delayMs});
+      else this.regen.delete(victim.playerId);
+    }
+    if(hp===0)this.state=registerPlayerDeath(this.state,owner.playerId,victim.playerId,now,{scoreVictory:this.mode?.scoreVictory??true});
+    this.skillDamageChanged=true;return true;
   }
   spawn(peerId,p){
     this.advance();const member=this.fighter(peerId),now=this.now(),previous=this.fired.get(p.playerId);
@@ -305,9 +357,9 @@ export class PvpDamageAuthority {
     return result;
   }
   emit(){if(!this.closed)this.onState({authorityId:this.authorityId,version:++this.version,round:this.round,
-    damageRevision:this.revision,...combatSnapshot(this.state),events:this.events,
+    damageRevision:this.revision,...combatSnapshot(this.state),pickups:this.pickups.snapshot(),skills:this.skills.snapshot(),events:this.events,
     ...(this.retry?.deadline!==undefined?{retry:this.retry.snapshot()}: {})});}
   close(){if(this.timer!==undefined)this.cancel(this.timer);this.timer=undefined;this.deadline=null;
-    this.retry?.close();
+    this.retry?.close();this.pickups.close();this.skills.close();
     this.closed=true;this.members.clear();this.positions.clear();this.projectiles.clear();this.fired.clear();this.diagnostics.clear();this.regen.clear();}
 }

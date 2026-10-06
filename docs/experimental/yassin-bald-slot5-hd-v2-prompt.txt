@@ -1,0 +1,27 @@
+Tool: built-in imagegen; transparent_background: true.
+Approved identity: assets-drafts/yassin-bald-third-style-preview.png.
+Style and animation reference: public/assets/characters/experimental/michael-level3-hd-preview.png.
+Output: public/assets/characters/experimental/yassin-bald-slot5-hd-v2-source.png.
+Registration: scripts/register-character-sheet.ps1, 128x144 frames, content height 126, preview scale 2, alpha threshold 128.
+
+Use case: identity-preserve / game sprite-sheet production.
+Create ONE complete transparent 6-column x 4-row character sprite sheet, EXACTLY 24 full-body sprites.
+
+REFERENCE ROLES:
+Image 1 is the approved YASSIN character design. Preserve this character's identity: completely bald warm tan head, friendly face, distinctive BLACK RECTANGULAR GLASSES, light blue short-sleeve shirt with blue collar, navy trousers and dark charcoal rounded shoes. Keep the approved medium head proportions.
+Image 2 is the existing MICHAEL third-skin sprite sheet. It is the animation-layout, body-proportion and rendering-style reference. Match its refined fine-grained 128x144 sprite aesthetic and understated shading, and closely follow its pose progression. Do NOT copy Michael's black shirt or cigarette.
+
+CHARACTER AND SUBTLE POLISH:
+Use the approved Yassin from Image 1 in every cell, with just a mild style refinement toward Image 2: slightly thinner, cleaner dark contours, finer pixel detail, restrained cloth folds, simpler warm skin shading and less bulky shoe highlights. Preserve the black rectangular glasses silhouette, baldness, blue clothes, proportions and friendly identity. The head must remain medium sized like the approved reference, not tiny and not enlarged. Skin is fully bald in all directions: no hair, stubble dots, buzzcut shading, or hairline. No cigarette, beard, accessories or added objects. Maintain the same body width, head size, palette, shirt hem and leg length throughout. Do not make an ultra-blocky low-resolution icon, a painterly image, or glossy 3D rendering.
+
+EXACT GRID / ANIMATION:
+Canvas aspect ratio 4:3, ideally 1536x1152; exactly SIX equal columns and FOUR equal rows. Every cell is 256x288 at that output size and intended to register into a 128x144 game frame. There must be large clear transparent gaps between each full character and its neighbours. All complete head/feet are inside their own cell.
+Row 1: FRONT / facing DOWN, all six frames.
+Row 2: LEFT PROFILE / facing LEFT, all six frames.
+Row 3: RIGHT PROFILE / facing RIGHT, all six frames.
+Row 4: BACK / facing UP, all six frames; show the back of the bald head, blue shirt, navy trousers and heels, not front glasses/face.
+In EACH row, column 1 is neutral standing idle, arms by sides, feet resting. Columns 2 through 6 are FIVE DISTINCT successive walk-cycle poses following the movement in Image 2: alternating extended leg, passing leg, opposite extended leg, passing leg and transition pose with coordinated opposite arm swings. Give a natural restrained walk, no jumping or running, no repeated idle frames masquerading as walk poses. Profile frames should have readable foot separation at strides. Glasses stay firmly attached to the head in front and side views, and may show only appropriate tiny temple arms by the ears from behind.
+Keep the head horizontally centred consistently in each cell; keep feet on a consistent row ground baseline. No drifting of character size between frames. Slight stride pose differences are required, but avoid excessive vertical head bob.
+
+OUTPUT:
+Exactly one complete usable sprite sheet, 24 isolated sprites, regular 6x4 grid. TRUE TRANSPARENT BACKGROUND, no solid background, no baked checkerboard, no ground shadows, no grid lines, no labels, no text, no decorations. Do not omit any frame or row. Preserve the reference character while producing every required direction and movement pose.

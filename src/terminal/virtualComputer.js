@@ -82,7 +82,8 @@ function networkCommand(computer, session, verb, arg) {
       return {message: 'Usage: connect <host>:<port> or connect <host> <port>', error: true};
     const [, host, port] = match;
     const ip = targetIp(computer, session, host);
-    if (!ip || !(computer.reachableIps ?? []).includes(ip)) return {message: `Could not connect to ${host}.`, error: true};
+    if (!ip || !(computer.reachableIps ?? []).includes(ip))
+      return {message: `Could not connect to ${host}.\nThe resolved address may no longer be valid.`, error: true};
     const service = (computer.services ?? []).find(item => item.ip === ip && item.port === Number(port));
     if (!service) return {message: `Connection to ${host}:${port} refused.`, error: true};
     if (service.requireHostname && key(host) !== key(service.hostname))

@@ -5,7 +5,8 @@ import { drawOfficeDoor,drawOffice3Door } from '../art/officeDoor.js';
 import { registerSecretaryFrames,SecretaryNpc } from '../npc/SecretaryNpc.js';
 import { drawSchoolBackdrop } from '../art/schoolBackdrop.js';
 import { preloadSchoolCorridorDecor,drawSchoolCorridorDecor } from '../art/schoolCorridorDecor.js';
-import { PAYLOAD_MAP_TEST_PORTAL } from '../maps/payloadMapTest.js';
+import { PVP_LOBBY_PORTAL } from '../maps/pvpLobbyPortal.js';
+import { pvpLobbyAvailable } from '../pvp/config.js';
 
 export class SchoolScene extends MapScene {
   constructor() { super('school', 'classroom.tmj'); }
@@ -27,7 +28,7 @@ export class SchoolScene extends MapScene {
 
   create(destination = {}) {
     super.create(destination);
-    this.createPayloadMapMarker();
+    if(pvpLobbyAvailable(import.meta.env))this.createPvpLobbyMarker();
     const studyLabel=this.tiledTextObjects?.find(text=>text.getData('tiledObjectName')==='studyModeSign');
     if(studyLabel){
       const bounds=studyLabel.getData('tiledObjectBounds');
@@ -52,15 +53,15 @@ export class SchoolScene extends MapScene {
     }
   }
 
-  createPayloadMapMarker(){
-    const portal=PAYLOAD_MAP_TEST_PORTAL;
+  createPvpLobbyMarker(){
+    const portal=PVP_LOBBY_PORTAL;
     this.mapTransitions.push(portal);
     this.add.graphics().setDepth(portal.y-1)
-      .fillStyle(0x33b8ff,.22).fillRoundedRect(portal.x-18,portal.y-18,36,36,5)
-      .lineStyle(2,0x7ce0ff,.95).strokeRoundedRect(portal.x-18,portal.y-18,36,36,5)
-      .fillStyle(0xdaf8ff,1).fillCircle(portal.x,portal.y,4);
-    this.add.text(portal.x,portal.y-23,'PAYLOAD TEST',{
-      fontSize:'9px',fontStyle:'bold',color:'#e5f8ff',backgroundColor:'#10283dcc',
+      .fillStyle(0xc99c48,.2).fillRoundedRect(portal.x-18,portal.y-18,36,36,5)
+      .lineStyle(2,0xe4c477,.95).strokeRoundedRect(portal.x-18,portal.y-18,36,36,5)
+      .fillStyle(0xffe7a6,1).fillCircle(portal.x,portal.y,4);
+    this.add.text(portal.x,portal.y-23,'PVP LOBBY',{
+      fontSize:'9px',fontStyle:'bold',color:'#fff0c5',backgroundColor:'#302719dd',
       padding:{x:4,y:2},
     }).setOrigin(.5,1).setDepth(portal.y+2);
   }

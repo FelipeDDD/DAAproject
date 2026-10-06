@@ -1,5 +1,7 @@
-import { PVP_RULES } from './config.js';
+import { DEFAULT_MATCH_TIME_LIMIT_MS,PVP_RULES } from './config.js';
 import { PLAYER_SPEED } from '../game/settings.js';
+
+export { DEFAULT_MATCH_TIME_LIMIT_MS };
 
 // Common round rules only. Objective/respawn/score rules stay in gameModes.
 export const DEFAULT_MATCH_SETTINGS=Object.freeze({
@@ -10,6 +12,16 @@ export const MATCH_SETTING_LIMITS=Object.freeze({
   maxHp:{min:50,max:500,integer:true},damage:{min:1,max:100,integer:true},
   attackCooldownMs:{min:100,max:5000,integer:true},movementSpeedMultiplier:{min:.5,max:2,integer:false},
 });
+export const MATCH_DURATION_MINUTES_LIMITS=Object.freeze({min:1,max:60});
+export function matchDurationMinutesToMs(minutes){
+  if(!Number.isSafeInteger(minutes)||minutes<MATCH_DURATION_MINUTES_LIMITS.min||minutes>MATCH_DURATION_MINUTES_LIMITS.max)
+    throw new Error('Match duration must be between 1 and 60 minutes.');
+  return minutes*60_000;
+}
+export function validMatchTimeLimitMs(value){
+  return Number.isSafeInteger(value)&&value>=MATCH_DURATION_MINUTES_LIMITS.min*60_000
+    &&value<=MATCH_DURATION_MINUTES_LIMITS.max*60_000;
+}
 const plain=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
 const validField=(key,value)=>{const {min,max,integer}=MATCH_SETTING_LIMITS[key];
   return Number.isFinite(value)&&value>=min&&value<=max&&(!integer||Number.isSafeInteger(value));};
@@ -54,5 +66,6 @@ export const sameMatchSettings=(a,b)=>[undefined,'A','B'].every(team=>{
 });
 export const hasCustomMatchSettings=match=>{
   const settings=matchSettingsFor(match);
-  return !sameMatchSettings(settings,DEFAULT_MATCH_SETTINGS);
+  return (match?.timeLimitMs??DEFAULT_MATCH_TIME_LIMIT_MS)!==DEFAULT_MATCH_TIME_LIMIT_MS
+    ||!sameMatchSettings(settings,DEFAULT_MATCH_SETTINGS);
 };

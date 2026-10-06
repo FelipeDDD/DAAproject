@@ -77,6 +77,12 @@ profile, o token autenticado continua válido e o progresso permanece no mesmo
 `profileId`. Guest não cria linhas em `profiles` ou `profileSessions`; fechar a aba
 ou sair libera a presença, com o timeout existente apenas como fallback.
 
+## Build de teste PvP
+
+Para uma build jogável separada e compartilhada com colegas, use
+`npm.cmd run build:test` e `npm.cmd run preview:test`. Veja os comandos de Convex,
+relay e tunnel em [Ambiente de teste PvP](docs/pvp-test-environment.md).
+
 ## Deploy manual: Vercel + Convex
 
 O frontend usa `import.meta.env.VITE_CONVEX_URL`. Em produção, essa variável é

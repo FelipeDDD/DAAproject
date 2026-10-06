@@ -17,9 +17,10 @@ export class CharacterMenu {
     this.rows=[];this.maxPlayers=MAX_PLAYER_CAPACITY;this.ready=false;this.connectionFailed=false;this.closed=false;
     let saved;try{saved=localStorage.getItem(CHARACTER_STORAGE_KEY);}catch{}
     const options=characterMenuOptions();
-    document.getElementById('character-list').classList.remove('has-experiment');
+    document.getElementById('character-list').classList.toggle('has-experiment',options.some(option=>option.previewStyle));
     this.cards=options.map(({c,label,previewStyle})=>{
       const button=document.createElement('button');button.className='character-card';
+      if(previewStyle)button.classList.add('yassin-skin-test-card');
       const image=document.createElement('img');image.src=`${import.meta.env.BASE_URL}${c.asset}`;image.alt='';
       const name=document.createElement('strong');name.textContent=label;
       const state=document.createElement('span');

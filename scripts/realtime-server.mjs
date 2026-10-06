@@ -13,6 +13,7 @@ import { teamSpawn } from '../src/pvp/spawns.js';
 import { collisionAreas } from '../src/maps/collision.js';
 import { objectsIn } from '../src/maps/tiledObjects.js';
 import { createLocalPvpBridge } from './pvp-convex-bridge.mjs';
+import { pickupSpotsFromMap } from '../src/pvp/pickups/spots.js';
 
 export function rateAllowed(client,now,limit){
   if(now-client.windowAt>=1000){client.windowAt=now;client.count=0;}
@@ -24,6 +25,7 @@ export function createRealtimeServer(options={}){
   const clients=new Map(),rooms=new Map();
   const authorities=new Map(),pendingMirrors=new Set(),bridge=options.pvpBridge;
   const map=JSON.parse(readFileSync(new URL(`../public/assets/maps/${PVP_MAP_FILE}`,import.meta.url),'utf8'));
+  const pickupSpots=pickupSpotsFromMap(map);
   const send=(client,type,payload,extra={})=>{
     if(client.ws.readyState!==WebSocket.OPEN)return;
     if(client.ws.bufferedAmount>config.maxBufferedBytes){client.ws.close(1013,'Backpressure');return;}
@@ -59,6 +61,7 @@ export function createRealtimeServer(options={}){
           requirePvpMap(initial);
           if(authorities.get(roomId)!==entry)return;
           const authority=new PvpDamageAuthority(initial,{now,authorityId,
+            pickupSpots,
             schedule:options.schedule??setTimeout,cancel:options.cancel??clearTimeout,walls:collisionAreas(objectsIn(map,'Collision')),
             modeAuthority:createModeAuthority(initial.mode,map,{now}),
             getSpawn:(p,m)=>teamSpawn(map,p.team,m.participants.filter(q=>q.team===p.team).findIndex(q=>q.playerId===p.playerId)),
@@ -88,7 +91,7 @@ export function createRealtimeServer(options={}){
       await entry.ready;
       if(generation!==client.authGeneration||client.roomId!==roomId||client.ws.readyState!==WebSocket.OPEN)return;
       if(!entry.authority)throw new Error('PvP room unavailable.');
-      if(!entry.authority.register(args.playerId,client.id))throw new Error('PvP player already connected or inactive.');
+      if(!entry.authority.register(args.playerId,client.id,args.sessionId))throw new Error('PvP player already connected or inactive.');
       client.combat=entry;client.pvpPlayerId=args.playerId;
       send(client,'pvp-authorized',{playerId:args.playerId,round:args.round,matchSettings:entry.authority.settings},{roomId});
       entry.authority.advance();entry.authority.emit();
@@ -142,6 +145,11 @@ export function createRealtimeServer(options={}){
       if(m.type==='pvp-authorize'){void authorize(client,m.payload);return;}
       if(m.type==='pvp-end-request'){client.combat?.authority.requestEnd(client.id);return;}
       if(m.type==='pvp-retry'){client.combat?.authority.requestRetry(client.id,m.payload.round);return;}
+      if(m.type==='pvp-skill-use'){
+        const result=client.combat?.authority.useSkill(client.id,m.payload)??{accepted:false,reason:'unauthorized'};
+        const {skillId,round,castSeq}=m.payload;
+        send(client,'pvp-skill-result',{skillId,round,castSeq,...result},{roomId:client.roomId});return;
+      }
       if(m.type==='pvp-hit-attempt'){
         console.debug('[PvP hit] attempt',{roomId:client.roomId,projectileId:m.payload.projectileId,shooterId:client.pvpPlayerId,targetId:m.payload.targetId});
         const result=client.combat?.authority.attempt(client.id,m.payload);

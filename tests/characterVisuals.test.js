@@ -35,7 +35,7 @@ test('new style applies to all four character test spritesheets',()=>{
   assert.equal(normalizeCharacterStyle('unknown'),'old');
 });
 
-test('the menu exposes only the four real character bases',()=>{
+test('skin preview cards keep only four real character bases',()=>{
   assert.equal(CHARACTERS.length,4);
   assert.deepEqual(new Set(CHARACTERS.map(character=>character.id)),new Set(['michael','jassine','sarina','felipe']));
   assert.ok(CHARACTERS.every(character=>!/-[23]$/.test(character.id)));
@@ -50,7 +50,7 @@ test('shared visuals are queued once for all four selectable bases',()=>{
   }};
   preloadCharacterTextures(scene,CHARACTERS,'/');
   assert.equal(loaded.length,new Set(loaded).size);
-  assert.equal(loaded.length,9); // Four classic, four Remastered, one Michael item sheet.
+  assert.equal(loaded.length,10); // Four classic, four Remastered, one Michael item sheet, public Yassin preview.
 });
 
 test('style preference persists with a safe old-style fallback',()=>{

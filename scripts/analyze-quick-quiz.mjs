@@ -59,6 +59,9 @@ function createHtml(data) {
     th { color: #c4b5fd; }
     select { background: #111827; color: #fff; border: 1px solid #6b7280; border-radius: 6px; padding: 8px 12px; }
     .pool-summary { display: flex; flex-wrap: wrap; gap: 10px 24px; margin: 14px 0; }
+    .pool-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 16px; margin-top: 12px; }
+    button { background: #312e81; color: #fff; border: 1px solid #818cf8; border-radius: 6px; padding: 8px 12px; cursor: pointer; }
+    button:focus-visible, select:focus-visible { outline: 2px solid #c4b5fd; outline-offset: 2px; }
     .examples { display: grid; gap: 12px; }
     .question { background: #111827; border: 1px solid #374151; border-radius: 8px; padding: 14px; }
     .question h3 { font-size: 1rem; margin: 4px 0 10px; }
@@ -84,11 +87,22 @@ function createHtml(data) {
     <div class="table-wrap"><table id="category-thresholds"></table></div>
   </section>
   <section class="panel">
-    <h2>Inspect a shortest-question pool</h2>
+    <h2>Inspect a question pool</h2>
     <label for="strategy">Strategy: </label>
     <select id="strategy"><option value="global">Global percentile</option><option value="per-category">Per-category percentile</option></select>
     <label for="cut"> Cut: </label>
     <select id="cut">${QUICK_QUIZ_CATEGORY_CUTS.map((cut) => `<option value="${cut}"${cut === 20 ? ' selected' : ''}>Shortest ${cut}%</option>`).join('')}</select>
+    <div class="pool-controls">
+      <label for="view">View: </label>
+      <select id="view" aria-label="Question sample view">
+        <option value="shortest">Shortest</option>
+        <option value="longest">Longest</option>
+        <option value="near-cutoff">Near cutoff</option>
+        <option value="random-sample">Random sample</option>
+      </select>
+      <button id="shuffle" type="button" hidden>Shuffle</button>
+      <span id="examples-status" class="muted" aria-live="polite"></span>
+    </div>
     <div id="category-cutoffs" class="muted"></div>
     <div id="pool-summary" class="pool-summary"></div>
     <div id="examples" class="examples"></div>
@@ -120,13 +134,36 @@ function createHtml(data) {
       const rows = [20, 25, 30].map((cut) => data.perCategoryPercentiles[name].find((row) => row.percentile === cut));
       return [name, data.categoryQuestionSets[name].length, ...rows.flatMap((row) => [row.eligibleCount, row.maxDisplayLength])];
     }));
+    const compareQuestions = (left, right) => left.metrics.displayLength - right.metrics.displayLength ||
+      left.metrics.questionLength - right.metrics.questionLength || left.id.localeCompare(right.id);
+    function sampleNearCutoff(groups, limit = 12) {
+      const examples = [];
+      for (let offset = 1; examples.length < limit; offset += 1) {
+        let found = false;
+        for (const group of groups) {
+          if (offset <= group.length) { examples.push(group[group.length - offset]); found = true; }
+          if (examples.length === limit) break;
+        }
+        if (!found) break;
+      }
+      return examples.sort(compareQuestions);
+    }
+    function randomSample(pool, limit = 20) {
+      const shuffled = pool.slice();
+      for (let index = shuffled.length - 1; index > 0; index -= 1) {
+        const other = Math.floor(Math.random() * (index + 1));
+        [shuffled[index], shuffled[other]] = [shuffled[other], shuffled[index]];
+      }
+      return shuffled.slice(0, limit);
+    }
     function renderPool() {
       const percentile = Number(byId('cut').value);
       const strategy = byId('strategy').value;
-      let pool; let summary; let cutoffText = '';
+      let pool; let summary; let cutoffText = ''; let cutoffGroups;
       if (strategy === 'global') {
         summary = data.percentiles.find((row) => row.percentile === percentile);
         pool = data.rankedQuestions.slice(0, summary.targetCount);
+        cutoffGroups = [pool];
       } else {
         const categoryRows = data.categoryNames.map((category) => {
           const categoryPool = data.categoryQuestionSets[category];
@@ -135,6 +172,7 @@ function createHtml(data) {
           return { category, selected, summary: data.perCategoryPercentiles[category].find((row) => row.percentile === percentile) };
         });
         pool = categoryRows.flatMap((row) => row.selected).sort((left, right) => left.metrics.displayLength - right.metrics.displayLength || left.metrics.questionLength - right.metrics.questionLength || left.id.localeCompare(right.id));
+        cutoffGroups = categoryRows.map((row) => row.selected);
         const metrics = pool.map((question) => question.metrics);
         summary = { eligibleCount: pool.length, maxQuestionLength: Math.max(0, ...metrics.map((item) => item.questionLength)), maxDisplayLength: Math.max(0, ...metrics.map((item) => item.displayLength)), maxAnswerLength: Math.max(0, ...metrics.map((item) => item.maxAnswerLength)) };
         cutoffText = categoryRows.map(({ category, selected, summary: row }) => category + ': ' + selected.length + '/' + data.categoryQuestionSets[category].length + ' · max display ' + row.maxDisplayLength).join(' | ');
@@ -146,7 +184,14 @@ function createHtml(data) {
         cell('span', 'Max answer: ' + summary.maxAnswerLength + ' chars'),
       );
       byId('category-cutoffs').textContent = cutoffText;
-      const examples = pool.slice(0, 12).map((question) => {
+      const view = byId('view').value;
+      const displayedPool = view === 'longest' ? pool.slice(-12).reverse()
+        : view === 'near-cutoff' ? sampleNearCutoff(cutoffGroups)
+        : view === 'random-sample' ? randomSample(pool)
+        : pool.slice(0, 12);
+      byId('shuffle').hidden = view !== 'random-sample';
+      byId('examples-status').textContent = 'Showing ' + displayedPool.length + ' of ' + pool.length + ' eligible questions.';
+      const examples = displayedPool.map((question) => {
         const article = document.createElement('article'); article.className = 'question';
         const tag = cell('div', question.category + ' · ' + question.id + ' · display ' + question.metrics.displayLength);
         tag.className = 'tag'; article.append(tag, cell('h3', question.question));
@@ -156,7 +201,8 @@ function createHtml(data) {
       });
       byId('examples').replaceChildren(...examples);
     }
-    byId('cut').addEventListener('change', renderPool); byId('strategy').addEventListener('change', renderPool); renderPool();
+    byId('cut').addEventListener('change', renderPool); byId('strategy').addEventListener('change', renderPool);
+    byId('view').addEventListener('change', renderPool); byId('shuffle').addEventListener('click', renderPool); renderPool();
   </script>
 </body>
 </html>

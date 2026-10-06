@@ -2,12 +2,14 @@ import { REALTIME_CONFIG as config } from './config.js';
 import { validPayloadState } from '../pvp/payload/state.js';
 import { PVP_MAX_PARTICIPANTS } from '../pvp/config.js';
 import { MATCH_SETTING_LIMITS,normalizeMatchSettings,effectiveMatchSettings } from '../pvp/matchSettings.js';
+import { validPickupSnapshot } from '../pvp/pickups/state.js';
+import { validSkillUse,validSkillSnapshot } from '../pvp/skills/state.js';
 
 const plain=p=>p!==null&&typeof p==='object'&&!Array.isArray(p);
 const number=(n,min,max)=>Number.isFinite(n)&&n>=min&&n<=max;
 const id=s=>typeof s==='string'&&/^[a-zA-Z0-9_-]{1,64}$/.test(s);
 export const validRoomId=id;
-export const CLIENT_TYPES=new Set(['join-room','leave-room','ping','peer-ping','peer-pong','position','pvp-authorize','pvp-end-request','pvp-retry','pvp-hit-attempt','pvp-movement','pvp-projectile-spawn','pvp-projectile-destroy','projectile-spawn','projectile-destroy','test-event','pulse-start','pulse-end','pulse-summary']);
+export const CLIENT_TYPES=new Set(['join-room','leave-room','ping','peer-ping','peer-pong','position','pvp-authorize','pvp-end-request','pvp-retry','pvp-skill-use','pvp-hit-attempt','pvp-movement','pvp-projectile-spawn','pvp-projectile-destroy','projectile-spawn','projectile-destroy','test-event','pulse-start','pulse-end','pulse-summary']);
 const integer=n=>Number.isSafeInteger(n)&&n>=0;
 const validRoundSettings=p=>{try{normalizeMatchSettings(p.matchSettings);return true;}catch{return false;}};
 // Combat fighter packets intentionally omit team metadata; validate their wire
@@ -47,6 +49,7 @@ export function validClientMessage(m){
     ||!number(m.sentAt,0,Number.MAX_SAFE_INTEGER)||!['reliable','unreliable'].includes(m.channel)||!plain(m.payload))return false;
   const p=m.payload;
   switch(m.type){
+    case 'pvp-skill-use':return m.channel==='reliable'&&validSkillUse(p);
     case 'pvp-retry':return integer(p.round)&&Object.keys(p).length===1;
     case 'pvp-end-request':case 'join-room':case 'leave-room':return Object.keys(p).length===0;
     case 'ping':return id(p.probeId);
@@ -72,6 +75,9 @@ export function validServerMessage(m){
   if(!plain(m)||typeof m.type!=='string'||!plain(m.payload)||!number(m.serverTime,0,Number.MAX_SAFE_INTEGER))return false;
   if(CLIENT_TYPES.has(m.type))return validClientMessage(m)&&id(m.senderId);
   switch(m.type){
+    case 'pvp-skill-result':return validRoomId(m.roomId)&&id(m.payload.skillId)&&integer(m.payload.round)
+      &&integer(m.payload.castSeq)&&m.payload.castSeq>0&&typeof m.payload.accepted==='boolean'
+      &&id(m.payload.reason);
     case 'pvp-round-transition':{
       const p=m.payload,s=p.match;
       return validRoomId(m.roomId)&&integer(p.fromRound)&&(s===null||(plain(s)&&id(s.matchId)&&s.round===p.fromRound+1
@@ -87,6 +93,8 @@ export function validServerMessage(m){
       &&validRoundSettings(m.payload)
       &&(m.payload.retry===undefined||retryState(m.payload.retry))
       &&(m.payload.payload===undefined||validPayloadState(m.payload.payload))
+      &&(m.payload.pickups===undefined||validPickupSnapshot(m.payload.pickups))
+      &&(m.payload.skills===undefined||validSkillSnapshot(m.payload.skills,m.payload.round))
       &&integer(m.payload.round)&&integer(m.payload.damageRevision)&&Array.isArray(m.payload.players)&&m.payload.players.length<=PVP_MAX_PARTICIPANTS
       &&['countdown','active','ended'].includes(m.payload.state)
       &&plain(m.payload.scores)&&integer(m.payload.scores.A)&&integer(m.payload.scores.B)

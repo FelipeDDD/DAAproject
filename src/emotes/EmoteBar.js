@@ -13,6 +13,10 @@ export class EmoteBar {
     this.pickerTitle=document.getElementById('emote-picker-title');this.choices=document.getElementById('emote-choices');
     this.onClick=event=>{const button=event.target.closest('button[data-emote-slot]');if(button)this.activate(Number(button.dataset.emoteSlot));};
     this.onContext=event=>{const button=event.target.closest('button[data-emote-slot]');if(button){event.preventDefault();this.openPicker(Number(button.dataset.emoteSlot));}};
+    this.onOutsidePointer=event=>{
+      if(this.picker.hidden||this.root.contains(event.target))return;
+      event.preventDefault();event.stopImmediatePropagation();this.closePicker();
+    };
     this.onSettings=()=>this.picker.hidden?this.openPicker(this.editingSlot):this.closePicker();
     this.onChoice=event=>{const button=event.target.closest('button[data-emote-choice]');if(button)this.choose(button.dataset.emoteChoice);};
     this.onKey=event=>{
@@ -22,6 +26,7 @@ export class EmoteBar {
     };
     this.slotsRoot.addEventListener('click',this.onClick);this.slotsRoot.addEventListener('contextmenu',this.onContext);
     this.settingsButton.addEventListener('click',this.onSettings);this.choices.addEventListener('click',this.onChoice);
+    window.addEventListener('pointerdown',this.onOutsidePointer,true);
     window.addEventListener('keydown',this.onKey,true);
     this.root.hidden=false;this.render();
     this.floating=fixedHudEnabled(layout)?null:new FloatingHotbar({root:this.root,handle:this.dragHandle,resetButton:this.resetPositionButton,
@@ -60,7 +65,8 @@ export class EmoteBar {
   close(){
     window.removeEventListener('keydown',this.onKey,true);this.slotsRoot.removeEventListener('click',this.onClick);
     this.slotsRoot.removeEventListener('contextmenu',this.onContext);this.settingsButton.removeEventListener('click',this.onSettings);
-    this.choices.removeEventListener('click',this.onChoice);this.root.hidden=true;this.picker.hidden=true;
+    this.choices.removeEventListener('click',this.onChoice);window.removeEventListener('pointerdown',this.onOutsidePointer,true);
+    this.root.hidden=true;this.picker.hidden=true;
     this.floating?.destroy();this.floating=null;
   }
 }

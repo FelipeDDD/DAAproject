@@ -7,8 +7,8 @@ import { PVP_RULES,PVP_MAX_PARTICIPANTS,PVP_MAP_DEFINITION,pvpRoom } from '../sr
 import { gameMode,PVP_MODES } from '../src/pvp/gameModes.js';
 import { validPayloadState } from '../src/pvp/payload/state.js';
 import { pvpModeValidator,payloadStateValidator } from './pvpModeValidators.js';
-import { matchSettingsValidator } from './pvpSettingsValidators.js';
-import { DEFAULT_MATCH_SETTINGS,normalizeMatchSettings,matchSettingsFor,effectiveMatchSettings,sameMatchSettings } from '../src/pvp/matchSettings.js';
+import { matchSettingsValidator,matchTimeLimitValidator } from './pvpSettingsValidators.js';
+import { DEFAULT_MATCH_SETTINGS,normalizeMatchSettings,matchSettingsFor,effectiveMatchSettings,sameMatchSettings,validMatchTimeLimitMs } from '../src/pvp/matchSettings.js';
 import { mergeCombatSnapshot } from '../src/pvp/combatSnapshot.js';
 import { newFighter,startMatch,endMatch,reconcileParticipants,interruptedMatch,canStartMatch } from '../src/pvp/matchState.js';
 
@@ -52,6 +52,12 @@ function publicMatch(m,deadlines,rooms){
 async function save(ctx,m){
   const {_id,_creationTime,...data}=m;await ctx.db.patch(_id,data);
 }
+async function extendMatchExpiry(ctx,match,endsAt){
+  const expiresAt=Math.max(match.expiresAt,endsAt+PVP_RULES.lobbyLifetimeMs);
+  if(expiresAt>match.expiresAt)
+    await ctx.scheduler.runAfter(Math.max(0,expiresAt-Date.now()),anyApi.pvpMatches.expire,{matchId:match._id});
+  return {...match,expiresAt};
+}
 async function leaveOld(ctx,args){
   for(const state of ['waiting','countdown','active']){
     const rows=await ctx.db.query('pvpMatches').withIndex('by_state',q=>q.eq('state',state)).collect();
@@ -82,10 +88,7 @@ export const create=mutation({args:{...identity,mode:v.optional(pvpModeValidator
   await ctx.scheduler.runAfter(PVP_RULES.lobbyLifetimeMs,anyApi.pvpMatches.expire,{matchId});
   return {matchId,code,round:0};
 }});
-export const join=mutation({args:{...identity,code:v.string()},handler:async(ctx,args)=>{
-  requireDev();const p=await player(ctx,args),code=normalizeArenaCode(args.code);
-  if(!validArenaCode(code))fail('Enter a valid six-character PvP code.');
-  const saved=await ctx.db.query('pvpMatches').withIndex('by_code',q=>q.eq('code',code)).unique();
+async function joinMatch(ctx,args,p,saved){
   if(!saved)fail('PvP lobby not found.');
   if(saved.state!=='waiting'||saved.expiresAt<=Date.now())fail('This PvP lobby has started, closed or expired.');
   const participants=await live(ctx,saved),m={...saved,participants};
@@ -98,6 +101,29 @@ export const join=mutation({args:{...identity,code:v.string()},handler:async(ctx
   participants.push(newFighter({playerId:p.playerId,sessionId:p.sessionId,displayName:p.displayName??p.name,
     characterBaseId:p.characterBaseId??p.characterId,team:assigned},m.matchSettings));
   await ctx.db.patch(m._id,{participants});return {matchId:m._id,code:m.code,round:m.round??0};
+}
+export const join=mutation({args:{...identity,code:v.string()},handler:async(ctx,args)=>{
+  requireDev();const p=await player(ctx,args),code=normalizeArenaCode(args.code);
+  if(!validArenaCode(code))fail('Enter a valid six-character PvP code.');
+  const saved=await ctx.db.query('pvpMatches').withIndex('by_code',q=>q.eq('code',code)).unique();
+  return joinMatch(ctx,args,p,saved);
+}});
+export const joinById=mutation({args:{...identity,matchId:v.id('pvpMatches')},handler:async(ctx,args)=>{
+  requireDev();const p=await player(ctx,args),saved=await ctx.db.get(args.matchId);
+  return joinMatch(ctx,args,p,saved);
+}});
+export const available=query({args:identity,handler:async(ctx,args)=>{
+  requireDev();await player(ctx,args);
+  const now=Date.now(),rows=await ctx.db.query('pvpMatches').withIndex('by_state',q=>q.eq('state','waiting')).collect();
+  const matches=[];
+  for(const match of rows){
+    if(match.expiresAt<=now||owns(match,args))continue;
+    const participants=await live(ctx,match),host=participants.find(p=>p.playerId===match.hostPlayerId);
+    if(!host||participants.length>=PVP_MAX_PARTICIPANTS)continue;
+    matches.push({matchId:match._id,mode:match.mode,hostName:host.displayName,
+      participantCount:participants.length,maxParticipants:PVP_MAX_PARTICIPANTS,createdAt:match.createdAt});
+  }
+  return matches.sort((a,b)=>b.createdAt-a.createdAt).slice(0,30);
 }});
 export const current=query({args:member,handler:async(ctx,args)=>{const {m,deadlines}=await read(ctx,args,true),state=publicMatch(m,deadlines);return state?{...state,serverNow:Date.now()}:null;}});
 export const chooseTeam=mutation({args:{...command,team},handler:async(ctx,args)=>{
@@ -107,14 +133,16 @@ export const chooseTeam=mutation({args:{...command,team},handler:async(ctx,args)
   await save(ctx,{...m,participants:m.participants.map(p=>p.playerId===args.playerId?
     {...p,team:args.team,hp:effectiveMatchSettings(m,args.team).maxHp}:p)});
 }});
-export const updateSettings=mutation({args:{...command,matchSettings:matchSettingsValidator},handler:async(ctx,args)=>{
+export const updateSettings=mutation({args:{...command,matchSettings:matchSettingsValidator,timeLimitMs:v.optional(matchTimeLimitValidator)},handler:async(ctx,args)=>{
   const {m}=await read(ctx,args);requireRound(m,args);
   if(m.hostPlayerId!==args.playerId)fail('Only the host can change match settings.');
   if(m.state!=='waiting')fail('Match settings are locked after starting.');
   let matchSettings;
   try{matchSettings=normalizeMatchSettings(args.matchSettings);}catch(error){fail(error.message);}
-  await save(ctx,{...m,matchSettings,participants:m.participants.map(p=>({...p,hp:effectiveMatchSettings({matchSettings},p.team).maxHp}))});
-  return {matchSettings};
+  const timeLimitMs=args.timeLimitMs??m.timeLimitMs;
+  if(!validMatchTimeLimitMs(timeLimitMs))fail('Match duration must be between 1 and 60 minutes.');
+  await save(ctx,{...m,matchSettings,timeLimitMs,participants:m.participants.map(p=>({...p,hp:effectiveMatchSettings({matchSettings},p.team).maxHp}))});
+  return {matchSettings,timeLimitMs};
 }});
 export const start=mutation({args:command,handler:async(ctx,args)=>{
   const {m}=await read(ctx,args);requireRound(m,args);if(m.hostPlayerId!==args.playerId)fail('Only the host can start.');
@@ -123,7 +151,10 @@ export const start=mutation({args:command,handler:async(ctx,args)=>{
     const row=await findSessionPlayer(ctx,undefined,member.playerId);
     if(row?.room===pvpRoom(m._id))fail('Wait for all players to return from the arena.');
   }
-  try{await save(ctx,startMatch(m,Date.now()));}catch(error){fail(error.message);}
+  try{
+    const started=startMatch(m,Date.now());
+    await save(ctx,await extendMatchExpiry(ctx,started,started.endsAt));
+  }catch(error){fail(error.message);}
 }});
 export const leave=mutation({args:command,handler:async(ctx,args)=>{
   const p=await findSessionPlayer(ctx,undefined,args.playerId);
@@ -214,6 +245,7 @@ export const advanceRealtimeRound=internalMutation({args:{matchId:v.id('pvpMatch
   if(args.startedAt!==null&&canStartMatch(next)){
     if(!Number.isFinite(args.startedAt)||args.startedAt<Date.now()||args.startedAt>Date.now()+10000)fail('Invalid Retry start.');
     next={...next,state:'countdown',startedAt:args.startedAt,endsAt:args.startedAt+next.timeLimitMs};
+    next=await extendMatchExpiry(ctx,next,next.endsAt);
   }
   await save(ctx,next);return publicMatch(next,deadlines,rooms);
 }});

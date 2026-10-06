@@ -5,7 +5,10 @@ import { REALTIME_CONFIG } from './src/realtime/config.js';
 export default defineConfig({
   build: {
     rollupOptions: {
-      input: { game: 'index.html', terminal: 'prototype-ui/computer-ui-preview.html' },
+      input: {
+        game: 'index.html',terminal: 'prototype-ui/computer-ui-preview.html',
+        yassinTest: 'yassin-skin-test.html',yassinAnimation: 'yassin-animation-preview.html',
+      },
     },
   },
   server: {

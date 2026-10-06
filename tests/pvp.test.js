@@ -5,13 +5,15 @@ import * as backend from '../convex/pvpMatches.js';
 import { combatSnapshot } from '../src/pvp/combatSnapshot.js';
 import { update,inRoom } from '../convex/players.js';
 import { newFighter,startMatch,advanceMatch,applyPlayerDamage,registerPlayerDeath,canStartMatch,endMatch } from '../src/pvp/matchState.js';
-import { PVP_RULES,PVP_MAX_PARTICIPANTS,pvpRoom,PVP_MAP,PVP_MAP_FILE,PVP_MAP_DEFINITION,PVP_INSPECTION_SCENE,setPvpEnabled,pvpEnabled } from '../src/pvp/config.js';
+import { PVP_RULES,PVP_MAX_PARTICIPANTS,pvpRoom,PVP_MAP,PVP_MAP_FILE,PVP_MAP_DEFINITION,PVP_INSPECTION_SCENE,setPvpEnabled,pvpEnabled,pvpLobbyAvailable } from '../src/pvp/config.js';
 import { teamSpawn } from '../src/pvp/spawns.js';
 import { collisionAreas } from '../src/maps/collision.js';
 import { objectsIn } from '../src/maps/tiledObjects.js';
 import { isPersistentClassRoom } from '../src/maps/classState.js';
 import { PvpMatchClient } from '../src/pvp/PvpMatchClient.js';
 import { PvpLobbyController } from '../src/pvp/PvpLobbyController.js';
+import { PvpLobbyButton } from '../src/pvp/PvpLobbyButton.js';
+import { shouldShowBossDevTools } from '../src/boss/BossDevTools.js';
 import { PvpCombatController } from '../src/pvp/PvpCombatController.js';
 import { PvpHud } from '../src/pvp/PvpHud.js';
 import { PvpReturnFlow } from '../src/pvp/PvpReturnFlow.js';
@@ -265,6 +267,38 @@ function ui(t){
   state.participants.forEach((p,i)=>Object.assign(p,{displayName:`Player ${i}`,characterBaseId:'felipe'}));
   return {documentRef,presence,scene,state,callbacks,calls,travel,ticks,subscriptions:()=>subscriptions};
 }
+
+test('test build exposes playable PvP without DEV tools or the stored development toggle',async t=>{
+  const env={DEV:false,VITE_PVP_TEST_BUILD:'true'},storage={getItem:()=> 'false'};
+  assert.equal(shouldShowBossDevTools(env),false);
+  assert.equal(pvpLobbyAvailable(env),true);assert.equal(pvpEnabled(env,storage),true);
+  assert.equal(pvpLobbyAvailable({DEV:false}),false);
+  assert.equal(pvpEnabled({DEV:false},{getItem:()=> 'true'}),false);
+  const f=ui(t);
+  for(const mode of ['tdm','payload']){
+    const lobby=new PvpLobbyController(f.scene,{env,storage,documentRef:f.documentRef});
+    assert.ok(lobby.buttons.some(button=>button.textContent==='Create TDM Lobby'));
+    assert.ok(lobby.buttons.some(button=>button.textContent==='Create Payload Lobby'));
+    assert.ok(lobby.buttons.some(button=>button.textContent==='Join PvP by Code'));
+    await lobby.acquire('create',undefined,mode);
+    assert.equal(f.calls.at(-1).fn,'create');assert.equal(f.calls.at(-1).args.mode??'tdm',mode);
+    lobby.close();
+  }
+  const hud=new PvpHud({documentRef:f.documentRef,dev:env.DEV,onLeave(){}});
+  assert.equal(hud.devPanel,undefined);assert.equal(hud.end,undefined);hud.destroy();
+});
+
+test('test build PvP toolbar entrance opens the lobby and is removed with its scene',t=>{
+  const f=ui(t),toolbar=new Element('div');toolbar.prepend=node=>toolbar.children.unshift(node);
+  f.documentRef.getElementById=id=>id==='play-toolbar'?toolbar:null;
+  let opened=0;f.scene.mapKey='school';f.scene.openPvpLobby=()=>opened++;
+  const env={DEV:false,VITE_PVP_TEST_BUILD:'true'};
+  const entry=new PvpLobbyButton(f.scene,{env,documentRef:f.documentRef});
+  assert.equal(entry.button.textContent,'PvP Lobby');entry.button.events.click();assert.equal(opened,1);
+  const button=entry.button;entry.destroy();entry.destroy();assert.equal(button.removed,true);assert.equal(button.events.click,undefined);
+  assert.equal(new PvpLobbyButton(f.scene,{env:{DEV:true},documentRef:f.documentRef}).button,undefined);
+  f.scene.mapKey=PVP_MAP;assert.equal(new PvpLobbyButton(f.scene,{env,documentRef:f.documentRef}).button,undefined);
+});
 
 test('lobby UI creates once, displays four fixed slots per team, keeps guest Start hidden and transitions through one match ID',async t=>{
   const f=ui(t);setPvpEnabled(true);const lobby=new PvpLobbyController(f.scene,{env:{DEV:true},documentRef:f.documentRef});

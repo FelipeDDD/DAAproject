@@ -1,0 +1,5 @@
+#character-list.has-experiment { grid-template-columns:repeat(5,minmax(0,1fr)); }
+.yassin-skin-test-card { border-color:#b28b4f; background-color:#f2e5ca; }
+.yassin-skin-test-card small { color:#6b512d; font-size:11px; text-align:center; }
+@media (max-width:900px) { #character-list.has-experiment { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media (max-width:600px) { #character-list.has-experiment { grid-template-columns:repeat(2,minmax(0,1fr)); } }

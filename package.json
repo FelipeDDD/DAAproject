@@ -26,6 +26,10 @@
     "preconvex": "node scripts/sync-quiz-data.mjs && node scripts/sync-door-definitions.mjs && node scripts/sync-npc-collectible-spawns.mjs && node scripts/sync-director-investigation.mjs",
     "prebuild": "node scripts/sync-quiz-data.mjs && node scripts/sync-door-definitions.mjs && node scripts/sync-npc-collectible-spawns.mjs && node scripts/sync-director-investigation.mjs",
     "build": "vite build",
+    "prebuild:test": "npm run prebuild",
+    "build:test": "vite build --config vite.test.config.js --mode test",
+    "preview:test": "vite preview --config vite.test.config.js --mode test",
+    "check:test": "node scripts/check-pvp-test.mjs",
     "deploy:prod": "npx vercel@latest --prod",
     "preview": "vite preview"
   },

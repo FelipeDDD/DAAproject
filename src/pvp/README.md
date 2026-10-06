@@ -124,8 +124,9 @@ amostras de vidas anteriores são ignorados. Reentrada/reconexão reinicia o buf
 2. Abra `http://localhost:5173` em duas abas com identidades distintas. Se o
    login compartilhado impedir duas sessões, use outro perfil/janela privada.
 3. No host, DEV Tools → **PvP Arena: ON** → **Open PvP Lobby** → **Create PvP
-   Lobby**. Na segunda aba, **Open PvP Lobby** → **Join PvP by Code**, usando o
-   código do host. Garanta pelo menos um jogador em cada equipe e inicie.
+   Lobby**. Na segunda aba, use **Enter Existing Lobby** para escolher uma sala
+   aberta e entrar automaticamente, ou **Join PvP by Code** com o código do host.
+   Garanta pelo menos um jogador em cada equipe e inicie.
 4. Mova os dois jogadores. No console, habilite mensagens Debug/Verbose e procure
    `[PvP movement] connected`, `joined` (room, peerId, playerId), `remote sender`
    e `discarded stale`. Em Network → WS, `/pvp-realtime` deve transportar
@@ -226,7 +227,8 @@ resolver. Relay authorization compares both teams' effective rules before enabli
 fire; restart `npm run realtime:server` and reload both browsers after updating.
 
 The same room authority owns death, score, 2.5s respawn (HP 100, life+1),
-score-limit victory (5), and the 180s match deadline. One server-local deadline
+score-limit victory (5), and the configured match deadline. Match Settings allows
+1-60 minutes, defaults to 10, and Retry keeps the selected duration. One server-local deadline
 timer handles countdown, respawns, timeout and presence expiry, including when
 no messages arrive. End/close/participant departure cancel pending respawns.
 The client only displays timestamps; it never decides a combat transition.
@@ -279,7 +281,7 @@ voters remain; Leave/disconnect/lease expiry remove a peer from unanimity.
 The relay serializes the final combat mirror before internal
 `advanceRealtimeRound`, which validates live sessions and stores the chosen roster.
 Same match/code/teams, round+1, HP100, life+1, zero score/K/D/shot state, no
-respawns/result, and fresh 3s countdown/180s deadline. Missing opponents or a lone
+respawns/result, and fresh 3s countdown with the same selected duration. Missing opponents or a lone
 survivor returns to waiting; no voters deletes the abandoned lobby. A missing
 host transfers only for subsequent lobby management, never vote priority.
 
@@ -305,7 +307,8 @@ start with at least one player on each team. **Create TDM Lobby** keeps the exis
 mode. Start local Convex before restarting the relay; reload both browsers.
 
 `payload/config.js` centralizes speed 10 px/s, radius 64 px, 100 ms objective
-snapshots, 3s fixed respawn and 180s duration. `PVP_MAP_DEFINITION` in `config.js`
+snapshots and 3s fixed respawn. Match Settings controls the shared match duration,
+which defaults to 10 minutes. `PVP_MAP_DEFINITION` in `config.js`
 selects `payload-map.tmj` (id `payload-map`, revision 1) for TDM, Payload,
 inspection scene and relay; `PVP_MAP_FILE` derives from that definition. The logical
 scene/room key stays `pvp-arena-test`; it is not a reference to the old layout.
@@ -411,3 +414,9 @@ verify center/neutral/new countdown. Optional 4v4 checks equal push speed.
 
 `node --test tests/pvpPayload.test.js` covers objective rules, physical routing,
 combat integration, two actual WebSocket clients, Retry and stale-round rejection.
+
+## Health packs e pickups
+
+Os health packs do mapa são coletados pelo relay via movimento autenticado e
+representados por snapshots, com cooldown por round. A configuração, o parser do
+Tiled, a authority e o visual ficam em [`pickups/`](./pickups/README.md).

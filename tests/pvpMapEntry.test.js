@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import { PVP_MAP,PVP_INSPECTION_SCENE,PVP_MAP_FILE,PVP_MAP_DEFINITION } from '../src/pvp/config.js';
 import { requirePvpMap,pvpArenaDestination } from '../src/pvp/mapConfig.js';
-import { PAYLOAD_MAP_TEST_PORTAL } from '../src/maps/payloadMapTest.js';
+import { PVP_LOBBY_PORTAL } from '../src/maps/pvpLobbyPortal.js';
 import { PvpTeleportController,readPvpTeleportAreas,pvpTeleportArrival } from '../src/pvp/teleports.js';
 import { collisionAreas } from '../src/maps/collision.js';
 import { objectsIn } from '../src/maps/tiledObjects.js';
@@ -42,16 +42,31 @@ test('all entry modes and Retry resolve only the authoritative physical map, nev
 
 test('DEV shortcut and lobby share the map loader and both register the real authored Teleport rectangles',()=>{
   const {Shared}=mapSceneFixture();
-  const Inspect=evaluate('src/scenes/PayloadMapScene.js',{PvpMapScene:Shared,PVP_INSPECTION_SCENE,Date},'PayloadMapScene');
+  const Inspect=evaluate('src/scenes/PayloadMapScene.js',{PvpMapScene:Shared,PVP_INSPECTION_SCENE,Date,
+    document:{getElementById:()=>null}},'PayloadMapScene');
   const Live=evaluate('src/scenes/PvpArenaScene.js',{PvpMapScene:Shared,PVP_MAP},'PvpArenaScene');
   const live=new Live(),inspection=new Inspect();
-  assert.equal(PAYLOAD_MAP_TEST_PORTAL.targetMap,inspection.mapKey);
+  assert.equal(PVP_LOBBY_PORTAL.action,'open-pvp-lobby');
+  assert.equal(PVP_LOBBY_PORTAL.targetMap,undefined,'the classroom entrance must open the lobby, not the inspection map');
   for(const scene of [live,inspection]){
     assert.equal(scene.filename,PVP_MAP_FILE);assert.equal(scene.reloadMapOnEntry,true);
     assert.match(scene.sourceKey,new RegExp(`payload-map-${PVP_MAP_DEFINITION.revision}-source$`));assert.notEqual(scene.sourceKey,'pvp-arena-test-source');
     scene.initializePvpTeleports();assert.deepEqual(scene.teleports.areas.map(p=>p.name),['top','bottom']);
   }
   inspection.enter();assert.equal(inspection.teleports.areas.length,2);
+});
+
+test('inspection has a classroom exit and recreates it without leaving duplicate toolbar controls',()=>{
+  const {Shared}=mapSceneFixture(),buttons=[],arrivals=[];
+  const document={getElementById:()=>({prepend:button=>buttons.unshift(button)}),createElement:()=>({
+    remove(){buttons.splice(buttons.indexOf(this),1);},
+  })};
+  const Inspect=evaluate('src/scenes/PayloadMapScene.js',{PvpMapScene:Shared,PVP_INSPECTION_SCENE,Date,document},'PayloadMapScene');
+  const inspection=new Inspect();inspection.travelTo=destination=>arrivals.push(destination);
+  inspection.enter();assert.equal(buttons.length,1);const first=buttons[0];
+  first.onclick();assert.equal(arrivals[0].targetMap,'school');
+  inspection.enter();assert.equal(buttons.length,1);assert.notEqual(buttons[0],first);assert.equal(first.onclick,null);
+  inspection.removeExitButton();assert.equal(buttons.length,0);assert.equal(inspection.exitButton,null);
 });
 
 test('new entry evicts only map caches and reloads the same configured asset instead of reusing a slept snapshot',()=>{

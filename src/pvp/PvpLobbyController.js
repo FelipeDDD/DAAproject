@@ -23,13 +23,47 @@ export class PvpLobbyController extends ArenaEntryController {
     this.teamButtons=[];this.teamSections=[];this.teamSlots=[];this.rosterSignature=null;
   }
   renderChoices(){
+    this.stopBrowsing();
     this.header('PVP ARENA',`Choose a mode · max ${PVP_RULES.teamSize} per team (${PVP_LOBBY_DISPLAY_SLOTS} slots shown).`);
     if(pvpEnabled(this.env,this.storage)){
       this.button('Create TDM Lobby',()=>void this.acquire('create',undefined,'tdm'),{kind:'primary'});
       this.button('Create Payload Lobby',()=>void this.acquire('create',undefined,'payload'),{kind:'primary'});
     }
+    this.button('Enter Existing Lobby',()=>this.browseExisting(),{kind:'secondary'});
     this.button('Join PvP by Code',()=>this.renderJoin());
     this.createStatus();this.button('Cancel',()=>this.close(),{kind:'quiet',allowBusy:true});
+  }
+  browseExisting(){
+    this.stopBrowsing();
+    const browseGeneration=this.browseGeneration;
+    this.header('ENTER EXISTING LOBBY','Choose an open lobby to join automatically.');
+    this.createStatus('Looking for open lobbies...');
+    this.button('Back',()=>this.renderChoices(),{kind:'quiet'});
+    this.availableSignature=null;
+    this.availableUnsubscribe=this.scene.presence.client.onUpdate(this.scene.presence.api.pvpMatches.available,
+      this.identity,lobbies=>{
+        if(!this.active||browseGeneration!==this.browseGeneration)return;
+        this.renderAvailableLobbies(lobbies??[]);
+      },error=>{
+        if(this.active&&browseGeneration===this.browseGeneration)this.reportError(error);
+      });
+  }
+  renderAvailableLobbies(lobbies){
+    const signature=JSON.stringify(lobbies.map(({matchId,mode,hostName,participantCount,maxParticipants})=>
+      [matchId,mode,hostName,participantCount,maxParticipants]));
+    if(signature===this.availableSignature)return;
+    this.availableSignature=signature;
+    this.header('ENTER EXISTING LOBBY','Choose an open lobby to join automatically.');
+    for(const lobby of lobbies){
+      const label=`Join · ${gameMode(lobby.mode).label} · ${lobby.hostName} · ${lobby.participantCount}/${lobby.maxParticipants}`;
+      this.button(label,()=>void this.acquire('joinById',undefined,'tdm',lobby.matchId),{kind:'primary'});
+    }
+    this.createStatus(lobbies.length?'Select a lobby to join.':'No open lobbies are available right now.');
+    this.button('Back',()=>this.renderChoices(),{kind:'quiet'});
+  }
+  stopBrowsing(){
+    this.browseGeneration=(this.browseGeneration??0)+1;
+    this.availableUnsubscribe?.();this.availableUnsubscribe=null;this.availableSignature=null;
   }
   renderNotice(message){
     this.header('PVP LOBBY CLOSED',message);this.createStatus();
@@ -40,13 +74,15 @@ export class PvpLobbyController extends ArenaEntryController {
     this.panel.children[0].textContent='JOIN PVP LOBBY';
     this.panel.children[1].textContent='Enter the code shared by the host.';
   }
-  async acquire(action,rawCode,mode='tdm'){
+  async acquire(action,rawCode,mode='tdm',matchId=null){
     if(!this.active||this.busy||(action==='create'&&!pvpEnabled(this.env,this.storage)))return;
     const code=normalizeArenaCode(rawCode);
     if(action==='join'&&!validArenaCode(code)){this.showStatus('Enter a valid six-character PvP code.');return;}
+    this.stopBrowsing();
     const generation=this.generation,p=this.scene.presence;this.setBusy(true);this.showStatus('Connecting...');
     try{
-      const result=await p.client.mutation(p.api.pvpMatches[action],{...this.identity,...(action==='join'?{code}:mode==='tdm'?{}:{mode})});
+      const args={...this.identity,...(action==='join'?{code}:action==='joinById'?{matchId}:mode==='tdm'?{}:{mode})};
+      const result=await p.client.mutation(p.api.pvpMatches[action],args);
       if(!this.active||generation!==this.generation){
         void p.client.mutation(p.api.pvpMatches.leave,{...this.identity,matchId:result.matchId,round:result.round??0}).catch(()=>{});return;
       }
@@ -68,9 +104,9 @@ export class PvpLobbyController extends ArenaEntryController {
     },{parent:settingsActions});
     this.customSettingsLabel=this.node('small','');settingsActions.append(this.customSettingsLabel);
     this.settingsPanel=new PvpMatchSettingsPanel({parent:this.panel,documentRef:this.document,playerId:this.identity.playerId,
-      onSave:async matchSettings=>{
+      onSave:async (matchSettings,timeLimitMs)=>{
         if(this.matchState?.hostPlayerId!==this.identity.playerId)return false;
-        const saved=await this.command('updateSettings',{matchSettings});
+        const saved=await this.command('updateSettings',{matchSettings,timeLimitMs});
         if(saved&&this.active)this.showStatus('Match settings saved.',3000);
         return saved;
       }});
@@ -170,6 +206,7 @@ export class PvpLobbyController extends ArenaEntryController {
     if(String(error).includes('CHARACTER_SESSION_LOST'))this.scene.presence.fail(error);
   }
   releaseLobby(){
+    this.stopBrowsing();
     this.settingsPanel?.destroy();this.settingsPanel=null;
     const round=this.matchState?.round??this.membershipRound;
     const matchId=this.matchId;this.matchClient?.close();this.matchClient=null;this.matchId=null;this.matchState=null;

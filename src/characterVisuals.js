@@ -95,7 +95,7 @@ export function preloadCharacterTextures(scene,characters,baseUrl,includeExperim
         frameHeight:character.lungCrusherVisual.frameHeight??NEW_CHARACTER_FRAME.height},
     );
     if(character.lungCrusherVisual)queued.add(character.lungCrusherVisual.sprite);
-    const experiment=includeExperiments&&character.experimentalVisual;
+    const experiment=(includeExperiments||character.experimentalVisual?.menuPreview===true)&&character.experimentalVisual;
     const sourceKey=experiment&&(experiment.recolorSource??experiment.sourceImage??experiment.sprite);
     if(experiment&&!queued.has(sourceKey)&&!scene.textures.exists(sourceKey)){
       if(experiment.sourceGrid)scene.load.image(sourceKey,`${baseUrl}${experiment.asset}`);
@@ -108,11 +108,12 @@ export function preloadCharacterTextures(scene,characters,baseUrl,includeExperim
 
 export function createCharacterAnimations(scene,characters,includeExperiments=import.meta.env?.DEV===true){
   for(const character of characters){
-    if(includeExperiments&&character.experimentalVisual){
+    const includePreview=includeExperiments||character.experimentalVisual?.menuPreview===true;
+    if(includePreview&&character.experimentalVisual){
       prepareFelipeRecolorTexture(scene.textures,character.experimentalVisual);
       prepareExperimentalGridTexture(scene.textures,character.experimentalVisual);
     }
-    for(const style of ['new','lungCrusher',...(includeExperiments?['level3Preview']:[])]){
+    for(const style of ['new','lungCrusher',...(includePreview?['level3Preview']:[])]){
       const visual=characterVisual(character,style);
       if(!visual.animated)continue;
       for(const direction of DIRECTIONS){

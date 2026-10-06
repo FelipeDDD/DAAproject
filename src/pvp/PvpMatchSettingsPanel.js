@@ -1,4 +1,5 @@
-import { DEFAULT_MATCH_SETTINGS,MATCH_SETTING_LIMITS,matchSettingsFor,normalizeMatchSettings,effectiveMatchSettings } from './matchSettings.js';
+import { DEFAULT_MATCH_SETTINGS,DEFAULT_MATCH_TIME_LIMIT_MS,MATCH_DURATION_MINUTES_LIMITS,MATCH_SETTING_LIMITS,
+  matchDurationMinutesToMs,matchSettingsFor,normalizeMatchSettings,effectiveMatchSettings } from './matchSettings.js';
 
 const fields=[
   {key:'maxHp',label:'Max HP',step:1},
@@ -22,6 +23,10 @@ export class PvpMatchSettingsPanel {
       input.setAttribute('aria-label',field.label);label.append(input);this.root.append(label);
       this.inputs.set(field.key,input);
     }
+    const durationLabel=node('label','Match Duration (minutes)');this.durationInput=node('input');
+    this.durationInput.type='number';this.durationInput.min=String(MATCH_DURATION_MINUTES_LIMITS.min);
+    this.durationInput.max=String(MATCH_DURATION_MINUTES_LIMITS.max);this.durationInput.step='1';
+    this.durationInput.setAttribute('aria-label','Match Duration (minutes)');durationLabel.append(this.durationInput);this.root.append(durationLabel);
     this.root.append(node('h3','Team Overrides'));
     const teams=node('div');teams.className='pvp-settings-teams';this.root.append(teams);
     for(const team of ['A','B']){
@@ -50,7 +55,8 @@ export class PvpMatchSettingsPanel {
     const button=(text,action)=>{const n=node('button',text);n.type='button';n.className='arena-action arena-action-secondary';
       n.addEventListener('click',action);actions.append(n);return n;};
     this.resetButton=button('Reset Defaults',()=>{if(this.canEdit&&!this.busy&&!this.saving){
-      this.fill(DEFAULT_MATCH_SETTINGS);this.error.textContent='';this.update(this.match,this.busy);
+      this.fill(DEFAULT_MATCH_SETTINGS);this.durationInput.value=String(DEFAULT_MATCH_TIME_LIMIT_MS/60_000);
+      this.error.textContent='';this.update(this.match,this.busy);
     }});
     this.saveButton=button('Save',()=>void this.save());
     this.closeButton=button('Close',()=>this.close());
@@ -67,8 +73,11 @@ export class PvpMatchSettingsPanel {
     this.match=match;this.busy=busy;this.canEdit=match?.state==='waiting'&&match.hostPlayerId===this.playerId;
     const settings=matchSettingsFor(match),signature=JSON.stringify(settings);
     if(signature!==this.signature){this.signature=signature;this.fill(settings);}
+    const durationMs=match?.timeLimitMs??DEFAULT_MATCH_TIME_LIMIT_MS;
+    if(durationMs!==this.durationSignature){this.durationSignature=durationMs;this.durationInput.value=String(durationMs/60_000);}
     this.notice.textContent=this.canEdit?'Global rules apply unless a team field is overridden. Rules are locked when the round starts.':'Only the host can change these settings.';
     for(const input of this.inputs.values())input.disabled=this.root.hidden||!this.canEdit||busy||this.saving;
+    this.durationInput.disabled=this.root.hidden||!this.canEdit||busy||this.saving;
     for(const {field,mode,input} of this.overrides.values()){
       mode.disabled=this.root.hidden||!this.canEdit||busy||this.saving;
       input.hidden=mode.value!=='custom';input.disabled=mode.disabled||input.hidden;
@@ -85,17 +94,18 @@ export class PvpMatchSettingsPanel {
   close(){this.root.hidden=true;this.update(this.match,this.busy);}
   async save(){
     if(!this.canEdit||this.busy||this.saving)return;
-    let matchSettings;
+    let matchSettings,timeLimitMs;
     try{
       const teamOverrides={A:{},B:{}};
       for(const {team,field,mode,input} of this.overrides.values())if(mode.value==='custom')
         teamOverrides[team][field.key]=Number(input.value)/(field.scale??1);
       matchSettings=normalizeMatchSettings({...Object.fromEntries(fields.map(field=>
         [field.key,Number(this.inputs.get(field.key).value)/(field.scale??1)])),teamOverrides});
+      timeLimitMs=matchDurationMinutesToMs(Number(this.durationInput.value));
     }
     catch(error){this.error.textContent=error.message;return;}
     this.saving=true;this.update(this.match,this.busy);
-    try{if(await this.onSave(matchSettings))this.close();else this.error.textContent='Settings were not saved. Check the lobby status.';}
+    try{if(await this.onSave(matchSettings,timeLimitMs))this.close();else this.error.textContent='Settings were not saved. Check the lobby status.';}
     finally{this.saving=false;this.update(this.match,this.busy);}
   }
   destroy(){this.root.remove();}

@@ -2,6 +2,7 @@ import { coopArenaEnabled,arenaEntryChoices } from './devArenaSettings.js';
 import { ArenaLobbyClient } from './ArenaLobbyClient.js';
 import { ArenaLobbyView } from './ArenaLobbyView.js';
 import { normalizeArenaCode,validArenaCode,arenaClosureMessage,arenaLobbyErrorMessage,setArenaDiagnostics } from './arenaLobbyUi.js';
+import { pvpLobbyAvailable } from '../pvp/config.js';
 
 const LABELS={solo:'Enter Solo',create:'Create Co-op Lobby',join:'Join Co-op Lobby'};
 export class ArenaEntryController {
@@ -67,7 +68,7 @@ export class ArenaEntryController {
     }
     // An explicit invitation is distinct from experimental discovery/creation.
     if(!coopArenaEnabled(this.env,this.storage))this.button('Have an invitation code?',()=>this.renderJoin(),{kind:'link'});
-    if(this.env?.DEV&&this.scene.openPvpLobby)this.button('PvP Arena (test)',()=>{this.close();this.scene.openPvpLobby();},{kind:'link'});
+    if(pvpLobbyAvailable(this.env)&&this.scene.openPvpLobby)this.button('PvP Arena (test)',()=>{this.close();this.scene.openPvpLobby();},{kind:'link'});
     this.createStatus();this.button('Cancel',()=>this.close(),{kind:'quiet',allowBusy:true});first?.focus();
   }
   renderJoin(prefill=''){

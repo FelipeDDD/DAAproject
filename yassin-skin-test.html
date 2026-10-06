@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en" class="app-loading">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="only light" />
+    <meta name="theme-color" content="#f8fafb" />
+    <link rel="stylesheet" href="/src/style.css" onerror="window.appStylesheetFailed = true" />
+    <style>
+      html.app-loading body > main { visibility: hidden; }
+      #app-loading { position: fixed; inset: 0; z-index: 20000; display: grid; place-items: center; padding: 24px; color: #eaf4f7; background: #0b1821; font: 600 15px/1.4 "Segoe UI", system-ui, sans-serif; letter-spacing: .04em; }
+      #app-loading[hidden] { display: none; }
+      #app-loading[data-error="true"] { color: #ffe1dc; background: #201416; text-align: center; }
+    </style>
+    <script>
+      window.showBootstrapError = () => {
+        if (!document.documentElement.classList.contains('app-loading')) return;
+        const loading = document.getElementById('app-loading');
+        if (loading) { loading.textContent = 'The app could not finish starting. Reload the page to try again.'; loading.dataset.error = 'true'; }
+      };
+      window.addEventListener('error', window.showBootstrapError);
+      window.addEventListener('unhandledrejection', window.showBootstrapError);
+    </script>
+    <title>Yassin Slot 5 Test | DAAproject — IT Classroom</title>
+  </head>
+  <body>
+    <div id="app-loading" class="app-loading-screen" role="status" aria-live="polite">Loading classroom…</div>
+    <main aria-busy="true">
+      <header>
+        <div>
+          <p class="eyebrow">DAAPROJECT</p>
+          <h1>IT Classroom</h1>
+        </div>
+        <div class="header-controls">
+          <div class="header-primary-controls">
+            <label class="viewport-size-control" for="viewport-size">View
+              <select id="viewport-size" aria-label="Game viewport size">
+                <option value="compact">Compact</option>
+                <option value="normal">Normal</option>
+                <option value="large">Large</option>
+              </select>
+            </label>
+            <span class="version">v0.1 · Local</span>
+          </div>
+          <div class="background-picker">
+            <button id="background-toggle" type="button" aria-expanded="false" aria-controls="background-options">Background <span aria-hidden="true">▾</span></button>
+            <div id="background-options" class="background-options" role="group" aria-label="Page background" hidden></div>
+          </div>
+        </div>
+      </header>
+      <section id="profile-auth" class="profile-auth" aria-labelledby="profile-auth-title">
+        <h2 id="profile-auth-title">Player profile</h2>
+        <div class="profile-auth-tabs" role="tablist" aria-label="Profile access">
+          <button id="profile-login-tab" type="button" role="tab" aria-selected="true">Login</button>
+          <button id="profile-register-tab" type="button" role="tab" aria-selected="false">Create profile</button>
+        </div>
+        <form id="profile-login-form" class="profile-auth-form">
+          <label>Profile name <input id="profile-login-name" name="profileName" required minlength="3" maxlength="32" autocomplete="username"></label>
+          <label>Password <input id="profile-login-password" name="password" type="password" required minlength="8" maxlength="128" autocomplete="current-password"></label>
+          <button type="submit">Login</button>
+        </form>
+        <form id="profile-register-form" class="profile-auth-form" hidden>
+          <label>Profile name <input id="profile-register-name" name="profileName" required minlength="3" maxlength="32" autocomplete="username"></label>
+          <label>Password <input id="profile-register-password" name="password" type="password" required minlength="8" maxlength="128" autocomplete="new-password"></label>
+          <label>Display name <input id="profile-register-display-name" name="displayName" required maxlength="32" autocomplete="nickname"></label>
+          <button type="submit">Create</button>
+        </form>
+        <form id="profile-display-name-form" class="profile-auth-form" hidden>
+          <label>Display name <input id="profile-display-name" name="displayName" required maxlength="32" autocomplete="nickname"></label>
+          <button type="submit">Continue</button>
+        </form>
+        <div class="profile-guest-option">
+          <span>or</span>
+          <button id="play-as-guest" type="button">Play as Guest</button>
+          <small>Progress won't be saved.</small>
+        </div>
+        <p id="profile-auth-message" role="status"></p>
+      </section>
+      <section id="character-menu" aria-labelledby="character-title" hidden>
+        <h2 id="character-title">Choose your character</h2>
+        <p>Ten player slots, four familiar classmates. Who will join?</p>
+        <label class="character-style-control" for="character-style">
+          Character sprites
+          <select id="character-style">
+            <option value="old">Original</option>
+            <option value="new">New test sprites</option>
+          </select>
+        </label>
+        <div id="character-list"></div>
+        <p id="character-message" role="status"></p>
+        <button id="logout-profile-menu" type="button">Logout profile</button>
+      </section>
+      <section id="play-area" hidden>
+      <div id="play-toolbar">
+        <button id="change-character" hidden>Change character</button>
+        <button id="logout-profile" hidden>Logout</button>
+        <p id="movement-guide">Explore with <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> or the <kbd>arrow keys</kbd>.</p>
+      </div>
+      <div id="game-shell" data-hud-visible="true">
+        <div id="game-frame" aria-hidden="true">
+          <span class="frame-edge frame-edge--top"></span><span class="frame-edge frame-edge--bottom"></span>
+          <span class="frame-edge frame-edge--left"></span><span class="frame-edge frame-edge--right"></span>
+          <span class="frame-corner frame-corner--top-left"></span><span class="frame-corner frame-corner--top-right"></span>
+          <span class="frame-corner frame-corner--bottom-left"></span><span class="frame-corner frame-corner--bottom-right"></span>
+        </div>
+        <div id="game" tabindex="0" role="region" aria-label="2D room. Use WASD or the arrow keys to move your character."></div>
+        <p id="interaction-hint" role="status" hidden></p>
+        <section id="room-chat" hidden aria-label="Room chat" data-state="hidden">
+          <header class="chat-overlay-header">
+            <span>ROOM CHAT</span>
+            <button id="chat-pin" type="button" aria-label="Pin chat" aria-pressed="false" title="Pin chat">📌</button>
+          </header>
+          <ol id="chat-messages" aria-label="Messages"></ol>
+          <input id="chat-input" aria-label="Message for this room" maxlength="200" placeholder="Message · Enter to send" autocomplete="off" />
+          <small id="chat-status" role="status"></small>
+        </section>
+        <section id="bottom-hud" aria-label="Player controls and status">
+          <div class="hud-left">
+          <div id="hud-hp-orb" role="meter" aria-valuemin="0">
+            <div class="hp-orb__mask"><div class="hp-orb__liquid"></div></div>
+            <strong id="hud-hp-text" class="hp-orb__text"></strong>
+            <img class="hp-orb__frame" alt="" aria-hidden="true" />
+          </div>
+          <div id="hud-info-panel"><p id="hud-info-text"></p></div>
+          </div>
+          <div class="hud-center">
+          <div id="hud-inventory-mount" aria-label="Inventory hotbar"></div>
+          </div>
+          <div class="hud-right">
+          <div id="hud-emote-mount"></div>
+          <aside id="hud-status-panel" aria-label="Current status"><div class="hud-status-content"><p id="hud-status-text"></p></div></aside>
+          </div>
+        </section>
+      </div>
+      <section id="quiz-lobby" hidden aria-labelledby="quiz-lobby-title">
+        <h2 id="quiz-lobby-title">QUIZ LOBBY</h2>
+        <ul id="quiz-participants"></ul>
+        <section id="quiz-settings" hidden aria-labelledby="quiz-settings-title">
+          <h3 id="quiz-settings-title">Quiz settings</h3>
+          <div class="quiz-setting-fields">
+            <label>Category<select id="quiz-category"></select></label>
+            <label id="quiz-topic-field" hidden>Topic<select id="quiz-topic"></select></label>
+            <label>Difficulty<select id="quiz-difficulty"></select></label>
+            <label>Questions<select id="quiz-quantity"></select></label>
+          </div>
+          <small id="quiz-settings-note"></small>
+        </section>
+        <section id="quiz-question" hidden aria-labelledby="quiz-question-text">
+          <div class="quiz-question-layout">
+            <div id="quiz-media" class="quiz-media" role="region" aria-label="Additional question content" tabindex="0" hidden></div>
+            <div class="quiz-question-body">
+              <time id="quiz-timer" class="quiz-timer" aria-label="Time remaining" hidden></time>
+              <h3 id="quiz-question-text"></h3>
+              <div id="quiz-alternatives" role="group" aria-label="Question answers"></div>
+              <p id="quiz-explanation" hidden></p>
+              <button id="confirm-answer" type="button">Confirm answer</button>
+            </div>
+          </div>
+        </section>
+        <section id="quiz-results" hidden aria-labelledby="quiz-results-title">
+          <h3 id="quiz-results-title">Results</h3>
+          <ul id="quiz-scores"></ul>
+        </section>
+        <div id="quiz-actions">
+          <button id="start-quiz" hidden>Start quiz</button>
+          <button id="next-question" type="button" hidden>Next question</button>
+          <button id="leave-quiz" type="button">Leave lobby</button>
+          <button id="cancel-leave-quiz" type="button" hidden>Cancel</button>
+        </div>
+        <small id="quiz-status" role="status"></small>
+      </section>
+      <section id="solo-study" hidden aria-labelledby="solo-study-title">
+        <h2 id="solo-study-title">SOLO MODE</h2>
+        <section id="solo-config" aria-labelledby="solo-config-title">
+          <h3 id="solo-config-title">Solo settings</h3>
+          <label class="solo-mode-field">Mode
+            <select id="solo-mode">
+              <option value="study">Study</option>
+              <option value="challenge">IT Challenge</option>
+            </select>
+          </label>
+          <small id="solo-mode-description"></small>
+          <div id="solo-setting-fields" class="quiz-setting-fields">
+            <label>Category<select id="solo-category"></select></label>
+            <label id="solo-topic-field" hidden>Topic<select id="solo-topic"></select></label>
+            <label>Difficulty<select id="solo-difficulty"></select></label>
+            <label>Questions<select id="solo-quantity"></select></label>
+          </div>
+          <section id="it-challenge-intro" hidden aria-labelledby="it-challenge-intro-title">
+            <h3 id="it-challenge-intro-title">5m IT Challenge</h3>
+            <ul>
+              <li>Medium correct: +10</li>
+              <li>Hard correct: +17</li>
+              <li>Wrong answer: -6</li>
+              <li>Skip: -3</li>
+            </ul>
+            <p>You have 5 minutes. Each question has a 30-second limit. Get the highest score possible.</p>
+            <label class="it-challenge-confirm-option">
+              <input id="it-challenge-confirm-toggle" type="checkbox" checked />
+              Confirm answer before submitting
+            </label>
+          </section>
+          <button id="start-solo-study" type="button">Start studying</button>
+          <button id="open-quiz-statistics" type="button">Statistics</button>
+          <button id="open-it-challenge-leaderboard" type="button">IT Challenge leaderboard</button>
+        </section>
+        <section id="solo-question" hidden aria-labelledby="solo-question-text">
+          <div id="solo-hud">
+            <p id="solo-progress" aria-label="Question progress"></p>
+            <p id="solo-score" hidden></p>
+          </div>
+          <div id="solo-media" class="quiz-media" role="region" aria-label="Additional question content" tabindex="0" hidden></div>
+          <h3 id="solo-question-text"></h3>
+          <div id="solo-alternatives" role="group" aria-label="Question answers"></div>
+          <p id="solo-feedback" hidden></p>
+          <p id="solo-explanation" hidden></p>
+          <button id="confirm-solo-answer" type="button">Confirm answer</button>
+          <button id="skip-it-challenge" type="button" hidden>SKIP</button>
+          <div id="it-challenge-global-timer" hidden>
+            <span>Total time</span>
+            <div id="it-challenge-global-track" role="progressbar" aria-label="Total challenge time remaining" aria-valuemin="0" aria-valuemax="300">
+              <span id="it-challenge-global-bar"></span>
+            </div>
+            <small id="it-challenge-global-label">5:00</small>
+          </div>
+          <div id="solo-challenge-timer" hidden>
+            <span>Question</span>
+            <div id="solo-timer-track" role="progressbar" aria-label="Time remaining" aria-valuemin="0" aria-valuemax="60">
+              <span id="solo-timer-bar"></span>
+            </div>
+            <small id="solo-timer-label">60s</small>
+          </div>
+          <button id="next-solo-question" type="button" hidden>Next question</button>
+        </section>
+        <section id="solo-results" hidden aria-labelledby="solo-results-title">
+          <h3 id="solo-results-title">Study complete</h3>
+          <p id="solo-result-score" hidden></p>
+          <p id="solo-result-text"></p>
+          <p id="solo-assessment" hidden></p>
+          <p id="it-challenge-personal-best" hidden>NEW PERSONAL BEST!</p>
+          <button id="study-again" type="button">Study again</button>
+          <button id="results-it-challenge-leaderboard" type="button" hidden>View leaderboard</button>
+        </section>
+        <section id="it-challenge-leaderboard" hidden aria-labelledby="it-challenge-leaderboard-title">
+          <h3 id="it-challenge-leaderboard-title">5m IT Challenge leaderboard</h3>
+          <ol id="it-challenge-leaderboard-list"></ol>
+          <small id="it-challenge-leaderboard-status" role="status"></small>
+          <button id="close-it-challenge-leaderboard" type="button">Back</button>
+        </section>
+        <section id="quiz-statistics" hidden aria-labelledby="quiz-statistics-title">
+          <div class="quiz-statistics-heading">
+            <h3 id="quiz-statistics-title">Statistics</h3>
+            <label>Mode
+              <select id="quiz-statistics-mode">
+                <option value="">All</option>
+                <option value="study">Study</option>
+                <option value="challenge">IT Challenge</option>
+                <option value="multiplayer">Multiplayer</option>
+              </select>
+            </label>
+          </div>
+          <div id="quiz-statistics-content"></div>
+          <small id="quiz-statistics-status" role="status"></small>
+          <button id="close-quiz-statistics" type="button">Back</button>
+        </section>
+        <button id="close-solo-study" type="button">Close</button>
+        <small id="solo-status" role="status"></small>
+      </section>
+      <section id="emote-bar" class="school-hotbar" hidden aria-label="Emote shortcuts">
+        <div id="emote-drag-handle" class="school-hotbar-header">
+          <span>EMOTES</span>
+          <button id="emote-reset-position" type="button" title="Reset bar position" aria-label="Reset emote bar position">↺</button>
+        </div>
+        <div class="hotbar-body">
+          <div id="emote-slots" class="school-hotbar-slots"></div>
+          <button id="emote-settings" type="button" aria-label="Customize emotes" title="Customize emotes">⚙</button>
+        </div>
+        <section id="emote-picker" hidden aria-labelledby="emote-picker-title">
+          <strong id="emote-picker-title"></strong>
+          <div id="emote-choices"></div>
+          <small>Right-click a slot to edit it directly.</small>
+        </section>
+      </section>
+      </section>
+    </main>
+    <noscript><style>html.app-loading body > main { visibility: visible; } #app-loading { display: none; }</style><p>Enable JavaScript to explore the school.</p></noscript>
+    <script type="module" src="/src/experimental/yassinSkinTestEntry.js" onerror="window.showBootstrapError()"></script>
+  </body>
+</html>

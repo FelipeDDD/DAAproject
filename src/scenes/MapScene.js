@@ -48,6 +48,8 @@ import { applySmoothDecorativeTextureFilters } from '../maps/decorativeTextureFi
 import { classRestoreDestination } from '../maps/classState.js';
 import { ArenaEntryController } from '../boss/ArenaEntryController.js';
 import { PvpLobbyController } from '../pvp/PvpLobbyController.js';
+import { PvpLobbyButton } from '../pvp/PvpLobbyButton.js';
+import { pvpLobbyAvailable } from '../pvp/config.js';
 import { consumeArenaInvitation,setArenaDiagnostics } from '../boss/arenaLobbyUi.js';
 import '../boss/arenaEntry.css';
 import { CollectibleQuestController } from '../npc/CollectibleQuestController.js';
@@ -233,6 +235,7 @@ export class MapScene extends Phaser.Scene {
       this.hint.hidden=true;
       this.terminalPrompt?.setVisible(false);
       this.devTools?.destroy();this.devTools=null;
+      this.pvpLobbyButton?.destroy();this.pvpLobbyButton=null;
       this.inventoryHotbar?.destroy();this.inventoryHotbar=null;
       this.characterItems?.destroy();this.characterItems=null;
       this.potionEffects?.destroy();this.potionEffects=null;
@@ -296,6 +299,8 @@ export class MapScene extends Phaser.Scene {
       this.devTools?.destroy();
       this.devTools=shouldShowBossDevTools(import.meta.env)&&hasProfileSession(this.presence)
         ?new BossDevTools(this,this.presence):null;
+      this.pvpLobbyButton?.destroy();
+      this.pvpLobbyButton=new PvpLobbyButton(this,{env:import.meta.env});
       this.doorSync?.close();
       this.doorSync = this.presence ? new DoorSync(this.presence,this.presenceRoom??this.mapKey,this.doors,()=>this.player.body) : null;
       this.chat?.close();
@@ -451,7 +456,7 @@ export class MapScene extends Phaser.Scene {
   }
 
   openPvpLobby(resumeMatchId=null){
-    if(!import.meta.env.DEV||!this.presence?.identity||this.arenaEntry?.active||this.mapKey==='arena'||this.mapKey==='pvp-arena-test'
+    if(!pvpLobbyAvailable(import.meta.env)||!this.presence?.identity||this.arenaEntry?.active||this.mapKey==='arena'||this.mapKey==='pvp-arena-test'
       ||this.terminal?.active||this.puzzleTerminal?.active||this.networkTerminal?.active||this.quiz?.seated
       ||this.soloStudy?.active||this.wardrobe?.active||this.chat?.isInputActive||this.characterItems?.transforming)return false;
     this.arenaEntry=new PvpLobbyController(this,{env:import.meta.env,resumeMatchId});return true;
@@ -593,6 +598,10 @@ export class MapScene extends Phaser.Scene {
       return;
     }
     if(this.lockedTransitionId){this.lockedTransitionId=null;this.doorMessage='';}
+    if(interact&&mapTransition?.action==='open-pvp-lobby'){
+      if(!this.openPvpLobby())this.doorMessage='Could not open the PvP lobby. Close the current activity and try again.';
+      return;
+    }
     if(mapTransition?.auto||(interact&&mapTransition)){
       this.travelTo(mapTransition);
       return;

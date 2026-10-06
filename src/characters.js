@@ -1,4 +1,6 @@
-// Menu order, names and replaceable sprite assets. All sprites use a 32 x 56 canvas.
+import { YASSIN_BALD_TEST_VISUAL } from './experimental/yassinBaldSkin.js';
+
+// Menu order, names and replaceable sprite assets. Classic sprites use a 32 x 56 canvas.
 const ORIGINAL_CHARACTERS = [
   {
     id: 'michael', name: 'Michael', sprite: 'character-michael', asset: 'assets/characters/michael.svg',
@@ -17,11 +19,7 @@ const ORIGINAL_CHARACTERS = [
   },
   {
     id: 'jassine', name: 'Yassin', sprite: 'character-jassine', asset: 'assets/characters/jassine.svg',
-    experimentalVisual:{sprite:'character-yassin-level3-hd-preview',asset:'assets/characters/experimental/yassin-level3-hd.png',
-      previewAsset:'assets/characters/experimental/yassin-level3-hd-idle.png',frameRate:10,
-      frameWidth:128,frameHeight:144,scale:0.5,
-      walkColumns:{down:[1,2,3,4,5],left:[1,2,3,4,5],right:[1,2,3,4,5],up:[1,2,3,4,5]},
-    },
+    experimentalVisual:YASSIN_BALD_TEST_VISUAL,
     newVisual:{sprite:'character-yassin-new',asset:'assets/characters/yassin-new.png?v=2',previewAsset:'assets/characters/yassin-new-preview.png?v=2'},
   },
   {
@@ -44,8 +42,12 @@ const ORIGINAL_CHARACTERS = [
   },
 ];
 export const CHARACTERS = ORIGINAL_CHARACTERS;
-// Experimental textures remain registered for DEV tools, never as character bases.
-export function characterMenuOptions(){return CHARACTERS.map(c=>({c,label:c.name,previewStyle:null}));}
+// Preview cards reuse real character bases; they never create extra server identities.
+export function characterMenuOptions(){return [
+  ...CHARACTERS.map(c=>({c,label:c.name,previewStyle:null})),
+  ...CHARACTERS.filter(c=>c.experimentalVisual?.menuPreview===true)
+    .map(c=>({c,label:c.experimentalVisual.menuLabel??`${c.name} — TEST`,previewStyle:'level3Preview'})),
+];}
 export const CHARACTER_STORAGE_KEY = 'daa-character-id';
 export const CHARACTER_STYLE_STORAGE_KEY = 'daa-character-style';
 export const baseCharacterId = id => {

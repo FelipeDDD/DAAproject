@@ -17,8 +17,14 @@ import { preparePlayerAttackVisuals,preloadPlayerAttackVisuals } from '../boss/P
 import { createModeView } from '../pvp/modeView.js';
 import { endMatch } from '../pvp/matchState.js';
 import { cameraZoomForMap } from '../game/settings.js';
+import { isPersistentClassRoom } from '../maps/classState.js';
 import { pvpMovementSpeed,effectiveMatchSettings } from '../pvp/matchSettings.js';
 import { PlayerHealthBar } from '../ui/PlayerHealthBar.js';
+import { PvpPickupView } from '../pvp/pickups/PvpPickupView.js';
+import { pickupDebugEnabled } from '../pvp/pickups/visualConfig.js';
+import { SkillClient } from '../pvp/skills/SkillClient.js';
+import { SkillView } from '../pvp/skills/SkillView.js';
+import { SkillHud } from '../pvp/skills/SkillHud.js';
 import '../pvp/pvp.css';
 
 export class PvpArenaScene extends PvpMapScene {
@@ -43,7 +49,9 @@ export class PvpArenaScene extends PvpMapScene {
     this.stopPvp();this.leaving=false;this.networkFailed=false;this.ending=false;this.preservePvpMembership=false;
     this.hostLeaveObserved=false;this.hostLeaveSeconds=undefined;
     this.pvpRemoteHealthBars=new Map();
-    this.presence=getPresence();this.returnDestination=destination.returnDestination??{targetMap:'school'};
+    this.presence=getPresence();
+    this.returnDestination=isPersistentClassRoom(destination.returnDestination?.targetMap)
+      ?destination.returnDestination:{targetMap:'school'};
     this.matchId=destination.pvpMatchId;this.presenceRoom=pvpRoom(this.matchId);
     this.matchState=destination.pvpSnapshot;
     try{requirePvpMap(this.matchState);}
@@ -53,6 +61,7 @@ export class PvpArenaScene extends PvpMapScene {
     const me=this.matchState?.participants.find(p=>p.playerId===this.presence?.identity?.playerId);
     if(!this.matchId||!me){this.leavePvp();return;}
     this.modeView=createModeView(this.matchState.mode,this);
+    this.pickupView=new PvpPickupView(this,{debug:pickupDebugEnabled(import.meta.env)});
     this.player.body.enable=true;this.player.setVisible(true).setAlpha(1).clearTint();
     this.player.setCharacter(characterById(me.characterBaseId),'old');
     this.placeAtSpawn(me);this.lastLife=me.life;
@@ -84,6 +93,9 @@ export class PvpArenaScene extends PvpMapScene {
       onRound:state=>this.applyNextRound(state),
       onState:state=>{if(!this.networkFailed){this.matchState=state;
         this.movementClient?.setMatch(state);this.projectileClient?.setMatch(state);}},onError:error=>this.showPvpError(error)});
+    this.skillClient=new SkillClient(this.damageClient,{keyboard:this.input.keyboard});
+    this.skillView=new SkillView(this);
+    this.skillHud=new SkillHud(this.pvpHud.skillMount);
     this.matchClient=new PvpMatchClient(this.presence,this.matchId,state=>{
       if(!state){if(!this.matchState?.retry)this.showPvpError(new Error('PvP lobby unavailable'));return;}
       try{requirePvpMap(state);}catch(error){this.showPvpError(error);return;}
@@ -108,6 +120,9 @@ export class PvpArenaScene extends PvpMapScene {
     this.returnFlow=new PvpReturnFlow((action,args)=>client.request(action,args),matchId=>this.leavePvp(matchId));
     this.combat.clear();this.projectileClient.reset();
     this.modeView?.reset();
+    this.pickupView?.reset();
+    this.skillView?.reset(state.round);
+    this.skillClient?.reset(state.round);
     this.combat.serial=0;this.combat.nextShotAt=0;this.combat.life=undefined;
     const me=state.participants.find(p=>p.playerId===this.presence.identity.playerId);
     this.player.body.enable=true;this.placeAtSpawn(me);this.lastLife=me.life;
@@ -134,6 +149,7 @@ export class PvpArenaScene extends PvpMapScene {
       this.matchState={...endMatch(state,Date.now(),'lobby_unavailable'),reason:'lobby_unavailable',endedAt:Date.now()};
     }
     this.networkFailed=true;
+    this.skillClient?.close();this.skillView?.reset();
     this.damageClient?.close();
     this.projectileClient?.close();
     this.movementClient?.close();
@@ -168,6 +184,7 @@ export class PvpArenaScene extends PvpMapScene {
     if(playable)this.player.update();else{this.player.setVelocity(0,0);this.player.setFacing(this.player.facing,false);}
     if(playable)this.updatePvpTeleports(now);
     this.movementClient?.update();
+    this.skillClient?.update();
     this.remotes.update();
     const renderedRemoteIds=new Set();
     for(const p of state.participants){
@@ -182,6 +199,9 @@ export class PvpArenaScene extends PvpMapScene {
     }
     this.combat?.update(this.networkFailed?{...state,state:'ended'}:state,me,delta,now);
     this.modeView?.render(state);
+    this.pickupView?.render(state,matchNow);
+    this.skillView?.render(state,matchNow);
+    this.skillHud?.render(state,me,matchNow);
     const returnSeconds=this.returnFlow?.remaining(matchNow)??null;
     this.pvpHud?.render(returnSeconds===null?state:{...state,retry:undefined},me,matchNow,returnSeconds);
     const seconds=returnSeconds??(state.retry?Math.max(0,Math.ceil((state.retry.deadline-matchNow)/1000)):null);
@@ -210,6 +230,7 @@ export class PvpArenaScene extends PvpMapScene {
   leavePvp(lobbyId=null){
     if(this.leaving)return;this.leaving=true;this.returnFlow?.close();
     this.traceHostLeave('return/waiting transition',{targetMap:this.returnDestination?.targetMap,lobbyId});
+    this.skillClient?.close();this.skillView?.reset();
     this.damageClient?.close();
     this.projectileClient?.close();
     this.movementClient?.close();
@@ -221,6 +242,10 @@ export class PvpArenaScene extends PvpMapScene {
     this.pvpRemoteHealthBars?.clear();this.pvpRemoteHealthBars=null;
     this.teleports?.reset();this.teleports=null;
     this.modeView?.destroy();this.modeView=null;
+    this.pickupView?.destroy();this.pickupView=null;
+    this.skillClient?.close();this.skillClient=null;
+    this.skillView?.destroy();this.skillView=null;
+    this.skillHud?.destroy();this.skillHud=null;
     this.damageClient?.close();this.damageClient=null;
     this.projectileClient?.close();this.projectileClient=null;
     this.movementClient?.close();this.movementClient=null;

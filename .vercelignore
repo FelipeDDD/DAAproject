@@ -4,6 +4,7 @@
 .map-recovery/
 node_modules/
 dist/
+builds/
 .env*
 *.local
 *.tiled-session

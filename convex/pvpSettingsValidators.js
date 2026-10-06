@@ -5,3 +5,4 @@ const fields=()=>({maxHp:optionalNumber(),damage:optionalNumber(),attackCooldown
 const override=v.union(v.object(fields()),v.null());
 export const matchSettingsValidator=v.object({...fields(),teamOverrides:v.optional(v.union(
   v.object({A:v.optional(override),B:v.optional(override)}),v.null()))});
+export const matchTimeLimitValidator=v.number();

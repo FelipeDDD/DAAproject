@@ -85,6 +85,10 @@
 .pvp-hud-feedback .pvp-hud-status { color:#ffc4ae; }
 .pvp-hud-feedback button { pointer-events:auto; }
 .pvp-hud [hidden] { display:none; }
+.pvp-hud-skills:empty { display:none; }
+.pvp-hud-skills:has(> [hidden]) { display:none; }
+.pvp-hud-skills { position:absolute; top:100%; right:-1px; padding:3px 7px; border:1px solid #a38a5b; border-top:0; border-radius:0 0 4px 4px; background:#101923e8; pointer-events:none; }
+.pvp-skill-hud { color:#e2b77e; font-size:10px; font-variant-numeric:tabular-nums; }
 @container (max-width:860px) {
   .pvp-hud-match { max-width:calc(100% - 16px); }
   .pvp-hud-player { top:10px; right:8px; }

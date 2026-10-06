@@ -272,11 +272,11 @@ test('profile/guest lobby creation can select Payload without contaminating part
     async unique(){return table==='players'?player:null;},async collect(){return table==='pvpMatches'?matches.filter(m=>filters.every(([k,v])=>m[k]===v)):[];}};return q;},
     async insert(_table,data){matches.push(data);return 'match-a';},async patch(_id,data){Object.assign(matches.at(-1),data);}}};
   await backend.create._handler(ctx,{playerId:player.playerId,sessionId:player.sessionId,mode:'payload'});
-  assert.equal(matches[0].mode,'payload');assert.equal(matches[0].respawnMs,3000);assert.equal(matches[0].timeLimitMs,180000);
+  assert.equal(matches[0].mode,'payload');assert.equal(matches[0].respawnMs,3000);assert.equal(matches[0].timeLimitMs,600000);
   assert.equal(matches[0].participants[0].mode,undefined);assert.equal(matches[0].participants[0].sessionId,'session-alice');
   ctx.db.get=async()=>matches[0];matches[0].state='countdown';
   await backend.requirePvpMembership(ctx,player,'match-a');
   await assert.rejects(backend.requirePvpMembership(ctx,{...player,sessionId:'stale'},'match-a'));
   matches[0].state='ended';await backend.create._handler(ctx,{playerId:player.playerId,sessionId:player.sessionId});
-  assert.equal(matches[1].mode,'tdm');assert.equal(matches[1].respawnMs,2500);assert.equal(gameMode('tdm').timeLimitMs,180000);
+  assert.equal(matches[1].mode,'tdm');assert.equal(matches[1].respawnMs,2500);assert.equal(gameMode('tdm').timeLimitMs,600000);
 });
