@@ -5,7 +5,7 @@ import * as backend from '../convex/pvpMatches.js';
 import { combatSnapshot } from '../src/pvp/combatSnapshot.js';
 import { update,inRoom } from '../convex/players.js';
 import { newFighter,startMatch,advanceMatch,applyPlayerDamage,registerPlayerDeath,canStartMatch,endMatch } from '../src/pvp/matchState.js';
-import { PVP_RULES,pvpRoom,PVP_MAP,PVP_MAP_FILE,PVP_MAP_DEFINITION,PVP_INSPECTION_SCENE,setPvpEnabled,pvpEnabled } from '../src/pvp/config.js';
+import { PVP_RULES,PVP_MAX_PARTICIPANTS,pvpRoom,PVP_MAP,PVP_MAP_FILE,PVP_MAP_DEFINITION,PVP_INSPECTION_SCENE,setPvpEnabled,pvpEnabled } from '../src/pvp/config.js';
 import { teamSpawn } from '../src/pvp/spawns.js';
 import { collisionAreas } from '../src/maps/collision.js';
 import { objectsIn } from '../src/maps/tiledObjects.js';
@@ -25,7 +25,7 @@ function fixture(t){
   let now=100_000,nextId=0;
   t.mock.method(Date,'now',()=>now);const previous=process.env.DEV_TOOLS_ENABLED;process.env.DEV_TOOLS_ENABLED='true';
   t.after(()=>{if(previous===undefined)delete process.env.DEV_TOOLS_ENABLED;else process.env.DEV_TOOLS_ENABLED=previous;});
-  const tables={players:Array.from({length:5},(_,i)=>({_id:`row${i}`,playerId:`p${i}`,sessionId:`s${i}`,guestId:`g${i}`,
+  const tables={players:Array.from({length:PVP_MAX_PARTICIPANTS+1},(_,i)=>({_id:`row${i}`,playerId:`p${i}`,sessionId:`s${i}`,guestId:`g${i}`,
     characterId:'felipe',characterBaseId:'felipe',name:`Name ${i}`,displayName:`Name ${i}`,room:'school',lastSeen:now,x:50,y:50,direction:'down'})),pvpMatches:[]};
   const jobs=[],writes=[];
   const ctx={scheduler:{async runAfter(delay,fn,args){jobs.push({delay,fn,args});return 'job';}},db:{
@@ -108,18 +108,19 @@ test('fifth kill ends the match immediately; timer chooses higher score and ende
   assert.equal(advanceMatch(timed,timed.endsAt).winner,'B');
 });
 
-test('lobby creates short code, joins idempotently, caps 4 players / 2 per team and hides sessions',async t=>{
+test('lobby creates short code, joins idempotently, caps 8 players / 4 per team and hides sessions',async t=>{
   const f=fixture(t),a=await backend.create._handler(f.ctx,f.args(0));
   assert.match(a.code,/^[A-Z2-9]{6}$/);assert.equal(f.jobs.length,1);assert.equal(f.jobs[0].delay,PVP_RULES.lobbyLifetimeMs);
-  for(const i of [1,1,2,3])await backend.join._handler(f.ctx,{...f.args(i),code:` ${a.code.toLowerCase()} `});
+  for(const i of [1,1,2,3,4,5,6,7])await backend.join._handler(f.ctx,{...f.args(i),code:` ${a.code.toLowerCase()} `});
   const state=await backend.current._handler(f.ctx,{...f.args(0),matchId:a.matchId});
-  assert.equal(state.participants.length,4);assert.equal(state.participants.filter(p=>p.team==='A').length,2);
+  assert.equal(state.participants.length,PVP_MAX_PARTICIPANTS);assert.equal(state.participants.filter(p=>p.team==='A').length,4);
+  assert.equal(state.participants.filter(p=>p.team==='B').length,4);
   assert.equal(JSON.stringify(state).includes('sessionId'),false);
   assert.ok(state.participants.every(p=>p.characterBaseId==='felipe'));
-  await assert.rejects(backend.join._handler(f.ctx,{...f.args(4),code:a.code}),/full/);
+  await assert.rejects(backend.join._handler(f.ctx,{...f.args(8),code:a.code}),/full/);
   await assert.rejects(backend.chooseTeam._handler(f.ctx,{...f.args(1),matchId:a.matchId,team:'A'}),/team is full/);
   await backend.start._handler(f.ctx,{...f.args(0),matchId:a.matchId});
-  assert.equal(f.tables.pvpMatches[0].state,'countdown'); // 2v2 uses the same start rule.
+  assert.equal(f.tables.pvpMatches[0].state,'countdown');
 });
 
 test('waiting host keeps identity and start authority across A/B/A team changes',async t=>{
@@ -246,7 +247,9 @@ test('configured PvP map owns team spawns, collision and the clear central path 
 
 class Element {
   constructor(tag){this.tag=tag;this.children=[];this.events={};this.hidden=false;this.value='';}
-  append(...nodes){this.children.push(...nodes);}replaceChildren(...nodes){this.children=nodes;}
+  get textContent(){return (this._text??'')+this.children.map(n=>n.textContent).join('');}
+  set textContent(value){this._text=String(value);this.children=[];}
+  append(...nodes){this.children.push(...nodes);}replaceChildren(...nodes){this._text='';this.children=nodes;}
   setAttribute(name,value){(this.attributes??={})[name]=value;}focus(){}select(){this.selected=true;}
   addEventListener(name,cb){this.events[name]=cb;}removeEventListener(name){delete this.events[name];}remove(){this.removed=true;}
   querySelectorAll(){return this.children.flatMap(n=>[...(['button','input'].includes(n.tag)?[n]:[]),...n.querySelectorAll()]);}
@@ -263,16 +266,31 @@ function ui(t){
   return {documentRef,presence,scene,state,callbacks,calls,travel,ticks,subscriptions:()=>subscriptions};
 }
 
-test('lobby UI creates once, displays two teams, keeps guest Start hidden and transitions through one match ID',async t=>{
+test('lobby UI creates once, displays four fixed slots per team, keeps guest Start hidden and transitions through one match ID',async t=>{
   const f=ui(t);setPvpEnabled(true);const lobby=new PvpLobbyController(f.scene,{env:{DEV:true},documentRef:f.documentRef});
   const pending=lobby.acquire('create');await lobby.acquire('create');await pending;assert.equal(f.calls.length,1);
   f.callbacks[0](f.state);await Promise.resolve();assert.equal(lobby.teams.children.length,2);assert.equal(lobby.startButton.hidden,false);
-  assert.equal(lobby.teams.children[0].children[1].textContent,'Player 0 · HOST · YOU (Felipe)');
+  assert.equal(lobby.teamSlots[0][0].children[0].textContent,'Player 0');
+  assert.equal(lobby.teamSlots[0][0].children[1].textContent,'HOST');
+  assert.equal(lobby.teamSlots[0][0].children[1].className,'pvp-host-badge');
+  assert.equal(lobby.teamSlots.flat().length,8);
+  assert.equal(lobby.teamSlots.flat().filter(slot=>slot.textContent==='Empty').length,6);
+  assert.match(lobby.panel.children[1].textContent,/max 4 per team \(4 slots shown\)/);
+  assert.match(lobby.panel.className,/pvp-lobby-panel/);
+  assert.equal(lobby.status.textContent,'Ready to start.');
+  assert.equal(lobby.teamButtons[0].attributes['aria-pressed'],'true');
+  assert.equal(lobby.teamButtons[1].attributes['aria-pressed'],'false');
+  const slots=[...lobby.teamSlots.flat()],buttons=[...lobby.teamButtons];
+  for(let i=0;i<2;i++)assert.equal(lobby.teams.children[i].children[5],buttons[i]);
+  assert.doesNotMatch(lobby.teams.textContent,/YOU|YOUR TEAM|Felipe/);
   assert.match(lobby.teams.children[0].className,/pvp-team-selected/);
   assert.doesNotMatch(lobby.teams.children[1].className,/pvp-team-selected/);
-  assert.equal(lobby.teams.children[0].children[1].className,'pvp-member-self');
+  assert.equal(lobby.teams.children[0].children[1].className,'pvp-player-slot');
   assert.doesNotMatch(lobby.teams.children[1].children[1].textContent,/YOU/);
   f.callbacks[0]({...f.state,hostPlayerId:'b'});await Promise.resolve();assert.equal(lobby.startButton.hidden,true);
+  assert.equal(lobby.status.textContent,'Waiting for host.');
+  assert.deepEqual(lobby.teamSlots.flat(),slots,'roster updates keep the same four slot elements');
+  assert.deepEqual(lobby.teamButtons,buttons,'roster updates do not replace focused buttons');
   f.callbacks[0]({...f.state,state:'countdown',startedAt:Date.now()+3000,endsAt:Date.now()+183000});await Promise.resolve();
   assert.equal(f.travel.length,1);assert.equal(f.travel[0].pvpMatchId,'match-a');assert.equal(f.subscriptions(),0);
   f.callbacks[0](f.state);await Promise.resolve();assert.equal(f.travel.length,1);setPvpEnabled(false);
@@ -304,11 +322,14 @@ test('team-change subscription snapshots move the HOST badge and preserve host S
   const check=team=>{
     const index=team==='A'?0:1;
     assert.equal(lobby.matchState.hostPlayerId,'p0');
-    assert.match(lobby.teams.children[index].children[1].textContent,/Name 0.*HOST.*YOU/);
+    assert.match(lobby.teams.children[index].children[1].textContent,/Name 0.*HOST/);
     const rows=lobby.teams.children.flatMap(section=>section.children);
     assert.equal(rows.filter(row=>row.textContent.includes('HOST')).length,1);
     assert.equal(lobby.startButton.hidden,false);
     assert.equal(lobby.matchState.state,'waiting');
+    assert.equal(lobby.teamButtons[index].attributes['aria-pressed'],'true');
+    assert.equal(lobby.teamButtons[1-index].attributes['aria-pressed'],'false');
+    assert.equal(lobby.teamSlots.flat().length,8);
   };
   check('A');
   for(const team of ['B','A','B']){await lobby.chooseTeam(team);check(team);}
@@ -328,7 +349,7 @@ test('non-host switching teams remains a guest in the lobby UI',async t=>{
     const rows=lobby.teams.children.flatMap(section=>section.children);
     assert.equal(rows.filter(row=>row.textContent.includes('HOST')).length,1);
     assert.match(rows.find(row=>row.textContent.includes('HOST')).textContent,/Player 0/);
-    assert.doesNotMatch(rows.find(row=>row.textContent.includes('YOU')).textContent,/HOST/);
+    assert.doesNotMatch(rows.find(row=>row.textContent.includes('Player 1')).textContent,/HOST/);
     assert.equal(lobby.startButton.hidden,true);
   }
   await lobby.start();assert.equal(u.calls.length,0);lobby.close();
@@ -568,7 +589,7 @@ test('client uses Convex server time for match deadlines when the local wall clo
   assert.equal(state.state,'ended');assert.equal(state.reason,'team_empty');client.close();
 });
 
-test('resumed lobby keeps code/counts and highlights selected Team B and YOU independently of HOST',async t=>{
+test('resumed lobby keeps code and highlights selected Team B independently of HOST',async t=>{
   const f=ui(t);f.presence.identity.playerId='b';
   const lobby=new PvpLobbyController(f.scene,{env:{DEV:true},documentRef:f.documentRef,resumeMatchId:'match-a'});
   assert.equal(f.calls.length,0);assert.equal(f.subscriptions(),1);
@@ -576,7 +597,7 @@ test('resumed lobby keeps code/counts and highlights selected Team B and YOU ind
   assert.equal(lobby.copyInput.value,'ABC234');assert.equal(lobby.teams.children.length,2);
   assert.doesNotMatch(lobby.teams.children[0].className,/selected/);assert.match(lobby.teams.children[1].className,/selected/);
   assert.match(lobby.teams.children[0].children[1].textContent,/HOST/);assert.doesNotMatch(lobby.teams.children[0].children[1].textContent,/YOU/);
-  assert.match(lobby.teams.children[1].children[1].textContent,/YOU/);assert.equal(lobby.startButton.hidden,true);
+  assert.match(lobby.teams.children[1].children[1].textContent,/Player 1/);assert.equal(lobby.teamButtons[1].attributes['aria-pressed'],'true');assert.equal(lobby.startButton.hidden,true);
   lobby.close();assert.equal(f.subscriptions(),0);assert.equal(f.calls.at(-1).args.round,1);
 });
 
@@ -680,7 +701,7 @@ test('host presence expiry after a completed match starts one stable departure c
   const f=await runningFixture(t,2);
   await f.ctx.db.patch(f.lobby.matchId,endMatch(f.tables.pvpMatches[0],104000,'score-limit'));
   const initial=await backend.current._handler(f.ctx,f.member(1)),u=ui(t);let state;
-  const client=new PvpMatchClient(u.presence,f.lobby.matchId,s=>state=s);
+  const client=new PvpMatchClient(u.presence,f.lobby.matchId,s=>state=s,()=>{}, {monotonicNow:()=>Date.now()});
   t.after(()=>client.close());
   u.callbacks[0](initial);await Promise.resolve();
   f.setTime(164000);f.tables.players[0].lastSeen=104000;

@@ -19,6 +19,14 @@ export function payloadCartFrame(time,moving){
 export const PAYLOAD_VIEW_CONFIG=Object.freeze({
   theme:'equipmentCart',showRoute:true,routeDepth:-1.8,
   routeColor:0xc7ccd1,routeAlpha:.18,routeWidth:2,routeEndpointRadius:10,
+  field:Object.freeze({
+    depth:-1.85,supersample:3,padding:12,
+    washAlpha:.035,glowAlpha:.075,glowThickness:8,
+    ringAlpha:.62,ringThickness:2.2,
+    secondaryInset:8,secondaryAlpha:.24,secondaryThickness:1.1,
+    segmentRadiusOffset:4,segmentCount:8,segmentAlpha:.58,segmentThickness:2.4,
+    pulsePeriodMs:2600,pulseScale:.012,pulseAlpha:.08,orbitSpeedRadPerSec:.08,
+  }),
   collision:Object.freeze({enabled:true,width:64,height:22,offsetX:0,offsetY:-20}),
 });
 

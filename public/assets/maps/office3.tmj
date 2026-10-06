@@ -75,8 +75,8 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":122,
-                 "x":38.6666666666667,
+                 "width":133.25,
+                 "x":27.4166666666667,
                  "y":93.6666666666667
                 }, 
                 {
@@ -104,16 +104,16 @@
                  "y":142
                 }, 
                 {
-                 "height":102,
+                 "height":96.5454545454545,
                  "id":9,
                  "name":"office3-desk-middle-left",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":122,
-                 "x":40,
-                 "y":248
+                 "width":118.545454545455,
+                 "x":40.7272727272727,
+                 "y":253.454545454545
                 }, 
                 {
                  "height":40,
@@ -128,40 +128,40 @@
                  "y":344
                 }, 
                 {
-                 "height":101.5,
+                 "height":96.2272727272727,
                  "id":11,
                  "name":"office3-desk-middle",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":120,
-                 "x":241,
-                 "y":248.5
+                 "width":117.272727272727,
+                 "x":241.545454545455,
+                 "y":253.772727272727
                 }, 
                 {
-                 "height":40,
+                 "height":29.8181818181818,
                  "id":12,
                  "name":"office3-chair-middle",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":39,
-                 "x":281,
+                 "width":34.6363636363636,
+                 "x":284.636363636364,
                  "y":344
                 }, 
                 {
-                 "height":82,
+                 "height":70.5909090909091,
                  "id":13,
                  "name":"office3-desk-lower-left",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":122,
-                 "x":40,
-                 "y":451
+                 "width":116.75,
+                 "x":41.25,
+                 "y":478
                 }, 
                 {
                  "height":38,
@@ -176,16 +176,16 @@
                  "y":530
                 }, 
                 {
-                 "height":82,
+                 "height":70.9090909090909,
                  "id":15,
                  "name":"office3-desk-lower-middle",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":120,
-                 "x":241,
-                 "y":451
+                 "width":117.090909090909,
+                 "x":241.363636363636,
+                 "y":478.272727272727
                 }, 
                 {
                  "height":39,
@@ -200,40 +200,40 @@
                  "y":530
                 }, 
                 {
-                 "height":94.5,
+                 "height":90.1666666666667,
                  "id":17,
                  "name":"office3-desk-bottom-left",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":117.5,
-                 "x":40,
-                 "y":641.5
+                 "width":115.5,
+                 "x":42,
+                 "y":651.5
                 }, 
                 {
-                 "height":95.5,
+                 "height":89.1363636363636,
                  "id":18,
                  "name":"office3-desk-bottom-middle",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":119.5,
-                 "x":241,
-                 "y":645
+                 "width":117.318181818182,
+                 "x":241.727272727273,
+                 "y":651.363636363636
                 }, 
                 {
-                 "height":109,
+                 "height":95,
                  "id":19,
                  "name":"office3-desk-right-upper",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":119,
+                 "width":118.25,
                  "x":641,
-                 "y":439
+                 "y":453
                 }, 
                 {
                  "height":107,
@@ -248,14 +248,14 @@
                  "y":639
                 }, 
                 {
-                 "height":145,
+                 "height":139,
                  "id":21,
                  "name":"office3-cabinet-top",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":65,
+                 "width":64.2727272727273,
                  "x":456,
                  "y":18
                 }, 
@@ -279,21 +279,21 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":46,
+                 "width":36.75,
                  "x":742,
                  "y":198.5
                 }, 
                 {
-                 "height":50,
+                 "height":69.6363636363636,
                  "id":25,
                  "name":"office3-plant-mid-left",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":42,
+                 "width":42.7272727272727,
                  "x":448.5,
-                 "y":207.5
+                 "y":217.136363636364
                 }, 
                 {
                  "height":34.5,
@@ -308,19 +308,19 @@
                  "y":341.5
                 }, 
                 {
-                 "height":88.5,
+                 "height":80.125,
                  "id":28,
                  "name":"office3-partition-upper-right",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":174.5,
-                 "x":603.5,
-                 "y":270
+                 "width":176.375,
+                 "x":601.625,
+                 "y":278.375
                 }, 
                 {
-                 "height":148.5,
+                 "height":141.590909090909,
                  "id":29,
                  "name":"office3-partition-lower-left",
                  "opacity":1,
@@ -329,10 +329,10 @@
                  "visible":true,
                  "width":22,
                  "x":416,
-                 "y":651.5
+                 "y":658.409090909091
                 }, 
                 {
-                 "height":151,
+                 "height":141.715909090909,
                  "id":30,
                  "name":"office3-partition-lower-middle",
                  "opacity":1,
@@ -341,31 +341,31 @@
                  "visible":true,
                  "width":22,
                  "x":522,
-                 "y":649
+                 "y":658.284090909091
                 }, 
                 {
-                 "height":52,
+                 "height":21.0909090909091,
                  "id":32,
                  "name":"office3-chair-bottom-left",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":38,
-                 "x":81,
-                 "y":733
+                 "width":32,
+                 "x":85.5454545454545,
+                 "y":736.090909090909
                 },
             
                 {
-                 "height":52,
+                 "height":24,
                  "id":33,
                  "name":"office3-chair-bottom-middle",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":39,
-                 "x":281,
+                 "width":31.5454545454546,
+                 "x":286.090909090909,
                  "y":733
                 }, 
                 {
@@ -393,52 +393,52 @@
                  "y":740
                 }, 
                 {
-                 "height":181,
+                 "height":177.5,
                  "id":36,
                  "name":"",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":20,
+                 "width":25.0833333333333,
                  "x":416.5,
-                 "y":399.5
+                 "y":403
                 }, 
                 {
-                 "height":79.5,
+                 "height":74.9375,
                  "id":37,
                  "name":"",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":386.5,
-                 "x":25.5,
-                 "y":398.5
+                 "width":392.041666666667,
+                 "x":24.1666666666667,
+                 "y":403.0625
                 }, 
                 {
-                 "height":13.5,
+                 "height":19.125,
                  "id":38,
                  "name":"",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":31.5,
-                 "x":85.5,
-                 "y":625.5
+                 "width":27.375,
+                 "x":87.5,
+                 "y":628.875
                 }, 
                 {
-                 "height":12.5,
+                 "height":15.875,
                  "id":39,
                  "name":"",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":37,
-                 "x":281,
-                 "y":627
+                 "width":28.4375,
+                 "x":287.5625,
+                 "y":629.3125
                 }, 
                 {
                  "height":12.5,
@@ -449,11 +449,11 @@
                  "type":"",
                  "visible":true,
                  "width":414.5,
-                 "x":0.5,
-                 "y":762.5
+                 "x":1.25,
+                 "y":775
                 }, 
                 {
-                 "height":307.5,
+                 "height":320.625,
                  "id":41,
                  "name":"",
                  "opacity":1,
@@ -463,18 +463,6 @@
                  "width":11.5,
                  "x":11.5,
                  "y":454.5
-                }, 
-                {
-                 "height":0,
-                 "id":42,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":452,
-                 "y":767.5
                 }, 
                 {
                  "height":33,
@@ -501,16 +489,16 @@
                  "y":737.5
                 }, 
                 {
-                 "height":14.5,
+                 "height":9.22727272727275,
                  "id":45,
                  "name":"",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":25.5,
-                 "x":688.5,
-                 "y":623.5
+                 "width":29.1363636363636,
+                 "x":685.863636363636,
+                 "y":629.318181818182
                 }, 
                 {
                  "height":404.5,
@@ -537,27 +525,27 @@
                  "y":364.5
                 }, 
                 {
-                 "height":100,
+                 "height":70.9090909090909,
                  "id":48,
                  "name":"",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":102,
+                 "width":103.090909090909,
                  "x":416.5,
-                 "y":258
+                 "y":287.090909090909
                 }, 
                 {
-                 "height":251,
+                 "height":281.363636363636,
                  "id":49,
                  "name":"",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":14.5,
-                 "x":415.5,
+                 "width":13.7727272727273,
+                 "x":416.227272727273,
                  "y":5.5
                 }, 
                 {
@@ -597,7 +585,7 @@
                  "y":170.5
                 }, 
                 {
-                 "height":7.5,
+                 "height":17.9545454545455,
                  "id":53,
                  "name":"",
                  "opacity":1,
@@ -609,7 +597,7 @@
                  "y":231
                 }, 
                 {
-                 "height":277.5,
+                 "height":295.5,
                  "id":54,
                  "name":"",
                  "opacity":1,
@@ -619,18 +607,6 @@
                  "width":9,
                  "x":15,
                  "y":108
-                }, 
-                {
-                 "height":12.5,
-                 "id":56,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":396.5,
-                 "x":24,
-                 "y":397.5
                 }, 
                 {
                  "height":28,
@@ -655,8 +631,7 @@
                  "width":4,
                  "x":450.5,
                  "y":131.5
-                },
-            
+                }, 
                 {
                  "height":8,
                  "id":59,
@@ -670,29 +645,18 @@
                  "y":119.5
                 }, 
                 {
-                 "height":0,
-                 "id":60,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":746,
-                 "y":144
-                }, 
-                {
-                 "height":11.5,
+                 "height":25.25,
                  "id":61,
                  "name":"",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":98.5,
-                 "x":641.5,
-                 "y":246
-                }, 
+                 "width":104.75,
+                 "x":636.189393939394,
+                 "y":249.393939393939
+                },
+            
                 {
                  "height":0,
                  "id":66,
@@ -711,9 +675,81 @@
                  "width":0,
                  "x":716.666666666667,
                  "y":478.666666666667
+                }, 
+                {
+                 "height":70,
+                 "id":75,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":6.54545454545462,
+                 "x":776,
+                 "y":128.363636363636
+                }, 
+                {
+                 "height":5.54545454545456,
+                 "id":77,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32.9090909090909,
+                 "x":683.545454545455,
+                 "y":433.272727272727
+                }, 
+                {
+                 "height":39.25,
+                 "id":78,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":17.75,
+                 "x":441,
+                 "y":751.125
+                }, 
+                {
+                 "height":20.5,
+                 "id":79,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":31.534090909091,
+                 "x":284.852272727273,
+                 "y":231.75
+                }, 
+                {
+                 "height":21,
+                 "id":82,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":21.75,
+                 "x":734.5,
+                 "y":130.25
                 }],
          "opacity":1,
          "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "id":7,
+         "image":"office3-overlay.png",
+         "imageheight":800,
+         "imagewidth":800,
+         "name":"overlay",
+         "opacity":1,
+         "type":"imagelayer",
          "visible":true,
          "x":0,
          "y":0
@@ -932,8 +968,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":7,
- "nextobjectid":75,
+ "nextlayerid":8,
+ "nextobjectid":83,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.2",

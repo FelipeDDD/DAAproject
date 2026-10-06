@@ -1,9 +1,22 @@
 import { gameMode } from './gameModes.js';
 
 const payloadStatus=payload=>payload?.contested?'CONTESTED':payload?.control==='A'?'BLUE PUSHING':payload?.control==='B'?'RED PUSHING':'NEUTRAL';
+function retryCompositionValid(state,retry){
+  if(!retry||!Array.isArray(retry.activePlayerIds)||!Array.isArray(state?.participants))return false;
+  const active=new Set(retry.activePlayerIds),participants=state.participants.filter(p=>active.has(p.playerId));
+  return participants.length>=2&&participants.some(p=>p.team==='A')&&participants.some(p=>p.team==='B');
+}
+export const PVP_DEV_PANEL_OPEN_KEY='daa-pvp-dev-panel-open';
+
+function readDevPanelOpen(storage){
+  try{return (storage??globalThis.localStorage)?.getItem(PVP_DEV_PANEL_OPEN_KEY)==='true';}catch{return false;}
+}
+function saveDevPanelOpen(open,storage){
+  try{(storage??globalThis.localStorage)?.setItem(PVP_DEV_PANEL_OPEN_KEY,String(Boolean(open)));}catch{}
+}
 
 export class PvpHud {
-  constructor({onLeave,onEnd,onRetry=()=>{},documentRef=globalThis.document,dev=false}){
+  constructor({onLeave,onEnd,onRetry=()=>{},documentRef=globalThis.document,dev=false,storage}){
     const node=(parent,tag,cls)=>{const n=documentRef.createElement(tag);n.className=cls;parent.append(n);return n;};
     this.root=documentRef.createElement('aside');this.root.className='pvp-hud';
     this.root.setAttribute('aria-label','PvP match');
@@ -21,6 +34,8 @@ export class PvpHud {
     this.leave=node(player,'button','pvp-hud-leave');this.leave.type='button';this.leave.textContent='Leave';this.leave.onclick=onLeave;
     if(dev){
       const details=node(player,'details','pvp-hud-dev');
+      this.devPanel=details;details.open=readDevPanelOpen(storage);
+      details.addEventListener('toggle',()=>saveDevPanelOpen(details.open,storage));
       const summary=node(details,'summary','');summary.textContent='DEV';
       this.diagnostics=node(details,'small','pvp-diagnostics');
       this.end=node(details,'button','');this.end.type='button';this.end.textContent='End match';this.end.onclick=onEnd;
@@ -38,11 +53,12 @@ export class PvpHud {
   }
   render(state,self,now,returnSeconds=null){
     const retry=state.state==='ended'?state.retry:null;
+    const canRetry=retryCompositionValid(state,retry);
     this.renderedRound=state.round??0;
-    this.retry.hidden=!retry;
-    this.retry.disabled=!retry||retry.resolving||retry.playerIds.includes(self?.playerId)||this.retryPendingRound===this.renderedRound;
+    this.retry.hidden=!canRetry;
+    this.retry.disabled=!canRetry||retry.resolving||retry.playerIds.includes(self?.playerId)||this.retryPendingRound===this.renderedRound;
     this.retry.textContent=retry?.playerIds.includes(self?.playerId)?'Retry confirmed':'Retry';
-    this.retryStatus.textContent=retry?`Retry: ${retry.playerIds.length}/${retry.activePlayerIds.length} · ${state.participants
+    this.retryStatus.textContent=canRetry?`Retry: ${retry.playerIds.length}/${retry.activePlayerIds.length} · ${state.participants
       .filter(p=>retry.playerIds.includes(p.playerId)).map(p=>p.displayName??'Player').join(', ')}`:'';
     this.mode.textContent=state.mode==='payload'?'PAYLOAD':'TDM';
     this.score.textContent=state.mode==='payload'?payloadStatus(state.payload):gameMode(state.mode).summary(state);
@@ -63,7 +79,8 @@ export class PvpHud {
       :state.state==='countdown'?String(Math.max(1,Math.ceil((state.startedAt-now)/1000)))
       :self?.hp===0?(self.respawnAt===null?'Waiting for respawn...':`Respawn in ${Math.max(0,(self.respawnAt-now)/1000).toFixed(1)}s`)
       :now-state.startedAt<1000?'FIGHT':'';
-    this.returnTimer.textContent=retry?(retry.resolving?'Preparing next round...':`Retry or leave in ${Math.max(0,Math.ceil((retry.deadline-now)/1000))}s`)
+    this.returnTimer.textContent=retry?(canRetry?(retry.resolving?'Preparing next round...':`Retry or leave in ${Math.max(0,Math.ceil((retry.deadline-now)/1000))}s`)
+      :`Returning in ${Math.max(0,Math.ceil((retry.deadline-now)/1000))}s`)
       :returnSeconds===null?'':`Returning in ${returnSeconds}...`;
     this.leave.textContent=returnSeconds===null?'Leave':'Leave now';
     if(this.diagnostics)this.diagnostics.textContent=`Match ${state.matchId} · ${state.state} · Round ${this.renderedRound} · Team ${self?.team}${this.errorDetail?` · ${this.errorDetail}`:''}`;

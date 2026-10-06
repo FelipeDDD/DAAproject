@@ -34,20 +34,24 @@ test('authored Payload collisions load without depending on a fixed count while 
   assert.ok(areas.every(area=>area.shape==='rectangle'&&area.width>0&&area.height>0));
 });
 
-test('both teams use authored base markers with clear distinct teammate spawns inside map bounds',()=>{
+test('both teams use four authored square spawns clear of collisions and inside map bounds',()=>{
   const walls=collisionAreas(objectsIn(map,'Collision'));
   for(const team of ['A','B']){
     const definition=PVP_MAP_LAYOUT.teamMarkers[team];
     const marker=objectsIn(map,definition.layer).find(p=>p.name===definition.name);
-    for(const index of [0,1]){
-      const spawn=teamSpawn(map,team,index),offset=PVP_MAP_LAYOUT.spawnOffsets[index];
-      assert.equal(spawn.x,marker.x+offset.x);assert.equal(spawn.y,marker.y+offset.y);
+    const spawns=Array.from({length:4},(_,index)=>teamSpawn(map,team,index));
+    assert.deepEqual(spawns.map(spawn=>spawn.name),Array.from({length:4},(_,index)=>`team${team}_spawn${index+1}`));
+    assert.equal(new Set(spawns.map(spawn=>`${spawn.x},${spawn.y}`)).size,4);
+    assert.deepEqual([...new Set(spawns.map(spawn=>spawn.x))].sort((a,b)=>a-b).map((x,i,all)=>i?x-all[i-1]:null).filter(Number.isFinite),[32]);
+    assert.deepEqual([...new Set(spawns.map(spawn=>spawn.y))].sort((a,b)=>a-b).map((y,i,all)=>i?y-all[i-1]:null).filter(Number.isFinite),[32]);
+    assert.ok(spawns.some(spawn=>spawn.x===marker.x&&spawn.y===marker.y),'one corner remains at the authored base marker');
+    assert.ok(spawns.some(spawn=>spawn.x===marker.x&&spawn.y===marker.y+32),'the original second teammate point remains one tile below the base');
+    for(const [index,spawn] of spawns.entries()){
       assert.equal(spawn.direction,definition.direction);
       assert.ok(spawn.x>0&&spawn.x<map.width*map.tilewidth&&spawn.y>0&&spawn.y<map.height*map.tileheight);
       const feet={x:spawn.x-10*PLAYER_SCALE,y:spawn.y-12*PLAYER_SCALE,width:20*PLAYER_SCALE,height:12*PLAYER_SCALE};
       assert.ok(!walls.some(area=>overlaps(feet,area)),`${team}/${index} feet must not overlap authored collision`);
     }
-    assert.notDeepEqual(teamSpawn(map,team,0),teamSpawn(map,team,1));
   }
 });
 

@@ -3,9 +3,11 @@ import assert from 'node:assert/strict';
 import { PvpHud } from '../src/pvp/PvpHud.js';
 
 class Element {
-  constructor(tag){this.tag=tag;this.children=[];this.textContent='';this.hidden=false;}
+  constructor(tag){this.tag=tag;this.children=[];this.textContent='';this.hidden=false;this.listeners={};}
   append(...nodes){this.children.push(...nodes);}
   setAttribute(name,value){(this.attributes??={})[name]=value;}
+  addEventListener(name,listener){(this.listeners[name]??=[]).push(listener);}
+  dispatchEvent(event){for(const listener of this.listeners[event.type]??[])listener(event);}
   remove(){this.removed=true;}
 }
 
@@ -56,4 +58,48 @@ test('Payload HUD keeps control and cart position visible; DEV diagnostics stay 
   hud.render({...match,mode:'payload',state:'ended',payload:{control:'A'}},self,90000);
   assert.equal(hud.phase.textContent,'ENDED');
   hud.destroy();
+});
+
+test('DEV panel stays enabled through death/respawn and restores its preference if the HUD is recreated',()=>{
+  const values=new Map(),storage={getItem:key=>values.get(key)??null,setItem:(key,value)=>values.set(key,value)};
+  const first=documentRef(),hud=new PvpHud({documentRef:first.document,onLeave(){},onEnd(){},dev:true,storage});
+  const devPanel=hud.devPanel;devPanel.open=true;devPanel.dispatchEvent({type:'toggle'});
+  hud.render({...match,state:'active'}, {...self,hp:0},10000);
+  assert.equal(devPanel.open,true,'death does not close the DEV panel');
+  hud.render({...match,state:'active'}, {...self,hp:100},13000);
+  assert.equal(devPanel.open,true,'respawn preserves the enabled DEV panel');
+  hud.destroy();
+
+  const resumed=documentRef(),recreated=new PvpHud({documentRef:resumed.document,onLeave(){},onEnd(){},dev:true,storage});
+  assert.equal(recreated.devPanel.open,true,'a recreated HUD restores the saved preference');
+  recreated.devPanel.open=false;recreated.devPanel.dispatchEvent({type:'toggle'});recreated.destroy();
+  const closed=documentRef(),closedHud=new PvpHud({documentRef:closed.document,onLeave(){},onEnd(){},dev:true,storage});
+  assert.equal(closedHud.devPanel.open,false,'the disabled preference also remains disabled');
+  closedHud.destroy();
+});
+
+test('Retry stays visible when the active voters can form a valid 1v1 round',()=>{
+  const {document}=documentRef(),hud=new PvpHud({documentRef:document,onLeave(){}});
+  const participants=[{...self,playerId:'alice',team:'A'},{...self,playerId:'bob',team:'B'}];
+  const state={...match,state:'ended',participants,retry:{deadline:20000,activePlayerIds:['alice','bob'],playerIds:[],resolving:false}};
+  hud.render(state,participants[0],11000);
+  assert.equal(hud.retry.hidden,false);assert.equal(hud.retry.disabled,false);
+  assert.match(hud.returnTimer.textContent,/Retry or leave/);hud.destroy();
+});
+
+test('Retry is hidden with one survivor and HUD shows the automatic return countdown',()=>{
+  const {document}=documentRef(),hud=new PvpHud({documentRef:document,onLeave(){}});
+  const state={...match,state:'ended',reason:'host_left',participants:[self],retry:{deadline:20000,activePlayerIds:['alice'],playerIds:[],resolving:false}};
+  hud.render(state,self,11000);
+  assert.equal(hud.retry.hidden,true);assert.equal(hud.retryStatus.textContent,'');
+  assert.equal(hud.returnTimer.textContent,'Returning in 9s');assert.equal(hud.leave.textContent,'Leave');hud.destroy();
+});
+
+test('Retry is hidden when remaining active participants are all on the same team',()=>{
+  const {document}=documentRef(),hud=new PvpHud({documentRef:document,onLeave(){}});
+  const participants=[{...self,playerId:'alice',team:'A'},{...self,playerId:'bob',team:'A'},
+    {...self,playerId:'carol',team:'A'}];
+  const state={...match,state:'ended',participants,retry:{deadline:20000,activePlayerIds:participants.map(p=>p.playerId),playerIds:[],resolving:false}};
+  hud.render(state,participants[0],11000);
+  assert.equal(hud.retry.hidden,true);assert.equal(hud.returnTimer.textContent,'Returning in 9s');hud.destroy();
 });

@@ -16,6 +16,7 @@ import { runInNewContext } from 'node:vm';
 import { readPvpTeleportAreas,PvpTeleportController } from '../src/pvp/teleports.js';
 import { PVP_MAP_DEFINITION } from '../src/pvp/config.js';
 import { requirePvpMap } from '../src/pvp/mapConfig.js';
+import { matchSettingsFor,pvpMovementSpeed,effectiveMatchSettings } from '../src/pvp/matchSettings.js';
 
 const match=()=>({arenaMap:PVP_MAP_DEFINITION,round:2,state:'active',participants:[
   {playerId:'alice',displayName:'Alice',characterBaseId:'michael',team:'A',life:0,hp:100},
@@ -294,7 +295,7 @@ test('actual PvP scene keeps local input immediate and Convex presence fixed whi
     .replace(/^import .*;\r?\n/gm,'').replace('export class PvpArenaScene','class PvpArenaScene')
     .replaceAll('import.meta.env','({DEV:true})');
   const Scene=runInNewContext(`${source}\nPvpArenaScene`,{PvpMapScene:MapScene,requirePvpMap,getPresence:()=>presence,createModeView:()=>null,
-    PVP_MAP:'pvp-arena-test',PVP_MAP_FILE:'payload-map.tmj',PVP_RULES:{maxHp:100},pvpRoom:id=>`pvp-arena-test:${id}`,
+    PVP_MAP:'pvp-arena-test',PVP_MAP_FILE:'payload-map.tmj',matchSettingsFor,pvpMovementSpeed,effectiveMatchSettings,pvpRoom:id=>`pvp-arena-test:${id}`,
     characterById:()=>({}),teamSpawn:()=>({x:100,y:200}),pvpRealtimeUrl:()=> 'ws://localhost:8787',
     pvpMovementDebugEnabled:()=>false,cameraZoomForMap:()=>1.25,readPvpTeleportAreas,PvpTeleportController,
     resolvedMovementState:body=>({moving:true,velocityX:body.velocity.x,velocityY:body.velocity.y}),

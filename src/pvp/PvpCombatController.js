@@ -1,4 +1,5 @@
 import { PVP_RULES } from './config.js';
+import { effectiveMatchSettings } from './matchSettings.js';
 import { aimedVelocity } from '../boss/BossCombatState.js';
 import { collisionAreas } from '../maps/collision.js';
 import { objectsIn } from '../maps/tiledObjects.js';
@@ -27,7 +28,7 @@ export class PvpCombatController {
     if(this.state?.state!=='active'||!self||self.hp<=0||now<this.nextShotAt||!this.canFire())return false;
     const aimOrigin={x:this.scene.player.x,y:this.scene.player.y-22};
     if(Math.hypot(target.x-aimOrigin.x,target.y-aimOrigin.y)<1)return false;
-    this.nextShotAt=now+PVP_RULES.attackCooldownMs;
+    this.nextShotAt=now+effectiveMatchSettings(this.state,self.team).attackCooldownMs;
     this.serial=Math.max(this.serial,self.lastShot)+1;
     const velocity=aimedVelocity(aimOrigin,target,PVP_RULES.projectileSpeed);
     const attackVisual=pvpAttackVisual(self.characterBaseId);

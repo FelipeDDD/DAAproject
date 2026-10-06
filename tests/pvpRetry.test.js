@@ -16,7 +16,9 @@ import { validClientMessage,validServerMessage } from '../src/realtime/realtimeM
 import { createRealtimeServer } from '../scripts/realtime-server.mjs';
 import * as backend from '../convex/pvpMatches.js';
 import { PVP_MAP_DEFINITION } from '../src/pvp/config.js';
+import { matchSettingsFor,pvpMovementSpeed,effectiveMatchSettings } from '../src/pvp/matchSettings.js';
 import { requirePvpMap } from '../src/pvp/mapConfig.js';
+import { PvpReturnFlow } from '../src/pvp/PvpReturnFlow.js';
 
 function clock(){
   let at=10000,serial=0;const jobs=new Map();
@@ -155,7 +157,7 @@ async function connectedFixture(t){
   const bridge={authenticate:args=>backend.current._handler(f.ctx,args),acquire:args=>backend.acquireRealtimeCombat._handler(f.ctx,args),
     commit:args=>backend.mirrorRealtimeCombat._handler(f.ctx,args),nextRound:args=>{resolutions++;return backend.advanceRealtimeRound._handler(f.ctx,args);},
     subscribe(_id,cb){subscriptions++;subscribers.add(cb);return ()=>{unsubscribed++;subscribers.delete(cb);};}};
-  const server=createRealtimeServer({port:0,heartbeatMs:60000,now:f.time.now,pvpBridge:bridge});await server.ready;
+  const server=createRealtimeServer({port:0,heartbeatMs:60000,now:f.time.now,schedule:f.time.schedule,cancel:f.time.cancel,pvpBridge:bridge});await server.ready;
   t.after(async()=>{clients.forEach(c=>c.close());await server.close();});
   const initial=await backend.current._handler(f.ctx,{matchId:'match-a',playerId:'alice',sessionId:'session-alice'});
   for(const [i,playerId] of ['alice','bob'].entries()){
@@ -232,6 +234,59 @@ test('real final-screen disconnect recalculates unanimity and returns remaining 
   a.damage.requestEnd();await waitFor(()=>b.state.retry);b.damage.requestRetry();await waitFor(()=>a.state.retry.playerIds.includes('bob'));
   a.close();await waitFor(()=>b.closed);assert.equal(b.returnedLobby,'match-a');assert.equal(f.saved.state,'waiting');assert.equal(f.saved.round,1);
 });
+test('active host leave: Convex-first departure keeps the survivor socket until the relay return handoff',async t=>{
+  const f=await connectedFixture(t),[a,b]=f.clients;
+  await backend.leave._handler(f.ctx,a.args);
+  assert.equal(b.movement.closed,false,'an ended membership echo must not disconnect the lifecycle listener');
+  assert.equal(b.projectiles.closed,false);
+  const sent=b.transport.seq;b.movement.update();assert.equal(b.transport.seq,sent,'keeping lifecycle open does not send movement after end');
+  await waitFor(()=>b.state.retry);
+  assert.equal(b.state.state,'ended');assert.equal(b.state.reason,'host_left');
+  const room=b.movement.roomId,entry=f.server.authorities.get(room);
+  a.close();await waitFor(()=>entry.authority.members.size===1);
+  const before=b.messages.filter(m=>m.type==='pvp-combat-state').length;
+  entry.authority.emit();await waitFor(()=>b.messages.filter(m=>m.type==='pvp-combat-state').length>before);
+  assert.equal(f.time.jobs.size,1,'the relay keeps its own return timer after host departure');
+  f.time.tick(b.state.retry.deadline);
+  await waitFor(()=>b.closed);assert.equal(b.returnedLobby,null);
+  assert.equal(f.saved,null);assert.equal(f.counts.resolutions,1);assert.equal(b.errors.length,0);
+  assert.equal(f.time.jobs.size,0,'exit cancels the relay timer once');
+});
+test('active host disconnect: surviving Retry voter returns to waiting without host or extra listeners',async t=>{
+  const f=await connectedFixture(t),[a,b]=f.clients;
+  const listenerCount=b.transport.messageHandlers.size;
+  a.close();await waitFor(()=>b.state.retry);
+  assert.equal(b.state.reason,'host_left');assert.equal(b.movement.closed,false);
+  assert.equal(f.server.rooms.get(b.movement.roomId).size,1);
+  assert.equal(b.transport.messageHandlers.size,listenerCount);
+  assert.ok(b.damage.requestRetry());await waitFor(()=>b.closed);
+  assert.equal(b.returnedLobby,'match-a');assert.equal(f.saved.state,'waiting');assert.equal(f.saved.hostPlayerId,'bob');
+  assert.equal(f.counts.resolutions,1);assert.equal(b.errors.length,0);
+});
+test('active host leave: departed HP bar cleanup keeps frames, countdown and Leave UI running, then exits once',async t=>{
+  const source=readFileSync(new URL('../src/scenes/PvpArenaScene.js',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'')
+    .replaceAll('import.meta.env','{}').replace('export class PvpArenaScene','class PvpArenaScene');
+  let now=10000,destroyed=0,returned=0,requested=0,closed=0;
+  const Arena=runInNewContext(source+'\nPvpArenaScene;',{PvpMapScene:class{},Date,console,
+    resolvedMovementState:()=>({moving:false,velocityX:0,velocityY:0})});
+  const scene=Object.create(Arena.prototype),documentRef={createElement(){return {append(){},setAttribute(){},remove(){}};},body:{append(){}}};
+  Object.assign(scene,{presence:{identity:{playerId:'bob'}},matchClient:{now:()=>now},pvpSettings:{maxHp:100},
+    matchState:{...base(),state:'ended',reason:'host_left',endedAt:now,participants:[base().participants[1]]},lastLife:0,
+    pvpRemoteHealthBars:new Map([['alice',{anchor:{},bar:{destroy:()=>destroyed++}}]]),
+    player:{body:{},facing:'down',setAlpha(){return this;},setCombatHealth(){return this;},setVelocity(){},setFacing(){}},
+    remotes:{players:new Map(),update(){}},combat:{update(){}},updatePvpHudHealth(){},
+    damageClient:{close:()=>closed++},projectileClient:{close:()=>closed++},movementClient:{update(){},close:()=>closed++},
+    returnDestination:{targetMap:'school'},travelTo(destination){assert.equal(destination.targetMap,'school');returned++;}});
+  scene.pvpHud=new PvpHud({documentRef,onLeave:()=>scene.leavePvp()});
+  scene.returnFlow=new PvpReturnFlow(async()=>{requested++;return null;},id=>scene.leavePvp(id));
+  assert.doesNotThrow(()=>scene.update(0,16),'removing a departed player must not abort the Phaser frame');
+  assert.equal(destroyed,1);assert.equal(scene.pvpRemoteHealthBars.size,0);
+  assert.match(scene.pvpHud.result.textContent,/host left/);assert.match(scene.pvpHud.returnTimer.textContent,/10/);
+  now+=1000;scene.update(0,16);assert.match(scene.pvpHud.returnTimer.textContent,/9/);
+  now+=9000;scene.update(0,16);await scene.returnFlow.pending;
+  assert.equal(returned,1);assert.equal(requested,1);assert.equal(closed,3);
+  scene.pvpHud.leave.onclick();scene.update(0,16);assert.equal(returned,1,'late clicks/frames do not repeat exit cleanup');
+});
 test('real deadline with no votes deletes only the abandoned lobby and delivers normal exit to both clients',async t=>{
   const f=await connectedFixture(t),[a,b]=f.clients;
   a.damage.requestEnd();await waitFor(()=>b.state.retry);
@@ -260,7 +315,7 @@ test('HUD displays independent confirmations, keeps Leave, and suppresses pendin
 test('arena handoff resets spawns/combat once, keeps adapters, and returns a lone survivor to lobby',()=>{
   const source=readFileSync(new URL('../src/scenes/PvpArenaScene.js',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replaceAll('import.meta.env','{}').replace('export class PvpArenaScene','class PvpArenaScene');
   const calls=[];class MapScene{}class PvpReturnFlow{close(){} }
-  const Arena=runInNewContext(source+'\nPvpArenaScene;',{PvpMapScene:MapScene,requirePvpMap,PvpReturnFlow,PVP_MAP:'pvp-arena-test',PVP_RULES:{maxHp:100},Date});
+  const Arena=runInNewContext(source+'\nPvpArenaScene;',{PvpMapScene:MapScene,requirePvpMap,PvpReturnFlow,PVP_MAP:'pvp-arena-test',matchSettingsFor,pvpMovementSpeed,effectiveMatchSettings,Date});
   const scene=Object.create(Arena.prototype);Object.assign(scene,{matchId:'match-a',matchClient:{},presence:{identity:{playerId:'alice'}},
     returnFlow:{close:()=>calls.push('close timer')},combat:{clear:()=>calls.push('clear combat'),update:()=>calls.push('countdown')},
     projectileClient:{reset:()=>calls.push('clear projectiles'),setMatch:()=>{}},movementClient:{switchRound:s=>calls.push(`room ${s.round}`)},

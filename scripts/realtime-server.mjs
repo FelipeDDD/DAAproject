@@ -33,6 +33,11 @@ export function createRealtimeServer(options={}){
     for(const id of rooms.get(client.roomId)??[]){const peer=clients.get(id);if(peer&&peer!==client)send(peer,type,payload,{roomId:client.roomId,senderId:client.id,...extra});}
   };
   const combatBroadcast=(roomId,type,payload)=>{
+    const authority=authorities.get(roomId)?.authority;
+    if(authority?.hostLeaveObserved||['host_left','host-left'].includes(authority?.state.reason))
+      console.info('[PVP host leave] snapshot/broadcast',{roomId,type,state:authority.state.state,
+        recipients:[...(rooms.get(roomId)??[])].filter(id=>clients.get(id)?.combat&&clients.get(id).ws.readyState===WebSocket.OPEN),
+        retryDeadline:payload.retry?.deadline});
     for(const id of rooms.get(roomId)??[]){const client=clients.get(id);if(client?.combat)send(client,type,payload,{roomId});}
   };
   const authorize=async(client,args)=>{
@@ -53,7 +58,8 @@ export function createRealtimeServer(options={}){
           const initial=bridge.acquire?await bridge.acquire({matchId:args.matchId,round:args.round,authorityId}):state;
           requirePvpMap(initial);
           if(authorities.get(roomId)!==entry)return;
-          const authority=new PvpDamageAuthority(initial,{now,authorityId,walls:collisionAreas(objectsIn(map,'Collision')),
+          const authority=new PvpDamageAuthority(initial,{now,authorityId,
+            schedule:options.schedule??setTimeout,cancel:options.cancel??clearTimeout,walls:collisionAreas(objectsIn(map,'Collision')),
             modeAuthority:createModeAuthority(initial.mode,map,{now}),
             getSpawn:(p,m)=>teamSpawn(map,p.team,m.participants.filter(q=>q.team===p.team).findIndex(q=>q.playerId===p.playerId)),
             commit:args=>bridge.commit(args),onState:state=>combatBroadcast(roomId,'pvp-combat-state',state),
@@ -63,6 +69,8 @@ export function createRealtimeServer(options={}){
               const match=await bridge.nextRound({matchId:args.matchId,round:args.round,authorityId,
                 playerIds:retained.map(p=>p.playerId),startedAt});
               if(authority.closed)return;
+              authority.traceHostLeave('server return/waiting transition',{nextState:match?.state??'leave',nextRound:match?.round,
+                remainingParticipants:match?.participants.map(p=>p.playerId)??[]});
               // The old subscription is finished before clients join the next room.
               entry.off?.();entry.off=null;
               combatBroadcast(roomId,'pvp-round-transition',{fromRound:args.round,match});
@@ -82,7 +90,7 @@ export function createRealtimeServer(options={}){
       if(!entry.authority)throw new Error('PvP room unavailable.');
       if(!entry.authority.register(args.playerId,client.id))throw new Error('PvP player already connected or inactive.');
       client.combat=entry;client.pvpPlayerId=args.playerId;
-      send(client,'pvp-authorized',{playerId:args.playerId,round:args.round},{roomId});
+      send(client,'pvp-authorized',{playerId:args.playerId,round:args.round,matchSettings:entry.authority.settings},{roomId});
       entry.authority.advance();entry.authority.emit();
     }catch(error){
       if(generation===client.authGeneration&&client.roomId===roomId)
@@ -92,6 +100,11 @@ export function createRealtimeServer(options={}){
   };
   const leave=client=>{
     if(!client.roomId)return;
+    const authority=client.combat?.authority;
+    if(authority&&authority.state.hostPlayerId===client.pvpPlayerId)
+      console.info('[PVP host leave] disconnect detected',{roomId:client.roomId,playerId:client.pvpPlayerId,
+        state:authority.state.state,remainingParticipants:[...authority.members.keys()].filter(id=>id!==client.pvpPlayerId),
+        combatTimerActive:authority.timer!==undefined,retryTimerActive:authority.retry?.timer!==undefined});
     ++client.authGeneration;client.combat?.authority.remove(client.id);client.combat=null;
     broadcast(client,'peer-left',{clientId:client.id});const room=rooms.get(client.roomId);room?.delete(client.id);
     if(!room?.size){rooms.delete(client.roomId);const entry=authorities.get(client.roomId);

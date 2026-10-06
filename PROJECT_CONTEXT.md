@@ -329,8 +329,16 @@ Do not reread it for routine isolated edits when the current session already has
   The dedicated scene reuses Tiled loading/player visuals but creates no inventory,
   quest, study, boss or reward controllers. PvP rooms are excluded from persistent
   class checkpoints. No profile progression or inventory tables are written.
-- Lobby cards highlight the local team in blue (A) or warm red (B), with **YOUR
-  TEAM** and a separate **YOU** marker on the local row; HOST remains independent.
+- PvP lobby presentation (2026-10-05): the waiting modal is 540px wide (previously
+  420px), capped at 92vw. Two equal columns each keep four 64px slots and their
+  team button in fixed grid rows. `PVP_LOBBY_DISPLAY_SLOTS` controls the visual
+  count; match capacity is now 4 per team / 8 total through `PVP_RULES.teamSize`
+  and derived `PVP_MAX_PARTICIPANTS`. The Payload map has four distinct numbered
+  spawn markers per team in a 2x2 tile formation. Slots show only the displayName and optional
+  lilac HOST pill; no class name, YOU or YOUR TEAM text. The selected team's
+  button uses aria-pressed and an accented border. Host Start validation is
+  unchanged. Width/slot size and team/host colors live in the CSS variables at
+  the top of `src/pvp/pvp.css`, scoped to `.pvp-lobby-panel`; co-op is unaffected.
   Interrupted matches show their reason and a **10-second return countdown**.
   `PvpReturnFlow` uses the scene clock and one `returnToLobby` command: survivors
   reuse the same code/document if the host remains; missing/closed/expired lobbies
@@ -338,6 +346,69 @@ Do not reread it for routine isolated edits when the current session already has
   more seconds; late results cannot travel twice and release unused membership.
   This remains the fallback for relay failure/expired lobbies; ordinary realtime
   ends now use the shared Retry/Leave deadline described above. No polling is added.
+- Common PvP rules (2026-10-05): `pvpMatches.matchSettings` stores global
+  `maxHp`, `damage`, `attackCooldownMs`, `movementSpeedMultiplier`. Waiting lobby
+  **Settings** is visible to everyone; only its live host/session may Save or
+  Reset Defaults + Save. `updateSettings` checks membership, ownership, round,
+  host and waiting state, plus shared bounds. Team changes never change authority.
+  Defaults reuse current rules: HP 100, damage 15, cooldown 800 ms, movement
+  100% of `PLAYER_SPEED` (144 px/s). Limits: HP 50-500, damage 1-100, cooldown
+  100-5000 ms, speed 50-200%. Missing legacy settings fall back to defaults.
+  Starting freezes the rules for the relay; respawn, HP regen cap, HUD/bars and
+  Retry use that max HP. Damage/cooldown are enforced by the relay, not supplied
+  by the shooter. Local input multiplies base speed; relay bounds reported velocity
+  by that same speed (position/teleport trust remains the existing architecture).
+  Retry/return-to-waiting retain settings; a new lobby gets defaults. No gameplay
+  rules live in localStorage; saving adds one discrete mutation and reuses the
+  lobby subscription. TDM/Payload share `src/pvp/matchSettings.js`; objective,
+  respawn and score rules remain in mode configs. Add future common fields there,
+  in `convex/pvpSettingsValidators.js`, the panel and their authority consumers.
+  Per-player modifiers remain deferred; team overrides are described below. Focused tests: `pvpMatchSettings`,
+  movement, lobby and Retry. Restart the relay and reload clients before testing.
+  Regression fixes: nullish/missing individual settings resolve defaults on both
+  client/relay and wire validation; invalid supplied numbers still fail. The relay
+  includes its frozen rules in `pvp-authorized`; a stale relay cannot silently
+  enable custom matches with different rules. In particular an old relay omitting
+  settings sends HP >100 snapshots that current clients reject, blocking fire.
+  Restart `npm run realtime:server` after code changes; Vite does not reload Node.
+  Arena return/HUD use the existing monotonic server-adjusted match clock. Once
+  departure recovery has started, late Retry echoes cannot suspend its update
+  or obscure the return countdown. Local shot TTL/cooldown keep their local clock.
+- Manual PvP team overrides (2026-10-05): `matchSettings.teamOverrides` optionally
+  holds `{A: {...}, B: {...}}` for the same four common fields. Each absent/nullish
+  field means **Use Global**; empty/missing/null override maps normalize to the
+  existing global-only shape. Globals/defaults and mode rules are unchanged.
+  Shared `resolveMatchSettings(settings, team)` / `effectiveMatchSettings(match,
+  team)` resolve team -> global -> default. Teams come from the authoritative
+  participant roster, never a requested team in movement/hit messages. Waiting
+  host/session/round validation and bounds apply to every save. The existing
+  Settings panel has independent Use Global/Custom controls below the global
+  section; non-hosts are read-only. Main lobby retains only `Custom rules`.
+  Start freezes globals/overrides for the relay. Team caps cover initial HP,
+  respawn, Retry, Payload regen and local/remote health bars. Attacker team selects
+  damage/cooldown; local input and relay velocity limits share its speed resolver.
+  Switching teams in waiting updates HP and uses destination-team rules, without
+  changing host or profile state. Retry retains overrides; new lobby clears them.
+  Relay authorization compares effective global/A/B rules by value, including
+  overrides, and reports mismatches explicitly before enabling combat. Partial
+  wire settings inherit defaults; fighter packets (without team) use the largest
+  configured wire HP ceiling, while Convex mirrors validate roster-specific caps.
+  For a new common field extend `matchSettings.js`, `pvpSettingsValidators.js`,
+  the panel's `fields` and its gameplay consumers/tests. No schema reset needed.
+  Restart realtime server and reload both browsers after this protocol change.
+- Active host departure recovery (2026-10-05): removing a remote fighter's HP bar
+  must destroy the stored `entry.bar`, not the `{anchor, bar}` wrapper. The wrong
+  call threw from the Phaser update loop, freezing the last timer/UI frame.
+  A same-round Convex `ended` echo may precede the relay's ended/Retry snapshot:
+  movement/projectile adapters stop combat and clear visuals but retain the shared
+  WebSocket/listeners until scene exit or authoritative round handoff. This avoids
+  losing the return event. The relay still ends with `host_left`; its own 10-second
+  Retry/Leave timer continues with remaining members. A sole Retry voter returns
+  to waiting and becomes lobby host; non-voters exit. No host browser drives timers
+  or mirrors. TEMP `[PVP host leave]` traces cover disconnect, membership, server
+  timer/transition/broadcast, client receipt, countdown and return/waiting. Restart
+  `npm run realtime:server`, reload both clients and create a new lobby for testing.
+  No map, Match Settings, combat rules or Convex schema changes in this fix.
 - An optional `pvpMatches.round` (legacy default 0) increments when an interrupted
   round returns to waiting. Round/session/life checks reject delayed combat,
   end and leave commands. Return resets fighters/scores once, removes departed

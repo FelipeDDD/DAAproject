@@ -31,7 +31,7 @@ export const DIRECTOR_CLUES = [
     "markerY": 321.875,
     "area": {
       "x": 683.125,
-      "y": 362,
+      "y": 361.9999999999999,
       "width": 32,
       "height": 24
     }
@@ -55,7 +55,7 @@ export const DIRECTOR_CLUES = [
     "markerY": 128.25,
     "area": {
       "x": 458.5,
-      "y": 164.16666666666669,
+      "y": 157,
       "width": 32,
       "height": 24
     }

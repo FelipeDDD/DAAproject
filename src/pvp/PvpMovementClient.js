@@ -38,7 +38,10 @@ export class PvpMovementClient {
   setMatch(match){
     if(this.closed)return;
     this.match=match;
-    if(!match||(!['countdown','active'].includes(match.state)&&!(match.state==='ended'&&match.retry))||(match.round??0)!==this.round){this.close();return;}
+    // A Convex departure can arrive before the relay's ended/Retry snapshot.
+    // End combat sends now, but keep the shared lifecycle socket until explicit
+    // scene exit or the authoritative round handoff, regardless of echo order.
+    if(!match||!['countdown','active','ended'].includes(match.state)||(match.round??0)!==this.round){this.close();return;}
     this.renderRoster();
   }
   switchRound(match){
@@ -102,6 +105,7 @@ export class PvpMovementClient {
       return;
     }
     if(!movement)return;
+    if(this.match.state==='ended'){discard('match_ended');return;}
     if(!this.joined){discard('room_not_joined');return;}
     if(!this.peers.has(message.senderId)){discard('unknown_peer');return;}
     const p=message.payload;

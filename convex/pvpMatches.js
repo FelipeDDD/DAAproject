@@ -3,10 +3,12 @@ import { v,ConvexError } from 'convex/values';
 import { findSessionPlayer } from './playerSessions.js';
 import { ownsPlayerSession,isPlayerActive,PRESENCE_TIMEOUT_MS } from '../src/multiplayer/presencePolicy.js';
 import { normalizeArenaCode,validArenaCode,ARENA_CODE_ALPHABET } from '../src/boss/arenaLobbyUi.js';
-import { PVP_RULES,PVP_MAP_DEFINITION,pvpRoom } from '../src/pvp/config.js';
+import { PVP_RULES,PVP_MAX_PARTICIPANTS,PVP_MAP_DEFINITION,pvpRoom } from '../src/pvp/config.js';
 import { gameMode,PVP_MODES } from '../src/pvp/gameModes.js';
 import { validPayloadState } from '../src/pvp/payload/state.js';
 import { pvpModeValidator,payloadStateValidator } from './pvpModeValidators.js';
+import { matchSettingsValidator } from './pvpSettingsValidators.js';
+import { DEFAULT_MATCH_SETTINGS,normalizeMatchSettings,matchSettingsFor,effectiveMatchSettings,sameMatchSettings } from '../src/pvp/matchSettings.js';
 import { mergeCombatSnapshot } from '../src/pvp/combatSnapshot.js';
 import { newFighter,startMatch,endMatch,reconcileParticipants,interruptedMatch,canStartMatch } from '../src/pvp/matchState.js';
 
@@ -44,7 +46,7 @@ async function read(ctx,args,allowMissing=false){
   return {p,m:state,deadlines};
 }
 function publicMatch(m,deadlines,rooms){
-  return m?{...m,arenaMap:PVP_MAP_DEFINITION,round:m.round??0,matchId:m._id,room:pvpRoom(m._id),participants:m.participants.map(({sessionId,...p})=>
+  return m?{...m,matchSettings:matchSettingsFor(m),arenaMap:PVP_MAP_DEFINITION,round:m.round??0,matchId:m._id,room:pvpRoom(m._id),participants:m.participants.map(({sessionId,...p})=>
     ({...p,presenceExpiresAt:deadlines[p.playerId],...(rooms?{presenceRoom:rooms[p.playerId]}:{})}))}:null;
 }
 async function save(ctx,m){
@@ -72,7 +74,7 @@ export const create=mutation({args:{...identity,mode:v.optional(pvpModeValidator
   }
   if(!code)fail('Could not create a code. Try again.');
   const mode=args.mode??'tdm',rules=gameMode(mode);
-  const now=Date.now(),match={code,round:0,damageRevision:0,mode,state:'waiting',hostPlayerId:p.playerId,
+  const now=Date.now(),match={code,round:0,damageRevision:0,mode,matchSettings:{...DEFAULT_MATCH_SETTINGS},state:'waiting',hostPlayerId:p.playerId,
     participants:[newFighter({playerId:args.playerId,sessionId:args.sessionId,displayName:p.displayName??p.name,characterBaseId:p.characterBaseId??p.characterId,team:'A'})],
     scores:{A:0,B:0},scoreLimit:PVP_RULES.scoreLimit,timeLimitMs:rules.timeLimitMs,respawnMs:rules.respawnMs,
     startedAt:null,endsAt:null,endedAt:null,winner:null,reason:null,createdAt:now,expiresAt:now+PVP_RULES.lobbyLifetimeMs};
@@ -89,19 +91,30 @@ export const join=mutation({args:{...identity,code:v.string()},handler:async(ctx
   const participants=await live(ctx,saved),m={...saved,participants};
   if(!participants.some(p=>p.playerId===m.hostPlayerId))fail('The host left this lobby.');
   if(owns(m,args))return {matchId:m._id,code:m.code,round:m.round??0};
-  if(participants.length>=4)fail('This PvP lobby is full (4 players).');
+  if(participants.length>=PVP_MAX_PARTICIPANTS)fail(`This PvP lobby is full (${PVP_MAX_PARTICIPANTS} players).`);
   await leaveOld(ctx,args);
   const count=t=>participants.filter(p=>p.team===t).length;
   const assigned=count('A')<=count('B')?'A':'B';
   participants.push(newFighter({playerId:p.playerId,sessionId:p.sessionId,displayName:p.displayName??p.name,
-    characterBaseId:p.characterBaseId??p.characterId,team:assigned}));
+    characterBaseId:p.characterBaseId??p.characterId,team:assigned},m.matchSettings));
   await ctx.db.patch(m._id,{participants});return {matchId:m._id,code:m.code,round:m.round??0};
 }});
 export const current=query({args:member,handler:async(ctx,args)=>{const {m,deadlines}=await read(ctx,args,true),state=publicMatch(m,deadlines);return state?{...state,serverNow:Date.now()}:null;}});
 export const chooseTeam=mutation({args:{...command,team},handler:async(ctx,args)=>{
   const {m}=await read(ctx,args);requireRound(m,args);if(m.state!=='waiting')fail('Teams are locked after starting.');
-  if(m.participants.filter(p=>p.team===args.team&&p.playerId!==args.playerId).length>=PVP_RULES.teamSize)fail('That team is full (2 players).');
-  await save(ctx,{...m,participants:m.participants.map(p=>p.playerId===args.playerId?{...p,team:args.team}:p)});
+  if(m.participants.filter(p=>p.team===args.team&&p.playerId!==args.playerId).length>=PVP_RULES.teamSize)
+    fail(`That team is full (${PVP_RULES.teamSize} players).`);
+  await save(ctx,{...m,participants:m.participants.map(p=>p.playerId===args.playerId?
+    {...p,team:args.team,hp:effectiveMatchSettings(m,args.team).maxHp}:p)});
+}});
+export const updateSettings=mutation({args:{...command,matchSettings:matchSettingsValidator},handler:async(ctx,args)=>{
+  const {m}=await read(ctx,args);requireRound(m,args);
+  if(m.hostPlayerId!==args.playerId)fail('Only the host can change match settings.');
+  if(m.state!=='waiting')fail('Match settings are locked after starting.');
+  let matchSettings;
+  try{matchSettings=normalizeMatchSettings(args.matchSettings);}catch(error){fail(error.message);}
+  await save(ctx,{...m,matchSettings,participants:m.participants.map(p=>({...p,hp:effectiveMatchSettings({matchSettings},p.team).maxHp}))});
+  return {matchSettings};
 }});
 export const start=mutation({args:command,handler:async(ctx,args)=>{
   const {m}=await read(ctx,args);requireRound(m,args);if(m.hostPlayerId!==args.playerId)fail('Only the host can start.');
@@ -143,6 +156,7 @@ export const acquireRealtimeCombat=internalMutation({args:{matchId:v.id('pvpMatc
 }});
 const nullableNumber=v.union(v.null(),v.number());
 const combatSnapshotValidator=v.object({
+  matchSettings:v.optional(matchSettingsValidator),
   state:v.union(v.literal('countdown'),v.literal('active'),v.literal('ended')),
   scores:v.object({A:v.number(),B:v.number()}),startedAt:nullableNumber,endsAt:nullableNumber,endedAt:nullableNumber,
   winner:v.union(v.null(),v.literal('A'),v.literal('B'),v.literal('draw')),reason:v.union(v.null(),v.string()),
@@ -158,9 +172,15 @@ export const mirrorRealtimeCombat=internalMutation({args:{matchId:v.id('pvpMatch
   if(args.revision<=revision)return {applied:true,duplicate:true};
   if(args.expectedRevision!==revision||args.revision!==revision+1)return {applied:false};
   const s=args.snapshot;
+  if(s.matchSettings!==undefined&&!sameMatchSettings(s.matchSettings,m.matchSettings))return {applied:false};
   if(s.payload!==undefined&&(m.mode!=='payload'||!validPayloadState(s.payload)))return {applied:false};
-  if(s.players.length>4||new Set(s.players.map(p=>p.playerId)).size!==s.players.length
-    ||s.players.some(p=>!Number.isSafeInteger(p.life)||p.life<0||!Number.isFinite(p.hp)||p.hp<0||p.hp>100))return {applied:false};
+  if(s.players.length>PVP_MAX_PARTICIPANTS||new Set(s.players.map(p=>p.playerId)).size!==s.players.length
+    ||s.players.some(p=>{const member=m.participants.find(q=>q.playerId===p.playerId);
+      // A queued mirror may contain a just-departed fighter; it cannot revive
+      // membership. Validate that tombstone against the maximum configured cap.
+      const maxHp=member?effectiveMatchSettings(m,member.team).maxHp:
+        Math.max(...['A','B'].map(team=>effectiveMatchSettings(m,team).maxHp));
+      return !Number.isSafeInteger(p.life)||p.life<0||!Number.isFinite(p.hp)||p.hp<0||p.hp>maxHp;}))return {applied:false};
   if(m.state==='ended'&&!interruptedMatch(m)&&s.state!=='ended')return {applied:false};
   // Copy decisions, never calculate damage/death/respawn/score/victory. Preserve
   // private ownership and never resurrect a participant removed by a concurrent leave.
@@ -180,11 +200,11 @@ export const advanceRealtimeRound=internalMutation({args:{matchId:v.id('pvpMatch
   }
   if(!m||(m.round??0)!==args.round||m.combatAuthorityId!==args.authorityId||m.state!=='ended'
     ||m.retryDeadline===undefined||m.expiresAt<=Date.now())fail('Retry round unavailable.');
-  if(args.playerIds.length>4||new Set(args.playerIds).size!==args.playerIds.length)fail('Invalid Retry participants.');
+  if(args.playerIds.length>PVP_MAX_PARTICIPANTS||new Set(args.playerIds).size!==args.playerIds.length)fail('Invalid Retry participants.');
   const deadlines={},rooms={},valid=await live(ctx,m,deadlines,rooms);
   // A Leave can commit before its reactive echo reaches the relay. Intersect the
   // chosen IDs with current valid members; never add/revive a removed participant.
-  const participants=valid.filter(p=>args.playerIds.includes(p.playerId)).map(p=>({...newFighter(p),life:p.life+1}));
+  const participants=valid.filter(p=>args.playerIds.includes(p.playerId)).map(p=>({...newFighter(p,m.matchSettings),life:p.life+1}));
   if(!participants.length){await ctx.db.delete(m._id);return null;}
   const hostPlayerId=participants.some(p=>p.playerId===m.hostPlayerId)?m.hostPlayerId:participants[0].playerId;
   let next={...m,round:args.round+1,combatAuthorityId:undefined,retryDeadline:undefined,retryFromAuthorityId:args.authorityId,
@@ -224,7 +244,7 @@ export const returnToLobby=mutation({args:command,handler:async(ctx,args)=>{
   if(m.state!=='ended'||m.reason!=='team_empty')return null;
   await save(ctx,{...m,round:(m.round??0)+1,combatAuthorityId:undefined,payload:undefined,damageRevision:0,state:'waiting',scores:{A:0,B:0},
     startedAt:null,endsAt:null,endedAt:null,winner:null,reason:null,
-    participants:active.map(p=>({...newFighter(p),life:p.life+1,lastShot:p.lastShot}))});
+    participants:active.map(p=>({...newFighter(p,m.matchSettings),life:p.life+1,lastShot:p.lastShot}))});
   return {matchId:m._id};
 }});
 export const expire=internalMutation({args:{matchId:v.id('pvpMatches')},handler:async(ctx,{matchId})=>{

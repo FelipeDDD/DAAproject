@@ -1,9 +1,11 @@
 import { defineSchema, defineTable } from 'convex/server';
 import { v } from 'convex/values';
 import { pvpModeValidator,payloadStateValidator } from './pvpModeValidators.js';
+import { matchSettingsValidator } from './pvpSettingsValidators.js';
 
 export default defineSchema({
   pvpMatches:defineTable({
+    matchSettings:v.optional(matchSettingsValidator),
     round:v.optional(v.number()),damageRevision:v.optional(v.number()),combatAuthorityId:v.optional(v.string()),
     retryDeadline:v.optional(v.number()),retryFromAuthorityId:v.optional(v.string()),
     code:v.string(),mode:pvpModeValidator,payload:v.optional(payloadStateValidator),state:v.union(v.literal('waiting'),v.literal('countdown'),v.literal('active'),v.literal('ended')),

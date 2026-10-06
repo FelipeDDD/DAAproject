@@ -11,6 +11,7 @@ import { WebSocketTransport } from '../src/realtime/WebSocketTransport.js';
 import { validPvpProjectile,validClientMessage } from '../src/realtime/realtimeMessages.js';
 import { createRealtimeServer } from '../scripts/realtime-server.mjs';
 import { pvpRealtimeRoom } from '../src/pvp/movementConfig.js';
+import { PVP_RULES } from '../src/pvp/config.js';
 
 const match=()=>({round:0,state:'active',participants:[
   {playerId:'alice',characterBaseId:'michael',team:'A',life:0,hp:100,lastShot:0},
@@ -158,9 +159,9 @@ test('local shot is rendered before network send and works without a joined rela
   assert.equal(f.transport.sent.length,0);
   f.join();let rendered=false;
   f.transport.sendReliable=(type,p)=>{if(type==='pvp-projectile-spawn')rendered=f.combat.shots.some(s=>s.event.projectileId===p.projectileId);return true;};
-  assert.equal(f.combat.fire({x:500,y:700},1400),true);assert.equal(rendered,true);
+  assert.equal(f.combat.fire({x:500,y:700},1000+PVP_RULES.attackCooldownMs),true);assert.equal(rendered,true);
   assert.notEqual(f.combat.shots[0].event.projectileId,f.combat.shots[1].event.projectileId);
-  f.client.close();assert.equal(f.combat.fire({x:500,y:700},1800),true);
+  f.client.close();assert.equal(f.combat.fire({x:500,y:700},1000+2*PVP_RULES.attackCooldownMs),true);
 });
 
 test('arena readiness gate blocks unregistered initial shots without consuming cooldown or sequence',t=>{
@@ -230,8 +231,8 @@ test('death keeps a local flight alive and reporting collision while new fire re
 test('dead shooter local flight expires at its original TTL instead of death time',t=>{
   const f=setup(t);f.join();f.combat.fire({x:600,y:700},1000);f.self.hp=0;
   f.combat.update(f.state,f.self,100,1100);assert.equal(f.combat.shots.length,1);
-  f.combat.update(f.state,f.self,0,2199);assert.equal(f.combat.shots.length,1);
-  f.combat.update(f.state,f.self,0,2200);assert.equal(f.combat.shots.length,0);assert.equal(f.hits.length,0);
+  f.combat.update(f.state,f.self,0,1000+PVP_RULES.projectileLifetimeMs-1);assert.equal(f.combat.shots.length,1);
+  f.combat.update(f.state,f.self,0,1000+PVP_RULES.projectileLifetimeMs);assert.equal(f.combat.shots.length,0);assert.equal(f.hits.length,0);
 });
 
 test('destroy before spawn leaves a tombstone; removed IDs cannot be replayed',t=>{
@@ -268,9 +269,11 @@ test('peer disconnect, reconnect, end/exit and repeated cleanup remove visuals a
   assert.equal(f.combat.remoteShots.size,1);
   f.transport.setState('reconnecting');assert.equal(f.combat.remoteShots.size,0);
   f.transport.setState('connected');f.join();f.receive();assert.equal(f.combat.remoteShots.size,1);
+  const listeners=[f.transport.messageHandlers.size,f.transport.stateHandlers.size];
   const ended={...f.state,state:'ended'};f.movement.setMatch(ended);f.client.setMatch(ended);f.combat.update(ended,f.self,0,Date.now());
-  assert.equal(f.transport.messageHandlers.size,0);assert.equal(f.transport.stateHandlers.size,0);
+  assert.deepEqual([f.transport.messageHandlers.size,f.transport.stateHandlers.size],listeners,'keep lifecycle listeners until explicit exit');
   assert.equal(f.combat.remoteShots.size,0);f.client.close();f.movement.close();
+  assert.equal(f.transport.messageHandlers.size,0);assert.equal(f.transport.stateHandlers.size,0);
   f.receive(projectile({projectileId:'late',shotSeq:100}));assert.equal(f.combat.remoteShots.size,0);
 });
 

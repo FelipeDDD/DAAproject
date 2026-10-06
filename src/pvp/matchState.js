@@ -1,8 +1,9 @@
 import { PVP_RULES,PVP_TEAMS } from './config.js';
+import { resolveMatchSettings,matchSettingsFor,effectiveMatchSettings } from './matchSettings.js';
 
 // Pure combat rules executed by the realtime authority. Convex uses lobby/membership helpers only.
 // No Phaser, profile rewards, network transport or UI code belongs here.
-export const newFighter=member=>({...member,hp:PVP_RULES.maxHp,kills:0,deaths:0,life:0,
+export const newFighter=(member,settings)=>({...member,hp:resolveMatchSettings(settings,member.team).maxHp,kills:0,deaths:0,life:0,
   respawnAt:null,lastShot:0,lastHitAt:0});
 export function canStartMatch(match){
   return match.state==='waiting'&&PVP_TEAMS.every(team=>{
@@ -36,17 +37,19 @@ export function reconcileParticipants(match,participants,now){
 }
 export const interruptedMatch=match=>match?.state==='ended'&&['team_empty','host_left','host-left','expired','lobby_unavailable'].includes(match.reason);
 export function startMatch(match,now){
-  if(!canStartMatch(match))throw new Error('Each team needs 1 or 2 players.');
+  if(!canStartMatch(match))throw new Error(`Each team needs 1 to ${PVP_RULES.teamSize} players.`);
   const startedAt=now+PVP_RULES.countdownMs;
-  return {...match,state:'countdown',startedAt,endsAt:startedAt+match.timeLimitMs};
+  const matchSettings=matchSettingsFor(match);
+  return {...match,matchSettings,participants:match.participants.map(p=>({...p,hp:resolveMatchSettings(matchSettings,p.team).maxHp})),
+    state:'countdown',startedAt,endsAt:startedAt+match.timeLimitMs};
 }
-export function respawnPlayer(player){return {...player,hp:PVP_RULES.maxHp,life:player.life+1,respawnAt:null,lastShot:0,lastHitAt:0};}
+export function respawnPlayer(player,settings){return {...player,hp:resolveMatchSettings(settings,player.team).maxHp,life:player.life+1,respawnAt:null,lastShot:0,lastHitAt:0};}
 export function advanceMatch(match,now,{finish=endMatch}={}){
   if(!match||match.state==='waiting'||match.state==='ended')return match;
   if(now>=match.endsAt)return finish(match,match.endsAt);
   if(now<match.startedAt)return match;
   return {...match,state:'active',participants:match.participants.map(p=>
-    p.respawnAt!==null&&now>=p.respawnAt?respawnPlayer(p):p)};
+    p.respawnAt!==null&&now>=p.respawnAt?respawnPlayer(p,match.matchSettings):p)};
 }
 export function registerPlayerDeath(match,killerId,victimId,now,{scoreVictory=true}={}){
   const killer=match.participants.find(p=>p.playerId===killerId),victim=match.participants.find(p=>p.playerId===victimId);
@@ -59,10 +62,11 @@ export function registerPlayerDeath(match,killerId,victimId,now,{scoreVictory=tr
 export function applyPlayerDamage(source,{attackerId,victimId,attackerLife,victimLife,shot},now){
   const match=advanceMatch(source,now);
   const attacker=match.participants.find(p=>p.playerId===attackerId),victim=match.participants.find(p=>p.playerId===victimId);
+  const settings=effectiveMatchSettings(match,attacker?.team);
   if(match.state!=='active'||!attacker||!victim||attacker.team===victim.team||attacker.hp<=0||victim.hp<=0
     ||attacker.life!==attackerLife||victim.life!==victimLife||!Number.isSafeInteger(shot)||shot<=attacker.lastShot
-    ||now-attacker.lastHitAt<PVP_RULES.attackCooldownMs)return match;
+    ||now-attacker.lastHitAt<settings.attackCooldownMs)return match;
   const next={...match,participants:match.participants.map(p=>p===attacker?{...p,lastShot:shot,lastHitAt:now}:
-    p===victim?{...p,hp:Math.max(0,p.hp-PVP_RULES.damage)}:p)};
-  return victim.hp<=PVP_RULES.damage?registerPlayerDeath(next,attackerId,victimId,now):next;
+    p===victim?{...p,hp:Math.max(0,p.hp-settings.damage)}:p)};
+  return victim.hp<=settings.damage?registerPlayerDeath(next,attackerId,victimId,now):next;
 }

@@ -48,7 +48,7 @@ test('DEV shortcut and lobby share the map loader and both register the real aut
   assert.equal(PAYLOAD_MAP_TEST_PORTAL.targetMap,inspection.mapKey);
   for(const scene of [live,inspection]){
     assert.equal(scene.filename,PVP_MAP_FILE);assert.equal(scene.reloadMapOnEntry,true);
-    assert.match(scene.sourceKey,/payload-map-1-source$/);assert.notEqual(scene.sourceKey,'pvp-arena-test-source');
+    assert.match(scene.sourceKey,new RegExp(`payload-map-${PVP_MAP_DEFINITION.revision}-source$`));assert.notEqual(scene.sourceKey,'pvp-arena-test-source');
     scene.initializePvpTeleports();assert.deepEqual(scene.teleports.areas.map(p=>p.name),['top','bottom']);
   }
   inspection.enter();assert.equal(inspection.teleports.areas.length,2);

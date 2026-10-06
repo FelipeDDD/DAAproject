@@ -4,12 +4,16 @@ import { advanceMatch,reconcileParticipants,endMatch,registerPlayerDeath,interru
 import { combatSnapshot,fighterFields } from './combatSnapshot.js';
 import { segmentRect,pvpPlayerHitboxAt } from './projectiles.js';
 import { PvpRetryCoordinator } from './PvpRetryCoordinator.js';
+import { matchSettingsFor,pvpMovementSpeed,effectiveMatchSettings } from './matchSettings.js';
 
 // One instance per authenticated room/round, owned only by the relay process.
 // Latest positions + straight segment checks, without historical rewind/rollback.
 export class PvpDamageAuthority {
   constructor(state,{now=Date.now,walls=[],getSpawn=()=>({x:0,y:0}),authorityId,onState=()=>{},commit,onFailure=()=>{},onRetryResolve,modeAuthority=null,log=()=>{},schedule=setTimeout,cancel=clearTimeout}){
     Object.assign(this,{state:structuredClone(state),now,walls,getSpawn,authorityId,onState,commit,onFailure,log,schedule,cancel,mode:modeAuthority});
+    this.settings=matchSettingsFor(state);
+    if(this.settings.teamOverrides){for(const fields of Object.values(this.settings.teamOverrides))Object.freeze(fields);Object.freeze(this.settings.teamOverrides);}
+    Object.freeze(this.settings);this.state.matchSettings=this.settings;
     if(this.mode)this.state.payload=this.mode.current;
     this.round=state.round??0;this.revision=state.damageRevision??0;this.version=0;this.closed=false;this.failed=false;
     this.regenEnabled=state.mode==='payload'&&state.arenaMap?.id===PVP_MAP_DEFINITION.id
@@ -32,6 +36,10 @@ export class PvpDamageAuthority {
   remove(peerId){
     const departed=[];
     for(const [playerId,id] of this.members)if(id===peerId){departed.push(playerId);this.members.delete(playerId);this.positions.delete(playerId);}
+    if(departed.includes(this.state.hostPlayerId)){
+      this.hostLeaveObserved=true;
+      this.traceHostLeave('participant disconnected',{peerId,remainingParticipants:[...this.members.keys()]});
+    }
     for(const [id,p] of this.projectiles)if(p.peerId===peerId)this.projectiles.delete(id);
     // During play a disconnect cancels that fighter's pending respawn. During
     // the end window it removes their vote/member without changing the result.
@@ -65,6 +73,13 @@ export class PvpDamageAuthority {
     this.advance();
   }
   changed(previous){return JSON.stringify(combatSnapshot(previous))!==JSON.stringify(combatSnapshot(this.state));}
+  // TEMP: narrow diagnostics for host departure; no per-tick combat logging.
+  traceHostLeave(event,detail={}){
+    if(!this.hostLeaveObserved&&!['host_left','host-left'].includes(this.state.reason))return;
+    this.hostLeaveObserved=true;
+    console.info(`[PVP host leave] ${event}`,{matchId:this.state.matchId,round:this.round,state:this.state.state,
+      remainingParticipants:this.state.participants.map(p=>p.playerId),...detail});
+  }
   arm(){
     let deadline=null;
     if(!this.closed&&!['waiting','ended'].includes(this.state.state)){
@@ -73,7 +88,7 @@ export class PvpDamageAuthority {
       if(this.mode)deadlines.push(this.mode.nextDeadline(m));
       if(this.regenEnabled&&m.state==='active')for(const [playerId,entry] of this.regen){
         const player=m.participants.find(p=>p.playerId===playerId);
-        if(player?.life===entry.life&&player.hp>0&&player.hp<PVP_RULES.maxHp)deadlines.push(entry.nextAt);
+        if(player?.life===entry.life&&player.hp>0&&player.hp<effectiveMatchSettings(this.state,player.team).maxHp)deadlines.push(entry.nextAt);
       }
       const finite=deadlines.filter(Number.isFinite);if(finite.length)deadline=Math.min(...finite);
     }
@@ -104,6 +119,9 @@ export class PvpDamageAuthority {
       if(this.retry&&this.state.reason!=='expired')this.retry.begin(this.state.endedAt,this.retryParticipants());
     }
     this.events=events;this.arm();this.emit();
+    if(previous.reason!==this.state.reason&&['host_left','host-left'].includes(this.state.reason))
+      this.traceHostLeave('server lifecycle transition',{source,previousState:previous.state,reason:this.state.reason,
+        combatTimerActive:this.timer!==undefined,retryTimerActive:this.retry?.timer!==undefined,retryDeadline:this.retry?.deadline});
     const args={matchId:this.state.matchId,round:this.round,authorityId:this.authorityId,
       expectedRevision:this.revision-1,revision:this.revision,snapshot:combatSnapshot(this.state)};
     if(this.retry?.deadline!==undefined)args.retryDeadline=this.retry.deadline;
@@ -161,12 +179,13 @@ export class PvpDamageAuthority {
     const participants=this.state.participants.map(player=>{
       const entry=this.regen.get(player.playerId);
       if(!entry)return player;
-      if(player.life!==entry.life||player.hp<=0||player.hp>=PVP_RULES.maxHp){this.regen.delete(player.playerId);return player;}
+      const maxHp=effectiveMatchSettings(this.state,player.team).maxHp;
+      if(player.life!==entry.life||player.hp<=0||player.hp>=maxHp){this.regen.delete(player.playerId);return player;}
       if(now<entry.nextAt)return player;
       const intervals=Math.floor((now-entry.nextAt)/PAYLOAD_REGEN.intervalMs)+1;
-      const hp=Math.min(PVP_RULES.maxHp,player.hp+intervals*PAYLOAD_REGEN.hpPerInterval);
+      const hp=Math.min(maxHp,player.hp+intervals*PAYLOAD_REGEN.hpPerInterval);
       entry.nextAt+=intervals*PAYLOAD_REGEN.intervalMs;
-      if(hp===PVP_RULES.maxHp)this.regen.delete(player.playerId);
+      if(hp===maxHp)this.regen.delete(player.playerId);
       changed=true;return {...player,hp};
     });
     for(const playerId of this.regen.keys())if(!participants.some(p=>p.playerId===playerId))this.regen.delete(playerId);
@@ -206,6 +225,12 @@ export class PvpDamageAuthority {
     this.advance();const member=this.fighter(peerId);
     const reason=this.closed?'authority_closed':this.state.state==='ended'?'match_ended':!member?'unowned_player':member.playerId!==p.playerId?'player_mismatch':member.life!==p.life?'stale_life':null;
     if(reason){this.log({event:'movement rejected',playerId:p.playerId,life:p.life,expectedLife:member?.life,reason});return false;}
+    // The movement adapter remains client-positioned (including authored
+    // teleports), but velocity uses the same round speed as local input.
+    const maxSpeed=pvpMovementSpeed(this.state,member.team);
+    if(Math.hypot(p.vx??0,p.vy??0)>maxSpeed+1){
+      this.log({event:'movement rejected',playerId:p.playerId,life:p.life,reason:'movement_speed',maxSpeed});return false;
+    }
     this.positions.set(p.playerId,{x:p.x,y:p.y,life:p.life,moving:p.moving,at:this.now()});
     this.firstAfterRespawn('movement',member,{sampleSeq:p.sampleSeq});
     if(this.mode)this.advance();return true;
@@ -220,7 +245,7 @@ export class PvpDamageAuthority {
     if(member.life!==p.life)return reject('stale_life');
     if(member.hp<=0)return reject('dead_shooter');
     if(this.projectiles.has(p.projectileId)||p.shotSeq<=Math.max(member.lastShot??0,previous?.life===p.life?previous.seq:0))return reject('duplicate_or_stale_sequence');
-    if(previous&&now-previous.at<PVP_RULES.attackCooldownMs)return reject('cooldown');
+    if(previous?.life===p.life&&now-previous.at<effectiveMatchSettings(this.state,member.team).attackCooldownMs)return reject('cooldown');
     const position=this.position(member),speed=Math.hypot(p.vx,p.vy);
     if(Math.hypot(p.x-position.x,p.y-(position.y-22))>64||Math.abs(speed-PVP_RULES.projectileSpeed)>1
       ||p.ttlMs!==PVP_RULES.projectileLifetimeMs)return reject('invalid_origin_speed_or_ttl');
@@ -264,7 +289,7 @@ export class PvpDamageAuthority {
       if(t!==null&&t<first){first=t;victim=member;}
     }
     if(victim?.playerId!==target.playerId)return reject('trajectory_or_cover');
-    const previous=structuredClone(this.state),hpBefore=target.hp,hpAfter=Math.max(0,hpBefore-PVP_RULES.damage);
+    const previous=structuredClone(this.state),hpBefore=target.hp,hpAfter=Math.max(0,hpBefore-effectiveMatchSettings(this.state,shooter.team).damage);
     shot.consumed=true;target.hp=hpAfter;
     if(this.regenEnabled){
       if(hpAfter>0)this.regen.set(target.playerId,{life:target.life,nextAt:now+PAYLOAD_REGEN.delayMs});

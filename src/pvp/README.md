@@ -1,5 +1,35 @@
 # Movimento e projéteis realtime na arena PvP
 
+## Common match settings
+
+Lobby **Settings** edits global rules and optional team overrides only while waiting. Other participants can
+inspect the panel read-only. **Reset Defaults** changes the draft; **Save** sends
+one `pvpMatches.updateSettings` mutation, validated against live player/session,
+membership, host, round and bounds. Rules are stored in `pvpMatches.matchSettings`;
+they never come from localStorage or projectile messages.
+
+`matchSettings.js` reuses defaults: HP 100, damage 15, cooldown 800 ms and movement
+100% of `PLAYER_SPEED` (144 px/s). Allowed ranges are HP 50-500, damage 1-100,
+cooldown 100-5000 ms and movement 50-200%. The relay freezes the accepted values
+per round, applies max HP on respawn and validates damage/cooldown. Local movement
+uses the multiplier; relay validation bounds reported velocity at the same speed.
+Position authority/anti-cheat remains unchanged. HP bars/HUD use the configured
+maximum. Retry and return-to-lobby preserve rules; a new lobby restores defaults.
+
+TDM and Payload share these common settings, while objective/respawn/score rules
+remain in `gameModes.js` and mode configs. Extend the shared definitions,
+`convex/pvpSettingsValidators.js`, `PvpMatchSettingsPanel` and the relevant authority
+consumer for future common settings; individual player modifiers remain deferred.
+Restart the relay and reload both browsers after this change.
+The authorization acknowledgment includes the relay's actual frozen rules; the
+client refuses a mismatch with an explicit restart/rejoin instruction. Missing
+or nullish individual fields in old/partial state resolve current defaults,
+while supplied out-of-range values remain invalid. Departure recovery uses the
+existing match clock and keeps progressing even if a late Retry echo arrives.
+
+`node --test tests/pvpMatchSettings.test.js tests/pvpMovement.test.js tests/pvpRetry.test.js`
+checks custom rules, ownership, protocol HP bounds, respawn, Retry and local UI.
+
 `PvpArenaScene` usa `PvpMovementClient` sobre `createRealtimeTransport`, sem acessar
 o socket. `pvp-movement` passa pelo relay: `playerId`, x/y, direção,
 vx/vy, moving, sampleSeq e life; o envelope inclui seq/sentAt e o relay atribui
@@ -182,6 +212,19 @@ troca de movimento com múltiplos adapters WebSocket conectados ao relay real.
 
 ## Full combat lifecycle authority (2026-10-04)
 
+Manual team rules extend the common `matchSettings` object with optional
+`teamOverrides: {A: {}, B: {maxHp: 180}}`. Fields individually inherit via
+`resolveMatchSettings(settings, team)` / `effectiveMatchSettings(match, team)`:
+team override, then global, then default. An omitted/nullish override field is
+**Use Global**; empty override maps normalize to the previous global-only shape.
+The Settings panel keeps globals above independent Team A/B inheritance controls.
+Only the waiting lobby host/session may save. Changing a waiting fighter's team
+changes its effective rules, not ownership. Retry retains rules; new lobbies clear
+overrides. HP spawn/respawn/regen/bars resolve the fighter's team; damage/cooldown
+resolve the attacker's team. Client speed and relay velocity limits share the same
+resolver. Relay authorization compares both teams' effective rules before enabling
+fire; restart `npm run realtime:server` and reload both browsers after updating.
+
 The same room authority owns death, score, 2.5s respawn (HP 100, life+1),
 score-limit victory (5), and the 180s match deadline. One server-local deadline
 timer handles countdown, respawns, timeout and presence expiry, including when
@@ -191,8 +234,12 @@ The client only displays timestamps; it never decides a combat transition.
 `pvp-combat-state` carries state/scores/start/end/result, full fighter
 HP/life/K/D/respawn metadata and an `events[]` batch (death, respawn, match-ended).
 A snapshot is applied once by authorityId/version/round; events are descriptive,
-never score increments applied again. The final state survives socket cleanup,
-and the Convex subscription still handles host/opponent departure afterwards.
+never score increments applied again. An ended snapshot stops combat and clears
+projectiles, but keeps the shared socket/listeners until scene exit or the relay's
+round handoff. Convex membership can announce host/opponent departure before the
+relay's Retry snapshot; that ordering must never disconnect the lifecycle listener.
+The relay's return timer and mirrors do not depend on the host browser. TEMP
+`[PVP host leave]` logs trace departure, timers, broadcast, receipt and return.
 
 Internal `acquireRealtimeCombat` binds authorityId transactionally per round.
 Concurrent clients await the same initialization and one internal subscription.
@@ -289,6 +336,13 @@ Numbered `Spawns/teamA_spawn1`, `teamA_spawn2`, `teamB_spawn1`,
 string `direction` marker property selects facing; defaults look inward.
 Scene, respawn, Retry and relay all call `teamSpawn`.
 
+The lobby displays four fixed slots per team and matches support 4v4.
+`PVP_RULES.teamSize` controls each team cap and `PVP_MAX_PARTICIPANTS` derives
+the total cap from that setting and the team count. The current map defines four
+distinct numbered spawn markers per team (`teamA_spawn1` through `teamA_spawn4`,
+likewise Team B) in a 2x2 formation, spaced one 32px tile apart. The fallback
+formation in `PVP_MAP_LAYOUT.spawnOffsets` uses the same 2x2 spacing.
+
 Optional Pac-Man flank teleports use an unrotated rectangle object layer named
 `Teleport`, with rectangles named `top` and `bottom`. Place each rectangle over
 the safe walkable part of the upper/lower passage. Arrival centers the foot body,
@@ -353,7 +407,7 @@ route/progression changes belong in the objective controller/config/map.
 Manual test: use two tabs on opposing teams. Walk blue into the circle and escort
 the cart towards the red/left base; move red inside to contest, move blue outside to push towards blue/right, then
 leave both outside to stop it. Escort to an endpoint, confirm Retry on both, and
-verify center/neutral/new countdown. Optional 2v2 checks equal push speed.
+verify center/neutral/new countdown. Optional 4v4 checks equal push speed.
 
 `node --test tests/pvpPayload.test.js` covers objective rules, physical routing,
 combat integration, two actual WebSocket clients, Retry and stale-round rejection.

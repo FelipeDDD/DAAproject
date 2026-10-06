@@ -199,7 +199,8 @@ export class MapScene extends Phaser.Scene {
     }
     this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     this.player = new Player(this, 0, 0);
-    this.remotes = new RemotePlayers(this,{labelFontSize:this.remoteNameLabelFontSize,labelResolution:this.remoteNameLabelResolution??1});
+    this.remotes = new RemotePlayers(this,{labelFontSize:this.remoteNameLabelFontSize,labelResolution:this.remoteNameLabelResolution??1,
+      showLabels:this.remoteNameLabels??true});
     this.collisionLayer = addMapCollision(this, map, this.player,this.collisionOptions?.()??{});
     this.doors = readDoors(this.source).map((definition) => new Door(this, definition));
     this.quizSeats = readQuizSeats(this.source);

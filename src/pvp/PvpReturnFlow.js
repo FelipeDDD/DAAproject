@@ -14,9 +14,12 @@ export class PvpReturnFlow {
     if(this.deadline===null&&(!state||interruptedMatch(state))){
       this.deadline=(state?.endedAt??now)+PVP_RULES.returnMs;
       this.round=state?.round??0;
+      this.hostLeft=['host_left','host-left'].includes(state?.reason);
+      if(this.hostLeft)console.info('[PVP host leave] fallback return countdown armed',{round:this.round,deadline:this.deadline,now});
     }
     if(this.deadline!==null&&(now>=this.deadline||state?.state==='waiting')&&!this.started){
       this.started=true;this.requestedAt=now;
+      if(this.hostLeft)console.info('[PVP host leave] fallback return requested',{round:this.round,now});
       this.pending=Promise.resolve().then(()=>this.closed?null:this.request('returnToLobby',{round:this.round}))
         .catch(()=>null).then(result=>{
           if(!this.closed&&!this.completed)this.complete(result?.matchId??null);

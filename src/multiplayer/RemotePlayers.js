@@ -9,8 +9,8 @@ export const REMOTE_NAME_LABEL_STYLE=Object.freeze({
 });
 
 export class RemotePlayers {
-  constructor(scene, { clock = () => performance.now(),labelResolution=1,labelFontSize=REMOTE_NAME_LABEL_STYLE.fontSize, ...bufferOptions } = {}) {
-    this.scene = scene; this.players = new Map();this.labelResolution=labelResolution;this.labelFontSize=labelFontSize;
+  constructor(scene, { clock = () => performance.now(),labelResolution=1,labelFontSize=REMOTE_NAME_LABEL_STYLE.fontSize,showLabels=true, ...bufferOptions } = {}) {
+    this.scene = scene; this.players = new Map();this.labelResolution=labelResolution;this.labelFontSize=labelFontSize;this.showLabels=showLabels;
     this.clock = clock; this.bufferOptions = bufferOptions;
   }
 
@@ -18,7 +18,7 @@ export class RemotePlayers {
     const arrivalAt = this.clock();
     const present = new Set(rows.map(p => p.playerId));
     for (const [id, remote] of this.players) if (!present.has(id)) {
-      remote.sprite.destroy(); remote.label.destroy(); this.players.delete(id);
+      remote.sprite.destroy(); remote.label?.destroy(); this.players.delete(id);
     }
     for (const row of rows) {
       let remote = this.players.get(row.playerId);
@@ -27,11 +27,11 @@ export class RemotePlayers {
         const sprite = this.scene.add.sprite(row.x,row.y,'student').setOrigin(0.5,1);
         const style=visualStyleForActiveItem(row.activeCharacterItem,row.equippedSkin);
         const visual=applyCharacterVisual(sprite,character,style);
-        const label = this.scene.add.text(row.x, row.y, row.displayName??row.name,
-          {...REMOTE_NAME_LABEL_STYLE,fontSize:this.labelFontSize,resolution:this.labelResolution}).setOrigin(0.5, 1);
+        const label = this.showLabels?this.scene.add.text(row.x, row.y, row.displayName??row.name,
+          {...REMOTE_NAME_LABEL_STYLE,fontSize:this.labelFontSize,resolution:this.labelResolution}).setOrigin(0.5, 1):null;
         remote = { sprite,label,visual,character,characterBaseId:characterBaseIdFor(row),style,buffer:new RemoteSnapshotBuffer(this.bufferOptions) };
         this.players.set(row.playerId, remote);
-        if(!movement){sprite.setDepth(row.y);label.setPosition(row.x,row.y-visual.labelOffset).setDepth(row.y+1);}
+        if(!movement){sprite.setDepth(row.y);label?.setPosition(row.x,row.y-visual.labelOffset).setDepth(row.y+1);}
         this.movementDebug?.('remote created',{playerId:row.playerId,spriteCreated:true,...this.spriteState(remote)});
       }
       const nextBaseId=characterBaseIdFor(row);
@@ -44,7 +44,7 @@ export class RemotePlayers {
       remote.presenceMode=row.presenceMode??'playing';
       remote.terminalLeaseExpiresAt=row.terminalLeaseExpiresAt;
       if (teleport) remote.sprite.setPosition(row.x, row.y);
-      remote.label.setText(row.displayName??row.name);
+      remote.label?.setText(row.displayName??row.name);
     }
   }
 
@@ -77,7 +77,7 @@ export class RemotePlayers {
       sprite.setPosition(target.x, target.y);
       updateCharacterVisual(sprite,remote.visual,target.direction,target.moving);
       sprite.setDepth(sprite.y);
-      label.setPosition(sprite.x,sprite.y-remote.visual.labelOffset).setDepth(sprite.y+1);
+      label?.setPosition(sprite.x,sprite.y-remote.visual.labelOffset).setDepth(sprite.y+1);
       if(this.movementDebug&&now>=(remote.nextDebugAt??0)){
         remote.nextDebugAt=now+(this.movementDebugIntervalMs??1000);
         this.movementDebug('position rendered',{playerId:remote.row.playerId,

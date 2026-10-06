@@ -1,12 +1,54 @@
-.pvp-teams { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
-.pvp-teams section { border:1px solid #85724d; padding:8px; border-radius:6px; min-width:0; }
-.pvp-teams p { font-size:12px; overflow-wrap:anywhere; }
-.pvp-team-A h3 { color:#86caed; }.pvp-team-B h3 { color:#efa491; }
-.pvp-team-A.pvp-team-selected { border-color:#78b9de; background:#233c542e; box-shadow:inset 0 0 12px #69b8e51a,0 0 8px #69b8e52b; }
-.pvp-team-B.pvp-team-selected { border-color:#dd907e; background:#5430272e; box-shadow:inset 0 0 12px #e58b731a,0 0 8px #e58b732b; }
-.pvp-member-self { padding:5px; border-radius:4px; font-weight:600; }
-.pvp-team-A .pvp-member-self { background:#6ebded22; color:#bce6ff; }
-.pvp-team-B .pvp-member-self { background:#ed9d8122; color:#ffd5c9; }
+/* PvP lobby only: adjust width, slot height and team/host colors here. */
+.arena-entry-panel.pvp-lobby-panel {
+  --pvp-lobby-width:540px;
+  --pvp-slot-height:64px;
+  --pvp-team-a:#86caed;
+  --pvp-team-b:#efa491;
+  --pvp-host-text:#f0e3ff;
+  --pvp-host-border:#cba5ef;
+  --pvp-host-background:#392b49;
+  width:min(var(--pvp-lobby-width),92vw);
+}
+.pvp-lobby-panel .pvp-teams { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin:18px 0 0; }
+.pvp-lobby-panel .pvp-team-A { --pvp-team-color:var(--pvp-team-a); }
+.pvp-lobby-panel .pvp-team-B { --pvp-team-color:var(--pvp-team-b); }
+.pvp-lobby-panel .pvp-teams section { display:grid; grid-template-rows:22px repeat(4,var(--pvp-slot-height)) 42px; gap:10px; min-width:0; padding:14px; border:1px solid color-mix(in srgb,var(--pvp-team-color) 40%,#26313d); border-radius:8px; background:#101720; }
+.pvp-lobby-panel .pvp-teams h3 { margin:0; align-self:center; color:var(--pvp-team-color); font-size:13px; line-height:22px; letter-spacing:.12em; }
+.pvp-lobby-panel .pvp-player-slot { box-sizing:border-box; display:flex; align-items:center; gap:8px; min-width:0; height:var(--pvp-slot-height); padding:10px; border:1px solid #35404e; border-radius:5px; background:#18212c; }
+.pvp-lobby-panel .pvp-player-name { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#f3ecdf; font-size:17px; font-weight:600; line-height:1.3; }
+.pvp-lobby-panel .pvp-player-slot.is-empty { color:#85909e; font-size:12px; background:#111922; border-style:dashed; }
+.pvp-lobby-panel .pvp-host-badge { flex-shrink:0; padding:3px 6px; border:1px solid var(--pvp-host-border); border-radius:20px; color:var(--pvp-host-text); background:var(--pvp-host-background); font-size:10px; font-weight:700; letter-spacing:.06em; }
+.pvp-lobby-panel .pvp-team-choice { margin:0; padding:8px 6px; color:var(--pvp-team-color); border-color:color-mix(in srgb,var(--pvp-team-color) 65%,#26313d); background:#1a2430; }
+.pvp-lobby-panel .pvp-team-choice[aria-pressed="true"]:disabled { opacity:1; border-color:var(--pvp-team-color); background:color-mix(in srgb,var(--pvp-team-color) 12%,#151e28); box-shadow:inset 0 0 0 1px var(--pvp-team-color),0 0 9px color-mix(in srgb,var(--pvp-team-color) 18%,transparent); }
+.pvp-lobby-panel .pvp-team-selected { border-color:color-mix(in srgb,var(--pvp-team-color) 75%,#26313d); }
+.pvp-lobby-panel .pvp-lobby-start { margin-top:18px; min-height:46px; font-size:15px; }
+.pvp-lobby-panel .arena-entry-status { box-sizing:border-box; min-height:36px; margin:10px 0 0; display:flex; align-items:center; justify-content:center; text-align:center; color:#b3bdc9; }
+.pvp-lobby-panel .arena-entry-status[data-tone="ready"] { color:#c9daa5; }
+.pvp-lobby-panel .arena-entry-status[data-tone="blocked"] { color:#d2a498; }
+.pvp-lobby-panel .arena-action-danger { margin-top:12px; }
+.pvp-lobby-settings { display:flex; align-items:center; gap:12px; margin-top:8px; }
+.pvp-lobby-settings small { color:#c9b991; font-size:11px; }
+.pvp-match-settings { margin-top:12px; padding:14px; border:1px solid #6b6555; border-radius:6px; background:#121b25; }
+.pvp-match-settings[hidden] { display:none; }
+.pvp-match-settings h3 { margin:0 0 8px; color:#eee0bf; }
+.pvp-match-settings p { margin:6px 0 10px; font-size:12px; color:#b3bdc9; }
+.pvp-match-settings label { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:8px 0; color:#eee0bf; font-size:13px; }
+.pvp-match-settings input { box-sizing:border-box; width:100px; padding:6px; color:#f4e6c8; background:#0c131d; border:1px solid #736a58; border-radius:4px; font:inherit; }
+.pvp-match-settings input:disabled { opacity:.65; }
+.pvp-settings-teams { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.pvp-settings-team { min-width:0; padding:10px; border:1px solid #536779; border-radius:4px; }
+.pvp-settings-team[data-team="B"] { border-color:#805951; }
+.pvp-settings-team h4 { margin:0 0 8px; color:#8dd0ef; }
+.pvp-settings-team[data-team="B"] h4 { color:#efa491; }
+.pvp-settings-team label { flex-wrap:wrap; }
+.pvp-override-controls { display:flex; flex-wrap:wrap; gap:6px; }
+.pvp-match-settings select { max-width:120px; padding:6px; color:#f4e6c8; background:#0c131d; border:1px solid #736a58; border-radius:4px; font:inherit; }
+.pvp-match-settings input[hidden] { display:none; }
+@media (max-width:650px) { .pvp-settings-teams { grid-template-columns:1fr; } }
+.pvp-match-settings .pvp-settings-error { color:#efa491; }
+.pvp-settings-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+.pvp-settings-actions .arena-action { flex:1; margin:0; }
+.pvp-settings-actions [hidden] { display:none; }
 .pvp-return { color:#edc87e; }
 .payload-speech-prompt { max-width:240px; padding:8px 11px; white-space:normal; text-align:center; font-size:12px; line-height:1.4; color:#f8edcf; background:#17212af2; border:1px solid #bda16a; border-radius:9px; pointer-events:none; }
 .payload-speech-prompt::after { content:''; position:absolute; top:100%; left:50%; width:9px; height:9px; background:#17212a; border-right:1px solid #bda16a; border-bottom:1px solid #bda16a; transform:translate(-50%,-5px) rotate(45deg); }

@@ -106,7 +106,8 @@ export class PvpProjectileClient {
   }
   setMatch(match){
     if(this.closed)return;
-    if(this.movement.closed||!match||(match.state==='ended'&&!match.retry)){this.close();return;}
+    if(this.movement.closed||!match){this.close();return;}
+    // Clear visuals at end, retain listeners for the shared relay handoff.
     if(match.state==='ended'){this.reset();return;}
     for(const [id,shot] of this.combat.remoteShots)if(!match.participants.some(p=>p.playerId===shot.playerId))
       this.combat.removeRemote(id,shot.playerId);

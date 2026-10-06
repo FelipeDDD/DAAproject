@@ -173,6 +173,13 @@ test('client cannot choose damage or forge server HP/result messages',()=>{
   const f=fixture();f.spawn();f.setTime(10200);assert.equal(f.hit({damage:9999}).damage,10);
 });
 
+test('realtime PvP protocol accepts all eight 4v4 fighters and simultaneous respawn events',()=>{
+  const state=packet();state.players=Array.from({length:8},(_,i)=>({playerId:`p${i}`,life:0,hp:100,kills:0,deaths:0,
+    lastShot:0,lastHitAt:0,respawnAt:null}));state.events=Array.from({length:8},()=>({type:'respawn'}));
+  assert.ok(validServerMessage({...envelope('pvp-combat-state',state),serverTime:1}));
+  assert.equal(validServerMessage({...envelope('pvp-combat-state',{...state,players:[...state.players,{...state.players[0],playerId:'p8'}]}),serverTime:1}),false);
+});
+
 class Transport extends RealtimeTransport{
   constructor(){super();this.sent=[];}
   sendReliable(type,payload){this.sent.push({type,payload});return true;}

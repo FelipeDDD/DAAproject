@@ -2,7 +2,7 @@ import { PvpMapScene } from './PvpMapScene.js';
 import { getPresence } from '../multiplayer/client.js';
 import { characterById } from '../characters.js';
 import { resolvedMovementState } from '../multiplayer/movementState.js';
-import { PVP_MAP,PVP_RULES,pvpRoom } from '../pvp/config.js';
+import { PVP_MAP,pvpRoom } from '../pvp/config.js';
 import { requirePvpMap } from '../pvp/mapConfig.js';
 import { teamSpawn } from '../pvp/spawns.js';
 import { PvpMatchClient } from '../pvp/PvpMatchClient.js';
@@ -17,11 +17,12 @@ import { preparePlayerAttackVisuals,preloadPlayerAttackVisuals } from '../boss/P
 import { createModeView } from '../pvp/modeView.js';
 import { endMatch } from '../pvp/matchState.js';
 import { cameraZoomForMap } from '../game/settings.js';
+import { pvpMovementSpeed,effectiveMatchSettings } from '../pvp/matchSettings.js';
 import { PlayerHealthBar } from '../ui/PlayerHealthBar.js';
 import '../pvp/pvp.css';
 
 export class PvpArenaScene extends PvpMapScene {
-  constructor(){super(PVP_MAP);this.remoteNameLabelFontSize='12px';this.remoteNameLabelResolution=2;}
+  constructor(){super(PVP_MAP);}
   preload(){
     super.preload();
     preloadPlayerAttackVisuals(this,import.meta.env.BASE_URL);
@@ -40,12 +41,14 @@ export class PvpArenaScene extends PvpMapScene {
     // PvP scenes can be reused after sleep; always re-read the map-only setting.
     this.cameras.main.setZoom(cameraZoomForMap(PVP_MAP));
     this.stopPvp();this.leaving=false;this.networkFailed=false;this.ending=false;this.preservePvpMembership=false;
+    this.hostLeaveObserved=false;this.hostLeaveSeconds=undefined;
     this.pvpRemoteHealthBars=new Map();
     this.presence=getPresence();this.returnDestination=destination.returnDestination??{targetMap:'school'};
     this.matchId=destination.pvpMatchId;this.presenceRoom=pvpRoom(this.matchId);
     this.matchState=destination.pvpSnapshot;
     try{requirePvpMap(this.matchState);}
     catch(error){console.warn('[PvP map]',error.message);this.leavePvp();return;}
+    this.applyMatchSettings(this.matchState);
     this.initializePvpTeleports();
     const me=this.matchState?.participants.find(p=>p.playerId===this.presence?.identity?.playerId);
     if(!this.matchId||!me){this.leavePvp();return;}
@@ -92,11 +95,14 @@ export class PvpArenaScene extends PvpMapScene {
   }
   applyNextRound(state){
     if(this.leaving||this.networkFailed)return;
+    this.traceHostLeave('return/waiting transition',{nextState:state?.state??'leave',nextRound:state?.round});
     if(!state||!state.participants.some(p=>p.playerId===this.presence.identity.playerId)){this.leavePvp();return;}
     try{requirePvpMap(state);}catch(error){this.showPvpError(error);return;}
+    this.applyMatchSettings(state);
     this.teleports?.reset();
     this.matchClient.snapshot=state;this.matchState=state;
     if(state.state==='waiting'){this.leavePvp(this.matchId);return;}
+    this.hostLeaveObserved=false;this.hostLeaveSeconds=undefined;
     this.returnFlow?.close();
     const client=this.matchClient;
     this.returnFlow=new PvpReturnFlow((action,args)=>client.request(action,args),matchId=>this.leavePvp(matchId));
@@ -105,7 +111,7 @@ export class PvpArenaScene extends PvpMapScene {
     this.combat.serial=0;this.combat.nextShotAt=0;this.combat.life=undefined;
     const me=state.participants.find(p=>p.playerId===this.presence.identity.playerId);
     this.player.body.enable=true;this.placeAtSpawn(me);this.lastLife=me.life;
-    this.player.setAlpha(1).setCombatHealth(me.hp,PVP_RULES.maxHp);
+    this.player.setAlpha(1).setCombatHealth(me.hp,this.pvpSettings.maxHp);
     this.movementState={moving:false,velocityX:0,velocityY:0};
     this.movementClient.switchRound(state);this.projectileClient.setMatch(state);
     this.combat.update(state,me,0,Date.now());
@@ -114,6 +120,10 @@ export class PvpArenaScene extends PvpMapScene {
     const index=this.matchState.participants.filter(p=>p.team===me.team).findIndex(p=>p.playerId===me.playerId);
     const spawn=teamSpawn(this.source,me.team,index);
     this.player.body.reset(spawn.x,spawn.y);this.player.setVelocity(0,0);this.player.setFacing(spawn.direction,false);
+  }
+  applyMatchSettings(state){
+    const self=state?.participants?.find(p=>p.playerId===this.presence?.identity?.playerId);
+    this.pvpSettings=effectiveMatchSettings(state,self?.team);this.player.speed=pvpMovementSpeed(state,self?.team);
   }
   showPvpError(error){
     if(!this.pvpHud)return;
@@ -133,17 +143,27 @@ export class PvpArenaScene extends PvpMapScene {
     if(this.matchState?.hostPlayerId!==this.presence.identity.playerId||this.ending)return;
     this.damageClient?.requestEnd();
   }
+  // TEMP: trace only this departure/recovery, without logging every frame.
+  traceHostLeave(event,detail={}){
+    if(!this.hostLeaveObserved&&!['host_left','host-left'].includes(this.matchState?.reason))return;
+    this.hostLeaveObserved=true;
+    console.info(`[PVP host leave] ${event}`,{matchId:this.matchId,round:this.matchState?.round,state:this.matchState?.state,...detail});
+  }
   update(_time,delta){
     if(!this.matchState||this.leaving)return;
     const now=Date.now(),state=this.matchState,me=state.participants.find(p=>p.playerId===this.presence.identity.playerId);
+    const matchNow=this.matchClient?.now?.()??now;
     if(!me){this.leavePvp();return;}
+    if(!this.hostLeaveObserved)this.traceHostLeave('client lifecycle transition',{reason:state.reason,endedAt:state.endedAt});
     this.updatePvpHudHealth(me.hp);
-    if(!state.retry)this.returnFlow?.update(state,now);
+    // The return deadline is latched: a delayed Retry snapshot cannot suspend
+    // recovery already started by host departure/connection loss.
+    if(!state.retry||this.returnFlow?.deadline!=null)this.returnFlow?.update(state,matchNow);
     if(this.leaving)return;
     const playable=state.state==='active'&&me.hp>0&&!this.networkFailed;
     this.player.body.enable=me.hp>0;
     if(me.life!==this.lastLife){this.lastLife=me.life;this.placeAtSpawn(me);}
-    this.player.setAlpha(me.hp>0?1:.25).setCombatHealth(me.hp,PVP_RULES.maxHp);
+    this.player.setAlpha(me.hp>0?1:.25).setCombatHealth(me.hp,this.pvpSettings.maxHp);
     this.movementState=resolvedMovementState(this.player.body);
     if(playable)this.player.update();else{this.player.setVelocity(0,0);this.player.setFacing(this.player.facing,false);}
     if(playable)this.updatePvpTeleports(now);
@@ -154,14 +174,20 @@ export class PvpArenaScene extends PvpMapScene {
       const remote=this.remotes.players.get(p.playerId);if(!remote)continue;
       renderedRemoteIds.add(p.playerId);
       remote.sprite.setAlpha(p.hp>0?1:.2);
-      remote.label.setColor(p.team==='A'?'#27698b':'#a33f30');
-      remote.label.setText(p.displayName??p.playerId);
       this.updateRemoteHealthBar(p,remote);
     }
-    for(const [playerId,bar] of this.pvpRemoteHealthBars)if(!renderedRemoteIds.has(playerId)){bar.destroy();this.pvpRemoteHealthBars.delete(playerId);}
+    for(const [playerId,entry] of this.pvpRemoteHealthBars)if(!renderedRemoteIds.has(playerId)){
+      entry.bar.destroy();this.pvpRemoteHealthBars.delete(playerId);
+      this.traceHostLeave('departed HP bar removed',{playerId});
+    }
     this.combat?.update(this.networkFailed?{...state,state:'ended'}:state,me,delta,now);
     this.modeView?.render(state);
-    this.pvpHud?.render(state,me,now,this.returnFlow?.remaining(now)??null);
+    const returnSeconds=this.returnFlow?.remaining(matchNow)??null;
+    this.pvpHud?.render(returnSeconds===null?state:{...state,retry:undefined},me,matchNow,returnSeconds);
+    const seconds=returnSeconds??(state.retry?Math.max(0,Math.ceil((state.retry.deadline-matchNow)/1000)):null);
+    if(this.hostLeaveObserved&&seconds!==this.hostLeaveSeconds){
+      this.hostLeaveSeconds=seconds;this.traceHostLeave('return countdown',{seconds,retryResolving:state.retry?.resolving??false});
+    }
 
   }
   updateRemoteHealthBar(participant,remote){
@@ -171,17 +197,19 @@ export class PvpArenaScene extends PvpMapScene {
       entry={anchor,bar:new PlayerHealthBar(anchor)};entry.bar.setVisible(true);
       this.pvpRemoteHealthBars.set(participant.playerId,entry);
     }
-    const hp=Number.isFinite(participant.hp)?participant.hp:PVP_RULES.maxHp;
+    const maxHp=effectiveMatchSettings(this.matchState,participant.team).maxHp,hp=Number.isFinite(participant.hp)?participant.hp:maxHp;
     entry.anchor.x=remote.sprite.x;entry.anchor.y=remote.sprite.y;
-    entry.bar.setHealth(hp,PVP_RULES.maxHp).updatePosition();
+    entry.bar.setHealth(hp,maxHp).updatePosition();
   }
   updatePvpHudHealth(hp){
-    if(this.pvpHudHealth===hp)return;
-    this.pvpHudHealth=hp;
-    this.gameHud?.setHealth(hp,PVP_RULES.maxHp);
+    const maxHp=this.pvpSettings.maxHp;
+    if(this.pvpHudHealth===hp&&this.pvpHudMaxHp===maxHp)return;
+    this.pvpHudHealth=hp;this.pvpHudMaxHp=maxHp;
+    this.gameHud?.setHealth(hp,maxHp);
   }
   leavePvp(lobbyId=null){
     if(this.leaving)return;this.leaving=true;this.returnFlow?.close();
+    this.traceHostLeave('return/waiting transition',{targetMap:this.returnDestination?.targetMap,lobbyId});
     this.damageClient?.close();
     this.projectileClient?.close();
     this.movementClient?.close();
@@ -200,7 +228,7 @@ export class PvpArenaScene extends PvpMapScene {
     this.combat?.destroy();this.combat=null;this.pvpHud?.destroy();this.pvpHud=null;
     if(this.matchClient){const client=this.matchClient;this.matchClient=null;client.close();if(!this.preservePvpMembership)void client.request('leave',{round:this.matchState?.round??client.snapshot?.round??0}).catch(()=>{});}
     this.matchId=null;this.matchState=null;this.remotes?.receive([]);
-    if(this.pvpHudHealth!==undefined){this.gameHud?.resetHealth();this.pvpHudHealth=undefined;}
+    if(this.pvpHudHealth!==undefined){this.gameHud?.resetHealth();this.pvpHudHealth=undefined;this.pvpHudMaxHp=undefined;}
     this.player?.setCombatHudVisible(false);if(this.player?.body)this.player.body.enable=true;
   }
 }

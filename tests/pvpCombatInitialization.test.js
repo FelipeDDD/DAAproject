@@ -9,7 +9,7 @@ import { PvpCombatController } from '../src/pvp/PvpCombatController.js';
 import { WebSocketTransport } from '../src/realtime/WebSocketTransport.js';
 import { createRealtimeServer } from '../scripts/realtime-server.mjs';
 import { newFighter } from '../src/pvp/matchState.js';
-import { PVP_MAP_DEFINITION } from '../src/pvp/config.js';
+import { PVP_MAP_DEFINITION,PVP_RULES } from '../src/pvp/config.js';
 
 const initial=()=>({arenaMap:PVP_MAP_DEFINITION,matchId:'match-a',room:'pvp-arena-test:match-a',round:0,
   damageRevision:0,state:'countdown',hostPlayerId:'alice',expiresAt:999999,startedAt:13000,endsAt:193000,
@@ -118,7 +118,7 @@ test('two sockets: discarded pre-auth positions are republished before the first
       now+=250;peer.combat.update(peer.state,peer.combat.self,250,now);
       await waitFor(()=>peer.messages.some(m=>m.type==='pvp-hit-result'&&m.payload.projectileId===shot.projectileId&&m.payload.accepted));
     }
-    assert.ok(authority.state.participants.every(p=>p.hp===90&&p.life===0));
+    assert.ok(authority.state.participants.every(p=>p.hp===PVP_RULES.maxHp-PVP_RULES.damage&&p.life===0));
     assert.ok(peers.every(p=>p.damage.authorized&&!p.movement.closed));
     await authority.queue;
   }finally{

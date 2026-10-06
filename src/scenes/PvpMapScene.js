@@ -8,6 +8,7 @@ import { PAYLOAD_CART_ASSET } from '../pvp/payload/visualConfig.js';
 export class PvpMapScene extends MapScene{
   constructor(key){
     super(key,PVP_MAP_FILE);
+    this.remoteNameLabels=false;
     this.sourceKey=`${key}-${PVP_MAP_DEFINITION.id}-${PVP_MAP_DEFINITION.revision}-source`;
     this.reloadMapOnEntry=true;
   }
