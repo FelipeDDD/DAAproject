@@ -7,7 +7,8 @@ param(
   [int]$FrameHeight = 72,
   [int]$ContentHeight = 66,
   [int]$PreviewScale = 4,
-  [int]$AlphaThreshold = 96
+  [int]$AlphaThreshold = 96,
+  [switch]$NormalizeDirectionHeight
 )
 
 # Registration only: no pose generation, per-frame stretching or runtime changes.
@@ -107,9 +108,21 @@ try {
   # Account for off-center accessories as well as body width.
   $halfWidth=($frames | ForEach-Object {[math]::Max($_.center-$_.bounds.Left,$_.bounds.Right-$_.center)} | Measure-Object -Maximum).Maximum
   $scale=[math]::Min($ContentHeight/$maxHeight,($FrameWidth/2-3)/$halfWidth)
+  # Optional: correct generated direction-size drift without changing scale between poses.
+  $directionScales=@()
+  for($row=0;$row -lt $Rows;$row++) {
+    $directionScale=$scale
+    if($NormalizeDirectionHeight) {
+      $directionFrames=@($frames | Where-Object {$_.row -eq $row})
+      $directionHeight=($directionFrames.bounds.Height | Measure-Object -Maximum).Maximum
+      $directionHalfWidth=($directionFrames | ForEach-Object {[math]::Max($_.center-$_.bounds.Left,$_.bounds.Right-$_.center)} | Measure-Object -Maximum).Maximum
+      $directionScale=[math]::Min($ContentHeight/$directionHeight,($FrameWidth/2-3)/$directionHalfWidth)
+    }
+    $directionScales += $directionScale
+  }
   foreach($frame in $frames) {
     [RegisteredCharacterSheet]::CopyFrame($inputBitmap,$sheet,$frame.bounds,
-      $frame.column*$FrameWidth,$frame.row*$FrameHeight,$FrameWidth,$FrameHeight,$frame.center,$scale,$AlphaThreshold)
+      $frame.column*$FrameWidth,$frame.row*$FrameHeight,$FrameWidth,$FrameHeight,$frame.center,$directionScales[$frame.row],$AlphaThreshold)
   }
   $sheet.Save("$prefix.png",[Drawing.Imaging.ImageFormat]::Png)
   $idle=$sheet.Clone([Drawing.Rectangle]::new(0,0,$FrameWidth,$FrameHeight),[Drawing.Imaging.PixelFormat]::Format32bppArgb)
@@ -119,8 +132,9 @@ try {
   [ordered]@{
     source=[IO.Path]::GetFileName($sourcePath);sourceSha256=(Get-FileHash -LiteralPath $sourcePath -Algorithm SHA256).Hash
     columns=$Columns;rows=$Rows;frameWidth=$FrameWidth;frameHeight=$FrameHeight;baseline=$FrameHeight-1
-    uniformScale=$scale;alphaThreshold=$AlphaThreshold
+    uniformScale=$(if($NormalizeDirectionHeight){$null}else{$scale});alphaThreshold=$AlphaThreshold
+    normalizeDirectionHeight=[bool]$NormalizeDirectionHeight;directionScales=$directionScales
     frames=@($frames | ForEach-Object {[ordered]@{row=$_.row;column=$_.column;x=$_.bounds.X;y=$_.bounds.Y;width=$_.bounds.Width;height=$_.bounds.Height;headCenterX=$_.center}})
   } | ConvertTo-Json -Depth 5 | Set-Content -Encoding UTF8 "$prefix-registration.json"
-  Write-Output "Registered $($frames.Count) frames: $($sheet.Width)x$($sheet.Height), uniform scale $scale, baseline $($FrameHeight-1)."
+  Write-Output "Registered $($frames.Count) frames: $($sheet.Width)x$($sheet.Height), direction scales $($directionScales -join ', '), baseline $($FrameHeight-1)."
 } finally {$sheet.Dispose();$inputBitmap.Dispose()}

@@ -1,16 +1,18 @@
 # Third-skin prototypes
 
+All four third skins now support wardrobe recoloring; see [editable material masks](material-masks.md) for the active PNGs and manual-edit instructions. Yassin now uses a newly drawn Felipe-referenced gait, five steps at 10 FPS; see [generation and registration](yassin-felipe-walk.md).
+
 ## Michael and Yassin tests
 
-Yassin now uses the approved subtle scalp/stubble version (v3). Previous brown and black spritesheets are preserved with their previews and registration reports in [archive/yassin](archive/yassin/README.md). The Yassin Dev Tools/wardrobe preview and this comparison page show the latest version.
+Yassin's current third skin is the new bald character with glasses (`yassin-felipe-walk-v1.png`). It is available as **Skin test** from the regular Yassin wardrobe, without an extra character-selection card. Earlier brown/black drafts remain in [archive/yassin](archive/yassin/README.md). Retired V4/V5 public sheets are no longer preloaded by normal gameplay.
 
-Michael and Yassin test skins now appear through **Dev Tools → All Skins** and the wardrobe after selecting their regular bases. Both use the approved B anchors: fully bald Michael and a slightly slimmer face for Yassin. Same 24-frame layout, 128x144 frame size, 0.5 scale and 10 FPS as the other experiments. No recolor masks. The four real bases and their ownership are unchanged; these are local-only visual previews.
+Michael and Yassin test skins now appear through **Dev Tools → All Skins** and the wardrobe after selecting their regular bases. Both use the approved B anchors: fully bald Michael and a slightly slimmer face for Yassin. Same 24-frame layout, 128x144 frame size, 0.5 scale and 10 FPS as the other experiments. Editable recolor masks are now available. The four real bases and their ownership are unchanged; these are local-only visual previews.
 
-Open `/tools/sprite-preview/` through Vite to compare the four experiments and inspect each walking pose. New sheets, thumbnails and enlarged previews are `public/assets/characters/experimental/{michael,yassin}-level3-hd*.png`. Prompts and registration details: [michael-yassin-generation.md](michael-yassin-generation.md).
+Open `/tools/sprite-preview/` through Vite to compare the four experiments and inspect each walking pose. Current sheets/previews are `public/assets/characters/experimental/michael-level3-hd*.png` and `yassin-felipe-walk-v1*.png`. Prompts and registration details: [michael-yassin-generation.md](michael-yassin-generation.md).
 
 ## Sarina test
 
-Sarina's Skin test is available through **Dev Tools → All Skins** for the regular Sarina base. She retains her normal profile/class identity, with only a local appearance override. No Sarina recolor masks are applied.
+Sarina's Skin test is available through **Dev Tools → All Skins** for the regular Sarina base. She retains her normal profile/class identity, with only a local appearance override. Sarina now has an editable hair/clothing mask.
 
 The new sheet uses Felipe's approved poses/style, with brown curly hair, purple shirt and blue trousers from the current Sarina reference. Both have the same 128x144 frames at 0.5 scale, 24 frames in down/left/right/up order, idle in column 0 and walking columns 1–5 at 10 FPS. The normalizer uses uniform scale and foot baseline 143. The comparison page includes her new and Remastered versions.
 
@@ -22,7 +24,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/register-character-s
 
 ## Try it
 
-Run `npm run dev`. Select Felipe normally, then click **All Skins** in Dev Tools to activate the third skin. The wardrobe can switch among Classic, Remastered and Skin test. The override survives room changes and appearance restoration, but is not saved as an unlock or sent to other players. Selection always has four cards.
+Run `npm run dev`. Select Felipe normally, then click **All Skins** in Dev Tools to activate the third skin. The wardrobe can switch among Classic, Remastered and Skin test. The override survives room changes and appearance restoration, but is not saved as an unlock or sent to other players. Selection has the four real bases plus a fifth **Felipe — TEST** preview card.
 
 For a backend-free animation comparison, open `http://localhost:5173/tools/sprite-preview/`. All four directions animate beside the existing Remastered art; pause, step or adjust FPS. This page is a development tool, not a production build entry.
 
@@ -30,7 +32,7 @@ For a backend-free animation comparison, open `http://localhost:5173/tools/sprit
 
 Felipe's test skin applies the fixed `FELIPE_TEST_PALETTE` from `src/art/felipeRecolor.js`: chestnut hair, teal shirt, light gray trousers and burgundy shoes. The wardrobe thumbnail shows the original HD PNG. In game, `createCharacterAnimations` first prepares a derived canvas texture from the loaded source, registers the same 128x144 frames, then creates its animations. The texture manager caches this result across scenes; no per-frame recoloring or Convex requests are added.
 
-The masks use authored boundaries for each direction and walking foot pose, with protections for skin, face, white emblem, black ink and the moving drink can. Recoloring modifies RGB only, retaining original alpha, positions and shading. These masks are specific to this source sheet and are not a general segmentation algorithm. Another sheet will need its own reviewed masks. There is no color picker, skin-tone change, persistent palette or multiplayer color synchronization yet. The preview's **Test colors** checkbox compares the original and recolored frames using the exact runtime function.
+The active Felipe mask is `public/assets/characters/experimental/felipe-level3-hd-material-mask.png`, exported ONLY from the `felipe-material-mask.png` layer of the user-edited `Downloads/felipe-level3-hd-teste.xcf`. It replaces generated boundaries for the 24-frame HD skin. Red = hair, green = shirt, blue = trousers, yellow = shoes; transparent/non-label pixels remain fixed. Edit without smoothing and export the mask alone at 768×576; never flatten it with the source sprite. The old coordinate-based mask remains as a fallback for tools calling the recolor helper without a PNG mask. Recoloring modifies RGB only, retaining original alpha, positions and shading. These masks are specific to this source sheet and are not a general segmentation algorithm. Another sheet will need its own reviewed masks. The wardrobe has a local color picker. Persistent palettes, skin-tone changes and multiplayer palette synchronization remain deferred. The preview's **Test colors** checkbox compares the original and recolored frames using the exact runtime function.
 
 ## Assets and registration
 

@@ -1,6 +1,6 @@
 import { CHARACTER_STYLE_STORAGE_KEY } from './characters.js';
 import { NEW_PLAYER_SCALE, PLAYER_SCALE } from './game/settings.js';
-import { prepareFelipeRecolorTexture } from './art/felipeRecolor.js';
+import { prepareCharacterRecolorTexture } from './art/characterRecolor.js';
 import { isCharacterItemEnabled } from './inventory/characterItems.js';
 import { previewVisual,registeredPreviewVisuals } from './characterPreviewSkins.js';
 
@@ -104,8 +104,11 @@ export function preloadCharacterTextures(scene,characters,baseUrl,includeExperim
     );
     if(character.lungCrusherVisual)queued.add(character.lungCrusherVisual.sprite);
     const experiments=includeRemotePreviews?registeredPreviewVisuals(character)
-      :[(includeExperiments||character.experimentalVisual?.menuPreview===true)&&character.experimentalVisual].filter(Boolean);
+      :[(includeExperiments||(character.experimentalVisual?.menuPreview===true||character.experimentalVisual?.wardrobePreview===true))&&character.experimentalVisual].filter(Boolean);
     for(const experiment of experiments){
+      if(experiment.recolorMaskSource&&!queued.has(experiment.recolorMaskSource)&&!scene.textures.exists(experiment.recolorMaskSource))
+        scene.load.image(experiment.recolorMaskSource,`${baseUrl}${experiment.recolorMaskAsset}`);
+      if(experiment.recolorMaskSource)queued.add(experiment.recolorMaskSource);
       const sourceKey=experiment.recolorSource??experiment.sourceImage??experiment.sprite;
       if(!queued.has(sourceKey)&&!scene.textures.exists(sourceKey)){
         if(experiment.sourceGrid)scene.load.image(sourceKey,`${baseUrl}${experiment.asset}`);
@@ -123,9 +126,9 @@ export function createCharacterAnimations(scene,characters,includeExperiments=im
       createCharacterAnimations(scene,[{...character,experimentalVisual:visual}],true);
   }
   for(const character of characters){
-    const includePreview=includeExperiments||character.experimentalVisual?.menuPreview===true;
+    const includePreview=includeExperiments||(character.experimentalVisual?.menuPreview===true||character.experimentalVisual?.wardrobePreview===true);
     if(includePreview&&character.experimentalVisual){
-      prepareFelipeRecolorTexture(scene.textures,character.experimentalVisual);
+      prepareCharacterRecolorTexture(scene.textures,character.experimentalVisual);
       prepareExperimentalGridTexture(scene.textures,character.experimentalVisual);
     }
     for(const style of ['new','lungCrusher',...(includePreview?['level3Preview']:[])]){

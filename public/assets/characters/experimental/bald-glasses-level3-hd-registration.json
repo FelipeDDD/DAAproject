@@ -1,0 +1,236 @@
+﻿{
+    "source":  "bald-glasses-walk-raw-v3.png",
+    "sourceSha256":  "38D69928BE52C93E6D455DA56536DC14AD939E2E626F87C38B4055B033078526",
+    "columns":  6,
+    "rows":  4,
+    "frameWidth":  128,
+    "frameHeight":  144,
+    "baseline":  143,
+    "uniformScale":  null,
+    "alphaThreshold":  96,
+    "normalizeDirectionHeight":  true,
+    "directionScales":  [
+                            0.50965250965250963,
+                            0.52173913043478259,
+                            0.52589641434262946,
+                            0.55696202531645567
+                        ],
+    "frames":  [
+                   {
+                       "row":  0,
+                       "column":  0,
+                       "x":  80,
+                       "y":  31,
+                       "width":  146,
+                       "height":  253,
+                       "headCenterX":  153.5
+                   },
+                   {
+                       "row":  0,
+                       "column":  1,
+                       "x":  321,
+                       "y":  31,
+                       "width":  146,
+                       "height":  259,
+                       "headCenterX":  395
+                   },
+                   {
+                       "row":  0,
+                       "column":  2,
+                       "x":  554,
+                       "y":  31,
+                       "width":  146,
+                       "height":  259,
+                       "headCenterX":  628.5
+                   },
+                   {
+                       "row":  0,
+                       "column":  3,
+                       "x":  774,
+                       "y":  31,
+                       "width":  147,
+                       "height":  259,
+                       "headCenterX":  847.5
+                   },
+                   {
+                       "row":  0,
+                       "column":  4,
+                       "x":  1011,
+                       "y":  31,
+                       "width":  145,
+                       "height":  258,
+                       "headCenterX":  1084.5
+                   },
+                   {
+                       "row":  0,
+                       "column":  5,
+                       "x":  1255,
+                       "y":  31,
+                       "width":  144,
+                       "height":  256,
+                       "headCenterX":  1327.5
+                   },
+                   {
+                       "row":  1,
+                       "column":  0,
+                       "x":  89,
+                       "y":  304,
+                       "width":  112,
+                       "height":  251,
+                       "headCenterX":  145
+                   },
+                   {
+                       "row":  1,
+                       "column":  1,
+                       "x":  322,
+                       "y":  304,
+                       "width":  145,
+                       "height":  253,
+                       "headCenterX":  387
+                   },
+                   {
+                       "row":  1,
+                       "column":  2,
+                       "x":  571,
+                       "y":  304,
+                       "width":  112,
+                       "height":  252,
+                       "headCenterX":  627
+                   },
+                   {
+                       "row":  1,
+                       "column":  3,
+                       "x":  793,
+                       "y":  304,
+                       "width":  145,
+                       "height":  253,
+                       "headCenterX":  857.5
+                   },
+                   {
+                       "row":  1,
+                       "column":  4,
+                       "x":  1033,
+                       "y":  304,
+                       "width":  112,
+                       "height":  252,
+                       "headCenterX":  1089
+                   },
+                   {
+                       "row":  1,
+                       "column":  5,
+                       "x":  1272,
+                       "y":  304,
+                       "width":  119,
+                       "height":  251,
+                       "headCenterX":  1328.5
+                   },
+                   {
+                       "row":  2,
+                       "column":  0,
+                       "x":  96,
+                       "y":  571,
+                       "width":  114,
+                       "height":  251,
+                       "headCenterX":  153
+                   },
+                   {
+                       "row":  2,
+                       "column":  1,
+                       "x":  322,
+                       "y":  571,
+                       "width":  145,
+                       "height":  250,
+                       "headCenterX":  394
+                   },
+                   {
+                       "row":  2,
+                       "column":  2,
+                       "x":  576,
+                       "y":  571,
+                       "width":  114,
+                       "height":  250,
+                       "headCenterX":  633
+                   },
+                   {
+                       "row":  2,
+                       "column":  3,
+                       "x":  777,
+                       "y":  571,
+                       "width":  152,
+                       "height":  250,
+                       "headCenterX":  866.5
+                   },
+                   {
+                       "row":  2,
+                       "column":  4,
+                       "x":  1042,
+                       "y":  571,
+                       "width":  116,
+                       "height":  251,
+                       "headCenterX":  1100
+                   },
+                   {
+                       "row":  2,
+                       "column":  5,
+                       "x":  1272,
+                       "y":  571,
+                       "width":  124,
+                       "height":  250,
+                       "headCenterX":  1336
+                   },
+                   {
+                       "row":  3,
+                       "column":  0,
+                       "x":  74,
+                       "y":  843,
+                       "width":  147,
+                       "height":  235,
+                       "headCenterX":  147.5
+                   },
+                   {
+                       "row":  3,
+                       "column":  1,
+                       "x":  312,
+                       "y":  843,
+                       "width":  151,
+                       "height":  237,
+                       "headCenterX":  389
+                   },
+                   {
+                       "row":  3,
+                       "column":  2,
+                       "x":  554,
+                       "y":  843,
+                       "width":  148,
+                       "height":  237,
+                       "headCenterX":  628
+                   },
+                   {
+                       "row":  3,
+                       "column":  3,
+                       "x":  774,
+                       "y":  843,
+                       "width":  150,
+                       "height":  237,
+                       "headCenterX":  849
+                   },
+                   {
+                       "row":  3,
+                       "column":  4,
+                       "x":  1013,
+                       "y":  843,
+                       "width":  148,
+                       "height":  237,
+                       "headCenterX":  1087
+                   },
+                   {
+                       "row":  3,
+                       "column":  5,
+                       "x":  1255,
+                       "y":  843,
+                       "width":  149,
+                       "height":  237,
+                       "headCenterX":  1331
+                   }
+               ]
+}

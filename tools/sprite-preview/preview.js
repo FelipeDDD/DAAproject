@@ -49,7 +49,9 @@ document.querySelector('#recolor').addEventListener('change',render);
 
 try{
   await Promise.all(previews.map(({image})=>image.decode()));
-  recolored=createFelipeRecolorCanvas(previews[0].image);
+  const maskImage=new Image();maskImage.src=`${import.meta.env.BASE_URL}${experiment.recolorMaskAsset}`;
+  await maskImage.decode();
+  recolored=createFelipeRecolorCanvas(previews[0].image,undefined,maskImage);
   ready=true;
   render();
   const tick=now=>{

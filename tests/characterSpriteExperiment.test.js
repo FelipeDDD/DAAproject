@@ -6,12 +6,14 @@ import { CharacterMenu } from '../src/CharacterMenu.js';
 import { canPreviewCharacterSkin, WardrobeController } from '../src/WardrobeController.js';
 import { characterVisual, createCharacterAnimations, footBodyForVisual, localCharacterStyle, preloadCharacterTextures, prepareExperimentalGridTexture, walkFrames } from '../src/characterVisuals.js';
 
+import { registeredPreviewVisuals } from '../src/characterPreviewSkins.js';
+
 const felipe=characterById('felipe');
 test('Yassin can select the approved skin in the wardrobe without DEV tools',async()=>{
   const yassin=characterById('jassine');
   assert.equal(canPreviewCharacterSkin(yassin,{},false),true);
-  assert.equal(canPreviewCharacterSkin(felipe,{},false),false);
-  assert.equal(canPreviewCharacterSkin(felipe,{devAllSkins:true},false),false);
+  assert.equal(canPreviewCharacterSkin(felipe,{},false),true);
+  assert.equal(canPreviewCharacterSkin(felipe,{devAllSkins:true},false),true);
   assert.equal(canPreviewCharacterSkin(felipe,{devAllSkins:true},true),true);
   for(const kind of ['guest','profile']){
     const identity={kind,characterId:'jassine',characterBaseId:'jassine'};
@@ -26,33 +28,37 @@ test('Yassin can select the approved skin in the wardrobe without DEV tools',asy
     assert.deepEqual(applied,['classic']);
   }
 });
-test('the fifth menu card previews approved Yassin using the existing base',()=>{
+test('the fifth menu card previews Felipe with the edited mask; Yassin stays a regular-base third skin',()=>{
   const options=characterMenuOptions();
   assert.equal(options.length,5);
   assert.deepEqual(options.slice(0,4).map(option=>option.c.id),['michael','jassine','sarina','felipe']);
   assert.ok(options.slice(0,4).every(option=>option.previewStyle===null));
-  assert.equal(options[4].c,characterById('jassine'));
-  assert.equal(options[4].label,'Yassin — TEST');
+  assert.equal(options[4].c,felipe);
+  assert.equal(options[4].label,'Felipe — TEST');
   assert.equal(options[4].previewStyle,'level3Preview');
-  assert.match(options[4].c.experimentalVisual.asset,/yassin-bald-slot5-hd-v3\.png$/);
+  assert.match(options[4].c.experimentalVisual.recolorMaskAsset,/felipe-level3-hd-material-mask\.png$/);
+  assert.equal(options[4].c.experimentalVisual.sprite,'character-felipe-level3-hd-recolor-v2');
+  assert.equal(characterById('jassine').experimentalVisual.menuPreview,undefined);
+  assert.equal(characterById('jassine').experimentalVisual.wardrobePreview,true);
+  assert.match(characterById('jassine').experimentalVisual.asset,/yassin-felipe-walk-v1\.png$/);
   assert.ok(CHARACTERS.every(character=>character.experimentalVisual));
   assert.equal(CHARACTERS.length,4);
 });
 
-test('the visible Yassin preview loads and animates with DEV experiments disabled',()=>{
+test('Yassin third skin and Felipe test load with DEV experiments disabled',()=>{
   const loaded=[],animations=new Map();
-  const scene={textures:{exists:()=>false},
+  const scene={textures:{exists:key=>CHARACTERS.some(c=>key===c.experimentalVisual.sprite)},
     load:{svg(){},spritesheet:(...args)=>loaded.push(args),image:(...args)=>loaded.push(args)},
     anims:{exists:key=>animations.has(key),create:config=>animations.set(config.key,config)}};
   preloadCharacterTextures(scene,CHARACTERS,'/',false);
   createCharacterAnimations(scene,CHARACTERS,false);
   const visual=characterVisual(characterById('jassine'),'level3Preview');
-  assert.deepEqual(loaded.find(([key])=>key===visual.sprite),[visual.sprite,`/${visual.asset}`,{frameWidth:128,frameHeight:144}]);
+  assert.deepEqual(loaded.find(([key])=>key===visual.recolorSource),[visual.recolorSource,`/${visual.asset}`,{frameWidth:128,frameHeight:144}]);
   for(const direction of ['down','left','right','up']){
     assert.ok(animations.has(`${visual.sprite}-idle-${direction}`));
-    assert.equal(animations.get(`${visual.sprite}-walk-${direction}`).frames.length,5);
+    assert.equal(animations.get(`${visual.sprite}-walk-${direction}`).frames.length,visual.walkColumns[direction].length);
   }
-  for(const id of ['michael','sarina','felipe']){
+  for(const id of ['michael','sarina']){
     const other=characterById(id).experimentalVisual;
     assert.ok(!loaded.some(([key])=>key===(other.recolorSource??other.sprite)));
     assert.ok(!animations.has(`${other.sprite}-walk-down`));
@@ -104,23 +110,25 @@ test('appearance restore keeps only the selected local Felipe in preview style',
 
 test('experimental frames load once only when enabled and use five walk poses at 10 FPS',()=>{
   const loaded=[],animations=new Map();
-  const scene={textures:{exists:key=>key===felipe.experimentalVisual.sprite},
+  const scene={textures:{exists:key=>CHARACTERS.some(c=>key===c.experimentalVisual.sprite)},
     load:{svg(){},spritesheet:(...args)=>loaded.push(args),image:(...args)=>loaded.push(args)},
     anims:{exists:key=>animations.has(key),create:config=>animations.set(config.key,config)}};
   preloadCharacterTextures(scene,CHARACTERS,'/',false);
-  assert.ok(!loaded.some(([key])=>key===felipe.experimentalVisual.sprite));
+  assert.ok(loaded.some(([key])=>key===felipe.experimentalVisual.recolorSource));
+  assert.deepEqual(loaded.find(([key])=>key===felipe.experimentalVisual.recolorMaskSource),
+    [felipe.experimentalVisual.recolorMaskSource,`/${felipe.experimentalVisual.recolorMaskAsset}`]);
   loaded.length=0;
   preloadCharacterTextures(scene,[...CHARACTERS,felipe],'/',true);
   assert.equal(loaded.filter(([key])=>key===felipe.experimentalVisual.recolorSource).length,1);
   for(const id of ['sarina','michael','jassine'])
-    assert.equal(loaded.filter(([key])=>key===characterById(id).experimentalVisual.sprite).length,1);
+    assert.equal(loaded.filter(([key])=>key===characterById(id).experimentalVisual.recolorSource).length,1);
   assert.deepEqual(loaded.find(([key])=>key===felipe.experimentalVisual.recolorSource)[2],{frameWidth:128,frameHeight:144});
   createCharacterAnimations(scene,CHARACTERS,true);
   const visual=characterVisual(felipe,'level3Preview');
   for(const [row,direction]of ['down','left','right','up'].entries()){
     assert.deepEqual(walkFrames(direction,visual),[1,2,3,4,5].map(column=>row*6+column));
     const walk=animations.get(`${visual.sprite}-walk-${direction}`);
-    assert.equal(walk.frames.length,5);assert.equal(walk.frameRate,10);
+    assert.equal(walk.frames.length,5);assert.equal(walk.frameRate,visual.frameRate);
     assert.deepEqual(animations.get(`${visual.sprite}-idle-${direction}`).frames,[{key:visual.sprite,frame:row*6}]);
   }
   assert.equal(animations.get('character-felipe-new-walk-down').frames.length,4);
@@ -144,9 +152,10 @@ test('generic experimental grid normalizer handles non-divisible source dimensio
   assert.deepEqual(registered[2],{frameWidth:128,frameHeight:144});
 });
 
-for(const id of ['sarina','michael','jassine'])test(`${id} uses registered HD frames without recoloring, with Felipe-sized world bounds and hitbox`,()=>{
+for(const id of ['sarina','michael','jassine'])test(`${id} uses editable material masks with registered HD frames and unchanged world bounds`,()=>{
   const character=characterById(id),visual=characterVisual(character,'level3Preview');
-  assert.equal(visual.recolorSource,undefined);
+  assert.ok(visual.recolorSource);
+  assert.ok(visual.recolorMaskAsset);
   assert.equal(visual.sourceGrid,undefined);
   assert.equal(visual.scale,.5);
   assert.equal(localCharacterStyle(character,'old',{characterBaseId:id,visualPreview:'level3Preview'}),'level3Preview');
@@ -159,8 +168,8 @@ for(const id of ['sarina','michael','jassine'])test(`${id} uses registered HD fr
   createCharacterAnimations({textures:{exists:()=>true},anims:{exists:()=>false,create:config=>animations.push(config)}},[character],true);
   for(const [row,direction]of ['down','left','right','up'].entries()){
     const walk=animations.find(animation=>animation.key===`${visual.sprite}-walk-${direction}`);
-    assert.deepEqual(walk.frames.map(f=>f.frame),[1,2,3,4,5].map(column=>row*6+column));
-    assert.equal(walk.frameRate,10);
+    assert.deepEqual(walk.frames.map(f=>f.frame),visual.walkColumns[direction].map(column=>row*6+column));
+    assert.equal(walk.frameRate,visual.frameRate);
   }
 });
 
@@ -174,4 +183,12 @@ test('experimental texture dimensions fit all 24 registered frames',()=>{
   assert.equal(report.frameWidth,visual.frameWidth);assert.equal(report.frameHeight,visual.frameHeight);
   assert.equal(report.sourceSha256,previous.sourceSha256);
   assert.deepEqual(report.frames,previous.frames); // Same approved poses/crops, higher registration resolution.
+});
+
+
+test('every public runtime preview points to an existing spritesheet and material mask',()=>{
+  for(const character of CHARACTERS)for(const visual of registeredPreviewVisuals(character)){
+    assert.ok(readFileSync(new URL('../public/'+visual.asset,import.meta.url)).length>0);
+    if(visual.recolorMaskAsset)assert.ok(readFileSync(new URL('../public/'+visual.recolorMaskAsset,import.meta.url)).length>0);
+  }
 });

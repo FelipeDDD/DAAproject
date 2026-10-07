@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Careca com óculos — comparação de caminhada</title>
+<style>
+body{margin:24px;background:#1e2530;color:#eef1f5;font:15px system-ui}h1{font-size:23px}button,select,input{margin:6px;padding:6px}table{border-collapse:collapse}td,th{padding:8px;text-align:center}canvas{display:block;background:repeating-conic-gradient(#58616c 0 25%,#646f7c 0 50%) 0/16px 16px;image-rendering:pixelated;border-bottom:1px solid #83cc91}label{white-space:nowrap}.scroll{overflow:auto}.muted{color:#bbc5d2}
+</style>
+<h1>Careca com óculos — caminhada</h1>
+<p>128×144 por frame · 6 colunas × 4 direções · linha dos pés 143 · escala do jogo 0,5×.</p>
+<p class="muted">Yassin usa poses redesenhadas com a caminhada do Felipe como referência: cinco frames a 10 FPS (500 ms). A versão antiga aparece abaixo para comparação. Pause para inspecionar. A linha verde marca o chão.</p>
+<button id="play">Pausar</button>
+
+<label>Velocidade <input id="fps" type="range" min="5" max="15" value="10"><span id="fps-value">10 FPS</span></label>
+<label>Etapa <input id="frame" type="range" min="0" max="4" value="0"><span id="frame-value">0</span></label>
+<label>Escala <select id="scale"><option value="0.5">0,5× — jogo</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
+<p id="status">Carregando imagens…</p>
+<div class="scroll"><table><thead><tr><th>Personagem</th><th>Frente</th><th>Esquerda</th><th>Direita</th><th>Costas</th></tr></thead><tbody id="sprites"></tbody></table></div>
+<script type="module">
+import { YASSIN_BALD_TEST_VISUAL } from '../../src/experimental/yassinBaldSkin.js';
+import { normalizeYassinUpStride } from '../../src/art/yassinUpStride.js';
+const directions=['down','left','right','up'];
+const prefix=location.protocol==='file:'?'../../public/assets/characters/experimental/':'/assets/characters/experimental/';
+const definitions=[['Yassin — caminhada nova','yassin-felipe-walk-v1'],['Yassin — desenho anterior','bald-glasses-level3-hd'],['Felipe','felipe-level3-hd'],['Sarina','sarina-level3-hd']];
+const views=[];let playing=true,lastTime=0,frame=0;
+function draw(){for(const view of views){const ctx=view.canvas.getContext('2d');ctx.clearRect(0,0,128,144);ctx.imageSmoothingEnabled=false;const columns=view.yassin?YASSIN_BALD_TEST_VISUAL.walkColumns[directions[view.row]]:[1,2,3,4,5];const column=columns[frame%columns.length];ctx.drawImage(view.image,column*128,view.row*144,128,144,0,0,128,144);}document.getElementById('frame').value=frame;document.getElementById('frame-value').textContent=frame;}
+function setScale(){const scale=Number(document.getElementById('scale').value);for(const {canvas} of views){canvas.style.width=128*scale+'px';canvas.style.height=144*scale+'px';}}
+async function init(){for(const [label,name] of definitions){let image=new Image();await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=()=>reject(new Error('Não foi possível carregar '+name));image.src=prefix+name+'.png';});if(name==='yassin-felipe-walk-v1'){const sheet=document.createElement('canvas');sheet.width=768;sheet.height=576;const ctx=sheet.getContext('2d');ctx.drawImage(image,0,0);const pixels=ctx.getImageData(0,0,768,576);pixels.data.set(normalizeYassinUpStride(pixels.data));ctx.putImageData(pixels,0,0);image=sheet;}const tr=document.createElement('tr');const title=document.createElement('th');title.textContent=label;tr.append(title);for(let row=0;row<4;row++){const canvas=document.createElement('canvas');canvas.width=128;canvas.height=144;const td=document.createElement('td');td.append(canvas);tr.append(td);views.push({canvas,image,row,yassin:name==='yassin-felipe-walk-v1'});}document.getElementById('sprites').append(tr);}setScale();draw();document.getElementById('status').textContent='Yassin: mesma sequência configurada no jogo. PNG e máscara permanecem alinhados.';requestAnimationFrame(tick);}
+function tick(time){const interval=1000/Number(document.getElementById('fps').value);if(playing&&time-lastTime>=interval){frame=(frame+1)%5;lastTime=time;draw();}requestAnimationFrame(tick);}
+document.getElementById('play').onclick=()=>{playing=!playing;document.getElementById('play').textContent=playing?'Pausar':'Continuar';lastTime=performance.now();};
+document.getElementById('frame').oninput=(event)=>{playing=false;document.getElementById('play').textContent='Continuar';frame=Number(event.target.value);draw();};
+document.getElementById('fps').oninput=(event)=>document.getElementById('fps-value').textContent=event.target.value+' FPS';
+document.getElementById('scale').onchange=setScale;
+init().catch(error=>document.getElementById('status').textContent=error.message);
+</script>
+</html>

@@ -90,7 +90,7 @@ export function createFelipeMaterialMask(data,width,height){
   return mask;
 }
 
-export function recolorFelipePixels(data,mask,palette=FELIPE_TEST_PALETTE){
+export function recolorFelipePixels(data,mask,palette=FELIPE_TEST_PALETTE,shadeBases=48){
   if(data.length!==mask.length*4)throw new Error('Material mask dimensions do not match the sprite.');
   const colors=FELIPE_MATERIALS.map(name=>{
     const hex=palette[name];
@@ -105,18 +105,47 @@ export function recolorFelipePixels(data,mask,palette=FELIPE_TEST_PALETTE){
     const i=p*4,light=(data[i]+data[i+1]+data[i+2])/3;
     // Rebase the source's dark shading ramp instead of multiplying black by a tint.
     // This allows light trousers while retaining the source folds and highlights.
-    const shade=Math.min(1.35,Math.max(.25,light/48));
+    const base=typeof shadeBases==='number'?shadeBases:shadeBases[mask[p]];
+    const shade=Math.min(1.35,Math.max(.25,light/base));
     for(let c=0;c<3;c++)result[i+c]=Math.round(Math.min(255,color[c]*shade));
   }
   return result;
 }
 
-export function createFelipeRecolorCanvas(image,palette=FELIPE_TEST_PALETTE){
+// Editable PNG labels: red hair, green shirt, blue trousers, yellow shoes.
+// Transparency and any non-label pixels are fixed (never tint pasted skin/ink).
+export function decodeFelipeMaterialMask(data,width,height){
+  if(width!==W*COLS||height!==H*ROWS||data.length!==width*height*4)
+    throw new Error('Felipe material masks require the registered 768x576 RGBA sheet.');
+  const mask=new Uint8Array(width*height);
+  for(let p=0;p<mask.length;p++){
+    const i=p*4;
+    if(!data[i+3])continue;
+    const r=data[i],g=data[i+1],b=data[i+2];
+    if(r===255&&g===0&&b===0)mask[p]=1;
+    else if(r===0&&g===255&&b===0)mask[p]=2;
+    else if(r===0&&g===0&&b===255)mask[p]=3;
+    else if(r===255&&g===255&&b===0)mask[p]=4;
+  }
+  return mask;
+}
+
+function readMaskImage(image,width,height){
+  if(image.width!==width||image.height!==height)
+    throw new Error('Material mask dimensions do not match the sprite.');
+  const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
+  const context=canvas.getContext('2d',{willReadFrequently:true});
+  context.drawImage(image,0,0);
+  return decodeFelipeMaterialMask(context.getImageData(0,0,width,height).data,width,height);
+}
+
+export function createFelipeRecolorCanvas(image,palette=FELIPE_TEST_PALETTE,maskImage=null){
   const canvas=document.createElement('canvas');canvas.width=image.width;canvas.height=image.height;
   const context=canvas.getContext('2d',{willReadFrequently:true});
   context.drawImage(image,0,0);
   const pixels=context.getImageData(0,0,canvas.width,canvas.height);
-  const mask=createFelipeMaterialMask(pixels.data,canvas.width,canvas.height);
+  const mask=maskImage?readMaskImage(maskImage,canvas.width,canvas.height)
+    :createFelipeMaterialMask(pixels.data,canvas.width,canvas.height);
   pixels.data.set(recolorFelipePixels(pixels.data,mask,palette));
   context.putImageData(pixels,0,0);
   return canvas;
@@ -125,7 +154,8 @@ export function createFelipeRecolorCanvas(image,palette=FELIPE_TEST_PALETTE){
 export function prepareFelipeRecolorTexture(textures,visual,createCanvas=createFelipeRecolorCanvas){
   if(!visual.recolorSource||textures.exists(visual.sprite))return;
   const image=textures.get(visual.recolorSource).getSourceImage();
-  const canvas=createCanvas(image);
+  const maskImage=visual.recolorMaskSource?textures.get(visual.recolorMaskSource).getSourceImage():null;
+  const canvas=createCanvas(image,FELIPE_TEST_PALETTE,maskImage);
   textures.addSpriteSheet(visual.sprite,canvas,{frameWidth:visual.frameWidth,frameHeight:visual.frameHeight});
 }
 
@@ -136,7 +166,8 @@ export function updateFelipeRecolorTexture(textures,visual,palette,createCanvas=
   const source=textures.get(visual.recolorSource).getSourceImage();
   const texture=textures.get(visual.sprite);
   const canvas=texture.getSourceImage();
-  const recolored=createCanvas(source,palette);
+  const maskImage=visual.recolorMaskSource?textures.get(visual.recolorMaskSource).getSourceImage():null;
+  const recolored=createCanvas(source,palette,maskImage);
   canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
   canvas.getContext('2d').drawImage(recolored,0,0);
   texture.source[0].update();

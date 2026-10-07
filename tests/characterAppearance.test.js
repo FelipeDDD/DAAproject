@@ -5,7 +5,7 @@ import { RemotePlayers } from '../src/multiplayer/RemotePlayers.js';
 import { characterById } from '../src/characters.js';
 import { applyLocalAppearance,selectPreviewSkin,clearPreviewSkin } from '../src/characterAppearance.js';
 import { characterVisual,preloadCharacterTextures,createCharacterAnimations } from '../src/characterVisuals.js';
-import { YASSIN_PROPORTION_TEST_VISUAL } from '../src/experimental/yassinProportionTestSkin.js';
+import { YASSIN_BALD_TEST_VISUAL } from '../src/experimental/yassinBaldSkin.js';
 import { claim,update } from '../convex/players.js';
 import { equipSkin } from '../convex/bossProgress.js';
 import { sessionTokenHash } from '../convex/profileStore.js';
@@ -58,18 +58,18 @@ test('stable preview IDs render the same variant on normal/test pages and are pr
   const yassin=characterById('jassine'),original=yassin.experimentalVisual;
   const identity={playerId:'owner',characterId:'jassine',characterBaseId:'jassine',equippedSkin:'classic'};
   try{
-    yassin.experimentalVisual=YASSIN_PROPORTION_TEST_VISUAL;selectPreviewSkin(identity,yassin);
+    yassin.experimentalVisual=YASSIN_BALD_TEST_VISUAL;selectPreviewSkin(identity,yassin);
     const owner=scene({identity},'test');applyLocalAppearance(owner);
     yassin.experimentalVisual=original;
     const observer=new RemotePlayers(scene(null,'school'));observer.receive([row({...identity})],{movement:false});
     assert.equal(observer.players.get('owner').visual.sprite,owner.player.visual.sprite);
-    assert.equal(owner.player.visual.sprite,YASSIN_PROPORTION_TEST_VISUAL.sprite);
+    assert.equal(owner.player.visual.sprite,YASSIN_BALD_TEST_VISUAL.sprite);
     const loaded=[],anims=new Map();
-    const preload={textures:{exists:()=>false},load:{svg(){},image(){},spritesheet:(key)=>loaded.push(key)},
+    const preload={textures:{exists:key=>key===original.sprite},load:{svg(){},image(){},spritesheet:(key)=>loaded.push(key)},
       anims:{exists:key=>anims.has(key),create:animation=>anims.set(animation.key,animation)}};
     preloadCharacterTextures(preload,[yassin],'/',false,true);
     createCharacterAnimations(preload,[yassin],false,true);
-    assert.ok(loaded.includes(identity.previewSkin));assert.ok(anims.has(`${identity.previewSkin}-walk-down`));
+    assert.ok(loaded.includes(original.recolorSource));assert.ok(anims.has(`${identity.previewSkin}-walk-down`));
     clearPreviewSkin(identity);observer.receive([row({...identity,previewSkin:null})],{movement:false});
     assert.equal(observer.players.get('owner').visual.sprite,'character-jassine');
   }finally{yassin.experimentalVisual=original;}
@@ -127,6 +127,6 @@ test('claim hydrates persisted skin; equip updates its Presence mirror atomicall
   await equipSkin._handler(ctx,{token,skin:'classic'});assert.equal(ctx.tables.players[0].equippedSkin,'classic');
   await update._handler(ctx,{...args,room:'outside',equippedSkin:'remastered'});
   assert.equal(ctx.tables.players[0].equippedSkin,'classic');
-  await assert.rejects(update._handler(ctx,{...args,previewSkin:YASSIN_PROPORTION_TEST_VISUAL.sprite}),/Invalid preview skin/);
+  await assert.rejects(update._handler(ctx,{...args,previewSkin:YASSIN_BALD_TEST_VISUAL.sprite}),/Invalid preview skin/);
   await assert.rejects(update._handler(ctx,{...args,sessionId:'wrong-session'}),/CHARACTER_SESSION_LOST/);
 });

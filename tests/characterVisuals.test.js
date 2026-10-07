@@ -46,11 +46,11 @@ test('skin preview cards keep only four real character bases',()=>{
 test('shared visuals are queued once for all four selectable bases',()=>{
   const loaded=[];
   const scene={textures:{exists:()=>false},load:{
-    svg:key=>loaded.push(key),spritesheet:key=>loaded.push(key),
+    svg:key=>loaded.push(key),spritesheet:key=>loaded.push(key),image:key=>loaded.push(key),
   }};
   preloadCharacterTextures(scene,CHARACTERS,'/');
   assert.equal(loaded.length,new Set(loaded).size);
-  assert.equal(loaded.length,10); // Four classic, four Remastered, one Michael item sheet, public Yassin preview.
+  assert.equal(loaded.length,13); // Four classic, four Remastered, item sheet, Yassin/Felipe sources + masks.
 });
 
 test('style preference persists with a safe old-style fallback',()=>{

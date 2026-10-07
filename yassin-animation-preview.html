@@ -24,7 +24,7 @@
 <main>
   <h1>Yassin — prévia das animações</h1>
   <p>Compare as quatro direções e pause para conferir mãos e pés.</p>
-  <p><a href="./yassin-skin-test.html">Abrir o jogo com o slot 5</a></p>
+  <p><a href="./index.html">Abrir o jogo — Yassin → terceira skin no guarda-roupa</a></p>
   <div class="controls">
     <button id="play" type="button">Pausar</button>
     <label>Movimento <select id="motion"><option value="walk">Caminhada</option><option value="idle">Parado</option></select></label>
@@ -35,6 +35,7 @@
 </main>
 <script type="module">
   import {YASSIN_BALD_TEST_VISUAL as visual} from './src/experimental/yassinBaldSkin.js';
+  import {normalizeYassinUpStride} from './src/art/yassinUpStride.js';
   const directions=[['down','Frente'],['left','Esquerda'],['right','Direita'],['up','Costas']];
   const canvases=directions.map(([,name])=>{
     const figure=document.createElement('figure');
@@ -47,7 +48,7 @@
   const play=document.getElementById('play'),motion=document.getElementById('motion');
   const slider=document.getElementById('frame'),number=document.getElementById('frame-number');
   const status=document.getElementById('status');
-  const sheet=new Image();sheet.src=`./${visual.asset}`;
+  let sheet=new Image();sheet.src=`./${visual.asset}`;
   let playing=true,ready=false,start=performance.now();
   function render(column,walking=false,index=0){
     if(!ready)return;
@@ -69,7 +70,7 @@
     }
     requestAnimationFrame(tick);
   }
-  try {await sheet.decode();ready=true;status.textContent='24 frames · 4 direções · 10 FPS · exibição ampliada 2×';requestAnimationFrame(tick);}
+  try {await sheet.decode();if(visual.normalizeUpStride){const canvas=document.createElement('canvas');canvas.width=768;canvas.height=576;const ctx=canvas.getContext('2d');ctx.drawImage(sheet,0,0);const pixels=ctx.getImageData(0,0,768,576);pixels.data.set(normalizeYassinUpStride(pixels.data));ctx.putImageData(pixels,0,0);sheet=canvas;}ready=true;status.textContent=`24 frames · 4 direções · ${visual.frameRate} FPS · exibição ampliada 2×`;requestAnimationFrame(tick);}
   catch {status.textContent='Não foi possível carregar o spritesheet. Recarregue esta página pelo servidor do jogo.';}
 </script>
 </body>

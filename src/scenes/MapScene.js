@@ -32,7 +32,7 @@ import { TerminalOverlayController } from '../terminal/TerminalOverlayController
 import { isMapTransitionLocked,nearbyMapTransition,readMapTransitions } from '../maps/transitions.js';
 import { readWardrobes } from '../maps/wardrobes.js';
 import { WardrobeController } from '../WardrobeController.js';
-import { FELIPE_TEST_PALETTE,updateFelipeRecolorTexture } from '../art/felipeRecolor.js';
+import { defaultCharacterPalette,updateCharacterRecolorTexture } from '../art/characterRecolor.js';
 import { normalizeBossProgress } from '../boss/BossRewards.js';
 import { BossDevTools,shouldShowBossDevTools } from '../boss/BossDevTools.js';
 import { InventoryHotbar } from '../inventory/InventoryHotbar.js';
@@ -275,14 +275,14 @@ export class MapScene extends Phaser.Scene {
       const saved=restoreClassState?classRestoreDestination(this.presence?.identity?.classState,this.mapKey,this.source):{};
       const spawn = resolveSpawn(this.source,{...destination,...saved});
       this.player.body.reset(spawn.x+(destination.spawnOffsetX??0),spawn.y+(destination.spawnOffsetY??0));
+      const character=characterById(this.presence?.identity?.characterBaseId??this.presence?.identity?.characterId);
       this.wardrobe?.destroy();
       this.wardrobe=(hasProfileSession(this.presence)||
-        (this.presence?.identity?.visualPreview==='level3Preview'&&this.presence.identity.characterBaseId==='felipe'))&&this.wardrobeDefinitions.length
+        (this.presence?.identity?.visualPreview==='level3Preview'&&character?.experimentalVisual?.recolorSource))&&this.wardrobeDefinitions.length
         ?new WardrobeController(this,this.presence,this.wardrobeDefinitions):null;
-      const character=characterById(this.presence?.identity?.characterId);
       if(character?.experimentalVisual&&this.presence?.identity?.visualPreview==='level3Preview')
-        updateFelipeRecolorTexture(this.textures,character.experimentalVisual,
-          this.presence.identity.previewPalette??FELIPE_TEST_PALETTE);
+        updateCharacterRecolorTexture(this.textures,character.experimentalVisual,
+          this.presence.identity.previewPalette??defaultCharacterPalette(character.experimentalVisual));
       this.activeCharacterItem=this.presence?.identity?.activeCharacterItem??null;
       applyLocalAppearance(this);
       this.potionEffects?.destroy();
@@ -375,8 +375,8 @@ export class MapScene extends Phaser.Scene {
   applyPreviewPalette(palette){
     const character=characterById(this.presence?.identity?.characterId);
     if(this.presence?.identity?.visualPreview!=='level3Preview'||!character?.experimentalVisual)return false;
-    const next={...FELIPE_TEST_PALETTE,...palette};
-    if(!updateFelipeRecolorTexture(this.textures,character.experimentalVisual,next))return false;
+    const next={...defaultCharacterPalette(character.experimentalVisual),...palette};
+    if(!updateCharacterRecolorTexture(this.textures,character.experimentalVisual,next))return false;
     this.presence.identity.previewPalette=next;
     return true;
   }

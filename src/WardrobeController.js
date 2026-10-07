@@ -3,7 +3,7 @@ import { BossProgressClient } from './boss/BossProgressClient.js';
 import { BOSS_REWARDS,CHARACTER_SKINS,hasBossReward,normalizeBossProgress } from './boss/BossRewards.js';
 import { nearbyWardrobe } from './maps/wardrobes.js';
 import { WorldPrompt } from './ui/WorldPrompt.js';
-import { FELIPE_TEST_PALETTE } from './art/felipeRecolor.js';
+import { characterColorParts,defaultCharacterPalette } from './art/characterRecolor.js';
 import { selectPreviewSkin,clearPreviewSkin } from './characterAppearance.js';
 
 const PREVIEW_COLORS=Object.freeze({
@@ -15,7 +15,7 @@ const PREVIEW_COLORS=Object.freeze({
 const PREVIEW_LABELS=Object.freeze({hair:'Hair',shirt:'Shirt',trousers:'Trousers',shoes:'Shoes'});
 
 export function canPreviewCharacterSkin(character,identity,dev=import.meta.env?.DEV===true,ownsTier3=false){
-  return Boolean(character?.experimentalVisual&&(character.experimentalVisual.menuPreview===true
+  return Boolean(character?.experimentalVisual&&(character.experimentalVisual.menuPreview===true||character.experimentalVisual.wardrobePreview===true
     ||(dev&&identity?.devAllSkins)||ownsTier3));
 }
 
@@ -90,19 +90,20 @@ export class WardrobeController {
     if(list.childElementCount)panel.append(list);
     if(this.presence.identity.visualPreview==='level3Preview'&&character?.experimentalVisual?.recolorSource){
       const colors=document.createElement('div');colors.className='wardrobe-colors';
-      const heading=document.createElement('h3');heading.textContent='Felipe · Skin test colors';colors.append(heading);
+      const heading=document.createElement('h3');heading.textContent=`${character.name} · Skin test colors`;colors.append(heading);
       const note=document.createElement('p');note.textContent='Local preview only. Colors reset when you leave the game.';colors.append(note);
-      const palette=this.presence.identity.previewPalette??FELIPE_TEST_PALETTE;
-      for(const [part,choices] of Object.entries(PREVIEW_COLORS)){
+      const palette=this.presence.identity.previewPalette??defaultCharacterPalette(character.experimentalVisual);
+      for(const part of characterColorParts(character.experimentalVisual)){
+        const choices=PREVIEW_COLORS[part];
         const row=document.createElement('div');row.className='wardrobe-color-row';
         const label=document.createElement('label');label.textContent=PREVIEW_LABELS[part];
-        const picker=document.createElement('input');picker.type='color';picker.value=palette[part];picker.setAttribute('aria-label',`${PREVIEW_LABELS[part]} color`);
+        const picker=document.createElement('input');picker.type='color';picker.value=palette[part]??character.experimentalVisual.materialColors?.[part]??choices[0];picker.setAttribute('aria-label',`${PREVIEW_LABELS[part]} color`);
         picker.addEventListener('change',()=>this.changePreviewColor(part,picker.value));label.append(picker);row.append(label);
         const swatches=document.createElement('div');swatches.className='wardrobe-swatches';
         for(const color of choices){
           const swatch=document.createElement('button');swatch.type='button';swatch.className='wardrobe-swatch';
           swatch.style.setProperty('--swatch-color',color);swatch.setAttribute('aria-label',`${PREVIEW_LABELS[part]} ${color}`);
-          swatch.setAttribute('aria-pressed',String(palette[part].toLowerCase()===color));
+          swatch.setAttribute('aria-pressed',String(palette[part]?.toLowerCase()===color));
           swatch.addEventListener('click',()=>this.changePreviewColor(part,color));swatches.append(swatch);
         }
         row.append(swatches);colors.append(row);
@@ -116,8 +117,9 @@ export class WardrobeController {
   }
 
   changePreviewColor(part,color){
-    const current=this.presence.identity.previewPalette??FELIPE_TEST_PALETTE;
-    const palette=part?{...current,[part]:color}:FELIPE_TEST_PALETTE;
+    const character=characterById(this.presence.identity.characterBaseId??this.presence.identity.characterId);
+    const current=this.presence.identity.previewPalette??defaultCharacterPalette(character.experimentalVisual);
+    const palette=part?{...current,[part]:color}:defaultCharacterPalette(character.experimentalVisual);
     if(this.scene.applyPreviewPalette(palette))this.render();
   }
 

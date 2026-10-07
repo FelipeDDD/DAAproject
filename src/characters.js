@@ -1,10 +1,16 @@
+import { FELIPE_TEST_PALETTE } from './art/felipeRecolor.js';
 import { YASSIN_BALD_TEST_VISUAL } from './experimental/yassinBaldSkin.js';
 
 // Menu order, names and replaceable sprite assets. Classic sprites use a 32 x 56 canvas.
 const ORIGINAL_CHARACTERS = [
   {
     id: 'michael', name: 'Michael', sprite: 'character-michael', asset: 'assets/characters/michael.svg',
-    experimentalVisual:{sprite:'character-michael-level3-hd-preview',asset:'assets/characters/experimental/michael-level3-hd.png',
+    experimentalVisual:{sprite:'character-michael-level3-hd-preview',
+      recolorSource:'character-michael-level3-hd-original',
+      recolorMaskSource:'character-michael-level3-hd-material-mask',
+      recolorMaskAsset:'assets/characters/experimental/michael-level3-hd-material-mask.png',
+      recolorParts:['shirt','trousers','shoes'],
+      materialColors:{shirt:'#292b2b',trousers:'#235584',shoes:'#37393d'},asset:'assets/characters/experimental/michael-level3-hd.png',
       previewAsset:'assets/characters/experimental/michael-level3-hd-idle.png',frameRate:10,
       frameWidth:128,frameHeight:144,scale:0.5,
       walkColumns:{down:[1,2,3,4,5],left:[1,2,3,4,5],right:[1,2,3,4,5],up:[1,2,3,4,5]},
@@ -25,7 +31,12 @@ const ORIGINAL_CHARACTERS = [
   {
     id: 'sarina', name: 'Sarina', sprite: 'character-sarina', asset: 'assets/characters/sarina.svg',
     newVisual:{sprite:'character-sarina-new',asset:'assets/characters/sarina-new.png',previewAsset:'assets/characters/sarina-new-preview.png'},
-    experimentalVisual:{sprite:'character-sarina-level3-hd-preview',asset:'assets/characters/experimental/sarina-level3-hd.png',
+    experimentalVisual:{sprite:'character-sarina-level3-hd-preview',
+      recolorSource:'character-sarina-level3-hd-original',
+      recolorMaskSource:'character-sarina-level3-hd-material-mask',
+      recolorMaskAsset:'assets/characters/experimental/sarina-level3-hd-material-mask.png',
+      recolorParts:['hair','shirt','trousers','shoes'],
+      materialColors:{hair:'#74412a',shirt:'#853ab5',trousers:'#245787',shoes:'#37393d'},asset:'assets/characters/experimental/sarina-level3-hd.png',
       previewAsset:'assets/characters/experimental/sarina-level3-hd-idle.png',frameRate:10,
       frameWidth:128,frameHeight:144,scale:0.5,
       walkColumns:{down:[1,2,3,4,5],left:[1,2,3,4,5],right:[1,2,3,4,5],up:[1,2,3,4,5]},
@@ -34,7 +45,10 @@ const ORIGINAL_CHARACTERS = [
   {
     id: 'felipe', name: 'Felipe', sprite: 'character-felipe', asset: 'assets/characters/felipe.svg',
     newVisual:{sprite:'character-felipe-new',asset:'assets/characters/felipe-new.png',previewAsset:'assets/characters/felipe-new-preview.png'},
-    experimentalVisual:{sprite:'character-felipe-level3-hd-recolor-v1',recolorSource:'character-felipe-level3-hd-preview',asset:'assets/characters/experimental/felipe-level3-hd.png',
+    experimentalVisual:{menuPreview:true,menuLabel:'Felipe — TEST',sprite:'character-felipe-level3-hd-recolor-v2',
+      recolorSource:'character-felipe-level3-hd-preview',recolorPalette:FELIPE_TEST_PALETTE,recolorShadeBase:48,
+      recolorMaskSource:'character-felipe-level3-hd-material-mask',
+      recolorMaskAsset:'assets/characters/experimental/felipe-level3-hd-material-mask.png',asset:'assets/characters/experimental/felipe-level3-hd.png',
       previewAsset:'assets/characters/experimental/felipe-level3-hd-idle.png',frameRate:10,
       frameWidth:128,frameHeight:144,scale:0.5,
       walkColumns:{down:[1,2,3,4,5],left:[1,2,3,4,5],right:[1,2,3,4,5],up:[1,2,3,4,5]},
