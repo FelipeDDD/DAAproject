@@ -88,6 +88,7 @@ export const register=internalMutation({
     }else{
       profileId=await ctx.db.insert('profiles',{
         profileName:args.profileName,displayName:args.displayName,passwordHash:args.passwordHash,
+        currency:{coins:0},
         passwordVersion:args.passwordVersion,selectedCharacterId:args.selectedCharacterId,
         createdAt:args.now,updatedAt:args.now,
       });

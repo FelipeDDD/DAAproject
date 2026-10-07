@@ -26,6 +26,7 @@ export const recordSoloAnswer=mutation({
       profileId:player.profileId,characterBaseId:player.characterBaseId,questionId:question.id,category:question.category,
       topic:question.topic,difficulty:question.difficulty,mode:run.mode,
       correct:args.answerIndex!==undefined&&args.answerIndex===question.correctAnswer,
+      ...(args.answerIndex===undefined?{}:{answerIndex:args.answerIndex}),
       answeredAt:Date.now(),
     });
     return { ...result, terminalLease: await refreshTerminalLease(ctx, player, args.playerId, args.sessionId) };

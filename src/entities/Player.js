@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { PLAYER_SCALE, PLAYER_SPEED } from '../game/settings.js';
 import { applyCharacterVisual,footBodyForVisual,updateCharacterVisual,localCharacterStyle } from '../characterVisuals.js';
 import { PlayerHealthBar } from '../ui/PlayerHealthBar.js';
+import { logPlayerSkin } from '../characterAppearance.js';
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
@@ -29,6 +30,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     const body=footBodyForVisual(this.visual);
     this.body.setSize(body.width,body.height);this.body.setOffset(body.offsetX,body.offsetY);
     this.setFacing(this.facing,false);
+    logPlayerSkin(this.scene,this.scene.presence?.identity,this.visual,'local',
+      this.scene.presence?.identity?.previewSkin?'players.previewSkin':this.scene.presence?.identity?.profileId?'bossProgress (session cache)':'players session',this);
   }
 
   setFacing(direction,moving=false){

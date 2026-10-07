@@ -13,6 +13,8 @@ import {
 } from './presencePolicy.js';
 
 export { PRESENCE_HEARTBEAT_MS, PRESENCE_POSITION_THRESHOLD_PX, PRESENCE_SYNC_INTERVAL_MS, PRESENCE_TIMEOUT_MS, TERMINAL_PRESENCE_HEARTBEAT_MS };
+import { normalizeEquippedSkin } from '../characterAppearance.js';
+import { DIRECTOR_BOSS_ID } from '../boss/BossRewards.js';
 
 export class Presence {
   constructor(client, api, identity, status = () => {}, { adaptiveMovement = ADAPTIVE_MOVEMENT } = {}) {
@@ -71,9 +73,28 @@ export class Presence {
     finally{this.terminalTransition=false;}
   }
 
-  enter(room, snapshot, receive) {
+  setEquippedSkin(skin){
+    if(!this.identity)return;
+    this.identity.equippedSkin=normalizeEquippedSkin(skin);
+    this.active?.appearanceChanged?.();
+    void this.send();
+  }
+
+  watchAppearance(){
+    this.unsubscribeAppearance?.();this.unsubscribeAppearance=null;
+    const identity=this.identity;
+    if(!identity?.profileId||!this.profileSessionToken)return;
+    this.unsubscribeAppearance=this.client.onUpdate(this.api.bossProgress.get,
+      {token:this.profileSessionToken,bossId:DIRECTOR_BOSS_ID},progress=>{
+        if(this.identity!==identity)return;
+        const skin=normalizeEquippedSkin(progress?.equippedSkin);
+        if(identity.equippedSkin!==skin)this.setEquippedSkin(skin);
+      },error=>console.warn('[PLAYER SKIN] persisted appearance subscription:',error));
+  }
+
+  enter(room, snapshot, receive, {appearanceChanged}={}) {
     this.leave();
-    const active = { room, snapshot, receive, rows: [], sentAt: 0, nextHeartbeatAt: 0, previous: '' };
+    const active = { room, snapshot, receive, appearanceChanged, rows: [], sentAt: 0, nextHeartbeatAt: 0, previous: '' };
     this.active = active;
     this.status('Conectando…');
     void this.subscribeRoom(active).catch(()=>{});
@@ -159,6 +180,8 @@ export class Presence {
       displayName:this.identity.displayName??this.identity.name,
       sessionId:this.identity.sessionId,room:active.room,...snapshot,
       ...(this.adaptiveMovement ? active.movement : {}),
+      equippedSkin:normalizeEquippedSkin(this.identity.equippedSkin??snapshot.equippedSkin),
+      previewSkin:this.identity.previewSkin??null,
     };
     if (!this.adaptiveMovement) {
       delete state.moving; delete state.velocityX; delete state.velocityY;
@@ -170,6 +193,7 @@ export class Presence {
     const eventChanged = !previousState || (adaptive && (
       state.moving !== previousState.moving || state.direction !== previousState.direction ||
       state.room !== previousState.room || state.equippedSkin !== previousState.equippedSkin ||
+      state.previewSkin !== previousState.previewSkin ||
       state.activeCharacterItem !== previousState.activeCharacterItem ||
       Math.hypot(state.velocityX-previousState.velocityX,state.velocityY-previousState.velocityY) >= ADAPTIVE_VELOCITY_THRESHOLD_PX_S ||
       Math.hypot(state.x-previousState.x,state.y-previousState.y) > 160));
@@ -262,6 +286,7 @@ export class Presence {
   }
 
   async release(){
+    this.unsubscribeAppearance?.();this.unsubscribeAppearance=null;
     const identity=this.identity;
     this.leave();
     if(!identity?.characterId||!identity?.sessionId)return {released:false};
@@ -273,5 +298,5 @@ export class Presence {
     return result;
   }
 
-  close() { this.leave(); return this.client.close(); }
+  close() { this.unsubscribeAppearance?.();this.unsubscribeAppearance=null;this.leave(); return this.client.close(); }
 }

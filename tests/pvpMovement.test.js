@@ -17,6 +17,7 @@ import { readPvpTeleportAreas,PvpTeleportController } from '../src/pvp/teleports
 import { PVP_MAP_DEFINITION } from '../src/pvp/config.js';
 import { requirePvpMap } from '../src/pvp/mapConfig.js';
 import { matchSettingsFor,pvpMovementSpeed,effectiveMatchSettings } from '../src/pvp/matchSettings.js';
+import { applyLocalAppearance } from '../src/characterAppearance.js';
 
 const match=()=>({arenaMap:PVP_MAP_DEFINITION,round:2,state:'active',participants:[
   {playerId:'alice',displayName:'Alice',characterBaseId:'michael',team:'A',life:0,hp:100},
@@ -187,6 +188,20 @@ function rendererFixture(){
   return {remotes,sprites};
 }
 
+test('late PvP skin metadata applies without movement and survives roster gaps and Retry',t=>{
+  const {remotes}=rendererFixture();const f=fixture(t,{remotes});
+  const remote=remotes.players.get('bob');assert.equal(remote.visual.sprite,'character-michael');
+  f.client.receiveRoster([{playerId:'bob',characterBaseId:'michael',equippedSkin:'remastered'}]);
+  assert.equal(remote.visual.sprite,'character-michael-new');
+  f.client.receiveRoster([]);assert.equal(remote.visual.sprite,'character-michael-new');
+  assert.equal(f.client.switchRound({...match(),round:3,state:'countdown'}),true);
+  assert.equal(remotes.players.get('bob').visual.sprite,'character-michael-new');
+  // Subsequent Presence delivery confirms the same choice without requiring
+  // a movement packet in the new round.
+  f.client.receiveRoster([{playerId:'bob',characterBaseId:'michael',equippedSkin:'remastered'}]);
+  assert.equal(remotes.players.get('bob').visual.sprite,'character-michael-new');
+});
+
 test('snapshot before Convex participant data is replayed after roster creation without another network message',t=>{
   const {remotes,sprites}=rendererFixture();const initial=match();initial.participants=initial.participants.slice(0,1);
   const f=fixture(t,{remotes,match:initial,config:{debug:true}});f.join();
@@ -268,7 +283,7 @@ test('actual PvP scene keeps local input immediate and Convex presence fixed whi
   const writes=[],transport=new FakeTransport();let at=0,scene;
   const presence=new Presence({onUpdate:()=>()=>{},mutation:async(type,args)=>writes.push({type,args})},
     {players:{inRoom:'inRoom',update:'update',heartbeat:'heartbeat'}},
-    {playerId:'alice',characterId:'michael',sessionId:'session-alice',displayName:'Alice'});
+    {playerId:'alice',characterId:'michael',characterBaseId:'michael',equippedSkin:'remastered',sessionId:'session-alice',displayName:'Alice'});
   const state=match();
   const chain=function(){return this;};
   class MapScene {
@@ -279,7 +294,8 @@ test('actual PvP scene keeps local input immediate and Convex presence fixed whi
         setVelocity:(x,y)=>{this.player.body.velocity={x,y};return this.player;},
         setFacing:(direction)=>{this.player.facing=direction;return this.player;},
         update:()=>{this.localUpdates=(this.localUpdates??0)+1;this.player.setVelocity(180,0);},
-        setVisible:chain,setAlpha:chain,clearTint:chain,setCharacter:chain,setCombatHudVisible:chain,setCombatHealth:chain};
+        setVisible:chain,setAlpha:chain,clearTint:chain,
+        setCharacter:(_character,style)=>{this.appliedStyle=style;return this.player;},setCombatHudVisible:chain,setCombatHealth:chain};
       this.remotes={players:new Map(),bufferOptions:{},receive(){},receiveMovement(){},update(){}};
       this.hint={};this.input={keyboard:{resetKeys(){}}};
     }
@@ -289,20 +305,26 @@ test('actual PvP scene keeps local input immediate and Convex presence fixed whi
   }
   class MatchClient {close(){}request(){return Promise.resolve();}}
   class Hud {constructor(){this.status={};}destroy(){}render(){}}
-  class Combat {constructor(){this.remoteShots=new Map();}clearRemote(){}destroy(){}update(){}}
+  class Combat {constructor(){this.remoteShots=new Map();}clear(){}clearRemote(){}destroy(){}update(){}}
   class ReturnFlow {close(){}update(){}remaining(){return null;}}
   const source=readFileSync(new URL('../src/scenes/PvpArenaScene.js',import.meta.url),'utf8')
     .replace(/^import .*;\r?\n/gm,'').replace('export class PvpArenaScene','class PvpArenaScene')
     .replaceAll('import.meta.env','({DEV:true})');
   const Scene=runInNewContext(`${source}\nPvpArenaScene`,{PvpMapScene:MapScene,requirePvpMap,getPresence:()=>presence,createModeView:()=>null,
     PVP_MAP:'pvp-arena-test',PVP_MAP_FILE:'payload-map.tmj',matchSettingsFor,pvpMovementSpeed,effectiveMatchSettings,pvpRoom:id=>`pvp-arena-test:${id}`,
-    characterById:()=>({}),teamSpawn:()=>({x:100,y:200}),pvpRealtimeUrl:()=> 'ws://localhost:8787',
+    applyLocalAppearance,isPersistentClassRoom:()=>false,teamSpawn:()=>({x:100,y:200}),pvpRealtimeUrl:()=> 'ws://localhost:8787',
+    startSceneEmotes:scene=>{scene.emotesStarted=true;},stopSceneEmotes:scene=>{scene.emotesStarted=false;},
+    PvpPickupView:class {reset(){}receive(){}render(){}update(){}destroy(){}},pickupDebugEnabled:()=>false,
+    SkillClient:class {reset(){}close(){}update(){}receive(){}},SkillView:class {reset(){}update(){}render(){}receive(){}destroy(){}},
+    SkillHud:class {update(){}render(){}destroy(){}},
     pvpMovementDebugEnabled:()=>false,cameraZoomForMap:()=>1.25,readPvpTeleportAreas,PvpTeleportController,
     resolvedMovementState:body=>({moving:true,velocityX:body.velocity.x,velocityY:body.velocity.y}),
     PvpMovementClient:class extends PvpMovementClient {constructor(options){super({...options,transport,now:()=>at,log:()=>{}});}},
     PvpDamageClient,PvpProjectileClient,PvpMatchClient:MatchClient,PvpHud:Hud,PvpCombatController:Combat,PvpReturnFlow:ReturnFlow,endMatch:()=>state,Date});
   try{
     scene=new Scene();scene.enter({pvpMatchId:'match-a',pvpSnapshot:state});
+    assert.equal(scene.appliedStyle,'new');
+    assert.equal(scene.emotesStarted,true);
     await Promise.resolve();await Promise.resolve();
     assert.equal(writes[0].type,'update');assert.equal(writes[0].args.room,'pvp-arena-test:match-a');
     // The relay is still awaiting its room acknowledgement; input already works.
@@ -315,6 +337,11 @@ test('actual PvP scene keeps local input immediate and Convex presence fixed whi
     assert.equal(presence.active.snapshot().x,100);
     await presence.send(presence.active.sentAt+10000);
     assert.equal(writes.at(-1).type,'heartbeat');
+    state.participants[0].life=1;scene.update(70,16);
+    assert.equal(scene.appliedStyle,'new');assert.equal(presence.identity.equippedSkin,'remastered');
+    scene.applyNextRound({...state,round:3,state:'countdown'});
+    assert.equal(scene.appliedStyle,'new');assert.equal(presence.identity.equippedSkin,'remastered');
+    assert.equal(scene.emotesStarted,true);
     scene.leavePvp();assert.equal(transport.disconnected,true);assert.equal(transport.messageHandlers.size,0);
     scene.stopPvp();scene.stopPvp();assert.equal(scene.movementClient,null);
   }finally{scene?.stopPvp();presence.leave();}

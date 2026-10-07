@@ -4,6 +4,7 @@ import { BOSS_REWARDS,CHARACTER_SKINS,hasBossReward,normalizeBossProgress } from
 import { nearbyWardrobe } from './maps/wardrobes.js';
 import { WorldPrompt } from './ui/WorldPrompt.js';
 import { FELIPE_TEST_PALETTE } from './art/felipeRecolor.js';
+import { selectPreviewSkin,clearPreviewSkin } from './characterAppearance.js';
 
 const PREVIEW_COLORS=Object.freeze({
   hair:['#604333','#231e2b','#a57040','#d2b07a','#744878'],
@@ -49,7 +50,7 @@ export class WardrobeController {
     if(!this.presence.identity.profileId)return 'classic';
     try{this.progress=normalizeBossProgress(await this.client.getProgress(),this.presence.identity.characterId);}
     catch{this.progress=normalizeBossProgress(null,this.presence.identity.characterId);}
-    this.scene.applyCharacterSkin(this.progress.equippedSkin);
+    // Loading wardrobe UI must not race with a newer equip/scene transition.
     return this.progress.equippedSkin;
   }
 
@@ -124,11 +125,11 @@ export class WardrobeController {
       if(skin==='level3Preview'){
         const character=characterById(this.presence.identity.characterId);
         if(!canPreviewCharacterSkin(character,this.presence.identity))throw new Error('Skin test is unavailable.');
-        this.presence.identity.visualPreview='level3Preview';
-        this.scene.applyCharacterSkin(this.progress?.equippedSkin);
+        selectPreviewSkin(this.presence.identity,character);
+        this.scene.applyCharacterSkin(this.presence.identity.equippedSkin??this.progress?.equippedSkin);
       }else{
         this.progress=await this.client.equipSkin(skin);
-        delete this.presence.identity.visualPreview;
+        clearPreviewSkin(this.presence.identity);
         this.scene.applyCharacterSkin(skin);
       }
       this.render();

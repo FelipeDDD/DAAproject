@@ -1,6 +1,7 @@
 import { characterBaseIdFor, characterById } from '../characters.js';
-import { applyCharacterVisual,updateCharacterVisual,visualStyleForActiveItem } from '../characterVisuals.js';
+import { applyCharacterVisual,updateCharacterVisual } from '../characterVisuals.js';
 import { RemoteSnapshotBuffer } from './remoteMovement.js';
+import { appearanceStyle,logPlayerSkin } from '../characterAppearance.js';
 
 // Rasterize nameplates above their displayed size so camera zoom does not
 // magnify a low-resolution text canvas. Logical font size/scale stay unchanged.
@@ -25,19 +26,25 @@ export class RemotePlayers {
       if (!remote) {
         const character=characterById(characterBaseIdFor(row));
         const sprite = this.scene.add.sprite(row.x,row.y,'student').setOrigin(0.5,1);
-        const style=visualStyleForActiveItem(row.activeCharacterItem,row.equippedSkin);
+        const style=appearanceStyle(character,row);
         const visual=applyCharacterVisual(sprite,character,style);
         const label = this.showLabels?this.scene.add.text(row.x, row.y, row.displayName??row.name,
           {...REMOTE_NAME_LABEL_STYLE,fontSize:this.labelFontSize,resolution:this.labelResolution}).setOrigin(0.5, 1):null;
         remote = { sprite,label,visual,character,characterBaseId:characterBaseIdFor(row),style,buffer:new RemoteSnapshotBuffer(this.bufferOptions) };
         this.players.set(row.playerId, remote);
+        logPlayerSkin(this.scene,row,visual,'remote','players.inRoom',sprite);
         if(!movement){sprite.setDepth(row.y);label?.setPosition(row.x,row.y-visual.labelOffset).setDepth(row.y+1);}
         this.movementDebug?.('remote created',{playerId:row.playerId,spriteCreated:true,...this.spriteState(remote)});
       }
       const nextBaseId=characterBaseIdFor(row);
-      if(remote.characterBaseId!==nextBaseId){
+      const nextCharacter=characterById(nextBaseId);
+      const nextStyle=appearanceStyle(nextCharacter,row);
+      if(remote.characterBaseId!==nextBaseId||remote.style!==nextStyle){
         remote.character=characterById(nextBaseId);remote.characterBaseId=nextBaseId;
-        remote.visual=applyCharacterVisual(remote.sprite,remote.character,remote.style);
+        remote.style=nextStyle;
+        remote.visual=applyCharacterVisual(remote.sprite,remote.character,nextStyle);
+        logPlayerSkin(this.scene,row,remote.visual,'remote','players.inRoom update',remote.sprite);
+        if(!movement)remote.label?.setPosition(remote.sprite.x,remote.sprite.y-remote.visual.labelOffset);
       }
       remote.row=row;
       const { teleport } = movement ? remote.buffer.push(row, arrivalAt) : { teleport:false };
@@ -72,8 +79,8 @@ export class RemotePlayers {
       const { sprite, label } = remote;
       const target = remote.buffer.sample(now);
       if (!target) continue;
-      const style=visualStyleForActiveItem(target.activeCharacterItem,target.equippedSkin);
-      if(remote.style!==style){remote.visual=applyCharacterVisual(sprite,remote.character,style);remote.style=style;}
+      // Appearance is current metadata, not part of the delayed movement
+      // timeline. Late rosters and stationary players update immediately.
       sprite.setPosition(target.x, target.y);
       updateCharacterVisual(sprite,remote.visual,target.direction,target.moving);
       sprite.setDepth(sprite.y);

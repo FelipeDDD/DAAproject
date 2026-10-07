@@ -14,7 +14,8 @@ import { getPresence } from '../multiplayer/client.js';
 import { RemotePlayers } from '../multiplayer/RemotePlayers.js';
 import { DoorSync } from '../multiplayer/DoorSync.js';
 import { CHARACTERS, characterById } from '../characters.js';
-import { createCharacterAnimations,preloadCharacterTextures,visualStyleForActiveItem } from '../characterVisuals.js';
+import { createCharacterAnimations,preloadCharacterTextures } from '../characterVisuals.js';
+import { applyLocalAppearance,normalizeEquippedSkin,selectPreviewSkin,clearPreviewSkin } from '../characterAppearance.js';
 import { RoomChat } from '../RoomChat.js';
 import { readQuizSeats } from '../maps/quizSeats.js';
 import { QuizLobby } from '../QuizLobby.js';
@@ -22,9 +23,7 @@ import { readSoloStudySeats } from '../maps/soloStudySeats.js';
 import { drawTiledTextObjects } from '../maps/tiledText.js';
 import { tileObjectFrame } from '../maps/tiledTileObjects.js';
 import { SoloStudyController } from '../SoloStudyController.js';
-import { EmoteRenderer } from '../emotes/EmoteRenderer.js';
-import { EmoteSync } from '../emotes/EmoteSync.js';
-import { EmoteBar } from '../emotes/EmoteBar.js';
+import { startSceneEmotes,stopSceneEmotes } from '../emotes/sceneEmotes.js';
 import { readChallengeLeaderboards,nearbyChallengeLeaderboard } from '../maps/challengeLeaderboards.js';
 import {
   readTerminalComputers,nearbyTerminalComputer,terminalPromptPosition,TERMINAL_PROMPT,
@@ -34,7 +33,6 @@ import { isMapTransitionLocked,nearbyMapTransition,readMapTransitions } from '..
 import { readWardrobes } from '../maps/wardrobes.js';
 import { WardrobeController } from '../WardrobeController.js';
 import { FELIPE_TEST_PALETTE,updateFelipeRecolorTexture } from '../art/felipeRecolor.js';
-import { BossProgressClient } from '../boss/BossProgressClient.js';
 import { normalizeBossProgress } from '../boss/BossRewards.js';
 import { BossDevTools,shouldShowBossDevTools } from '../boss/BossDevTools.js';
 import { InventoryHotbar } from '../inventory/InventoryHotbar.js';
@@ -44,6 +42,7 @@ import { PotionUseEffectRenderer } from '../inventory/PotionUseEffectRenderer.js
 import { WorldPrompt,centeredMessageViewport } from '../ui/WorldPrompt.js';
 import { getGameHud } from '../hud/GameHudController.js';
 import { hasProfileSession } from '../ProfileSessionClient.js';
+import { getCurrentCurrencyClient } from '../economy/CurrencyClient.js';
 import { applySmoothDecorativeTextureFilters } from '../maps/decorativeTextureFilters.js';
 import { classRestoreDestination } from '../maps/classState.js';
 import { ArenaEntryController } from '../boss/ArenaEntryController.js';
@@ -83,7 +82,7 @@ export class MapScene extends Phaser.Scene {
   }
 
   preload() {
-    preloadCharacterTextures(this,CHARACTERS,import.meta.env.BASE_URL);
+    preloadCharacterTextures(this,CHARACTERS,import.meta.env.BASE_URL,import.meta.env.DEV,true);
     for(const pack of CIGARETTE_PACKS)if(!this.textures.exists(pack.groundTexture)){
       const url=`${import.meta.env.BASE_URL}${pack.groundAsset}`;
       if(pack.groundAsset.endsWith('.svg'))this.load.svg(pack.groundTexture,url);
@@ -161,7 +160,7 @@ export class MapScene extends Phaser.Scene {
     }
     createPlaceholderTextures(this);
     createDoorTextures(this);
-    createCharacterAnimations(this,CHARACTERS);
+    createCharacterAnimations(this,CHARACTERS,import.meta.env.DEV,true);
     drawMapPlaceholders(this, this.source);
     this.tiledTextObjects=drawTiledTextObjects(this,this.source);
     const floorDetails = this.source.layers.find((layer) => layer.name === 'FloorDetails');
@@ -241,9 +240,7 @@ export class MapScene extends Phaser.Scene {
       this.potionEffects?.destroy();this.potionEffects=null;
       this.terminal?.destroy();this.terminal=null;
       this.wardrobe?.closePanel();
-      this.emoteBar?.close();this.emoteBar=null;
-      this.emoteSync?.close();this.emoteSync=null;
-      this.emoteRenderer?.close();this.emoteRenderer=null;
+      stopSceneEmotes(this);
       this.soloStudy?.close();this.soloStudy=null;
       this.quiz?.close();this.quiz=null;
       this.chat?.close();this.chat=null;
@@ -282,20 +279,19 @@ export class MapScene extends Phaser.Scene {
       this.wardrobe=(hasProfileSession(this.presence)||
         (this.presence?.identity?.visualPreview==='level3Preview'&&this.presence.identity.characterBaseId==='felipe'))&&this.wardrobeDefinitions.length
         ?new WardrobeController(this,this.presence,this.wardrobeDefinitions):null;
-      this.appearanceRestoreToken=Symbol('appearance');
       const character=characterById(this.presence?.identity?.characterId);
       if(character?.experimentalVisual&&this.presence?.identity?.visualPreview==='level3Preview')
         updateFelipeRecolorTexture(this.textures,character.experimentalVisual,
           this.presence.identity.previewPalette??FELIPE_TEST_PALETTE);
-      this.equippedSkin='classic';
-      this.activeCharacterItem=null;
-      if(character)this.player.setCharacter(character,'old');
+      this.activeCharacterItem=this.presence?.identity?.activeCharacterItem??null;
+      applyLocalAppearance(this);
       this.potionEffects?.destroy();
       this.potionEffects=this.presence?new PotionUseEffectRenderer(this,this.presence.identity.playerId,this.remotes):null;
       this.presence?.enter(this.presenceRoom??this.mapKey, () => ({
         x: this.player.x, y: this.player.y, direction: this.player.facing,equippedSkin:this.equippedSkin,
         activeCharacterItem:this.activeCharacterItem,
-      }), rows => {this.remotes.receive(rows);this.potionEffects?.receive(rows);});
+      }), rows => {this.remotes.receive(rows);this.potionEffects?.receive(rows);},
+      {appearanceChanged:()=>applyLocalAppearance(this)});
       this.devTools?.destroy();
       this.devTools=shouldShowBossDevTools(import.meta.env)&&hasProfileSession(this.presence)
         ?new BossDevTools(this,this.presence):null;
@@ -330,17 +326,13 @@ export class MapScene extends Phaser.Scene {
         ? new QuizLobby(this,this.presence,this.quizSeats) : null;
       this.soloStudy?.close();
       this.soloStudy=this.presence ? new SoloStudyController(this,this.presence,this.soloStudySeats) : null;
-      this.emoteBar?.close();this.emoteSync?.close();this.emoteRenderer?.close();
-      this.emoteRenderer=this.presence ? new EmoteRenderer(this,this.presenceRoom??this.mapKey,this.presence.identity.playerId,this.remotes) : null;
-      this.emoteSync=this.presence ? new EmoteSync(this.presence,this.presenceRoom??this.mapKey,this.emoteRenderer) : null;
-      this.emoteBar=this.presence ? new EmoteBar(this.presence.identity.characterId,emote=>this.emoteSync.trigger(emote)) : null;
+      startSceneEmotes(this);
       this.returnDestination = destination.returnDestination;
       if(destination.pvpLobbyId)this.openPvpLobby(destination.pvpLobbyId);
       this.input.keyboard.resetKeys();
       this.doorMessage = '';
       this.nearbyDoor = null;
       document.querySelector('h1').textContent = propertiesOf(this.source).label ?? this.mapKey;
-      if(hasProfileSession(this.presence))void this.restoreEquippedSkin(this.appearanceRestoreToken);
       void this.wardrobe?.restore();
       if(this.mapKey!=='arena'){
         setArenaDiagnostics(this,null);
@@ -355,9 +347,8 @@ export class MapScene extends Phaser.Scene {
   }
 
   applyCharacterSkin(skin='classic'){
-    const character=characterById(this.presence?.identity?.characterId);
-    this.equippedSkin=skin==='remastered'?'remastered':'classic';
-    if(character)this.player.setCharacter(character,visualStyleForActiveItem(this.activeCharacterItem,this.equippedSkin));
+    if(this.presence?.identity)this.presence.identity.equippedSkin=normalizeEquippedSkin(skin);
+    applyLocalAppearance(this);
     void this.presence?.send();
   }
 
@@ -366,7 +357,7 @@ export class MapScene extends Phaser.Scene {
     const character=characterById(this.presence.identity.characterBaseId);
     this.presence.identity.devAllSkins=true;
     if(character?.experimentalVisual){
-      this.presence.identity.visualPreview='level3Preview';
+      selectPreviewSkin(this.presence.identity,character);
       this.applyCharacterSkin(this.equippedSkin);
     }
     if(this.wardrobe?.active)this.wardrobe.render();
@@ -376,7 +367,7 @@ export class MapScene extends Phaser.Scene {
   disableAllDevSkins(){
     if(!this.presence?.identity?.devAllSkins)return;
     delete this.presence.identity.devAllSkins;
-    delete this.presence.identity.visualPreview;
+    clearPreviewSkin(this.presence.identity);
     this.applyCharacterSkin(this.equippedSkin);
     if(this.wardrobe?.active)this.wardrobe.render();
   }
@@ -390,29 +381,25 @@ export class MapScene extends Phaser.Scene {
     return true;
   }
 
-  setActiveCharacterItem(itemId,{instant=true,restoreSkin}={}){
-    if(restoreSkin)this.equippedSkin=restoreSkin==='remastered'?'remastered':'classic';
+  setActiveCharacterItem(itemId,{instant=true}={}){
     this.activeCharacterItem=itemId??null;
-    const character=characterById(this.presence?.identity?.characterId);
-    if(character)this.player.setCharacter(character,visualStyleForActiveItem(this.activeCharacterItem,this.equippedSkin));
+    if(this.presence?.identity)this.presence.identity.activeCharacterItem=this.activeCharacterItem;
+    applyLocalAppearance(this);
     void this.presence?.send();
     return instant;
   }
 
-  async restoreEquippedSkin(token=this.appearanceRestoreToken){
-    if(!hasProfileSession(this.presence))return this.equippedSkin;
-    try{
-      const progress=normalizeBossProgress(await new BossProgressClient(this.presence).getProgress(),
-        this.presence.identity.characterId);
-      if(token!==this.appearanceRestoreToken)return this.equippedSkin;
-      this.applyCharacterSkin(progress.equippedSkin);
-    }catch(error){console.warn('Appearance restore:',error);}
-    return this.equippedSkin;
+  restoreEquippedSkin(){
+    // Selection hydrates the cache before scene creation; the persistent
+    // subscription updates it independently of map lifecycle.
+    return applyLocalAppearance(this);
   }
 
   applyBossProgress(progress){
     const normalized=normalizeBossProgress(progress,this.presence?.identity?.characterId);
-    this.applyCharacterSkin(normalized.equippedSkin);
+    // Rewards/UI responses can arrive after an equip. Only the persistent
+    // appearance subscription and explicit equip update the session choice.
+    applyLocalAppearance(this);
     this.wardrobe?.setProgress(normalized);
     this.inventoryHotbar?.setProgress(normalized);
     this.boss?.applyProgressSnapshot?.(normalized);
@@ -446,6 +433,7 @@ export class MapScene extends Phaser.Scene {
   devDropHealthPotion(){return this.characterItems?.spawnDevPickup(CHARACTER_ITEM_IDS.HEALTH_POTION)??null;}
   devClearHealthPotions(){return this.characterItems?.clearHealthPotions()??null;}
   devGrantOffice2Key(){return this.characterItems?.devGrantOffice2Key()??null;}
+  devGrantCoins(){return getCurrentCurrencyClient()?.devGrantCoins()??null;}
   devCollection(action){return this.collectibleQuest?.devCollection(action)??null;}
   devSetFreeCollect(enabled){return this.collectibleQuest?.setDevFreeCollect(enabled)??null;}
 

@@ -3,9 +3,13 @@ import {
 } from './config.js';
 import { FloatingHotbar } from '../ui/FloatingHotbar.js';
 import { fixedHudEnabled,HUD_LAYOUT } from '../hud/config.js';
+let activeEmoteBar=null;
 
 export class EmoteBar {
   constructor(characterId,trigger,{layout=HUD_LAYOUT}={}) {
+    // The DOM bar is shared by scenes. A late shutdown of the old scene must
+    // not hide the bar that the new scene has already opened.
+    activeEmoteBar?.close();activeEmoteBar=this;this.closed=false;
     Object.assign(this,{characterId,trigger,slots:loadEmoteSlots(characterId),editingSlot:0});
     this.root=document.getElementById('emote-bar');this.slotsRoot=document.getElementById('emote-slots');
     this.settingsButton=document.getElementById('emote-settings');this.picker=document.getElementById('emote-picker');
@@ -63,10 +67,11 @@ export class EmoteBar {
     }));
   }
   close(){
+    if(this.closed)return;this.closed=true;
     window.removeEventListener('keydown',this.onKey,true);this.slotsRoot.removeEventListener('click',this.onClick);
     this.slotsRoot.removeEventListener('contextmenu',this.onContext);this.settingsButton.removeEventListener('click',this.onSettings);
     this.choices.removeEventListener('click',this.onChoice);window.removeEventListener('pointerdown',this.onOutsidePointer,true);
-    this.root.hidden=true;this.picker.hidden=true;
+    if(activeEmoteBar===this){this.root.hidden=true;this.picker.hidden=true;activeEmoteBar=null;}
     this.floating?.destroy();this.floating=null;
   }
 }

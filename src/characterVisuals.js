@@ -2,6 +2,7 @@ import { CHARACTER_STYLE_STORAGE_KEY } from './characters.js';
 import { NEW_PLAYER_SCALE, PLAYER_SCALE } from './game/settings.js';
 import { prepareFelipeRecolorTexture } from './art/felipeRecolor.js';
 import { isCharacterItemEnabled } from './inventory/characterItems.js';
+import { previewVisual,registeredPreviewVisuals } from './characterPreviewSkins.js';
 
 export const CHARACTER_STYLES=Object.freeze(['old','new','lungCrusher','level3Preview']);
 export const NEW_CHARACTER_FRAME=Object.freeze({width:64,height:72,columns:6,rows:4});
@@ -24,6 +25,11 @@ export function saveCharacterStyle(style,storage=globalThis.localStorage){
 }
 
 export function characterVisual(character,style=loadCharacterStyle()){
+  const publishedPreview=typeof style==='string'&&style.startsWith('preview:')
+    ?previewVisual(character,style.slice(8)):null;
+  if(publishedPreview)return {...publishedPreview,style,animated:true,
+    scale:publishedPreview.scale??NEW_PLAYER_SCALE,frameWidth:publishedPreview.frameWidth??NEW_CHARACTER_FRAME.width,
+    frameHeight:publishedPreview.frameHeight??NEW_CHARACTER_FRAME.height,labelOffset:68};
   if(style==='level3Preview'&&character?.experimentalVisual)return {
     ...character.experimentalVisual,style,animated:true,scale:character.experimentalVisual.scale??NEW_PLAYER_SCALE,
     frameWidth:character.experimentalVisual.frameWidth??NEW_CHARACTER_FRAME.width,
@@ -55,10 +61,12 @@ export function walkFrames(direction,visual){
 }
 export function animationKey(visual,type,direction){return `${visual.sprite}-${type}-${direction}`;}
 
-// This override is used only by the local Player; remote art still uses published equipment.
+// Resolve legacy local preview selectors into the published stable skin ID.
 export function localCharacterStyle(character,style,identity){
   // Item-specific art has its own animation and must take priority over local skin previews.
   if(style==='lungCrusher')return style;
+  if(identity?.characterBaseId===character?.id&&previewVisual(character,identity?.previewSkin))
+    return `preview:${identity.previewSkin}`;
   return identity?.visualPreview==='level3Preview'&&identity.characterBaseId===character?.id&&character?.experimentalVisual
     ?'level3Preview':style;
 }
@@ -79,7 +87,7 @@ export function prepareExperimentalGridTexture(textures,visual,createCanvas=()=>
   textures.addSpriteSheet(visual.sprite,canvas,{frameWidth,frameHeight});
 }
 
-export function preloadCharacterTextures(scene,characters,baseUrl,includeExperiments=import.meta.env?.DEV===true){
+export function preloadCharacterTextures(scene,characters,baseUrl,includeExperiments=import.meta.env?.DEV===true,includeRemotePreviews=false){
   const queued=new Set();
   for(const character of characters){
     if(!queued.has(character.sprite)&&!scene.textures.exists(character.sprite))scene.load.svg(character.sprite,`${baseUrl}${character.asset}`);
@@ -95,18 +103,25 @@ export function preloadCharacterTextures(scene,characters,baseUrl,includeExperim
         frameHeight:character.lungCrusherVisual.frameHeight??NEW_CHARACTER_FRAME.height},
     );
     if(character.lungCrusherVisual)queued.add(character.lungCrusherVisual.sprite);
-    const experiment=(includeExperiments||character.experimentalVisual?.menuPreview===true)&&character.experimentalVisual;
-    const sourceKey=experiment&&(experiment.recolorSource??experiment.sourceImage??experiment.sprite);
-    if(experiment&&!queued.has(sourceKey)&&!scene.textures.exists(sourceKey)){
-      if(experiment.sourceGrid)scene.load.image(sourceKey,`${baseUrl}${experiment.asset}`);
-      else scene.load.spritesheet(sourceKey,`${baseUrl}${experiment.asset}`,
-        {frameWidth:experiment.frameWidth??NEW_CHARACTER_FRAME.width,frameHeight:experiment.frameHeight??NEW_CHARACTER_FRAME.height});
+    const experiments=includeRemotePreviews?registeredPreviewVisuals(character)
+      :[(includeExperiments||character.experimentalVisual?.menuPreview===true)&&character.experimentalVisual].filter(Boolean);
+    for(const experiment of experiments){
+      const sourceKey=experiment.recolorSource??experiment.sourceImage??experiment.sprite;
+      if(!queued.has(sourceKey)&&!scene.textures.exists(sourceKey)){
+        if(experiment.sourceGrid)scene.load.image(sourceKey,`${baseUrl}${experiment.asset}`);
+        else scene.load.spritesheet(sourceKey,`${baseUrl}${experiment.asset}`,
+          {frameWidth:experiment.frameWidth??NEW_CHARACTER_FRAME.width,frameHeight:experiment.frameHeight??NEW_CHARACTER_FRAME.height});
+      }
+      queued.add(sourceKey);
     }
-    if(experiment)queued.add(sourceKey);
   }
 }
 
-export function createCharacterAnimations(scene,characters,includeExperiments=import.meta.env?.DEV===true){
+export function createCharacterAnimations(scene,characters,includeExperiments=import.meta.env?.DEV===true,includeRemotePreviews=false){
+  if(includeRemotePreviews){
+    for(const character of characters)for(const visual of registeredPreviewVisuals(character))
+      createCharacterAnimations(scene,[{...character,experimentalVisual:visual}],true);
+  }
   for(const character of characters){
     const includePreview=includeExperiments||character.experimentalVisual?.menuPreview===true;
     if(includePreview&&character.experimentalVisual){

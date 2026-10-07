@@ -112,7 +112,7 @@ function expiredQuizClient({seated=true,participants=['felipe']}={}){
   const calls=[];
   const quiz=Object.assign(Object.create(QuizLobby.prototype),{
     seated,room:'school',selectedAnswer:2,render(){},
-    lobby:{status:'starting',participants,question:{id:'expired-question'},questionDeadline:0,allAnswered:false},
+    lobby:{lobbyId:'test-lobby',questionIndex:0,status:'starting',participants,question:{id:'expired-question'},questionDeadline:0,allAnswered:false},
     timerElement:{classList:{toggle(){}}},
     presence:{identity:{playerId:'felipe',characterId:'felipe',sessionId:'session-123456789'},
       api:{quizLobbies:{finishTimedQuestion:'finish'}},
@@ -134,7 +134,8 @@ test('unseated or nonparticipant clients never finalize expired multiplayer ques
 test('seated participant finalizes timeout with the selected answer and does not repeat success',async()=>{
   const {quiz,calls}=expiredQuizClient();
   quiz.updateTimer();await new Promise(resolve=>setImmediate(resolve));
-  assert.deepEqual(calls,[{name:'finish',args:{room:'school',playerId:'felipe',sessionId:'session-123456789',answerIndex:2}}]);
+  assert.deepEqual(calls,[{name:'finish',args:{room:'school',playerId:'felipe',sessionId:'session-123456789',answerIndex:2,
+    lobbyId:'test-lobby',questionIndex:0,questionId:'expired-question'}}]);
   assert.equal(quiz.confirmedAnswer,2);
   for(let tick=0;tick<40;tick++)quiz.updateTimer();
   assert.equal(calls.length,1);

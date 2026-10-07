@@ -24,6 +24,39 @@ async function currentBest(ctx,profileId){
     .eq('profileId',profileId).eq('rulesKey',itChallengeRulesKey())).unique();
 }
 
+async function ownedRun(ctx,args){
+  const player=await requireAuthenticatedLivePlayer(ctx,args.playerId,args.sessionId);
+  const run=await ctx.db.get(args.runId);
+  if(!run||run.profileId!==player.profileId||run.playerId!==args.playerId||run.sessionId!==args.sessionId)
+    throw new Error('IT Challenge session unavailable.');
+  if(run.rulesKey!==itChallengeRulesKey())throw new Error('IT Challenge rules have changed. Start a new run.');
+  return {player,run};
+}
+
+function attemptFor(run,player,question,outcome){
+  return {
+    attemptKey:`it-challenge:${run._id}:${outcome.questionIndex}:${run.playerId}`,
+    profileId:player.profileId,characterBaseId:player.characterBaseId,questionId:question.id,
+    category:question.category,topic:question.topic,difficulty:question.difficulty,
+    mode:'challenge',answeredAt:Date.now(),
+  };
+}
+
+export const answer=mutation({
+  args:{playerId:v.string(),sessionId:v.string(),runId:v.id('itChallengeRuns'),questionIndex:v.number(),answerIndex:v.number()},
+  handler:async(ctx,args)=>{
+    const {player,run}=await ownedRun(ctx,args);
+    if(run.finishedAt||Date.now()>run.deadline)throw new Error('IT Challenge has ended.');
+    const question=run.questions[args.questionIndex];
+    if(!Number.isSafeInteger(args.questionIndex)||!question||!Number.isSafeInteger(args.answerIndex)
+      ||args.answerIndex<0||args.answerIndex>=question.answerCount)throw new Error('Invalid IT Challenge answer.');
+    const result=await recordQuizAttempt(ctx,{
+      ...attemptFor(run,player,question,args),answerIndex:args.answerIndex,correct:args.answerIndex===question.correctAnswer,
+    });
+    return {...result,terminalLease:await refreshTerminalLease(ctx,player,args.playerId,args.sessionId)};
+  },
+});
+
 export const start=mutation({
   args:{playerId:v.string(),sessionId:v.string()},
   handler:async(ctx,args)=>{
@@ -58,23 +91,15 @@ export const finish=mutation({
     outcomes:v.array(outcomeValidator),lastViewedQuestionIndex:v.number(),
   },
   handler:async(ctx,args)=>{
-    const player = await requireAuthenticatedLivePlayer(ctx,args.playerId,args.sessionId);
-    const run=await ctx.db.get(args.runId);
-    if(!run||run.profileId!==player.profileId||run.playerId!==args.playerId||run.sessionId!==args.sessionId)
-      throw new Error('IT Challenge session unavailable.');
-    if(run.rulesKey!==itChallengeRulesKey())throw new Error('IT Challenge rules have changed. Start a new run.');
+    const {player,run}=await ownedRun(ctx,args);
     if(run.finishedAt){
       return {result:run.result,newPersonalBest:run.wasPersonalBest??false,personalBest:await currentBest(ctx,player.profileId),terminalLease: await refreshTerminalLease(ctx, player, args.playerId, args.sessionId)};
     }
     const {result,records}=scoreItChallengeOutcomes(run.questions,args.outcomes,args.lastViewedQuestionIndex);
     for(const {question,outcome,correct} of records){
-      const base={
-        attemptKey:`it-challenge:${run._id}:${outcome.questionIndex}:${args.playerId}`,
-        profileId:player.profileId,characterBaseId:player.characterBaseId,questionId:question.id,category:question.category,
-        topic:question.topic,difficulty:question.difficulty,mode:'challenge',answeredAt:Date.now(),
-      };
+      const base=attemptFor(run,player,question,outcome);
       if(outcome.type==='answer'){
-        await recordQuizAttempt(ctx,{...base,correct});
+        await recordQuizAttempt(ctx,{...base,correct,answerIndex:outcome.answerIndex});
       }else{
         await recordQuizSkip(ctx,{...base,outcome:outcome.type});
       }

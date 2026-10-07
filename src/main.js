@@ -7,6 +7,9 @@ import { DisplaySettingsController } from './ui/displaySettings.js';
 import { BackgroundSettingsController } from './ui/backgroundSettings.js';
 import { GameHudController,setGameHud } from './hud/GameHudController.js';
 import { ProfileAuth } from './ProfileAuth.js';
+import { CurrencyClient,setCurrentCurrencyClient } from './economy/CurrencyClient.js';
+import { CurrencyHud } from './economy/CurrencyHud.js';
+import './economy/currency.css';
 
 let game, pausedScene;
 const presence=getPresence();
@@ -15,6 +18,9 @@ const changeButton=document.getElementById('change-character');
 const logoutButton=document.getElementById('logout-profile');
 const menuLogoutButton=document.getElementById('logout-profile-menu');
 const gameHud=setGameHud(new GameHudController());
+const currencyHud=new CurrencyHud();
+const currencyClient=new CurrencyClient(presence,currencyHud);
+setCurrentCurrencyClient(currencyClient);
 const displaySettings=new DisplaySettingsController(document.getElementById('viewport-size'),()=>game?.scale.refresh());
 const backgroundSettings=new BackgroundSettingsController(
   document.getElementById('background-toggle'),document.getElementById('background-options'));
@@ -41,9 +47,9 @@ const menu=new CharacterMenu(presence,()=>{
   }
 });
 const auth=new ProfileAuth(presence,{
-  onAuthenticated(profile,token){menu.setAuthentication(profile,token);menu.show();},
-  onGuest(guest){menu.setGuestIdentity(guest);menu.show();},
-  onLoggedOut(){menu.hide();},
+  onAuthenticated(profile,token){currencyClient.start(token);menu.setAuthentication(profile,token);menu.show();},
+  onGuest(guest){currencyClient.stop();menu.setGuestIdentity(guest);menu.show();},
+  onLoggedOut(){currencyClient.stop();menu.hide();},
 });
 function releaseInitialLoading(){
   const stylesheetReady=getComputedStyle(document.documentElement)
@@ -142,6 +148,8 @@ if (import.meta.hot) {
     displaySettings.destroy();
     backgroundSettings.destroy();
     gameHud.destroy();
+    currencyClient.destroy();currencyHud.destroy();
+    setCurrentCurrencyClient(null);
     auth.destroy();
     document.getElementById('character-list').replaceChildren();
   });

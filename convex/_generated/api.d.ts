@@ -13,6 +13,7 @@ import type * as bossProgress from "../bossProgress.js";
 import type * as characterItems from "../characterItems.js";
 import type * as characterLoadouts from "../characterLoadouts.js";
 import type * as crons from "../crons.js";
+import type * as currency from "../currency.js";
 import type * as directorInvestigation from "../directorInvestigation.js";
 import type * as directorWorkstation from "../directorWorkstation.js";
 import type * as doorDefinitions from "../doorDefinitions.js";
@@ -24,12 +25,14 @@ import type * as messages from "../messages.js";
 import type * as npcCollectibleQuestStore from "../npcCollectibleQuestStore.js";
 import type * as npcQuests from "../npcQuests.js";
 import type * as office3Safe from "../office3Safe.js";
+import type * as playerAppearance from "../playerAppearance.js";
 import type * as playerSessions from "../playerSessions.js";
 import type * as players from "../players.js";
 import type * as profileCharacterState from "../profileCharacterState.js";
 import type * as profileDataMigration from "../profileDataMigration.js";
 import type * as profileStore from "../profileStore.js";
 import type * as profiles from "../profiles.js";
+import type * as puzzleQuiz from "../puzzleQuiz.js";
 import type * as pvpMatches from "../pvpMatches.js";
 import type * as pvpModeValidators from "../pvpModeValidators.js";
 import type * as pvpSettingsValidators from "../pvpSettingsValidators.js";
@@ -43,6 +46,8 @@ import type * as quizSelection from "../quizSelection.js";
 import type * as quizStatistics from "../quizStatistics.js";
 import type * as quizStatisticsModel from "../quizStatisticsModel.js";
 import type * as quizStatisticsStore from "../quizStatisticsStore.js";
+import type * as rewardStore from "../rewardStore.js";
+import type * as rouletteRewards from "../rouletteRewards.js";
 import type * as soloStudy from "../soloStudy.js";
 
 import type {
@@ -57,6 +62,7 @@ declare const fullApi: ApiFromModules<{
   characterItems: typeof characterItems;
   characterLoadouts: typeof characterLoadouts;
   crons: typeof crons;
+  currency: typeof currency;
   directorInvestigation: typeof directorInvestigation;
   directorWorkstation: typeof directorWorkstation;
   doorDefinitions: typeof doorDefinitions;
@@ -68,12 +74,14 @@ declare const fullApi: ApiFromModules<{
   npcCollectibleQuestStore: typeof npcCollectibleQuestStore;
   npcQuests: typeof npcQuests;
   office3Safe: typeof office3Safe;
+  playerAppearance: typeof playerAppearance;
   playerSessions: typeof playerSessions;
   players: typeof players;
   profileCharacterState: typeof profileCharacterState;
   profileDataMigration: typeof profileDataMigration;
   profileStore: typeof profileStore;
   profiles: typeof profiles;
+  puzzleQuiz: typeof puzzleQuiz;
   pvpMatches: typeof pvpMatches;
   pvpModeValidators: typeof pvpModeValidators;
   pvpSettingsValidators: typeof pvpSettingsValidators;
@@ -87,6 +95,8 @@ declare const fullApi: ApiFromModules<{
   quizStatistics: typeof quizStatistics;
   quizStatisticsModel: typeof quizStatisticsModel;
   quizStatisticsStore: typeof quizStatisticsStore;
+  rewardStore: typeof rewardStore;
+  rouletteRewards: typeof rouletteRewards;
   soloStudy: typeof soloStudy;
 }>;
 

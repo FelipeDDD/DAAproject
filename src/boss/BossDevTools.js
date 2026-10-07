@@ -11,6 +11,7 @@ const PRESETS=Object.freeze([
 ]);
 const ACTIONS=Object.freeze([
   ['boss','Teleport to boss'],['classroom','Teleport to classroom'],['potion','Drop health potion'],
+  ['coins','Get 30 coins'],
   ['clearPotions','Clear my potions'],['office2Key','Get Office2 key'],
   ['resetCollection','Reset cigarette collection'],['grantCollection','Get all cigarette packs'],
 ]);
@@ -83,6 +84,7 @@ export class BossDevTools {
 
   runAction(action,label){
     if(action==='clearPotions')return this.clearPotions();
+    if(action==='coins')return this.grantCoins(label);
     if(action==='office2Key')return this.grantOffice2Key(label);
     if(action==='resetCollection'||action==='grantCollection')return this.collectionAction(action);
     let result=false;
@@ -136,6 +138,18 @@ export class BossDevTools {
       this.status.textContent=result===null||result===undefined?'DEV: Office2 key unavailable'
         :result.duplicate?'DEV: Office2 key is already in your inventory':`DEV: ${label}`;
       return result!==null&&result!==undefined;
+    }catch(error){this.status.textContent=error.message;return false;}
+    finally{this.busy=false;this.setDisabled(false);}
+  }
+
+  async grantCoins(label){
+    if(this.busy)return false;
+    this.busy=true;this.setDisabled(true);this.status.textContent='Adding 30 coins...';
+    try{
+      const result=await this.scene.devGrantCoins?.();
+      if(!result)throw new Error('DEV: coin grant unavailable');
+      this.status.textContent=`DEV: ${label} (balance: ${result.coins})`;
+      return true;
     }catch(error){this.status.textContent=error.message;return false;}
     finally{this.busy=false;this.setDisabled(false);}
   }

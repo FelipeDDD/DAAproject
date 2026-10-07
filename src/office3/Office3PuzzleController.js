@@ -6,6 +6,7 @@ import { WorldPrompt } from '../ui/WorldPrompt.js';
 import { renderQuizMedia } from '../QuizMedia.js';
 import { office3PaperPlacement } from '../art/office3PaperHighlight.js';
 import { loadOffice3Questions } from '../quiz/quizBank.js';
+import { PuzzleQuizClient } from '../economy/PuzzleQuizClient.js';
 import { readNamedMapMarker } from '../maps/namedMapMarkers.js';
 import { pointInsideInteractionArea, readNamedInteractionArea } from '../maps/namedInteractionAreas.js';
 import { devPuzzleOneAnswerEnabled } from '../boss/devPuzzleSettings.js';
@@ -255,8 +256,9 @@ export class Office3PuzzleController {
     this.correctAnswers = [];
     this.panel.replaceChildren(element('h2','','OFFICE TERMINAL'),element('p','','Loading questions...'));
     try{
-      const [staticQuestions,status]=await Promise.all([
+      const [staticQuestions,status,puzzleQuiz]=await Promise.all([
         loadOffice3Questions(),this.safeRequest('challengeStatus',{password:'488'}),
+        new PuzzleQuizClient(this.scene.presence,'office3').start(),
       ]);
       if(!this.active||generation!==this.generation)return false;
       if(status.blockedUntil>Date.now()){
@@ -266,6 +268,7 @@ export class Office3PuzzleController {
       this.proofAnswerCount=status.requiredAnswers;
       this.quizTarget=devPuzzleOneAnswerEnabled()?1:status.requiredAnswers;
       this.questionBank=staticQuestions;
+      this.puzzleQuiz=puzzleQuiz;
       this.showQuestion();
       return true;
     }catch(error){
@@ -284,6 +287,7 @@ export class Office3PuzzleController {
   showQuestion() {
     if (!this.active) return;
     this.question = chooseOffice3Question(this.questionBank,this.usedIds);
+    this.puzzleQuiz.prepare(this.question);
     this.usedIds.push(this.question.id);
     this.panel.replaceChildren();
     this.panel.classList.add('quiz');
@@ -311,10 +315,19 @@ export class Office3PuzzleController {
     choices.querySelector('button')?.focus();
   }
 
-  answer(index, choices, feedback, progress) {
+  async answer(index, choices, feedback, progress) {
     if (!this.active || this.busy) return;
     this.busy = true;
-    const correct = index === this.question.correctAnswer;
+    const generation=this.generation;
+    choices.querySelectorAll('button').forEach(button=>{button.disabled=true;});
+    let correct;
+    try{({correct}=await this.puzzleQuiz.answer(index));}
+    catch{
+      if(!this.active||generation!==this.generation)return;
+      feedback.textContent='Could not save answer. Please try again.';
+      this.busy=false;choices.querySelectorAll('button').forEach(button=>{button.disabled=false;});return;
+    }
+    if(!this.active||generation!==this.generation)return;
     this.streak = nextStreak(this.streak, correct, this.quizTarget);
     if(correct)this.correctAnswers.push({id:this.question.id,answer:this.question.answers[index]});
     else this.correctAnswers=[];

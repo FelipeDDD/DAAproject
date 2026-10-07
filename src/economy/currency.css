@@ -1,0 +1,14 @@
+.hud-currency {
+  position:absolute;left:20%;bottom:5px;z-index:5;
+  display:flex;align-items:center;gap:5px;pointer-events:none;
+  padding:2px 7px;border:1px solid #8e744754;border-radius:5px;
+  color:#efdcaa;background:#0b1624e6;
+  font:600 clamp(10px,1.1cqw,14px)/1.2 "Segoe UI",sans-serif;
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+.hud-currency[hidden] {display:none;}
+.hud-currency__coin {
+  display:grid;place-items:center;width:14px;height:14px;border-radius:50%;
+  color:#573d16;background:#cfac58;border:1px solid #f1d280;font-size:9px;
+}
+.hud-currency__gain {position:absolute;left:calc(100% + 5px);color:#e7cf87;opacity:0;}

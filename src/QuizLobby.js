@@ -222,14 +222,17 @@ export class QuizLobby {
   async confirmAnswer(){
     if(this.selectedAnswer===null||this.confirmedAnswer!==null||this.pendingAnswer||this.questionHasExpired()||this.lobby?.status!=='starting')return;
     const answerIndex=this.selectedAnswer;
+    const context={lobbyId:this.lobby.lobbyId,questionId:this.lobby.question.id,questionIndex:this.lobby.questionIndex};
+    const sameQuestion=()=>!this.closed&&this.seated&&this.lobby?.lobbyId===context.lobbyId
+      &&this.lobby?.questionIndex===context.questionIndex&&this.lobby?.question?.id===context.questionId;
     this.pendingAnswer=true;this.answerError='';this.render();
     try{
       const {playerId,sessionId}=this.presence.identity;
-      const result=await this.presence.client.mutation(this.presence.api.quizLobbies.answer,{room:this.room,playerId,sessionId,answerIndex});
-      this.confirmedAnswer=result.answerIndex;
+      const result=await this.presence.client.mutation(this.presence.api.quizLobbies.answer,{room:this.room,playerId,sessionId,answerIndex,...context});
+      if(sameQuestion())this.confirmedAnswer=result.answerIndex;
     }catch{
-      this.answerError='Could not save your answer.';
-    }finally{this.pendingAnswer=false;this.render();}
+      if(sameQuestion())this.answerError='Could not save your answer.';
+    }finally{if(sameQuestion()){this.pendingAnswer=false;this.render();}}
   }
 
   questionHasExpired(){return remainingQuizSeconds(this.lobby?.questionDeadline)===0;}
@@ -254,26 +257,29 @@ export class QuizLobby {
   async finishTimedQuestion(){
     const questionId=this.lobby?.question?.id;
     if(!this.isActiveParticipant()||this.lobby?.status!=='starting'||!questionId||this.finishingTimedQuestion)return;
+    const context={lobbyId:this.lobby.lobbyId,questionId,questionIndex:this.lobby.questionIndex};
+    const sameQuestion=()=>!this.closed&&this.seated&&this.lobby?.lobbyId===context.lobbyId
+      &&this.lobby?.questionIndex===context.questionIndex&&this.lobby?.question?.id===questionId;
     this.finishingTimedQuestion=true;this.timerRetryCount=(this.timerRetryCount??0)+1;
     this.answerError='';this.render();
     try{
       const {playerId,sessionId}=this.presence.identity;
-      const args={room:this.room,playerId,sessionId};
+      const args={room:this.room,playerId,sessionId,...context};
       if(Number.isInteger(this.selectedAnswer))args.answerIndex=this.selectedAnswer;
       const result=await this.presence.client.mutation(this.presence.api.quizLobbies.finishTimedQuestion,args);
-      if(this.closed||!this.seated||this.lobby?.question?.id!==questionId)return;
+      if(!sameQuestion())return;
       if(Number.isInteger(result.answerIndex)){
         this.confirmedAnswer=result.answerIndex;this.selectedAnswer=result.answerIndex;
       }
       this.timerRetryAt=Infinity;
       this.timerRetryCount=0;
     }catch{
-      if(this.closed||!this.seated||this.lobby?.question?.id!==questionId)return;
+      if(!sameQuestion())return;
       const exhausted=this.timerRetryCount>=QUIZ_TIMEOUT_MAX_ATTEMPTS;
       this.answerError=exhausted?'Could not finish the question. Retry with the button below.'
         :'Could not finish the question. Retrying…';
       this.timerRetryAt=exhausted?Infinity:Date.now()+quizTimeoutRetryDelay(this.timerRetryCount);
-    }finally{this.finishingTimedQuestion=false;this.render();}
+    }finally{if(sameQuestion()){this.finishingTimedQuestion=false;this.render();}}
   }
 
   retryTimedQuestion(){

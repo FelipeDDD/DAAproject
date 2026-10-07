@@ -7,12 +7,18 @@ import { drawSchoolBackdrop } from '../art/schoolBackdrop.js';
 import { preloadSchoolCorridorDecor,drawSchoolCorridorDecor } from '../art/schoolCorridorDecor.js';
 import { PVP_LOBBY_PORTAL } from '../maps/pvpLobbyPortal.js';
 import { pvpLobbyAvailable } from '../pvp/config.js';
+import { GAMBLE_MACHINE } from '../gamble/config.js';
+import { gambleMachinePlacement } from '../gamble/placement.js';
+import { GambleMachineController } from '../gamble/GambleMachineController.js';
+import '../gamble/gambleMachine.css';
 
 export class SchoolScene extends MapScene {
   constructor() { super('school', 'classroom.tmj'); }
 
   preload() {
     super.preload();
+    if(!this.textures.exists(GAMBLE_MACHINE.textureKey))
+      this.load.image(GAMBLE_MACHINE.textureKey,`${import.meta.env.BASE_URL}${GAMBLE_MACHINE.assetPath}`);
     preloadSchoolCorridorDecor(this);
     this.load.image('classroom-desks',
       `${import.meta.env.BASE_URL}assets/furniture/mesas-transparent.png`);
@@ -28,6 +34,16 @@ export class SchoolScene extends MapScene {
 
   create(destination = {}) {
     super.create(destination);
+    const machinePlacement=gambleMachinePlacement(this.source,{dev:import.meta.env.DEV});
+    if(machinePlacement){
+      this.textures.get(GAMBLE_MACHINE.textureKey).setFilter(Phaser.Textures.FilterMode.LINEAR);
+      this.gambleMachine=new GambleMachineController(this,machinePlacement);
+      const suspend=()=>this.gambleMachine?.suspend();
+      this.events.on('sleep',suspend);
+      this.events.once('shutdown',()=>{
+        this.events.off('sleep',suspend);this.gambleMachine?.destroy();this.gambleMachine=null;
+      });
+    }
     if(pvpLobbyAvailable(import.meta.env))this.createPvpLobbyMarker();
     const studyLabel=this.tiledTextObjects?.find(text=>text.getData('tiledObjectName')==='studyModeSign');
     if(studyLabel){
@@ -66,14 +82,20 @@ export class SchoolScene extends MapScene {
     }).setOrigin(.5,1).setDepth(portal.y+2);
   }
 
-  enter(destination={}){super.enter(destination);this.secretary?.resetVisit();}
+  enter(destination={}){super.enter(destination);this.secretary?.resetVisit();this.gambleMachine?.resume();}
   onLockedMapTransition(transition,time){
     if(transition.targetMap!=='office2')return;
     const started=this.secretary?.onDoorAttempt(time);
     if(!started&&this.secretary?.state.active)this.doorMessage='';
   }
   update(time,delta){
+    // Consume E only when this interactable is available, before MapScene's
+    // existing E router. The shared modal handles input isolation and Escape.
+    if(this.gambleMachine?.canInteract()&&Phaser.Input.Keyboard.JustDown(this.interactKey)){
+      this.gambleMachine.open();this.hint.hidden=true;
+    }
     super.update(time,delta);
+    this.gambleMachine?.update();
     this.secretary?.update(time,delta);
   }
 }

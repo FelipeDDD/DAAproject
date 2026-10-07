@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { answer, current, nextQuestion, cleanup, finishTimedQuestion, join, leave, start } from '../convex/quizLobbies.js';
 import seatsByRoom from '../convex/quizSeatDefinitions.js';
+const questionContext={lobbyId:'lobby',questionId:'question',questionIndex:0};
 
 function fixture() {
   const now = Date.now();
@@ -18,7 +19,7 @@ function fixture() {
     questions: [{ id: 'question', category: 'Hardware', difficulty: 'medium',
       question: 'Question?', answers: ['A', 'B'], correctAnswer: 0 }],
   };
-  const tables = { players, quizLobbies: [lobby], quizAnswers: [], quizCleanupWorker: [],quizAttempts:[],quizPerformance:[],quizQuestionHistory:[] };
+  const tables = { players, profiles:[{_id:'profile-a'}],currencyEvents:[],quizLobbies: [lobby], quizAnswers: [], quizCleanupWorker: [],quizAttempts:[],quizPerformance:[],quizQuestionHistory:[] };
   let next = 0;
   const ctx = { db: {
     query(table) {
@@ -47,8 +48,8 @@ function fixture() {
 
 test('two hypothetical same-base players keep distinct answers, scores and host authority', async () => {
   const { ctx, lobby, tables } = fixture();
-  const alice = { room: 'school', playerId: 'live-a', sessionId: 'session-a' };
-  const bob = { room: 'school', playerId: 'live-b', sessionId: 'session-b' };
+  const alice = { ...questionContext,room: 'school', playerId: 'live-a', sessionId: 'session-a' };
+  const bob = { ...questionContext,room: 'school', playerId: 'live-b', sessionId: 'session-b' };
   const initial = await current._handler(ctx, { room: 'school', playerId: 'live-b' });
   assert.deepEqual(initial.participants, ['live-a', 'live-b']);
   assert.deepEqual(initial.participantDetails.map(row => row.characterBaseId), ['michael', 'michael']);
@@ -67,11 +68,15 @@ test('two hypothetical same-base players keep distinct answers, scores and host 
 test('multiplayer answers persist by profile while guest answers stay live-only',async()=>{
   const {ctx,players,tables}=fixture();
   players[0].profileId='profile-a';
-  await answer._handler(ctx,{room:'school',playerId:'live-a',sessionId:'session-a',answerIndex:0});
-  await answer._handler(ctx,{room:'school',playerId:'live-b',sessionId:'session-b',answerIndex:1});
+  await answer._handler(ctx,{...questionContext,room:'school',playerId:'live-a',sessionId:'session-a',answerIndex:0});
+  await answer._handler(ctx,{...questionContext,room:'school',playerId:'live-b',sessionId:'session-b',answerIndex:1});
   assert.deepEqual(tables.quizAttempts.map(row=>row.profileId),['profile-a']);
   assert.deepEqual(tables.quizPerformance.map(row=>row.profileId),['profile-a']);
   assert.equal(tables.quizAnswers.length,2);
+  assert.equal(tables.profiles[0].currency.coins,1);
+  await answer._handler(ctx,{...questionContext,room:'school',playerId:'live-a',sessionId:'session-a',answerIndex:0});
+  assert.equal(tables.profiles[0].currency.coins,1);
+  assert.equal(tables.currencyEvents.length,1);
 });
 
 test('reclaimed slot and delayed old player ID cannot inherit a quiz seat or submit an answer', async () => {
@@ -129,8 +134,9 @@ test('same-base players join, start and answer independently using generic seat 
   assert.equal(live.participantDetails[1].characterBaseId,'michael');
   assert.deepEqual(tables.quizLobbies[0].seatAssignments.map(seat=>seat.playerId),['live-a','live-b']);
   assert.equal(new Set(tables.quizLobbies[0].seatAssignments.map(seat=>seat.seatId)).size,2);
-  await answer._handler(ctx,{...first,answerIndex:0});
-  await answer._handler(ctx,{...second,answerIndex:1});
+  const context={lobbyId:live.lobbyId,questionId:live.question.id,questionIndex:live.questionIndex};
+  await answer._handler(ctx,{...first,...context,answerIndex:0});
+  await answer._handler(ctx,{...second,...context,answerIndex:1});
   assert.deepEqual(tables.quizAnswers.map(row=>row.playerId),['live-a','live-b']);
 });
 
@@ -140,12 +146,24 @@ test('timeout resolves each live player independently and rejects a stale sessio
   const first={room:'school',playerId:'live-a',sessionId:'session-a'};
   const second={room:'school',playerId:'live-b',sessionId:'session-b'};
   await assert.rejects(finishTimedQuestion._handler(ctx,{...first,sessionId:'old-session'}),/Invalid session/);
-  await finishTimedQuestion._handler(ctx,{...first,answerIndex:0});
+  await finishTimedQuestion._handler(ctx,{...questionContext,...first,answerIndex:0});
   assert.deepEqual(lobby.timedOutPlayerIds,['live-a']);
   assert.equal(lobby.scoredQuestionIds.length,0);
-  await finishTimedQuestion._handler(ctx,second);
+  await finishTimedQuestion._handler(ctx,{...questionContext,...second});
   assert.deepEqual(lobby.timedOutPlayerIds,['live-a','live-b']);
   assert.deepEqual(lobby.scores,[{playerId:'live-a',points:1},{playerId:'live-b',points:0}]);
   assert.deepEqual(tables.quizAnswers.map(row=>row.playerId),['live-a']);
   assert.equal((await current._handler(ctx,{room:'school',playerId:'live-b'})).allAnswered,true);
+});
+
+test('a delayed multiplayer answer is rejected after advancing the question or recreating the lobby',async()=>{
+  const {ctx,lobby,players,tables}=fixture();players[0].profileId='profile-a';
+  const args={...questionContext,room:'school',playerId:'live-a',sessionId:'session-a',answerIndex:0};
+  await answer._handler(ctx,args);
+  lobby.questions.push({...lobby.questions[0],id:'next-question'});lobby.questionIndex=1;
+  await assert.rejects(answer._handler(ctx,args),/QUIZ_QUESTION_CHANGED/);
+  await assert.rejects(finishTimedQuestion._handler(ctx,args),/QUIZ_QUESTION_CHANGED/);
+  lobby._id='replacement-lobby';lobby.questionIndex=0;
+  await assert.rejects(answer._handler(ctx,args),/QUIZ_QUESTION_CHANGED/);
+  assert.equal(tables.profiles[0].currency.coins,1);assert.equal(tables.currencyEvents.length,1);
 });

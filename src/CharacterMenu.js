@@ -3,6 +3,7 @@ import { characterVisual } from './characterVisuals.js';
 import { isPlayerActive } from './multiplayer/presencePolicy.js';
 import { createSessionId } from './playerIdentity.js';
 import { MAX_PLAYER_CAPACITY } from './multiplayer/playerCapacity.js';
+import { normalizeEquippedSkin,selectPreviewSkin } from './characterAppearance.js';
 
 export const createCharacterSessionId=createSessionId;
 
@@ -120,8 +121,12 @@ export class CharacterMenu {
         kind:this.mode,playerId:result.playerId,characterId:c.id,characterBaseId:baseCharacterId(c.id),
         name:displayName,displayName,characterName:c.name,sessionId:this.sessionId,
         ...(previewStyle==='level3Preview'&&c.experimentalVisual?{visualPreview:previewStyle}:{}),
+        equippedSkin:normalizeEquippedSkin(result.equippedSkin),
+        activeCharacterItem:result.activeCharacterItem??null,
         ...(this.mode==='guest'?{guestId:this.guest.guestId}:{profileId:result.profile.profileId,classState:result.classState??null}),
       };
+      if(previewStyle==='level3Preview'&&c.experimentalVisual)selectPreviewSkin(this.presence.identity,c);
+      this.presence.watchAppearance?.();
       try{localStorage.setItem(CHARACTER_STORAGE_KEY,c.id);}catch{}
       // Keep the claim alive while Phaser loads its maps and sprites.
       this.presence.enter('selection',()=>({x:0,y:0,direction:'down',activeCharacterItem:null}),()=>{});

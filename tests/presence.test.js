@@ -91,7 +91,8 @@ test('network latency never queues a position per frame, and stationary heartbea
 
 function stationaryPresence(mutation) {
   const identity={playerId:'me',characterId:'me',name:'Me',sessionId:'session-123456789'};
-  const state={...identity,room:'school',x:10,y:20,direction:'down'};
+  const state={playerId:identity.playerId,characterId:identity.characterId,name:'Me',displayName:'Me',
+    sessionId:identity.sessionId,room:'school',x:10,y:20,direction:'down',equippedSkin:'classic',previewSkin:null};
   const presence=new Presence({mutation},{players:{update:'update',heartbeat:'heartbeat'}},identity);
   presence.active={room:'school',snapshot:()=>({x:10,y:20,direction:'down'}),
     previous:JSON.stringify(state),previousState:state,sentAt:0};

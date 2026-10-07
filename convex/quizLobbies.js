@@ -17,6 +17,12 @@ import { recordQuizAttempt } from './quizStatisticsStore.js';
 import { ensureQuizCleanupWorker,stopQuizCleanupWorkerIfEmpty,runQuizCleanupWorker } from './quizCleanupWorker.js';
 
 const DEFAULT_SETTINGS=Object.freeze({category:null,topic:null,difficulty:null,count:QUESTIONS_PER_QUIZ});
+const questionContextArgs={lobbyId:v.id('quizLobbies'),questionId:v.string(),questionIndex:v.number()};
+
+function requireQuestionContext(lobby,question,args){
+  if(lobby._id!==args.lobbyId||question.id!==args.questionId||(lobby.questionIndex??0)!==args.questionIndex)
+    throw new Error('QUIZ_QUESTION_CHANGED');
+}
 
 function settingsFor(lobby){return {...DEFAULT_SETTINGS,...(lobby.settings??{})};}
 
@@ -139,7 +145,7 @@ export const current = query({
     ));
     const ownAnswer=activeAnswers.find(answer=>answer.playerId===playerId);
     return {
-      room:lobby.room,hostPlayerId:lobby.hostPlayerId,status:lobby.status,
+      lobbyId:lobby._id,room:lobby.room,hostPlayerId:lobby.hostPlayerId,status:lobby.status,
       participants,seatAssignments,participantDetails:activeRows.map(p=>({playerId:p.playerId,characterBaseId:p.characterBaseId,displayName:p.displayName??p.name})),
       createdAt:lobby.createdAt,questionIndex:lobby.questionIndex??0,
       settings:settingsFor(lobby),
@@ -277,13 +283,14 @@ export const start = mutation({
 });
 
 export const answer = mutation({
-  args: { room:v.string(), playerId:v.string(), sessionId:v.string(), answerIndex:v.number() },
+  args: { room:v.string(), playerId:v.string(), sessionId:v.string(), answerIndex:v.number(),...questionContextArgs },
   handler: async (ctx,args) => {
     const player=await playerFor(ctx,args.playerId,args.sessionId,args.room);
     const lobby=await ctx.db.query('quizLobbies').withIndex('by_room',q=>q.eq('room',args.room)).unique();
     const question=lobby&&questionFor(lobby);
     if(!lobby||lobby.status!=='starting'||!question||!lobby.participants.includes(args.playerId))
       throw new Error('Quiz unavailable for this player.');
+    requireQuestionContext(lobby,question,args);
     if(!Number.isInteger(args.answerIndex)||args.answerIndex<0||args.answerIndex>=question.answers.length)
       throw new Error('Invalid answer.');
     if(quizQuestionExpired(deadlineFor(lobby)))throw new Error('The time for this question has expired.');
@@ -320,6 +327,7 @@ export const finishTimedQuestion = mutation({
   args: {
     room:v.string(),playerId:v.string(),sessionId:v.string(),
     answerIndex:v.optional(v.number()),
+    ...questionContextArgs,
   },
   handler:async(ctx,args)=>{
     const player=await playerFor(ctx,args.playerId,args.sessionId,args.room);
@@ -327,6 +335,7 @@ export const finishTimedQuestion = mutation({
     const question=lobby&&questionFor(lobby);
     if(!lobby||lobby.status!=='starting'||!question||!lobby.participants.includes(args.playerId))
       throw new Error('Quiz unavailable for this player.');
+    requireQuestionContext(lobby,question,args);
     if(!quizQuestionExpired(deadlineFor(lobby)))throw new Error('The question is still active.');
     let existing=await ctx.db.query('quizAnswers').withIndex('by_lobby_question_player',q=>
       q.eq('lobbyId',lobby._id).eq('questionId',question.id).eq('playerId',args.playerId)).unique();

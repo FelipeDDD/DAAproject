@@ -342,7 +342,7 @@ export class SoloStudyController {
       if(this.session.complete)this.finishChallenge();this.render();return result;
     }
     this.status.textContent=result.correct?'Correct.':'Incorrect.';this.renderQuestion();
-    if(this.session.mode==='study')this.recordCurrentAnswer(result);
+    this.recordCurrentAnswer(result);
     return result;
   }
 
@@ -379,9 +379,10 @@ export class SoloStudyController {
   }
 
   recordCurrentAnswer(result){
-    if(!this.runId||this.session?.mode!=='study')return;
+    if(!this.runId||!['study','challenge'].includes(this.session?.mode))return;
     const {playerId,sessionId}=this.presence.identity;
-    this.statisticsPending=this.terminalMutation(this.presence.api.quizStatistics.recordSoloAnswer,{
+    const endpoint=this.session.mode==='challenge'?this.presence.api.itChallenge.answer:this.presence.api.quizStatistics.recordSoloAnswer;
+    this.statisticsPending=this.terminalMutation(endpoint,{
       playerId,sessionId,runId:this.runId,questionIndex:this.session.index,
       ...(result.answerIndex===null?{}:{answerIndex:result.answerIndex}),
     }).catch(()=>{this.status.textContent='Answer saved locally, but statistics could not be updated.';this.render();});

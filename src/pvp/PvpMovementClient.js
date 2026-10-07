@@ -53,17 +53,26 @@ export class PvpMovementClient {
     this.transport.sendReliable('join-room',{});return true;
   }
 
-  receiveRoster(rows){if(this.closed)return;this.rows=rows;this.renderRoster();}
+  receiveRoster(rows){
+    if(this.closed)return;
+    // Participants can precede Presence during a transition. Retain the last
+    // known appearance for current members; Retry recreates sprites, not skins.
+    this.rows=this.match.participants.map(p=>rows.find(row=>row.playerId===p.playerId)
+      ??this.rows.find(row=>row.playerId===p.playerId)
+      ??this.remotes.players?.get(p.playerId)?.row).filter(Boolean);
+    this.renderRoster();
+  }
   markTeleport(){
     if(this.closed)return false;
     this.teleportPending=true;this.nextSendAt=Math.min(this.nextSendAt,this.now());return true;
   }
   renderRoster(){
     const rows=this.match.participants.filter(p=>p.playerId!==this.playerId).map(p=>{
-      const metadata=this.rows.find(row=>row.playerId===p.playerId);
+      const metadata=this.rows.find(row=>row.playerId===p.playerId)??this.remotes.players?.get(p.playerId)?.row;
       const spawn=this.getSpawn(p,this.match);
       // Presence coordinates/timestamps never enter the movement buffer.
       return {...metadata,...p,x:spawn.x,y:spawn.y,direction:spawn.direction??'down',
+        characterBaseId:metadata?.characterBaseId??p.characterBaseId,
         equippedSkin:metadata?.equippedSkin??'classic',activeCharacterItem:null};
     });
     this.remotes.receive(rows,{movement:false});

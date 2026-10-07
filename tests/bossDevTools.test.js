@@ -59,6 +59,18 @@ test('clear potions action updates the status and re-enables Dev Tools',async()=
   assert.ok(tools.content.querySelectorAll('button').every(button=>!button.disabled));
 });
 
+test('Get 30 coins calls the dev grant and reports the persistent balance',async()=>{
+  const documentRef={createElement:tag=>new Element(tag),body:new Element('body')};
+  let grants=0;
+  const tools=new BossDevTools({devGrantCoins:async()=>{grants++;return {amount:30,coins:42};}},null,{documentRef});
+  const button=tools.content.querySelectorAll('button').find(item=>item.textContent==='Get 30 coins');
+  assert.ok(button);
+  await tools.runAction('coins','Get 30 coins');
+  assert.equal(grants,1);
+  assert.equal(tools.status.textContent,'DEV: Get 30 coins (balance: 42)');
+  assert.ok(tools.content.querySelectorAll('button').every(item=>!item.disabled));
+});
+
 test('one-answer puzzle option persists and can be switched back off',()=>{
   const saved=new Map();
   const storage={getItem:key=>saved.get(key)??null,setItem:(key,value)=>saved.set(key,value)};

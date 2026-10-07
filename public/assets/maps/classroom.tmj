@@ -7469,6 +7469,18 @@
                  "width":0,
                  "x":1057.09090909091,
                  "y":551.454545454545
+                },
+                {
+                 "height":0,
+                 "id":599,
+                 "name":"gamble-machine",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":752,
+                 "y":912
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -7477,7 +7489,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":599,
+ "nextobjectid":600,
  "orientation":"orthogonal",
  "properties":[
         {

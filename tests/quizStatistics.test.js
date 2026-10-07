@@ -7,7 +7,8 @@ import {
 } from '../convex/quizStatisticsModel.js';
 
 class MemoryDatabase{
-  constructor(){this.tables=new Map();this.nextId=1;}
+  constructor(){this.tables=new Map([['profiles',[{_id:'profile-1'},{_id:'profile-2'}]]]);this.nextId=1;}
+  async get(id){return [...this.tables.values()].flat().find(row=>row._id===id)??null;}
   rows(table){if(!this.tables.has(table))this.tables.set(table,[]);return this.tables.get(table);}
   query(table){
     return {withIndex:(_name,filter)=>{

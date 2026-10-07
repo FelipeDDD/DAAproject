@@ -1,6 +1,7 @@
 import { mutationGeneric as mutation,queryGeneric as query } from 'convex/server';
 import { v } from 'convex/values';
 import { requireSessionToken } from './profileStore.js';
+import { publishProfileSkin } from './playerAppearance.js';
 import {
   applyBossDevPreset,applyDirectorRewardChoice,applyDirectorVictory,BOSS_DEV_PRESETS,
   DIRECTOR_BOSS_ID,DIRECTOR_REWARD_IDS,equipCharacterSkin,
@@ -92,6 +93,7 @@ export const equipSkin=mutation({
     const progress=equipCharacterSkin(previous,args.skin,profile.selectedCharacterId);
     const stored=storedProgress(progress,profile);
     if(previous)await ctx.db.replace(previous._id,stored);else await ctx.db.insert('bossProgress',stored);
+    await publishProfileSkin(ctx,profile._id,stored);
     return normalizeBossProgress(stored,profile.selectedCharacterId);
   },
 });
@@ -106,6 +108,7 @@ export const devSetPreset=mutation({
     const progress=applyBossDevPreset(previous,args.preset,profile.selectedCharacterId);
     const stored=storedProgress(progress,profile);
     if(previous)await ctx.db.replace(previous._id,stored);else await ctx.db.insert('bossProgress',stored);
+    await publishProfileSkin(ctx,profile._id,stored);
     if(args.preset==='fresh'){
       const workstation=await ctx.db.query('directorWorkstations')
         .withIndex('by_profile',q=>q.eq('profileId',profile._id)).unique();

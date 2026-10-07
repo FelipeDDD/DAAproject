@@ -8,6 +8,7 @@ import { SoloStudyController } from '../src/SoloStudyController.js';
 import { TERMINAL_LEASE_MS } from '../src/multiplayer/presencePolicy.js';
 function fixture(now,mode='terminal'){
  const tables=new Map();let id=0;const rows=t=>{if(!tables.has(t))tables.set(t,[]);return tables.get(t);};
+ rows('profiles').push({_id:'profile'});
  const player={_id:'player',playerId:'independent-live-id',characterId:'felipe',sessionId:'session',profileId:'profile',lastSeen:now,presenceMode:mode,terminalLeaseExpiresAt:now+5000};rows('players').push(player);
  let playerWrites=0;
  const db={query:t=>({withIndex:(_,filter)=>{const conditions=[];const builder={eq(k,v){conditions.push([k,v]);return builder;}};filter(builder);const matches=()=>rows(t).filter(r=>conditions.every(([k,v])=>r[k]===v));return {unique:async()=>matches()[0]??null,collect:async()=>matches()};}}),

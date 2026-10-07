@@ -1,6 +1,7 @@
 import { PvpMapScene } from './PvpMapScene.js';
 import { getPresence } from '../multiplayer/client.js';
-import { characterById } from '../characters.js';
+import { applyLocalAppearance } from '../characterAppearance.js';
+import { startSceneEmotes,stopSceneEmotes } from '../emotes/sceneEmotes.js';
 import { resolvedMovementState } from '../multiplayer/movementState.js';
 import { PVP_MAP,pvpRoom } from '../pvp/config.js';
 import { requirePvpMap } from '../pvp/mapConfig.js';
@@ -63,7 +64,7 @@ export class PvpArenaScene extends PvpMapScene {
     this.modeView=createModeView(this.matchState.mode,this);
     this.pickupView=new PvpPickupView(this,{debug:pickupDebugEnabled(import.meta.env)});
     this.player.body.enable=true;this.player.setVisible(true).setAlpha(1).clearTint();
-    this.player.setCharacter(characterById(me.characterBaseId),'old');
+    applyLocalAppearance(this,{activeCharacterItem:null});
     this.placeAtSpawn(me);this.lastLife=me.life;
     this.hint.hidden=true;this.input.keyboard.enabled=true;this.input.enabled=true;
     this.input.keyboard.resetKeys();this.player.setCombatHudVisible(true);this.updatePvpHudHealth(me.hp);
@@ -82,8 +83,10 @@ export class PvpArenaScene extends PvpMapScene {
     // Keep the arena membership and existing heartbeat/lease flow in Convex.
     // A fixed entry snapshot avoids sending the movement stream to both servers.
     const entryPresence={x:this.player.x,y:this.player.y,direction:this.player.facing,
-      equippedSkin:this.presence.identity.equippedSkin??'classic',activeCharacterItem:null};
-    this.presence.enter(this.presenceRoom,()=>entryPresence,rows=>this.movementClient?.receiveRoster(rows));
+      activeCharacterItem:null};
+    this.presence.enter(this.presenceRoom,()=>entryPresence,rows=>this.movementClient?.receiveRoster(rows),
+      {appearanceChanged:()=>applyLocalAppearance(this,{activeCharacterItem:null})});
+    startSceneEmotes(this);
     this.pvpHud=new PvpHud({onLeave:()=>this.leavePvp(),onRetry:()=>this.damageClient?.requestRetry()??false,onEnd:()=>this.forceEnd(),dev:import.meta.env.DEV});
     this.combat=new PvpCombatController(this,hit=>this.damageClient?.attempt(hit),
       {onSpawn:event=>this.projectileClient?.sendSpawn(event),onRemove:event=>this.projectileClient?.sendDestroy(event),
@@ -123,6 +126,7 @@ export class PvpArenaScene extends PvpMapScene {
     this.pickupView?.reset();
     this.skillView?.reset(state.round);
     this.skillClient?.reset(state.round);
+    this.emoteRenderer?.clear();
     this.combat.serial=0;this.combat.nextShotAt=0;this.combat.life=undefined;
     const me=state.participants.find(p=>p.playerId===this.presence.identity.playerId);
     this.player.body.enable=true;this.placeAtSpawn(me);this.lastLife=me.life;
@@ -186,6 +190,7 @@ export class PvpArenaScene extends PvpMapScene {
     this.movementClient?.update();
     this.skillClient?.update();
     this.remotes.update();
+    this.emoteRenderer?.update();
     const renderedRemoteIds=new Set();
     for(const p of state.participants){
       const remote=this.remotes.players.get(p.playerId);if(!remote)continue;
@@ -238,6 +243,7 @@ export class PvpArenaScene extends PvpMapScene {
     this.travelTo({...this.returnDestination,...(lobbyId?{pvpLobbyId:lobbyId}:{})});
   }
   stopPvp(){
+    stopSceneEmotes(this);
     for(const entry of this.pvpRemoteHealthBars?.values?.()??[])entry.bar.destroy();
     this.pvpRemoteHealthBars?.clear();this.pvpRemoteHealthBars=null;
     this.teleports?.reset();this.teleports=null;

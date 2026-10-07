@@ -5,6 +5,7 @@ import { chooseOffice3Question, OFFICE3_FEEDBACK_MS } from '../office3/office3Pu
 import { CharacterItemClient } from '../inventory/CharacterItemClient.js';
 import { CHARACTER_ITEM_IDS, normalizeCharacterItem } from '../inventory/characterItems.js';
 import { hasProfileSession } from '../ProfileSessionClient.js';
+import { PuzzleQuizClient } from '../economy/PuzzleQuizClient.js';
 import { koettingGiftOffsets, koettingMarker, KOETTING_REWARD_AMOUNT, KOETTING_STREAK_TARGET, nextKoettingStreak } from './koettingChallenge.js';
 import { devPuzzleOneAnswerEnabled } from '../boss/devPuzzleSettings.js';
 import './koettingNpc.css';
@@ -144,9 +145,11 @@ export class KoettingNpc {
     this.content.replaceChildren(element('h2','koetting-name','Mysterious Man'),
       element('p','koetting-status','Fragen werden geladen…'));
     try{
-      const questions=await loadOffice3Questions();
+      const [questions,puzzleQuiz]=await Promise.all([
+        loadOffice3Questions(),new PuzzleQuizClient(this.scene.presence,'koetting').start(),
+      ]);
       if(!this.active||generation!==this.openGeneration)return;
-      this.questions=questions;this.busy=false;this.showQuestion();
+      this.questions=questions;this.puzzleQuiz=puzzleQuiz;this.busy=false;this.showQuestion();
     }catch(error){
       if(!this.active||generation!==this.openGeneration)return;
       this.busy=false;
@@ -161,6 +164,7 @@ export class KoettingNpc {
     if(!this.active)return;
     try{this.question=chooseOffice3Question(this.questions,this.usedIds);}
     catch(error){this.content.replaceChildren(element('p','koetting-status','Keine Fragen verfügbar.'));return;}
+    this.puzzleQuiz.prepare(this.question);
     this.usedIds.push(this.question.id);
     const heading=element('h2','koetting-name','Mysterious Man');
     const progress=element('p','koetting-progress',`${this.streak}/${this.quizTarget} richtig in Folge`);
@@ -175,10 +179,19 @@ export class KoettingNpc {
     this.content.replaceChildren(heading,progress,media,prompt,choices,feedback);
     choices.querySelector('button')?.focus();
   }
-  answer(index,choices,feedback,progress){
+  async answer(index,choices,feedback,progress){
     if(!this.active||this.busy)return;
     this.busy=true;
-    const correct=index===this.question.correctAnswer;
+    const generation=this.openGeneration;
+    choices.querySelectorAll('button').forEach(button=>{button.disabled=true;});
+    let correct;
+    try{({correct}=await this.puzzleQuiz.answer(index));}
+    catch{
+      if(!this.active||generation!==this.openGeneration)return;
+      feedback.textContent='Could not save answer. Please try again.';
+      this.busy=false;choices.querySelectorAll('button').forEach(button=>{button.disabled=false;});return;
+    }
+    if(!this.active||generation!==this.openGeneration)return;
     this.streak=nextKoettingStreak(this.streak,correct,this.quizTarget);
     progress.textContent=`${this.streak}/${this.quizTarget} richtig in Folge`;
     feedback.textContent=correct?'Richtig!':`Falsch! Zurück auf 0/${this.quizTarget}.`;

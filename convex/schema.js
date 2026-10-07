@@ -124,6 +124,7 @@ export default defineSchema({
     topic:v.union(v.string(),v.null()),difficulty:v.string(),
     mode:v.union(v.literal('study'),v.literal('challenge'),v.literal('multiplayer')),
     correct:v.optional(v.boolean()),
+    answerIndex:v.optional(v.number()),
     outcome:v.optional(v.union(v.literal('correct'),v.literal('wrong'),v.literal('manualSkip'),v.literal('timeoutSkip'))),
     answeredAt:v.number(),
   }).index('by_attempt_key',['attemptKey'])
@@ -148,9 +149,21 @@ export default defineSchema({
     .index('by_room_door',['room','doorId']),
   profiles: defineTable({
     profileName:v.string(),displayName:v.optional(v.string()),selectedCharacterId:v.string(),
+    currency:v.optional(v.object({coins:v.number()})),
     passwordHash:v.optional(v.string()),passwordVersion:v.optional(v.number()),
     createdAt:v.number(),updatedAt:v.number(),
   }).index('by_profile_name',['profileName']),
+  currencyEvents:defineTable({
+    profileId:v.id('profiles'),eventKey:v.string(),source:v.string(),delta:v.number(),createdAt:v.number(),
+  }).index('by_profile_event',['profileId','eventKey']),
+  rouletteResults:defineTable({
+    profileId:v.id('profiles'),spinId:v.string(),rewardId:v.string(),createdAt:v.number(),
+  }).index('by_profile_spin',['profileId','spinId']),
+  puzzleQuizRuns:defineTable({
+    profileId:v.id('profiles'),playerId:v.string(),sessionId:v.string(),
+    source:v.union(v.literal('office3'),v.literal('koetting')),createdAt:v.number(),
+    questions:v.array(v.object({id:v.string(),answer:v.optional(v.string())})),
+  }).index('by_profile_source',['profileId','source']),
   profileSessions: defineTable({
     profileId:v.id('profiles'),tokenHash:v.string(),createdAt:v.number(),expiresAt:v.number(),
   }).index('by_token_hash',['tokenHash'])
@@ -173,6 +186,7 @@ export default defineSchema({
     moving:v.optional(v.boolean()),velocityX:v.optional(v.number()),velocityY:v.optional(v.number()),
     equippedSkin:v.optional(v.union(v.literal('classic'),v.literal('remastered'))),
     activeCharacterItem:v.optional(v.union(v.string(),v.null())),lastSeen: v.number(),
+    previewSkin:v.optional(v.string()),
     lastItemUseId:v.optional(v.string()),lastItemUseAt:v.optional(v.number()),
   }).index('by_player', ['playerId']).index('by_character', ['characterId']).index('by_room', ['room']).index('by_lastSeen', ['lastSeen'])
     .index('by_presenceMode_lease',['presenceMode','terminalLeaseExpiresAt'])

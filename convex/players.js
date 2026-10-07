@@ -20,6 +20,8 @@ import { MAX_PLAYER_CAPACITY } from '../src/multiplayer/playerCapacity.js';
 import { normalizeDisplayName } from '../src/displayName.js';
 import { equippedItemId } from './characterLoadouts.js';
 import { findProfileCharacterState,publicClassState,savePlayerClassState } from './profileCharacterState.js';
+import { profileEquippedSkin } from './playerAppearance.js';
+import { previewVisual } from '../src/characterPreviewSkins.js';
 
 export const availability = query({
   args: {},
@@ -61,13 +63,14 @@ export const claim = internalMutation({
     const savedItem=await equippedItemId(ctx,profile._id,baseCharacterId(c.id));
     const activeCharacterItem=isCharacterItemEnabled(savedItem)?savedItem:null;
     const classState=publicClassState(await findProfileCharacterState(ctx,profile._id,baseCharacterId(c.id)));
+    const equippedSkin=await profileEquippedSkin(ctx,profile._id);
     const state={profileId:profile._id,identityKind:'profile',playerId:'pending',characterId:c.id,
       characterBaseId:baseCharacterId(c.id),name:displayName,displayName,sessionId,room:'selection',x:0,y:0,direction:'down',presenceMode:'playing',
-      equippedSkin:'classic',activeCharacterItem,moving:undefined,velocityX:undefined,velocityY:undefined,lastSeen:now};
+      equippedSkin,activeCharacterItem,moving:undefined,velocityX:undefined,velocityY:undefined,lastSeen:now};
     // A fresh Convex document ID is the independent live identity; never an authorization token.
     const playerId=await ctx.db.insert('players',state);
     await ctx.db.patch(playerId,{playerId});
-    return {ok:true,playerId,profile:publicProfile({...profile,selectedCharacterId:c.id,updatedAt:now}),classState};
+    return {ok:true,playerId,profile:publicProfile({...profile,selectedCharacterId:c.id,updatedAt:now}),classState,equippedSkin,activeCharacterItem};
   },
 });
 
@@ -170,6 +173,7 @@ export const update = mutation({
     x: v.number(), y: v.number(), direction: v.string(),
     moving:v.optional(v.boolean()),velocityX:v.optional(v.number()),velocityY:v.optional(v.number()),
     equippedSkin:v.optional(v.union(v.literal('classic'),v.literal('remastered'))),
+    previewSkin:v.optional(v.union(v.string(),v.null())),
     activeCharacterItem:v.optional(v.union(v.string(),v.null())),
   },
   handler: async (ctx, args) => {
@@ -186,6 +190,8 @@ export const update = mutation({
     if(!ownsCharacterSession(existing,args.characterId,args.sessionId)||!ownsPlayerSession(existing,args.playerId,args.sessionId)
       ||!isPlayerActive(existing))throw new Error('CHARACTER_SESSION_LOST');
     if(existing.presenceMode==='terminal')return;
+    if(args.previewSkin&&!previewVisual(characterById(baseCharacterId(args.characterId)),args.previewSkin))
+      throw new Error('Invalid preview skin');
     // Older clients publishing bare `arena` are also isolated, never placed in a shared solo room.
     const room=args.room==='arena'?soloArenaRoom(args.playerId):args.room;
     if(roomMapKey(room)===PVP_MAP){
@@ -203,7 +209,10 @@ export const update = mutation({
       room,x:args.x,y:args.y,direction:args.direction,
       characterBaseId:baseCharacterId(args.characterId),
       moving:args.moving,velocityX:args.velocityX,velocityY:args.velocityY,
-      equippedSkin:args.equippedSkin,activeCharacterItem:isCharacterItemEnabled(publishedItem)?publishedItem??null:null,
+      equippedSkin:existing.profileId?await profileEquippedSkin(ctx,existing.profileId)
+        :args.equippedSkin??existing.equippedSkin??'classic',
+      ...(args.previewSkin!==undefined?{previewSkin:args.previewSkin??undefined}:{}),
+      activeCharacterItem:isCharacterItemEnabled(publishedItem)?publishedItem??null:null,
       name:existing.displayName??existing.name,
       displayName:existing.displayName??existing.name,lastSeen:Date.now(),
       presenceMode:'playing',stationaryLeaseExpiresAt:undefined,
