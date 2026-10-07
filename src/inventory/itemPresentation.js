@@ -7,6 +7,7 @@ export function createItemPresentationImage(doc,item,baseUrl='/'){
   const frame=item.presentationFrame;
   if(!frame){
     const image=doc.createElement('img');image.className='boss-reward-image';
+    if(item.presentationClip)image.style.clipPath=item.presentationClip;
     image.src=src;image.alt=item.name;return image;
   }
   const svg=doc.createElementNS('http://www.w3.org/2000/svg','svg');

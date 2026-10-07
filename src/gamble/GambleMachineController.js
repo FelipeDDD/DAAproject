@@ -3,8 +3,12 @@ import { WorldPrompt } from '../ui/WorldPrompt.js';
 import { ROULETTE_COST,ROULETTE_REWARDS } from '../economy/config.js';
 import { getCurrentCurrencyClient } from '../economy/CurrencyClient.js';
 import { GAMBLE_MACHINE } from './config.js';
-import { GAMBLE_MACHINE_VISUAL,GAMBLE_VISUAL_PLACEHOLDERS,GAMBLE_REWARD_LABELS,GAMBLE_REWARD_PREVIEWS,GAMBLE_UI_TEXT } from './visualConfig.js';
+import { GAMBLE_MACHINE_VISUAL,GAMBLE_REWARD_LABELS,GAMBLE_UI_TEXT } from './visualConfig.js';
 import { machineDisplaySize,nearMachineBase } from './placement.js';
+import { COIN_BRACKETS,CIGARETTE_REWARDS,CIGARETTE_VOUCHER,RARE_CIGARETTE,SPECIAL_REWARDS,rouletteCategoryId } from './rewardCatalog.js';
+import { characterById } from '../characters.js';
+import { ItemRewardOverlay } from '../inventory/ItemRewardOverlay.js';
+import { isRewardDismissKey } from '../boss/BossRewardOverlay.js';
 
 const totalRewardWeight=(rewards=ROULETTE_REWARDS)=>rewards.reduce((total,reward)=>total+reward.weight,0);
 export function rewardChancePercent(reward,total=totalRewardWeight()){
@@ -28,26 +32,22 @@ export function createWheelSegments(rewards=ROULETTE_REWARDS,maxSegments=GAMBLE_
   });
   const visualSegments=segments.map(segment=>({...segment,label:segment.rewards.map(rewardName).join(' / '),rare:segment.rewards.every(reward=>isRareReward(reward,rewards)),
     icon:segment.rewards.every(reward=>isRareReward(reward,rewards))?GAMBLE_MACHINE_VISUAL.rareReward.icon:segment.rewards.reduce((icon,reward)=>
-    GAMBLE_MACHINE_VISUAL.rewardIconsById[reward.id]??icon,
+    reward.icon??GAMBLE_MACHINE_VISUAL.rewardIconsById[reward.id]??icon,
     segment.rewards.map(reward=>GAMBLE_MACHINE_VISUAL.rewardIconsByType[reward.reward?.type]
       ??GAMBLE_MACHINE_VISUAL.rewardIconsByType.default)[0]),
   }));
   while(visualSegments.length<maxSegments){
-    const index=visualSegments.length,placeholder=GAMBLE_VISUAL_PLACEHOLDERS[(index-count)%GAMBLE_VISUAL_PLACEHOLDERS.length];
-    if(!placeholder)break;
-    visualSegments.push({...placeholder,index,visualId:placeholder.id,id:`filler-${placeholder.id}-${index}`,placeholder:true,
-      rewardIds:[],rewards:[],rare:false});
+    const index=visualSegments.length,categoryId=GAMBLE_MACHINE_VISUAL.extraSegmentCategories[(index-count)%GAMBLE_MACHINE_VISUAL.extraSegmentCategories.length];
+    const original=visualSegments.find(segment=>segment.rewardIds.includes(categoryId))??visualSegments[0];
+    visualSegments.push({...original,index,visualId:`${original.rewardIds[0]}-extra`,id:`repeat-${index}`});
   }
   const order=GAMBLE_MACHINE_VISUAL.segmentOrder;
   const rank=segment=>{const index=order.indexOf(segment.visualId??segment.rewardIds[0]);return index<0?order.length:index;};
-  return visualSegments.sort((a,b)=>rank(a)-rank(b)).map((segment,index)=>({...segment,index,
-    previewImage:segment.previewImage??GAMBLE_REWARD_PREVIEWS[segment.rewardIds[0]]?.previewImage??null,
-    previewAsset:segment.previewAsset??GAMBLE_REWARD_PREVIEWS[segment.rewardIds[0]]?.previewAsset??null,
-  }));
+  return visualSegments.sort((a,b)=>rank(a)-rank(b)).map((segment,index)=>({...segment,index}));
 }
 
 export function wheelSegmentIndexForReward(rewardId,segments){
-  const segmentIndex=segments.findIndex(segment=>segment.rewardIds.includes(rewardId));
+  const segmentIndex=segments.findIndex(segment=>segment.rewardIds.includes(rouletteCategoryId(rewardId)));
   if(segmentIndex<0)throw new Error(`Unknown wheel reward: ${rewardId}`);
   return segmentIndex;
 }
@@ -74,6 +74,19 @@ function svgElement(doc,tag,className){
   if(className)element.setAttribute('class',className);
   return element;
 }
+function createFrameOrnaments(doc){
+  const frame=node(doc,'div','gamble-frame-ornaments');frame.setAttribute('aria-hidden','true');
+  for(const corner of ['tl','tr','bl','br']){
+    const svg=svgElement(doc,'svg',`gamble-frame-corner gamble-frame-corner--${corner}`);svg.setAttribute('viewBox','0 0 64 64');
+    const path=svgElement(doc,'path');
+    path.setAttribute('d','M4 60V22Q4 4 22 4H60 M12 44V24Q12 12 24 12H44 M12 34Q24 34 24 22Q34 24 34 12 M19 18L24 13L29 18L24 23Z');
+    svg.append(path);frame.append(svg);
+  }
+  const crest=svgElement(doc,'svg','gamble-frame-crest');crest.setAttribute('viewBox','0 0 160 44');
+  const path=svgElement(doc,'path');
+  path.setAttribute('d','M80 2L91 22L80 39L69 22Z M80 11L85 22L80 30L75 22Z M4 23H43Q55 23 59 14Q62 8 67 14Q70 23 58 26 M48 23Q55 33 69 24 M156 23H117Q105 23 101 14Q98 8 93 14Q90 23 102 26 M112 23Q105 33 91 24');
+  crest.append(path);frame.append(crest);return frame;
+}
 function wheelIcon(doc,kind,x,y){
   const group=svgElement(doc,'g',`gamble-wheel__icon gamble-wheel__icon--${kind}`);
   group.setAttribute('transform',`translate(${x} ${y})`);
@@ -81,9 +94,19 @@ function wheelIcon(doc,kind,x,y){
     const coin=svgElement(doc,'circle');coin.setAttribute('r','21');coin.setAttribute('class','gamble-wheel__coin');group.append(coin);
     const inner=svgElement(doc,'circle');inner.setAttribute('r','15');inner.setAttribute('class','gamble-wheel__coin-inner');group.append(inner);
     const mark=svgElement(doc,'path');mark.setAttribute('d','M 1 -10 V 10 M 7 -7 C 5 -10 -5 -10 -6 -5 C -8 0 7 -1 6 5 C 5 10 -5 10 -7 7');mark.setAttribute('class','gamble-wheel__coin-mark');group.append(mark);
+  }else if(kind==='sad'){
+    const face=svgElement(doc,'circle','gamble-wheel__sad-face');face.setAttribute('r','20');
+    const expression=svgElement(doc,'path','gamble-wheel__sad-expression');
+    expression.setAttribute('d','M -7 -7 V -4 M 7 -7 V -4 M -9 10 Q 0 -1 9 10');
+    group.append(face,expression);
   }else if(kind==='star'){
     const points=Array.from({length:10},(_,index)=>{const radius=index%2?9:21,angle=-Math.PI/2+index*Math.PI/5;return `${Math.cos(angle)*radius},${Math.sin(angle)*radius}`;}).join(' ');
     const star=svgElement(doc,'polygon');star.setAttribute('points',points);star.setAttribute('class','gamble-wheel__star');group.append(star);
+  }else if(['pack','ticket','gift'].includes(kind)){
+    const paths={pack:['M -16 -5 L -14 20 H 16 L 18 -5 Z','M -12 -5 V -20 H -5 V -5 M 0 -5 V -23 H 7 V -5 M 11 -5 V -17 H 17 V -5'],
+      ticket:['M -22 -12 H 22 V -4 Q 14 0 22 4 V 12 H -22 V 4 Q -14 0 -22 -4 Z','M -8 -7 V 7 M 8 -7 V 7'],
+      gift:['M -19 -3 H 19 V 20 H -19 Z M -22 -10 H 22 V -3 H -22 Z','M 0 -10 V 20 M 0 -10 C -25 -25 -25 -2 0 -10 C 25 -25 25 -2 0 -10']};
+    paths[kind].forEach((d,index)=>{const path=svgElement(doc,'path',`gamble-wheel__object${index?' gamble-wheel__object-detail':''}`);path.setAttribute('d',d);group.append(path);});
   }else{
     const mark=svgElement(doc,'text','gamble-wheel__question');mark.setAttribute('x','0');mark.setAttribute('y','1');mark.setAttribute('text-anchor','middle');mark.setAttribute('dominant-baseline','central');mark.textContent='?';group.append(mark);
   }
@@ -117,6 +140,7 @@ export function createPrizeWheel(documentRef=document,rewards=ROULETTE_REWARDS,{
   });
   const lights=svgElement(documentRef,'circle','gamble-wheel__lights');lights.setAttribute('cx','200');lights.setAttribute('cy','200');lights.setAttribute('r','187');svg.append(lights);
   const hub=svgElement(documentRef,'circle','gamble-wheel__hub');hub.setAttribute('cx','200');hub.setAttribute('cy','200');hub.setAttribute('r','31');svg.append(hub);
+  svg.append(wheelIcon(documentRef,'star',200,200));
   const pointer=svgElement(documentRef,'svg','gamble-wheel-pointer');pointer.setAttribute('viewBox','0 0 40 45');pointer.setAttribute('aria-hidden','true');
   const pointerPath=svgElement(documentRef,'path','gamble-wheel__pointer');pointerPath.setAttribute('d','M 2 2 L 38 2 L 20 40 Z');pointer.append(pointerPath);
   wrapper.append(svg,pointer);
@@ -149,13 +173,16 @@ function rewardName(reward){
 
 export class GambleMachinePanel extends GameMenuModal {
   constructor(options={}){
-    const {spinRequest=null,animateWheel=animateWheelTo,spinIdFactory=()=>globalThis.crypto?.randomUUID?.()
+    const {spinRequest=null,onAward=null,animateWheel=animateWheelTo,spinIdFactory=()=>globalThis.crypto?.randomUUID?.()
       ??`spin-${Date.now()}-${Math.random().toString(36).slice(2)}`,random=Math.random}=options;
     super({...options,title:GAMBLE_UI_TEXT.title,eyebrow:GAMBLE_UI_TEXT.eyebrow,footerText:'ESC TO CLOSE'});
-    Object.assign(this,{spinRequest,animateWheel,spinIdFactory,random,spinning:false,rotation:0,resultId:null});
+    Object.assign(this,{spinRequest,onAward,animateWheel,spinIdFactory,random,spinning:false,rotation:0,resultId:null});
     this.root.className+=' gamble-machine-modal';
+    this.closeButton.remove();
+    this.panel.append(createFrameOrnaments(this.doc));
     for(const [key,value] of Object.entries({
       '--gm-width':`${GAMBLE_MACHINE_VISUAL.modalWidthPx}px`,'--gm-max-height':`${GAMBLE_MACHINE_VISUAL.modalMaxHeightPx}px`,
+      '--gm-details-height':`${GAMBLE_MACHINE_VISUAL.detailsHeightPx}px`,
       '--gm-burgundy':GAMBLE_MACHINE_VISUAL.burgundy,'--gm-burgundy-light':GAMBLE_MACHINE_VISUAL.burgundyLight,
       '--gm-burgundy-dark':GAMBLE_MACHINE_VISUAL.burgundyDark,'--gm-gold':GAMBLE_MACHINE_VISUAL.gold,
       '--gm-gold-light':GAMBLE_MACHINE_VISUAL.goldLight,'--gm-gold-dim':GAMBLE_MACHINE_VISUAL.goldDim,
@@ -174,6 +201,7 @@ export class GambleMachinePanel extends GameMenuModal {
       '--gm-result-font':`${GAMBLE_MACHINE_VISUAL.resultFontSizePx}px`,
     }))this.root.style.setProperty?.(key,value);
     this.balanceState={coins:null,available:false};
+    this.itemPresentation=new ItemRewardOverlay({documentRef:this.doc,baseUrl:this.baseUrl});
     this.spinHandler=()=>this.spin();
   }
 
@@ -188,41 +216,84 @@ export class GambleMachinePanel extends GameMenuModal {
 
     const prizeColumn=node(this.doc,'section','gamble-prize-column');
     const groups=node(this.doc,'div','gamble-prize-groups');
-    const mainGroup=node(this.doc,'section','gamble-prize-group');
-    mainGroup.append(node(this.doc,'h3','gamble-section-title',GAMBLE_UI_TEXT.mainRewards));
+    groups.append(node(this.doc,'p','gamble-category-hint',GAMBLE_UI_TEXT.categories));
     const total=totalRewardWeight(),list=node(this.doc,'ul','gamble-reward-list');this.rewardRows=new Map();this.rewardRowClasses=new Map();
-    for(const reward of [...ROULETTE_REWARDS].sort((a,b)=>b.weight-a.weight)){
+    this.categoryButtons=new Map();
+    for(const reward of ROULETTE_REWARDS){
       const chance=rewardChancePercent(reward,total),rare=chance<=GAMBLE_MACHINE_VISUAL.rarePercent;
-      const row=node(this.doc,'li',`gamble-reward${rare?' is-rare':''}`);row.setAttribute('data-reward-id',reward.id);this.rewardRows.set(reward.id,row);
+      const row=node(this.doc,'li',`gamble-reward${rare?' is-rare':''}${reward.id==='lung_crusher_rare'?' is-featured':''}`);row.setAttribute('data-reward-id',reward.id);this.rewardRows.set(reward.id,row);
       this.rewardRowClasses.set(reward.id,row.className);
       const segment=this.wheelSegments[wheelSegmentIndexForReward(reward.id,this.wheelSegments)];
       const icon=prizeIcon(this.doc,segment.icon);
-      icon.setAttribute('aria-hidden','true');row.append(icon,node(this.doc,'span','gamble-reward__name',rewardName(reward)),
-        node(this.doc,'span','gamble-reward__chance',`${Number(chance.toFixed(2))}%`));list.append(row);
+      const button=this.button('','gamble-category-button',()=>this.selectCategory(reward.id));
+      this.categoryButtons.set(reward.id,button);
+      icon.setAttribute('aria-hidden','true');button.append(icon,node(this.doc,'span','gamble-reward__name',rewardName(reward)),
+        node(this.doc,'span','gamble-reward__chance',`${Number(chance.toFixed(2))}%`));row.append(button);list.append(row);
     }
-    mainGroup.append(list);groups.append(mainGroup);
-    const fillerGroup=node(this.doc,'section','gamble-prize-group gamble-prize-group--filler');
-    fillerGroup.append(node(this.doc,'h3','gamble-section-title',GAMBLE_UI_TEXT.fillers));
-    const fillerList=node(this.doc,'ul','gamble-reward-list');
-    for(const segment of this.wheelSegments.filter(segment=>segment.placeholder)){
-      const row=node(this.doc,'li','gamble-reward is-placeholder');
-      row.append(prizeIcon(this.doc,segment.icon),node(this.doc,'span','gamble-reward__name',segment.label));
-      fillerList.append(row);
-    }
-    if(fillerList.children.length){fillerGroup.append(fillerList);groups.append(fillerGroup);}
-    prizeColumn.append(groups);layout.append(wheelColumn,prizeColumn);
+    groups.append(list);
+    this.detailsPanel=node(this.doc,'section','gamble-details');this.detailsPanel.setAttribute('aria-live','polite');
+    prizeColumn.append(groups,this.detailsPanel);layout.append(wheelColumn,prizeColumn);
 
     const controls=node(this.doc,'section','gamble-controls'),stats=node(this.doc,'div','gamble-stats');
     const balance=node(this.doc,'p','gamble-balance');balance.append(node(this.doc,'span','',`${GAMBLE_UI_TEXT.balance}: `));
     this.balanceValue=node(this.doc,'strong','','— Coins');balance.append(this.balanceValue);
-    const cost=node(this.doc,'p','gamble-cost',`${GAMBLE_UI_TEXT.cost}: ${ROULETTE_COST} Coins`);stats.append(balance,cost);
+    stats.append(balance);
     this.spinStatus=node(this.doc,'p','gamble-spin-status','');const actions=node(this.doc,'div','gamble-actions');
     this.spinButton=node(this.doc,'button','gamble-spin-button',`SPIN FOR ${ROULETTE_COST} COINS`);
     this.spinButton.type='button';this.spinButton.addEventListener('click',this.spinHandler);
-    this.headerCloseButton=this.closeButton;
     this.closeActionButton=this.button(GAMBLE_UI_TEXT.close,'gamble-close-button',()=>this.requestClose());
+    this.closeButton=this.closeActionButton;
     actions.append(this.spinButton,this.closeActionButton);controls.append(stats,this.spinStatus,actions);
-    this.body.replaceChildren(layout,controls);this.setBalance(this.balanceState);
+    this.body.replaceChildren(layout,controls);this.selectCategory('tier3_skin');this.setBalance(this.balanceState);
+  }
+
+  previewImage({src,label,frame},className='',showCaption=true){
+    const figure=node(this.doc,'figure',`gamble-preview ${className}`),holder=node(this.doc,'div','gamble-preview__art');
+    if(frame){
+      const svg=svgElement(this.doc,'svg','gamble-preview__image');
+      svg.setAttribute('viewBox',`${frame.x} ${frame.y} ${frame.width} ${frame.height}`);
+      svg.setAttribute('role','img');svg.setAttribute('aria-label',label);
+      const image=svgElement(this.doc,'image');image.setAttribute('href',new URL(`${this.baseUrl}${src}`,this.doc.baseURI).href);
+      image.setAttribute('width',frame.sourceWidth);image.setAttribute('height',frame.sourceHeight);svg.append(image);holder.append(svg);
+    }else{
+      const image=node(this.doc,'img','gamble-preview__image');image.src=new URL(`${this.baseUrl}${src}`,this.doc.baseURI).href;
+      image.alt=label;holder.append(image);
+    }
+    figure.append(holder);if(showCaption)figure.append(node(this.doc,'figcaption','',label));return figure;
+  }
+
+  selectCategory(id){
+    const category=ROULETTE_REWARDS.find(reward=>reward.id===id);if(!category)return;
+    this.selectedCategoryId=id;
+    for(const [key,button] of this.categoryButtons){button.setAttribute('aria-pressed',String(key===id));
+      const winner=this.resultId&&rouletteCategoryId(this.resultId)===key;
+      this.rewardRows.get(key).setAttribute('class',`${this.rewardRowClasses.get(key)}${key===id?' is-selected':''}${winner?' is-winner':''}`);
+    }
+    this.detailsPanel.className=`gamble-details${category.premium?' is-rare':''}${id==='lung_crusher_rare'?' is-featured':''}${id==='tier3_skin'?' is-skin-preview':''}`;
+    const heading=node(this.doc,'div','gamble-details__heading');
+    heading.append(node(this.doc,'h3','',category.name),node(this.doc,'span','gamble-details__chance',`${rewardChancePercent(category)}% chance`));
+    const content=node(this.doc,'div','gamble-details__content');
+    if(id==='coins'){
+      const table=node(this.doc,'table','gamble-brackets');
+      for(const bracket of COIN_BRACKETS){const row=node(this.doc,'tr','');row.append(node(this.doc,'td','',`${bracket.min}\u2013${bracket.max} Coins`),node(this.doc,'td','',`${bracket.weight}%`));table.append(row);}
+      content.append(table);
+    }else if(id==='special'){
+      const list=node(this.doc,'ul','gamble-special-list');for(const item of SPECIAL_REWARDS)list.append(node(this.doc,'li','',item.name));content.append(list);
+    }else if(id==='tier3_skin'){
+      const character=characterById(this.scene?.presence?.identity?.characterBaseId)??characterById('michael');
+      content.append(this.previewImage({src:character.experimentalVisual.previewAsset,label:`${character.name} \u2014 Tier 3`},'gamble-preview--skin',false));
+    }else{
+      const previews=node(this.doc,'div','gamble-preview-grid');
+      const images=category.previewImages??(category.previewImage?[{src:category.previewImage,label:category.name,frame:category.previewFrame}]:[]);
+      for(const image of images){
+        if(id==='cigarette_collection'&&image.src===RARE_CIGARETTE.icon)continue;
+        previews.append(this.previewImage(image));
+      }
+      if(id==='cigarette_collection')previews.append(this.previewImage({src:CIGARETTE_VOUCHER.icon,label:'Collection complete: Voucher',frame:CIGARETTE_VOUCHER.iconFrame},'gamble-preview--voucher'));
+      content.append(previews);
+    }
+    if(!['coins','tier3_skin','cigarette_collection'].includes(id))content.append(node(this.doc,'p','gamble-details__description',category.description));
+    this.detailsPanel.replaceChildren(...(id==='tier3_skin'?[content]:[heading,content]));
   }
 
   setBalance(state){
@@ -235,11 +306,24 @@ export class GambleMachinePanel extends GameMenuModal {
     else{this.spinButton.disabled=false;this.spinButton.textContent=`SPIN FOR ${ROULETTE_COST} COINS`;this.spinStatus.textContent='';}
   }
 
-  requestClose(){if(this.spinning)return false;return super.requestClose();}
+  handleKey(event){
+    if(this.active&&this.itemPresentation?.active){
+      event.stopImmediatePropagation();event.preventDefault();
+      if(event.type==='keydown'){
+        if(event.key==='Escape'||isRewardDismissKey(event))this.itemPresentation.dismiss();
+        else if(event.key==='Tab')this.itemPresentation.backButton?.focus();
+      }
+      return;
+    }
+    super.handleKey(event);
+  }
+  requestClose(){if(this.spinning)return false;if(this.itemPresentation?.active)return this.itemPresentation.dismiss();return super.requestClose();}
   handleBackdrop(){if(!this.spinning)super.handleBackdrop();}
+  close(options){this.itemPresentation?.close(true);super.close(options);}
+  destroy(){super.destroy();this.itemPresentation?.destroy();}
 
   async spin(){
-    if(this.spinning||this.spinButton?.disabled||!this.active)return false;
+    if(this.spinning||this.itemPresentation?.active||this.spinButton?.disabled||!this.active)return false;
     if(!this.spinRequest){this.spinStatus.textContent='Spin service is unavailable.';return false;}
     this.resultId=null;this.resultMessage.hidden=true;this.resultMessage.textContent='';
     this.resultMessage.className='gamble-result';
@@ -247,30 +331,40 @@ export class GambleMachinePanel extends GameMenuModal {
       `gamble-wheel__segment${this.wheelSegments[index].rare?' is-rare':''}`));
     for(const [id,row] of this.rewardRows)row.setAttribute('class',this.rewardRowClasses.get(id));
     this.spinning=true;this.spinButton.disabled=true;this.spinButton.textContent=GAMBLE_UI_TEXT.spinning;
-    this.closeActionButton.disabled=true;this.headerCloseButton.disabled=true;this.spinStatus.textContent=GAMBLE_UI_TEXT.spinning;
+    this.closeActionButton.disabled=true;this.spinStatus.textContent=GAMBLE_UI_TEXT.spinning;
     try{
       const result=await this.spinRequest(this.spinIdFactory());
-      const segmentIndex=wheelSegmentIndexForReward(result.rewardId,this.wheelSegments);
-      const reward=ROULETTE_REWARDS.find(item=>item.id===result.rewardId);
+      const categoryId=result.categoryId??rouletteCategoryId(result.rewardId);
+      const segmentIndex=wheelSegmentIndexForReward(categoryId,this.wheelSegments);
+      const reward=ROULETTE_REWARDS.find(item=>item.id===categoryId);
       const jitter=landingJitterDegrees(this.wheelSegments.length,this.random);
       const target=wheelTargetRotation(segmentIndex,this.wheelSegments.length,this.rotation,
         GAMBLE_MACHINE_VISUAL.fullRotations,jitter);
       await this.animateWheel(this.wheel,{from:this.rotation,to:target,durationMs:GAMBLE_MACHINE_VISUAL.spinDurationMs,
         easing:GAMBLE_MACHINE_VISUAL.easing});
       this.rotation=target;this.resultId=result.rewardId;
+      this.selectCategory(categoryId);
       const rare=isRareReward(reward);
       this.wheelView.segmentPaths[segmentIndex].setAttribute('class',
         `gamble-wheel__segment${this.wheelSegments[segmentIndex].rare?' is-rare':''} is-winner${rare?' is-rare-win':''}`);
-      this.rewardRows.get(result.rewardId)?.setAttribute('class',
-        `${this.rewardRowClasses.get(result.rewardId)} is-winner${rare?' is-rare-win':''}`);
+      this.rewardRows.get(categoryId)?.setAttribute('class',
+        `${this.rewardRowClasses.get(categoryId)} is-selected is-winner${rare?' is-rare-win':''}`);
       this.resultMessage.className=`gamble-result${rare?' is-rare-win':''}`;
-      this.resultMessage.textContent=`${rare?GAMBLE_MACHINE_VISUAL.rareReward.resultPrefix+' -':GAMBLE_UI_TEXT.won} ${rewardName(reward).toUpperCase()}`;this.resultMessage.hidden=false;
+      const label=result.outcome?.label??GAMBLE_REWARD_LABELS[result.rewardId]??rewardName(reward);
+      this.resultMessage.textContent=`${rare?GAMBLE_MACHINE_VISUAL.rareReward.resultPrefix+' -':GAMBLE_UI_TEXT.won} ${label.toUpperCase()}`;this.resultMessage.hidden=false;
+      Promise.resolve().then(()=>this.onAward?.(result)).catch(error=>console.warn('[LUCKY MACHINE] Inventory refresh failed:',error));
       if(Number.isSafeInteger(result.coins))this.balanceState={coins:result.coins,available:true};
-      this.spinning=false;this.closeActionButton.disabled=false;this.headerCloseButton.disabled=false;
+      this.spinning=false;this.closeActionButton.disabled=false;
       this.setBalance(this.balanceState);
+      const obtainedPack=!result.duplicate&&CIGARETTE_REWARDS.find(item=>item.itemId===result.outcome?.itemId);
+      if(obtainedPack&&this.active&&!this.destroyed)this.itemPresentation.show(obtainedPack,{
+        source:'roulette',mount:this.root,onReturn:()=>{
+          if(this.active)(this.spinButton.disabled?this.closeActionButton:this.spinButton).focus({preventScroll:true});
+        },
+      });
       return true;
     }catch(error){
-      this.spinning=false;this.closeActionButton.disabled=false;this.headerCloseButton.disabled=false;
+      this.spinning=false;this.closeActionButton.disabled=false;
       this.setBalance(this.balanceState);this.spinStatus.textContent=error.message??'The spin failed. Try again.';return false;
     }
   }
@@ -280,7 +374,8 @@ export class GambleMachineController {
   constructor(scene,placement,{config=GAMBLE_MACHINE}={}){
     Object.assign(this,{scene,placement,config,destroyed:false,suspended:false});
     this.currencyClient=getCurrentCurrencyClient();
-    this.dialog=new GambleMachinePanel({scene,spinRequest:spinId=>this.currencyClient?.spinRoulette(spinId)});
+    this.dialog=new GambleMachinePanel({scene,spinRequest:spinId=>this.currencyClient?.spinRoulette(spinId),
+      onAward:()=>scene.characterItems?.restore()});
     this.unsubscribeBalance=this.currencyClient?.subscribe(state=>this.dialog?.setBalance(state));
     const frame=scene.textures.get(config.textureKey).get(),size=machineDisplaySize(frame,placement);
     this.visual=scene.add.container(placement.x,placement.y).setDepth(placement.y+config.depthOffset);

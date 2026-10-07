@@ -2,7 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { CollectionsMenu } from '../src/collections/CollectionsMenu.js';
-import { createPreviewCollections } from '../src/collections/catalog.js';
+import { createPreviewCollections,collectionsFromQuestProgress } from '../src/collections/catalog.js';
+import { ITEM_CATALOG,inventoryItemsFromSources } from '../src/inventory/config.js';
+import { createItemPresentationImage } from '../src/inventory/itemPresentation.js';
 
 import { menuFixture } from './helpers/menuFixture.js';
 const fixture=()=>menuFixture(CollectionsMenu);
@@ -14,6 +16,23 @@ test('sample collections have stable IDs and valid existing assets without chang
   assert.ok(items.some(item=>item.rarity==='rare'&&!item.unlocked));
   for(const item of items.filter(item=>item.image))assert.ok(readFileSync(new URL(`../public/${item.image}`,import.meta.url)).length);
   items[0].unlocked=false;assert.equal(createPreviewCollections()[0].items[0].unlocked,true);
+});
+
+test('new common editions retain their inventory icons and consistently crop the card backdrop',()=>{
+  const {menu,doc}=fixture();
+  const ids=['roulette_pack_pink','roulette_pack_orange','roulette_pack_purple'];
+  const items=inventoryItemsFromSources(null,ids.map(itemId=>({itemId,quantity:1})),'sarina');
+  assert.equal(items.length,3);
+  menu.setCollections(collectionsFromQuestProgress(null,items));menu.open();menu.showCollection('cigarettes');
+  for(const id of ids){
+    const item=ITEM_CATALOG[id];assert.match(item.icon,/-inv.png$/);
+    assert.ok(readFileSync(new URL(`../public/${item.icon}`,import.meta.url)).length);
+    menu.selectItem(id);
+    const image=menu.preview.querySelector('img'),card=createItemPresentationImage(doc,item);
+    assert.match(image.src,new RegExp(item.presentationImage.replaceAll('.','\\.')));
+    assert.match(image.style.clipPath,/^polygon\(/);assert.equal(card.style.clipPath,image.style.clipPath);
+  }
+  menu.destroy();
 });
 
 test('overview navigates to the item grid, selection updates preview, and back returns to collections',()=>{

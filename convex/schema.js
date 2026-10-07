@@ -158,6 +158,8 @@ export default defineSchema({
   }).index('by_profile_event',['profileId','eventKey']),
   rouletteResults:defineTable({
     profileId:v.id('profiles'),spinId:v.string(),rewardId:v.string(),createdAt:v.number(),
+    categoryId:v.optional(v.string()),outcome:v.optional(v.object({type:v.string(),label:v.string(),
+      itemId:v.optional(v.string()),amount:v.optional(v.number())})),
   }).index('by_profile_spin',['profileId','spinId']),
   puzzleQuizRuns:defineTable({
     profileId:v.id('profiles'),playerId:v.string(),sessionId:v.string(),

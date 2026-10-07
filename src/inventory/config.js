@@ -3,7 +3,7 @@ import { CHARACTER_ITEMS,characterInventoryItems,isCharacterItemEnabled } from '
 
 export const INVENTORY_SLOT_COUNT=4;
 export const INVENTORY_POSITION_STORAGE_KEY='daa-inventory-bar-position';
-export const ITEM_TYPES=Object.freeze(['key','quest','consumable','character_item']);
+export const ITEM_TYPES=Object.freeze(['key','quest','consumable','character_item','collectible','voucher','cosmetic']);
 export const ITEM_CATALOG=Object.freeze({
   [BOSS_REWARDS.DIRECTOR_ACCESS_BADGE]:Object.freeze({
     itemId:BOSS_REWARDS.DIRECTOR_ACCESS_BADGE,type:'key',quantity:1,

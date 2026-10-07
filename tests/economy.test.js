@@ -5,7 +5,12 @@ import { grantReward,grantQuizReward,spendCoins,profileCoins } from '../convex/r
 import { balance,devGrantCoins } from '../convex/currency.js';
 import * as puzzle from '../convex/puzzleQuiz.js';
 import * as challenge from '../convex/itChallenge.js';
-import { resolveRoulette,spin as spinRoulette } from '../convex/rouletteRewards.js';
+import { resolveRoulette,spin as spinRoulette,grantRoulettePrize } from '../convex/rouletteRewards.js';
+import { COIN_BRACKETS,CIGARETTE_REWARDS,CIGARETTE_VOUCHER } from '../src/gamble/rewardCatalog.js';
+import { claim as claimItem } from '../convex/characterItems.js';
+import { inventoryItemsFromSources } from '../src/inventory/config.js';
+import { canPreviewCharacterSkin } from '../src/WardrobeController.js';
+import { characterById } from '../src/characters.js';
 import { sessionTokenHash } from '../convex/profileStore.js';
 import { itChallengeRulesKey } from '../src/quiz/itChallengeRules.js';
 import QUESTIONS from '../convex/quizStaticQuestions.generated.js';
@@ -222,8 +227,9 @@ test('HUD subscription restores backend balance, reacts to gains/spends and igno
 
 test('weights validate config and permit precise one-percent or smaller chances',()=>{
   assert.equal(validateWeightedRewards(ROULETTE_REWARDS),100);assert.equal(ROULETTE_COST,5);
-  assert.equal(selectWeightedReward(ROULETTE_REWARDS,.98999).id,'coins_5');
-  assert.equal(selectWeightedReward(ROULETTE_REWARDS,.99).id,'coins_20');
+  assert.equal(COIN_BRACKETS.reduce((sum,bracket)=>sum+bracket.weight,0),40);
+  assert.equal(selectWeightedReward(ROULETTE_REWARDS,.835).id,'lung_crusher_rare');
+  assert.equal(selectWeightedReward(ROULETTE_REWARDS,.845).id,'tier3_skin');
   const precise=[{id:'common',weight:99.99,reward:{type:'none'}},{id:'rare',weight:.01,reward:{type:'none'}}];
   assert.equal(validateWeightedRewards(precise),100);assert.equal(selectWeightedReward(precise,.99995).id,'rare');
   for(const weight of [0,-1,NaN,Infinity])assert.throws(()=>validateWeightedRewards([{id:'x',weight,reward:{type:'none'}}]));
@@ -233,25 +239,71 @@ test('weights validate config and permit precise one-percent or smaller chances'
 });
 
 test('prepared roulette uses server RNG, stable result and one spend per spin',async t=>{
-  const h=await fixture(10);t.mock.method(Math,'random',()=>.995);
+  const h=await fixture(10);t.mock.method(Math,'random',()=>.845);
   const args={profileId:h.profileId,spinId:'server-spin'};
-  assert.deepEqual(await resolveRoulette(h.ctx,args),{rewardId:'coins_20',duplicate:false});
-  assert.equal(await h.coins(),25);
+  const expected={rewardId:'tier3_skin',categoryId:'tier3_skin',outcome:{type:'item',itemId:'tier3_skin',label:'Tier 3 Skin'}};
+  assert.deepEqual(await resolveRoulette(h.ctx,args),{...expected,duplicate:false});
+  assert.equal(await h.coins(),5);assert.equal(h.db.rows('characterItems').length,1);
   t.mock.method(Math,'random',()=>0);
-  assert.deepEqual(await resolveRoulette(h.ctx,args),{rewardId:'coins_20',duplicate:true});
-  assert.equal(await h.coins(),25);assert.equal(h.db.rows('currencyEvents').length,2);
+  assert.deepEqual(await resolveRoulette(h.ctx,args),{...expected,duplicate:true});
+  assert.equal(await h.coins(),5);assert.equal(h.db.rows('currencyEvents').length,1);
   const poor=await fixture(4);
   await assert.rejects(resolveRoulette(poor.ctx,{profileId:poor.profileId,spinId:'no-funds'}),/INSUFFICIENT/);
   assert.equal(await poor.coins(),4);assert.equal(poor.db.rows('rouletteResults').length,0);
 });
 
 test('public roulette spin authenticates the live owner and returns stable rewardId with updated balance',async t=>{
-  const h=await fixture(10);t.mock.method(Math,'random',()=>.995);
+  const h=await fixture(10);t.mock.method(Math,'random',()=>.835);
   const args={token:h.token,...h.args,spinId:'client-spin-001'};
-  assert.deepEqual(await spinRoulette._handler(h.ctx,args),{rewardId:'coins_20',duplicate:false,coins:25});
-  assert.deepEqual(await spinRoulette._handler(h.ctx,args),{rewardId:'coins_20',duplicate:true,coins:25});
-  assert.equal(h.db.rows('currencyEvents').length,2);
+  const expected={rewardId:'lung_crusher_rare',categoryId:'lung_crusher_rare',outcome:{type:'item',itemId:'roulette_pack_rare',label:'Lung Crusher 3000 Rare'},coins:5};
+  assert.deepEqual(await spinRoulette._handler(h.ctx,args),{...expected,duplicate:false});
+  assert.deepEqual(await spinRoulette._handler(h.ctx,args),{...expected,duplicate:true});
+  assert.equal(h.db.rows('currencyEvents').length,1);
   await assert.rejects(spinRoulette._handler(h.ctx,{...args,sessionId:'other'}),/SESSION_LOST/);
   await h.db.patch(h.rowId,{profileId:'foreign'});
   await assert.rejects(spinRoulette._handler(h.ctx,{...args,spinId:'client-spin-002'}),/PROFILE_REQUIRED/);
+});
+
+test('collection awards an unowned eligible pack; completed collection stacks vouchers',async t=>{
+  const h=await fixture(30);t.mock.method(Math,'random',()=>.75);
+  for(const item of CIGARETTE_REWARDS.slice(0,3))await h.db.insert('characterItems',{profileId:h.profileId,itemId:item.itemId,quantity:1});
+  const category=ROULETTE_REWARDS.find(reward=>reward.id==='cigarette_collection'),event={profileId:h.profileId,eventKey:'collection'};
+  const outcome=await grantRoulettePrize(h.ctx,event,category);
+  assert.equal(outcome.itemId,CIGARETTE_REWARDS[3].itemId);
+  assert.equal(h.db.rows('characterItems').length,4);
+  assert.equal((await grantRoulettePrize(h.ctx,event,category)).itemId,CIGARETTE_VOUCHER.itemId);
+  await grantRoulettePrize(h.ctx,event,category);
+  assert.equal(h.db.rows('characterItems').find(item=>item.itemId===CIGARETTE_VOUCHER.itemId).quantity,2);
+  t.mock.method(Math,'random',()=>.75);
+  const args={profileId:h.profileId,spinId:'collection-voucher-id'};
+  const result=await resolveRoulette(h.ctx,args);assert.equal(result.outcome.type,'voucher');
+  await resolveRoulette(h.ctx,args);
+  assert.equal(h.db.rows('characterItems').find(item=>item.itemId===CIGARETTE_VOUCHER.itemId).quantity,3);
+  assert.equal(await h.coins(),25);
+});
+
+test('coin category picks a weighted bracket then an integer amount, preserving the spin receipt',async t=>{
+  const h=await fixture(10),draws=[.33,.1,.5];t.mock.method(Math,'random',()=>draws.shift()??0);
+  const args={profileId:h.profileId,spinId:'coin-bracket-id'},result=await resolveRoulette(h.ctx,args);
+  assert.equal(result.categoryId,'coins');assert.deepEqual(result.outcome,{type:'coins',amount:4,label:'Coins \u00d74'});
+  assert.equal(await h.coins(),9);
+  assert.deepEqual(await resolveRoulette(h.ctx,args),{...result,duplicate:true});
+  assert.equal(await h.coins(),9);
+});
+
+test('roulette grants appear in inventory after reload and cannot be claimed by the client',async()=>{
+  const h=await fixture(10);await h.db.patch(h.profileId,{selectedCharacterId:'michael'});
+  for(const id of ['lung_crusher_rare','tier3_skin','special'])await grantRoulettePrize(h.ctx,{profileId:h.profileId,eventKey:id},ROULETTE_REWARDS.find(reward=>reward.id===id));
+  const items=inventoryItemsFromSources(null,h.db.rows('characterItems'),'sarina');
+  assert.equal(items.length,3);assert.ok(items.some(item=>item.type==='cosmetic'));
+  assert.ok(canPreviewCharacterSkin(characterById('sarina'),{},false,items.some(item=>item.itemId==='tier3_skin')));
+  for(const item of items)await assert.rejects(claimItem._handler(h.ctx,{token:h.token,itemId:item.itemId}),/only be granted by the Lucky Machine/);
+  const vouchers=inventoryItemsFromSources(null,[{itemId:CIGARETTE_VOUCHER.itemId,quantity:2}],'michael');
+  assert.equal(vouchers[0].quantity,2);assert.equal(vouchers[0].type,'voucher');
+});
+
+test('historical spin receipts map to the new category without another charge or grant',async()=>{
+  const h=await fixture(27);await h.db.insert('rouletteResults',{profileId:h.profileId,spinId:'legacy-spin',rewardId:'coins_5',createdAt:0});
+  assert.deepEqual(await resolveRoulette(h.ctx,{profileId:h.profileId,spinId:'legacy-spin'}),{rewardId:'coins_5',categoryId:'coins',duplicate:true});
+  assert.equal(await h.coins(),27);assert.equal(h.db.rows('currencyEvents').length,0);
 });

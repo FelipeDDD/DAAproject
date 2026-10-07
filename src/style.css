@@ -273,11 +273,11 @@ body { min-height:100vh; margin:0; color:#334550; background-color:var(--page-ba
   image-rendering:auto; filter:none; animation:none; transform:none;
 }
 .boss-reward-presentation.item[data-item-id='office2_key'] img { width: min(260px,60vw); height: min(260px,60vw); object-fit: cover; object-position: 61% center; clip-path: inset(0 7% 0 14%); animation:none; transform:none; filter:none; }
-.boss-reward-presentation.item:is([data-item-id='lung_crusher_3000_pack'],[data-item-id='cigarette_pack_01'],[data-item-id='cigarette_pack_02'],[data-item-id='cigarette_pack_03'],[data-item-id='cigarette_pack_04']) .boss-reward-panel {
+.boss-reward-presentation.item:is([data-item-id='lung_crusher_3000_pack'],[data-item-id='cigarette_pack_01'],[data-item-id='cigarette_pack_02'],[data-item-id='cigarette_pack_03'],[data-item-id='cigarette_pack_04'],[data-presentation-style='cigarette-pack']) .boss-reward-panel {
   background:radial-gradient(ellipse at 50% 42%,#614322 0%,#281d13 62%,#121519 100%);
   border-color:#d3a253;
 }
-.boss-reward-presentation.item:is([data-item-id='lung_crusher_3000_pack'],[data-item-id='cigarette_pack_01'],[data-item-id='cigarette_pack_02'],[data-item-id='cigarette_pack_03'],[data-item-id='cigarette_pack_04']) img {
+.boss-reward-presentation.item:is([data-item-id='lung_crusher_3000_pack'],[data-item-id='cigarette_pack_01'],[data-item-id='cigarette_pack_02'],[data-item-id='cigarette_pack_03'],[data-item-id='cigarette_pack_04'],[data-presentation-style='cigarette-pack']) img {
   width:min(43vw,430px,43vh);height:auto;image-rendering:auto;
   animation:none;transform:none;filter:drop-shadow(0 0 10px #ffd56d99);
 }

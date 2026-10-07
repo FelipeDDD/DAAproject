@@ -2,6 +2,7 @@ import { baseCharacterId } from '../characters.js';
 import { CIGARETTE_QUEST } from '../npc/cigaretteQuest.js';
 import { cigarettePack } from '../npc/cigarettePacks.js';
 import { DIRECTOR_HIDDEN_KEY_ITEM_ID } from '../office2/directorInvestigation.js';
+import { ROULETTE_ITEMS } from '../gamble/rewardCatalog.js';
 
 export const CHARACTER_ITEM_IDS=Object.freeze({
   LUNG_CRUSHER_3000:'lung_crusher_3000',LUNG_CRUSHER_PACK:'lung_crusher_3000_pack',
@@ -36,6 +37,7 @@ const PACK_ICON_CLIPS=[
 ];
 
 export const CHARACTER_ITEMS=Object.freeze({
+  ...Object.fromEntries(ROULETTE_ITEMS.map(item=>[item.itemId,Object.freeze(item)])),
   [CHARACTER_ITEM_IDS.DIRECTOR_HIDDEN_KEY]:Object.freeze({
     itemId:CHARACTER_ITEM_IDS.DIRECTOR_HIDDEN_KEY,type:'key',quantity:1,questId:'director-hidden-key',
     name:"Director's Hidden Key",description:'A forgotten key, recovered from an unusually safe hiding place.',

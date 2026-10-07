@@ -71,7 +71,7 @@ export class BackpackMenu extends GameMenuModal {
     if(item.presentationFrame){
       const image=createItemPresentationImage(this.doc,item,this.baseUrl);
       image.setAttribute('class','collection-image');art.append(image);
-    }else this.renderImage(art,inventoryPresentationAsset(item));
+    }else this.renderImage(art,inventoryPresentationAsset(item),item.presentationClip);
     const title=node(this.doc,'h3','collection-preview-title',item.name);title.setAttribute('aria-live','polite');
     const description=node(this.doc,'p','collection-preview-description',item.description);
     const metadata=node(this.doc,'p','backpack-metadata',`${item.type.replaceAll('_',' ')} · Quantity: ${item.quantity}${item.active?' · Equipped':''}`);

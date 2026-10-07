@@ -14,6 +14,7 @@ export class ItemRewardOverlay {
   show(item,{eyebrow='NEW ITEM',source='pickup',onReturn=null,mount=null}={}){
     this.close(true);this.source=source;this.onReturn=onReturn;this.state.begin();this.root.dataset.itemId=item.itemId;
     this.root.dataset.source=source;
+    this.root.dataset.presentationStyle=item.presentationStyle??'';
     if(mount)mount.append(this.root);
     const panel=this.doc.createElement('div');panel.className='boss-reward-panel';
     const eyebrowLabel=this.doc.createElement('small');eyebrowLabel.textContent=eyebrow;

@@ -51,6 +51,7 @@ export const claim=mutation({
     const profile=await authenticatedProfile(ctx,args.token);
     const characterBaseId=baseCharacterId(profile.selectedCharacterId);
     if(characterItemDefinition(args.itemId)?.questId)throw new Error('Use the quest pickup to collect this item.');
+    if(characterItemDefinition(args.itemId)?.rewardOnly)throw new Error('This item can only be granted by the Lucky Machine.');
     if(args.itemId===CHARACTER_ITEM_IDS.OFFICE2_KEY)throw new Error('Use the office safe to collect this key.');
     if(!isCharacterItemEnabled(args.itemId))throw new Error('This item is temporarily unavailable.');
     if(!canCharacterOwnItem(characterBaseId,args.itemId))throw new Error('This character cannot collect that item.');
