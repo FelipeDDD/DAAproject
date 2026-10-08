@@ -39,7 +39,7 @@ export class SkillAuthority {
     const position=this.world.position(player);
     if(position.life!==player.life||!Number.isFinite(position.x)||!Number.isFinite(position.y)
       ||(position.moving&&now-position.at>1000))return reject('invalid_position');
-    const data=resolved.definition.create({player,position,config:resolved.config,now});
+    const data=resolved.definition.create({player,position,aim:request.aim,config:resolved.config,now});
     if(!data)return reject('invalid_placement');
     const instance={id:`skill-${this.round}-${++this.serial}`,skillId:request.skillId,round:this.round,
       ownerId:player.playerId,ownerLife:player.life,team:player.team,config:resolved.config,data};

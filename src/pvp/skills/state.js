@@ -3,9 +3,13 @@ const id=s=>typeof s==='string'&&/^[a-zA-Z0-9_-]{1,64}$/.test(s);
 const integer=n=>Number.isSafeInteger(n)&&n>=0;
 const time=n=>Number.isFinite(n)&&n>=0&&n<=Number.MAX_SAFE_INTEGER;
 export function validSkillUse(p){
-  return plain(p)&&['playerId','sessionId','skillId'].every(k=>id(p[k]))
-    &&['round','life','castSeq'].every(k=>integer(p[k]))&&p.castSeq>0
-    &&Object.keys(p).length===6;
+  if(!plain(p)||!['playerId','sessionId','skillId'].every(k=>id(p[k]))
+    ||!['round','life','castSeq'].every(k=>integer(p[k]))||p.castSeq<=0)return false;
+  const keys=Object.keys(p);
+  if(keys.length===6)return true;
+  return keys.length===7&&Object.hasOwn(p,'aim')&&plain(p.aim)
+    &&Object.keys(p.aim).length===2&&Number.isFinite(p.aim.x)&&Number.isFinite(p.aim.y)
+    &&Math.abs(p.aim.x)<=100300&&Math.abs(p.aim.y)<=100300;
 }
 // Generic envelope; a skill can evolve its presentation data without touching
 // combat snapshots persisted in Convex. Bound wire size and world coordinates.

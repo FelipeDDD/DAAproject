@@ -474,14 +474,15 @@ test('unfinished first victory remains a recoverable pending reward',()=>{
 
 test('Classic is always available and Remastered requires its persistent unlock',()=>{
   const empty=wardrobeSkinOptions(null);
-  assert.deepEqual(empty.map(option=>[option.id,option.unlocked]),[['classic',true],['remastered',false]]);
+  assert.deepEqual(empty.map(option=>[option.id,option.unlocked]),[['classic',true],['remastered',false],['level3Preview',false]]);
   assert.throws(()=>equipCharacterSkin(null,CHARACTER_SKINS.REMASTERED,'felipe'),/not been unlocked/);
   assert.equal(equipCharacterSkin(null,CHARACTER_SKINS.CLASSIC,'felipe').equippedSkin,'classic');
   const unlocked=applyDirectorRewardChoice(applyDirectorVictory(null,'felipe').progress,
     BOSS_REWARDS.REMASTERED_SKIN).progress;
   assert.equal(wardrobeSkinOptions(unlocked)[1].unlocked,true);
-  assert.deepEqual(wardrobeSkinOptions(unlocked,{experimental:true}).map(option=>option.id),
+  assert.deepEqual(wardrobeSkinOptions(unlocked,{tier3Unlocked:true}).map(option=>option.id),
     ['classic','remastered','level3Preview']);
+  assert.equal(wardrobeSkinOptions(unlocked,{tier3Unlocked:true})[2].unlocked,true);
   assert.equal(equipCharacterSkin(unlocked,CHARACTER_SKINS.REMASTERED).equippedSkin,'remastered');
   assert.equal(normalizeBossProgress({...unlocked,equippedSkin:'remastered'}).equippedSkin,'remastered');
 });

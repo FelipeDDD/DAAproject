@@ -18,7 +18,7 @@ import { ArenaEncounterController } from '../boss/ArenaEncounterController.js';
 import { ARENA_MODES } from '../boss/ArenaEncounter.js';
 
 export class ArenaScene extends MapScene {
-  constructor(){super('arena','arena.tmj');}
+  constructor(){super('arena','arena.tmj',{hud:{showCurrency:false}});}
 
   collisionOptions(){return {excludeNames:['gate']};}
 

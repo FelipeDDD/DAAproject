@@ -238,6 +238,20 @@ export class GambleMachinePanel extends GameMenuModal {
     const balance=node(this.doc,'p','gamble-balance');balance.append(node(this.doc,'span','',`${GAMBLE_UI_TEXT.balance}: `));
     this.balanceValue=node(this.doc,'strong','','— Coins');balance.append(this.balanceValue);
     stats.append(balance);
+    const coinInfo=node(this.doc,'span','gamble-coin-info');
+    const coinTip=node(this.doc,'span','gamble-coin-tooltip',GAMBLE_UI_TEXT.coinInfo);
+    coinTip.id='gamble-coin-tooltip';coinTip.hidden=true;coinTip.setAttribute('role','tooltip');
+    let infoPinned=false;
+    const setInfoVisible=visible=>{coinTip.hidden=!visible;infoButton.setAttribute('aria-expanded',String(visible));};
+    const infoButton=this.button('i','gamble-coin-info-button',()=>{infoPinned=!infoPinned;setInfoVisible(infoPinned);});
+    infoButton.setAttribute('aria-label',GAMBLE_UI_TEXT.coinInfoLabel);
+    infoButton.setAttribute('aria-describedby',coinTip.id);infoButton.setAttribute('aria-controls',coinTip.id);
+    infoButton.setAttribute('aria-expanded','false');
+    coinInfo.addEventListener('mouseenter',()=>setInfoVisible(true));
+    coinInfo.addEventListener('mouseleave',()=>{if(!infoPinned&&this.doc.activeElement!==infoButton)setInfoVisible(false);});
+    infoButton.addEventListener('focus',()=>setInfoVisible(true));
+    infoButton.addEventListener('blur',()=>{infoPinned=false;setInfoVisible(false);});
+    coinInfo.append(infoButton,coinTip);stats.append(coinInfo);
     this.spinStatus=node(this.doc,'p','gamble-spin-status','');const actions=node(this.doc,'div','gamble-actions');
     this.spinButton=node(this.doc,'button','gamble-spin-button',`SPIN FOR ${ROULETTE_COST} COINS`);
     this.spinButton.type='button';this.spinButton.addEventListener('click',this.spinHandler);
@@ -356,7 +370,8 @@ export class GambleMachinePanel extends GameMenuModal {
       if(Number.isSafeInteger(result.coins))this.balanceState={coins:result.coins,available:true};
       this.spinning=false;this.closeActionButton.disabled=false;
       this.setBalance(this.balanceState);
-      const obtainedPack=!result.duplicate&&CIGARETTE_REWARDS.find(item=>item.itemId===result.outcome?.itemId);
+      const obtainedPack=!result.duplicate&&[...CIGARETTE_REWARDS,RARE_CIGARETTE,CIGARETTE_VOUCHER]
+        .find(item=>item.itemId===result.outcome?.itemId);
       if(obtainedPack&&this.active&&!this.destroyed)this.itemPresentation.show(obtainedPack,{
         source:'roulette',mount:this.root,onReturn:()=>{
           if(this.active)(this.spinButton.disabled?this.closeActionButton:this.spinButton).focus({preventScroll:true});

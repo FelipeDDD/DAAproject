@@ -143,9 +143,14 @@
 .gamble-special-list {margin:0;padding-left:20px;font:16px/1.5 Georgia,serif;}
 .gamble-special-list li {padding:5px 0;}
 .gamble-controls {display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);grid-template-rows:56px 18px;height:108px;align-items:center;gap:6px 18px;padding:14px 12px 8px;border-top:1px solid #c2974e55;}
-.gamble-stats {grid-column:1;grid-row:1;min-width:0;display:flex;align-items:center;}
+.gamble-stats {position:relative;grid-column:1;grid-row:1;min-width:0;display:flex;align-items:center;gap:10px;}
 .gamble-stats p {margin:0;color:#decba7;font:var(--gm-stats-font)/1.4 Georgia,serif;}
 .gamble-balance strong {color:#f4d77f;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.gamble-coin-info {display:inline-flex;flex:none;align-items:center;}
+.gamble-machine-modal .gamble-coin-info-button {display:grid;place-items:center;box-sizing:border-box;width:24px;height:24px;min-height:0;padding:0;border:1px solid var(--gm-gold-dim);border-radius:50%;color:var(--gm-gold-light);background:var(--gm-burgundy-dark);font:italic 700 16px/1 Georgia,serif;box-shadow:inset 0 0 5px #d5b25f12;}
+.gamble-machine-modal .gamble-coin-info-button:hover,.gamble-machine-modal .gamble-coin-info-button[aria-expanded="true"] {border-color:var(--gm-gold);background:var(--gm-burgundy-light);box-shadow:0 0 8px #d5b25f25;}
+.gamble-coin-tooltip {position:absolute;z-index:5;bottom:calc(100% + 8px);left:0;box-sizing:border-box;width:260px;max-width:calc(100vw - 80px);padding:11px 14px;border:1px solid var(--gm-gold-dim);border-radius:6px;color:var(--gm-text);background:var(--gm-burgundy-dark);font:14px/1.5 "Segoe UI",sans-serif;text-align:left;box-shadow:0 5px 18px #0009;}
+.gamble-coin-tooltip[hidden] {display:none;}
 .gamble-spin-status {grid-column:1/-1;grid-row:2;height:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0;color:var(--gm-muted);text-align:center;font:13px "Segoe UI",sans-serif;}
 .gamble-spin-status:empty {display:none;}
 .gamble-actions {display:contents;}

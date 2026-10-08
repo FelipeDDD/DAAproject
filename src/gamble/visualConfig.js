@@ -1,3 +1,5 @@
+import { CURRENCY_UI_TEXT } from '../economy/uiText.js';
+
 export const GAMBLE_MACHINE_VISUAL=Object.freeze({
   modalWidthPx:1200,modalMaxHeightPx:920,detailsHeightPx:300,
   statsFontSizePx:24,resultFontSizePx:25,
@@ -26,4 +28,5 @@ export const GAMBLE_UI_TEXT=Object.freeze({
   title:'LUCKY MACHINE',eyebrow:'TRY YOUR LUCK',wheel:'FORTUNE WHEEL',prizes:'PRIZES',
   categories:'Select a category to view details',
   balance:'Balance',cost:'Cost',close:'Close',won:'YOU WON',spinning:'SPINNING...',
+  coinInfoLabel:CURRENCY_UI_TEXT.earningHintLabel,coinInfo:CURRENCY_UI_TEXT.earningHint,
 });

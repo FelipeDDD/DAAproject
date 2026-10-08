@@ -15,16 +15,15 @@ const PREVIEW_COLORS=Object.freeze({
 const PREVIEW_LABELS=Object.freeze({hair:'Hair',shirt:'Shirt',trousers:'Trousers',shoes:'Shoes'});
 
 export function canPreviewCharacterSkin(character,identity,dev=import.meta.env?.DEV===true,ownsTier3=false){
-  return Boolean(character?.experimentalVisual&&(character.experimentalVisual.menuPreview===true||character.experimentalVisual.wardrobePreview===true
-    ||(dev&&identity?.devAllSkins)||ownsTier3));
+  return Boolean(character?.experimentalVisual&&(ownsTier3||(dev&&identity?.devAllSkins)));
 }
 
-export function wardrobeSkinOptions(progress,{experimental=false}={}){
+export function wardrobeSkinOptions(progress,{tier3Unlocked=false}={}){
   const normalized=normalizeBossProgress(progress);
   return [
     {id:CHARACTER_SKINS.CLASSIC,label:'Classic',unlocked:true},
     {id:CHARACTER_SKINS.REMASTERED,label:'Remastered',unlocked:hasBossReward(normalized,BOSS_REWARDS.REMASTERED_SKIN)},
-    ...(experimental?[{id:'level3Preview',label:'Skin test',unlocked:true}]:[]),
+    {id:'level3Preview',label:'Tier 3',unlocked:Boolean(tier3Unlocked)},
   ];
 }
 
@@ -71,9 +70,8 @@ export class WardrobeController {
     const list=document.createElement('div');list.className='wardrobe-skins';
     const character=characterById(this.presence.identity.characterId);
     const ownsTier3=this.scene.characterItems?.items?.some(item=>item.itemId==='tier3_skin');
-    const experimental=canPreviewCharacterSkin(character,this.presence.identity,import.meta.env?.DEV===true,ownsTier3);
-    const options=this.presence.identity.profileId?wardrobeSkinOptions(this.progress,{experimental})
-      :experimental?[{id:'level3Preview',label:'Skin test',unlocked:true}]:[];
+    const devPreview=canPreviewCharacterSkin(character,this.presence.identity,import.meta.env?.DEV===true,ownsTier3);
+    const options=wardrobeSkinOptions(this.progress,{tier3Unlocked:ownsTier3||devPreview});
     for(const option of options){
       const button=document.createElement('button');button.type='button';button.className='wardrobe-skin';button.disabled=!option.unlocked;
       if(!option.unlocked)button.classList.add('locked');
@@ -83,7 +81,7 @@ export class WardrobeController {
       if(selected)button.classList.add('equipped');
       const image=document.createElement('img');image.alt='';image.src=`${import.meta.env.BASE_URL}${option.id==='level3Preview'
         ?character.experimentalVisual.previewAsset:option.id===CHARACTER_SKINS.REMASTERED?character.newVisual.previewAsset:character.asset}`;
-      const label=document.createElement('strong');label.textContent=option.id==='level3Preview'&&ownsTier3?'Tier 3 Skin':option.label;
+      const label=document.createElement('strong');label.textContent=option.label;
       const state=document.createElement('span');state.textContent=option.unlocked?(selected?'Equipped':'Available'):'Locked';
       button.append(image,label,state);button.addEventListener('click',()=>this.equip(option.id));list.append(button);
     }
@@ -129,7 +127,7 @@ export class WardrobeController {
       if(skin==='level3Preview'){
         const character=characterById(this.presence.identity.characterId);
         const ownsTier3=this.scene.characterItems?.items?.some(item=>item.itemId==='tier3_skin');
-        if(!canPreviewCharacterSkin(character,this.presence.identity,import.meta.env?.DEV===true,ownsTier3))throw new Error('Skin is unavailable.');
+        if(!canPreviewCharacterSkin(character,this.presence.identity,import.meta.env?.DEV===true,ownsTier3))throw new Error('Tier 3 skin has not been unlocked.');
         selectPreviewSkin(this.presence.identity,character);
         this.scene.applyCharacterSkin(this.presence.identity.equippedSkin??this.progress?.equippedSkin);
       }else{

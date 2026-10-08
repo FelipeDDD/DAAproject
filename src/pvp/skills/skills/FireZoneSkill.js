@@ -1,3 +1,5 @@
+import { clampSkillAim } from '../config.js';
+
 const DIRECTIONS={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}};
 const bounded=(value,min,max)=>Number.isFinite(value)&&value>=min&&value<=max;
 
@@ -5,12 +7,23 @@ const bounded=(value,min,max)=>Number.isFinite(value)&&value>=min&&value<=max;
 export const FireZoneSkill={
   id:'fire-zone',
   validConfig:c=>bounded(c.cooldownMs,1000,300000)&&bounded(c.telegraphMs,0,10000)
-    &&bounded(c.durationMs,250,30000)&&bounded(c.radius,1,500)
-    &&bounded(c.damagePerSecond,0.1,100)&&bounded(c.tickMs,50,1000)
-    &&c.tickMs<=c.durationMs&&bounded(c.placementDistance,0,300),
-  create({position,config,now}){
-    const direction=DIRECTIONS[position.direction];if(!direction)return null;
-    return {x:position.x+direction.x*config.placementDistance,y:position.y+direction.y*config.placementDistance,
+    &&bounded(c.durationMs,250,30000)&&bounded(c.radius,2,500)
+    &&bounded(c.damagePerSecond,0.3,100)&&bounded(c.tickMs,50,1000)
+    &&c.tickMs<=c.durationMs&&bounded(c.placementDistance,0,300)
+    &&Number.isInteger(c.maxRangeTiles)&&c.maxRangeTiles>=1&&c.maxRangeTiles<=32
+    &&Number.isInteger(c.tileSize)&&c.tileSize>=1&&c.tileSize<=256,
+  create({position,aim,config,now}){
+    let x,y;
+    if(aim){
+      const target=clampSkillAim(position,aim,config.maxRangeTiles*config.tileSize);
+      if(!target)return null;
+      ({x,y}=target);
+    }else{
+      const direction=DIRECTIONS[position.direction];if(!direction)return null;
+      const distance=Math.min(config.placementDistance,config.maxRangeTiles*config.tileSize);
+      x=position.x+direction.x*distance;y=position.y+direction.y*distance;
+    }
+    return {x,y,
       radius:config.radius,activeAt:now+config.telegraphMs,endsAt:now+config.telegraphMs+config.durationMs,
       phase:'telegraph',lastTickAt:now+config.telegraphMs,nextAt:now+config.telegraphMs};
   },

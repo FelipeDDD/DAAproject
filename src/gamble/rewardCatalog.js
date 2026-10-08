@@ -12,10 +12,9 @@ export const CIGARETTE_REWARDS=Object.freeze([
   commonPack('roulette_pack_pink','Lung Crusher 3000 Pink','lung-crusher-3000-pink'),
   commonPack('roulette_pack_orange','Lung Crusher 3000 Orange','lung-crusher-3000-orange'),
   commonPack('roulette_pack_purple','Lung Crusher 3000 Purple','lung-crusher-3000-purple'),
-  item('roulette_pack_rare','Lung Crusher 3000 Rare','lung-crusher-3000-rare',{rarity:'rare',
-    iconFrame:{x:498,y:445,width:248,height:335,sourceWidth:1254,sourceHeight:1254}}),
 ]);
-export const RARE_CIGARETTE=CIGARETTE_REWARDS[3];
+export const RARE_CIGARETTE=item('roulette_pack_rare','Lung Crusher 3000 Rare','lung-crusher-3000-rare',{rarity:'rare',
+  iconFrame:{x:498,y:445,width:248,height:335,sourceWidth:1254,sourceHeight:1254}});
 export const CIGARETTE_VOUCHER=item('cigarette_voucher','Zigarettenschachtel Voucher','gutschein',
   {type:'voucher',maxStack:1_000_000,
     iconFrame:{x:375,y:497,width:505,height:258,sourceWidth:1254,sourceHeight:1254},
@@ -30,7 +29,7 @@ export const SPECIAL_REWARDS=Object.freeze([
   {itemId:'special_paperclip',name:'A premium paperclip'},
 ].map(entry=>({...entry,type:'collectible',rewardOnly:true,quantity:1,maxStack:1_000_000,
   description:'A particularly questionable Lucky Machine prize.',icon:'assets/items/gutschein-inv.png',useBehavior:'presentation'})));
-export const ROULETTE_ITEMS=Object.freeze([...CIGARETTE_REWARDS,CIGARETTE_VOUCHER,TIER3_SKIN_ITEM,...SPECIAL_REWARDS]);
+export const ROULETTE_ITEMS=Object.freeze([...CIGARETTE_REWARDS,RARE_CIGARETTE,CIGARETTE_VOUCHER,TIER3_SKIN_ITEM,...SPECIAL_REWARDS]);
 
 // Absolute percentages of all spins. The backend uses these weights within the 40% coin category.
 export const COIN_BRACKETS=Object.freeze([
@@ -44,7 +43,7 @@ export const ROULETTE_CATEGORIES=Object.freeze([
   {id:'nothing',name:'Nothing',weight:32,icon:'sad',description:'The wheel offers its sincere congratulations. And nothing else.',reward:{type:'none'}},
   {id:'coins',name:'Coin Rewards',weight:40,icon:'coin',description:'One coin bracket is selected, then a whole-number amount within that range.',reward:{type:'coin-brackets'}},
   {id:'cigarette_collection',name:'Cigarette Collection',weight:10,icon:'pack',
-    description:'Receive an unowned edition from the collection. Own all four? Receive a Zigarettenschachtel Voucher instead.',
+    description:'Receive one of the three unowned common editions. Own all three? Receive a Zigarettenschachtel Voucher instead.',
     previewImages:CIGARETTE_REWARDS.map(entry=>({src:entry.icon,label:entry.name,frame:entry.iconFrame})),reward:{type:'cigarette-collection'}},
   {id:'lung_crusher_rare',name:'Lung Crusher 3000 Rare',weight:2,icon:'ticket',
     description:'The rare edition of the collection.',previewImage:RARE_CIGARETTE.icon,previewFrame:RARE_CIGARETTE.iconFrame,reward:{type:'item',itemId:RARE_CIGARETTE.itemId}},

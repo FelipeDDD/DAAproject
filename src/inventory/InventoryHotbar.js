@@ -1,6 +1,6 @@
 import { BossProgressClient } from '../boss/BossProgressClient.js';
 import { CHARACTER_ITEM_IDS,itemCooldownRemaining } from './characterItems.js';
-import { INVENTORY_POSITION_STORAGE_KEY,inventoryItemUseBehavior,inventoryItemsFromSources,inventoryShortcutSlot,inventorySlots,isHealthPotionShortcut } from './config.js';
+import { INVENTORY_SLOT_COUNT,INVENTORY_POSITION_STORAGE_KEY,inventoryItemUseBehavior,inventoryItemsFromSources,inventoryShortcutSlot,inventorySlots,isHealthPotionShortcut } from './config.js';
 import { ItemRewardOverlay } from './ItemRewardOverlay.js';
 import { FloatingHotbar } from '../ui/FloatingHotbar.js';
 import { fixedHudEnabled,HUD_LAYOUT } from '../hud/config.js';
@@ -15,37 +15,44 @@ import { createItemIconImage } from './itemPresentation.js';
 const publicAsset=path=>new URL(`${import.meta.env.BASE_URL}${path}`,document.baseURI).href;
 
 export class InventoryHotbar {
-  constructor(presence,{onToggleItem=()=>{},layout=HUD_LAYOUT,scene=null}={}){
-    this.client=new BossProgressClient(presence);
+  constructor(presence,{onToggleItem=()=>{},layout=HUD_LAYOUT,scene=null,
+    quickSlotActions=null,mount=null,documentRef=globalThis.document,windowRef=globalThis.window}={}){
+    const document=documentRef,window=windowRef;
+    this.document=document;this.window=window;this.quickSlotActions=quickSlotActions;this.actionViews=new Map();
+    this.client=quickSlotActions?null:new BossProgressClient(presence);
     this.presence=presence;this.onToggleItem=onToggleItem;this.items=[];this.progress=null;this.characterItems=[];
-    this.overlay=new ItemRewardOverlay();this.slots=[];
+    this.overlay=quickSlotActions?null:new ItemRewardOverlay();this.slots=[];
     this.root=document.createElement('section');this.root.className='school-hotbar inventory-hotbar';this.root.setAttribute('aria-label','Inventory');
     const header=document.createElement('div');header.className='school-hotbar-header inventory-drag-handle';
     const title=document.createElement('span');title.textContent='INVENTORY';
     const reset=document.createElement('button');reset.type='button';reset.className='hotbar-reset-position';reset.textContent='↺';
     reset.title='Reset bar position';reset.setAttribute('aria-label','Reset inventory bar position');header.append(title,reset);
     this.slotsRoot=document.createElement('div');this.slotsRoot.className='school-hotbar-slots';
-    this.collections=new CollectionsMenu({scene,collections:collectionsFromQuestProgress(null,[])});
-    this.backpack=new BackpackMenu({scene,onUse:item=>this.activate(item)});
-    this.backpackButton=this.menuButton('Inventory','backpack',()=>this.popup.toggle());
-    this.collectionsButton=this.menuButton('Collections','book',()=>void this.openCollections());
     this.quickGroup=document.createElement('div');this.quickGroup.className='inventory-quick-group';this.quickGroup.setAttribute('aria-label','Quick slots 1 to 4');
     this.utilityGroup=document.createElement('div');this.utilityGroup.className='inventory-utility-group';this.utilityGroup.setAttribute('role','group');this.utilityGroup.setAttribute('aria-label','Inventory and collections');
-    this.utilityGroup.append(this.backpackButton,this.collectionsButton);
-    this.popup=new BackpackPopup({scene,anchor:this.backpackButton,utilityGroup:this.utilityGroup,onUse:item=>this.activate(item),onExpand:id=>{
-      if(this.backpack.open()&&id)this.backpack.selectItem(id);
-    }});
-    this.backpackButton.setAttribute('aria-expanded','false');
+    // Reuse the consumable bar for temporary scene actions without loading
+    // persistent inventory, item rewards or backpack/collection controllers.
+    if(!quickSlotActions){
+      this.collections=new CollectionsMenu({scene,collections:collectionsFromQuestProgress(null,[])});
+      this.backpack=new BackpackMenu({scene,onUse:item=>this.activate(item)});
+      this.backpackButton=this.menuButton('Inventory','backpack',()=>this.popup.toggle());
+      this.collectionsButton=this.menuButton('Collections','book',()=>void this.openCollections());
+      this.utilityGroup.append(this.backpackButton,this.collectionsButton);
+      this.popup=new BackpackPopup({scene,anchor:this.backpackButton,utilityGroup:this.utilityGroup,onUse:item=>this.activate(item),onExpand:id=>{
+        if(this.backpack.open()&&id)this.backpack.selectItem(id);
+      }});
+      this.backpackButton.setAttribute('aria-expanded','false');
+    }else this.utilityGroup.hidden=true;
     this.root.append(header,this.slotsRoot);
-    (document.getElementById('hud-inventory-mount')??document.body).append(this.root);this.render();
-    this.onKeyDown=event=>this.handleHotkey(event);window.addEventListener('keydown',this.onKeyDown,true);
+    (mount??document.getElementById('hud-inventory-mount')??document.body).append(this.root);this.render();
+    if(!quickSlotActions){this.onKeyDown=event=>this.handleHotkey(event);window.addEventListener('keydown',this.onKeyDown,true);}
     this.floating=fixedHudEnabled(layout)?null:new FloatingHotbar({root:this.root,handle:header,resetButton:reset,
       storageKey:INVENTORY_POSITION_STORAGE_KEY,kind:'inventory',getSnapTargets:()=>[
         document.getElementById('emote-bar'),document.getElementById('game'),document.querySelector('.boss-dev-tools'),
       ]});
   }
 
-  async refresh(){try{this.setProgress(await this.client.getProgress());}catch(error){console.warn('Inventory:',error);}}
+  async refresh(){if(!this.client)return;try{this.setProgress(await this.client.getProgress());}catch(error){console.warn('Inventory:',error);}}
   setProgress(progress){this.progress=progress;this.refreshItems();}
   setCharacterItems(items){this.characterItems=items??[];this.refreshItems();}
   showItem(item,options){this.overlay.show(item,options);}
@@ -105,14 +112,31 @@ export class InventoryHotbar {
     void this.activate(item);
   }
   render(){
-    this.slots=inventorySlots(this.items);
+    const document=this.document??globalThis.document;
+    this.slots=this.quickSlotActions?Array(INVENTORY_SLOT_COUNT).fill(null):inventorySlots(this.items);
+    if(this.quickSlotActions)for(const action of this.quickSlotActions){
+      if(Number.isInteger(action.slot)&&action.slot>=1&&action.slot<=this.slots.length)
+        this.slots[action.slot-1]={...action,quickSlotAction:true};
+    }
     this.quickGroup.replaceChildren(...this.slots.map((item,index)=>{
       const wrapper=document.createElement('div');wrapper.className='inventory-slot-wrap';
-      const usable=Boolean(inventoryItemUseBehavior(item))&&item?.compatible!==false;
+      const usable=item?.quickSlotAction||(Boolean(inventoryItemUseBehavior(item))&&item?.compatible!==false);
       const slot=document.createElement(usable?'button':'div');slot.className='school-hotbar-slot inventory-slot';slot.dataset.slot=String(index+1);
-      if(slot instanceof HTMLButtonElement)slot.type='button';
+      if(usable)slot.type='button';
       const hotkey=document.createElement('kbd');hotkey.textContent=String(index+1);slot.append(hotkey);
       if(!item){slot.classList.add('empty');slot.setAttribute('aria-label',`Empty inventory slot ${index+1}`);wrapper.append(slot);return wrapper;}
+      if(item.quickSlotAction){
+        const image=document.createElementNS('http://www.w3.org/2000/svg','svg');
+        image.setAttribute('viewBox','0 0 24 24');image.setAttribute('aria-hidden','true');image.setAttribute('class','inventory-slot-icon');
+        const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+        path.setAttribute('d',item.iconPath??'M12 3 21 12 12 21 3 12Z');image.append(path);
+        const status=document.createElement('span');status.className='inventory-action-status';
+        slot.classList.add('inventory-action-slot');slot.disabled=true;slot.append(image,status);
+        slot.onclick=()=>{if(!this.destroyed&&!this.root.hidden&&!slot.disabled)item.onUse?.();};
+        this.actionViews.set(item.id,{slot,image,status,item});
+        this.setQuickSlotActionState(item.id,{visible:true,enabled:false,status:'--'});
+        wrapper.append(slot);return wrapper;
+      }
       slot.dataset.itemId=item.itemId;
       if(!item.consumable)slot.dataset.tooltip=`${item.name}\n${item.description}`;
       slot.setAttribute('aria-label',`${item.name}. ${item.description}`);
@@ -140,5 +164,18 @@ export class InventoryHotbar {
     }));
     this.slotsRoot.replaceChildren(this.quickGroup,this.utilityGroup);
   }
-  destroy(){this.destroyed=true;clearTimeout(this.cooldownTimer);window.removeEventListener('keydown',this.onKeyDown,true);this.floating?.destroy();this.popup.destroy();this.backpack.destroy();this.collections.destroy();this.overlay.destroy();this.root.remove();}
+  setQuickSlotActionState(id,{visible=true,enabled=false,status=''}){
+    const view=this.actionViews.get(id);if(!view||this.destroyed)return;
+    const {slot,image,item}=view;slot.disabled=!visible||!enabled;
+    slot.classList.toggle('empty',!visible);slot.classList.toggle('active',visible&&enabled);
+    image.style.display=visible?'':'none';view.status.hidden=!visible;view.status.textContent=visible?status:'';
+    slot.dataset.tooltip=visible?`${item.label} (${item.slot})\n${status}`:`Empty inventory slot ${item.slot}`;
+    slot.setAttribute('aria-label',slot.dataset.tooltip);
+  }
+  destroy(){
+    if(this.destroyed)return;this.destroyed=true;clearTimeout(this.cooldownTimer);
+    if(this.onKeyDown)this.window.removeEventListener('keydown',this.onKeyDown,true);
+    for(const {slot} of this.actionViews.values())slot.onclick=null;
+    this.actionViews.clear();this.floating?.destroy();this.popup?.destroy();this.backpack?.destroy();this.collections?.destroy();this.overlay?.destroy();this.root.remove();
+  }
 }

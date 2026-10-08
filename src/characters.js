@@ -57,9 +57,9 @@ const ORIGINAL_CHARACTERS = [
 ];
 export const CHARACTERS = ORIGINAL_CHARACTERS;
 // Preview cards reuse real character bases; they never create extra server identities.
-export function characterMenuOptions(){return [
+export function characterMenuOptions({includePreviews=false}={}){return [
   ...CHARACTERS.map(c=>({c,label:c.name,previewStyle:null})),
-  ...CHARACTERS.filter(c=>c.experimentalVisual?.menuPreview===true)
+  ...(includePreviews?CHARACTERS.filter(c=>c.experimentalVisual?.menuPreview===true):[])
     .map(c=>({c,label:c.experimentalVisual.menuLabel??`${c.name} — TEST`,previewStyle:'level3Preview'})),
 ];}
 export const CHARACTER_STORAGE_KEY = 'daa-character-id';

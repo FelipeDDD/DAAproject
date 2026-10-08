@@ -7,7 +7,7 @@ import { PAYLOAD_CART_ASSET } from '../pvp/payload/visualConfig.js';
 // cache policy and triggers. A slept arena never resurrects an old map snapshot.
 export class PvpMapScene extends MapScene{
   constructor(key){
-    super(key,PVP_MAP_FILE);
+    super(key,PVP_MAP_FILE,{hud:{showCurrency:false}});
     this.remoteNameLabels=false;
     this.sourceKey=`${key}-${PVP_MAP_DEFINITION.id}-${PVP_MAP_DEFINITION.revision}-source`;
     this.reloadMapOnEntry=true;

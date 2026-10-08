@@ -11,12 +11,13 @@ import {
 
 // Local projectile geometry is a disposable test adapter, not combat authority.
 export class PvpCombatController {
-  constructor(scene,onHit,{onSpawn=()=>{},onRemove=()=>{},canFire=()=>true,visual=PVP_PROJECTILE_VISUAL}={}){
+  constructor(scene,onHit,{onSpawn=()=>{},onRemove=()=>{},canFire=()=>true,consumePointer=()=>false,visual=PVP_PROJECTILE_VISUAL}={}){
     const projectileVisual={...PVP_PROJECTILE_VISUAL,...visual,
       colors:{...PVP_PROJECTILE_VISUAL.colors,...visual?.colors}};
     Object.assign(this,{scene,onHit,onSpawn,onRemove,canFire,visual:projectileVisual});this.shots=[];this.remoteShots=new Map();this.nextShotAt=0;this.serial=0;
     this.walls=collisionAreas(objectsIn(scene.source,'Collision'));
     this.pointer=pointer=>{
+      if(consumePointer(pointer))return;
       if(pointer.button!==0)return;
       const target=scene.cameras.main.getWorldPoint(pointer.x,pointer.y);
       this.fire(target,Date.now());

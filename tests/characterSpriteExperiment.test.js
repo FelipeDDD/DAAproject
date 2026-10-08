@@ -9,27 +9,34 @@ import { characterVisual, createCharacterAnimations, footBodyForVisual, localCha
 import { registeredPreviewVisuals } from '../src/characterPreviewSkins.js';
 
 const felipe=characterById('felipe');
-test('Yassin can select the approved skin in the wardrobe without DEV tools',async()=>{
+test('Tier 3 stays locked in normal play until the Lucky Machine item is owned',async()=>{
   const yassin=characterById('jassine');
-  assert.equal(canPreviewCharacterSkin(yassin,{},false),true);
-  assert.equal(canPreviewCharacterSkin(felipe,{},false),true);
-  assert.equal(canPreviewCharacterSkin(felipe,{devAllSkins:true},false),true);
+  assert.equal(canPreviewCharacterSkin(yassin,{},false),false);
+  assert.equal(canPreviewCharacterSkin(felipe,{},false),false);
+  assert.equal(canPreviewCharacterSkin(felipe,{devAllSkins:true},false),false);
   assert.equal(canPreviewCharacterSkin(felipe,{devAllSkins:true},true),true);
   for(const kind of ['guest','profile']){
     const identity={kind,characterId:'jassine',characterBaseId:'jassine'};
     const applied=[],errors=[];
     const wardrobe=Object.assign(Object.create(WardrobeController.prototype),{
-      presence:{identity},scene:{applyCharacterSkin:skin=>applied.push(skin)},
+      presence:{identity},scene:{characterItems:{items:[]},applyCharacterSkin:skin=>applied.push(skin)},
       progress:{equippedSkin:'classic'},render:error=>{if(error)errors.push(error);},
     });
+    await wardrobe.equip('level3Preview');
+    assert.match(errors.pop(),/not been unlocked/);
+    assert.equal(identity.visualPreview,undefined);
+    wardrobe.scene.characterItems.items=[{itemId:'tier3_skin'}];
     await wardrobe.equip('level3Preview');
     assert.deepEqual(errors,[]);
     assert.equal(identity.visualPreview,'level3Preview');
     assert.deepEqual(applied,['classic']);
   }
 });
-test('the fifth menu card previews Felipe with the edited mask; Yassin stays a regular-base third skin',()=>{
-  const options=characterMenuOptions();
+test('experimental menu preview is opt-in and does not unlock Tier 3 in normal play',()=>{
+  assert.equal(characterMenuOptions().length,4);
+  const standardOptions=characterMenuOptions({includePreviews:false});
+  assert.equal(standardOptions.length,4);
+  const options=characterMenuOptions({includePreviews:true});
   assert.equal(options.length,5);
   assert.deepEqual(options.slice(0,4).map(option=>option.c.id),['michael','jassine','sarina','felipe']);
   assert.ok(options.slice(0,4).every(option=>option.previewStyle===null));
@@ -40,6 +47,7 @@ test('the fifth menu card previews Felipe with the edited mask; Yassin stays a r
   assert.equal(options[4].c.experimentalVisual.sprite,'character-felipe-level3-hd-recolor-v2');
   assert.equal(characterById('jassine').experimentalVisual.menuPreview,undefined);
   assert.equal(characterById('jassine').experimentalVisual.wardrobePreview,true);
+  assert.equal(canPreviewCharacterSkin(characterById('jassine'),{},false),false);
   assert.match(characterById('jassine').experimentalVisual.asset,/yassin-felipe-walk-v1\.png$/);
   assert.ok(CHARACTERS.every(character=>character.experimentalVisual));
   assert.equal(CHARACTERS.length,4);

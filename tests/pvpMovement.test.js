@@ -315,7 +315,7 @@ test('actual PvP scene keeps local input immediate and Convex presence fixed whi
     applyLocalAppearance,isPersistentClassRoom:()=>false,teamSpawn:()=>({x:100,y:200}),pvpRealtimeUrl:()=> 'ws://localhost:8787',
     startSceneEmotes:scene=>{scene.emotesStarted=true;},stopSceneEmotes:scene=>{scene.emotesStarted=false;},
     PvpPickupView:class {reset(){}receive(){}render(){}update(){}destroy(){}},pickupDebugEnabled:()=>false,
-    SkillClient:class {reset(){}close(){}update(){}receive(){}},SkillView:class {reset(){}update(){}render(){}receive(){}destroy(){}},
+    SkillClient:class {reset(){}close(){}update(){}receive(){}},SkillView:class {reset(){}update(){}render(){}renderTargeting(){}receive(){}destroy(){}},
     SkillHud:class {update(){}render(){}destroy(){}},
     pvpMovementDebugEnabled:()=>false,cameraZoomForMap:()=>1.25,readPvpTeleportAreas,PvpTeleportController,
     resolvedMovementState:body=>({moving:true,velocityX:body.velocity.x,velocityY:body.velocity.y}),

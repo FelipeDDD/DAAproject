@@ -52,9 +52,17 @@ export class GameHudController {
   setInfoText(text){if(this.infoText)this.infoText.textContent=String(text??'');}
   setStatusLines(lines){if(this.statusText)this.statusText.textContent=(Array.isArray(lines)?lines:[lines]).filter(Boolean).join('\n');}
   setVisible(visible){if(this.root)this.root.dataset.hudVisible=visible?'true':'false';}
+  setSceneHud({showCurrency=true}={}){if(this.root)this.root.dataset.currencyVisible=showCurrency?'true':'false';}
   resetHealth(){this.setHealth(PLAYER_MAX_HP,PLAYER_MAX_HP);}
   destroy(){if(this.destroyed)return;this.destroyed=true;if(currentHud===this)currentHud=null;}
 }
 
 export function setGameHud(controller){currentHud=controller;return controller;}
 export function getGameHud(){return currentHud;}
+
+// Apply on creation and wake even when a combat scene overrides MapScene.enter.
+export function bindSceneHud(scene,controller){
+  const apply=()=>controller?.setSceneHud(scene.hudConfig);
+  apply();scene.events.on('wake',apply);
+  scene.events.once('shutdown',()=>scene.events.off('wake',apply));
+}

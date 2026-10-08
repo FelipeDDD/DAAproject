@@ -90,15 +90,18 @@ export class PvpArenaScene extends PvpMapScene {
     this.pvpHud=new PvpHud({onLeave:()=>this.leavePvp(),onRetry:()=>this.damageClient?.requestRetry()??false,onEnd:()=>this.forceEnd(),dev:import.meta.env.DEV});
     this.combat=new PvpCombatController(this,hit=>this.damageClient?.attempt(hit),
       {onSpawn:event=>this.projectileClient?.sendSpawn(event),onRemove:event=>this.projectileClient?.sendDestroy(event),
+        consumePointer:pointer=>this.skillClient?.handlePointer(pointer)??false,
         canFire:()=>this.damageClient?.authorized&&this.damageClient.hp?.state==='active'&&this.movementClient?.authorizedPoseSent});
     this.projectileClient=new PvpProjectileClient(this.movementClient,this.combat);
     this.damageClient=new PvpDamageClient(this.movementClient,{matchId:this.matchId,sessionId:this.presence.identity.sessionId,
       onRound:state=>this.applyNextRound(state),
       onState:state=>{if(!this.networkFailed){this.matchState=state;
         this.movementClient?.setMatch(state);this.projectileClient?.setMatch(state);}},onError:error=>this.showPvpError(error)});
-    this.skillClient=new SkillClient(this.damageClient,{keyboard:this.input.keyboard});
+    this.skillClient=new SkillClient(this.damageClient,{keyboard:this.input.keyboard,
+      getAimPoint:pointer=>{const p=pointer??this.input.activePointer;return this.cameras.main.getWorldPoint(p.x,p.y);},
+      getOrigin:()=>({x:this.player.x,y:this.player.y}),now:()=>this.matchClient?.now?.()??Date.now()});
     this.skillView=new SkillView(this);
-    this.skillHud=new SkillHud(this.pvpHud.skillMount);
+    this.skillHud=new SkillHud(undefined,{onUse:id=>this.skillClient?.activate(id)});
     this.matchClient=new PvpMatchClient(this.presence,this.matchId,state=>{
       if(!state){if(!this.matchState?.retry)this.showPvpError(new Error('PvP lobby unavailable'));return;}
       try{requirePvpMap(state);}catch(error){this.showPvpError(error);return;}
@@ -206,6 +209,7 @@ export class PvpArenaScene extends PvpMapScene {
     this.modeView?.render(state);
     this.pickupView?.render(state,matchNow);
     this.skillView?.render(state,matchNow);
+    this.skillView?.renderTargeting(this.skillClient?.targetingPreview?.());
     this.skillHud?.render(state,me,matchNow);
     const returnSeconds=this.returnFlow?.remaining(matchNow)??null;
     this.pvpHud?.render(returnSeconds===null?state:{...state,retry:undefined},me,matchNow,returnSeconds);

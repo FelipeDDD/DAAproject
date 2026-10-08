@@ -25,9 +25,9 @@ Coin bracket weights are absolute percentages of all spins: 22%, 10%, 5%,
 category, the backend normalizes those weights, then draws a uniform integer
 within the selected range.
 
-Cigarette Collection uniformly chooses among unowned pink, orange, purple
-and rare editions. Owning all four yields a stackable Zigarettenschachtel
-Voucher. The separate rare category grants that same rare item. Tier 3 grants
+Cigarette Collection uniformly chooses among the three unowned common editions:
+pink, orange and purple. Owning all three yields a stackable Zigarettenschachtel
+Voucher. The separate 2% category alone grants the rare edition. Tier 3 grants
 a persistent wardrobe unlock for existing per-character Tier 3 assets.
 Special Rewards uniformly selects one of four configurable joke items.
 Voucher exchange is reserved for a future task.

@@ -269,7 +269,7 @@ test('collection awards an unowned eligible pack; completed collection stacks vo
   for(const item of CIGARETTE_REWARDS.slice(0,3))await h.db.insert('characterItems',{profileId:h.profileId,itemId:item.itemId,quantity:1});
   const category=ROULETTE_REWARDS.find(reward=>reward.id==='cigarette_collection'),event={profileId:h.profileId,eventKey:'collection'};
   const outcome=await grantRoulettePrize(h.ctx,event,category);
-  assert.equal(outcome.itemId,CIGARETTE_REWARDS[3].itemId);
+  assert.equal(outcome.itemId,CIGARETTE_VOUCHER.itemId);
   assert.equal(h.db.rows('characterItems').length,4);
   assert.equal((await grantRoulettePrize(h.ctx,event,category)).itemId,CIGARETTE_VOUCHER.itemId);
   await grantRoulettePrize(h.ctx,event,category);

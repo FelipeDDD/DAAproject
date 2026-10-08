@@ -40,7 +40,7 @@ import { CharacterItemController } from '../inventory/CharacterItemController.js
 import { CHARACTER_ITEM_IDS } from '../inventory/characterItems.js';
 import { PotionUseEffectRenderer } from '../inventory/PotionUseEffectRenderer.js';
 import { WorldPrompt,centeredMessageViewport } from '../ui/WorldPrompt.js';
-import { getGameHud } from '../hud/GameHudController.js';
+import { getGameHud,bindSceneHud } from '../hud/GameHudController.js';
 import { hasProfileSession } from '../ProfileSessionClient.js';
 import { getCurrentCurrencyClient } from '../economy/CurrencyClient.js';
 import { applySmoothDecorativeTextureFilters } from '../maps/decorativeTextureFilters.js';
@@ -74,11 +74,12 @@ function readTileset(xml, firstgid) {
 
 // Interior and exterior use this single implementation of loading, collision and travel.
 export class MapScene extends Phaser.Scene {
-  constructor(key, filename) {
+  constructor(key, filename, {hud={}}={}) {
     super(key);
     this.mapKey = key;
     this.sourceKey = `${key}-source`;
     this.filename = filename;
+    this.hudConfig={showCurrency:true,...hud};
   }
 
   preload() {
@@ -118,6 +119,7 @@ export class MapScene extends Phaser.Scene {
 
   create(destination = {}) {
     this.gameHud=getGameHud();
+    bindSceneHud(this,this.gameHud);
     this.source = this.cache.json.get(this.sourceKey);
     // This source is much larger than its world display size; keep smoothing scoped to the ground bag.
     this.textures.get('health-potion-pickup').setFilter(Phaser.Textures.FilterMode.LINEAR);

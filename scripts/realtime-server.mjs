@@ -23,7 +23,18 @@ export function createRealtimeServer(options={}){
   const config={...REALTIME_CONFIG,...options};const now=options.now??Date.now;
   const wss=new WebSocketServer({host:config.host,port:config.port,maxPayload:config.maxMessageBytes,perMessageDeflate:false});
   const clients=new Map(),rooms=new Map();
-  const authorities=new Map(),pendingMirrors=new Set(),bridge=options.pvpBridge;
+  const authorities=new Map(),pendingMirrors=new Set();
+  let bridge=options.pvpBridge,bridgePending=null,closing=false;
+  // Convex may start after this process. Retry on the next PvP authorization
+  // rather than leaving a healthy relay permanently without combat authority.
+  const ensurePvpBridge=()=>{
+    if(bridge||!options.pvpBridgeFactory||closing)return Promise.resolve(bridge);
+    if(!bridgePending)bridgePending=Promise.resolve().then(()=>options.pvpBridgeFactory()).then(async candidate=>{
+      if(closing){await candidate?.close?.();return null;}
+      bridge=candidate;return bridge;
+    }).catch(()=>null).finally(()=>{bridgePending=null;});
+    return bridgePending;
+  };
   const map=JSON.parse(readFileSync(new URL(`../public/assets/maps/${PVP_MAP_FILE}`,import.meta.url),'utf8'));
   const pickupSpots=pickupSpotsFromMap(map);
   const send=(client,type,payload,extra={})=>{
@@ -45,7 +56,8 @@ export function createRealtimeServer(options={}){
   const authorize=async(client,args)=>{
     const generation=++client.authGeneration,roomId=client.roomId;
     try{
-      if(!bridge||roomId!==pvpRealtimeRoom(args.matchId,args.round))throw new Error('No local PvP authority.');
+      if(roomId!==pvpRealtimeRoom(args.matchId,args.round))throw new Error('Invalid PvP room.');
+      if(!await ensurePvpBridge())throw new Error('No local PvP authority.');
       if(args.mapId!==PVP_MAP_DEFINITION.id||args.mapRevision!==PVP_MAP_DEFINITION.revision)
         throw new Error('PvP map configuration mismatch. Reload both browsers and restart the realtime server.');
       if(client.pvpPlayerId&&client.pvpPlayerId!==args.playerId)throw new Error('PvP player changed.');
@@ -204,19 +216,19 @@ export function createRealtimeServer(options={}){
     });
   });
   const ready=new Promise((resolve,reject)=>{wss.once('listening',resolve);wss.once('error',reject);});
-  return {wss,clients,rooms,authorities,ready,sweep,close:async()=>{clearInterval(interval);
+  return {wss,clients,rooms,authorities,ready,sweep,close:async()=>{closing=true;clearInterval(interval);
     const pending=[...pendingMirrors,...[...authorities.values()].map(async entry=>{await entry.ready;return entry.authority?.queue;})];
     for(const entry of authorities.values()){entry.off?.();entry.authority?.close();}authorities.clear();
     for(const c of clients.values())c.ws.terminate();await new Promise(resolve=>wss.close(resolve));
-    await Promise.allSettled(pending);await bridge?.close?.();}};
+    await Promise.allSettled(pending);await bridgePending;await bridge?.close?.();}};
 }
 
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
   const host=process.env.REALTIME_HOST||REALTIME_CONFIG.host,port=Number(process.env.REALTIME_PORT||REALTIME_CONFIG.port);
   if(!Number.isInteger(port)||port<1||port>65535)throw new Error('Invalid REALTIME_PORT');
   let pvpBridge;
-  try{pvpBridge=await createLocalPvpBridge();}catch{console.warn('PvP damage disabled: start the project LOCAL Convex backend, then restart this relay. Lab remains available.');}
-  const server=createRealtimeServer({host,port,pvpBridge});
+  try{pvpBridge=await createLocalPvpBridge();}catch{console.warn('PvP authority pending: start the project LOCAL Convex backend and rejoin the lobby. Authorization will retry automatically. Lab remains available.');}
+  const server=createRealtimeServer({host,port,pvpBridge,pvpBridgeFactory:createLocalPvpBridge});
   await server.ready;console.log(`DEV Realtime relay: ws://${host}:${port}; local PvP authority ${pvpBridge?'enabled':'unavailable'}`);
   for(const signal of ['SIGINT','SIGTERM'])process.on(signal,()=>server.close().then(()=>process.exit(0)));
 }
