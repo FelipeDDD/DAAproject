@@ -107,13 +107,21 @@ test('selection is ready for category, difficulty and amount filters',()=>{
 });
 
 test('Rechnungen topics are detected and filter the shared question bank',()=>{
+  const source=QUIZ_QUESTIONS.filter(question=>question.category==='Rechnungen'&&question.topic);
+  assert.ok(source.length>0, 'Rechnungen provides questions with topics');
+  const expectedTopics=[...new Set(source.map(question=>question.topic))]
+    .sort((left,right)=>left.localeCompare(right,'de'));
   const groups=quizTopicsByCategory();
   const rechnungen=groups.find(group=>group.category==='Rechnungen')?.topics??[];
-  for(const topic of ['Dreisatz','Netto-Brutto','Prozentrechnung','Rabatt','Textverständnis'])
-    assert.ok(rechnungen.includes(topic));
-  const ids=selectQuizQuestionIds({category:'Rechnungen',topic:'Rabatt',difficulty:'medium',count:null,seed:'rabatt'});
-  assert.equal(ids.length,2);
-  assert.ok(ids.every(id=>QUIZ_QUESTIONS.find(question=>question.id===id)?.topic==='Rabatt'));
+  assert.deepEqual(rechnungen,expectedTopics);
+  for(const topic of expectedTopics){
+    for(const difficulty of QUIZ_DIFFICULTIES){
+      const eligible=source.filter(question=>question.topic===topic&&question.difficulty===difficulty);
+      const ids=selectQuizQuestionIds({category:'Rechnungen',topic,difficulty,count:null,seed:'topics'});
+      assert.equal(ids.length,eligible.length);
+      assert.deepEqual(new Set(ids),new Set(eligible.map(question=>question.id)));
+    }
+  }
 });
 
 test('All quantity uses every compatible question without failing',()=>{

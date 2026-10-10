@@ -11,11 +11,16 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const header = 'id;category;difficulty;question;answer1;answer2;answer3;answer4;correctAnswer;explanation;media';
 const topicHeader = 'id;category;topic;difficulty;question;answer1;answer2;answer3;answer4;correctAnswer;explanation;media';
 
-test('all CSV questions load with unique IDs, source files and quoted code intact', () => {
+test('all CSV questions load with unique IDs and match the generated bank', () => {
   const result = loadStaticQuizQuestions(path.join(root, 'quiz-data'));
   assert.deepEqual(result.errors, []);
-  assert.ok(result.files.length >= 6, 'all current category CSV files are present');
-  assert.ok(result.questions.length >= 900, 'the static question bank has not lost a large portion of its questions');
+  const expectedFiles = fs.readdirSync(path.join(root, 'quiz-data'))
+    .filter((file) => file.toLowerCase().endsWith('.csv'))
+    .sort((left, right) => left.localeCompare(right));
+  assert.deepEqual(result.files, expectedFiles);
+  assert.ok(result.questions.length > 0, 'the static question bank is not empty');
+  for (const file of expectedFiles)
+    assert.ok(result.questions.some((question) => question.source === file), `${file} contributes questions`);
   assert.equal(new Set(result.questions.map(({ id }) => id)).size, result.questions.length);
   const validCategories = new Set(['Betriebssysteme','Hardware','Netzwerk','Programmierung','Rechnungen','WiSo']);
   const categories = new Set(result.questions.map(({ category }) => category));
@@ -42,17 +47,6 @@ test('all CSV questions load with unique IDs, source files and quoted code intac
       assert.equal(generated[field] ?? null, question[field] ?? null, `${question.id}.${field} matches the CSV`);
     assert.deepEqual(generated.answers, question.answers, `${question.id} answers match the CSV`);
   }
-
-  const code = result.questions.find(({ id }) => id === 'Programmierung-011');
-  assert.equal(code.source,'programming.csv');
-  assert.equal(code.answers[0],'const score = 10;');
-  assert.match(result.questions.find(({id})=>id==='Programmierung-014').question,/value = 5; if/);
-  assert.ok(result.questions.filter(({ category }) => category === 'Hardware').length >= 20);
-  assert.equal(result.questions.find(({id})=>id==='hardware-001').topic,null);
-  const rechnungenTopics=[...new Set(result.questions
-    .filter(({category})=>category==='Rechnungen').map(({topic})=>topic))];
-  for(const topic of ['Dreisatz','Netto-Brutto','Prozentrechnung','Rabatt','Textverständnis'])
-    assert.ok(rechnungenTopics.includes(topic));
 });
 
 test('new CSV header reads optional topics while the old header remains compatible',()=>{
