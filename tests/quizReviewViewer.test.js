@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import vm from 'node:vm';
 
-const path=new URL('../tools/quiz-review-viewer/app.js',import.meta.url);
+const path=new URL('../tools/quiz-review/viewer/app.js',import.meta.url);
 const fullSource=readFileSync(path,'utf8');
 const source=fullSource.split('$("file-input").addEventListener')[0]+
   fullSource.split('function handleReviewShortcut')[1].split('document.addEventListener("keydown",handleReviewShortcut)')[0]

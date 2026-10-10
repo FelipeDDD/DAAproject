@@ -10929,6 +10929,214 @@ export default [
     "source": "netzwerk.csv"
   },
   {
+    "id": "netzwerk-289",
+    "category": "Netzwerk",
+    "topic": "Netzwerkkomponenten",
+    "difficulty": "medium",
+    "question": "Ein unverwalteter Switch hat keine konfigurierbare Management-IP. Daneben sind ein herkömmliches Patchpanel und RJ45-Anschlussdosen verbaut. Welche Einordnung ist fachlich richtig?",
+    "answers": [
+      "Der Switch ist aktiv; Patchpanel und Anschlussdosen sind passiv.",
+      "Switch und Patchpanel sind aktiv; die Anschlussdosen sind passiv.",
+      "Der Switch ist passiv; Patchpanel und Anschlussdosen sind aktiv.",
+      "Alle drei sind passiv, solange sie keine eigene IP-Adresse besitzen."
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ein Switch benötigt Strom und verarbeitet beziehungsweise vermittelt Frames. Ein herkömmliches Patchpanel und Anschlussdosen verbinden Leitungen ohne aktive Signalverarbeitung. Eine Management-IP ist kein Kriterium für die Einteilung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-290",
+    "category": "Netzwerk",
+    "topic": "Access Point",
+    "difficulty": "medium",
+    "question": "Ein Access Point wird per Ethernet in ein bestehendes VLAN eingebunden. WLAN-Clients sollen dieses VLAN und dessen vorhandenen DHCP-Server nutzen. Welche Funktion erfüllt der Access Point im Bridge-Betrieb?",
+    "answers": [
+      "Er verbindet die WLAN-Stationen auf Sicherungsschicht mit dem vorhandenen LAN.",
+      "Er routet die WLAN-Clients in ein separates IP-Subnetz und ersetzt deren Standardgateway.",
+      "Er übernimmt die Vergabe der IP-Konfiguration und ersetzt den vorhandenen DHCP-Server.",
+      "Er löst die Namen der WLAN-Clients auf und ersetzt den vorhandenen DNS-Server."
+    ],
+    "correctAnswer": 0,
+    "explanation": "Im Bridge-Betrieb verbindet der Access Point WLAN und kabelgebundenes LAN auf Layer 2. DHCP, DNS und Routing können weiterhin die vorhandenen Dienste übernehmen. Zusätzliche Routerfunktionen eines Kombigeräts sind davon zu unterscheiden.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-291",
+    "category": "Netzwerk",
+    "topic": "PoE",
+    "difficulty": "medium",
+    "question": "Ein PoE-fähiger Access Point soll über eine vorhandene Ethernet-Leitung an der Decke betrieben werden. Dort gibt es keine Steckdose, der vorhandene Switch liefert kein PoE. Welche Ergänzung ermöglicht die Versorgung, ohne den Switch auszutauschen?",
+    "answers": [
+      "Ein mit Strom versorgter PoE-Injektor mit passendem Standard und ausreichender Leistung.",
+      "Ein PoE-Splitter am Access Point, dessen Eingang nur mit dem nicht PoE-fähigen Switch verbunden ist.",
+      "Ein Ethernet-Repeater ohne PoE-Ausgang, der die vorhandene Datenverbindung regeneriert.",
+      "Ein passiver RJ45-Leitungsadapter ohne eigene Stromzufuhr zwischen Switch und Access Point."
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ein gespeister PoE-Injektor führt Daten und Strom auf der Leitung zum Access Point zusammen. PoE-Standard und verfügbare Leistung müssen zum Gerät passen. Ein Splitter trennt bereits vorhandenes PoE; er erzeugt keine Versorgung aus einer reinen Datenleitung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-292",
+    "category": "Netzwerk",
+    "topic": "WLAN-Sicherheit",
+    "difficulty": "medium",
+    "question": "Welche konstruktive Schwäche trägt dazu bei, dass WEP auch mit einem langen konfigurierten Schlüssel keinen ausreichenden WLAN-Schutz bietet?",
+    "answers": [
+      "Der kurze Initialisierungsvektor kann bei gleichem Schlüssel wiederkehren und Angriffe auf das RC4-basierte Verfahren begünstigen.",
+      "Der konfigurierte geheime WEP-Schlüssel wird zusammen mit jedem Datenframe unverschlüsselt übertragen.",
+      "Die AES-Verschlüsselung von WEP wird unsicher, sobald der Access Point kein Serverzertifikat besitzt.",
+      "Die öffentlich sichtbare SSID dient bei WEP als alleiniger Schlüssel zur Verschlüsselung der Daten."
+    ],
+    "correctAnswer": 0,
+    "explanation": "WEP verwendet RC4 und einen 24-Bit-Initialisierungsvektor. Wiederholungen und weitere Protokollschwächen ermöglichen praktische Angriffe. Ein längerer statischer WEP-Schlüssel beseitigt diese Konstruktionsprobleme nicht. Der IV ist öffentlich, der geheime Schlüssel wird nicht einfach mitgesendet.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-295",
+    "category": "Netzwerk",
+    "topic": "Windows-Netzwerkprofil",
+    "difficulty": "medium",
+    "question": "Ein Windows-PC wechselt von einem privaten Netzwerk in ein öffentliches WLAN. Welche Auswirkung kann das öffentliche Netzwerkprofil haben?",
+    "answers": [
+      "Netzwerkfreigaben und eingehende Verbindungen können durch strengere Firewallregeln eingeschränkt werden.",
+      "Das Profil ändert die lokale IPv4-Adresse in eine öffentliche Internetadresse.",
+      "Das Profil verschlüsselt den Datenverkehr im WLAN zusätzlich.",
+      "Ausgehende Internetverbindungen werden im öffentlichen Profil standardmäßig blockiert."
+    ],
+    "correctAnswer": 0,
+    "explanation": "Das öffentliche Profil nutzt Regeln für ein weniger vertrauenswürdiges Netzwerk. Freigaben und eingehende Verbindungen können dadurch eingeschränkt werden. Es ändert weder die IP-Adresse noch die WLAN-Verschlüsselung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-296",
+    "category": "Netzwerk",
+    "topic": "Windows-Netzwerkdiagnose",
+    "difficulty": "medium",
+    "question": "Für einen Windows-Client sollen IPv4-Adresse, Standardgateway, konfigurierte DNS-Server und der DHCP-Status aller Adapter geprüft werden. Welcher Befehl zeigt diese Angaben gemeinsam an?",
+    "answers": [
+      "ipconfig /all",
+      "ipconfig",
+      "getmac /v",
+      "route print"
+    ],
+    "correctAnswer": 0,
+    "explanation": "ipconfig /all zeigt die ausführliche Adapterkonfiguration einschließlich DNS-Servern und DHCP-Angaben. ipconfig ohne Parameter liefert weniger Details; getmac konzentriert sich auf MAC-Adressen, route print auf die Routingtabelle.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-297",
+    "category": "Netzwerk",
+    "topic": "ARP-Diagnose",
+    "difficulty": "medium",
+    "question": "Welcher Windows-Befehl zeigt die aktuell im lokalen ARP-Cache gespeicherten Zuordnungen von IPv4-Adressen zu MAC-Adressen an?",
+    "answers": [
+      "arp -a",
+      "getmac /v",
+      "ipconfig /all",
+      "route print"
+    ],
+    "correctAnswer": 0,
+    "explanation": "arp -a zeigt die im lokalen ARP-Cache gespeicherten IP-MAC-Zuordnungen. Die anderen Befehle zeigen eigene MAC-Adressen, Adapterkonfiguration beziehungsweise die Routingtabelle.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-298",
+    "category": "Netzwerk",
+    "topic": "WLAN-Frequenzbänder",
+    "difficulty": "medium",
+    "question": "Ein Betrieb möchte mit einem Wi-Fi-6E-Access-Point zusätzlich das 6-GHz-Band nutzen. Vorhandene Wi-Fi-6-Notebooks unterstützen laut Datenblatt nur 2,4 und 5 GHz. Welche Aussage trifft zu?",
+    "answers": [
+      "Für eine Verbindung im 6-GHz-Band benötigen auch die Notebooks einen dafür geeigneten WLAN-Adapter.",
+      "Der Access Point setzt die 5-GHz-Funksignale der vorhandenen Adapter automatisch in 6-GHz-Verbindungen um.",
+      "Die Unterstützung von IEEE 802.11ax garantiert bei jedem vorhandenen Adapter bereits die Nutzung von 6 GHz.",
+      "Durch die Auswahl von WPA3 wird das 6-GHz-Band auch bei reinen 2,4-/5-GHz-Adaptern verfügbar."
+    ],
+    "correctAnswer": 0,
+    "explanation": "Wi-Fi 6E erweitert Wi-Fi 6 um die Nutzung des 6-GHz-Bands. Beide Kommunikationspartner müssen das Band unterstützen. Ein neuer Access Point oder eine andere Sicherheitseinstellung erweitert nicht die Funkhardware eines vorhandenen Clients.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-299",
+    "category": "Netzwerk",
+    "topic": "WLAN / MIMO",
+    "difficulty": "medium",
+    "question": "Ein Access Point unterstützt auf einem Funkband 4x4:4-MIMO, ein Notebook dort 2x2:2-MIMO. Wie viele räumliche Datenströme kann eine einzelne Übertragung vom Access Point zu diesem Notebook höchstens nutzen?",
+    "answers": [
+      "Zwei; der Client kann höchstens zwei räumliche Datenströme empfangen.",
+      "Vier; die Anzahl der Datenströme wird ausschließlich vom Access Point bestimmt.",
+      "Sechs; die Sende- und Empfangsmöglichkeiten beider Geräte werden addiert.",
+      "Einen; mehrere räumliche Datenströme sind nur für mehrere Clients gleichzeitig vorgesehen."
+    ],
+    "correctAnswer": 0,
+    "explanation": "Räumliches Multiplexing setzt passende Fähigkeiten an beiden Enden voraus. Der hier auf zwei Datenströme begrenzte Client kann nicht vier unabhängige Datenströme derselben Übertragung empfangen. Die Angabe garantiert keinen bestimmten Nettodurchsatz.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-300",
+    "category": "Netzwerk",
+    "topic": "DHCP-Reservierung",
+    "difficulty": "medium",
+    "question": "Ein Netzwerkdrucker soll weiterhin seine IP-Konfiguration per DHCP beziehen, dabei aber stets dieselbe dafür vorgesehene IPv4-Adresse erhalten. Welche Maßnahme setzt diese Vorgabe gezielt um?",
+    "answers": [
+      "Eine DHCP-Reservierung für die vom Server verwendete Client-Kennung des Druckers einrichten.",
+      "Die gewünschte Adresse nur aus dem dynamischen Pool ausschließen, ohne sie dem Drucker zuzuordnen.",
+      "Die Lease-Dauer aller Clients verlängern, ohne eine feste Zuordnung für den Drucker anzulegen.",
+      "Einen DNS-A-Eintrag für den Drucker anlegen, ohne die Adressvergabe des DHCP-Servers anzupassen."
+    ],
+    "correctAnswer": 0,
+    "explanation": "Eine Reservierung ordnet einem identifizierten DHCP-Client gezielt eine Adresse zu. Die Kennung ist je nach DHCP-Implementierung beispielsweise eine Client-ID beziehungsweise MAC-Adresse. Ein Ausschluss allein vergibt keine Adresse; DNS und Lease-Dauer ersetzen keine Reservierung.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-301",
+    "category": "Netzwerk",
+    "topic": "DHCP-Lease",
+    "difficulty": "medium",
+    "question": "Ein Client nutzt eine noch gültige dynamische DHCPv4-Lease. Der DHCP-Server fällt aus; alle Verlängerungsversuche bleiben ohne Bestätigung. Was muss der Client spätestens beim Ablauf dieser Lease tun?",
+    "answers": [
+      "Die Nutzung der geleasten Adresse einstellen und erneut versuchen, eine gültige Konfiguration zu erhalten.",
+      "Die Lease eigenständig um die ursprüngliche Dauer verlängern und dieselbe Adresse weiterverwenden.",
+      "Die Adresse bis zum nächsten Neustart weiterverwenden, solange kein anderer Client einen Konflikt meldet.",
+      "Das Standardgateway als Ersatz für den DHCP-Server um eine Verlängerung der bestehenden Lease bitten."
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ohne erfolgreiche Verlängerung endet die Nutzungsberechtigung für die dynamisch geleaste Adresse mit der Lease. Der Client muss ihre Nutzung beenden und die Konfiguration neu anfordern. Der Ausfall des Servers allein beendet eine zuvor noch gültige Lease nicht sofort.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-302",
+    "category": "Netzwerk",
+    "topic": "DNS / SRV",
+    "difficulty": "medium",
+    "question": "Eine Anwendung unterstützt DNS-basierte Diensterkennung und soll für einen benannten Dienst sowohl den Zielhost als auch den zugehörigen TCP-Port erfahren. Welcher DNS-Record-Typ ist dafür vorgesehen?",
+    "answers": [
+      "SRV",
+      "CNAME",
+      "A",
+      "MX"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ein SRV-Record enthält unter anderem Zielhost und Port für einen Dienst. A liefert eine IPv4-Adresse, CNAME einen Aliasnamen und MX die Mailserver einer Domain. Die Anwendung muss SRV-Abfragen unterstützen; ein gewöhnlicher A-Record legt keinen Dienstport fest.",
+    "source": "netzwerk.csv"
+  },
+  {
+    "id": "netzwerk-303",
+    "category": "Netzwerk",
+    "topic": "Windows / DNS-Cache",
+    "difficulty": "medium",
+    "question": "nslookup liefert beim zuständigen DNS-Server die neue IPv4-Adresse eines Hosts. Im lokalen Windows-DNS-Resolvercache steht noch die alte Adresse; Hosts-Datei und Anwendungscache wurden als Ursache ausgeschlossen. Welcher Befehl entfernt gezielt die lokalen DNS-Cacheeinträge?",
+    "answers": [
+      "ipconfig /flushdns",
+      "ipconfig /release",
+      "ipconfig /renew",
+      "ipconfig /registerdns"
+    ],
+    "correctAnswer": 0,
+    "explanation": "ipconfig /flushdns leert den lokalen DNS-Resolvercache. Es ändert weder DNS-Zonendaten noch den Cache eines externen Resolvers. release und renew betreffen die DHCP-Konfiguration; registerdns stößt eine DNS-Registrierung an.",
+    "source": "netzwerk.csv"
+  },
+  {
     "id": "Programmierung-001",
     "category": "Programmierung",
     "topic": null,

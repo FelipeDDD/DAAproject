@@ -6,7 +6,7 @@ import vm from 'node:vm';
 import {fileURLToPath} from 'node:url';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const html=fs.readFileSync(path.join(root,'tools/quick-quiz-analysis/index.html'),'utf8');
+const html=fs.readFileSync(path.join(root,'tools/quiz-review/scripts/quick-quiz-analysis.html'),'utf8');
 const data=JSON.parse(html.match(/<script id="analysis-data" type="application\/json">([\s\S]*?)<\/script>/)[1]);
 const script=html.match(/<script>\s*([\s\S]*?)<\/script>/)[1];
 

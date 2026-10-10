@@ -1,0 +1,2245 @@
+{
+  "schema_version": "1.0",
+  "title": "Netzwerk — validação independente de cobertura e nove propostas",
+  "review_date": "2026-10-10",
+  "category": "Netzwerk",
+  "source_file": "tools/quiz-review/reviews/netzwerk-coverage-review-2026-10-10.json",
+  "source_sha256": "f8265149bce283c5be9acffdf7b9d82549117d8a0d2925bb4ad83b49422de850",
+  "mandatory_sources": [
+    {
+      "path": "quiz-data/netzwerk.csv",
+      "sha256": "2d4ba1de3a10f295f6176ae227a073f9bd58285f369797cf9cd3d5ab5b6c0a0d"
+    },
+    {
+      "path": "quiz-data/Unterrichtsraum_Mapa_de_Conteudo_2026-10-10.md",
+      "sha256": "5929d536ce49cbbc5f35a67a96befc12dd074d97c07789d9faa5ecda89ffaf19"
+    }
+  ],
+  "methodology": {
+    "analyzed_question_count": 283,
+    "original_candidate_count": 9,
+    "method": "Leitura de todas as 283 perguntas/alternativas, explicações pertinentes e leitura direta da seção Netzwerk T083–T108, do tópico T109 e limitações do mapa. Comparação por objetivo de aprendizagem, não apenas palavras-chave ou contagem de perguntas. Referências técnicas primárias usadas para verificar fatos, sem substituir o mapa como evidência de exposição na DAA.",
+    "course_map_limitations": "CORE é prioridade organizacional atribuída pelo mapa Work, não matriz oficial FiSI/IHK. E = explicado; X = exercício; M = mencionado. O mapa se baseia em texto/OCR e não no conteúdo integral de anexos. G15 alerta para simplificações em TLS/WLAN. T109 está em Betriebssysteme. Não houve acesso novo ao OneNote nem alegação de exame IHK oficial.",
+    "scope": "Nenhuma alteração/aplicação de CSVs, arquivos gerados ou propostas anteriores. IDs adicionais são propostas, não reservas globais; conferir disponibilidade antes de eventual aplicação.",
+    "encoding": "Os pontos de interrogação no interior de palavras das propostas originais são U+003F presentes no JSON, não mero problema do terminal. Versões originais são preservadas literalmente; versões finais usam UTF-8 correto."
+  },
+  "summary": {
+    "verdict_scope": "Somente as nove candidatas originais netzwerk-289 a netzwerk-297.",
+    "APPROVE": 0,
+    "REVISE": 9,
+    "REJECT": 0,
+    "additional_proposals": 6,
+    "additional_candidate_ids": [
+      "netzwerk-298",
+      "netzwerk-299",
+      "netzwerk-300",
+      "netzwerk-301",
+      "netzwerk-302",
+      "netzwerk-303"
+    ],
+    "reason": "Nenhuma das nove duplica o mesmo objetivo já avaliado no banco; todos os conceitos têm valor. Todas precisam correção de texto e/ou qualidade de distractors/precisão. Adições são propostas do validador, não autoaprovações nem parte dos nove vereditos."
+  },
+  "coverage_validation": [
+    {
+      "topic_id": "T083",
+      "course_topic_row": "| T083 | Netzwerk Topologien | Sterntopologie; Baumtopologie; Ringtopologie; Strang-/Linien-/Bus-topologie; Punkt zu Punkt; Meshtopologie; WLAN-Zuordnung; Vorteile; Nachteile; Ausfallpunkte; Verkabelung | P037 E | CORE |",
+      "status": "WELL_COVERED",
+      "existing_question_ids": [
+        "netzwerk-076",
+        "netzwerk-077",
+        "netzwerk-078",
+        "netzwerk-079",
+        "netzwerk-204",
+        "netzwerk-207"
+      ],
+      "assessment": "Topologias, consequências de falha e escolhas de arquitetura já são avaliadas; não acrescentar apenas para repetir o tema."
+    },
+    {
+      "topic_id": "T085",
+      "course_topic_row": "| T085 | OSI Schichten Modell | Bitübertragungsschicht; Sicherungsschicht; Vermittlungsschicht; Transportschicht; Sitzungsschicht; Darstellungsschicht; Anwendungsschicht; Aufgaben; Geräte; Protokolle; Merksätze | P037 E; P039 E; P040 M; P041 E; P042 E; P043 E; P044 E; P045 X — repetido/reforçado | CORE |",
+      "status": "WELL_COVERED",
+      "existing_question_ids": [
+        "netzwerk-026",
+        "netzwerk-027",
+        "netzwerk-028",
+        "netzwerk-029",
+        "netzwerk-121",
+        "netzwerk-126",
+        "netzwerk-127",
+        "netzwerk-129",
+        "netzwerk-190"
+      ],
+      "assessment": "Camadas, direção e funções do OSI são variadas; conteúdo CORE reforçado não exige quantidade proporcional de perguntas."
+    },
+    {
+      "topic_id": "T086",
+      "course_topic_row": "| T086 | Kapselung / Entkapselung / PDU | Senderichtung; Empfangsrichtung; Daten; Segment; Paket; Frame; Bit; TCP/IP-Modell als Vergleich erwähnt | P039 E; P043 E — repetido/reforçado | CORE |",
+      "status": "CORE_BASICS_COVERED",
+      "existing_question_ids": [
+        "netzwerk-075",
+        "netzwerk-126",
+        "netzwerk-127",
+        "netzwerk-129",
+        "netzwerk-282"
+      ],
+      "assessment": "Há encapsulamento e desencapsulamento diretamente. A contagem de quatro perguntas não demonstra gap. Não proposta nova sem um objetivo adicional específico."
+    },
+    {
+      "topic_id": "T087",
+      "course_topic_row": "| T087 | Aktive / passive Netzwerkkomponenten | Hub; Switch; Router; Modem; Repeater; Access Point; Powerline; Firewall; Netzwerkkarte; Patchpanel; Kabel; RJ45; Kupfer; Glasfaser; Funk | P039 E | CORE |",
+      "status": "PARTIAL",
+      "existing_question_ids": [
+        "netzwerk-001",
+        "netzwerk-065",
+        "netzwerk-066",
+        "netzwerk-067",
+        "netzwerk-068"
+      ],
+      "assessment": "Componentes de switching/routing têm cobertura; classificação ativa/passiva e função bridge do AP faltam (289/290)."
+    },
+    {
+      "topic_id": "T088",
+      "course_topic_row": "| T088 | MAC-Adresse / Ethernet-Frame | 48 Bit; Hexadezimal; Herstellerkennung; Gerätekennung; Absender; Ziel; Typ / Länge; Nutzdaten; Prüfsumme | P039 E; P041 E — repetido/reforçado | CORE |",
+      "status": "WELL_COVERED",
+      "existing_question_ids": [
+        "netzwerk-046",
+        "netzwerk-065",
+        "netzwerk-069",
+        "netzwerk-070",
+        "netzwerk-129",
+        "netzwerk-130"
+      ],
+      "assessment": "MAC, aprendizagem de switch e campos/processamento de Ethernet têm cobertura útil."
+    },
+    {
+      "topic_id": "T089",
+      "course_topic_row": "| T089 | ARP | Adressauflösung; MAC und IP; ARP-Tabelle; arp -a | P039 E; P041 E — repetido/reforçado | CORE |",
+      "status": "PARTIAL",
+      "existing_question_ids": [
+        "netzwerk-007",
+        "netzwerk-041",
+        "netzwerk-042",
+        "netzwerk-043"
+      ],
+      "assessment": "ARP conceitual bem coberto; consulta prática da tabela ausente (297)."
+    },
+    {
+      "topic_id": "T090",
+      "course_topic_row": "| T090 | IPv4 / Subnetzmaske / CIDR | Oktette; Binärdarstellung; Netzanteil; Hostanteil; historische Klassen; private und öffentliche Adressen; Netzwerkadresse; Broadcast; Gateway; Loopback; /24; /26; Hostanzahl; Schrittweite | P002 M; P039 X; P040 M; P041 E; P045 X — repetido/reforçado | CORE |",
+      "status": "WELL_COVERED",
+      "existing_question_ids": [
+        "netzwerk-003",
+        "netzwerk-047",
+        "netzwerk-048",
+        "netzwerk-049",
+        "netzwerk-050",
+        "netzwerk-051",
+        "netzwerk-052",
+        "netzwerk-055",
+        "netzwerk-278",
+        "netzwerk-279",
+        "netzwerk-280",
+        "netzwerk-281"
+      ],
+      "assessment": "Endereçamento, máscara/CIDR e cálculo/diagnóstico de sub-redes têm diversidade de questões."
+    },
+    {
+      "topic_id": "T091",
+      "course_topic_row": "| T091 | IPv6 | Überschrift / Erwähnung; ::1; AAAA; keine eigenständige ausgeführte Einheit identifiziert | P039 M; P041 M; P046 M — repetido/reforçado | UNCLEAR |",
+      "status": "NOT_PRIORITIZED",
+      "existing_question_ids": [
+        "netzwerk-039"
+      ],
+      "assessment": "UNCLEAR no mapa; preservar perguntas existentes e não extrapolar uma unidade IPv6 estudada."
+    },
+    {
+      "topic_id": "T092",
+      "course_topic_row": "| T092 | Netzwerkdiagnose unter Windows | ping; ipconfig; /all; /renew; /release; /flushdns; arp -a; getmac; tracert; Ausgabeinterpretation | P039 E; P041 E; P045 X — repetido/reforçado | CORE |",
+      "status": "PARTIAL",
+      "existing_question_ids": [
+        "netzwerk-012",
+        "netzwerk-032",
+        "netzwerk-034",
+        "netzwerk-035",
+        "netzwerk-036",
+        "netzwerk-264"
+      ],
+      "assessment": "Diagnóstico conceitual e traceroute/nslookup presentes. /all, arp -a e intervenção /flushdns acrescentam objetivos operacionais (296/297/303)."
+    },
+    {
+      "topic_id": "T093",
+      "course_topic_row": "| T093 | TTL / HOP / ICMP | Lebensdauer von Paketen; Zwischenstationen; Diagnose- und Fehlermeldungen; Routenverfolgung | P041 E | CORE |",
+      "status": "WELL_COVERED",
+      "existing_question_ids": [
+        "netzwerk-031",
+        "netzwerk-032",
+        "netzwerk-034",
+        "netzwerk-160",
+        "netzwerk-265"
+      ],
+      "assessment": "TTL/ICMP/rastreio de rota avaliados em diferentes cenários."
+    },
+    {
+      "topic_id": "T094",
+      "course_topic_row": "| T094 | Ports | Portbereiche; Well Known; Registered; Dynamic; Quellport; Zielport; Zuordnung von Programmen und Diensten | P042 E | CORE |",
+      "status": "WELL_COVERED",
+      "existing_question_ids": [
+        "netzwerk-016",
+        "netzwerk-019",
+        "netzwerk-020",
+        "netzwerk-021",
+        "netzwerk-073"
+      ],
+      "assessment": "Papéis e uso de portas representados; não acrescentar memorização arbitrária."
+    },
+    {
+      "topic_id": "T095",
+      "course_topic_row": "| T095 | TCP / UDP | verbindungsorientiert; verbindungslos; Handshake; Reihenfolge; Verlust; erneutes Senden; Echtzeit-Beispiele; Segmentierung | P037 E; P039 E; P042 E — repetido/reforçado | CORE |",
+      "status": "WELL_COVERED",
+      "existing_question_ids": [
+        "netzwerk-008",
+        "netzwerk-131",
+        "netzwerk-193",
+        "netzwerk-220"
+      ],
+      "assessment": "Contrastes TCP/UDP e comportamento do transporte presentes."
+    },
+    {
+      "topic_id": "T097",
+      "course_topic_row": "| T097 | SSL / TLS | Begriffe; Verschlüsselung; Bezug zu Darstellung und Anwendung; TLS-Handshake in Beispielen; Schichtzuordnung laut Unterricht | P037 M; P039 E; P043 M; P044 E — repetido/reforçado | CORE |",
+      "status": "WELL_COVERED",
+      "existing_question_ids": [
+        "netzwerk-142",
+        "netzwerk-143",
+        "netzwerk-144",
+        "netzwerk-192",
+        "netzwerk-203",
+        "netzwerk-219",
+        "netzwerk-228"
+      ],
+      "assessment": "TLS/HTTPS, integridade e certificados presentes. Não transformar simplificações OSI do material em afirmações absolutas."
+    },
+    {
+      "topic_id": "T099",
+      "course_topic_row": "| T099 | Sitzungsschicht | Aufbau; Aufrechterhaltung; Beenden; Dialogsteuerung; Checkpoints; Wiederherstellung | P037 E; P039 E; P044 E; P045 X — repetido/reforçado | CORE |",
+      "status": "CORE_BASICS_COVERED",
+      "existing_question_ids": [
+        "netzwerk-132",
+        "netzwerk-173",
+        "netzwerk-174",
+        "netzwerk-175",
+        "netzwerk-176",
+        "netzwerk-218"
+      ],
+      "assessment": "Funções de sessão presentes; sem gap evidente que justifique outra candidata neste passe."
+    },
+    {
+      "topic_id": "T101",
+      "course_topic_row": "| T101 | DHCP | IP-Vergabe; Gateway; DNS; Lease / im Text Release; Pool; Reservierung; DORA; Discover; Offer; Request; ACK | P041 M; P042 M; P045 X; P046 M; P048 E — repetido/reforçado | CORE |",
+      "status": "PARTIAL",
+      "existing_question_ids": [
+        "netzwerk-004",
+        "netzwerk-035",
+        "netzwerk-036",
+        "netzwerk-037",
+        "netzwerk-038",
+        "netzwerk-237"
+      ],
+      "assessment": "DORA, função, portas, APIPA e relay presentes; reserva e validade/expiração de lease não avaliadas diretamente (300/301)."
+    },
+    {
+      "topic_id": "T102",
+      "course_topic_row": "| T102 | PortPanda: zwei Netze | je ein DHCP-Server; Router; mindestens drei Clients; IP-Vergabe prüfen; gegenseitiges Anpingen | P045 X | CORE |",
+      "status": "EXERCISE_COMPONENTS_COVERED",
+      "existing_question_ids": [
+        "netzwerk-002",
+        "netzwerk-012",
+        "netzwerk-055",
+        "netzwerk-255",
+        "netzwerk-281"
+      ],
+      "assessment": "Exercício de dois segmentos exige DHCP, gateway e conectividade já avaliados; reproduzir nome PortPanda não é um novo objetivo."
+    },
+    {
+      "topic_id": "T103",
+      "course_topic_row": "| T103 | DNS | Namensauflösung; interner und externer Dienst; lokaler Cache; DNS-Server über DHCP / manuell; Hosts-Datei | P041 E; P042 M; P046 E; P048 E — repetido/reforçado | CORE |",
+      "status": "PARTIAL",
+      "existing_question_ids": [
+        "netzwerk-005",
+        "netzwerk-006",
+        "netzwerk-157",
+        "netzwerk-159",
+        "netzwerk-264",
+        "netzwerk-287"
+      ],
+      "assessment": "Resolução, autoridade e cache/TTL têm cobertura; ação sobre cache local Windows falta (303)."
+    },
+    {
+      "topic_id": "T104",
+      "course_topic_row": "| T104 | DNS Records | A; AAAA; MX; CNAM (Schreibweise der Quelle); TXT; NS; SRV | P046 E | CORE |",
+      "status": "PARTIAL",
+      "existing_question_ids": [
+        "netzwerk-039",
+        "netzwerk-155",
+        "netzwerk-156",
+        "netzwerk-158",
+        "netzwerk-159",
+        "netzwerk-198"
+      ],
+      "assessment": "Não declarar todos os records bem cobertos: SRV/TXT sem pergunta e NS aparece como distrator, embora autoridade de zona seja coberta. Priorizada descoberta de serviço SRV (302)."
+    },
+    {
+      "topic_id": "T105",
+      "course_topic_row": "| T105 | WLAN / IEEE 802.11 | a; b; g; n; ac; ax; be; Wi-Fi 4 / 5 / 6 / 6E / 7; Frequenzbänder; Kanalbreite; Datenrate; Reichweite; MIMO; Gerätebeispiele | P037 M; P047 E; P048 E — repetido/reforçado | CORE |",
+      "status": "MAJOR_SUBTOPIC_GAP",
+      "existing_question_ids": [
+        "netzwerk-117",
+        "netzwerk-118",
+        "netzwerk-190",
+        "netzwerk-238",
+        "netzwerk-240",
+        "netzwerk-242",
+        "netzwerk-244",
+        "netzwerk-245"
+      ],
+      "assessment": "CSMA/CA, hidden nodes e sinal não substituem padrões, bandas, largura de canal e MIMO listados no mapa. Propostas 298/299 iniciam cobertura, sem alegar completar todos os subtópicos."
+    },
+    {
+      "topic_id": "T106",
+      "course_topic_row": "| T106 | Access Point / PoE | Stromversorgung; PoE-Switch; PoE-Injektor; Access Point | P039 E; P047 E — repetido/reforçado | CORE |",
+      "status": "MISSING_TARGETED_COVERAGE",
+      "existing_question_ids": [
+        "netzwerk-117",
+        "netzwerk-240",
+        "netzwerk-242"
+      ],
+      "assessment": "AP incidental não testa bridge ou alimentação PoE; 290/291 tratam dessas funções."
+    },
+    {
+      "topic_id": "T107",
+      "course_topic_row": "| T107 | WLAN-Verschlüsselung und Authentifizierung | WEP; WPA; WPA2; WPA3; RC4; TKIP; CCMP / AES; GCMP; PSK; 4-Way Handshake; 802.1X; RADIUS; SAE; PMF; PFS; genannte Schwachstellen | P047 E; P048 E — repetido/reforçado | CORE |",
+      "status": "MISSING_TARGETED_COVERAGE",
+      "existing_question_ids": [
+        "netzwerk-142",
+        "netzwerk-144",
+        "netzwerk-219",
+        "netzwerk-228"
+      ],
+      "assessment": "TLS genérico não substitui segurança WLAN. As três candidatas revistas são complementares (WEP, acesso individual Enterprise, SAE), mas não cobrem toda a lista PMF/CCMP/GCMP/PFS."
+    },
+    {
+      "topic_id": "T108",
+      "course_topic_row": "| T108 | Vom PC ins Internet | WLAN-Verbindung; Authentifizierung; DHCP; DNS; lokaler DNS-Speicher; Webseite; zeitlicher Ablauf als Beispielszenario | P048 E | CORE |",
+      "status": "PARTIAL_COMPOSITE_COVERAGE",
+      "existing_question_ids": [
+        "netzwerk-004",
+        "netzwerk-005",
+        "netzwerk-006",
+        "netzwerk-037",
+        "netzwerk-157",
+        "netzwerk-264",
+        "netzwerk-287"
+      ],
+      "assessment": "Partes do percurso PC→Internet cobertas; as propostas WLAN/cache melhoram o cenário. Não criar uma sequência rígida que ignore caches ou configuração estática."
+    },
+    {
+      "topic_id": "T109",
+      "course_topic_row": "| T109 | Windows Netzwerkprofil | Privates Netzwerk; Öffentliches Netzwerk; Netzwerkerkennung; Datei- und Druckerfreigabe; Firewall-Regeln; SMB als Beispiel | P048 E | CORE |",
+      "status": "MISSING_TARGETED_COVERAGE",
+      "existing_question_ids": [
+        "netzwerk-103"
+      ],
+      "assessment": "Tópico CORE está na seção Betriebssysteme; é relevante ao diagnóstico de rede. P2P não é perfil público/privado; proposta 295 preenche lacuna real."
+    }
+  ],
+  "confirmed_gaps": [
+    {
+      "candidate_id": "netzwerk-289",
+      "course_topic_ids": [
+        "T087"
+      ],
+      "gap_status": "CONFIRMED",
+      "reason": "Router- und Switchaufgaben sind vorhanden; keine Frage prüft aktive gegenüber passiven Verkabelungskomponenten. Eine fehlende Management-IP macht einen Switch nicht passiv."
+    },
+    {
+      "candidate_id": "netzwerk-290",
+      "course_topic_ids": [
+        "T087",
+        "T106"
+      ],
+      "gap_status": "CONFIRMED",
+      "reason": "CSMA/CA und Hidden Nodes setzen Access Points voraus, prüfen aber nicht ihre Bridge-Funktion zwischen WLAN und LAN. Router, DHCP und DNS sind eigenständige bereits behandelte Funktionen."
+    },
+    {
+      "candidate_id": "netzwerk-291",
+      "course_topic_ids": [
+        "T106"
+      ],
+      "gap_status": "CONFIRMED",
+      "reason": "Keine vorhandene Frage behandelt PoE, Leistungsversorgung oder einen Injector. Funk-/Layer-1-Fragen prüfen nicht die Versorgung eines AP."
+    },
+    {
+      "candidate_id": "netzwerk-292",
+      "course_topic_ids": [
+        "T107"
+      ],
+      "gap_status": "CONFIRMED",
+      "reason": "Vorhandene TLS-/Verschlüsselungsfragen ersetzen keine Frage zur konstruktiven Unsicherheit von WEP. Keine semantisch gleichwertige WEP-Frage vorhanden."
+    },
+    {
+      "candidate_id": "netzwerk-293",
+      "course_topic_ids": [
+        "T107"
+      ],
+      "gap_status": "CONFIRMED",
+      "reason": "Dezentrale Dateirechte und TLS-Zertifikate sind keine WLAN-Zugangsverwaltung mit 802.1X/RADIUS. Keine bestehende Frage prüft individuelle WLAN-Authentisierung."
+    },
+    {
+      "candidate_id": "netzwerk-294",
+      "course_topic_ids": [
+        "T107"
+      ],
+      "gap_status": "CONFIRMED",
+      "reason": "Keine vorhandene Frage behandelt WPA3/SAE oder den Unterschied zwischen passiver Offline- und aktiver Kennwortprüfung. Die neue Enterprise-Frage behandelt eine andere Entscheidung."
+    },
+    {
+      "candidate_id": "netzwerk-295",
+      "course_topic_ids": [
+        "T109"
+      ],
+      "gap_status": "CONFIRMED_STRONGER_THAN_CLAIMED",
+      "reason": "netzwerk-103 behandelt die dezentrale Pflege von P2P-Freigaberechten, nicht öffentliche/private Windows-Netzwerkprofile. Keine semantisch gleichwertige Profil-/Firewallfrage vorhanden."
+    },
+    {
+      "candidate_id": "netzwerk-296",
+      "course_topic_ids": [
+        "T092"
+      ],
+      "gap_status": "CONFIRMED",
+      "reason": "Adress-/Gatewayfehler, APIPA, nslookup und traceroute sind vorhanden; keine Frage verlangt die ausführliche Windows-Adapterkonfiguration mit DNS- und DHCP-Angaben."
+    },
+    {
+      "candidate_id": "netzwerk-297",
+      "course_topic_ids": [
+        "T089",
+        "T092"
+      ],
+      "gap_status": "CONFIRMED",
+      "reason": "ARP-Aufgabe, Broadcast und Ziel-MAC sind gut abgedeckt. Die Abfrage bestehender Cachezuordnungen ist ein anderes, bislang ungeprüftes Lernziel."
+    }
+  ],
+  "contested_claims": [
+    {
+      "claim": "Uma questão existente já cobre perfil público do Windows.",
+      "finding": "netzwerk-103 é sobre gestão descentralizada de permissões em P2P; não cobre perfil público/privado. A lacuna é maior do que o resumo indicava.",
+      "evidence": [
+        "netzwerk-103"
+      ]
+    },
+    {
+      "claim": "PDU é fraco porque existem apenas quatro perguntas relacionadas entre 283.",
+      "finding": "A contagem não mede diversidade. 075 testa encapsulamento, 282 desencapsulamento, 126/127 direções e 129 identificação do protocolo. Não há gap CORE básico demonstrado que exija outra pergunta.",
+      "evidence": [
+        "netzwerk-075",
+        "netzwerk-126",
+        "netzwerk-127",
+        "netzwerk-129",
+        "netzwerk-282"
+      ]
+    },
+    {
+      "claim": "DHCP está bem coberto sem ressalvas.",
+      "finding": "Fundamentos, DORA, portas, APIPA e relay sim; reserva e expiração de lease são objetivos distintos não avaliados. Ocorrência como distrator não conta como cobertura.",
+      "evidence": [
+        "netzwerk-004",
+        "netzwerk-035",
+        "netzwerk-036",
+        "netzwerk-037",
+        "netzwerk-038",
+        "netzwerk-237"
+      ]
+    },
+    {
+      "claim": "DNS Records está bem coberto sem ressalvas.",
+      "finding": "AAAA/MX/CNAME/PTR e autoridade de zona estão representados; SRV/TXT não, NS não como objetivo direto. Proposta adicional prioriza SRV.",
+      "evidence": [
+        "netzwerk-039",
+        "netzwerk-155",
+        "netzwerk-156",
+        "netzwerk-158",
+        "netzwerk-159",
+        "netzwerk-198"
+      ]
+    },
+    {
+      "claim": "WLAN/radio e colisões representam cobertura de T105.",
+      "finding": "Colisões/acesso ao meio não cobrem padrões/bandas/MIMO, explícitos e explicados no mapa. Ausência desses objetivos confirmada por leitura do banco.",
+      "evidence": [
+        "netzwerk-117",
+        "netzwerk-118",
+        "netzwerk-190",
+        "netzwerk-238",
+        "netzwerk-240",
+        "netzwerk-242",
+        "netzwerk-244",
+        "netzwerk-245"
+      ]
+    }
+  ],
+  "additional_core_gaps": [
+    {
+      "candidate_id": "netzwerk-298",
+      "gap": "Frequenzbänder / Wi-Fi 6 gegenüber 6E",
+      "course_topic_ids": [
+        "T105"
+      ],
+      "reason": "T105 é CORE, explicado em P047/P048; o banco cobre acesso ao meio e sinal, mas não compatibilidade de bandas/padrões. Nova pergunta testa a exigência de hardware dos dois lados, não uma tabela de velocidades decorada."
+    },
+    {
+      "candidate_id": "netzwerk-299",
+      "gap": "MIMO e limite de spatial streams do cliente",
+      "course_topic_ids": [
+        "T105"
+      ],
+      "reason": "MIMO é subtópico explícito de T105 explicado em P047/P048 e não é avaliado. A contagem de streams não duplica CSMA/CA, hidden nodes nem a compatibilidade de 6 GHz da outra proposta."
+    },
+    {
+      "candidate_id": "netzwerk-300",
+      "gap": "DHCP-Reservierung versus pool exclusion, lease e DNS",
+      "course_topic_ids": [
+        "T101"
+      ],
+      "reason": "Reservierung consta explicitamente em T101. A palavra aparece apenas como distrator em netzwerk-237, cujo objetivo é relay; DORA e atribuição automática não avaliam como fixar a concessão de um cliente."
+    },
+    {
+      "candidate_id": "netzwerk-301",
+      "gap": "Validade temporal de uma lease e expiração sem renovação",
+      "course_topic_ids": [
+        "T101"
+      ],
+      "reason": "T101 inclui Lease e foi explicado/exercitado. O banco cobre obtenção inicial e falha/APIPA, mas não distingue lease ainda válida de lease vencida após falha do servidor. Não são cobrados timers T1/T2 ausentes do mapa."
+    },
+    {
+      "candidate_id": "netzwerk-302",
+      "gap": "SRV para descoberta de host e porta de um serviço",
+      "course_topic_ids": [
+        "T104"
+      ],
+      "reason": "SRV é listado em T104 CORE explicado em P046 e não é testado. AAAA/MX/CNAME/PTR e autoridade de zona não cobrem esta função; NS como distrator de netzwerk-158 também não fecha esse gap."
+    },
+    {
+      "candidate_id": "netzwerk-303",
+      "gap": "Limpeza dirigida do cache DNS local Windows",
+      "course_topic_ids": [
+        "T092",
+        "T103"
+      ],
+      "reason": "T092 inclui /flushdns e T103 inclui cache local. netzwerk-287 explica cache de resolver ainda dentro da TTL; não testa a intervenção no cliente nem distingue cache local de cache externo. Enunciado exclui Hosts/cache da aplicação para evitar diagnóstico ambíguo."
+    }
+  ],
+  "remaining_partial_coverage": {
+    "notes": "Este passe não pretende preencher automaticamente todo subtópico CORE nem impor volume mínimo. As seis adições são objetivos distintos de aplicação prática com ausência clara.",
+    "not_fully_closed": [
+      "T104: TXT e significado direto de NS continuam sem pergunta dedicada; autoridade de zona já existe.",
+      "T105: largura de canal, trade-off alcance/interferência e mais padrões continuam parciais após as duas adições.",
+      "T107: seleção CCMP/TKIP, PMF, PFS e outros detalhes continuam parciais; WEP/Enterprise/SAE não equivalem a cobertura completa."
+    ],
+    "no_extra_ipv6": "T091 é UNCLEAR/mentioned; não usado para criar acréscimos. Questões existentes não são invalidadas por ir além das notas."
+  },
+  "technical_sources": [
+    {
+      "id": "MS-IPCONFIG",
+      "title": "Microsoft: ipconfig",
+      "url": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/ipconfig",
+      "question_ids": [
+        "netzwerk-296",
+        "netzwerk-303"
+      ],
+      "support": "Detalhes de /all e ações /flushdns, /release, /renew e /registerdns."
+    },
+    {
+      "id": "MS-ARP",
+      "title": "Microsoft: arp",
+      "url": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/arp",
+      "question_ids": [
+        "netzwerk-297"
+      ],
+      "support": "Consulta de entradas existentes do ARP cache com -a."
+    },
+    {
+      "id": "CISCO-POE",
+      "title": "Cisco Access Point Power Requirements",
+      "url": "https://www.cisco.com/c/en/us/support/docs/wireless/catalyst-9100-access-points/215467-cisco-access-point-power-requirements-qu.html",
+      "question_ids": [
+        "netzwerk-291"
+      ],
+      "support": "PoE deve satisfazer os requisitos de potência e compatibilidade do AP."
+    },
+    {
+      "id": "CISCO-WEP",
+      "title": "Cisco: Configuring Wired Equivalent Privacy",
+      "url": "https://www.cisco.com/c/en/us/support/docs/wireless-mobility/wireless-lan-wlan/10953-confwep.html",
+      "question_ids": [
+        "netzwerk-292"
+      ],
+      "support": "RC4 e IV de 24 bits; referência histórica, não recomendação atual de uso de WEP."
+    },
+    {
+      "id": "MS-NPS",
+      "title": "Microsoft: Network Policy Server overview",
+      "url": "https://learn.microsoft.com/en-us/windows-server/networking/technologies/nps/nps-top",
+      "question_ids": [
+        "netzwerk-293"
+      ],
+      "support": "RADIUS e autenticação/autorização centralizada."
+    },
+    {
+      "id": "MS-8021X",
+      "title": "Microsoft: Deploy Password-Based 802.1X Authenticated Wireless Access",
+      "url": "https://learn.microsoft.com/en-us/windows-server/networking/core-network-guide/cncg/wireless/a-deploy-8021X-wireless-access",
+      "question_ids": [
+        "netzwerk-293"
+      ],
+      "support": "WLAN Enterprise com 802.1X e NPS."
+    },
+    {
+      "id": "CISCO-SAE",
+      "title": "Cisco: WPA3, Catalyst 9800 configuration guide",
+      "url": "https://www.cisco.com/c/en/us/td/docs/wireless/controller/9800/17-13/config-guide/b_wl_17_13_cg/m_wpa3.html",
+      "question_ids": [
+        "netzwerk-294"
+      ],
+      "support": "SAE e resistência a offline dictionary attacks; distinção de modo transition."
+    },
+    {
+      "id": "MS-FIREWALL",
+      "title": "Microsoft: Firewall and network protection",
+      "url": "https://support.microsoft.com/en-us/windows/security/windows-security/firewall-and-network-protection-in-the-windows-security-app",
+      "question_ids": [
+        "netzwerk-295"
+      ],
+      "support": "Perfis público/privado e filtragem de conexões."
+    },
+    {
+      "id": "INTEL-WIFI",
+      "title": "Intel: Wi-Fi 6 Series",
+      "url": "https://www.intel.com/content/www/us/en/products/details/wireless/wi-fi-6-series.html",
+      "question_ids": [
+        "netzwerk-298"
+      ],
+      "support": "Equipamentos Wi-Fi 6 versus 6E e bandas suportadas."
+    },
+    {
+      "id": "CISCO-MIMO",
+      "title": "Cisco: Wireless RF Reference Guide",
+      "url": "https://www.cisco.com/c/en/us/td/docs/wireless/controller/9800/technical-reference/wireless-rf-reference-guide.pdf",
+      "question_ids": [
+        "netzwerk-299"
+      ],
+      "support": "Convenção de antenas e spatial streams 4x4:4 / 2x2:2."
+    },
+    {
+      "id": "MS-RESERVATION",
+      "title": "Microsoft: DHCP server reservation by client ID",
+      "url": "https://learn.microsoft.com/en-us/previous-versions/windows/desktop/dhcpserverpsprov/getbyclientid-ps-dhcpserverv4reservation",
+      "question_ids": [
+        "netzwerk-300"
+      ],
+      "support": "Reservas DHCP associadas a identificador de cliente."
+    },
+    {
+      "id": "RFC2131",
+      "title": "RFC 2131: Dynamic Host Configuration Protocol, section 4.4.5",
+      "url": "https://www.rfc-editor.org/rfc/rfc2131.html",
+      "question_ids": [
+        "netzwerk-301"
+      ],
+      "support": "Expiração sem DHCPACK: parar de usar configuração expirada e voltar à aquisição."
+    },
+    {
+      "id": "RFC2782",
+      "title": "RFC 2782: A DNS RR for specifying the location of services",
+      "url": "https://www.rfc-editor.org/rfc/rfc2782.html",
+      "question_ids": [
+        "netzwerk-302"
+      ],
+      "support": "SRV Target e Port; necessidade de cliente compatível com SRV."
+    }
+  ],
+  "viewer_usage": {
+    "open_together": [
+      "tools/quiz-review/reviews/netzwerk-coverage-review-2026-10-10.json",
+      "tools/quiz-review/reviews/netzwerk-coverage-validation-2026-10-10.json"
+    ],
+    "expected_records": 15,
+    "original_proposals": "As nove entradas preservam new_question e original_proposal_entry; o viewer usa recommended_final_question para REVISE.",
+    "additional_proposals": "Seis entradas new_question adicionais, sem verdict herdado; aguardam revisão humana.",
+    "media": "media:null representa ausência de mídia neste relatório. Para eventual conversão ao CSV, deixar célula media vazia; não serializar null como mídia do runtime."
+  },
+  "validations": [
+    {
+      "id": "netzwerk-289",
+      "candidate_key": "netzwerk-289",
+      "item_type": "new_question",
+      "verdict": "REVISE",
+      "reason": "Lacuna real; a explicação original contém ben?tigt. Reestruturada como uma classificação aplicada e com alternativas de classificações concorrentes, preservando a distinção elétrica/funcional e não por IP.",
+      "issue_types": [
+        "ENCODING",
+        "DISTRACTORS"
+      ],
+      "related_ids": [
+        "netzwerk-001",
+        "netzwerk-065",
+        "netzwerk-066",
+        "netzwerk-067",
+        "netzwerk-068"
+      ],
+      "new_question": {
+        "id": "netzwerk-289",
+        "category": "Netzwerk",
+        "difficulty": "medium",
+        "question": "Bei der Dokumentation einer strukturierten Gebäudeverkabelung sollen Bauteile als aktiv oder passiv eingeordnet werden. Welche Zuordnung ist korrekt?",
+        "answer1": "Ein Patchpanel und eine RJ45-Anschlussdose sind passive Komponenten; ein Switch ist eine aktive Komponente.",
+        "answer2": "Ein Patchpanel ist aktiv, weil es den Datenverkehr auf mehrere Ports verteilt; ein Switch ist passiv.",
+        "answer3": "Eine RJ45-Anschlussdose ist aktiv, weil sie elektrische Signale erzeugt; eine Netzwerkkarte ist passiv.",
+        "answer4": "Alle Komponenten ohne eigene IP-Adresse gelten als passiv, auch ein Switch.",
+        "correctAnswer": 0,
+        "explanation": "Patchpanel und Anschlussdose verbinden beziehungsweise terminieren Leitungen ohne Frames zu verarbeiten. Ein Switch ben?tigt Energie und verarbeitet Frames, daher ist er aktiv.",
+        "media": null
+      },
+      "original_proposal_entry": {
+        "id": "netzwerk-289",
+        "candidate_key": "netzwerk-289",
+        "item_type": "new_question",
+        "status": "NEW_QUESTION",
+        "gap": "Apostila classifica componentes de rede em ativos e passivos e lista patch panel, RJ45 e placa de rede; o banco n?o testa essa distin??o.",
+        "course_reference": "IT.III.01 07.09.2026 (P039), Aktive / passive Netzwerkkomponenten",
+        "new_question": {
+          "id": "netzwerk-289",
+          "category": "Netzwerk",
+          "difficulty": "medium",
+          "question": "Bei der Dokumentation einer strukturierten Gebäudeverkabelung sollen Bauteile als aktiv oder passiv eingeordnet werden. Welche Zuordnung ist korrekt?",
+          "answer1": "Ein Patchpanel und eine RJ45-Anschlussdose sind passive Komponenten; ein Switch ist eine aktive Komponente.",
+          "answer2": "Ein Patchpanel ist aktiv, weil es den Datenverkehr auf mehrere Ports verteilt; ein Switch ist passiv.",
+          "answer3": "Eine RJ45-Anschlussdose ist aktiv, weil sie elektrische Signale erzeugt; eine Netzwerkkarte ist passiv.",
+          "answer4": "Alle Komponenten ohne eigene IP-Adresse gelten als passiv, auch ein Switch.",
+          "correctAnswer": 0,
+          "explanation": "Patchpanel und Anschlussdose verbinden beziehungsweise terminieren Leitungen ohne Frames zu verarbeiten. Ein Switch ben?tigt Energie und verarbeitet Frames, daher ist er aktiv.",
+          "media": null
+        },
+        "course_topic_id": "T087",
+        "course_priority": "CORE"
+      },
+      "recommended_final_question": {
+        "id": "netzwerk-289",
+        "category": "Netzwerk",
+        "topic": "Netzwerkkomponenten",
+        "difficulty": "medium",
+        "question": "Ein unverwalteter Switch hat keine konfigurierbare Management-IP. Daneben sind ein herkömmliches Patchpanel und RJ45-Anschlussdosen verbaut. Welche Einordnung ist fachlich richtig?",
+        "answer1": "Der Switch ist aktiv; Patchpanel und Anschlussdosen sind passiv.",
+        "answer2": "Switch und Patchpanel sind aktiv; die Anschlussdosen sind passiv.",
+        "answer3": "Der Switch ist passiv; Patchpanel und Anschlussdosen sind aktiv.",
+        "answer4": "Alle drei sind passiv, solange sie keine eigene IP-Adresse besitzen.",
+        "correctAnswer": 0,
+        "explanation": "Ein Switch benötigt Strom und verarbeitet beziehungsweise vermittelt Frames. Ein herkömmliches Patchpanel und Anschlussdosen verbinden Leitungen ohne aktive Signalverarbeitung. Eine Management-IP ist kein Kriterium für die Einteilung.",
+        "media": null
+      },
+      "assessment": {
+        "gap_status": "CONFIRMED",
+        "semantic_duplicate_found": false,
+        "novelty": "Router- und Switchaufgaben sind vorhanden; keine Frage prüft aktive gegenüber passiven Verkabelungskomponenten. Eine fehlende Management-IP macht einen Switch nicht passiv.",
+        "existing_bank_evidence": [
+          {
+            "id": "netzwerk-001",
+            "question": "Welche Aufgabe übernimmt ein Router hauptsächlich?",
+            "correct_answer": "Er verbindet unterschiedliche IP-Netze und leitet Pakete zwischen ihnen weiter"
+          },
+          {
+            "id": "netzwerk-065",
+            "question": "Ein Switch empfängt an Port 3 einen Frame mit Quell-MAC A und Ziel-MAC B. Welchen dynamischen Eintrag kann er daraus unmittelbar lernen?",
+            "correct_answer": "MAC A ist über Port 3 erreichbar."
+          },
+          {
+            "id": "netzwerk-066",
+            "question": "Ein Switch empfängt einen Unicast-Frame an Port 3. Die Ziel-MAC ist im selben VLAN ebenfalls an Port 3 gelernt. Wie behandelt ein gewöhnlicher Layer-2-Switch diesen Frame?",
+            "correct_answer": "Er leitet ihn nicht über einen anderen Port weiter."
+          },
+          {
+            "id": "netzwerk-067",
+            "question": "Ein Switch erhält einen Ethernet-Broadcast an einem Access-Port in VLAN 10. Welche weiteren Ports erhalten ihn bei normaler VLAN-Weiterleitung?",
+            "correct_answer": "Die dafür weiterleitenden Ports von VLAN 10."
+          },
+          {
+            "id": "netzwerk-068",
+            "question": "Welche Aussage zu VLAN und Subnetz ist am treffendsten?",
+            "correct_answer": "VLAN und IP-Subnetz sind unterschiedliche Konzepte, werden in der Praxis aber häufig einander zugeordnet."
+          }
+        ],
+        "course_priority": "CORE",
+        "course_topic_ids": [
+          "T087"
+        ],
+        "course_pages": [
+          "P039"
+        ],
+        "course_topic_rows": [
+          "| T087 | Aktive / passive Netzwerkkomponenten | Hub; Switch; Router; Modem; Repeater; Access Point; Powerline; Firewall; Netzwerkkarte; Patchpanel; Kabel; RJ45; Kupfer; Glasfaser; Funk | P039 E | CORE |"
+        ],
+        "depth": "explained",
+        "technical_accuracy": "Die Kernaussage ist richtig. Die Neufassung grenzt ein herkömmliches passives Patchpanel und einen unverwalteten Switch ausdrücklich ein.",
+        "german_and_clarity": "Revisão em alemão; caracteres ? que substituíam letras nas versões originais foram corrigidos na versão final. A proposta original foi preservada sem correção silenciosa.",
+        "distractors_and_answer_cues": "Lacuna real; a explicação original contém ben?tigt. Reestruturada como uma classificação aplicada e com alternativas de classificações concorrentes, preservando a distinção elétrica/funcional e não por IP.",
+        "difficulty": "medium: aplicação de classificação funcional; não exige conhecimento avançado.",
+        "answer_contract": {
+          "correctAnswer": 0,
+          "answer1_is_correct": true
+        },
+        "study_value": "Conceito aplicável à formação FiSI e a questões de preparação; não se afirma presença obrigatória na prova IHK."
+      }
+    },
+    {
+      "id": "netzwerk-290",
+      "candidate_key": "netzwerk-290",
+      "item_type": "new_question",
+      "verdict": "REVISE",
+      "reason": "Função de AP ausente como objetivo de aprendizagem. Corrigidos caracteres e substituídas alternativas irreais (como converter WLAN em cabos) por confusões com funções reais de roteamento/DHCP/DNS.",
+      "issue_types": [
+        "ENCODING",
+        "DISTRACTORS",
+        "SCOPE"
+      ],
+      "related_ids": [
+        "netzwerk-001",
+        "netzwerk-067",
+        "netzwerk-068",
+        "netzwerk-117",
+        "netzwerk-240",
+        "netzwerk-242"
+      ],
+      "new_question": {
+        "id": "netzwerk-290",
+        "category": "Netzwerk",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen m?chte ein bestehendes kabelgebundenes LAN um WLAN erweitern. Welche Aufgabe ?bernimmt ein Access Point in einer typischen Infrastrukturkonfiguration?",
+        "answer1": "Er verbindet WLAN-Stationen mit dem lokalen Netzwerk; Routing und DHCP sind davon getrennte Funktionen.",
+        "answer2": "Er ersetzt zwingend den Router und ?bersetzt private IPv4-Adressen ins Internet.",
+        "answer3": "Er weist jedem WLAN-Client selbstst?ndig eine ?ffentliche IPv4-Adresse zu.",
+        "answer4": "Er wandelt jede WLAN-Verbindung in eine eigene physische Ethernet-Leitung um.",
+        "correctAnswer": 0,
+        "explanation": "Ein Access Point stellt den Funkzugang zu einem vorhandenen Netzwerk bereit. Ob zus?tzlich Routing oder DHCP angeboten wird, h?ngt von weiteren Ger?tefunktionen ab.",
+        "media": null
+      },
+      "original_proposal_entry": {
+        "id": "netzwerk-290",
+        "candidate_key": "netzwerk-290",
+        "item_type": "new_question",
+        "status": "NEW_QUESTION",
+        "gap": "Access Points aparecem como componente de WLAN, mas o banco n?o testa sua fun??o b?sica separada de roteamento e DHCP.",
+        "course_reference": "IT.III.01 07.09.2026 (P039), Access Point",
+        "new_question": {
+          "id": "netzwerk-290",
+          "category": "Netzwerk",
+          "difficulty": "medium",
+          "question": "Ein Unternehmen m?chte ein bestehendes kabelgebundenes LAN um WLAN erweitern. Welche Aufgabe ?bernimmt ein Access Point in einer typischen Infrastrukturkonfiguration?",
+          "answer1": "Er verbindet WLAN-Stationen mit dem lokalen Netzwerk; Routing und DHCP sind davon getrennte Funktionen.",
+          "answer2": "Er ersetzt zwingend den Router und ?bersetzt private IPv4-Adressen ins Internet.",
+          "answer3": "Er weist jedem WLAN-Client selbstst?ndig eine ?ffentliche IPv4-Adresse zu.",
+          "answer4": "Er wandelt jede WLAN-Verbindung in eine eigene physische Ethernet-Leitung um.",
+          "correctAnswer": 0,
+          "explanation": "Ein Access Point stellt den Funkzugang zu einem vorhandenen Netzwerk bereit. Ob zus?tzlich Routing oder DHCP angeboten wird, h?ngt von weiteren Ger?tefunktionen ab.",
+          "media": null
+        },
+        "course_topic_id": "T087",
+        "course_priority": "CORE"
+      },
+      "recommended_final_question": {
+        "id": "netzwerk-290",
+        "category": "Netzwerk",
+        "topic": "Access Point",
+        "difficulty": "medium",
+        "question": "Ein Access Point wird per Ethernet in ein bestehendes VLAN eingebunden. WLAN-Clients sollen dieses VLAN und dessen vorhandenen DHCP-Server nutzen. Welche Funktion erfüllt der Access Point im Bridge-Betrieb?",
+        "answer1": "Er verbindet die WLAN-Stationen auf Sicherungsschicht mit dem vorhandenen LAN.",
+        "answer2": "Er routet die WLAN-Clients in ein separates IP-Subnetz und ersetzt deren Standardgateway.",
+        "answer3": "Er übernimmt die Vergabe der IP-Konfiguration und ersetzt den vorhandenen DHCP-Server.",
+        "answer4": "Er löst die Namen der WLAN-Clients auf und ersetzt den vorhandenen DNS-Server.",
+        "correctAnswer": 0,
+        "explanation": "Im Bridge-Betrieb verbindet der Access Point WLAN und kabelgebundenes LAN auf Layer 2. DHCP, DNS und Routing können weiterhin die vorhandenen Dienste übernehmen. Zusätzliche Routerfunktionen eines Kombigeräts sind davon zu unterscheiden.",
+        "media": null
+      },
+      "assessment": {
+        "gap_status": "CONFIRMED",
+        "semantic_duplicate_found": false,
+        "novelty": "CSMA/CA und Hidden Nodes setzen Access Points voraus, prüfen aber nicht ihre Bridge-Funktion zwischen WLAN und LAN. Router, DHCP und DNS sind eigenständige bereits behandelte Funktionen.",
+        "existing_bank_evidence": [
+          {
+            "id": "netzwerk-001",
+            "question": "Welche Aufgabe übernimmt ein Router hauptsächlich?",
+            "correct_answer": "Er verbindet unterschiedliche IP-Netze und leitet Pakete zwischen ihnen weiter"
+          },
+          {
+            "id": "netzwerk-067",
+            "question": "Ein Switch erhält einen Ethernet-Broadcast an einem Access-Port in VLAN 10. Welche weiteren Ports erhalten ihn bei normaler VLAN-Weiterleitung?",
+            "correct_answer": "Die dafür weiterleitenden Ports von VLAN 10."
+          },
+          {
+            "id": "netzwerk-068",
+            "question": "Welche Aussage zu VLAN und Subnetz ist am treffendsten?",
+            "correct_answer": "VLAN und IP-Subnetz sind unterschiedliche Konzepte, werden in der Praxis aber häufig einander zugeordnet."
+          },
+          {
+            "id": "netzwerk-117",
+            "question": "Welches Verfahren nutzt WLAN beim klassischen Zugriff konkurrierender Stationen auf das Funkmedium?",
+            "correct_answer": "CSMA/CA"
+          },
+          {
+            "id": "netzwerk-240",
+            "question": "Zwei WLAN-Stationen erreichen denselben Access Point, können sich gegenseitig aber nicht hören. Warum können ihre Übertragungen dennoch kollidieren?",
+            "correct_answer": "Beide können das Medium lokal für frei halten und gleichzeitig zum Access Point senden."
+          },
+          {
+            "id": "netzwerk-242",
+            "question": "Welche optionale WLAN-Funktion kann die Auswirkungen versteckter Stationen auf längere Datenübertragungen verringern?",
+            "correct_answer": "Ein RTS/CTS-Austausch vor der Datenübertragung."
+          }
+        ],
+        "course_priority": "CORE",
+        "course_topic_ids": [
+          "T087",
+          "T106"
+        ],
+        "course_pages": [
+          "P039",
+          "P047"
+        ],
+        "course_topic_rows": [
+          "| T087 | Aktive / passive Netzwerkkomponenten | Hub; Switch; Router; Modem; Repeater; Access Point; Powerline; Firewall; Netzwerkkarte; Patchpanel; Kabel; RJ45; Kupfer; Glasfaser; Funk | P039 E | CORE |",
+          "| T106 | Access Point / PoE | Stromversorgung; PoE-Switch; PoE-Injektor; Access Point | P039 E; P047 E — repetido/reforçado | CORE |"
+        ],
+        "depth": "explained",
+        "technical_accuracy": "AP im Bridge-Betrieb arbeitet hier auf Layer 2. Router-/NAT-/DHCP-Zusatzfunktionen eines Kombigeräts sind nicht generell AP-Aufgaben.",
+        "german_and_clarity": "Revisão em alemão; caracteres ? que substituíam letras nas versões originais foram corrigidos na versão final. A proposta original foi preservada sem correção silenciosa.",
+        "distractors_and_answer_cues": "Função de AP ausente como objetivo de aprendizagem. Corrigidos caracteres e substituídas alternativas irreais (como converter WLAN em cabos) por confusões com funções reais de roteamento/DHCP/DNS.",
+        "difficulty": "medium: aplicar função do componente a uma rede existente.",
+        "answer_contract": {
+          "correctAnswer": 0,
+          "answer1_is_correct": true
+        },
+        "study_value": "Conceito aplicável à formação FiSI e a questões de preparação; não se afirma presença obrigatória na prova IHK."
+      }
+    },
+    {
+      "id": "netzwerk-291",
+      "candidate_key": "netzwerk-291",
+      "item_type": "new_question",
+      "verdict": "REVISE",
+      "reason": "Lacuna confirmada. Tornados explícitos AP compatível com PoE, alimentação do injetor e potência adequada. DNS/DHCP não são alternativas plausíveis de alimentação e foram substituídos.",
+      "issue_types": [
+        "ENCODING",
+        "DISTRACTORS",
+        "PRECONDITIONS"
+      ],
+      "related_ids": [
+        "netzwerk-001",
+        "netzwerk-117",
+        "netzwerk-190"
+      ],
+      "new_question": {
+        "id": "netzwerk-291",
+        "category": "Netzwerk",
+        "difficulty": "medium",
+        "question": "Ein Access Point soll an der Decke montiert werden, wo keine Steckdose vorhanden ist. Der vorhandene Switch unterst?tzt kein PoE. Welche L?sung kann Daten und Strom ?ber die Leitung zum Access Point bringen?",
+        "answer1": "Ein PoE-Injektor wird zwischen Switch und Access Point eingesetzt und speist Strom in die Ethernet-Leitung ein.",
+        "answer2": "Ein gew?hnlicher passiver Patchpanel-Port erzeugt die ben?tigte PoE-Spannung.",
+        "answer3": "Der Access Point erh?lt Strom ?ber DHCP, sobald er eine IP-Adresse bekommen hat.",
+        "answer4": "Ein DNS-Eintrag f?r den Access Point aktiviert die Stromversorgung ?ber Ethernet.",
+        "correctAnswer": 0,
+        "explanation": "Ein PoE-Injektor speist elektrische Leistung in die Ethernet-Verbindung ein und leitet die Daten weiter. Ein PoE-f?higer Switch k?nnte diese Funktion direkt ?bernehmen.",
+        "media": null
+      },
+      "original_proposal_entry": {
+        "id": "netzwerk-291",
+        "candidate_key": "netzwerk-291",
+        "item_type": "new_question",
+        "status": "NEW_QUESTION",
+        "gap": "PoE foi explicado com switch PoE e injector, mas n?o h? pergunta sobre a aplica??o pr?tica dessas op??es.",
+        "course_reference": "IT.III.01 07.09.2026 (P039) e IT.III.02 01.10.2026 (P047), Access Point / PoE",
+        "new_question": {
+          "id": "netzwerk-291",
+          "category": "Netzwerk",
+          "difficulty": "medium",
+          "question": "Ein Access Point soll an der Decke montiert werden, wo keine Steckdose vorhanden ist. Der vorhandene Switch unterst?tzt kein PoE. Welche L?sung kann Daten und Strom ?ber die Leitung zum Access Point bringen?",
+          "answer1": "Ein PoE-Injektor wird zwischen Switch und Access Point eingesetzt und speist Strom in die Ethernet-Leitung ein.",
+          "answer2": "Ein gew?hnlicher passiver Patchpanel-Port erzeugt die ben?tigte PoE-Spannung.",
+          "answer3": "Der Access Point erh?lt Strom ?ber DHCP, sobald er eine IP-Adresse bekommen hat.",
+          "answer4": "Ein DNS-Eintrag f?r den Access Point aktiviert die Stromversorgung ?ber Ethernet.",
+          "correctAnswer": 0,
+          "explanation": "Ein PoE-Injektor speist elektrische Leistung in die Ethernet-Verbindung ein und leitet die Daten weiter. Ein PoE-f?higer Switch k?nnte diese Funktion direkt ?bernehmen.",
+          "media": null
+        },
+        "course_topic_id": "T106",
+        "course_priority": "CORE"
+      },
+      "recommended_final_question": {
+        "id": "netzwerk-291",
+        "category": "Netzwerk",
+        "topic": "PoE",
+        "difficulty": "medium",
+        "question": "Ein PoE-fähiger Access Point soll über eine vorhandene Ethernet-Leitung an der Decke betrieben werden. Dort gibt es keine Steckdose, der vorhandene Switch liefert kein PoE. Welche Ergänzung ermöglicht die Versorgung, ohne den Switch auszutauschen?",
+        "answer1": "Ein mit Strom versorgter PoE-Injektor mit passendem Standard und ausreichender Leistung.",
+        "answer2": "Ein PoE-Splitter am Access Point, dessen Eingang nur mit dem nicht PoE-fähigen Switch verbunden ist.",
+        "answer3": "Ein Ethernet-Repeater ohne PoE-Ausgang, der die vorhandene Datenverbindung regeneriert.",
+        "answer4": "Ein passiver RJ45-Leitungsadapter ohne eigene Stromzufuhr zwischen Switch und Access Point.",
+        "correctAnswer": 0,
+        "explanation": "Ein gespeister PoE-Injektor führt Daten und Strom auf der Leitung zum Access Point zusammen. PoE-Standard und verfügbare Leistung müssen zum Gerät passen. Ein Splitter trennt bereits vorhandenes PoE; er erzeugt keine Versorgung aus einer reinen Datenleitung.",
+        "media": null
+      },
+      "assessment": {
+        "gap_status": "CONFIRMED",
+        "semantic_duplicate_found": false,
+        "novelty": "Keine vorhandene Frage behandelt PoE, Leistungsversorgung oder einen Injector. Funk-/Layer-1-Fragen prüfen nicht die Versorgung eines AP.",
+        "existing_bank_evidence": [
+          {
+            "id": "netzwerk-001",
+            "question": "Welche Aufgabe übernimmt ein Router hauptsächlich?",
+            "correct_answer": "Er verbindet unterschiedliche IP-Netze und leitet Pakete zwischen ihnen weiter"
+          },
+          {
+            "id": "netzwerk-117",
+            "question": "Welches Verfahren nutzt WLAN beim klassischen Zugriff konkurrierender Stationen auf das Funkmedium?",
+            "correct_answer": "CSMA/CA"
+          },
+          {
+            "id": "netzwerk-190",
+            "question": "Ein WLAN-Signal ist so schwach, dass Bits fehlerhaft ankommen. Welche Schicht ist am ehesten betroffen?",
+            "correct_answer": "Schicht 1 Bitübertragung"
+          }
+        ],
+        "course_priority": "CORE",
+        "course_topic_ids": [
+          "T106"
+        ],
+        "course_pages": [
+          "P039",
+          "P047"
+        ],
+        "course_topic_rows": [
+          "| T106 | Access Point / PoE | Stromversorgung; PoE-Switch; PoE-Injektor; Access Point | P039 E; P047 E — repetido/reforçado | CORE |"
+        ],
+        "depth": "explained",
+        "technical_accuracy": "Ein Injector benötigt selbst Strom; AP, PoE-Standard und Leistungsbudget müssen kompatibel sein. Ein Splitter oder Datenadapter erzeugt keine Energie.",
+        "german_and_clarity": "Revisão em alemão; caracteres ? que substituíam letras nas versões originais foram corrigidos na versão final. A proposta original foi preservada sem correção silenciosa.",
+        "distractors_and_answer_cues": "Lacuna confirmada. Tornados explícitos AP compatível com PoE, alimentação do injetor e potência adequada. DNS/DHCP não são alternativas plausíveis de alimentação e foram substituídos.",
+        "difficulty": "medium: escolha prática de equipamento, sem decorar potência por norma.",
+        "answer_contract": {
+          "correctAnswer": 0,
+          "answer1_is_correct": true
+        },
+        "study_value": "Conceito aplicável à formação FiSI e a questões de preparação; não se afirma presença obrigatória na prova IHK."
+      }
+    },
+    {
+      "id": "netzwerk-292",
+      "candidate_key": "netzwerk-292",
+      "item_type": "new_question",
+      "verdict": "REVISE",
+      "reason": "Conceito útil e ausente. Distratores originais sobre WEP proteger só DNS ou funcionar só com IPv6 eram demasiado fáceis; substituídos por equívocos sobre chave, IV, algoritmo e SSID.",
+      "issue_types": [
+        "ENCODING",
+        "DISTRACTORS"
+      ],
+      "related_ids": [
+        "netzwerk-142",
+        "netzwerk-144",
+        "netzwerk-219",
+        "netzwerk-228"
+      ],
+      "new_question": {
+        "id": "netzwerk-292",
+        "category": "Netzwerk",
+        "difficulty": "medium",
+        "question": "Warum gilt WEP als unsicher und sollte f?r ein WLAN nicht mehr eingesetzt werden?",
+        "answer1": "Der kurze Initialisierungsvektor kann sich wiederholen; zusammen mit dem veralteten Verfahren lassen sich daraus Schw?chen zur Schl?sselgewinnung ausnutzen.",
+        "answer2": "WEP verwendet grunds?tzlich individuelle Zertifikate pro Nutzer und kann deshalb keine Ger?te authentisieren.",
+        "answer3": "WEP verschl?sselt nur den DNS-Verkehr, w?hrend andere WLAN-Daten unverschl?sselt bleiben.",
+        "answer4": "WEP erlaubt ausschlie?lich Verbindungen mit IPv6 und blockiert IPv4.",
+        "correctAnswer": 0,
+        "explanation": "WEP verwendet RC4 mit einem kurzen IV. Wiederholungen und weitere Schw?chen des Verfahrens machten es praktisch angreifbar; es bietet keinen zeitgem??en WLAN-Schutz.",
+        "media": null
+      },
+      "original_proposal_entry": {
+        "id": "netzwerk-292",
+        "candidate_key": "netzwerk-292",
+        "item_type": "new_question",
+        "status": "NEW_QUESTION",
+        "gap": "As notas detalham WEP como inseguro por RC4 e IV curto/reutilizado; o banco n?o cobre seguran?a WLAN.",
+        "course_reference": "IT.III.02 01.10.2026 (P047), WLAN-Verschlüsselung / WEP",
+        "new_question": {
+          "id": "netzwerk-292",
+          "category": "Netzwerk",
+          "difficulty": "medium",
+          "question": "Warum gilt WEP als unsicher und sollte f?r ein WLAN nicht mehr eingesetzt werden?",
+          "answer1": "Der kurze Initialisierungsvektor kann sich wiederholen; zusammen mit dem veralteten Verfahren lassen sich daraus Schw?chen zur Schl?sselgewinnung ausnutzen.",
+          "answer2": "WEP verwendet grunds?tzlich individuelle Zertifikate pro Nutzer und kann deshalb keine Ger?te authentisieren.",
+          "answer3": "WEP verschl?sselt nur den DNS-Verkehr, w?hrend andere WLAN-Daten unverschl?sselt bleiben.",
+          "answer4": "WEP erlaubt ausschlie?lich Verbindungen mit IPv6 und blockiert IPv4.",
+          "correctAnswer": 0,
+          "explanation": "WEP verwendet RC4 mit einem kurzen IV. Wiederholungen und weitere Schw?chen des Verfahrens machten es praktisch angreifbar; es bietet keinen zeitgem??en WLAN-Schutz.",
+          "media": null
+        },
+        "course_topic_id": "T107",
+        "course_priority": "CORE"
+      },
+      "recommended_final_question": {
+        "id": "netzwerk-292",
+        "category": "Netzwerk",
+        "topic": "WLAN-Sicherheit",
+        "difficulty": "medium",
+        "question": "Welche konstruktive Schwäche trägt dazu bei, dass WEP auch mit einem langen konfigurierten Schlüssel keinen ausreichenden WLAN-Schutz bietet?",
+        "answer1": "Der kurze Initialisierungsvektor kann bei gleichem Schlüssel wiederkehren und Angriffe auf das RC4-basierte Verfahren begünstigen.",
+        "answer2": "Der konfigurierte geheime WEP-Schlüssel wird zusammen mit jedem Datenframe unverschlüsselt übertragen.",
+        "answer3": "Die AES-Verschlüsselung von WEP wird unsicher, sobald der Access Point kein Serverzertifikat besitzt.",
+        "answer4": "Die öffentlich sichtbare SSID dient bei WEP als alleiniger Schlüssel zur Verschlüsselung der Daten.",
+        "correctAnswer": 0,
+        "explanation": "WEP verwendet RC4 und einen 24-Bit-Initialisierungsvektor. Wiederholungen und weitere Protokollschwächen ermöglichen praktische Angriffe. Ein längerer statischer WEP-Schlüssel beseitigt diese Konstruktionsprobleme nicht. Der IV ist öffentlich, der geheime Schlüssel wird nicht einfach mitgesendet.",
+        "media": null
+      },
+      "assessment": {
+        "gap_status": "CONFIRMED",
+        "semantic_duplicate_found": false,
+        "novelty": "Vorhandene TLS-/Verschlüsselungsfragen ersetzen keine Frage zur konstruktiven Unsicherheit von WEP. Keine semantisch gleichwertige WEP-Frage vorhanden.",
+        "existing_bank_evidence": [
+          {
+            "id": "netzwerk-142",
+            "question": "Was ist HTTPS vereinfacht gesagt?",
+            "correct_answer": "HTTP mit verschlüsselter Übertragung"
+          },
+          {
+            "id": "netzwerk-144",
+            "question": "Was schützt Anwendungsdaten einer TLS-Verbindung vor unbemerkter Manipulation während der Übertragung?",
+            "correct_answer": "Die kryptografische Integritätsprüfung der geschützten Daten."
+          },
+          {
+            "id": "netzwerk-219",
+            "question": "Wozu dient Server Name Indication (SNI) im TLS-Handshake?",
+            "correct_answer": "Der Client nennt den gewünschten Servernamen zur Auswahl der TLS-Konfiguration."
+          },
+          {
+            "id": "netzwerk-228",
+            "question": "Eine Website wird mit einer gültig authentisierten HTTPS-Verbindung geladen. Welche Schlussfolgerung ist trotzdem nicht gerechtfertigt?",
+            "correct_answer": "Der Betreiber ist vertrauenswürdig und seine Angebote sind frei von Betrug."
+          }
+        ],
+        "course_priority": "CORE",
+        "course_topic_ids": [
+          "T107"
+        ],
+        "course_pages": [
+          "P047",
+          "P048"
+        ],
+        "course_topic_rows": [
+          "| T107 | WLAN-Verschlüsselung und Authentifizierung | WEP; WPA; WPA2; WPA3; RC4; TKIP; CCMP / AES; GCMP; PSK; 4-Way Handshake; 802.1X; RADIUS; SAE; PMF; PFS; genannte Schwachstellen | P047 E; P048 E — repetido/reforçado | CORE |"
+        ],
+        "depth": "explained",
+        "technical_accuracy": "RC4 und kurzer 24-Bit-IV mit Wiederholungen gehören zu den WEP-Schwächen. Ein langer statischer Schlüssel beseitigt sie nicht; der geheime Schlüssel wird nicht einfach mit jedem Frame übertragen.",
+        "german_and_clarity": "Revisão em alemão; caracteres ? que substituíam letras nas versões originais foram corrigidos na versão final. A proposta original foi preservada sem correção silenciosa.",
+        "distractors_and_answer_cues": "Conceito útil e ausente. Distratores originais sobre WEP proteger só DNS ou funcionar só com IPv6 eram demasiado fáceis; substituídos por equívocos sobre chave, IV, algoritmo e SSID.",
+        "difficulty": "medium: reconhecer falha estrutural ensinada; não exige derivar criptoanálise.",
+        "answer_contract": {
+          "correctAnswer": 0,
+          "answer1_is_correct": true
+        },
+        "study_value": "Conceito aplicável à formação FiSI e a questões de preparação; não se afirma presença obrigatória na prova IHK."
+      }
+    },
+    {
+      "id": "netzwerk-293",
+      "candidate_key": "netzwerk-293",
+      "item_type": "new_question",
+      "verdict": "REVISE",
+      "reason": "Lacuna real. Removida referência a im Unterricht e formulado requisito de empresa; quatro opções são configurações WLAN plausíveis. O contraste é gestão individual versus credencial compartilhada, não simplesmente WPA3 melhor que WPA2.",
+      "issue_types": [
+        "ENCODING",
+        "EXAM_LANGUAGE",
+        "DISTRACTORS"
+      ],
+      "related_ids": [
+        "netzwerk-103",
+        "netzwerk-203",
+        "netzwerk-228"
+      ],
+      "new_question": {
+        "id": "netzwerk-293",
+        "category": "Netzwerk",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen m?chte WLAN-Zug?nge pro Mitarbeitendem verwalten, statt ein gemeinsames Kennwort an alle zu verteilen. Welche im Unterricht behandelte Variante passt dazu?",
+        "answer1": "WPA-Enterprise mit 802.1X und einem Authentisierungsdienst wie RADIUS.",
+        "answer2": "WPA-Personal mit demselben Pre-Shared Key f?r alle Besch?ftigten.",
+        "answer3": "Ein offenes WLAN ohne Authentisierung, dessen SSID nicht ausgestrahlt wird.",
+        "answer4": "WEP mit einem statischen Schl?ssel, der regelm??ig auf allen Ger?ten ge?ndert wird.",
+        "correctAnswer": 0,
+        "explanation": "WPA-Enterprise bindet die WLAN-Anmeldung an 802.1X und typischerweise RADIUS. WPA-Personal verwendet dagegen einen gemeinsam genutzten PSK.",
+        "media": null
+      },
+      "original_proposal_entry": {
+        "id": "netzwerk-293",
+        "candidate_key": "netzwerk-293",
+        "item_type": "new_question",
+        "status": "NEW_QUESTION",
+        "gap": "O material compara WPA-Personal com WPA-Enterprise e associa Enterprise a 802.1X/RADIUS; essa escolha n?o ? avaliada no banco.",
+        "course_reference": "IT.III.02 01.10.2026 (P047), WPA-Personal / WPA-Enterprise",
+        "new_question": {
+          "id": "netzwerk-293",
+          "category": "Netzwerk",
+          "difficulty": "medium",
+          "question": "Ein Unternehmen m?chte WLAN-Zug?nge pro Mitarbeitendem verwalten, statt ein gemeinsames Kennwort an alle zu verteilen. Welche im Unterricht behandelte Variante passt dazu?",
+          "answer1": "WPA-Enterprise mit 802.1X und einem Authentisierungsdienst wie RADIUS.",
+          "answer2": "WPA-Personal mit demselben Pre-Shared Key f?r alle Besch?ftigten.",
+          "answer3": "Ein offenes WLAN ohne Authentisierung, dessen SSID nicht ausgestrahlt wird.",
+          "answer4": "WEP mit einem statischen Schl?ssel, der regelm??ig auf allen Ger?ten ge?ndert wird.",
+          "correctAnswer": 0,
+          "explanation": "WPA-Enterprise bindet die WLAN-Anmeldung an 802.1X und typischerweise RADIUS. WPA-Personal verwendet dagegen einen gemeinsam genutzten PSK.",
+          "media": null
+        },
+        "course_topic_id": "T107",
+        "course_priority": "CORE"
+      },
+      "recommended_final_question": {
+        "id": "netzwerk-293",
+        "category": "Netzwerk",
+        "topic": "WLAN-Authentifizierung",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen möchte WLAN-Zugänge personenbezogen verwalten und einzelne Berechtigungen zentral sperren können, ohne das WLAN-Kennwort aller anderen Beschäftigten zu ändern. Welche Konfiguration unterstützt dieses Ziel?",
+        "answer1": "WPA2-Enterprise mit 802.1X, individuellen Zugangsdaten und zentraler Prüfung über RADIUS.",
+        "answer2": "WPA2-Personal mit einem gemeinsamen langen PSK und regelmäßiger Änderung dieses Schlüssels.",
+        "answer3": "WPA2-Personal mit einem gemeinsamen PSK und deaktivierter Ausstrahlung der SSID.",
+        "answer4": "WPA3-Personal mit SAE und einem gemeinsamen Kennwort für alle Beschäftigten.",
+        "correctAnswer": 0,
+        "explanation": "Enterprise mit 802.1X ermöglicht individuelle Authentisierung und zentrale Zugangsentscheidungen, typischerweise über RADIUS. Ein gemeinsamer PSK oder ein gemeinsames SAE-Kennwort bildet allein keine personenbezogene Berechtigungsverwaltung. Der Authentisierungsdienst muss entsprechend eingerichtet sein.",
+        "media": null
+      },
+      "assessment": {
+        "gap_status": "CONFIRMED",
+        "semantic_duplicate_found": false,
+        "novelty": "Dezentrale Dateirechte und TLS-Zertifikate sind keine WLAN-Zugangsverwaltung mit 802.1X/RADIUS. Keine bestehende Frage prüft individuelle WLAN-Authentisierung.",
+        "existing_bank_evidence": [
+          {
+            "id": "netzwerk-103",
+            "question": "In einem kleinen P2P-Dateifreigabenetz verwaltet jeder Nutzer seine Freigaberechte selbst. Welche organisatorische Schwierigkeit entsteht daraus?",
+            "correct_answer": "Einheitliche Zugriffsregeln müssen auf mehreren unabhängigen Geräten abgestimmt werden."
+          },
+          {
+            "id": "netzwerk-203",
+            "question": "Ein Browser verbindet sich mit https://shop.example.com. Die Zertifikatskette ist vertrauenswürdig und zeitlich gültig, das Zertifikat gilt aber ausschließlich für mail.example.com. Was ist das Problem?",
+            "correct_answer": "Die bestätigte Serveridentität passt nicht zum angefragten Hostnamen."
+          },
+          {
+            "id": "netzwerk-228",
+            "question": "Eine Website wird mit einer gültig authentisierten HTTPS-Verbindung geladen. Welche Schlussfolgerung ist trotzdem nicht gerechtfertigt?",
+            "correct_answer": "Der Betreiber ist vertrauenswürdig und seine Angebote sind frei von Betrug."
+          }
+        ],
+        "course_priority": "CORE",
+        "course_topic_ids": [
+          "T107"
+        ],
+        "course_pages": [
+          "P047",
+          "P048"
+        ],
+        "course_topic_rows": [
+          "| T107 | WLAN-Verschlüsselung und Authentifizierung | WEP; WPA; WPA2; WPA3; RC4; TKIP; CCMP / AES; GCMP; PSK; 4-Way Handshake; 802.1X; RADIUS; SAE; PMF; PFS; genannte Schwachstellen | P047 E; P048 E — repetido/reforçado | CORE |"
+        ],
+        "depth": "explained",
+        "technical_accuracy": "802.1X/Enterprise mit geeignet eingerichtetem Authentisierungsdienst unterstützt individuelle Authentisierung und zentrale Sperrung. Ein gemeinsam genutztes PSK-/SAE-Kennwort allein bietet dies nicht.",
+        "german_and_clarity": "Revisão em alemão; caracteres ? que substituíam letras nas versões originais foram corrigidos na versão final. A proposta original foi preservada sem correção silenciosa.",
+        "distractors_and_answer_cues": "Lacuna real. Removida referência a im Unterricht e formulado requisito de empresa; quatro opções são configurações WLAN plausíveis. O contraste é gestão individual versus credencial compartilhada, não simplesmente WPA3 melhor que WPA2.",
+        "difficulty": "medium: selecionar arquitetura de autenticação por requisito.",
+        "answer_contract": {
+          "correctAnswer": 0,
+          "answer1_is_correct": true
+        },
+        "study_value": "Conceito aplicável à formação FiSI e a questões de preparação; não se afirma presença obrigatória na prova IHK."
+      }
+    },
+    {
+      "id": "netzwerk-294",
+      "candidate_key": "netzwerk-294",
+      "item_type": "new_question",
+      "verdict": "REVISE",
+      "reason": "Conceito adequado, mas original hard era principalmente reconhecimento de uma propriedade e tinha alternativa absurda sobre alcance de rádio. Reescrita para distinguir ataques offline/ativos e PMF, com limites técnicos explícitos; dificuldade medium.",
+      "issue_types": [
+        "ENCODING",
+        "EXAM_LANGUAGE",
+        "DISTRACTORS",
+        "DIFFICULTY",
+        "SECURITY_SCOPE"
+      ],
+      "related_ids": [
+        "netzwerk-142",
+        "netzwerk-144",
+        "netzwerk-219",
+        "netzwerk-228"
+      ],
+      "new_question": {
+        "id": "netzwerk-294",
+        "category": "Netzwerk",
+        "difficulty": "hard",
+        "question": "Ein WLAN wird von WPA2-Personal auf WPA3-Personal umgestellt. Welcher Sicherheitsvorteil von SAE wird im Unterricht besonders hervorgehoben?",
+        "answer1": "Ein aufgezeichneter Anmeldevorgang erm?glicht dem Angreifer nicht in gleicher Weise einen Offline-W?rterbuchangriff auf das Kennwort.",
+        "answer2": "SAE macht das WLAN ohne Kennwort nutzbar, verhindert aber die Anzeige der SSID.",
+        "answer3": "SAE ersetzt die Verschl?sselung der ?bertragenen Daten vollst?ndig durch eine MAC-Adresspr?fung.",
+        "answer4": "SAE verhindert grunds?tzlich jede Funkst?rung und garantiert eine gr??ere Reichweite.",
+        "correctAnswer": 0,
+        "explanation": "WPA3-Personal verwendet SAE statt des WPA2-Personal-PSK-Verfahrens. Ein wesentlicher vorgesehener Vorteil ist der Schutz gegen Offline-W?rterbuchangriffe auf Basis eines mitgeschnittenen Handshakes.",
+        "media": null
+      },
+      "original_proposal_entry": {
+        "id": "netzwerk-294",
+        "candidate_key": "netzwerk-294",
+        "item_type": "new_question",
+        "status": "NEW_QUESTION",
+        "gap": "As notas apresentam SAE no WPA3-Personal como prote??o contra ataques de dicion?rio offline; o banco n?o trata isso.",
+        "course_reference": "IT.III.02 01.10.2026 (P047), WPA3-Personal / SAE",
+        "new_question": {
+          "id": "netzwerk-294",
+          "category": "Netzwerk",
+          "difficulty": "hard",
+          "question": "Ein WLAN wird von WPA2-Personal auf WPA3-Personal umgestellt. Welcher Sicherheitsvorteil von SAE wird im Unterricht besonders hervorgehoben?",
+          "answer1": "Ein aufgezeichneter Anmeldevorgang erm?glicht dem Angreifer nicht in gleicher Weise einen Offline-W?rterbuchangriff auf das Kennwort.",
+          "answer2": "SAE macht das WLAN ohne Kennwort nutzbar, verhindert aber die Anzeige der SSID.",
+          "answer3": "SAE ersetzt die Verschl?sselung der ?bertragenen Daten vollst?ndig durch eine MAC-Adresspr?fung.",
+          "answer4": "SAE verhindert grunds?tzlich jede Funkst?rung und garantiert eine gr??ere Reichweite.",
+          "correctAnswer": 0,
+          "explanation": "WPA3-Personal verwendet SAE statt des WPA2-Personal-PSK-Verfahrens. Ein wesentlicher vorgesehener Vorteil ist der Schutz gegen Offline-W?rterbuchangriffe auf Basis eines mitgeschnittenen Handshakes.",
+          "media": null
+        },
+        "course_topic_id": "T107",
+        "course_priority": "CORE"
+      },
+      "recommended_final_question": {
+        "id": "netzwerk-294",
+        "category": "Netzwerk",
+        "topic": "WPA3 / SAE",
+        "difficulty": "medium",
+        "question": "Ein Angreifer zeichnet nur einen Anmeldevorgang eines korrekt implementierten WPA3-Personal-Netzes mit SAE auf; ein WPA2-Übergangsmodus ist nicht aktiv. Welchen Schutz bietet SAE gegenüber dem aufgezeichneten WPA2-Personal-PSK-Handshake?",
+        "answer1": "Der Mitschnitt allein erlaubt kein vergleichbares beliebiges Offline-Prüfen von Kennwortkandidaten; aktive Rateversuche bleiben gesondert zu betrachten.",
+        "answer2": "Der Mitschnitt bleibt für dieselben Offline-Kennworttests nutzbar; SAE schützt ausschließlich spätere Management-Frames.",
+        "answer3": "Der Mitschnitt enthält den gemeinsamen WLAN-Schlüssel nun verschlüsselt, während WPA2-Personal ihn im Klartext übertragen hätte.",
+        "answer4": "Der Mitschnitt kann keine Kennwortangriffe mehr ermöglichen, und SAE macht dadurch auch aktive Rateversuche grundsätzlich unmöglich.",
+        "correctAnswer": 0,
+        "explanation": "SAE ist ein passwortauthentisierter Schlüsselaustausch, der passive Offline-Wörterbuchangriffe aus einem aufgezeichneten Austausch abwehrt. Das bedeutet weder Schutz vor jedem aktiven Angriff noch eine Garantie für jede Implementierung. Auch WPA2-Personal überträgt das gemeinsame Kennwort nicht einfach im Klartext.",
+        "media": null
+      },
+      "assessment": {
+        "gap_status": "CONFIRMED",
+        "semantic_duplicate_found": false,
+        "novelty": "Keine vorhandene Frage behandelt WPA3/SAE oder den Unterschied zwischen passiver Offline- und aktiver Kennwortprüfung. Die neue Enterprise-Frage behandelt eine andere Entscheidung.",
+        "existing_bank_evidence": [
+          {
+            "id": "netzwerk-142",
+            "question": "Was ist HTTPS vereinfacht gesagt?",
+            "correct_answer": "HTTP mit verschlüsselter Übertragung"
+          },
+          {
+            "id": "netzwerk-144",
+            "question": "Was schützt Anwendungsdaten einer TLS-Verbindung vor unbemerkter Manipulation während der Übertragung?",
+            "correct_answer": "Die kryptografische Integritätsprüfung der geschützten Daten."
+          },
+          {
+            "id": "netzwerk-219",
+            "question": "Wozu dient Server Name Indication (SNI) im TLS-Handshake?",
+            "correct_answer": "Der Client nennt den gewünschten Servernamen zur Auswahl der TLS-Konfiguration."
+          },
+          {
+            "id": "netzwerk-228",
+            "question": "Eine Website wird mit einer gültig authentisierten HTTPS-Verbindung geladen. Welche Schlussfolgerung ist trotzdem nicht gerechtfertigt?",
+            "correct_answer": "Der Betreiber ist vertrauenswürdig und seine Angebote sind frei von Betrug."
+          }
+        ],
+        "course_priority": "CORE",
+        "course_topic_ids": [
+          "T107"
+        ],
+        "course_pages": [
+          "P047",
+          "P048"
+        ],
+        "course_topic_rows": [
+          "| T107 | WLAN-Verschlüsselung und Authentifizierung | WEP; WPA; WPA2; WPA3; RC4; TKIP; CCMP / AES; GCMP; PSK; 4-Way Handshake; 802.1X; RADIUS; SAE; PMF; PFS; genannte Schwachstellen | P047 E; P048 E — repetido/reforçado | CORE |"
+        ],
+        "depth": "explained",
+        "technical_accuracy": "Die Garantie wird auf korrekt implementiertes SAE ohne WPA2-Übergangsmodus und passiven Mitschnitt begrenzt; kein Versprechen völliger Immunität gegen Passwortangriffe oder Implementierungsfehler.",
+        "german_and_clarity": "Revisão em alemão; caracteres ? que substituíam letras nas versões originais foram corrigidos na versão final. A proposta original foi preservada sem correção silenciosa.",
+        "distractors_and_answer_cues": "Conceito adequado, mas original hard era principalmente reconhecimento de uma propriedade e tinha alternativa absurda sobre alcance de rádio. Reescrita para distinguir ataques offline/ativos e PMF, com limites técnicos explícitos; dificuldade medium.",
+        "difficulty": "medium em vez de hard: uma distinção conceitual direta, não análise criptográfica avançada.",
+        "answer_contract": {
+          "correctAnswer": 0,
+          "answer1_is_correct": true
+        },
+        "study_value": "Conceito aplicável à formação FiSI e a questões de preparação; não se afirma presença obrigatória na prova IHK."
+      }
+    },
+    {
+      "id": "netzwerk-295",
+      "candidate_key": "netzwerk-295",
+      "item_type": "new_question",
+      "verdict": "REVISE",
+      "reason": "O gap existe, mas a alegada pergunta prévia sobre rede pública não corresponde a netzwerk-103. A formulação original simplifica demais acesso a arquivos. Novo cenário especifica regras SMB e evita recomendar marcar rede pública como privada.",
+      "issue_types": [
+        "ENCODING",
+        "OVERGENERALIZATION",
+        "DISTRACTORS",
+        "COVERAGE_EVIDENCE"
+      ],
+      "related_ids": [
+        "netzwerk-103"
+      ],
+      "new_question": {
+        "id": "netzwerk-295",
+        "category": "Netzwerk",
+        "difficulty": "medium",
+        "question": "Ein Firmenlaptop verbindet sich in einem Caf? mit einem nicht vertrauensw?rdigen WLAN. Welche Windows-Netzwerkeinstellung ist f?r diese Verbindung die angemessene Wahl?",
+        "answer1": "Das Profil ??ffentlich? mit deaktivierter Netzwerkerkennung und Dateifreigabe sowie restriktiven Regeln f?r eingehende Verbindungen.",
+        "answer2": "Das Profil ?Privat?, damit alle Ger?te im WLAN automatisch auf lokale Freigaben zugreifen k?nnen.",
+        "answer3": "Das Profil ?Dom?ne?, auch wenn der Rechner keiner Unternehmensdom?ne angeh?rt.",
+        "answer4": "Ein privates Profil mit freigegebenen Verwaltungsports, weil die WLAN-Verschl?sselung alle lokalen Angriffe verhindert.",
+        "correctAnswer": 0,
+        "explanation": "Ein fremdes Caf?-WLAN ist als nicht vertrauensw?rdig zu behandeln. Das ?ffentliche Profil schr?nkt die Erreichbarkeit und Freigaben des Rechners ein.",
+        "media": null
+      },
+      "original_proposal_entry": {
+        "id": "netzwerk-295",
+        "candidate_key": "netzwerk-295",
+        "item_type": "new_question",
+        "status": "NEW_QUESTION",
+        "gap": "A aula de WLAN p?blico contrasta perfis de rede privados e p?blicos do Windows, mas esse comportamento n?o aparece no banco.",
+        "course_reference": "IT.III.02 06.10.2026 (P048), Windows Netzwerkprofil",
+        "new_question": {
+          "id": "netzwerk-295",
+          "category": "Netzwerk",
+          "difficulty": "medium",
+          "question": "Ein Firmenlaptop verbindet sich in einem Caf? mit einem nicht vertrauensw?rdigen WLAN. Welche Windows-Netzwerkeinstellung ist f?r diese Verbindung die angemessene Wahl?",
+          "answer1": "Das Profil ??ffentlich? mit deaktivierter Netzwerkerkennung und Dateifreigabe sowie restriktiven Regeln f?r eingehende Verbindungen.",
+          "answer2": "Das Profil ?Privat?, damit alle Ger?te im WLAN automatisch auf lokale Freigaben zugreifen k?nnen.",
+          "answer3": "Das Profil ?Dom?ne?, auch wenn der Rechner keiner Unternehmensdom?ne angeh?rt.",
+          "answer4": "Ein privates Profil mit freigegebenen Verwaltungsports, weil die WLAN-Verschl?sselung alle lokalen Angriffe verhindert.",
+          "correctAnswer": 0,
+          "explanation": "Ein fremdes Caf?-WLAN ist als nicht vertrauensw?rdig zu behandeln. Das ?ffentliche Profil schr?nkt die Erreichbarkeit und Freigaben des Rechners ein.",
+          "media": null
+        },
+        "course_topic_id": "T109",
+        "course_priority": "CORE"
+      },
+      "recommended_final_question": {
+        "id": "netzwerk-295",
+        "category": "Netzwerk",
+        "topic": "Windows-Netzwerkprofil",
+        "difficulty": "medium",
+        "question": "Auf einem Windows-Notebook ist eingehender SMB-Verkehr nur für das private Firewallprofil erlaubt. Nach dem Wechsel in ein Hotel-WLAN mit öffentlichem Profil sind seine Freigaben nicht erreichbar, Webseiten aber schon. Welche Erklärung passt?",
+        "answer1": "Die Regeln des öffentlichen Profils blockieren hier eingehendes SMB, während ausgehende Webverbindungen erlaubt bleiben können.",
+        "answer2": "Die Profiländerung hat automatisch die NTFS-Zugriffsrechte aller freigegebenen Dateien auf dem Notebook entfernt.",
+        "answer3": "Das öffentliche Profil verbirgt Freigaben nur in der Netzwerkerkennung; direkte SMB-Zugriffe per IP bleiben von seinen Firewallregeln unberührt.",
+        "answer4": "Ausgehende Browserverbindungen umgehen die Windows-Firewall grundsätzlich, weil diese ausschließlich eingehende Verbindungen prüfen kann.",
+        "correctAnswer": 0,
+        "explanation": "Windows kann je nach aktivem Netzwerkprofil unterschiedliche Firewallregeln anwenden. Das Profil ändert nicht automatisch NTFS-Berechtigungen. Auch ein direkter SMB-Zugriff per IP unterliegt der Firewall; ausgehende Verbindungen können ebenfalls gefiltert werden. Entscheidend sind hier die angegebenen profilabhängigen Regeln.",
+        "media": null
+      },
+      "assessment": {
+        "gap_status": "CONFIRMED_STRONGER_THAN_CLAIMED",
+        "semantic_duplicate_found": false,
+        "novelty": "netzwerk-103 behandelt die dezentrale Pflege von P2P-Freigaberechten, nicht öffentliche/private Windows-Netzwerkprofile. Keine semantisch gleichwertige Profil-/Firewallfrage vorhanden.",
+        "existing_bank_evidence": [
+          {
+            "id": "netzwerk-103",
+            "question": "In einem kleinen P2P-Dateifreigabenetz verwaltet jeder Nutzer seine Freigaberechte selbst. Welche organisatorische Schwierigkeit entsteht daraus?",
+            "correct_answer": "Einheitliche Zugriffsregeln müssen auf mehreren unabhängigen Geräten abgestimmt werden."
+          }
+        ],
+        "course_priority": "CORE",
+        "course_topic_ids": [
+          "T109"
+        ],
+        "course_pages": [
+          "P048"
+        ],
+        "course_topic_rows": [
+          "| T109 | Windows Netzwerkprofil | Privates Netzwerk; Öffentliches Netzwerk; Netzwerkerkennung; Datei- und Druckerfreigabe; Firewall-Regeln; SMB als Beispiel | P048 E | CORE |"
+        ],
+        "depth": "explained",
+        "technical_accuracy": "Privat erlaubt nicht automatisch allen Nutzern Dateizugriff. Profile wählen Richtlinien; effektive Firewall-/Freigabe-/NTFS-Regeln bleiben maßgeblich. Ein Domänenprofil ist keine beliebig wählbare Vertrauensstufe für ein Hotelnetz.",
+        "german_and_clarity": "Revisão em alemão; caracteres ? que substituíam letras nas versões originais foram corrigidos na versão final. A proposta original foi preservada sem correção silenciosa.",
+        "distractors_and_answer_cues": "O gap existe, mas a alegada pergunta prévia sobre rede pública não corresponde a netzwerk-103. A formulação original simplifica demais acesso a arquivos. Novo cenário especifica regras SMB e evita recomendar marcar rede pública como privada.",
+        "difficulty": "medium: inferir efeito de regras de firewall explícitas. T109 está na seção Betriebssysteme, mas tem aplicação direta em Netzwerk.",
+        "answer_contract": {
+          "correctAnswer": 0,
+          "answer1_is_correct": true
+        },
+        "study_value": "Conceito aplicável à formação FiSI e a questões de preparação; não se afirma presença obrigatória na prova IHK."
+      }
+    },
+    {
+      "id": "netzwerk-296",
+      "candidate_key": "netzwerk-296",
+      "item_type": "new_question",
+      "verdict": "REVISE",
+      "reason": "Lacuna prática em comando explicado/usado em exercício. Substituídas combinações inventadas de parâmetros por comandos Windows reais e mantido requisito que distingue /all de ipconfig simples.",
+      "issue_types": [
+        "ENCODING",
+        "DISTRACTORS"
+      ],
+      "related_ids": [
+        "netzwerk-012",
+        "netzwerk-032",
+        "netzwerk-034",
+        "netzwerk-035",
+        "netzwerk-036",
+        "netzwerk-264"
+      ],
+      "new_question": {
+        "id": "netzwerk-296",
+        "category": "Netzwerk",
+        "difficulty": "medium",
+        "question": "Bei einem Windows-Client sollen IPv4-Adresse, Standardgateway, DNS-Server und Eigenschaften aller Netzwerkadapter gemeinsam gepr?ft werden. Welcher Befehl liefert daf?r die passende ?bersicht?",
+        "answer1": "ipconfig /all",
+        "answer2": "tracert /flushdns",
+        "answer3": "getmac /renewdns",
+        "answer4": "arp -d *",
+        "correctAnswer": 0,
+        "explanation": "ipconfig /all zeigt detaillierte Informationen zu den Netzwerkadaptern und ihrer IP-Konfiguration, darunter Gateway- und DNS-Angaben.",
+        "media": null
+      },
+      "original_proposal_entry": {
+        "id": "netzwerk-296",
+        "candidate_key": "netzwerk-296",
+        "item_type": "new_question",
+        "status": "NEW_QUESTION",
+        "gap": "ipconfig /all foi ensinado para examinar adaptadores e configura??o, mas n?o h? quest?o de diagn?stico baseada nesse comando.",
+        "course_reference": "IT.III.01 11.09.2026 (P041), ipconfig /all",
+        "new_question": {
+          "id": "netzwerk-296",
+          "category": "Netzwerk",
+          "difficulty": "medium",
+          "question": "Bei einem Windows-Client sollen IPv4-Adresse, Standardgateway, DNS-Server und Eigenschaften aller Netzwerkadapter gemeinsam gepr?ft werden. Welcher Befehl liefert daf?r die passende ?bersicht?",
+          "answer1": "ipconfig /all",
+          "answer2": "tracert /flushdns",
+          "answer3": "getmac /renewdns",
+          "answer4": "arp -d *",
+          "correctAnswer": 0,
+          "explanation": "ipconfig /all zeigt detaillierte Informationen zu den Netzwerkadaptern und ihrer IP-Konfiguration, darunter Gateway- und DNS-Angaben.",
+          "media": null
+        },
+        "course_topic_id": "T092",
+        "course_priority": "CORE"
+      },
+      "recommended_final_question": {
+        "id": "netzwerk-296",
+        "category": "Netzwerk",
+        "topic": "Windows-Netzwerkdiagnose",
+        "difficulty": "medium",
+        "question": "Für einen Windows-Client sollen IPv4-Adresse, Standardgateway, konfigurierte DNS-Server und der DHCP-Status aller Adapter geprüft werden. Welcher Befehl zeigt diese Angaben gemeinsam an?",
+        "answer1": "ipconfig /all",
+        "answer2": "ipconfig",
+        "answer3": "getmac /v",
+        "answer4": "route print",
+        "correctAnswer": 0,
+        "explanation": "ipconfig /all zeigt die ausführliche Adapterkonfiguration einschließlich DNS-Servern und DHCP-Angaben. ipconfig ohne Parameter liefert weniger Details; getmac konzentriert sich auf MAC-Adressen, route print auf die Routingtabelle.",
+        "media": null
+      },
+      "assessment": {
+        "gap_status": "CONFIRMED",
+        "semantic_duplicate_found": false,
+        "novelty": "Adress-/Gatewayfehler, APIPA, nslookup und traceroute sind vorhanden; keine Frage verlangt die ausführliche Windows-Adapterkonfiguration mit DNS- und DHCP-Angaben.",
+        "existing_bank_evidence": [
+          {
+            "id": "netzwerk-012",
+            "question": "Ein DHCP-Client erreicht Geräte und den DNS-Server im eigenen IPv4-Subnetz. Ziele in anderen Netzen sind nicht erreichbar; dafür sind keine spezifischen Routen eingerichtet. Welcher Eintrag sollte zuerst geprüft werden?",
+            "correct_answer": "Das konfigurierte Standardgateway."
+          },
+          {
+            "id": "netzwerk-032",
+            "question": "Welche ICMPv4-Nachricht meldet bei traceroute typischerweise, dass die TTL eines Pakets unterwegs abgelaufen ist?",
+            "correct_answer": "Time Exceeded"
+          },
+          {
+            "id": "netzwerk-034",
+            "question": "Wie ermittelt traceroute Zwischenstationen auf einem IP-Pfad?",
+            "correct_answer": "Es erhöht TTL beziehungsweise Hop Limit der Proben schrittweise und wertet ICMP-Antworten aus."
+          },
+          {
+            "id": "netzwerk-035",
+            "question": "Ein Windows-Client erhält keine DHCPv4-Konfiguration und verwendet APIPA. Aus welchem Bereich stammt seine automatisch gewählte Link-Local-Adresse?",
+            "correct_answer": "169.254.0.0/16"
+          },
+          {
+            "id": "netzwerk-036",
+            "question": "Ein Windows-Client erhält 169.254.44.18/16. Was ist die wahrscheinlichste Ursache?",
+            "correct_answer": "Der Client konnte keinen DHCP-Server erreichen."
+          },
+          {
+            "id": "netzwerk-264",
+            "question": "Was bewirkt unter Windows der Befehl nslookup example.com 192.0.2.53?",
+            "correct_answer": "Er fragt example.com gezielt beim DNS-Server 192.0.2.53 ab."
+          }
+        ],
+        "course_priority": "CORE",
+        "course_topic_ids": [
+          "T092"
+        ],
+        "course_pages": [
+          "P039",
+          "P041",
+          "P045"
+        ],
+        "course_topic_rows": [
+          "| T092 | Netzwerkdiagnose unter Windows | ping; ipconfig; /all; /renew; /release; /flushdns; arp -a; getmac; tracert; Ausgabeinterpretation | P039 E; P041 E; P045 X — repetido/reforçado | CORE |"
+        ],
+        "depth": "explained + exercise (P045)",
+        "technical_accuracy": "ipconfig /all liefert die geforderten Details. ipconfig ohne Parameter, getmac /v und route print sind reale Befehle, liefern aber nicht gemeinsam die verlangte Konfiguration.",
+        "german_and_clarity": "Revisão em alemão; caracteres ? que substituíam letras nas versões originais foram corrigidos na versão final. A proposta original foi preservada sem correção silenciosa.",
+        "distractors_and_answer_cues": "Lacuna prática em comando explicado/usado em exercício. Substituídas combinações inventadas de parâmetros por comandos Windows reais e mantido requisito que distingue /all de ipconfig simples.",
+        "difficulty": "medium: diagnóstico orientado por informação necessária, embora acessível após prática.",
+        "answer_contract": {
+          "correctAnswer": 0,
+          "answer1_is_correct": true
+        },
+        "study_value": "Conceito aplicável à formação FiSI e a questões de preparação; não se afirma presença obrigatória na prova IHK."
+      }
+    },
+    {
+      "id": "netzwerk-297",
+      "candidate_key": "netzwerk-297",
+      "item_type": "new_question",
+      "verdict": "REVISE",
+      "reason": "Não duplica as perguntas conceituais de ARP. Comandos fictícios foram substituídos; enunciado agora limita a observação às associações já existentes e explicação não confunde ausência de cache com host inexistente.",
+      "issue_types": [
+        "ENCODING",
+        "DISTRACTORS",
+        "SCOPE"
+      ],
+      "related_ids": [
+        "netzwerk-007",
+        "netzwerk-041",
+        "netzwerk-042",
+        "netzwerk-043"
+      ],
+      "new_question": {
+        "id": "netzwerk-297",
+        "category": "Netzwerk",
+        "difficulty": "medium",
+        "question": "Ein Techniker m?chte unter Windows pr?fen, welche IPv4-Adressen derzeit mit MAC-Adressen im lokalen ARP-Cache eingetragen sind. Welchen Befehl verwendet er?",
+        "answer1": "arp -a",
+        "answer2": "ipconfig /registerdns",
+        "answer3": "nslookup -cache",
+        "answer4": "tracert -mac",
+        "correctAnswer": 0,
+        "explanation": "arp -a zeigt die vorhandenen Eintr?ge der lokalen ARP-Tabelle. Es ermittelt nicht automatisch alle erreichbaren Ger?te eines Netzwerks.",
+        "media": null
+      },
+      "original_proposal_entry": {
+        "id": "netzwerk-297",
+        "candidate_key": "netzwerk-297",
+        "item_type": "new_question",
+        "status": "NEW_QUESTION",
+        "gap": "A aula ensina arp -a para consultar a tabela local IPv4?MAC; as perguntas atuais testam ARP conceitualmente, mas n?o essa ferramenta.",
+        "course_reference": "IT.III.01 11.09.2026 (P041), ARP-Tabelle / arp -a",
+        "new_question": {
+          "id": "netzwerk-297",
+          "category": "Netzwerk",
+          "difficulty": "medium",
+          "question": "Ein Techniker m?chte unter Windows pr?fen, welche IPv4-Adressen derzeit mit MAC-Adressen im lokalen ARP-Cache eingetragen sind. Welchen Befehl verwendet er?",
+          "answer1": "arp -a",
+          "answer2": "ipconfig /registerdns",
+          "answer3": "nslookup -cache",
+          "answer4": "tracert -mac",
+          "correctAnswer": 0,
+          "explanation": "arp -a zeigt die vorhandenen Eintr?ge der lokalen ARP-Tabelle. Es ermittelt nicht automatisch alle erreichbaren Ger?te eines Netzwerks.",
+          "media": null
+        },
+        "course_topic_id": "T089 / T092",
+        "course_priority": "CORE"
+      },
+      "recommended_final_question": {
+        "id": "netzwerk-297",
+        "category": "Netzwerk",
+        "topic": "ARP-Diagnose",
+        "difficulty": "medium",
+        "question": "Nach einem Verbindungsversuch zu einem Gerät im lokalen IPv4-Netz soll geprüft werden, welche MAC-Adresse Windows dessen IP-Adresse bereits zugeordnet hat. Welcher Befehl zeigt die vorhandenen Zuordnungen an?",
+        "answer1": "arp -a",
+        "answer2": "getmac /v",
+        "answer3": "ipconfig /all",
+        "answer4": "route print",
+        "correctAnswer": 0,
+        "explanation": "arp -a zeigt Einträge des lokalen ARP-Caches. getmac zeigt MAC-Adressen eigener Adapter; ipconfig /all zeigt deren Konfiguration, route print die Routingtabelle. Ein fehlender Cache-Eintrag beweist allein nicht, dass ein Gerät im Netz fehlt.",
+        "media": null
+      },
+      "assessment": {
+        "gap_status": "CONFIRMED",
+        "semantic_duplicate_found": false,
+        "novelty": "ARP-Aufgabe, Broadcast und Ziel-MAC sind gut abgedeckt. Die Abfrage bestehender Cachezuordnungen ist ein anderes, bislang ungeprüftes Lernziel.",
+        "existing_bank_evidence": [
+          {
+            "id": "netzwerk-007",
+            "question": "Welche Aussage beschreibt ARP in einem IPv4-LAN am besten?",
+            "correct_answer": "ARP ermittelt zu einer bekannten IPv4-Adresse die zugehörige MAC-Adresse im lokalen Netz"
+          },
+          {
+            "id": "netzwerk-041",
+            "question": "Ein Ethernet-Host benötigt die MAC-Adresse einer lokalen IPv4-Zieladresse und hat keinen passenden ARP-Eintrag. An welche Ethernet-Zieladresse sendet er die gewöhnliche ARP-Anfrage?",
+            "correct_answer": "An ff:ff:ff:ff:ff:ff als Broadcast."
+          },
+          {
+            "id": "netzwerk-042",
+            "question": "Zwei Hosts liegen im selben IPv4-Subnetz auf einem gemeinsamen Ethernet-Link. Welche Ziel-MAC verwendet der sendende Host für einen Unicast an den anderen?",
+            "correct_answer": "Die MAC-Adresse des Zielhosts."
+          },
+          {
+            "id": "netzwerk-043",
+            "question": "Ein IPv4-Host sendet einen Unicast an ein entferntes Netz. Die passende Route führt über das lokale Standardgateway. Welche Ziel-MAC-Adresse verwendet der erste Ethernet-Frame?",
+            "correct_answer": "Die MAC-Adresse des Standardgateways."
+          }
+        ],
+        "course_priority": "CORE",
+        "course_topic_ids": [
+          "T089",
+          "T092"
+        ],
+        "course_pages": [
+          "P039",
+          "P041"
+        ],
+        "course_topic_rows": [
+          "| T089 | ARP | Adressauflösung; MAC und IP; ARP-Tabelle; arp -a | P039 E; P041 E — repetido/reforçado | CORE |",
+          "| T092 | Netzwerkdiagnose unter Windows | ping; ipconfig; /all; /renew; /release; /flushdns; arp -a; getmac; tracert; Ausgabeinterpretation | P039 E; P041 E; P045 X — repetido/reforçado | CORE |"
+        ],
+        "depth": "explained",
+        "technical_accuracy": "arp -a zeigt vorhandene ARP-Cacheeinträge, keine vollständige Live-Inventur des LANs. getmac zeigt eigene Adapter-MACs, nicht die gesuchte Nachbarzuordnung.",
+        "german_and_clarity": "Revisão em alemão; caracteres ? que substituíam letras nas versões originais foram corrigidos na versão final. A proposta original foi preservada sem correção silenciosa.",
+        "distractors_and_answer_cues": "Não duplica as perguntas conceituais de ARP. Comandos fictícios foram substituídos; enunciado agora limita a observação às associações já existentes e explicação não confunde ausência de cache com host inexistente.",
+        "difficulty": "medium: selecionar ferramenta de diagnóstico para uma evidência concreta.",
+        "answer_contract": {
+          "correctAnswer": 0,
+          "answer1_is_correct": true
+        },
+        "study_value": "Conceito aplicável à formação FiSI e a questões de preparação; não se afirma presença obrigatória na prova IHK."
+      }
+    },
+    {
+      "id": "netzwerk-298",
+      "candidate_key": "netzwerk-298",
+      "item_type": "new_question",
+      "origin": "independent_validation_addition",
+      "review_status": "PROPOSED_FOR_HUMAN_REVIEW",
+      "reason": "T105 é CORE, explicado em P047/P048; o banco cobre acesso ao meio e sinal, mas não compatibilidade de bandas/padrões. Nova pergunta testa a exigência de hardware dos dois lados, não uma tabela de velocidades decorada.",
+      "gap": "Frequenzbänder / Wi-Fi 6 gegenüber 6E",
+      "course_priority": "CORE",
+      "course_topic_ids": [
+        "T105"
+      ],
+      "course_topic_rows": [
+        "| T105 | WLAN / IEEE 802.11 | a; b; g; n; ac; ax; be; Wi-Fi 4 / 5 / 6 / 6E / 7; Frequenzbänder; Kanalbreite; Datenrate; Reichweite; MIMO; Gerätebeispiele | P037 M; P047 E; P048 E — repetido/reforçado | CORE |"
+      ],
+      "related_ids": [
+        "netzwerk-117",
+        "netzwerk-118",
+        "netzwerk-190",
+        "netzwerk-240",
+        "netzwerk-242"
+      ],
+      "existing_bank_evidence": [
+        {
+          "id": "netzwerk-117",
+          "question": "Welches Verfahren nutzt WLAN beim klassischen Zugriff konkurrierender Stationen auf das Funkmedium?",
+          "correct_answer": "CSMA/CA"
+        },
+        {
+          "id": "netzwerk-118",
+          "question": "Wozu dient der zufällige Backoff beim konkurrenzbasierten WLAN-Zugriff mit CSMA/CA?",
+          "correct_answer": "Er verteilt konkurrierende Sendeversuche zeitlich, um gleichzeitige Starts seltener zu machen."
+        },
+        {
+          "id": "netzwerk-190",
+          "question": "Ein WLAN-Signal ist so schwach, dass Bits fehlerhaft ankommen. Welche Schicht ist am ehesten betroffen?",
+          "correct_answer": "Schicht 1 Bitübertragung"
+        },
+        {
+          "id": "netzwerk-240",
+          "question": "Zwei WLAN-Stationen erreichen denselben Access Point, können sich gegenseitig aber nicht hören. Warum können ihre Übertragungen dennoch kollidieren?",
+          "correct_answer": "Beide können das Medium lokal für frei halten und gleichzeitig zum Access Point senden."
+        },
+        {
+          "id": "netzwerk-242",
+          "question": "Welche optionale WLAN-Funktion kann die Auswirkungen versteckter Stationen auf längere Datenübertragungen verringern?",
+          "correct_answer": "Ein RTS/CTS-Austausch vor der Datenübertragung."
+        }
+      ],
+      "semantic_duplicate_found": false,
+      "new_question": {
+        "id": "netzwerk-298",
+        "category": "Netzwerk",
+        "topic": "WLAN-Frequenzbänder",
+        "difficulty": "medium",
+        "question": "Ein Betrieb möchte mit einem Wi-Fi-6E-Access-Point zusätzlich das 6-GHz-Band nutzen. Vorhandene Wi-Fi-6-Notebooks unterstützen laut Datenblatt nur 2,4 und 5 GHz. Welche Aussage trifft zu?",
+        "answer1": "Für eine Verbindung im 6-GHz-Band benötigen auch die Notebooks einen dafür geeigneten WLAN-Adapter.",
+        "answer2": "Der Access Point setzt die 5-GHz-Funksignale der vorhandenen Adapter automatisch in 6-GHz-Verbindungen um.",
+        "answer3": "Die Unterstützung von IEEE 802.11ax garantiert bei jedem vorhandenen Adapter bereits die Nutzung von 6 GHz.",
+        "answer4": "Durch die Auswahl von WPA3 wird das 6-GHz-Band auch bei reinen 2,4-/5-GHz-Adaptern verfügbar.",
+        "correctAnswer": 0,
+        "explanation": "Wi-Fi 6E erweitert Wi-Fi 6 um die Nutzung des 6-GHz-Bands. Beide Kommunikationspartner müssen das Band unterstützen. Ein neuer Access Point oder eine andere Sicherheitseinstellung erweitert nicht die Funkhardware eines vorhandenen Clients.",
+        "media": null
+      },
+      "issue_types": [
+        "ADDITIONAL_CORE_GAP"
+      ],
+      "answer_contract": {
+        "correctAnswer": 0,
+        "answer1_is_correct": true
+      }
+    },
+    {
+      "id": "netzwerk-299",
+      "candidate_key": "netzwerk-299",
+      "item_type": "new_question",
+      "origin": "independent_validation_addition",
+      "review_status": "PROPOSED_FOR_HUMAN_REVIEW",
+      "reason": "MIMO é subtópico explícito de T105 explicado em P047/P048 e não é avaliado. A contagem de streams não duplica CSMA/CA, hidden nodes nem a compatibilidade de 6 GHz da outra proposta.",
+      "gap": "MIMO e limite de spatial streams do cliente",
+      "course_priority": "CORE",
+      "course_topic_ids": [
+        "T105"
+      ],
+      "course_topic_rows": [
+        "| T105 | WLAN / IEEE 802.11 | a; b; g; n; ac; ax; be; Wi-Fi 4 / 5 / 6 / 6E / 7; Frequenzbänder; Kanalbreite; Datenrate; Reichweite; MIMO; Gerätebeispiele | P037 M; P047 E; P048 E — repetido/reforçado | CORE |"
+      ],
+      "related_ids": [
+        "netzwerk-117",
+        "netzwerk-118",
+        "netzwerk-190",
+        "netzwerk-240",
+        "netzwerk-242"
+      ],
+      "existing_bank_evidence": [
+        {
+          "id": "netzwerk-117",
+          "question": "Welches Verfahren nutzt WLAN beim klassischen Zugriff konkurrierender Stationen auf das Funkmedium?",
+          "correct_answer": "CSMA/CA"
+        },
+        {
+          "id": "netzwerk-118",
+          "question": "Wozu dient der zufällige Backoff beim konkurrenzbasierten WLAN-Zugriff mit CSMA/CA?",
+          "correct_answer": "Er verteilt konkurrierende Sendeversuche zeitlich, um gleichzeitige Starts seltener zu machen."
+        },
+        {
+          "id": "netzwerk-190",
+          "question": "Ein WLAN-Signal ist so schwach, dass Bits fehlerhaft ankommen. Welche Schicht ist am ehesten betroffen?",
+          "correct_answer": "Schicht 1 Bitübertragung"
+        },
+        {
+          "id": "netzwerk-240",
+          "question": "Zwei WLAN-Stationen erreichen denselben Access Point, können sich gegenseitig aber nicht hören. Warum können ihre Übertragungen dennoch kollidieren?",
+          "correct_answer": "Beide können das Medium lokal für frei halten und gleichzeitig zum Access Point senden."
+        },
+        {
+          "id": "netzwerk-242",
+          "question": "Welche optionale WLAN-Funktion kann die Auswirkungen versteckter Stationen auf längere Datenübertragungen verringern?",
+          "correct_answer": "Ein RTS/CTS-Austausch vor der Datenübertragung."
+        }
+      ],
+      "semantic_duplicate_found": false,
+      "new_question": {
+        "id": "netzwerk-299",
+        "category": "Netzwerk",
+        "topic": "WLAN / MIMO",
+        "difficulty": "medium",
+        "question": "Ein Access Point unterstützt auf einem Funkband 4x4:4-MIMO, ein Notebook dort 2x2:2-MIMO. Wie viele räumliche Datenströme kann eine einzelne Übertragung vom Access Point zu diesem Notebook höchstens nutzen?",
+        "answer1": "Zwei; der Client kann höchstens zwei räumliche Datenströme empfangen.",
+        "answer2": "Vier; die Anzahl der Datenströme wird ausschließlich vom Access Point bestimmt.",
+        "answer3": "Sechs; die Sende- und Empfangsmöglichkeiten beider Geräte werden addiert.",
+        "answer4": "Einen; mehrere räumliche Datenströme sind nur für mehrere Clients gleichzeitig vorgesehen.",
+        "correctAnswer": 0,
+        "explanation": "Räumliches Multiplexing setzt passende Fähigkeiten an beiden Enden voraus. Der hier auf zwei Datenströme begrenzte Client kann nicht vier unabhängige Datenströme derselben Übertragung empfangen. Die Angabe garantiert keinen bestimmten Nettodurchsatz.",
+        "media": null
+      },
+      "issue_types": [
+        "ADDITIONAL_CORE_GAP"
+      ],
+      "answer_contract": {
+        "correctAnswer": 0,
+        "answer1_is_correct": true
+      }
+    },
+    {
+      "id": "netzwerk-300",
+      "candidate_key": "netzwerk-300",
+      "item_type": "new_question",
+      "origin": "independent_validation_addition",
+      "review_status": "PROPOSED_FOR_HUMAN_REVIEW",
+      "reason": "Reservierung consta explicitamente em T101. A palavra aparece apenas como distrator em netzwerk-237, cujo objetivo é relay; DORA e atribuição automática não avaliam como fixar a concessão de um cliente.",
+      "gap": "DHCP-Reservierung versus pool exclusion, lease e DNS",
+      "course_priority": "CORE",
+      "course_topic_ids": [
+        "T101"
+      ],
+      "course_topic_rows": [
+        "| T101 | DHCP | IP-Vergabe; Gateway; DNS; Lease / im Text Release; Pool; Reservierung; DORA; Discover; Offer; Request; ACK | P041 M; P042 M; P045 X; P046 M; P048 E — repetido/reforçado | CORE |"
+      ],
+      "related_ids": [
+        "netzwerk-004",
+        "netzwerk-037",
+        "netzwerk-237"
+      ],
+      "existing_bank_evidence": [
+        {
+          "id": "netzwerk-004",
+          "question": "Welche Aufgabe hat DHCP in einem typischen LAN?",
+          "correct_answer": "Es kann Clients automatisch Netzwerkkonfigurationen wie IP-Adresse, Subnetzmaske und Gateway zuweisen"
+        },
+        {
+          "id": "netzwerk-037",
+          "question": "Welche Reihenfolge beschreibt einen typischen erfolgreichen erstmaligen DHCPv4-Lease-Bezug?",
+          "correct_answer": "DHCPDISCOVER → DHCPOFFER → DHCPREQUEST → DHCPACK"
+        },
+        {
+          "id": "netzwerk-237",
+          "question": "Ein DHCPv4-Server steht in einem anderen IP-Subnetz als die Clients. Welche Funktion ermöglicht die reguläre Vermittlung ihrer anfänglichen DHCP-Broadcasts zum Server?",
+          "correct_answer": "Ein passend konfigurierter DHCP-Relay-Agent."
+        }
+      ],
+      "semantic_duplicate_found": false,
+      "new_question": {
+        "id": "netzwerk-300",
+        "category": "Netzwerk",
+        "topic": "DHCP-Reservierung",
+        "difficulty": "medium",
+        "question": "Ein Netzwerkdrucker soll weiterhin seine IP-Konfiguration per DHCP beziehen, dabei aber stets dieselbe dafür vorgesehene IPv4-Adresse erhalten. Welche Maßnahme setzt diese Vorgabe gezielt um?",
+        "answer1": "Eine DHCP-Reservierung für die vom Server verwendete Client-Kennung des Druckers einrichten.",
+        "answer2": "Die gewünschte Adresse nur aus dem dynamischen Pool ausschließen, ohne sie dem Drucker zuzuordnen.",
+        "answer3": "Die Lease-Dauer aller Clients verlängern, ohne eine feste Zuordnung für den Drucker anzulegen.",
+        "answer4": "Einen DNS-A-Eintrag für den Drucker anlegen, ohne die Adressvergabe des DHCP-Servers anzupassen.",
+        "correctAnswer": 0,
+        "explanation": "Eine Reservierung ordnet einem identifizierten DHCP-Client gezielt eine Adresse zu. Die Kennung ist je nach DHCP-Implementierung beispielsweise eine Client-ID beziehungsweise MAC-Adresse. Ein Ausschluss allein vergibt keine Adresse; DNS und Lease-Dauer ersetzen keine Reservierung.",
+        "media": null
+      },
+      "issue_types": [
+        "ADDITIONAL_CORE_GAP"
+      ],
+      "answer_contract": {
+        "correctAnswer": 0,
+        "answer1_is_correct": true
+      }
+    },
+    {
+      "id": "netzwerk-301",
+      "candidate_key": "netzwerk-301",
+      "item_type": "new_question",
+      "origin": "independent_validation_addition",
+      "review_status": "PROPOSED_FOR_HUMAN_REVIEW",
+      "reason": "T101 inclui Lease e foi explicado/exercitado. O banco cobre obtenção inicial e falha/APIPA, mas não distingue lease ainda válida de lease vencida após falha do servidor. Não são cobrados timers T1/T2 ausentes do mapa.",
+      "gap": "Validade temporal de uma lease e expiração sem renovação",
+      "course_priority": "CORE",
+      "course_topic_ids": [
+        "T101"
+      ],
+      "course_topic_rows": [
+        "| T101 | DHCP | IP-Vergabe; Gateway; DNS; Lease / im Text Release; Pool; Reservierung; DORA; Discover; Offer; Request; ACK | P041 M; P042 M; P045 X; P046 M; P048 E — repetido/reforçado | CORE |"
+      ],
+      "related_ids": [
+        "netzwerk-004",
+        "netzwerk-035",
+        "netzwerk-036",
+        "netzwerk-037",
+        "netzwerk-237"
+      ],
+      "existing_bank_evidence": [
+        {
+          "id": "netzwerk-004",
+          "question": "Welche Aufgabe hat DHCP in einem typischen LAN?",
+          "correct_answer": "Es kann Clients automatisch Netzwerkkonfigurationen wie IP-Adresse, Subnetzmaske und Gateway zuweisen"
+        },
+        {
+          "id": "netzwerk-035",
+          "question": "Ein Windows-Client erhält keine DHCPv4-Konfiguration und verwendet APIPA. Aus welchem Bereich stammt seine automatisch gewählte Link-Local-Adresse?",
+          "correct_answer": "169.254.0.0/16"
+        },
+        {
+          "id": "netzwerk-036",
+          "question": "Ein Windows-Client erhält 169.254.44.18/16. Was ist die wahrscheinlichste Ursache?",
+          "correct_answer": "Der Client konnte keinen DHCP-Server erreichen."
+        },
+        {
+          "id": "netzwerk-037",
+          "question": "Welche Reihenfolge beschreibt einen typischen erfolgreichen erstmaligen DHCPv4-Lease-Bezug?",
+          "correct_answer": "DHCPDISCOVER → DHCPOFFER → DHCPREQUEST → DHCPACK"
+        },
+        {
+          "id": "netzwerk-237",
+          "question": "Ein DHCPv4-Server steht in einem anderen IP-Subnetz als die Clients. Welche Funktion ermöglicht die reguläre Vermittlung ihrer anfänglichen DHCP-Broadcasts zum Server?",
+          "correct_answer": "Ein passend konfigurierter DHCP-Relay-Agent."
+        }
+      ],
+      "semantic_duplicate_found": false,
+      "new_question": {
+        "id": "netzwerk-301",
+        "category": "Netzwerk",
+        "topic": "DHCP-Lease",
+        "difficulty": "medium",
+        "question": "Ein Client nutzt eine noch gültige dynamische DHCPv4-Lease. Der DHCP-Server fällt aus; alle Verlängerungsversuche bleiben ohne Bestätigung. Was muss der Client spätestens beim Ablauf dieser Lease tun?",
+        "answer1": "Die Nutzung der geleasten Adresse einstellen und erneut versuchen, eine gültige Konfiguration zu erhalten.",
+        "answer2": "Die Lease eigenständig um die ursprüngliche Dauer verlängern und dieselbe Adresse weiterverwenden.",
+        "answer3": "Die Adresse bis zum nächsten Neustart weiterverwenden, solange kein anderer Client einen Konflikt meldet.",
+        "answer4": "Das Standardgateway als Ersatz für den DHCP-Server um eine Verlängerung der bestehenden Lease bitten.",
+        "correctAnswer": 0,
+        "explanation": "Ohne erfolgreiche Verlängerung endet die Nutzungsberechtigung für die dynamisch geleaste Adresse mit der Lease. Der Client muss ihre Nutzung beenden und die Konfiguration neu anfordern. Der Ausfall des Servers allein beendet eine zuvor noch gültige Lease nicht sofort.",
+        "media": null
+      },
+      "issue_types": [
+        "ADDITIONAL_CORE_GAP"
+      ],
+      "answer_contract": {
+        "correctAnswer": 0,
+        "answer1_is_correct": true
+      }
+    },
+    {
+      "id": "netzwerk-302",
+      "candidate_key": "netzwerk-302",
+      "item_type": "new_question",
+      "origin": "independent_validation_addition",
+      "review_status": "PROPOSED_FOR_HUMAN_REVIEW",
+      "reason": "SRV é listado em T104 CORE explicado em P046 e não é testado. AAAA/MX/CNAME/PTR e autoridade de zona não cobrem esta função; NS como distrator de netzwerk-158 também não fecha esse gap.",
+      "gap": "SRV para descoberta de host e porta de um serviço",
+      "course_priority": "CORE",
+      "course_topic_ids": [
+        "T104"
+      ],
+      "course_topic_rows": [
+        "| T104 | DNS Records | A; AAAA; MX; CNAM (Schreibweise der Quelle); TXT; NS; SRV | P046 E | CORE |"
+      ],
+      "related_ids": [
+        "netzwerk-039",
+        "netzwerk-155",
+        "netzwerk-156",
+        "netzwerk-158",
+        "netzwerk-159",
+        "netzwerk-198"
+      ],
+      "existing_bank_evidence": [
+        {
+          "id": "netzwerk-039",
+          "question": "Welcher DNS-Ressourceneintrag ordnet einem Hostnamen eine IPv6-Adresse zu?",
+          "correct_answer": "AAAA"
+        },
+        {
+          "id": "netzwerk-155",
+          "question": "Welcher DNS-Record nennt die für den E-Mail-Empfang einer Domain vorgesehenen Mailserver?",
+          "correct_answer": "MX"
+        },
+        {
+          "id": "netzwerk-156",
+          "question": "Wozu dient ein DNS-CNAME-Record?",
+          "correct_answer": "Er verweist von einem Aliasnamen auf einen anderen Domainnamen."
+        },
+        {
+          "id": "netzwerk-158",
+          "question": "Welche Einstellung fragt im interaktiven Windows-nslookup anschließend gezielt Mail-Exchanger-Einträge ab?",
+          "correct_answer": "set type=MX"
+        },
+        {
+          "id": "netzwerk-159",
+          "question": "Was zeichnet einen für eine DNS-Zone autoritativen Nameserver aus?",
+          "correct_answer": "Er beantwortet Anfragen für diese Zone aus deren maßgeblichem Datenbestand."
+        },
+        {
+          "id": "netzwerk-198",
+          "question": "Welcher DNS-Record wird in einer Reverse-DNS-Zone verwendet, um einer IP-Adresse einen Namen zuzuordnen?",
+          "correct_answer": "PTR"
+        }
+      ],
+      "semantic_duplicate_found": false,
+      "new_question": {
+        "id": "netzwerk-302",
+        "category": "Netzwerk",
+        "topic": "DNS / SRV",
+        "difficulty": "medium",
+        "question": "Eine Anwendung unterstützt DNS-basierte Diensterkennung und soll für einen benannten Dienst sowohl den Zielhost als auch den zugehörigen TCP-Port erfahren. Welcher DNS-Record-Typ ist dafür vorgesehen?",
+        "answer1": "SRV",
+        "answer2": "CNAME",
+        "answer3": "A",
+        "answer4": "MX",
+        "correctAnswer": 0,
+        "explanation": "Ein SRV-Record enthält unter anderem Zielhost und Port für einen Dienst. A liefert eine IPv4-Adresse, CNAME einen Aliasnamen und MX die Mailserver einer Domain. Die Anwendung muss SRV-Abfragen unterstützen; ein gewöhnlicher A-Record legt keinen Dienstport fest.",
+        "media": null
+      },
+      "issue_types": [
+        "ADDITIONAL_CORE_GAP"
+      ],
+      "answer_contract": {
+        "correctAnswer": 0,
+        "answer1_is_correct": true
+      }
+    },
+    {
+      "id": "netzwerk-303",
+      "candidate_key": "netzwerk-303",
+      "item_type": "new_question",
+      "origin": "independent_validation_addition",
+      "review_status": "PROPOSED_FOR_HUMAN_REVIEW",
+      "reason": "T092 inclui /flushdns e T103 inclui cache local. netzwerk-287 explica cache de resolver ainda dentro da TTL; não testa a intervenção no cliente nem distingue cache local de cache externo. Enunciado exclui Hosts/cache da aplicação para evitar diagnóstico ambíguo.",
+      "gap": "Limpeza dirigida do cache DNS local Windows",
+      "course_priority": "CORE",
+      "course_topic_ids": [
+        "T092",
+        "T103"
+      ],
+      "course_topic_rows": [
+        "| T092 | Netzwerkdiagnose unter Windows | ping; ipconfig; /all; /renew; /release; /flushdns; arp -a; getmac; tracert; Ausgabeinterpretation | P039 E; P041 E; P045 X — repetido/reforçado | CORE |",
+        "| T103 | DNS | Namensauflösung; interner und externer Dienst; lokaler Cache; DNS-Server über DHCP / manuell; Hosts-Datei | P041 E; P042 M; P046 E; P048 E — repetido/reforçado | CORE |"
+      ],
+      "related_ids": [
+        "netzwerk-006",
+        "netzwerk-157",
+        "netzwerk-264",
+        "netzwerk-287"
+      ],
+      "existing_bank_evidence": [
+        {
+          "id": "netzwerk-006",
+          "question": "Ein PC kann die IP-Adresse eines Webservers erreichen, aber dessen Hostname nicht auflösen. Welcher Dienst sollte zuerst überprüft werden?",
+          "correct_answer": "DNS"
+        },
+        {
+          "id": "netzwerk-157",
+          "question": "Was begrenzt der TTL-Wert eines gewöhnlich gecachten DNS-Ressourceneintrags?",
+          "correct_answer": "Wie lange der Eintrag regulär im Cache weiterverwendet werden darf."
+        },
+        {
+          "id": "netzwerk-264",
+          "question": "Was bewirkt unter Windows der Befehl nslookup example.com 192.0.2.53?",
+          "correct_answer": "Er fragt example.com gezielt beim DNS-Server 192.0.2.53 ab."
+        },
+        {
+          "id": "netzwerk-287",
+          "question": "Ein autoritativer DNS-A-Eintrag wurde geändert. Ein Resolver hat noch den früheren Wert mit verbleibender TTL im Cache. Warum kann ein Client vorübergehend noch die alte Adresse erhalten?",
+          "correct_answer": "Der Resolver darf den noch gültigen gecachten Wert regulär weiterverwenden."
+        }
+      ],
+      "semantic_duplicate_found": false,
+      "new_question": {
+        "id": "netzwerk-303",
+        "category": "Netzwerk",
+        "topic": "Windows / DNS-Cache",
+        "difficulty": "medium",
+        "question": "nslookup liefert beim zuständigen DNS-Server die neue IPv4-Adresse eines Hosts. Im lokalen Windows-DNS-Resolvercache steht noch die alte Adresse; Hosts-Datei und Anwendungscache wurden als Ursache ausgeschlossen. Welcher Befehl entfernt gezielt die lokalen DNS-Cacheeinträge?",
+        "answer1": "ipconfig /flushdns",
+        "answer2": "ipconfig /release",
+        "answer3": "ipconfig /renew",
+        "answer4": "ipconfig /registerdns",
+        "correctAnswer": 0,
+        "explanation": "ipconfig /flushdns leert den lokalen DNS-Resolvercache. Es ändert weder DNS-Zonendaten noch den Cache eines externen Resolvers. release und renew betreffen die DHCP-Konfiguration; registerdns stößt eine DNS-Registrierung an.",
+        "media": null
+      },
+      "issue_types": [
+        "ADDITIONAL_CORE_GAP"
+      ],
+      "answer_contract": {
+        "correctAnswer": 0,
+        "answer1_is_correct": true
+      }
+    }
+  ],
+  "original_analysis_summary": {
+    "analyzed_question_count": 283,
+    "reviewed_lesson_pages": [
+      "IT.III.0 03.09.2026",
+      "IT.III.01 07.09.2026",
+      "IT.III.01 11.09.2026",
+      "IT.III.01 14.09.2026",
+      "IT.III.01 21.09.2026",
+      "IT.III.01 23.09.2026",
+      "IT.III.02 28.09.2026",
+      "IT.III.02 01.10.2026",
+      "IT.III.02 06.10.2026"
+    ],
+    "priority_markers_found": [
+      "CORE: T083 Netzwerk Topologien",
+      "CORE: T085 OSI Schichten Modell",
+      "CORE: T086 Kapselung / Entkapselung / PDU",
+      "CORE: T087 Aktive / passive Netzwerkkomponenten",
+      "CORE: T088 MAC-Adresse / Ethernet-Frame",
+      "CORE: T089 ARP",
+      "CORE: T090 IPv4 / Subnetzmaske / CIDR",
+      "CORE: T092 Netzwerkdiagnose unter Windows",
+      "CORE: T093 TTL / HOP / ICMP",
+      "CORE: T094 Ports",
+      "CORE: T095 TCP / UDP",
+      "CORE: T097 SSL / TLS",
+      "CORE: T099 Sitzungsschicht",
+      "CORE: T101 DHCP",
+      "CORE: T102 PortPanda: zwei Netze",
+      "CORE: T103 DNS",
+      "CORE: T104 DNS Records",
+      "CORE: T105 WLAN / IEEE 802.11",
+      "CORE: T106 Access Point / PoE",
+      "CORE: T107 WLAN-Verschlüsselung und Authentifizierung",
+      "CORE: T108 Vom PC ins Internet",
+      "CORE: T109 Windows Netzwerkprofil",
+      "UNCLEAR: T091 IPv6"
+    ],
+    "notes": "O mapa de conteúdo contém prioridades explícitas. As propostas foram concentradas em lacunas do banco dentro de tópicos CORE; tópicos CORE já bem cobertos não receberam acréscimos automáticos. IPv6 (T091) é UNCLEAR e não recebeu nova pergunta.",
+    "well_covered": [
+      "T085 OSI Schichten Modell (CORE; material repetido/reforçado e cobertura ampla no banco)",
+      "T088 MAC-Adresse / Ethernet-Frame (CORE)",
+      "T089 ARP conceitual (CORE)",
+      "T090 IPv4, Subnetzmaske, CIDR e Subnetting (CORE)",
+      "T094 Ports e T095 TCP/UDP (CORE)",
+      "T101 DHCP (CORE)",
+      "T103 DNS e T104 DNS Records (CORE)"
+    ],
+    "partial_coverage": [
+      "T086 Kapselung / Entkapselung / PDU é CORE e tem 4 questões relacionadas entre 283; manter como cobertura estreita a considerar em revisão futura.",
+      "T087 componentes de rede: o banco cobre alguns dispositivos em contextos específicos, mas não testa classificação ativa/passiva nem distingue de modo direto a função de um Access Point.",
+      "T092 diagnóstico Windows: ping/tracert e alguns conceitos de ARP aparecem, mas ipconfig /all e arp -a não são testados como comandos.",
+      "T105 WLAN/radio e colisões têm cobertura; a parte de segurança T107 (CORE) está sem questões dedicadas.",
+      "T109 perfil público do Windows (CORE) tem apenas uma questão relacionada."
+    ],
+    "gaps": [
+      "T087 (CORE): classificação funcional de componentes ativos/passivos e função básica do Access Point ainda não são avaliadas diretamente.",
+      "T106 (CORE): PoE/PoE-Injektor foi explicado, mas não há pergunta correspondente.",
+      "T107 (CORE): segurança WLAN foi explicada em duas aulas, mas o banco não possui perguntas dedicadas a WEP, WPA-Enterprise/802.1X/RADIUS ou WPA3/SAE.",
+      "T109 (CORE): perfil público do Windows em WLAN não confiável tem cobertura insuficiente no banco.",
+      "T092 (CORE): ipconfig /all e arp -a são comandos ensinados sem questão prática correspondente."
+    ],
+    "topic_priority_assessment": {
+      "source": "quiz-data/Unterrichtsraum_Mapa_de_Conteudo_2026-10-10.md, Abschnitt Netzwerk (T083–T109) plus Windows Netzwerkprofil T109",
+      "interpretation": "Prioridade do mapa foi considerada junto com profundidade documentada e lacunas reais no banco; CORE não implica automaticamente criar outra pergunta.",
+      "strong_core_coverage": [
+        "T085 OSI Schichten Modell (CORE; repetido e reforçado nas aulas; banco também cobre bem)",
+        "T088 MAC-Adresse / Ethernet-Frame (CORE)",
+        "T089 ARP conceitual (CORE; a lacuna restante é a consulta prática com arp -a)",
+        "T090 IPv4 / Subnetzmaske / CIDR (CORE)",
+        "T095 TCP / UDP e T094 Ports (CORE)",
+        "T101 DHCP e T103 DNS (CORE)"
+      ],
+      "weak_or_missing_core_coverage": [
+        "T086 Kapselung / Entkapselung / PDU (CORE; apenas 4 perguntas relacionadas no banco de 283; cobertura direta ainda estreita)",
+        "T087 Aktive / passive Netzwerkkomponenten (CORE; não há pergunta que avalie diretamente a classificação ativo/passivo ou função básica de Access Point)",
+        "T092 Netzwerkdiagnose unter Windows (CORE; ausência de questões sobre ipconfig /all e arp -a como comandos)",
+        "T106 Access Point / PoE (CORE; não há questão sobre PoE/injetor)",
+        "T107 WLAN-Verschlüsselung und Authentifizierung (CORE; não há questões dedicadas a WEP/WPA-Enterprise/WPA3-SAE)",
+        "T109 Windows Netzwerkprofil (CORE; há apenas uma pergunta relacionada a rede pública)"
+      ],
+      "not_prioritized_for_new_questions": [
+        "T091 IPv6 é UNCLEAR no mapa e aparece como menção, sem unidade explicada; não foi proposto acréscimo de IPv6 nesta revisão."
+      ]
+    }
+  },
+  "validation_checks": {
+    "viewer": "Código real de tools/quiz-review/viewer/app.js: classify, validate e recordsFrom aceitam a proposta original + esta validação e produzem 15 registros, com as nove versões revisadas corretas.",
+    "question_validation": "15 questões finais passaram validateQuizQuestion após normalização de answers e omissão de media:null (sem mídia).",
+    "answer_contract": "Todas as 15 versões finais têm answer1 correta e correctAnswer:0; dificuldades medium.",
+    "identity": "15 IDs distintos, sem colisão com as 283 perguntas do CSV nesta leitura.",
+    "source_preservation": "SHA-256 dos dois arquivos obrigatórios e do JSON original conferidos sem alteração.",
+    "encoding": "Versões finais sem U+FFFD ou pontos de interrogação substituindo letras; propostas originais preservadas com seus defeitos.",
+    "scope": "Validação estrutural e análise editorial; não foi executado sync, build, suíte de gameplay nem aplicação ao banco."
+  }
+}

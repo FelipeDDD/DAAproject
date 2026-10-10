@@ -18,7 +18,7 @@
     "test:statistics": "node --env-file=.env.local scripts/check-quiz-statistics.mjs",
     "validate:quiz": "node scripts/sync-quiz-data.mjs --validate-only",
     "audit:quiz": "node scripts/audit-quiz-quality.mjs",
-    "analyze:quick-quiz": "node scripts/analyze-quick-quiz.mjs",
+    "analyze:quick-quiz": "node tools/quiz-review/scripts/analyze-quick-quiz.mjs",
     "sync:quiz": "node scripts/sync-quiz-data.mjs",
     "predev": "node scripts/sync-quiz-data.mjs && node scripts/sync-director-investigation.mjs",
     "dev": "vite",

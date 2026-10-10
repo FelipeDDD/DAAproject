@@ -1,0 +1,301 @@
+{
+  "schema_version": 2,
+  "title": "Netzwerk ? Erg?nzungsvorschl?ge nach Unterrichtsraum vom 10.10.2026",
+  "category": "Netzwerk",
+  "source_reference": "quiz-data/Unterrichtsraum_Mapa_de_Conteudo_2026-10-10.md e quiz-data/unterrichtsraum-2026-10-10",
+  "analysis_summary": {
+    "analyzed_question_count": 283,
+    "reviewed_lesson_pages": [
+      "IT.III.0 03.09.2026",
+      "IT.III.01 07.09.2026",
+      "IT.III.01 11.09.2026",
+      "IT.III.01 14.09.2026",
+      "IT.III.01 21.09.2026",
+      "IT.III.01 23.09.2026",
+      "IT.III.02 28.09.2026",
+      "IT.III.02 01.10.2026",
+      "IT.III.02 06.10.2026"
+    ],
+    "priority_markers_found": [
+      "CORE: T083 Netzwerk Topologien",
+      "CORE: T085 OSI Schichten Modell",
+      "CORE: T086 Kapselung / Entkapselung / PDU",
+      "CORE: T087 Aktive / passive Netzwerkkomponenten",
+      "CORE: T088 MAC-Adresse / Ethernet-Frame",
+      "CORE: T089 ARP",
+      "CORE: T090 IPv4 / Subnetzmaske / CIDR",
+      "CORE: T092 Netzwerkdiagnose unter Windows",
+      "CORE: T093 TTL / HOP / ICMP",
+      "CORE: T094 Ports",
+      "CORE: T095 TCP / UDP",
+      "CORE: T097 SSL / TLS",
+      "CORE: T099 Sitzungsschicht",
+      "CORE: T101 DHCP",
+      "CORE: T102 PortPanda: zwei Netze",
+      "CORE: T103 DNS",
+      "CORE: T104 DNS Records",
+      "CORE: T105 WLAN / IEEE 802.11",
+      "CORE: T106 Access Point / PoE",
+      "CORE: T107 WLAN-Verschlüsselung und Authentifizierung",
+      "CORE: T108 Vom PC ins Internet",
+      "CORE: T109 Windows Netzwerkprofil",
+      "UNCLEAR: T091 IPv6"
+    ],
+    "notes": "O mapa de conteúdo contém prioridades explícitas. As propostas foram concentradas em lacunas do banco dentro de tópicos CORE; tópicos CORE já bem cobertos não receberam acréscimos automáticos. IPv6 (T091) é UNCLEAR e não recebeu nova pergunta.",
+    "well_covered": [
+      "T085 OSI Schichten Modell (CORE; material repetido/reforçado e cobertura ampla no banco)",
+      "T088 MAC-Adresse / Ethernet-Frame (CORE)",
+      "T089 ARP conceitual (CORE)",
+      "T090 IPv4, Subnetzmaske, CIDR e Subnetting (CORE)",
+      "T094 Ports e T095 TCP/UDP (CORE)",
+      "T101 DHCP (CORE)",
+      "T103 DNS e T104 DNS Records (CORE)"
+    ],
+    "partial_coverage": [
+      "T086 Kapselung / Entkapselung / PDU é CORE e tem 4 questões relacionadas entre 283; manter como cobertura estreita a considerar em revisão futura.",
+      "T087 componentes de rede: o banco cobre alguns dispositivos em contextos específicos, mas não testa classificação ativa/passiva nem distingue de modo direto a função de um Access Point.",
+      "T092 diagnóstico Windows: ping/tracert e alguns conceitos de ARP aparecem, mas ipconfig /all e arp -a não são testados como comandos.",
+      "T105 WLAN/radio e colisões têm cobertura; a parte de segurança T107 (CORE) está sem questões dedicadas.",
+      "T109 perfil público do Windows (CORE) tem apenas uma questão relacionada."
+    ],
+    "gaps": [
+      "T087 (CORE): classificação funcional de componentes ativos/passivos e função básica do Access Point ainda não são avaliadas diretamente.",
+      "T106 (CORE): PoE/PoE-Injektor foi explicado, mas não há pergunta correspondente.",
+      "T107 (CORE): segurança WLAN foi explicada em duas aulas, mas o banco não possui perguntas dedicadas a WEP, WPA-Enterprise/802.1X/RADIUS ou WPA3/SAE.",
+      "T109 (CORE): perfil público do Windows em WLAN não confiável tem cobertura insuficiente no banco.",
+      "T092 (CORE): ipconfig /all e arp -a são comandos ensinados sem questão prática correspondente."
+    ],
+    "topic_priority_assessment": {
+      "source": "quiz-data/Unterrichtsraum_Mapa_de_Conteudo_2026-10-10.md, Abschnitt Netzwerk (T083–T109) plus Windows Netzwerkprofil T109",
+      "interpretation": "Prioridade do mapa foi considerada junto com profundidade documentada e lacunas reais no banco; CORE não implica automaticamente criar outra pergunta.",
+      "strong_core_coverage": [
+        "T085 OSI Schichten Modell (CORE; repetido e reforçado nas aulas; banco também cobre bem)",
+        "T088 MAC-Adresse / Ethernet-Frame (CORE)",
+        "T089 ARP conceitual (CORE; a lacuna restante é a consulta prática com arp -a)",
+        "T090 IPv4 / Subnetzmaske / CIDR (CORE)",
+        "T095 TCP / UDP e T094 Ports (CORE)",
+        "T101 DHCP e T103 DNS (CORE)"
+      ],
+      "weak_or_missing_core_coverage": [
+        "T086 Kapselung / Entkapselung / PDU (CORE; apenas 4 perguntas relacionadas no banco de 283; cobertura direta ainda estreita)",
+        "T087 Aktive / passive Netzwerkkomponenten (CORE; não há pergunta que avalie diretamente a classificação ativo/passivo ou função básica de Access Point)",
+        "T092 Netzwerkdiagnose unter Windows (CORE; ausência de questões sobre ipconfig /all e arp -a como comandos)",
+        "T106 Access Point / PoE (CORE; não há questão sobre PoE/injetor)",
+        "T107 WLAN-Verschlüsselung und Authentifizierung (CORE; não há questões dedicadas a WEP/WPA-Enterprise/WPA3-SAE)",
+        "T109 Windows Netzwerkprofil (CORE; há apenas uma pergunta relacionada a rede pública)"
+      ],
+      "not_prioritized_for_new_questions": [
+        "T091 IPv6 é UNCLEAR no mapa e aparece como menção, sem unidade explicada; não foi proposto acréscimo de IPv6 nesta revisão."
+      ]
+    }
+  },
+  "questions": [
+    {
+      "id": "netzwerk-289",
+      "candidate_key": "netzwerk-289",
+      "item_type": "new_question",
+      "status": "NEW_QUESTION",
+      "gap": "Apostila classifica componentes de rede em ativos e passivos e lista patch panel, RJ45 e placa de rede; o banco n?o testa essa distin??o.",
+      "course_reference": "IT.III.01 07.09.2026 (P039), Aktive / passive Netzwerkkomponenten",
+      "new_question": {
+        "id": "netzwerk-289",
+        "category": "Netzwerk",
+        "difficulty": "medium",
+        "question": "Bei der Dokumentation einer strukturierten Gebäudeverkabelung sollen Bauteile als aktiv oder passiv eingeordnet werden. Welche Zuordnung ist korrekt?",
+        "answer1": "Ein Patchpanel und eine RJ45-Anschlussdose sind passive Komponenten; ein Switch ist eine aktive Komponente.",
+        "answer2": "Ein Patchpanel ist aktiv, weil es den Datenverkehr auf mehrere Ports verteilt; ein Switch ist passiv.",
+        "answer3": "Eine RJ45-Anschlussdose ist aktiv, weil sie elektrische Signale erzeugt; eine Netzwerkkarte ist passiv.",
+        "answer4": "Alle Komponenten ohne eigene IP-Adresse gelten als passiv, auch ein Switch.",
+        "correctAnswer": 0,
+        "explanation": "Patchpanel und Anschlussdose verbinden beziehungsweise terminieren Leitungen ohne Frames zu verarbeiten. Ein Switch ben?tigt Energie und verarbeitet Frames, daher ist er aktiv.",
+        "media": null
+      },
+      "course_topic_id": "T087",
+      "course_priority": "CORE"
+    },
+    {
+      "id": "netzwerk-290",
+      "candidate_key": "netzwerk-290",
+      "item_type": "new_question",
+      "status": "NEW_QUESTION",
+      "gap": "Access Points aparecem como componente de WLAN, mas o banco n?o testa sua fun??o b?sica separada de roteamento e DHCP.",
+      "course_reference": "IT.III.01 07.09.2026 (P039), Access Point",
+      "new_question": {
+        "id": "netzwerk-290",
+        "category": "Netzwerk",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen m?chte ein bestehendes kabelgebundenes LAN um WLAN erweitern. Welche Aufgabe ?bernimmt ein Access Point in einer typischen Infrastrukturkonfiguration?",
+        "answer1": "Er verbindet WLAN-Stationen mit dem lokalen Netzwerk; Routing und DHCP sind davon getrennte Funktionen.",
+        "answer2": "Er ersetzt zwingend den Router und ?bersetzt private IPv4-Adressen ins Internet.",
+        "answer3": "Er weist jedem WLAN-Client selbstst?ndig eine ?ffentliche IPv4-Adresse zu.",
+        "answer4": "Er wandelt jede WLAN-Verbindung in eine eigene physische Ethernet-Leitung um.",
+        "correctAnswer": 0,
+        "explanation": "Ein Access Point stellt den Funkzugang zu einem vorhandenen Netzwerk bereit. Ob zus?tzlich Routing oder DHCP angeboten wird, h?ngt von weiteren Ger?tefunktionen ab.",
+        "media": null
+      },
+      "course_topic_id": "T087",
+      "course_priority": "CORE"
+    },
+    {
+      "id": "netzwerk-291",
+      "candidate_key": "netzwerk-291",
+      "item_type": "new_question",
+      "status": "NEW_QUESTION",
+      "gap": "PoE foi explicado com switch PoE e injector, mas n?o h? pergunta sobre a aplica??o pr?tica dessas op??es.",
+      "course_reference": "IT.III.01 07.09.2026 (P039) e IT.III.02 01.10.2026 (P047), Access Point / PoE",
+      "new_question": {
+        "id": "netzwerk-291",
+        "category": "Netzwerk",
+        "difficulty": "medium",
+        "question": "Ein Access Point soll an der Decke montiert werden, wo keine Steckdose vorhanden ist. Der vorhandene Switch unterst?tzt kein PoE. Welche L?sung kann Daten und Strom ?ber die Leitung zum Access Point bringen?",
+        "answer1": "Ein PoE-Injektor wird zwischen Switch und Access Point eingesetzt und speist Strom in die Ethernet-Leitung ein.",
+        "answer2": "Ein gew?hnlicher passiver Patchpanel-Port erzeugt die ben?tigte PoE-Spannung.",
+        "answer3": "Der Access Point erh?lt Strom ?ber DHCP, sobald er eine IP-Adresse bekommen hat.",
+        "answer4": "Ein DNS-Eintrag f?r den Access Point aktiviert die Stromversorgung ?ber Ethernet.",
+        "correctAnswer": 0,
+        "explanation": "Ein PoE-Injektor speist elektrische Leistung in die Ethernet-Verbindung ein und leitet die Daten weiter. Ein PoE-f?higer Switch k?nnte diese Funktion direkt ?bernehmen.",
+        "media": null
+      },
+      "course_topic_id": "T106",
+      "course_priority": "CORE"
+    },
+    {
+      "id": "netzwerk-292",
+      "candidate_key": "netzwerk-292",
+      "item_type": "new_question",
+      "status": "NEW_QUESTION",
+      "gap": "As notas detalham WEP como inseguro por RC4 e IV curto/reutilizado; o banco n?o cobre seguran?a WLAN.",
+      "course_reference": "IT.III.02 01.10.2026 (P047), WLAN-Verschlüsselung / WEP",
+      "new_question": {
+        "id": "netzwerk-292",
+        "category": "Netzwerk",
+        "difficulty": "medium",
+        "question": "Warum gilt WEP als unsicher und sollte f?r ein WLAN nicht mehr eingesetzt werden?",
+        "answer1": "Der kurze Initialisierungsvektor kann sich wiederholen; zusammen mit dem veralteten Verfahren lassen sich daraus Schw?chen zur Schl?sselgewinnung ausnutzen.",
+        "answer2": "WEP verwendet grunds?tzlich individuelle Zertifikate pro Nutzer und kann deshalb keine Ger?te authentisieren.",
+        "answer3": "WEP verschl?sselt nur den DNS-Verkehr, w?hrend andere WLAN-Daten unverschl?sselt bleiben.",
+        "answer4": "WEP erlaubt ausschlie?lich Verbindungen mit IPv6 und blockiert IPv4.",
+        "correctAnswer": 0,
+        "explanation": "WEP verwendet RC4 mit einem kurzen IV. Wiederholungen und weitere Schw?chen des Verfahrens machten es praktisch angreifbar; es bietet keinen zeitgem??en WLAN-Schutz.",
+        "media": null
+      },
+      "course_topic_id": "T107",
+      "course_priority": "CORE"
+    },
+    {
+      "id": "netzwerk-293",
+      "candidate_key": "netzwerk-293",
+      "item_type": "new_question",
+      "status": "NEW_QUESTION",
+      "gap": "O material compara WPA-Personal com WPA-Enterprise e associa Enterprise a 802.1X/RADIUS; essa escolha n?o ? avaliada no banco.",
+      "course_reference": "IT.III.02 01.10.2026 (P047), WPA-Personal / WPA-Enterprise",
+      "new_question": {
+        "id": "netzwerk-293",
+        "category": "Netzwerk",
+        "difficulty": "medium",
+        "question": "Ein Unternehmen m?chte WLAN-Zug?nge pro Mitarbeitendem verwalten, statt ein gemeinsames Kennwort an alle zu verteilen. Welche im Unterricht behandelte Variante passt dazu?",
+        "answer1": "WPA-Enterprise mit 802.1X und einem Authentisierungsdienst wie RADIUS.",
+        "answer2": "WPA-Personal mit demselben Pre-Shared Key f?r alle Besch?ftigten.",
+        "answer3": "Ein offenes WLAN ohne Authentisierung, dessen SSID nicht ausgestrahlt wird.",
+        "answer4": "WEP mit einem statischen Schl?ssel, der regelm??ig auf allen Ger?ten ge?ndert wird.",
+        "correctAnswer": 0,
+        "explanation": "WPA-Enterprise bindet die WLAN-Anmeldung an 802.1X und typischerweise RADIUS. WPA-Personal verwendet dagegen einen gemeinsam genutzten PSK.",
+        "media": null
+      },
+      "course_topic_id": "T107",
+      "course_priority": "CORE"
+    },
+    {
+      "id": "netzwerk-294",
+      "candidate_key": "netzwerk-294",
+      "item_type": "new_question",
+      "status": "NEW_QUESTION",
+      "gap": "As notas apresentam SAE no WPA3-Personal como prote??o contra ataques de dicion?rio offline; o banco n?o trata isso.",
+      "course_reference": "IT.III.02 01.10.2026 (P047), WPA3-Personal / SAE",
+      "new_question": {
+        "id": "netzwerk-294",
+        "category": "Netzwerk",
+        "difficulty": "hard",
+        "question": "Ein WLAN wird von WPA2-Personal auf WPA3-Personal umgestellt. Welcher Sicherheitsvorteil von SAE wird im Unterricht besonders hervorgehoben?",
+        "answer1": "Ein aufgezeichneter Anmeldevorgang erm?glicht dem Angreifer nicht in gleicher Weise einen Offline-W?rterbuchangriff auf das Kennwort.",
+        "answer2": "SAE macht das WLAN ohne Kennwort nutzbar, verhindert aber die Anzeige der SSID.",
+        "answer3": "SAE ersetzt die Verschl?sselung der ?bertragenen Daten vollst?ndig durch eine MAC-Adresspr?fung.",
+        "answer4": "SAE verhindert grunds?tzlich jede Funkst?rung und garantiert eine gr??ere Reichweite.",
+        "correctAnswer": 0,
+        "explanation": "WPA3-Personal verwendet SAE statt des WPA2-Personal-PSK-Verfahrens. Ein wesentlicher vorgesehener Vorteil ist der Schutz gegen Offline-W?rterbuchangriffe auf Basis eines mitgeschnittenen Handshakes.",
+        "media": null
+      },
+      "course_topic_id": "T107",
+      "course_priority": "CORE"
+    },
+    {
+      "id": "netzwerk-295",
+      "candidate_key": "netzwerk-295",
+      "item_type": "new_question",
+      "status": "NEW_QUESTION",
+      "gap": "A aula de WLAN p?blico contrasta perfis de rede privados e p?blicos do Windows, mas esse comportamento n?o aparece no banco.",
+      "course_reference": "IT.III.02 06.10.2026 (P048), Windows Netzwerkprofil",
+      "new_question": {
+        "id": "netzwerk-295",
+        "category": "Netzwerk",
+        "difficulty": "medium",
+        "question": "Ein Firmenlaptop verbindet sich in einem Caf? mit einem nicht vertrauensw?rdigen WLAN. Welche Windows-Netzwerkeinstellung ist f?r diese Verbindung die angemessene Wahl?",
+        "answer1": "Das Profil ??ffentlich? mit deaktivierter Netzwerkerkennung und Dateifreigabe sowie restriktiven Regeln f?r eingehende Verbindungen.",
+        "answer2": "Das Profil ?Privat?, damit alle Ger?te im WLAN automatisch auf lokale Freigaben zugreifen k?nnen.",
+        "answer3": "Das Profil ?Dom?ne?, auch wenn der Rechner keiner Unternehmensdom?ne angeh?rt.",
+        "answer4": "Ein privates Profil mit freigegebenen Verwaltungsports, weil die WLAN-Verschl?sselung alle lokalen Angriffe verhindert.",
+        "correctAnswer": 0,
+        "explanation": "Ein fremdes Caf?-WLAN ist als nicht vertrauensw?rdig zu behandeln. Das ?ffentliche Profil schr?nkt die Erreichbarkeit und Freigaben des Rechners ein.",
+        "media": null
+      },
+      "course_topic_id": "T109",
+      "course_priority": "CORE"
+    },
+    {
+      "id": "netzwerk-296",
+      "candidate_key": "netzwerk-296",
+      "item_type": "new_question",
+      "status": "NEW_QUESTION",
+      "gap": "ipconfig /all foi ensinado para examinar adaptadores e configura??o, mas n?o h? quest?o de diagn?stico baseada nesse comando.",
+      "course_reference": "IT.III.01 11.09.2026 (P041), ipconfig /all",
+      "new_question": {
+        "id": "netzwerk-296",
+        "category": "Netzwerk",
+        "difficulty": "medium",
+        "question": "Bei einem Windows-Client sollen IPv4-Adresse, Standardgateway, DNS-Server und Eigenschaften aller Netzwerkadapter gemeinsam gepr?ft werden. Welcher Befehl liefert daf?r die passende ?bersicht?",
+        "answer1": "ipconfig /all",
+        "answer2": "tracert /flushdns",
+        "answer3": "getmac /renewdns",
+        "answer4": "arp -d *",
+        "correctAnswer": 0,
+        "explanation": "ipconfig /all zeigt detaillierte Informationen zu den Netzwerkadaptern und ihrer IP-Konfiguration, darunter Gateway- und DNS-Angaben.",
+        "media": null
+      },
+      "course_topic_id": "T092",
+      "course_priority": "CORE"
+    },
+    {
+      "id": "netzwerk-297",
+      "candidate_key": "netzwerk-297",
+      "item_type": "new_question",
+      "status": "NEW_QUESTION",
+      "gap": "A aula ensina arp -a para consultar a tabela local IPv4?MAC; as perguntas atuais testam ARP conceitualmente, mas n?o essa ferramenta.",
+      "course_reference": "IT.III.01 11.09.2026 (P041), ARP-Tabelle / arp -a",
+      "new_question": {
+        "id": "netzwerk-297",
+        "category": "Netzwerk",
+        "difficulty": "medium",
+        "question": "Ein Techniker m?chte unter Windows pr?fen, welche IPv4-Adressen derzeit mit MAC-Adressen im lokalen ARP-Cache eingetragen sind. Welchen Befehl verwendet er?",
+        "answer1": "arp -a",
+        "answer2": "ipconfig /registerdns",
+        "answer3": "nslookup -cache",
+        "answer4": "tracert -mac",
+        "correctAnswer": 0,
+        "explanation": "arp -a zeigt die vorhandenen Eintr?ge der lokalen ARP-Tabelle. Es ermittelt nicht automatisch alle erreichbaren Ger?te eines Netzwerks.",
+        "media": null
+      },
+      "course_topic_id": "T089 / T092",
+      "course_priority": "CORE"
+    }
+  ]
+}

@@ -825,3 +825,10 @@ The prior playback-only repair did not fix malformed poses. Yassin third skin no
 
 ### Yassin up-stride correction — 2026-10-08
 The generated back row repeated the same lifted leg. `normalizeUpStride` in `src/experimental/yassinBaldSkin.js` enables `src/art/yassinUpStride.js` during recolor texture registration: back-row columns3/4 receive horizontally mirrored lower-body pixels from columns1/2 (local y102–143). Head/torso, all other directions, source PNG and mask remain untouched. Applied after recoloring, also on palette changes, so clothes remain aligned. Both animation preview pages apply the same helper. When editing the source/mask manually, edit source columns1/2 for these legs, or disable normalization after supplying a fully corrected sheet. 19 focused tests and Vite build pass.
+
+## Quiz review tools consolidated (2026-10-11)
+
+- All local quiz analysis/review tooling now lives under `tools/quiz-review/`: `viewer/` for the review UI, `scripts/` for Quick Quiz analysis and reusable benchmark scripts/prompts, and `reviews/` for review JSONs/results. See `tools/quiz-review/README.md`.
+- `npm run analyze:quick-quiz` runs `tools/quiz-review/scripts/analyze-quick-quiz.mjs` and writes `tools/quiz-review/scripts/quick-quiz-analysis.html`. The shared CSV parser remains `scripts/quiz-csv.mjs`; calculation/filtering logic is unchanged.
+- `node tools/quiz-review/scripts/build-rechnungen-benchmark.mjs` writes its output under `tools/quiz-review/reviews/`. Original selected IDs and reusable prompts are preserved. Netzwerk proposal/validation JSONs are there too; only path metadata in the validation was updated.
+- Open `tools/quiz-review/viewer/open-viewer.cmd` or `index.html`. Viewer code and its historical localStorage key are unchanged so existing local decisions retain their keys. CSVs and `convex/quizStaticQuestions.generated.js` are untouched by this reorganization.

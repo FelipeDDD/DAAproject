@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<one:Page xmlns:one="http://schemas.microsoft.com/office/onenote/2013/onenote" ID="{6730B80E-8088-0F54-3EB9-45DAC71C399F}{3}{E19483499330717373730820139825398082333492911}" name="IT.III 04.09.2026" dateTime="2026-09-04T07:02:59.000Z" lastModifiedTime="2026-09-14T07:40:05.000Z" pageLevel="2" lang="de"><one:QuickStyleDef index="0" name="PageTitle" fontColor="automatic" font="Calibri Light" fontSize="20.0" spaceBefore="0.0" spaceAfter="0.0"/><one:QuickStyleDef index="1" name="p" fontColor="automatic" font="Calibri" fontSize="11.0" spaceBefore="0.0" spaceAfter="0.0"/><one:PageSettings RTL="false" color="automatic"><one:PageSize><one:Automatic/></one:PageSize><one:RuleLines visible="false"/></one:PageSettings><one:Title lang="de"><one:OE author="Christian Bergs 1932206573" authorInitials="CB1" lastModifiedBy="Alexander Schmidt 1932206171" lastModifiedByInitials="AS1" creationTime="2026-09-04T07:02:59.000Z" lastModifiedTime="2026-09-06T08:27:40.000Z" objectID="{A4A33DB2-0252-41A1-B223-326BA8FCE632}{56}{B0}" alignment="left" quickStyleIndex="0" style="font-family:'Calibri Light';font-size:20.0pt"><one:T><![CDATA[IT.III 04.09.2026]]></one:T></one:OE></one:Title><one:Outline author="Christian Bergs 1932206573" authorInitials="CB1" lastModifiedBy="Christian Bergs 1932206573" lastModifiedByInitials="CB1" lastModifiedTime="2026-09-14T07:39:22.000Z" objectID="{A4A33DB2-0252-41A1-B223-326BA8FCE632}{29}{B0}"><one:Position x="36.0" y="86.4000015258789" z="0"/><one:Size width="540.0" height="413.9206237792969"/><one:OEChildren><one:OE creationTime="2026-09-04T07:04:32.000Z" lastModifiedTime="2026-09-04T07:05:04.000Z" objectID="{A4A33DB2-0252-41A1-B223-326BA8FCE632}{30}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt"><one:T><![CDATA[Besprechung der Übungs IHK Aufgaben]]></one:T></one:OE><one:OE creationTime="2026-09-04T07:06:54.000Z" lastModifiedTime="2026-09-04T07:07:14.000Z" objectID="{A4A33DB2-0252-41A1-B223-326BA8FCE632}{34}{B0}" alignment="left"><one:InsertedFile pathCache="C:\Users\Felipe\AppData\Local\Temp\{0893C76B-1D9D-407A-97A0-5B09B591CDFD}.bin" preferredName="IHK Backup.pdf"/></one:OE><one:OE creationTime="2026-09-04T07:06:54.000Z" lastModifiedTime="2026-09-04T07:45:27.000Z" objectID="{A4A33DB2-0252-41A1-B223-326BA8FCE632}{38}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt" lang="pt-BR"><one:T><![CDATA[<span
+lang=de>Merksatz:</span><span lang=pt-BR><br />
+</span><span lang=de><br />
+Inkrementell:</span><span
+lang=pt-BR><br />
+</span><span lang=de>Bedeutet das alle Änderungen seit dem letzten Inkrementellen Zustand gespeichert werden.</span><span
+lang=pt-BR><br />
+</span><span lang=de><br />
+Bei einem zurück spielen des Backups bedeutet dies das man also das letzte Vollbackup + die letzten verfügbaren Inkrementellen Backup benötigt um einen größtmöglichen letzten Zustand wiederherzustellen. (Reihenfolge der inkrementellen Backups muss eingehalten werden!)</span><span
+lang=pt-BR><br />
+</span><span lang=de><br />
+Differentiell:</span><span
+lang=pt-BR><br />
+</span><span lang=de>Bedeutet das alle Änderungen auch der letzten differentiellen Backups nach dem letzten Vollbackup gespeichert werden.</span>]]></one:T></one:OE><one:OE creationTime="2026-09-04T07:43:08.000Z" lastModifiedTime="2026-09-04T07:43:09.000Z" objectID="{A4A33DB2-0252-41A1-B223-326BA8FCE632}{40}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt"><one:T><![CDATA[]]></one:T></one:OE><one:OE creationTime="2026-09-04T07:43:09.000Z" lastModifiedTime="2026-09-04T07:44:07.000Z" objectID="{A4A33DB2-0252-41A1-B223-326BA8FCE632}{42}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt"><one:T><![CDATA[Bei einem zurückspielen des Backups bedeutet dies das nur das letzte Vollbackup + das letzte Differentielle Backup zurückgespielt werden muss.]]></one:T></one:OE><one:OE creationTime="2026-09-04T07:44:07.000Z" lastModifiedTime="2026-09-04T07:44:07.000Z" objectID="{A4A33DB2-0252-41A1-B223-326BA8FCE632}{44}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt"><one:T><![CDATA[]]></one:T></one:OE><one:OE creationTime="2026-09-04T07:44:07.000Z" lastModifiedTime="2026-09-04T09:55:12.000Z" objectID="{A4A33DB2-0252-41A1-B223-326BA8FCE632}{46}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt" lang="pt-BR"><one:T><![CDATA[<span
+lang=de>---------------------------------------------------</span><span
+lang=pt-BR><br />
+</span><span lang=de><br />
+Thema Linux (VM)</span><span
+lang=pt-BR><br />
+</span><span lang=de><br />
+Grundbedingung:</span><span
+lang=pt-BR><br />
+</span><span lang=de><br />
+Bitte einmal auf Hyper-V einmal eine Linux VM erstellen.</span><span
+lang=pt-BR><br />
+</span><span lang=de>Betriebssystem: Ubuntu 26.04 (</span><a
+href="https://releases.ubuntu.com/26.04.1/ubuntu-26.04.1-desktop-amd64.iso"><span
+lang=de>Link</span></a><span lang=de>)</span><span lang=pt-BR><br />
+</span>&nbsp;]]></one:T></one:OE></one:OEChildren></one:Outline></one:Page>

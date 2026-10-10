@@ -1,0 +1,218 @@
+<?xml version="1.0"?>
+<one:Page xmlns:one="http://schemas.microsoft.com/office/onenote/2013/onenote" ID="{6730B80E-8088-0F54-3EB9-45DAC71C399F}{3}{E19537182505422254696620121475595028466172581}" name="IT.0/1 17.08.2026" dateTime="2026-08-17T06:13:45.000Z" lastModifiedTime="2026-10-08T12:11:01.000Z" pageLevel="2" lang="pt-BR"><one:QuickStyleDef index="0" name="PageTitle" fontColor="automatic" font="Calibri Light" fontSize="20.0" spaceBefore="0.0" spaceAfter="0.0"/><one:QuickStyleDef index="1" name="p" fontColor="automatic" font="Calibri" fontSize="11.0" spaceBefore="0.0" spaceAfter="0.0"/><one:PageSettings RTL="false" color="automatic"><one:PageSize><one:Automatic/></one:PageSize><one:RuleLines visible="false"/></one:PageSettings><one:Title lang="de"><one:OE author="Alexander Schmidt 1932206171" authorInitials="AS1" lastModifiedBy="Alexander Schmidt 1932206171" lastModifiedByInitials="AS" lastModifiedByResolutionID="&lt;resolutionId provider=&quot;AD&quot; hash=&quot;l5qDJ7ap36alcit50Gc32A==&quot;&gt;&lt;localId O365id=&quot;S::1932206171@bildung.daa.de::f24d8c2f-c43b-4db6-a42d-c5c16635adfa&quot;/&gt;&lt;/resolutionId&gt;" creationTime="2026-08-17T06:13:45.000Z" lastModifiedTime="2026-10-08T12:11:01.000Z" objectID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{75}{B0}" alignment="left" quickStyleIndex="0" style="font-family:'Calibri Light';font-size:20.0pt"><one:T><![CDATA[IT.0/1 17.08.2026]]></one:T></one:OE></one:Title><one:Outline author="Alexander Schmidt 1932206171" authorInitials="AS1" lastModifiedBy="Alexander Schmidt 1932206171" lastModifiedByInitials="AS1" lastModifiedTime="2026-09-14T07:09:13.000Z" objectID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{30}{B0}"><one:Position x="36.0" y="86.4000015258789" z="0"/><one:Size width="540.0" height="628.843505859375"/><one:OEChildren><one:OE creationTime="2026-08-17T14:05:43.000Z" lastModifiedTime="2026-08-17T14:05:43.000Z" objectID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{31}{B0}" alignment="left"><one:Image alt="A &#xA;B &#xA;C &#xA;D &#xA;E &#xA;1 &#xA;5 &#xA;4 &#xA;Operatoren &#xA;2 &#xA;Mathe &#xA;Excel &#xA;3 &#xA;WAHR &#xA;2+3=5 &#xA;= &#xA;= &#xA;4 &#xA;WAHR &#xA;A1&gt;=5 &#xA;&gt; &#xA;&gt; &#xA;5 &#xA;FALSCH &#xA;A1 &lt;= B1 &#xA;&lt; &#xA;&lt; &#xA;6 &#xA;FALSCH &#xA;3*3&gt;A1+B1 &#xA;5 &#xA;&lt;= &#xA;7 &#xA;FALSCH &#xA;A1*B1&lt;&gt;(A1*A1)-5 &#xA;2 &#xA;8 &#xA;WAHR &#xA;A1 ist ungerade &#xA;&lt;&gt; &#xA;9 &#xA;=A1&gt;5;B1&lt;5 &#xA;A1&gt;5;B1&lt;5 &#xA;10 &#xA;FALSCH &#xA;UND(A1&gt;5;B1&lt;5) &#xA;11 &#xA;WAHR &#xA;ODER(A1&gt;5;B1&lt;5) &#xA;12 &#xA;WAHR &#xA;ODER(A1 &lt;= B1;A1*A1&gt;20;B1) &#xA;13 &#xA;Ja &#xA;WENN A1 größer als 4, schreibe &quot;Ja&quot;, sonst &quot;Nein&quot; &#xA;14 &#xA;=WENN(A1&gt;4;&quot;Ja&quot;;&quot;Nein&quot;) "><one:Size width="360.0" height="228.7500152587891"/><one:CallbackID callbackID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{33}{B0}"/><one:OCRData><one:OCRText><![CDATA[A 
+B 
+C 
+D 
+E 
+1 
+5 
+4 
+Operatoren 
+2 
+Mathe 
+Excel 
+3 
+WAHR 
+2+3=5 
+= 
+= 
+4 
+WAHR 
+A1>=5 
+> 
+> 
+5 
+FALSCH 
+A1 <= B1 
+< 
+< 
+6 
+FALSCH 
+3*3>A1+B1 
+5 
+<= 
+7 
+FALSCH 
+A1*B1<>(A1*A1)-5 
+2 
+8 
+WAHR 
+A1 ist ungerade 
+<> 
+9 
+=A1>5;B1<5 
+A1>5;B1<5 
+10 
+FALSCH 
+UND(A1>5;B1<5) 
+11 
+WAHR 
+ODER(A1>5;B1<5) 
+12 
+WAHR 
+ODER(A1 <= B1;A1*A1>20;B1) 
+13 
+Ja 
+WENN A1 größer als 4, schreibe "Ja", sonst "Nein" 
+14 
+=WENN(A1>4;"Ja";"Nein") ]]></one:OCRText><one:OCRToken startPos="0" region="0" line="0" x="148.5" y="12.0" width="11.25" height="20.25"/><one:OCRToken startPos="3" region="0" line="1" x="334.5" y="12.0" width="9.75" height="18.75"/><one:OCRToken startPos="6" region="0" line="2" x="582.0" y="11.25" width="10.5" height="20.25"/><one:OCRToken startPos="9" region="0" line="3" x="807.75" y="12.75" width="9.75" height="18.75"/><one:OCRToken startPos="12" region="0" line="4" x="916.5" y="11.25" width="12.75" height="21.75"/><one:OCRToken startPos="15" region="0" line="5" x="17.25" y="51.75" width="10.5" height="21.75"/><one:OCRToken startPos="18" region="0" line="6" x="149.25" y="52.5" width="9.0" height="18.0"/><one:OCRToken startPos="21" region="0" line="7" x="335.25" y="53.25" width="9.75" height="18.0"/><one:OCRToken startPos="24" region="0" line="8" x="801.0" y="51.75" width="132.0" height="24.0"/><one:OCRToken startPos="36" region="0" line="9" x="16.5" y="85.5" width="11.25" height="21.0"/><one:OCRToken startPos="39" region="0" line="10" x="777.75" y="85.5" width="72.0" height="21.75"/><one:OCRToken startPos="46" region="0" line="11" x="895.5" y="85.5" width="56.25" height="20.25"/><one:OCRToken startPos="53" region="0" line="12" x="15.0" y="126.0" width="10.5" height="19.5"/><one:OCRToken startPos="56" region="0" line="13" x="106.5" y="119.25" width="91.5" height="28.5"/><one:OCRToken startPos="62" region="0" line="14" x="269.25" y="125.25" width="64.5" height="21.0"/><one:OCRToken startPos="69" region="0" line="15" x="807.0" y="128.25" width="7.5" height="15.0"/><one:OCRToken startPos="72" region="0" line="16" x="915.75" y="128.25" width="7.5" height="14.25"/><one:OCRToken startPos="75" region="0" line="17" x="15.0" y="166.5" width="11.25" height="21.0"/><one:OCRToken startPos="78" region="0" line="18" x="107.25" y="161.25" width="90.0" height="27.0"/><one:OCRToken startPos="84" region="0" line="19" x="267.75" y="166.5" width="67.5" height="21.0"/><one:OCRToken startPos="91" region="0" line="20" x="808.5" y="168.75" width="9.75" height="16.5"/><one:OCRToken startPos="94" region="0" line="21" x="917.25" y="168.0" width="10.5" height="17.25"/><one:OCRToken startPos="97" region="0" line="22" x="14.25" y="207.0" width="12.0" height="21.75"/><one:OCRToken startPos="100" region="0" line="23" x="99.75" y="201.75" width="100.5" height="27.75"/><one:OCRToken startPos="108" region="0" line="24" x="267.75" y="207.75" width="25.5" height="21.0"/><one:OCRToken startPos="111" region="0" line="24" x="297.0" y="207.75" width="24.0" height="21.0"/><one:OCRToken startPos="114" region="0" line="24" x="324.0" y="207.75" width="29.25" height="21.0"/><one:OCRToken startPos="118" region="0" line="25" x="808.5" y="209.25" width="9.75" height="18.0"/><one:OCRToken startPos="121" region="0" line="26" x="916.5" y="210.0" width="9.75" height="16.5"/><one:OCRToken startPos="124" region="0" line="27" x="15.0" y="249.0" width="10.5" height="20.25"/><one:OCRToken startPos="127" region="0" line="28" x="99.0" y="243.0" width="102.0" height="28.5"/><one:OCRToken startPos="135" region="0" line="29" x="266.25" y="248.25" width="129.75" height="22.5"/><one:OCRToken startPos="146" region="0" line="30" x="809.25" y="249.75" width="11.25" height="19.5"/><one:OCRToken startPos="149" region="0" line="31" x="909.0" y="250.5" width="24.0" height="18.0"/><one:OCRToken startPos="153" region="0" line="32" x="17.25" y="289.5" width="10.5" height="21.75"/><one:OCRToken startPos="156" region="0" line="33" x="99.75" y="284.25" width="102.0" height="27.75"/><one:OCRToken startPos="164" region="0" line="34" x="266.25" y="287.25" width="212.25" height="27.75"/><one:OCRToken startPos="182" region="0" line="35" x="808.5" y="290.25" width="12.0" height="20.25"/><one:OCRToken startPos="185" region="0" line="36" x="15.0" y="331.5" width="11.25" height="20.25"/><one:OCRToken startPos="188" region="0" line="37" x="106.5" y="324.0" width="93.0" height="29.25"/><one:OCRToken startPos="194" region="0" line="38" x="267.75" y="331.5" width="28.5" height="24.0"/><one:OCRToken startPos="197" region="0" line="38" x="300.75" y="331.5" width="28.5" height="24.0"/><one:OCRToken startPos="201" region="0" line="38" x="333.75" y="330.75" width="105.0" height="24.75"/><one:OCRToken startPos="211" region="0" line="39" x="909.0" y="331.5" width="24.75" height="19.5"/><one:OCRToken startPos="215" region="0" line="40" x="14.25" y="372.75" width="10.5" height="21.0"/><one:OCRToken startPos="218" region="0" line="41" x="49.5" y="366.75" width="174.0" height="30.75"/><one:OCRToken startPos="230" region="0" line="42" x="267.0" y="372.0" width="120.75" height="24.0"/><one:OCRToken startPos="241" region="0" line="43" x="9.0" y="413.25" width="23.25" height="21.75"/><one:OCRToken startPos="245" region="0" line="44" x="98.25" y="407.25" width="103.5" height="28.5"/><one:OCRToken startPos="253" region="0" line="45" x="266.25" y="412.5" width="195.0" height="26.25"/><one:OCRToken startPos="269" region="0" line="46" x="10.5" y="454.5" width="24.0" height="22.5"/><one:OCRToken startPos="273" region="0" line="47" x="106.5" y="449.25" width="90.75" height="27.75"/><one:OCRToken startPos="279" region="0" line="48" x="265.5" y="453.0" width="206.25" height="27.0"/><one:OCRToken startPos="296" region="0" line="49" x="10.5" y="498.75" width="25.5" height="21.75"/><one:OCRToken startPos="300" region="0" line="50" x="106.5" y="494.25" width="91.5" height="27.75"/><one:OCRToken startPos="306" region="0" line="51" x="267.0" y="498.75" width="97.5" height="26.25"/><one:OCRToken startPos="314" region="0" line="51" x="369.0" y="498.75" width="21.75" height="27.0"/><one:OCRToken startPos="317" region="0" line="51" x="395.25" y="498.75" width="198.75" height="27.0"/><one:OCRToken startPos="334" region="0" line="52" x="8.25" y="543.0" width="27.0" height="24.0"/><one:OCRToken startPos="338" region="0" line="53" x="50.25" y="539.25" width="30.0" height="28.5"/><one:OCRToken startPos="342" region="0" line="54" x="266.25" y="543.75" width="69.0" height="26.25"/><one:OCRToken startPos="347" region="0" line="54" x="347.25" y="543.75" width="30.75" height="27.0"/><one:OCRToken startPos="350" region="0" line="54" x="384.0" y="543.75" width="75.75" height="27.0"/><one:OCRToken startPos="357" region="0" line="54" x="465.0" y="543.75" width="31.5" height="27.0"/><one:OCRToken startPos="361" region="0" line="54" x="501.75" y="543.75" width="21.0" height="27.0"/><one:OCRToken startPos="364" region="0" line="54" x="527.25" y="543.75" width="93.75" height="26.25"/><one:OCRToken startPos="373" region="0" line="54" x="626.25" y="543.0" width="54.0" height="27.0"/><one:OCRToken startPos="379" region="0" line="54" x="684.75" y="543.0" width="59.25" height="26.25"/><one:OCRToken startPos="385" region="0" line="54" x="748.5" y="543.0" width="76.5" height="26.25"/><one:OCRToken startPos="393" region="0" line="55" x="9.0" y="588.75" width="26.25" height="23.25"/><one:OCRToken startPos="397" region="0" line="56" x="423.0" y="585.75" width="297.0" height="28.5"/></one:OCRData></one:Image></one:OE><one:OE creationTime="2026-08-17T14:05:43.000Z" lastModifiedTime="2026-08-17T14:07:28.000Z" objectID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{36}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt"><one:T><![CDATA[]]></one:T></one:OE><one:OE creationTime="2026-08-17T11:46:34.000Z" lastModifiedTime="2026-08-17T14:10:26.000Z" objectID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{38}{B0}" alignment="left" spaceBefore="5.5" spaceAfter="5.5" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt" lang="de"><one:T><![CDATA[Bearbeitung der Aufgabe Excel 10d bis 12:50 Uhr, dann kurzes Treffen vor der Mittagspause.]]></one:T></one:OE><one:OE creationTime="2026-08-17T11:46:34.000Z" lastModifiedTime="2026-08-17T14:10:26.000Z" objectID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{41}{B0}" alignment="left" spaceBefore="5.5" spaceAfter="5.5" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt" lang="de"><one:T><![CDATA[Nachmittags wechseln wir thematisch wieder zu WiSo]]></one:T></one:OE><one:OE creationTime="2026-08-17T11:46:34.000Z" lastModifiedTime="2026-08-21T10:32:28.000Z" objectID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{43}{B0}" alignment="left" spaceBefore="5.5" spaceAfter="5.5" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt" lang="de"><one:T><![CDATA[Excel 10d wird Mittwoch morgen bedarfsgerecht besprochen.]]></one:T></one:OE><one:OE creationTime="2026-08-17T11:46:34.000Z" lastModifiedTime="2026-08-17T14:10:26.000Z" objectID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{46}{B0}" alignment="left" spaceBefore="5.5" spaceAfter="5.5" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt" lang="de"><one:T><![CDATA[Die Bonusaufgabe Excel 14b ist für Knobler und alle Kursteilnehmende mit Vorwissen und/oder  dem Wunsch nach einem etwas höheren Schwierigkeitsgrad (deutlich über dem der Abschlussklausur).]]></one:T></one:OE><one:OE creationTime="2026-08-17T11:46:34.000Z" lastModifiedTime="2026-08-17T14:10:26.000Z" objectID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{48}{B0}" alignment="left" spaceBefore="5.5" spaceAfter="5.5" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt" lang="de"><one:T><![CDATA[Hierzu wird am Mittwoch ebenfalls eine Lösung bereitgestellt.]]></one:T></one:OE><one:OE creationTime="2026-08-17T14:10:26.000Z" lastModifiedTime="2026-08-17T14:10:26.000Z" objectID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{50}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt"><one:T><![CDATA[]]></one:T></one:OE><one:OE creationTime="2026-08-17T14:10:23.000Z" lastModifiedTime="2026-08-17T14:10:24.000Z" objectID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{52}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt"><one:T><![CDATA[]]></one:T></one:OE><one:OE creationTime="2026-08-17T14:07:34.000Z" lastModifiedTime="2026-08-17T14:07:34.000Z" objectID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{54}{B0}" alignment="left"><one:Image alt="Brutto- &#xA;Angebots- &#xA;Rest- &#xA;stapelbar &#xA;Preis oder &#xA;Grenzpreis- &#xA;Dosenmengen- &#xA;Beschreibung &#xA;Einheit &#xA;Preis &#xA;Stk. &#xA;preis &#xA;Posten &#xA;Menge? &#xA;rabatt &#xA;Rabatt &#xA;Einheitsrabatt &#xA;Flüssigkorrosion, rot-braun &#xA;Tüte &#xA;9,99 € &#xA;9 &#xA;Ja &#xA;9 &#xA;Tüte &#xA;Preis &#xA;0,00 € &#xA;27,00% &#xA;Großflächen-Alumagnet &#xA;Stück &#xA;36,00 € &#xA;31 &#xA;Nein &#xA;Stück &#xA;Preis &#xA;0,00 € &#xA;20,00% &#xA;Schraubenzieher f. Linkshänder &#xA;Dose &#xA;98,00 € &#xA;4 &#xA;Nein &#xA;4 &#xA;stapelbar &#xA;Preis &#xA;19,60 € &#xA;94,00% &#xA;frei gleitendes Feilenfett &#xA;Stück &#xA;39,00 € &#xA;45 &#xA;Nein &#xA;Stück &#xA;Menge &#xA;0,00 € &#xA;20,00% &#xA;Knackpatronen für Drehmomentschlüssel &#xA;Tüte &#xA;39,00 € &#xA;39 &#xA;Nein &#xA;Tüte &#xA;Gleich &#xA;0,00 € &#xA;37,00% &#xA;Leuchtmittel für Vergaser-Innenbeleuchtung &#xA;Röhre &#xA;59,00 € &#xA;8 &#xA;Nein &#xA;8 &#xA;Röhre &#xA;Preis &#xA;11,80 € &#xA;20,00% &#xA;Kolbenrückholfedern, messing &#xA;Dose &#xA;59,00 € &#xA;5 &#xA;Nein &#xA;5 &#xA;stapelbar &#xA;Preis &#xA;11,80 € &#xA;54,00% &#xA;Abluftschlauch-Gewindebohrer &#xA;Dose &#xA;27,50 € &#xA;32 &#xA;Nein &#xA;stapelbar &#xA;Menge &#xA;0,00 € &#xA;5,50 € &#xA;4,50% &#xA;Fertigfugen, alle Größen &#xA;Box &#xA;12,00 € &#xA;42 &#xA;Nein &#xA;Box &#xA;Menge &#xA;0,00 € &#xA;20,00% &#xA;Druckabfall-Eimer &#xA;Stück &#xA;9,99 € &#xA;8 &#xA;Ja &#xA;8 &#xA;Stück &#xA;Preis &#xA;0,00 € &#xA;20,00% &#xA;Kloppdich Gewindehammer &#xA;Stück &#xA;65,00 € &#xA;65 &#xA;Nein &#xA;Stück &#xA;Gleich &#xA;13,00 € &#xA;20,00% &#xA;Luftbläschen f. Wasserwaage &#xA;Dose &#xA;9,99 € &#xA;5 &#xA;Ja &#xA;5 &#xA;stapelbar &#xA;Preis &#xA;0,00 € &#xA;4,99% &#xA;Drehstromtransistor &#xA;Dose &#xA;29,00 € &#xA;25 &#xA;Nein &#xA;stapelbar &#xA;Preis &#xA;0,00 € &#xA;5,80 € &#xA;4,00% &#xA;Grenzpreis &#xA;50,00 € &#xA;Aktueller Rabattsatz &#xA;20% &#xA;-0 &#xA;O &#xA;O &#xA;Spalte E: = WENN(C2=9,99;&quot;Ja&quot;;&quot;Nein&quot;) &#xA;Spalte F: = WENN(D2&lt;10;D2;&quot;&quot;) &#xA;Spalte G: = WENN(B2=&quot;Dose&quot;;&quot;stapelbar&quot;;B2) &#xA;Spalte H: = WENN(C2&gt;D2;&quot;'Preis&quot;;&quot;'Menge&quot;) &#xA;Spalte H (Bonus): = WENN(C2&gt;D2;&quot;Preis&quot;;WENN(C2&lt;D2;&quot;Menge&quot;;&quot;Gleich&quot;)) &#xA;Spalte I: = WENN(C2&gt;$B$16;C2*B$17;0) &#xA;Spalte J: = WENN(UND(D2&gt;20;B2=&quot;Dose&quot;);C2*$B$17;&quot;'&quot;) &#xA;Spalte K: &#xA;=WENNS(B2=&quot;Dose&quot;;ABS(C2-D2)%; &#xA;B2=&quot;Tüte&quot;;LÄNGE(A2)%; &#xA;Ò WAHR:ŚBS17) &#xA;0 "><one:Size width="360.0" height="152.2500152587891"/><one:CallbackID callbackID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{55}{B0}"/><one:OCRData><one:OCRText><![CDATA[Brutto- 
+Angebots- 
+Rest- 
+stapelbar 
+Preis oder 
+Grenzpreis- 
+Dosenmengen- 
+Beschreibung 
+Einheit 
+Preis 
+Stk. 
+preis 
+Posten 
+Menge? 
+rabatt 
+Rabatt 
+Einheitsrabatt 
+Flüssigkorrosion, rot-braun 
+Tüte 
+9,99 € 
+9 
+Ja 
+9 
+Tüte 
+Preis 
+0,00 € 
+27,00% 
+Großflächen-Alumagnet 
+Stück 
+36,00 € 
+31 
+Nein 
+Stück 
+Preis 
+0,00 € 
+20,00% 
+Schraubenzieher f. Linkshänder 
+Dose 
+98,00 € 
+4 
+Nein 
+4 
+stapelbar 
+Preis 
+19,60 € 
+94,00% 
+frei gleitendes Feilenfett 
+Stück 
+39,00 € 
+45 
+Nein 
+Stück 
+Menge 
+0,00 € 
+20,00% 
+Knackpatronen für Drehmomentschlüssel 
+Tüte 
+39,00 € 
+39 
+Nein 
+Tüte 
+Gleich 
+0,00 € 
+37,00% 
+Leuchtmittel für Vergaser-Innenbeleuchtung 
+Röhre 
+59,00 € 
+8 
+Nein 
+8 
+Röhre 
+Preis 
+11,80 € 
+20,00% 
+Kolbenrückholfedern, messing 
+Dose 
+59,00 € 
+5 
+Nein 
+5 
+stapelbar 
+Preis 
+11,80 € 
+54,00% 
+Abluftschlauch-Gewindebohrer 
+Dose 
+27,50 € 
+32 
+Nein 
+stapelbar 
+Menge 
+0,00 € 
+5,50 € 
+4,50% 
+Fertigfugen, alle Größen 
+Box 
+12,00 € 
+42 
+Nein 
+Box 
+Menge 
+0,00 € 
+20,00% 
+Druckabfall-Eimer 
+Stück 
+9,99 € 
+8 
+Ja 
+8 
+Stück 
+Preis 
+0,00 € 
+20,00% 
+Kloppdich Gewindehammer 
+Stück 
+65,00 € 
+65 
+Nein 
+Stück 
+Gleich 
+13,00 € 
+20,00% 
+Luftbläschen f. Wasserwaage 
+Dose 
+9,99 € 
+5 
+Ja 
+5 
+stapelbar 
+Preis 
+0,00 € 
+4,99% 
+Drehstromtransistor 
+Dose 
+29,00 € 
+25 
+Nein 
+stapelbar 
+Preis 
+0,00 € 
+5,80 € 
+4,00% 
+Grenzpreis 
+50,00 € 
+Aktueller Rabattsatz 
+20% 
+-0 
+O 
+O 
+Spalte E: = WENN(C2=9,99;"Ja";"Nein") 
+Spalte F: = WENN(D2<10;D2;"") 
+Spalte G: = WENN(B2="Dose";"stapelbar";B2) 
+Spalte H: = WENN(C2>D2;"'Preis";"'Menge") 
+Spalte H (Bonus): = WENN(C2>D2;"Preis";WENN(C2<D2;"Menge";"Gleich")) 
+Spalte I: = WENN(C2>$B$16;C2*B$17;0) 
+Spalte J: = WENN(UND(D2>20;B2="Dose");C2*$B$17;"'") 
+Spalte K: 
+=WENNS(B2="Dose";ABS(C2-D2)%; 
+B2="Tüte";LÄNGE(A2)%; 
+Ò WAHR:ŚBS17) 
+0 ]]></one:OCRText><one:OCRToken startPos="0" region="0" line="0" x="299.25" y="2.25" width="39.75" height="11.25"/><one:OCRToken startPos="9" region="0" line="1" x="398.25" y="3.0" width="59.25" height="11.25"/><one:OCRToken startPos="20" region="0" line="2" x="489.75" y="2.25" width="30.0" height="11.25"/><one:OCRToken startPos="27" region="0" line="3" x="555.75" y="11.25" width="53.25" height="11.25"/><one:OCRToken startPos="38" region="0" line="4" x="638.25" y="2.25" width="28.5" height="12.0"/><one:OCRToken startPos="44" region="0" line="4" x="669.75" y="3.0" width="27.75" height="11.25"/><one:OCRToken startPos="50" region="0" line="5" x="721.5" y="3.0" width="64.5" height="12.0"/><one:OCRToken startPos="63" region="0" line="6" x="806.25" y="4.5" width="67.5" height="10.5"/><one:OCRToken startPos="77" region="0" line="7" x="2.25" y="18.75" width="77.25" height="12.0"/><one:OCRToken startPos="91" region="0" line="8" x="239.25" y="18.75" width="39.75" height="11.25"/><one:OCRToken startPos="100" region="0" line="9" x="305.25" y="18.0" width="28.5" height="11.25"/><one:OCRToken startPos="107" region="0" line="10" x="360.0" y="18.75" width="20.25" height="10.5"/><one:OCRToken startPos="113" region="0" line="11" x="414.0" y="19.5" width="27.0" height="10.5"/><one:OCRToken startPos="120" region="0" line="12" x="484.5" y="18.75" width="37.5" height="12.0"/><one:OCRToken startPos="128" region="0" line="13" x="644.25" y="18.0" width="45.75" height="13.5"/><one:OCRToken startPos="136" region="0" line="14" x="738.0" y="18.75" width="35.25" height="12.0"/><one:OCRToken startPos="144" region="0" line="15" x="824.25" y="17.25" width="31.5" height="10.5"/><one:OCRToken startPos="152" region="0" line="16" x="897.75" y="10.5" width="64.5" height="10.5"/><one:OCRToken startPos="168" region="0" line="17" x="3.0" y="34.5" width="78.0" height="12.75"/><one:OCRToken startPos="186" region="0" line="17" x="83.25" y="35.25" width="45.75" height="11.25"/><one:OCRToken startPos="197" region="0" line="18" x="247.5" y="34.5" width="21.0" height="10.5"/><one:OCRToken startPos="203" region="0" line="19" x="318.0" y="34.5" width="23.25" height="12.0"/><one:OCRToken startPos="208" region="0" line="19" x="344.25" y="34.5" width="7.5" height="12.0"/><one:OCRToken startPos="211" region="0" line="20" x="378.0" y="35.25" width="6.0" height="9.75"/><one:OCRToken startPos="214" region="0" line="21" x="421.5" y="35.25" width="11.25" height="9.75"/><one:OCRToken startPos="218" region="0" line="22" x="501.0" y="36.0" width="6.0" height="9.75"/><one:OCRToken startPos="221" region="0" line="23" x="570.75" y="34.5" width="22.5" height="11.25"/><one:OCRToken startPos="227" region="0" line="24" x="654.0" y="34.5" width="27.75" height="11.25"/><one:OCRToken startPos="234" region="0" line="25" x="762.0" y="34.5" width="23.25" height="12.0"/><one:OCRToken startPos="239" region="0" line="25" x="789.0" y="35.25" width="6.75" height="10.5"/><one:OCRToken startPos="242" region="0" line="26" x="935.25" y="33.75" width="39.75" height="13.5"/><one:OCRToken startPos="250" region="0" line="27" x="1.5" y="51.0" width="117.0" height="12.75"/><one:OCRToken startPos="273" region="0" line="28" x="243.75" y="50.25" width="28.5" height="11.25"/><one:OCRToken startPos="280" region="0" line="29" x="311.25" y="51.0" width="29.25" height="12.0"/><one:OCRToken startPos="286" region="0" line="29" x="344.25" y="51.0" width="6.75" height="12.0"/><one:OCRToken startPos="289" region="0" line="30" x="372.0" y="51.0" width="11.25" height="9.75"/><one:OCRToken startPos="293" region="0" line="31" x="415.5" y="51.0" width="24.0" height="11.25"/><one:OCRToken startPos="299" region="0" line="32" x="568.5" y="51.0" width="27.75" height="11.25"/><one:OCRToken startPos="306" region="0" line="33" x="654.0" y="50.25" width="27.0" height="12.0"/><one:OCRToken startPos="313" region="0" line="34" x="762.0" y="51.0" width="22.5" height="11.25"/><one:OCRToken startPos="318" region="0" line="34" x="789.0" y="51.75" width="6.75" height="10.5"/><one:OCRToken startPos="321" region="0" line="35" x="934.5" y="51.0" width="40.5" height="12.0"/><one:OCRToken startPos="329" region="0" line="36" x="2.25" y="66.75" width="79.5" height="12.0"/><one:OCRToken startPos="345" region="0" line="36" x="84.0" y="66.75" width="7.5" height="12.0"/><one:OCRToken startPos="348" region="0" line="36" x="93.75" y="66.75" width="60.0" height="12.75"/><one:OCRToken startPos="361" region="0" line="37" x="243.75" y="66.75" width="27.75" height="11.25"/><one:OCRToken startPos="367" region="0" line="38" x="311.25" y="66.75" width="29.25" height="12.0"/><one:OCRToken startPos="373" region="0" line="38" x="344.25" y="66.75" width="6.75" height="12.75"/><one:OCRToken startPos="376" region="0" line="39" x="378.75" y="67.5" width="6.0" height="9.75"/><one:OCRToken startPos="379" region="0" line="40" x="415.5" y="67.5" width="23.25" height="10.5"/><one:OCRToken startPos="385" region="0" line="41" x="501.0" y="67.5" width="6.0" height="9.75"/><one:OCRToken startPos="388" region="0" line="42" x="555.75" y="68.25" width="53.25" height="10.5"/><one:OCRToken startPos="399" region="0" line="43" x="653.25" y="66.75" width="27.0" height="11.25"/><one:OCRToken startPos="406" region="0" line="44" x="756.75" y="66.75" width="27.75" height="11.25"/><one:OCRToken startPos="412" region="0" line="44" x="789.0" y="67.5" width="6.0" height="10.5"/><one:OCRToken startPos="415" region="0" line="45" x="935.25" y="67.5" width="40.5" height="11.25"/><one:OCRToken startPos="423" region="0" line="46" x="0.75" y="85.5" width="18.0" height="12.0"/><one:OCRToken startPos="428" region="0" line="46" x="21.0" y="85.5" width="51.0" height="12.0"/><one:OCRToken startPos="439" region="0" line="46" x="73.5" y="86.25" width="49.5" height="10.5"/><one:OCRToken startPos="451" region="0" line="47" x="243.75" y="85.5" width="27.75" height="11.25"/><one:OCRToken startPos="458" region="0" line="48" x="311.25" y="84.75" width="28.5" height="12.0"/><one:OCRToken startPos="464" region="0" line="48" x="344.25" y="85.5" width="6.75" height="11.25"/><one:OCRToken startPos="467" region="0" line="49" x="372.0" y="84.75" width="12.0" height="10.5"/><one:OCRToken startPos="471" region="0" line="50" x="415.5" y="84.75" width="24.0" height="11.25"/><one:OCRToken startPos="477" region="0" line="51" x="567.75" y="85.5" width="27.75" height="10.5"/><one:OCRToken startPos="484" region="0" line="52" x="648.75" y="84.75" width="36.0" height="12.75"/><one:OCRToken startPos="491" region="0" line="53" x="762.0" y="85.5" width="22.5" height="11.25"/><one:OCRToken startPos="496" region="0" line="53" x="789.0" y="86.25" width="6.0" height="9.75"/><one:OCRToken startPos="499" region="0" line="54" x="934.5" y="85.5" width="41.25" height="11.25"/><one:OCRToken startPos="507" region="0" line="55" x="0.75" y="102.0" width="72.0" height="12.75"/><one:OCRToken startPos="521" region="0" line="55" x="75.75" y="102.0" width="15.0" height="12.0"/><one:OCRToken startPos="525" region="0" line="55" x="93.0" y="102.0" width="109.5" height="12.0"/><one:OCRToken startPos="546" region="0" line="56" x="247.5" y="102.0" width="21.0" height="9.75"/><one:OCRToken startPos="552" region="0" line="57" x="310.5" y="100.5" width="30.0" height="12.75"/><one:OCRToken startPos="558" region="0" line="57" x="344.25" y="101.25" width="6.75" height="12.0"/><one:OCRToken startPos="561" region="0" line="58" x="372.0" y="101.25" width="11.25" height="9.75"/><one:OCRToken startPos="565" region="0" line="59" x="417.0" y="102.0" width="21.0" height="9.75"/><one:OCRToken startPos="571" region="0" line="60" x="570.75" y="102.0" width="21.75" height="9.75"/><one:OCRToken startPos="577" region="0" line="61" x="651.0" y="101.25" width="32.25" height="11.25"/><one:OCRToken startPos="585" region="0" line="62" x="762.0" y="100.5" width="24.0" height="12.0"/><one:OCRToken startPos="590" region="0" line="62" x="789.0" y="100.5" width="7.5" height="12.0"/><one:OCRToken startPos="593" region="0" line="63" x="934.5" y="101.25" width="40.5" height="11.25"/><one:OCRToken startPos="601" region="0" line="64" x="2.25" y="117.75" width="60.0" height="12.0"/><one:OCRToken startPos="614" region="0" line="64" x="64.5" y="117.75" width="15.0" height="12.0"/><one:OCRToken startPos="618" region="0" line="64" x="81.0" y="117.0" width="135.0" height="14.25"/><one:OCRToken startPos="645" region="0" line="65" x="241.5" y="117.75" width="31.5" height="10.5"/><one:OCRToken startPos="652" region="0" line="66" x="309.75" y="117.0" width="30.75" height="12.0"/><one:OCRToken startPos="658" region="0" line="66" x="343.5" y="117.75" width="6.75" height="11.25"/><one:OCRToken startPos="661" region="0" line="67" x="378.75" y="118.5" width="4.5" height="8.25"/><one:OCRToken startPos="664" region="0" line="68" x="415.5" y="117.75" width="23.25" height="10.5"/><one:OCRToken startPos="670" region="0" line="69" x="501.75" y="117.75" width="5.25" height="9.0"/><one:OCRToken startPos="673" region="0" line="70" x="565.5" y="117.75" width="31.5" height="11.25"/><one:OCRToken startPos="680" region="0" line="71" x="654.0" y="117.75" width="26.25" height="10.5"/><one:OCRToken startPos="687" region="0" line="72" x="756.75" y="116.25" width="28.5" height="12.75"/><one:OCRToken startPos="693" region="0" line="72" x="789.0" y="117.75" width="6.75" height="11.25"/><one:OCRToken startPos="696" region="0" line="73" x="935.25" y="117.75" width="41.25" height="10.5"/><one:OCRToken startPos="704" region="0" line="74" x="1.5" y="134.25" width="104.25" height="11.25"/><one:OCRToken startPos="725" region="0" line="74" x="108.0" y="135.0" width="39.75" height="11.25"/><one:OCRToken startPos="734" region="0" line="75" x="244.5" y="133.5" width="26.25" height="10.5"/><one:OCRToken startPos="740" region="0" line="76" x="310.5" y="133.5" width="29.25" height="12.0"/><one:OCRToken startPos="746" region="0" line="76" x="343.5" y="133.5" width="6.75" height="12.0"/><one:OCRToken startPos="749" region="0" line="77" x="378.75" y="133.5" width="5.25" height="9.75"/><one:OCRToken startPos="752" region="0" line="78" x="416.25" y="133.5" width="22.5" height="10.5"/><one:OCRToken startPos="758" region="0" line="79" x="501.75" y="134.25" width="5.25" height="8.25"/><one:OCRToken startPos="761" region="0" line="80" x="556.5" y="134.25" width="53.25" height="11.25"/><one:OCRToken startPos="772" region="0" line="81" x="653.25" y="133.5" width="27.0" height="11.25"/><one:OCRToken startPos="779" region="0" line="82" x="756.75" y="133.5" width="27.75" height="12.0"/><one:OCRToken startPos="785" region="0" line="82" x="789.0" y="134.25" width="6.75" height="10.5"/><one:OCRToken startPos="788" region="0" line="83" x="934.5" y="134.25" width="40.5" height="10.5"/><one:OCRToken startPos="796" region="0" line="84" x="3.0" y="150.75" width="150.0" height="12.0"/><one:OCRToken startPos="826" region="0" line="85" x="244.5" y="150.0" width="26.25" height="10.5"/><one:OCRToken startPos="832" region="0" line="86" x="311.25" y="149.25" width="29.25" height="12.0"/><one:OCRToken startPos="838" region="0" line="86" x="343.5" y="149.25" width="7.5" height="12.0"/><one:OCRToken startPos="841" region="0" line="87" x="372.0" y="149.25" width="12.75" height="10.5"/><one:OCRToken startPos="845" region="0" line="88" x="416.25" y="150.0" width="22.5" height="10.5"/><one:OCRToken startPos="851" region="0" line="89" x="555.75" y="150.75" width="53.25" height="11.25"/><one:OCRToken startPos="862" region="0" line="90" x="648.75" y="150.0" width="36.0" height="11.25"/><one:OCRToken startPos="869" region="0" line="91" x="762.0" y="149.25" width="22.5" height="11.25"/><one:OCRToken startPos="874" region="0" line="91" x="789.0" y="150.0" width="6.75" height="10.5"/><one:OCRToken startPos="877" region="0" line="92" x="847.5" y="150.0" width="22.5" height="11.25"/><one:OCRToken startPos="882" region="0" line="92" x="874.5" y="150.0" width="6.0" height="11.25"/><one:OCRToken startPos="885" region="0" line="93" x="941.25" y="150.75" width="33.75" height="10.5"/><one:OCRToken startPos="892" region="0" line="94" x="0.75" y="166.5" width="60.0" height="12.0"/><one:OCRToken startPos="905" region="0" line="94" x="63.0" y="166.5" width="17.25" height="12.0"/><one:OCRToken startPos="910" region="0" line="94" x="83.25" y="166.5" width="35.25" height="12.0"/><one:OCRToken startPos="918" region="0" line="95" x="248.25" y="165.75" width="20.25" height="11.25"/><one:OCRToken startPos="923" region="0" line="96" x="312.0" y="165.0" width="29.25" height="12.75"/><one:OCRToken startPos="929" region="0" line="96" x="344.25" y="165.0" width="7.5" height="12.75"/><one:OCRToken startPos="932" region="0" line="97" x="372.0" y="165.75" width="12.75" height="10.5"/><one:OCRToken startPos="936" region="0" line="98" x="416.25" y="165.75" width="22.5" height="10.5"/><one:OCRToken startPos="942" region="0" line="99" x="572.25" y="166.5" width="20.25" height="10.5"/><one:OCRToken startPos="947" region="0" line="100" x="648.75" y="166.5" width="36.0" height="11.25"/><one:OCRToken startPos="954" region="0" line="101" x="762.0" y="165.0" width="24.0" height="12.0"/><one:OCRToken startPos="959" region="0" line="101" x="789.0" y="165.0" width="7.5" height="12.0"/><one:OCRToken startPos="962" region="0" line="102" x="934.5" y="166.5" width="41.25" height="11.25"/><one:OCRToken startPos="970" region="0" line="103" x="1.5" y="183.0" width="87.0" height="10.5"/><one:OCRToken startPos="989" region="0" line="104" x="243.75" y="181.5" width="27.75" height="12.0"/><one:OCRToken startPos="996" region="0" line="105" x="318.0" y="181.5" width="23.25" height="12.0"/><one:OCRToken startPos="1001" region="0" line="105" x="344.25" y="181.5" width="7.5" height="12.0"/><one:OCRToken startPos="1004" region="0" line="106" x="378.75" y="182.25" width="5.25" height="9.75"/><one:OCRToken startPos="1007" region="0" line="107" x="422.25" y="180.75" width="11.25" height="11.25"/><one:OCRToken startPos="1011" region="0" line="108" x="501.0" y="182.25" width="6.0" height="9.75"/><one:OCRToken startPos="1014" region="0" line="109" x="567.75" y="181.5" width="29.25" height="11.25"/><one:OCRToken startPos="1021" region="0" line="110" x="654.0" y="181.5" width="27.0" height="11.25"/><one:OCRToken startPos="1028" region="0" line="111" x="762.0" y="182.25" width="23.25" height="11.25"/><one:OCRToken startPos="1033" region="0" line="111" x="789.0" y="183.0" width="6.75" height="9.75"/><one:OCRToken startPos="1036" region="0" line="112" x="935.25" y="183.0" width="40.5" height="10.5"/><one:OCRToken startPos="1044" region="0" line="113" x="0.0" y="198.75" width="48.0" height="12.0"/><one:OCRToken startPos="1054" region="0" line="113" x="51.0" y="198.75" width="86.25" height="11.25"/><one:OCRToken startPos="1069" region="0" line="114" x="243.75" y="197.25" width="28.5" height="12.0"/><one:OCRToken startPos="1076" region="0" line="115" x="310.5" y="197.25" width="29.25" height="12.75"/><one:OCRToken startPos="1082" region="0" line="115" x="344.25" y="198.0" width="6.75" height="11.25"/><one:OCRToken startPos="1085" region="0" line="116" x="372.0" y="198.0" width="11.25" height="9.75"/><one:OCRToken startPos="1089" region="0" line="117" x="415.5" y="198.0" width="24.0" height="11.25"/><one:OCRToken startPos="1095" region="0" line="118" x="568.5" y="197.25" width="27.75" height="11.25"/><one:OCRToken startPos="1102" region="0" line="119" x="651.0" y="198.0" width="32.25" height="11.25"/><one:OCRToken startPos="1110" region="0" line="120" x="756.75" y="198.0" width="28.5" height="11.25"/><one:OCRToken startPos="1116" region="0" line="120" x="789.0" y="198.0" width="6.0" height="11.25"/><one:OCRToken startPos="1119" region="0" line="121" x="934.5" y="198.75" width="40.5" height="10.5"/><one:OCRToken startPos="1127" region="0" line="122" x="0.0" y="215.25" width="62.25" height="10.5"/><one:OCRToken startPos="1140" region="0" line="122" x="64.5" y="215.25" width="9.0" height="10.5"/><one:OCRToken startPos="1143" region="0" line="122" x="75.0" y="215.25" width="67.5" height="12.0"/><one:OCRToken startPos="1156" region="0" line="123" x="243.75" y="214.5" width="26.25" height="10.5"/><one:OCRToken startPos="1162" region="0" line="124" x="317.25" y="213.75" width="24.0" height="12.0"/><one:OCRToken startPos="1167" region="0" line="124" x="343.5" y="214.5" width="7.5" height="11.25"/><one:OCRToken startPos="1170" region="0" line="125" x="379.5" y="213.75" width="5.25" height="10.5"/><one:OCRToken startPos="1173" region="0" line="126" x="421.5" y="213.75" width="12.0" height="10.5"/><one:OCRToken startPos="1177" region="0" line="127" x="501.0" y="213.75" width="6.0" height="10.5"/><one:OCRToken startPos="1180" region="0" line="128" x="555.75" y="215.25" width="54.0" height="11.25"/><one:OCRToken startPos="1191" region="0" line="129" x="654.0" y="213.75" width="27.75" height="11.25"/><one:OCRToken startPos="1198" region="0" line="130" x="762.0" y="214.5" width="22.5" height="10.5"/><one:OCRToken startPos="1203" region="0" line="130" x="789.0" y="215.25" width="6.0" height="9.75"/><one:OCRToken startPos="1206" region="0" line="131" x="942.0" y="214.5" width="33.0" height="11.25"/><one:OCRToken startPos="1213" region="0" line="132" x="0.75" y="231.75" width="97.5" height="11.25"/><one:OCRToken startPos="1234" region="0" line="133" x="243.75" y="229.5" width="27.0" height="12.75"/><one:OCRToken startPos="1240" region="0" line="134" x="311.25" y="230.25" width="29.25" height="12.75"/><one:OCRToken startPos="1246" region="0" line="134" x="344.25" y="230.25" width="6.0" height="12.0"/><one:OCRToken startPos="1249" region="0" line="135" x="372.0" y="229.5" width="12.75" height="12.0"/><one:OCRToken startPos="1253" region="0" line="136" x="415.5" y="229.5" width="24.0" height="12.0"/><one:OCRToken startPos="1259" region="0" line="137" x="556.5" y="231.0" width="52.5" height="11.25"/><one:OCRToken startPos="1270" region="0" line="138" x="653.25" y="230.25" width="27.0" height="11.25"/><one:OCRToken startPos="1277" region="0" line="139" x="762.0" y="229.5" width="24.0" height="12.0"/><one:OCRToken startPos="1282" region="0" line="139" x="789.0" y="229.5" width="6.0" height="12.0"/><one:OCRToken startPos="1285" region="0" line="140" x="846.75" y="229.5" width="23.25" height="12.0"/><one:OCRToken startPos="1290" region="0" line="140" x="873.75" y="229.5" width="6.75" height="12.0"/><one:OCRToken startPos="1293" region="0" line="141" x="941.25" y="229.5" width="32.25" height="12.0"/><one:OCRToken startPos="1300" region="0" line="142" x="176.25" y="263.25" width="52.5" height="12.0"/><one:OCRToken startPos="1312" region="0" line="143" x="243.0" y="262.5" width="29.25" height="12.75"/><one:OCRToken startPos="1318" region="0" line="143" x="276.75" y="262.5" width="6.75" height="12.0"/><one:OCRToken startPos="1321" region="0" line="144" x="130.5" y="279.75" width="45.0" height="12.0"/><one:OCRToken startPos="1331" region="0" line="144" x="177.75" y="279.75" width="51.0" height="12.0"/><one:OCRToken startPos="1343" region="0" line="145" x="261.75" y="279.0" width="22.5" height="11.25"/><one:OCRToken startPos="1348" region="0" line="146" x="471.0" y="292.5" width="8.25" height="9.0"/><one:OCRToken startPos="1352" region="0" line="147" x="943.5" y="296.25" width="6.75" height="3.75"/><one:OCRToken startPos="1355" region="0" line="148" x="1.5" y="294.75" width="4.5" height="8.25"/><one:OCRToken startPos="1358" region="0" line="149" x="10.5" y="305.25" width="33.75" height="13.5"/><one:OCRToken startPos="1365" region="0" line="149" x="46.5" y="305.25" width="12.75" height="13.5"/><one:OCRToken startPos="1368" region="0" line="149" x="62.25" y="305.25" width="3.75" height="13.5"/><one:OCRToken startPos="1370" region="0" line="149" x="69.0" y="304.5" width="154.5" height="14.25"/><one:OCRToken startPos="1397" region="0" line="150" x="320.25" y="304.5" width="33.0" height="15.0"/><one:OCRToken startPos="1404" region="0" line="150" x="355.5" y="304.5" width="12.75" height="15.0"/><one:OCRToken startPos="1407" region="0" line="150" x="371.25" y="305.25" width="3.75" height="14.25"/><one:OCRToken startPos="1409" region="0" line="150" x="377.25" y="304.5" width="111.75" height="15.0"/><one:OCRToken startPos="1428" region="0" line="151" x="552.0" y="305.25" width="33.0" height="14.25"/><one:OCRToken startPos="1435" region="0" line="151" x="588.0" y="305.25" width="14.25" height="14.25"/><one:OCRToken startPos="1438" region="0" line="151" x="604.5" y="305.25" width="3.75" height="14.25"/><one:OCRToken startPos="1440" region="0" line="151" x="611.25" y="305.25" width="186.0" height="14.25"/><one:OCRToken startPos="1472" region="0" line="152" x="10.5" y="320.25" width="33.0" height="14.25"/><one:OCRToken startPos="1479" region="0" line="152" x="46.5" y="320.25" width="14.25" height="15.0"/><one:OCRToken startPos="1482" region="0" line="152" x="63.75" y="320.25" width="3.75" height="15.0"/><one:OCRToken startPos="1484" region="0" line="152" x="70.5" y="320.25" width="174.0" height="15.0"/><one:OCRToken startPos="1515" region="0" line="153" x="319.5" y="320.25" width="33.75" height="15.0"/><one:OCRToken startPos="1522" region="0" line="153" x="355.5" y="320.25" width="8.25" height="15.0"/><one:OCRToken startPos="1524" region="0" line="153" x="366.0" y="320.25" width="49.5" height="15.0"/><one:OCRToken startPos="1533" region="0" line="153" x="420.0" y="320.25" width="4.5" height="15.0"/><one:OCRToken startPos="1535" region="0" line="153" x="426.75" y="320.25" width="301.5" height="15.0"/><one:OCRToken startPos="1585" region="0" line="154" x="9.75" y="336.0" width="33.75" height="15.0"/><one:OCRToken startPos="1592" region="0" line="154" x="45.75" y="336.0" width="12.0" height="15.0"/><one:OCRToken startPos="1595" region="0" line="154" x="64.5" y="336.0" width="4.5" height="15.0"/><one:OCRToken startPos="1597" region="0" line="154" x="71.25" y="336.0" width="159.75" height="15.75"/><one:OCRToken startPos="1623" region="0" line="155" x="318.75" y="336.75" width="33.75" height="14.25"/><one:OCRToken startPos="1630" region="0" line="155" x="355.5" y="336.75" width="12.0" height="14.25"/><one:OCRToken startPos="1633" region="0" line="155" x="371.25" y="336.75" width="4.5" height="14.25"/><one:OCRToken startPos="1635" region="0" line="155" x="378.75" y="336.0" width="248.25" height="15.75"/><one:OCRToken startPos="1676" region="0" line="156" x="10.5" y="352.5" width="34.5" height="13.5"/><one:OCRToken startPos="1683" region="0" line="156" x="46.5" y="352.5" width="13.5" height="13.5"/><one:OCRToken startPos="1687" region="0" line="157" x="10.5" y="366.75" width="190.5" height="15.75"/><one:OCRToken startPos="1718" region="0" line="158" x="10.5" y="382.5" width="134.25" height="16.5"/><one:OCRToken startPos="1741" region="0" line="159" x="0.0" y="399.75" width="6.0" height="12.75"/><one:OCRToken startPos="1743" region="0" line="159" x="10.5" y="399.0" width="78.0" height="13.5"/><one:OCRToken startPos="1756" region="0" line="160" x="944.25" y="400.5" width="5.25" height="8.25"/></one:OCRData></one:Image></one:OE><one:OE creationTime="2026-08-17T14:07:34.000Z" lastModifiedTime="2026-08-17T14:11:55.000Z" objectID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{58}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt"><one:T><![CDATA[]]></one:T></one:OE><one:OE creationTime="2026-08-17T11:47:55.000Z" lastModifiedTime="2026-08-17T14:11:56.000Z" objectID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{60}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt" lang="de"><one:T><![CDATA[Bis 13:00 EXEL mit den Übungen]]></one:T></one:OE><one:OE creationTime="2026-08-17T11:48:33.000Z" lastModifiedTime="2026-08-17T14:12:52.000Z" objectID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{63}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt" lang="de"><one:T><![CDATA[Danach also ab 13.30 WISO (IT.I.o4 -Bonus-übungen Besprechung)]]></one:T></one:OE><one:OE creationTime="2026-08-17T14:12:52.000Z" lastModifiedTime="2026-08-17T14:12:52.000Z" objectID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{65}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt" lang="de"><one:T><![CDATA[]]></one:T></one:OE><one:OE creationTime="2026-08-17T14:12:52.000Z" lastModifiedTime="2026-08-17T14:12:53.000Z" objectID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{67}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt" lang="de"><one:T><![CDATA[]]></one:T></one:OE><one:OE creationTime="2026-08-17T12:09:15.000Z" lastModifiedTime="2026-08-17T14:12:55.000Z" objectID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{69}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt" lang="de"><one:T><![CDATA[Ab 14:10 Verzugszinsberechnung IT.I.04 mit Übungsaufgaben]]></one:T></one:OE><one:OE creationTime="2026-08-17T14:12:55.000Z" lastModifiedTime="2026-08-17T14:12:55.000Z" objectID="{9E8A5141-4F7C-4982-B61C-5CFBF227874E}{71}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt" lang="de"><one:T><![CDATA[]]></one:T></one:OE></one:OEChildren></one:Outline></one:Page>

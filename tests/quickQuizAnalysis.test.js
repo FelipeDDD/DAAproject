@@ -10,7 +10,7 @@ import {
   defaultQuizDataDirectory,
   loadQuickQuizAnalysis,
   QUICK_QUIZ_EXCLUDED_CATEGORIES,
-} from '../scripts/quick-quiz-analysis.mjs';
+} from '../tools/quiz-review/scripts/quick-quiz-analysis.mjs';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const quizDataDirectory = defaultQuizDataDirectory(projectRoot);
@@ -63,7 +63,7 @@ test('WiSo exclusion is case-insensitive and viewer exposes both strategies', ()
     { id: 'c-001', category: 'wiso', question: 'also excluded', answers: ['a', 'b', 'c', 'd'] },
   ];
   const analysis = buildQuickQuizAnalysis(questions);
-  const html = fs.readFileSync(path.join(projectRoot, 'tools', 'quick-quiz-analysis', 'index.html'), 'utf8');
+  const html = fs.readFileSync(path.join(projectRoot, 'tools', 'quiz-review', 'scripts', 'quick-quiz-analysis.html'), 'utf8');
 
   assert.equal(analysis.sourceQuestionCount, 3);
   assert.equal(analysis.totalQuestions, 1);
