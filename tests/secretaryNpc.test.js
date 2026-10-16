@@ -19,7 +19,7 @@ test('all four animation rows fit the unevenly spaced PNG without crossing frame
   const texture={has:()=>false,add:(name,_source,x,y,w,h)=>frames.push({name,x,y,w,h})};
   const scene={textures:{get:()=>texture},anims:{exists:()=>false,create:definition=>animations.push(definition)}};
   registerSecretaryFrames(scene);
-  assert.equal(frames.length,16);
+  assert.equal(frames.length,24);
   assert.equal(animations.length,4);
   assert.deepEqual(animations.map(animation=>animation.key),[
     'school-secretary-walk-down','school-secretary-walk-up',
@@ -28,6 +28,12 @@ test('all four animation rows fit the unevenly spaced PNG without crossing frame
   assert.ok(frames.every(frame=>frame.x>=0&&frame.y>=0&&frame.x+frame.w<=width&&frame.y+frame.h<=height));
   assert.ok(frames.every(frame=>frame.w===180));
   assert.deepEqual(frames.filter(frame=>frame.name.endsWith('-0')).map(frame=>frame.h),[284,262,255,262]);
+  for(const direction of ['left','right']){
+    const walk=animations.find(animation=>animation.key===`school-secretary-walk-${direction}`);
+    assert.deepEqual(walk.frames.map(frame=>frame.frame),Array.from({length:8},(_,i)=>`${direction}-${i}`));
+    assert.equal(walk.frames.length/walk.frameRate,24/32,'one cycle matches the authored stride at patrol speed');
+    assert.equal(walk.repeat,-1);
+  }
 });
 
 test('secretary patrol remains in the clear corridor near the locked office entrance',()=>{

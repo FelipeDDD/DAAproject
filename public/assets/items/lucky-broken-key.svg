@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <title>Broken keyboard key</title>
+  <path d="m10 16 39-4 9 34-7 10-39 2-7-9z" fill="#202a36" stroke="#98a8b7" stroke-width="2" stroke-linejoin="round"/>
+  <path d="m10 16 39-4 3 30-40 4z" fill="#546474" stroke="#bccbd5" stroke-width="2" stroke-linejoin="round"/>
+  <path d="m17 21 12-1m-11 5 9-1" stroke="#e0e8ec" stroke-width="3" stroke-linecap="round"/>
+  <path d="m36 14-6 12 10 5-7 13 5 12" fill="none" stroke="#111a24" stroke-width="4" stroke-linejoin="round"/>
+  <path d="m38 15-5 10 10 5-7 13" fill="none" stroke="#c2cdd5" stroke-width="1.5"/>
+  <path d="m51 3 8 2-3 6z" fill="#738596" stroke="#c2cdd5" stroke-width="1"/>
+</svg>

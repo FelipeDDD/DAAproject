@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <title>50 percent discount coupon</title>
+  <path d="M5 12h54v13a7 7 0 0 0 0 14v13H5V39a7 7 0 0 0 0-14z" fill="#dec18a" stroke="#5b4027" stroke-width="3"/>
+  <path d="M12 18h40M12 46h40" stroke="#987447" stroke-width="2"/>
+  <path d="M49 20v24" stroke="#987447" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <text x="29" y="39" text-anchor="middle" fill="#412c23" font-family="Arial,sans-serif" font-size="20" font-weight="bold">50%</text>
+</svg>

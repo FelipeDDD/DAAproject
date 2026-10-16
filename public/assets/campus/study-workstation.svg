@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="384" viewBox="0 0 64 96">
+  <defs>
+    <linearGradient id="wood" x2="1" y2="1"><stop stop-color="#d7b68a"/><stop offset=".5" stop-color="#bd956a"/><stop offset="1" stop-color="#9b7553"/></linearGradient>
+    <linearGradient id="metal" x2="1" y2="0"><stop stop-color="#29343e"/><stop offset=".5" stop-color="#596873"/><stop offset="1" stop-color="#303c46"/></linearGradient>
+    <linearGradient id="screen" x2=".7" y2="1"><stop stop-color="#91c6cf"/><stop offset="1" stop-color="#315c75"/></linearGradient>
+  </defs>
+  <!-- Same 64 x 96 footprint and monitor aperture as the original prototype. -->
+  <rect x="3" y="9" width="58" height="86" rx="4" fill="#19232c" opacity=".18"/>
+  <path d="M4 68h6v26H4zm48 0h6v26h-6z" fill="url(#metal)"/>
+  <path d="M7 88h48v4H7z" fill="#414e59"/>
+  <rect x=".5" y="2.5" width="63" height="85" rx="3" fill="#624c3a" stroke="#3d3630"/>
+  <rect x="1" y="1" width="62" height="81" rx="3" fill="url(#wood)" stroke="#866746"/>
+  <path d="M4 3h56M3 6v71" fill="none" stroke="#eed2a9" stroke-width="1.2"/>
+  <path d="M7 7v67m12-65v65m36-62v61" stroke="#795c41" stroke-opacity=".16" fill="none"/>
+  <path d="M5 83h54" stroke="#b08a62"/>
+  <!-- Compact tower, rotated keyboard and mouse: workstation faces the chair on its right. -->
+  <rect x="7" y="10" width="13" height="34" rx="2" fill="#202b34" stroke="#6b7880" stroke-width=".7"/>
+  <path d="M9 12h8v29H9z" fill="#394852"/>
+  <path d="M11 17h4m-4 3h4m-4 3h4" stroke="#1d2831"/>
+  <circle cx="13" cy="35" r="1.1" fill="#8bd2ad"/>
+  <path d="M37 31h6v12h-6z" fill="url(#metal)"/>
+  <rect x="32" y="40" width="16" height="4" rx="1.5" fill="#35434e"/>
+  <rect x="27" y="8" width="26" height="29" rx="2" fill="#1b2833" stroke="#6c7b84" stroke-width=".8"/>
+  <rect x="30" y="11" width="20" height="23" rx=".8" fill="url(#screen)"/>
+  <path d="M31 12h18v5H31z" fill="#d1e8e8" opacity=".45"/>
+  <path d="M33 21h12m-12 3h9m-9 3h11" stroke="#bddfe3" stroke-width="1.1" opacity=".7"/>
+  <circle cx="49" cy="35.5" r=".6" fill="#80d7b6"/>
+  <rect x="24" y="47" width="32" height="13" rx="2" fill="#384550" stroke="#a0a8a9" stroke-width=".6"/>
+  <path d="M27 50h26m-26 3h26m-22 3h18" stroke="#adb6b7" stroke-width="1.2" stroke-dasharray="2 1"/>
+  <rect x="44" y="63" width="12" height="13" rx="2" fill="#4e6267"/>
+  <rect x="48" y="65" width="5" height="8" rx="2.5" fill="#c5cecb" stroke="#384952" stroke-width=".7"/>
+  <path d="M50.5 65v3" stroke="#65757c" stroke-width=".7"/>
+  <rect x="9" y="63" width="23" height="15" rx="1" fill="#475f71"/>
+  <path d="M12 64h18v12H12z" fill="#e4ddc7"/>
+  <path d="M15 67h12m-12 3h12m-12 3h8" stroke="#a6ab9e" stroke-width=".7"/>
+  <path d="M35 64l-1 12" stroke="#355469" stroke-width="1.5"/>
+</svg>

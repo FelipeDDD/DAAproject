@@ -83,6 +83,17 @@ export default defineSchema({
     recentQuestions:v.array(v.object({questionId:v.string(),seenAt:v.number()})),
     updatedAt:v.number(),
   }).index('by_profile',['profileId']),
+  questionReports: defineTable({
+    profileId:v.id('profiles'),questionId:v.string(),occurrenceId:v.string(),
+    category:v.string(),topic:v.union(v.string(),v.null()),difficulty:v.string(),
+    mode:v.union(v.literal('study'),v.literal('challenge')),
+    reason:v.string(),comment:v.string(),
+    snapshot:v.object({question:v.string(),answers:v.array(v.string()),correctAnswer:v.number(),
+      explanation:v.optional(v.string()),media:v.optional(v.any())}),
+    status:v.union(v.literal('pending'),v.literal('reviewed'),v.literal('dismissed')),
+    createdAt:v.number(),
+  }).index('by_profile_question',['profileId','questionId'])
+    .index('by_profile_createdAt',['profileId','createdAt']).index('by_status_createdAt',['status','createdAt']),
   soloQuizRuns: defineTable({
     profileId:v.optional(v.id('profiles')),playerId:v.optional(v.string()),sessionId:v.string(),mode:v.union(v.literal('study'),v.literal('challenge')),
     characterId:v.optional(v.string()),characterBaseId:v.optional(v.string()),

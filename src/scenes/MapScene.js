@@ -56,8 +56,8 @@ import { DirectorInvestigationController } from '../office2/DirectorInvestigatio
 import { CIGARETTE_PACKS } from '../npc/cigarettePacks.js';
 import '../terminal/terminal.css';
 
-// The main classroom quiz chairs are temporarily unavailable; remove `school`
-// from this set when multiplayer seating should be enabled there again.
+// The main classroom PCs now open the shared PvP lobby from a standing area.
+// Keep their legacy quiz seats inactive; PvP membership does not reserve seats.
 const MULTIPLAYER_QUIZ_DISABLED_MAPS=new Set(['school']);
 
 function readTileset(xml, firstgid) {
@@ -624,7 +624,7 @@ export class MapScene extends Phaser.Scene {
       : wardrobe
       ? '[E] Change appearance'
       : mapTransition
-      ? `[E] Enter ${mapTransition.label}`
+      ? `[E] ${mapTransition.action==='open-pvp-lobby'?'Open':'Enter'} ${mapTransition.label}`
       : nearby
       ? [nearby.locked ? 'Door locked' : destination ? 'Press E to exit' : action,this.doorMessage]
         .filter(Boolean).join(' · ')

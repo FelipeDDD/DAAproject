@@ -3237,7 +3237,7 @@
                  "y":591
                 }, 
                 {
-                 "gid":1592,
+                 "gid":1638,
                  "height":81.3333333333335,
                  "id":257,
                  "name":"Table_office-193",
@@ -3286,7 +3286,7 @@
                  "y":913.333333333333
                 }, 
                 {
-                 "gid":1589,
+                 "gid":1641,
                  "height":32,
                  "id":259,
                  "name":"OfficeChair-195",
@@ -3315,7 +3315,7 @@
                  "y":595.333333333333
                 }, 
                 {
-                 "gid":1589,
+                 "gid":1641,
                  "height":32,
                  "id":260,
                  "name":"OfficeChair-196",
@@ -3344,7 +3344,7 @@
                  "y":655.333333333333
                 }, 
                 {
-                 "gid":1589,
+                 "gid":1641,
                  "height":32,
                  "id":261,
                  "name":"OfficeChair-197",
@@ -3373,7 +3373,7 @@
                  "y":848.5
                 }, 
                 {
-                 "gid":1589,
+                 "gid":1641,
                  "height":32,
                  "id":262,
                  "name":"OfficeChair-198",
@@ -3402,7 +3402,7 @@
                  "y":912
                 }, 
                 {
-                 "gid":1589,
+                 "gid":1641,
                  "height":32,
                  "id":263,
                  "name":"OfficeChair-199",
@@ -3431,7 +3431,7 @@
                  "y":903.5
                 }, 
                 {
-                 "gid":1589,
+                 "gid":1641,
                  "height":32,
                  "id":264,
                  "name":"OfficeChair-200",
@@ -3460,7 +3460,7 @@
                  "y":848.666666666667
                 }, 
                 {
-                 "gid":1589,
+                 "gid":1641,
                  "height":32,
                  "id":265,
                  "name":"OfficeChair-201",
@@ -3489,7 +3489,7 @@
                  "y":835.166666666667
                 }, 
                 {
-                 "gid":1589,
+                 "gid":1641,
                  "height":32,
                  "id":266,
                  "name":"OfficeChair-202",
@@ -3518,7 +3518,7 @@
                  "y":915.166666666667
                 }, 
                 {
-                 "gid":1589,
+                 "gid":1641,
                  "height":32,
                  "id":267,
                  "name":"OfficeChair-203",
@@ -3547,7 +3547,7 @@
                  "y":658
                 }, 
                 {
-                 "gid":1589,
+                 "gid":1641,
                  "height":32,
                  "id":268,
                  "name":"OfficeChair-204",
@@ -3576,7 +3576,7 @@
                  "y":592.5
                 }, 
                 {
-                 "gid":1589,
+                 "gid":1641,
                  "height":32,
                  "id":269,
                  "name":"quizSeat-sarina",
@@ -3620,7 +3620,7 @@
                  "y":591.5
                 }, 
                 {
-                 "gid":1589,
+                 "gid":1641,
                  "height":32,
                  "id":270,
                  "name":"quizSeat-felipe",
@@ -3664,7 +3664,7 @@
                  "y":653
                 }, 
                 {
-                 "gid":2147485237,
+                 "gid":2147485289,
                  "height":32,
                  "id":271,
                  "name":"OfficeChair-207",
@@ -3693,7 +3693,7 @@
                  "y":653
                 }, 
                 {
-                 "gid":2147485237,
+                 "gid":2147485289,
                  "height":32,
                  "id":272,
                  "name":"OfficeChair-208",
@@ -3722,7 +3722,7 @@
                  "y":593.5
                 }, 
                 {
-                 "gid":2147485237,
+                 "gid":2147485289,
                  "height":32,
                  "id":273,
                  "name":"quizSeat-michael",
@@ -3766,7 +3766,7 @@
                  "y":592
                 }, 
                 {
-                 "gid":2147485237,
+                 "gid":2147485289,
                  "height":32,
                  "id":274,
                  "name":"quizSeat-yassin",
@@ -3810,7 +3810,7 @@
                  "y":656
                 }, 
                 {
-                 "gid":2147485237,
+                 "gid":2147485289,
                  "height":32,
                  "id":275,
                  "name":"OfficeChair-212",
@@ -3839,7 +3839,7 @@
                  "y":592
                 }, 
                 {
-                 "gid":2147485237,
+                 "gid":2147485289,
                  "height":32,
                  "id":276,
                  "name":"OfficeChair-213",
@@ -3868,7 +3868,7 @@
                  "y":651.5
                 }, 
                 {
-                 "gid":2147485237,
+                 "gid":2147485289,
                  "height":32,
                  "id":277,
                  "name":"OfficeChair-214",
@@ -3897,7 +3897,7 @@
                  "y":844
                 }, 
                 {
-                 "gid":2147485237,
+                 "gid":2147485289,
                  "height":32,
                  "id":278,
                  "name":"OfficeChair-215",
@@ -3926,7 +3926,7 @@
                  "y":907.5
                 }, 
                 {
-                 "gid":2147485237,
+                 "gid":2147485289,
                  "height":32,
                  "id":279,
                  "name":"OfficeChair-216",
@@ -3955,7 +3955,7 @@
                  "y":840
                 }, 
                 {
-                 "gid":2147485237,
+                 "gid":2147485289,
                  "height":32,
                  "id":280,
                  "name":"OfficeChair-217",
@@ -3984,7 +3984,7 @@
                  "y":892
                 }, 
                 {
-                 "gid":2147485237,
+                 "gid":2147485289,
                  "height":32,
                  "id":281,
                  "name":"OfficeChair-218",
@@ -4013,7 +4013,7 @@
                  "y":850.5
                 }, 
                 {
-                 "gid":2147485237,
+                 "gid":2147485289,
                  "height":32,
                  "id":282,
                  "name":"OfficeChair-219",
@@ -4042,7 +4042,7 @@
                  "y":912
                 }, 
                 {
-                 "gid":1593,
+                 "gid":1640,
                  "height":93,
                  "id":283,
                  "name":"TableCoffe-236",
@@ -4100,7 +4100,7 @@
                  "y":927
                 }, 
                 {
-                 "gid":2147485238,
+                 "gid":2147485287,
                  "height":33,
                  "id":287,
                  "name":"chairLuxury-241",
@@ -6155,6 +6155,17 @@
          "name":"Notes",
          "objects":[
                 {
+                 "height":192,
+                 "id":600,
+                 "name":"PVP-LOBBY-INTERACTION",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":136,
+                 "x":924,
+                 "y":512
+                },
+                {
                  "height":0,
                  "id":190,
                  "name":"Door",
@@ -7489,7 +7500,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":600,
+ "nextobjectid":601,
  "orientation":"orthogonal",
  "properties":[
         {
@@ -7556,6 +7567,22 @@
         {
          "firstgid":1637,
          "source":"..\/tilessets\/school\/modern-coffee-cups.tsx"
+        },
+        {
+         "firstgid":1638,
+         "source":"..\/campus\/study-workstation.tsx"
+        },
+        {
+         "firstgid":1639,
+         "source":"..\/campus\/study-chair.tsx"
+        },
+        {
+         "firstgid":1640,
+         "source":"..\/campus\/office-coffee-table.tsx"
+        },
+        {
+         "firstgid":1641,
+         "source":"..\/campus\/office-chair-dark.tsx"
         }],
  "tilewidth":32,
  "type":"map",

@@ -6,6 +6,10 @@ export const SMOOTH_DECORATIVE_TILESETS = new Set([
   'modern-desk-plant',
   'modern-sandwiches',
   'modern-coffee-cups',
+  'study-workstation',
+  'study-chair',
+  'office-chair-dark',
+  'office-coffee-table',
 ]);
 
 export function applySmoothDecorativeTextureFilters({ tilesets, textureManager, textureKeyPrefix, linearFilter }) {

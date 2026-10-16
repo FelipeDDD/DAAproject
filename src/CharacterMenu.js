@@ -6,6 +6,8 @@ import { MAX_PLAYER_CAPACITY } from './multiplayer/playerCapacity.js';
 import { normalizeEquippedSkin,selectPreviewSkin } from './characterAppearance.js';
 
 export const createCharacterSessionId=createSessionId;
+// Presentation only: choosing a base still restores its actual equipped skin.
+const SELECTION_PREVIEW_STYLE='level3Preview';
 
 export class CharacterMenu {
   constructor(presence,onChoose) {
@@ -73,7 +75,7 @@ export class CharacterMenu {
   }
   renderPreviews(){
     for(const {c,image,previewStyle}of this.cards){
-      const visual=characterVisual(c,previewStyle??this.style);
+      const visual=characterVisual(c,previewStyle??SELECTION_PREVIEW_STYLE);
       image.src=`${import.meta.env.BASE_URL}${visual.previewAsset}`;
       image.dataset.style=visual.style;
       if(visual.sourceGrid){

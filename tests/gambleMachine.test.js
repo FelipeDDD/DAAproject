@@ -231,3 +231,38 @@ test('won packs use the existing item card after animation, without replaying du
   assert.equal(presentation.active,false);
   panel.destroy();assert.equal(presentation.root.removed,true);
 });
+
+for(const {itemId,label,file,draws} of [
+  {itemId:'special_exam_coupon',label:'50% discount coupon for a prostate exam',file:'prostate-exam',draws:[0,.5,.999]},
+  {itemId:'special_paperclip',label:'A strong papperclip',file:'papperclip',draws:[0,.3,.6,.999]},
+  {itemId:'special_floppy_disk',label:'A suspicious floppy disk',file:'floppydisk',draws:[0,.3,.6,.999]},
+  {itemId:'special_broken_key',label:'One Broken ESCape',file:'esc-escape',draws:[0,.3,.6,.999]},
+])test(`${itemId} randomly presents each configured photo after animation without replaying duplicate receipts`,async()=>{
+  const {menu:panel,doc}=menuFixture(GambleMachinePanel);let finishAnimation;
+  const outcome={type:'item',itemId,label};
+  panel.spinRequest=async()=>({rewardId:'special',categoryId:'special',coins:25,outcome});
+  panel.animateWheel=()=>new Promise(resolve=>finishAnimation=resolve);
+  panel.open();panel.setBalance({coins:30,available:true});
+  for(const [index,random] of draws.entries()){
+    panel.random=()=>random;
+    const pending=panel.spin();await Promise.resolve();
+    assert.equal(panel.itemPresentation.active,false);
+    finishAnimation();assert.equal(await pending,true);
+    const presentation=panel.itemPresentation;
+    assert.equal(presentation.active,true);assert.equal(panel.active,true);
+    assert.equal(presentation.root.dataset.itemId,outcome.itemId);
+    assert.ok(presentation.root.querySelector('img').src.endsWith(`/assets/items/${file}${index+1}.png`));
+    assert.equal(presentation.root.querySelector('h2').textContent,label);
+    assert.ok(panel.resultMessage.textContent.includes(label.toUpperCase()));
+    assert.ok(readFileSync(new URL(`../assets-drafts/${file}${index+1}.png`,import.meta.url))
+      .equals(readFileSync(new URL(`../public/assets/items/${file}${index+1}.png`,import.meta.url))));
+    assert.equal(await panel.spin(),false,'cannot spin over an open item card');
+    presentation.state.unlock();
+    panel.handleKey({key:'Enter',type:'keydown',preventDefault(){},stopImmediatePropagation(){}});
+    assert.equal(presentation.active,false);assert.equal(doc.activeElement,panel.spinButton);
+  }
+  panel.spinRequest=async()=>({rewardId:'special',categoryId:'special',coins:25,outcome,duplicate:true});
+  const replay=panel.spin();await Promise.resolve();finishAnimation();await replay;
+  assert.equal(panel.itemPresentation.active,false);
+  panel.destroy();
+});

@@ -9,16 +9,19 @@ const FRAME_X=320,FRAME_STEP_X=212;
 // Rows have different padding: one uniform spritesheet grid would cut feet
 // from the first row and include pixels from the next pose in another.
 const FRAME_ROWS=[
-  {direction:'down',y:0,height:284},
-  {direction:'up',y:284,height:262},
-  {direction:'left',y:546,height:255},
-  {direction:'right',y:801,height:262},
+  {direction:'down',y:0,height:284,count:4},
+  {direction:'up',y:284,height:262,count:4},
+  {direction:'left',y:546,height:255,count:8},
+  {direction:'right',y:801,height:262,count:8},
 ];
 const PATROL_HALF_WIDTH=74;
 const PATROL_Y_OFFSET=24;
 const PATROL_SPEED=32;
 const END_PAUSE_MS=300;
 const DISPLAY_SCALE=.25;
+// The planted foot travels 48 source pixels over half of the eight-frame
+// cycle. Match the animation to the existing movement speed, avoiding skating.
+const WALK_CYCLE_DISTANCE=96*DISPLAY_SCALE;
 
 export function secretaryPatrolArea(transition){
   return {left:transition.x-PATROL_HALF_WIDTH,right:transition.x+PATROL_HALF_WIDTH,
@@ -27,15 +30,15 @@ export function secretaryPatrolArea(transition){
 
 export function registerSecretaryFrames(scene){
   const texture=scene.textures.get(TEXTURE);
-  for(const {direction,y,height} of FRAME_ROWS){
-    for(let col=0;col<4;col++){
+  for(const {direction,y,height,count} of FRAME_ROWS){
+    for(let col=0;col<count;col++){
       const frame=`${direction}-${col}`;
       if(!texture.has(frame))texture.add(frame,0,FRAME_X+col*FRAME_STEP_X,y,FRAME_WIDTH,height);
     }
     const key=`school-secretary-walk-${direction}`;
     if(!scene.anims.exists(key))scene.anims.create({
-      key,frames:Array.from({length:4},(_,col)=>({key:TEXTURE,frame:`${direction}-${col}` })),
-      frameRate:7,repeat:-1,
+      key,frames:Array.from({length:count},(_,col)=>({key:TEXTURE,frame:`${direction}-${col}` })),
+      frameRate:count===8?count*PATROL_SPEED/WALK_CYCLE_DISTANCE:7,repeat:-1,
     });
   }
 }

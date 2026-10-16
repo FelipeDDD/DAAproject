@@ -2,6 +2,7 @@ import { TERMINAL_ANIMATION as timing } from './config.js';
 import { getMonitorScreenBounds } from '../maps/terminalComputers.js';
 import { TerminalStudyBridge } from './TerminalStudyBridge.js';
 import { TerminalChallengeBridge } from './TerminalChallengeBridge.js';
+import { handleTerminalQuestionReport } from './TerminalQuestionReportBridge.js';
 
 export class TerminalOverlayController {
   constructor(scene) {
@@ -27,6 +28,9 @@ export class TerminalOverlayController {
     this.frame.src = `${import.meta.env?.BASE_URL ?? '/'}prototype-ui/computer-ui-preview.html?embedded=1`;
     document.body.append(this.root);
     this.onMessage = event => {
+      if(event.origin===location.origin&&event.source===this.frame.contentWindow&&event.data?.type==='daa-terminal-question-report'){
+        void handleTerminalQuestionReport({event,frame:this.frame,controller:this.scene.soloStudy});return;
+      }
       if (event.origin === location.origin && event.source === this.frame.contentWindow &&
         event.data?.type === 'daa-terminal-database-request') {
         void this.databaseBridge().then(bridge=>bridge.handle(event));return;

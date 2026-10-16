@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <title>Suspicious floppy disk</title>
+  <path d="M10 5h38l9 9v44H7V8z" fill="#425c83" stroke="#172839" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M18 6h27v21H18z" fill="#bac8d0" stroke="#24384b" stroke-width="2"/>
+  <path d="M34 9h7v14h-7z" fill="#283c51"/>
+  <path d="M16 35h32v22H16z" fill="#e8dfc8" stroke="#253b52" stroke-width="2"/>
+  <path d="M20 35h24v6H20z" fill="#b56b60"/>
+  <path d="M21 46h21m-21 5h14" stroke="#9f998b" stroke-width="2"/>
+  <path d="M11 49v5m42-5v5" stroke="#1f344b" stroke-width="3"/>
+</svg>

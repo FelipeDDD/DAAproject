@@ -1,5 +1,23 @@
 # Project context
 
+## Classroom PvP entrance (2026-10-16)
+
+- The former floor portal is replaced by the `Notes/PVP-LOBBY-INTERACTION` rectangle in `classroom.tmj`, surrounding the four former multiplayer PCs (x 924, y 512, width 136, height 192). Edit that rectangle in Tiled to adjust reach. The existing named interaction-area reader supplies the entrance; the player's feet must be inside it and E opens the existing `PvpLobbyController`. No automatic entry, seating, chair ownership or additional backend traffic. Multiple players may open their own menu at the same spot; create/browse/join, host authority and match capacity remain unchanged.
+- The old classroom quiz seats remain inactive. `SchoolScene` registers the new area, and `nearbyMapTransition` supports an optional rectangle while preserving circular travel triggers. There is no old portal graphic or hardcoded coordinate fallback.
+- All 24 black classroom chairs now use `public/assets/campus/office-chair-dark.svg` / `.tsx`, a graphite variation of the Study chair. Existing positions, dimensions, flip flags, collisions and seat metadata are preserved. The red Study chair stays red.
+
+## Terminal question feedback (2026-10-16)
+
+- Study and IT Challenge share question/answer sizing and metadata typography in `prototype-ui/terminal-questions.css`. No-media questions use one centered layout column; narrower answer containers switch to one column even when the viewport itself is wide.
+- Both modes provide **Report question**, with reason and optional comment (1000 characters). `QuestionReportDialog` isolates keyboard shortcuts; Challenge timers continue, and the report retains the question originally selected even if the timer advances. The existing main-game session supplies the snapshot rather than accepting question text from the iframe.
+- Explicit submission calls `questionReports.submit` once, validating live player/session, profile and the owning Study/Challenge run. `questionReports` preserves canonical template ID, occurrence ID, displayed question/answer order/media/explanation, authoritative answer index, category/topic/difficulty, reporter profile, mode, reason, comment and creation time. Reports start `pending`. Same profile/question text is deduplicated while pending; separate reports have a five-second submission limit. No polling, subscriptions or cron jobs.
+- Review in Convex Dashboard → Data → `questionReports`, filter `status: pending`, then set `reviewed` or `dismissed` manually. Use `questionId` to locate the source CSV/template; reports survive source edits and run cleanup. No public review/read/update API was added. Export via the dashboard when needed. Each local/cloud Convex deployment keeps its own queue; reports follow the backend the game is connected to. Deploy the updated schema/functions to that backend before submissions can succeed. CSVs and generated questions are never modified by submitting a report.
+
+## Payload-only PvP menu (2026-10-16)
+
+- `PvpLobbyController` offers only **Create Payload Lobby** in DEV and test builds. Creation always sends `mode: 'payload'` explicitly; the initial waiting screen also says Payload. The lobby browser hides legacy TDM matches.
+- TDM's internal definitions/schema and existing code-based joins remain compatible with legacy matches. Do not delete shared PvP scene, combat, realtime, settings, Retry or teleport code: Payload uses that infrastructure. This menu change does not alter Payload objectives, rules, map or authority.
+
 ## Payload cart presentation (2026-10-05)
 
 - The selected theme now displays `equipment-cart-pixel-v3.png`, the approved transparent **128 x 64** single-frame blue-monitor sprite, at scale 1. Speech is configured independently from frame animation; the older four-frame sheet remains available but is not selected.

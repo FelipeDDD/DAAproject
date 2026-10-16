@@ -4,6 +4,7 @@ import '../src/calculator/CalculatorWidget.css';
 import { TerminalQuestionDatabasePage } from './TerminalQuestionDatabasePage.js';
 import { TerminalLeaderboardPage } from './TerminalLeaderboardPage.js';
 import { terminalChallengeShortcut } from '../src/terminal/terminalChallengeShortcuts.js';
+import { QuestionReportDialog } from './QuestionReportDialog.js';
 
 const byId=id=>document.getElementById(id);
 const clock=byId('terminal-clock');
@@ -113,6 +114,7 @@ function challengeClock(milliseconds,{secondsOnly=false}={}){
 class TerminalPageController {
   constructor(){
     this.page='home';this.state=null;this.challengeState=null;this.transitionTimer=null;this.challengeQuestionRenderKey='';
+    this.questionReports=new QuestionReportDialog({embedded});
     this.selection={category:null,topic:null,difficulty:null};
     this.calculator=new CalculatorWidget({
       mount:byId('study-question-tools'),scene:null,documentRef:document,windowRef:window,
@@ -252,6 +254,7 @@ class TerminalPageController {
 
   renderQuestion(){
     const {question,progress,selectedAnswer,confirmedAnswer}=this.state;
+    this.questionReports.update('study',question);
     studyQuestionTags.replaceChildren(...[question.category,question.topic,question.difficulty]
       .filter(Boolean).map(value=>{const tag=document.createElement('span');tag.textContent=value;return tag;}));
     studyQuestionProgress.textContent=`${progress.current} / ${progress.total}`;
@@ -314,6 +317,7 @@ class TerminalPageController {
   renderChallengeQuestion(){
     const state=this.challengeState;if(!state?.question)return;
     const {question,timers,selectedAnswer,confirmedAnswer,resolving}=state;
+    this.questionReports.update('challenge',question);
     this.renderChallengeDashboard();
     challengeQuestionTags.replaceChildren(...[question.category,question.topic,question.difficulty]
       .filter(Boolean).map(value=>{const tag=document.createElement('span');tag.textContent=value;

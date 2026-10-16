@@ -3,7 +3,7 @@ import { WorldPrompt } from '../ui/WorldPrompt.js';
 import { ROULETTE_COST,ROULETTE_REWARDS } from '../economy/config.js';
 import { getCurrentCurrencyClient } from '../economy/CurrencyClient.js';
 import { GAMBLE_MACHINE } from './config.js';
-import { GAMBLE_MACHINE_VISUAL,GAMBLE_REWARD_LABELS,GAMBLE_UI_TEXT } from './visualConfig.js';
+import { GAMBLE_MACHINE_VISUAL,GAMBLE_REWARD_LABELS,GAMBLE_UI_TEXT,GAMBLE_REWARD_PRESENTATION_IMAGES } from './visualConfig.js';
 import { machineDisplaySize,nearMachineBase } from './placement.js';
 import { COIN_BRACKETS,CIGARETTE_REWARDS,CIGARETTE_VOUCHER,RARE_CIGARETTE,SPECIAL_REWARDS,rouletteCategoryId } from './rewardCatalog.js';
 import { characterById } from '../characters.js';
@@ -370,9 +370,14 @@ export class GambleMachinePanel extends GameMenuModal {
       if(Number.isSafeInteger(result.coins))this.balanceState={coins:result.coins,available:true};
       this.spinning=false;this.closeActionButton.disabled=false;
       this.setBalance(this.balanceState);
-      const obtainedPack=!result.duplicate&&[...CIGARETTE_REWARDS,RARE_CIGARETTE,CIGARETTE_VOUCHER]
+      const obtainedItem=!result.duplicate&&[...CIGARETTE_REWARDS,RARE_CIGARETTE,CIGARETTE_VOUCHER,
+        ...SPECIAL_REWARDS.filter(item=>GAMBLE_REWARD_PRESENTATION_IMAGES[item.itemId]?.length)]
         .find(item=>item.itemId===result.outcome?.itemId);
-      if(obtainedPack&&this.active&&!this.destroyed)this.itemPresentation.show(obtainedPack,{
+      const images=GAMBLE_REWARD_PRESENTATION_IMAGES[obtainedItem?.itemId];
+      const presentationItem=images?.length
+        ? {...obtainedItem,presentationImage:images[Math.floor(this.random()*images.length)]}
+        : obtainedItem;
+      if(presentationItem&&this.active&&!this.destroyed)this.itemPresentation.show(presentationItem,{
         source:'roulette',mount:this.root,onReturn:()=>{
           if(this.active)(this.spinButton.disabled?this.closeActionButton:this.spinButton).focus({preventScroll:true});
         },

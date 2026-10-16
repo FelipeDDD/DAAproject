@@ -131,9 +131,18 @@
 .gamble-details.is-featured .gamble-preview {width:100px;margin:auto;}
 .gamble-details.is-featured .gamble-preview__art {height:125px;}
 .gamble-preview--skin {width:150px;margin:auto;}
-.gamble-preview--skin .gamble-preview__art {height:145px;border-bottom:1px solid #cdad6460;background:radial-gradient(ellipse at bottom,#9f54b635,transparent 60%);}
-.gamble-preview--skin img {image-rendering:pixelated;filter:drop-shadow(0 0 8px #dba94e35);}
-.gamble-details.is-skin-preview {grid-template-rows:minmax(0,1fr);}
+.gamble-preview--skin .gamble-preview__art {height:145px;}
+.gamble-machine-modal .gamble-preview--skin img {
+  image-rendering:pixelated;mix-blend-mode:normal;
+  filter:drop-shadow(0 5px 4px #08071190) drop-shadow(0 0 12px #b8a0df28);
+}
+.gamble-details.is-skin-preview {
+  grid-template-rows:minmax(0,1fr);isolation:isolate;border-color:#9d819c80;
+  background:radial-gradient(ellipse at 50% 42%,#8467a340 0%,#59446f24 38%,transparent 72%),
+    radial-gradient(ellipse at 50% 0%,#dfc09b14,transparent 55%),
+    linear-gradient(145deg,#211a30,#15121f 62%,#211621);
+  box-shadow:inset 0 1px 0 #eee0ff0d,inset 0 0 32px #08061050;
+}
 .gamble-details.is-skin-preview .gamble-details__content {display:grid;place-items:center;overflow:hidden;scrollbar-gutter:auto;margin:0;padding:0;}
 .gamble-details.is-skin-preview .gamble-preview--skin {width:min(180px,100%);height:min(180px,100%);min-height:0;margin:0;}
 .gamble-details.is-skin-preview .gamble-preview__art {height:100%;min-height:0;}

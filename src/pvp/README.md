@@ -303,8 +303,10 @@ Focused feature tests: `node --test tests/pvpRetry.test.js`.
 ## Payload MVP (2026-10-04)
 
 Create **Payload Lobby** in the existing DEV PvP menu; join by the same code and
-start with at least one player on each team. **Create TDM Lobby** keeps the existing
-mode. Start local Convex before restarting the relay; reload both browsers.
+start with at least one player on each team. Payload is the only mode offered for
+creation and lobby browsing (also in test builds); creation explicitly sends
+`mode: 'payload'`. TDM definitions remain for legacy compatibility and shared PvP
+infrastructure. Start local Convex before restarting the relay; reload both browsers.
 
 `payload/config.js` centralizes speed 10 px/s, radius 64 px, 100 ms objective
 snapshots and 3s fixed respawn. Match Settings controls the shared match duration,

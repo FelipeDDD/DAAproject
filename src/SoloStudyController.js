@@ -298,6 +298,20 @@ export class SoloStudyController {
     };
   }
 
+  async reportTerminalQuestion({mode,questionId,reason,comment}){
+    if(!this.session||this.session.mode!==mode||!this.runId)throw new Error('This quiz session is no longer available.');
+    const questionIndex=this.session.questions.findIndex(question=>question.id===questionId);
+    const question=this.session.questions[questionIndex];
+    if(!question)throw new Error('Question not found in this session.');
+    const {playerId,sessionId}=this.presence.identity;
+    return this.terminalMutation(this.presence.api.questionReports.submit,{
+      playerId,sessionId,mode,runId:this.runId,questionId,questionIndex,reason,comment,
+      snapshot:{question:question.question,answers:[...question.answers],
+        ...(question.explanation?{explanation:question.explanation}:{}),
+        ...(question.media?{media:question.media}:{})},
+    });
+  }
+
   subscribeTerminalChallenge(listener){
     this.terminalChallengeListeners.add(listener);
     return ()=>this.terminalChallengeListeners.delete(listener);

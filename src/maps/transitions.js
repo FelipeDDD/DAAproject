@@ -1,5 +1,6 @@
 import { objectsIn,propertiesOf } from './tiledObjects.js';
 import { CHARACTER_ITEM_IDS } from '../inventory/characterItems.js';
+import { pointInsideInteractionArea } from './namedInteractionAreas.js';
 
 export function isMapTransitionLocked(transition,items=[]){
   if(!transition?.locked)return false;
@@ -31,6 +32,8 @@ export function nearbyMapTransition(transitions,body){
   const y=body.center?.y??body.y+body.height/2;
   return transitions
     .map(item=>({...item,distance:Math.hypot(item.x-x,item.y-y)}))
-    .filter(item=>item.distance<=item.radius)
+    .filter(item=>item.interactionArea
+      ? pointInsideInteractionArea(item.interactionArea,x,body.bottom??body.y+body.height)
+      : item.distance<=item.radius)
     .sort((a,b)=>a.distance-b.distance)[0];
 }

@@ -275,17 +275,33 @@ test('test build exposes playable PvP without DEV tools or the stored developmen
   assert.equal(pvpLobbyAvailable({DEV:false}),false);
   assert.equal(pvpEnabled({DEV:false},{getItem:()=> 'true'}),false);
   const f=ui(t);
-  for(const mode of ['tdm','payload']){
-    const lobby=new PvpLobbyController(f.scene,{env,storage,documentRef:f.documentRef});
-    assert.ok(lobby.buttons.some(button=>button.textContent==='Create TDM Lobby'));
-    assert.ok(lobby.buttons.some(button=>button.textContent==='Create Payload Lobby'));
-    assert.ok(lobby.buttons.some(button=>button.textContent==='Join PvP by Code'));
-    await lobby.acquire('create',undefined,mode);
-    assert.equal(f.calls.at(-1).fn,'create');assert.equal(f.calls.at(-1).args.mode??'tdm',mode);
-    lobby.close();
-  }
+  const lobby=new PvpLobbyController(f.scene,{env,storage,documentRef:f.documentRef});
+  assert.equal(lobby.buttons.some(button=>button.textContent==='Create TDM Lobby'),false);
+  const create=lobby.buttons.find(button=>button.textContent==='Create Payload Lobby');
+  assert.ok(create);
+  assert.ok(lobby.buttons.some(button=>button.textContent==='Join PvP by Code'));
+  create.events.click();await Promise.resolve();
+  assert.equal(f.calls.at(-1).fn,'create');assert.equal(f.calls.at(-1).args.mode,'payload');
+  assert.match(lobby.panel.children[1].textContent,/Payload/);lobby.close();
   const hud=new PvpHud({documentRef:f.documentRef,dev:env.DEV,onLeave(){}});
   assert.equal(hud.devPanel,undefined);assert.equal(hud.end,undefined);hud.destroy();
+});
+
+test('lobby browser lists only Payload and joins by ID without changing the match mode',async t=>{
+  const f=ui(t);f.presence.api.pvpMatches.available='available';f.presence.api.pvpMatches.joinById='joinById';
+  const lobby=new PvpLobbyController(f.scene,{env:{DEV:false,VITE_PVP_TEST_BUILD:'true'},documentRef:f.documentRef});
+  t.after(()=>lobby.close());lobby.browseExisting();
+  const legacy={matchId:'old-tdm',mode:'tdm',hostName:'Old host',participantCount:1,maxParticipants:8};
+  const payload={matchId:'payload-lobby',mode:'payload',hostName:'Payload host',participantCount:2,maxParticipants:8};
+  f.callbacks[0]([legacy,payload]);
+  assert.equal(lobby.buttons.filter(button=>button.textContent.startsWith('Join ·')).length,1);
+  assert.doesNotMatch(lobby.panel.textContent,/Team Deathmatch|Old host/);
+  f.callbacks[0]([legacy]);assert.match(lobby.status.textContent,/No open lobbies/);
+  f.callbacks[0]([legacy,payload]);
+  lobby.buttons.find(button=>button.textContent.startsWith('Join · Payload')).events.click();await Promise.resolve();
+  assert.deepEqual(f.calls[0],{fn:'joinById',args:{playerId:'a',sessionId:'sa',matchId:'payload-lobby'}});
+  assert.equal(f.subscriptions(),1,'browser subscription is replaced by the joined match subscription');
+  lobby.close();assert.equal(f.subscriptions(),0);
 });
 
 test('test build PvP toolbar entrance opens the lobby and is removed with its scene',t=>{
@@ -303,6 +319,7 @@ test('test build PvP toolbar entrance opens the lobby and is removed with its sc
 test('lobby UI creates once, displays four fixed slots per team, keeps guest Start hidden and transitions through one match ID',async t=>{
   const f=ui(t);setPvpEnabled(true);const lobby=new PvpLobbyController(f.scene,{env:{DEV:true},documentRef:f.documentRef});
   const pending=lobby.acquire('create');await lobby.acquire('create');await pending;assert.equal(f.calls.length,1);
+  assert.equal(f.calls[0].args.mode,'payload');
   f.callbacks[0](f.state);await Promise.resolve();assert.equal(lobby.teams.children.length,2);assert.equal(lobby.startButton.hidden,false);
   assert.equal(lobby.teamSlots[0][0].children[0].textContent,'Player 0');
   assert.equal(lobby.teamSlots[0][0].children[1].textContent,'HOST');

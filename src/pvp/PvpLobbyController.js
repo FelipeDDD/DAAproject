@@ -24,10 +24,9 @@ export class PvpLobbyController extends ArenaEntryController {
   }
   renderChoices(){
     this.stopBrowsing();
-    this.header('PVP ARENA',`Choose a mode · max ${PVP_RULES.teamSize} per team (${PVP_LOBBY_DISPLAY_SLOTS} slots shown).`);
+    this.header('PVP ARENA',`Payload · max ${PVP_RULES.teamSize} per team (${PVP_LOBBY_DISPLAY_SLOTS} slots shown).`);
     if(pvpEnabled(this.env,this.storage)){
-      this.button('Create TDM Lobby',()=>void this.acquire('create',undefined,'tdm'),{kind:'primary'});
-      this.button('Create Payload Lobby',()=>void this.acquire('create',undefined,'payload'),{kind:'primary'});
+      this.button('Create Payload Lobby',()=>void this.acquire('create'),{kind:'primary'});
     }
     this.button('Enter Existing Lobby',()=>this.browseExisting(),{kind:'secondary'});
     this.button('Join PvP by Code',()=>this.renderJoin());
@@ -49,6 +48,7 @@ export class PvpLobbyController extends ArenaEntryController {
       });
   }
   renderAvailableLobbies(lobbies){
+    lobbies=lobbies.filter(lobby=>lobby.mode==='payload');
     const signature=JSON.stringify(lobbies.map(({matchId,mode,hostName,participantCount,maxParticipants})=>
       [matchId,mode,hostName,participantCount,maxParticipants]));
     if(signature===this.availableSignature)return;
@@ -56,7 +56,7 @@ export class PvpLobbyController extends ArenaEntryController {
     this.header('ENTER EXISTING LOBBY','Choose an open lobby to join automatically.');
     for(const lobby of lobbies){
       const label=`Join · ${gameMode(lobby.mode).label} · ${lobby.hostName} · ${lobby.participantCount}/${lobby.maxParticipants}`;
-      this.button(label,()=>void this.acquire('joinById',undefined,'tdm',lobby.matchId),{kind:'primary'});
+      this.button(label,()=>void this.acquire('joinById',undefined,lobby.matchId),{kind:'primary'});
     }
     this.createStatus(lobbies.length?'Select a lobby to join.':'No open lobbies are available right now.');
     this.button('Back',()=>this.renderChoices(),{kind:'quiet'});
@@ -74,14 +74,14 @@ export class PvpLobbyController extends ArenaEntryController {
     this.panel.children[0].textContent='JOIN PVP LOBBY';
     this.panel.children[1].textContent='Enter the code shared by the host.';
   }
-  async acquire(action,rawCode,mode='tdm',matchId=null){
+  async acquire(action,rawCode,matchId=null){
     if(!this.active||this.busy||(action==='create'&&!pvpEnabled(this.env,this.storage)))return;
     const code=normalizeArenaCode(rawCode);
     if(action==='join'&&!validArenaCode(code)){this.showStatus('Enter a valid six-character PvP code.');return;}
     this.stopBrowsing();
     const generation=this.generation,p=this.scene.presence;this.setBusy(true);this.showStatus('Connecting...');
     try{
-      const args={...this.identity,...(action==='join'?{code}:action==='joinById'?{matchId}:mode==='tdm'?{}:{mode})};
+      const args={...this.identity,...(action==='join'?{code}:action==='joinById'?{matchId}:{mode:'payload'})};
       const result=await p.client.mutation(p.api.pvpMatches[action],args);
       if(!this.active||generation!==this.generation){
         void p.client.mutation(p.api.pvpMatches.leave,{...this.identity,matchId:result.matchId,round:result.round??0}).catch(()=>{});return;
@@ -93,7 +93,7 @@ export class PvpLobbyController extends ArenaEntryController {
     finally{if(this.active&&generation===this.generation)this.setBusy(false);}
   }
   buildLobby(code){
-    this.header('PVP LOBBY',`Team Deathmatch · max ${PVP_RULES.teamSize} per team (${PVP_LOBBY_DISPLAY_SLOTS} slots shown).`);
+    this.header('PVP LOBBY',`Payload · max ${PVP_RULES.teamSize} per team (${PVP_LOBBY_DISPLAY_SLOTS} slots shown).`);
     this.copyInput=this.node('input','');this.copyInput.readOnly=true;this.copyInput.value=code;
     this.copyInput.className='arena-lobby-code';this.copyInput.setAttribute('aria-label','PvP lobby code');this.panel.append(this.copyInput);
     this.button('Copy Code',()=>void this.copyCode());

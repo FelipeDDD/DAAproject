@@ -36,6 +36,7 @@ import type * as puzzleQuiz from "../puzzleQuiz.js";
 import type * as pvpMatches from "../pvpMatches.js";
 import type * as pvpModeValidators from "../pvpModeValidators.js";
 import type * as pvpSettingsValidators from "../pvpSettingsValidators.js";
+import type * as questionReports from "../questionReports.js";
 import type * as quizCleanupWorker from "../quizCleanupWorker.js";
 import type * as quizGeneratedQuestions from "../quizGeneratedQuestions.js";
 import type * as quizHistory from "../quizHistory.js";
@@ -85,6 +86,7 @@ declare const fullApi: ApiFromModules<{
   pvpMatches: typeof pvpMatches;
   pvpModeValidators: typeof pvpModeValidators;
   pvpSettingsValidators: typeof pvpSettingsValidators;
+  questionReports: typeof questionReports;
   quizCleanupWorker: typeof quizCleanupWorker;
   quizGeneratedQuestions: typeof quizGeneratedQuestions;
   quizHistory: typeof quizHistory;

@@ -23,12 +23,12 @@ export const TIER3_SKIN_ITEM={itemId:'tier3_skin',name:'Tier 3 Skin',type:'cosme
   icon:'assets/characters/experimental/michael-level3-hd-idle.png',quantity:1,useBehavior:'presentation',
   description:'Unlocks the existing Tier 3 appearance in the wardrobe.'};
 export const SPECIAL_REWARDS=Object.freeze([
-  {itemId:'special_exam_coupon',name:'50% discount coupon for a prostate exam'},
-  {itemId:'special_broken_key',name:'One broken keyboard key'},
-  {itemId:'special_floppy_disk',name:'A suspicious floppy disk'},
-  {itemId:'special_paperclip',name:'A premium paperclip'},
+  {itemId:'special_exam_coupon',name:'50% discount coupon for a prostate exam',icon:'assets/items/lucky-discount.svg'},
+  {itemId:'special_broken_key',name:'One Broken ESCape',icon:'assets/items/lucky-broken-key.svg'},
+  {itemId:'special_floppy_disk',name:'A suspicious floppy disk',icon:'assets/items/lucky-floppy-disk.svg'},
+  {itemId:'special_paperclip',name:'A strong papperclip',icon:'assets/items/lucky-paperclip.svg'},
 ].map(entry=>({...entry,type:'collectible',rewardOnly:true,quantity:1,maxStack:1_000_000,
-  description:'A particularly questionable Lucky Machine prize.',icon:'assets/items/gutschein-inv.png',useBehavior:'presentation'})));
+  description:'A particularly questionable Lucky Machine prize.',useBehavior:'presentation'})));
 export const ROULETTE_ITEMS=Object.freeze([...CIGARETTE_REWARDS,RARE_CIGARETTE,CIGARETTE_VOUCHER,TIER3_SKIN_ITEM,...SPECIAL_REWARDS]);
 
 // Absolute percentages of all spins. The backend uses these weights within the 40% coin category.

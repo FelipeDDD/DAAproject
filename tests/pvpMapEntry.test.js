@@ -4,7 +4,9 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import { PVP_MAP,PVP_INSPECTION_SCENE,PVP_MAP_FILE,PVP_MAP_DEFINITION } from '../src/pvp/config.js';
 import { requirePvpMap,pvpArenaDestination } from '../src/pvp/mapConfig.js';
-import { PVP_LOBBY_PORTAL } from '../src/maps/pvpLobbyPortal.js';
+import { PVP_LOBBY_PORTAL,readPvpLobbyEntrance } from '../src/maps/pvpLobbyPortal.js';
+import { nearbyMapTransition } from '../src/maps/transitions.js';
+import { readQuizSeats } from '../src/maps/quizSeats.js';
 import { PvpTeleportController,readPvpTeleportAreas,pvpTeleportArrival } from '../src/pvp/teleports.js';
 import { collisionAreas } from '../src/maps/collision.js';
 import { objectsIn } from '../src/maps/tiledObjects.js';
@@ -13,6 +15,37 @@ import { PAYLOAD_CART_ASSET } from '../src/pvp/payload/visualConfig.js';
 
 const read=path=>readFileSync(new URL(`../${path}`,import.meta.url),'utf8');
 const source=JSON.parse(read(`public/assets/maps/${PVP_MAP_FILE}`));
+const classroom=JSON.parse(read('public/assets/maps/classroom.tmj'));
+const feetBody=(x,y)=>({x:x-10,y:y-12,width:20,height:12});
+
+test('classroom PCs share a Tiled feet rectangle; all four chairs and table edges open the same lobby',()=>{
+  const entry=readPvpLobbyEntrance(classroom),area=entry.interactionArea;
+  assert.equal(area.layer,'Notes');assert.equal(entry.action,'open-pvp-lobby');
+  assert.equal(entry.targetMap,undefined);
+  const seats=readQuizSeats(classroom);assert.equal(seats.length,4);
+  for(const seat of seats)assert.equal(nearbyMapTransition([entry],feetBody(seat.seatX,seat.seatY))?.id,entry.id);
+  for(const [x,y] of [[area.x,area.y],[area.x+area.width,area.y+area.height]])
+    assert.equal(nearbyMapTransition([entry],feetBody(x,y))?.id,entry.id);
+  for(const [x,y] of [[area.x-1,area.y],[area.x,area.y+area.height+1],[860,755]])
+    assert.equal(nearbyMapTransition([entry],feetBody(x,y)),undefined);
+  assert.equal(readPvpLobbyEntrance({layers:[]}),null,'no old hardcoded portal fallback');
+  const door={id:'door',x:50,y:50,radius:40};
+  assert.equal(nearbyMapTransition([door],feetBody(50,50))?.id,'door','circular doors retain existing behavior');
+});
+
+test('players at the same PC open independent lobby menus without reserving seats or auto-joining',()=>{
+  const menus=[];
+  const Map=evaluate('src/scenes/MapScene.js',{Phaser:{Scene:class{}},pvpLobbyAvailable:()=>true,
+    PvpLobbyController:class {constructor(scene){this.active=true;menus.push(scene.presence.identity.playerId);}}},'MapScene');
+  for(const playerId of ['first','second']){
+    const scene=Object.assign(Object.create(Map.prototype),{mapKey:'school',presence:{identity:{playerId}},
+      quiz:null,player:{x:947,y:592}});
+    assert.equal(scene.openPvpLobby(),true);
+    assert.equal(scene.openPvpLobby(),false,'only the current player cannot reopen their already-open panel');
+    assert.equal(scene.player.x,947);assert.equal(scene.player.y,592);
+  }
+  assert.deepEqual(menus,['first','second']);
+});
 const evaluate=(path,context,name)=>runInNewContext(read(path).replace(/^import[\s\S]*?;\r?\n/gm,'')
   .replaceAll('import.meta.env','({DEV:true})').replace(`export class ${name}`,`class ${name}`)+`\n${name}`,context);
 

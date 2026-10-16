@@ -1,5 +1,32 @@
 import { CURRENCY_UI_TEXT } from '../economy/uiText.js';
 
+// One image is selected client-side for each newly won configured item.
+export const GAMBLE_REWARD_PRESENTATION_IMAGES=Object.freeze({
+  special_exam_coupon:Object.freeze([
+    'assets/items/prostate-exam1.png',
+    'assets/items/prostate-exam2.png',
+    'assets/items/prostate-exam3.png',
+  ]),
+  special_paperclip:Object.freeze([
+    'assets/items/papperclip1.png',
+    'assets/items/papperclip2.png',
+    'assets/items/papperclip3.png',
+    'assets/items/papperclip4.png',
+  ]),
+  special_floppy_disk:Object.freeze([
+    'assets/items/floppydisk1.png',
+    'assets/items/floppydisk2.png',
+    'assets/items/floppydisk3.png',
+    'assets/items/floppydisk4.png',
+  ]),
+  special_broken_key:Object.freeze([
+    'assets/items/esc-escape1.png',
+    'assets/items/esc-escape2.png',
+    'assets/items/esc-escape3.png',
+    'assets/items/esc-escape4.png',
+  ]),
+});
+
 export const GAMBLE_MACHINE_VISUAL=Object.freeze({
   modalWidthPx:1200,modalMaxHeightPx:920,detailsHeightPx:300,
   statsFontSizePx:24,resultFontSizePx:25,

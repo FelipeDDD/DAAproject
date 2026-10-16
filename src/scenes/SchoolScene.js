@@ -5,7 +5,7 @@ import { drawOfficeDoor,drawOffice3Door } from '../art/officeDoor.js';
 import { registerSecretaryFrames,SecretaryNpc } from '../npc/SecretaryNpc.js';
 import { drawSchoolBackdrop } from '../art/schoolBackdrop.js';
 import { preloadSchoolCorridorDecor,drawSchoolCorridorDecor } from '../art/schoolCorridorDecor.js';
-import { PVP_LOBBY_PORTAL } from '../maps/pvpLobbyPortal.js';
+import { readPvpLobbyEntrance,PVP_LOBBY_SIGN } from '../maps/pvpLobbyPortal.js';
 import { pvpLobbyAvailable } from '../pvp/config.js';
 import { GAMBLE_MACHINE } from '../gamble/config.js';
 import { gambleMachinePlacement } from '../gamble/placement.js';
@@ -30,6 +30,7 @@ export class SchoolScene extends MapScene {
       `${import.meta.env.BASE_URL}assets/npc/secretary.png`);
     this.load.image('study-mode-sign',
       `${import.meta.env.BASE_URL}assets/hud/study-mode-sign2.png`);
+    this.load.svg('pvp-lobby-sign',`${import.meta.env.BASE_URL}assets/hud/pvp-sign.svg`);
   }
 
   create(destination = {}) {
@@ -44,7 +45,16 @@ export class SchoolScene extends MapScene {
         this.events.off('sleep',suspend);this.gambleMachine?.destroy();this.gambleMachine=null;
       });
     }
-    if(pvpLobbyAvailable(import.meta.env))this.createPvpLobbyMarker();
+    if(pvpLobbyAvailable(import.meta.env)){
+      const entrance=readPvpLobbyEntrance(this.source);
+      if(entrance){
+        this.mapTransitions.push(entrance);
+        const sign=PVP_LOBBY_SIGN;
+        this.textures.get('pvp-lobby-sign').setFilter(Phaser.Textures.FilterMode.LINEAR);
+        this.pvpLobbySign=this.add.image(entrance.x+sign.offsetX,entrance.interactionArea.y+sign.offsetY,'pvp-lobby-sign')
+          .setDisplaySize(sign.width,sign.height).setDepth(sign.depth);
+      }
+    }
     const studyLabel=this.tiledTextObjects?.find(text=>text.getData('tiledObjectName')==='studyModeSign');
     if(studyLabel){
       const bounds=studyLabel.getData('tiledObjectBounds');
@@ -67,19 +77,6 @@ export class SchoolScene extends MapScene {
       this.events.on('sleep',()=>this.secretary?.hide());
       this.events.once('shutdown',()=>{this.secretary?.destroy();this.secretary=null;});
     }
-  }
-
-  createPvpLobbyMarker(){
-    const portal=PVP_LOBBY_PORTAL;
-    this.mapTransitions.push(portal);
-    this.add.graphics().setDepth(portal.y-1)
-      .fillStyle(0xc99c48,.2).fillRoundedRect(portal.x-18,portal.y-18,36,36,5)
-      .lineStyle(2,0xe4c477,.95).strokeRoundedRect(portal.x-18,portal.y-18,36,36,5)
-      .fillStyle(0xffe7a6,1).fillCircle(portal.x,portal.y,4);
-    this.add.text(portal.x,portal.y-23,'PVP LOBBY',{
-      fontSize:'9px',fontStyle:'bold',color:'#fff0c5',backgroundColor:'#302719dd',
-      padding:{x:4,y:2},
-    }).setOrigin(.5,1).setDepth(portal.y+2);
   }
 
   enter(destination={}){super.enter(destination);this.secretary?.resetVisit();this.gambleMachine?.resume();}

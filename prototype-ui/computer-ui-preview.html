@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="./computer-ui-study-v3.css">
     <link rel="stylesheet" href="./leaderboard-futuristic.css">
     <link rel="stylesheet" href="./challenge-futuristic.css">
+    <link rel="stylesheet" href="./terminal-questions.css">
     <script type="module" src="./computer-ui-preview.js"></script>
   </head>
   <body>
@@ -199,7 +200,7 @@
           <section id="study-question-view" class="study-question-view" aria-labelledby="study-question-text" hidden>
             <div class="study-question-meta">
               <div id="study-question-tags" class="study-question-tags"></div>
-              <strong id="study-question-progress"></strong>
+              <div class="question-meta-actions"><strong id="study-question-progress"></strong><button id="study-report-question" class="question-report-button" type="button">Report question</button></div>
             </div>
             <div class="study-question-layout">
               <div id="study-question-media" class="quiz-media study-question-media" role="region" aria-label="Additional question content" tabindex="0" hidden></div>
@@ -283,7 +284,7 @@
               <div class="challenge-clock challenge-question-clock"><span>QUESTION TIME</span><strong id="challenge-question-time">30s</strong><div><i id="challenge-question-progress-bar"></i></div></div>
               <div class="challenge-score"><span>SCORE</span><strong id="challenge-score">0</strong><em id="challenge-score-delta" hidden></em></div>
             </div>
-            <div class="challenge-question-meta"><div id="challenge-question-tags" class="study-question-tags"></div><strong id="challenge-question-progress">QUESTION 1</strong></div>
+            <div class="challenge-question-meta"><div id="challenge-question-tags" class="study-question-tags"></div><div class="question-meta-actions"><strong id="challenge-question-progress">QUESTION 1</strong><button id="challenge-report-question" class="question-report-button" type="button">Report question</button></div></div>
             <div class="challenge-question-layout">
               <div id="challenge-question-media" class="quiz-media study-question-media challenge-question-media" role="region" aria-label="Additional question content" tabindex="0" hidden></div>
               <div class="challenge-question-body">
