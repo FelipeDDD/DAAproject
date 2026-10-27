@@ -13,17 +13,14 @@ and keeps the cost at 5 coins. Quiz rewards are unchanged.
 
 | Category | Chance |
 | --- | --- |
-| Nothing | 32% |
-| Coin Rewards | 40% |
+| Nothing | 40% |
+| Coin Rewards | 32% |
 | Cigarette Collection | 10% |
 | Lung Crusher 3000 Rare | 2% |
 | Tier 3 Skin | 1% |
 | Special Rewards | 15% |
 
-Coin bracket weights are absolute percentages of all spins: 22%, 10%, 5%,
-2%, 1% for ranges 3-5, 6-10, 11-20, 21-35, 36-50. Inside the 40% coin
-category, the backend normalizes those weights, then draws a uniform integer
-within the selected range.
+Coin bracket weights are absolute percentages of all spins and sum to the 32% coin category: 12% for 1-3, 9% for 4-5, 5% for 6-10, 3% for 11-20, 2% for 21-35, and 1% for 36-50. The backend normalizes those weights within the coin category, then draws a uniform integer within the selected range. With a 5-coin spin cost, the average coin return is 2.50 coins per spin.
 
 Cigarette Collection uniformly chooses among the three unowned common editions:
 pink, orange and purple. Owning all three yields a stackable Zigarettenschachtel

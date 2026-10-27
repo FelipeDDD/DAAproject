@@ -6,6 +6,7 @@ import { gambleMachinePlacement,machineDisplaySize,nearMachineBase } from '../sr
 import { GambleMachineController,GambleMachinePanel,createPrizeWheel,createWheelSegments,landingJitterDegrees,
   rewardChancePercent,wheelSegmentIndexForReward,wheelTargetRotation } from '../src/gamble/GambleMachineController.js';
 import { ROULETTE_COST,ROULETTE_REWARDS } from '../src/economy/config.js';
+import { COIN_BRACKETS } from '../src/gamble/rewardCatalog.js';
 import { collisionAreas } from '../src/maps/collision.js';
 import { menuFixture } from './helpers/menuFixture.js';
 
@@ -88,7 +89,7 @@ test('machine modal isolates input and keeps spin unavailable without a server e
 
 test('reward display probabilities are derived from the configured backend weights',()=>{
   const total=ROULETTE_REWARDS.reduce((sum,reward)=>sum+reward.weight,0);
-  assert.deepEqual(ROULETTE_REWARDS.map(reward=>rewardChancePercent(reward,total)),[32,40,10,2,1,15]);
+  assert.deepEqual(ROULETTE_REWARDS.map(reward=>rewardChancePercent(reward,total)),[40,32,10,2,1,15]);
   assert.equal(rewardChancePercent({weight:1},100),1);
   const f=menuFixture(GambleMachinePanel),wheel=createPrizeWheel(f.doc,ROULETTE_REWARDS);
   assert.equal(wheel.segments.length,8);
@@ -177,7 +178,7 @@ test('category buttons replace details, use inventory miniatures and the real ch
     else assert.equal(panel.detailsPanel.querySelector('h3').textContent,category.name);
     assert.equal(panel.categoryButtons.get(category.id)['aria-pressed'],'true');
   }
-  panel.selectCategory('coins');assert.equal(panel.detailsPanel.querySelectorAll('tr').length,5);
+  panel.selectCategory('coins');assert.equal(panel.detailsPanel.querySelectorAll('tr').length,COIN_BRACKETS.length);
   panel.selectCategory('cigarette_collection');
   const previews=panel.detailsPanel.querySelectorAll('image');assert.equal(previews.length,4);
   for(const image of previews)assert.match(image.href,/-inv.png$/);

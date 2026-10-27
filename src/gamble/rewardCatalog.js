@@ -31,17 +31,18 @@ export const SPECIAL_REWARDS=Object.freeze([
   description:'A particularly questionable Lucky Machine prize.',useBehavior:'presentation'})));
 export const ROULETTE_ITEMS=Object.freeze([...CIGARETTE_REWARDS,RARE_CIGARETTE,CIGARETTE_VOUCHER,TIER3_SKIN_ITEM,...SPECIAL_REWARDS]);
 
-// Absolute percentages of all spins. The backend uses these weights within the 40% coin category.
+// Absolute percentages of all spins. These bracket weights sum to the 32% coin category.
 export const COIN_BRACKETS=Object.freeze([
-  {id:'coins_3_5',min:3,max:5,weight:22},
-  {id:'coins_6_10',min:6,max:10,weight:10},
-  {id:'coins_11_20',min:11,max:20,weight:5},
+  {id:'coins_1_3',min:1,max:3,weight:12},
+  {id:'coins_4_5',min:4,max:5,weight:9},
+  {id:'coins_6_10',min:6,max:10,weight:5},
+  {id:'coins_11_20',min:11,max:20,weight:3},
   {id:'coins_21_35',min:21,max:35,weight:2},
   {id:'coins_36_50',min:36,max:50,weight:1},
 ]);
 export const ROULETTE_CATEGORIES=Object.freeze([
-  {id:'nothing',name:'Nothing',weight:32,icon:'sad',description:'The wheel offers its sincere congratulations. And nothing else.',reward:{type:'none'}},
-  {id:'coins',name:'Coin Rewards',weight:40,icon:'coin',description:'One coin bracket is selected, then a whole-number amount within that range.',reward:{type:'coin-brackets'}},
+  {id:'nothing',name:'Nothing',weight:40,icon:'sad',description:'The wheel offers its sincere congratulations. And nothing else.',reward:{type:'none'}},
+  {id:'coins',name:'Coin Rewards',weight:32,icon:'coin',description:'One coin bracket is selected, then a whole-number amount within that range.',reward:{type:'coin-brackets'}},
   {id:'cigarette_collection',name:'Cigarette Collection',weight:10,icon:'pack',
     description:'Receive one of the three unowned common editions. Own all three? Receive a Zigarettenschachtel Voucher instead.',
     previewImages:CIGARETTE_REWARDS.map(entry=>({src:entry.icon,label:entry.name,frame:entry.iconFrame})),reward:{type:'cigarette-collection'}},
