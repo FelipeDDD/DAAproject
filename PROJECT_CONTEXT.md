@@ -1,5 +1,17 @@
 # Project context
 
+## Michael HD frame alignment (2026-10-27)
+
+- Michael Tier 3 now has balanced front/back arm poses plus a final alignment pass. `scripts/align-michael-frames.ps1` translates the complete sprite and its recolor mask together using the head/neck as the stable reference; no pose resampling or redrawing. Idle and enlarged previews are updated too.
+- Every frame offset is recorded in `michael-level3-hd-registration.json` under `postprocess.alignment`. Run alignment after `register-michael-arm-swing.ps1` when rebuilding from local drafts. The stored initial baseline is 143; final sole positions are per-frame (139–143) because the alignment preserves complete original poses.
+- Source art and before-edit backups under ignored `assets-drafts/` stay local; committed PNGs/masks are sufficient to run the game on another machine. Rebuilding the experimental art scripts also requires those local source/backup files.
+
+## Yassin arm motion (2026-10-27)
+
+- Two distinct assets: fifth-slot test `yassin-stubble-test-v3.png` and regular bald/glasses Tier 3 `yassin-felipe-walk-v1.png`. Both now use equal subtle opposing front/back arm motion; normal skin's recolor mask follows the adjusted sleeves.
+- `scripts/balance-yassin-arms.ps1` is the final registration pass, superseding earlier one-arm adjustments. Originals/masks are preserved in ignored `assets-drafts/character-customization/*-before-balanced-arms.png`.
+- The regular skin also uses `src/art/yassinUpStride.js` at runtime: above y=112, its leg mirroring must stay inside x=44..83 to avoid overwriting hands. Validate the final recolored/normalized texture, not only the raw PNG. Regression coverage: `tests/yassinArmSwing.test.js`, `tests/yassinUpStride.test.js`.
+
 ## Classroom PvP entrance (2026-10-16)
 
 - The former floor portal is replaced by the `Notes/PVP-LOBBY-INTERACTION` rectangle in `classroom.tmj`, surrounding the four former multiplayer PCs (x 924, y 512, width 136, height 192). Edit that rectangle in Tiled to adjust reach. The existing named interaction-area reader supplies the entrance; the player's feet must be inside it and E opens the existing `PvpLobbyController`. No automatic entry, seating, chair ownership or additional backend traffic. Multiple players may open their own menu at the same spot; create/browse/join, host authority and match capacity remain unchanged.

@@ -7,7 +7,7 @@ export function registeredPreviewVisuals(character){
   if(!character)return [];
   // Retired V4/V5 files are not public runtime skins. Test pages may override
   // experimentalVisual while normal pages retain the registered base skin.
-  const visuals=[originals.get(character.id),character.experimentalVisual];
+  const visuals=[originals.get(character.id),character.experimentalVisual,character.testVisual];
   return [...new Map(visuals.filter(Boolean).map(v=>[v.sprite,v])).values()];
 }
 export function previewVisual(character,id){return registeredPreviewVisuals(character).find(v=>v.sprite===id);}

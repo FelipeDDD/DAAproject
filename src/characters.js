@@ -1,5 +1,6 @@
 import { FELIPE_TEST_PALETTE } from './art/felipeRecolor.js';
 import { YASSIN_BALD_TEST_VISUAL } from './experimental/yassinBaldSkin.js';
+import { YASSIN_STUBBLE_TEST_VISUAL } from './experimental/yassinStubbleSkin.js';
 
 // Menu order, names and replaceable sprite assets. Classic sprites use a 32 x 56 canvas.
 const ORIGINAL_CHARACTERS = [
@@ -26,6 +27,7 @@ const ORIGINAL_CHARACTERS = [
   {
     id: 'jassine', name: 'Yassin', sprite: 'character-jassine', asset: 'assets/characters/jassine.svg',
     experimentalVisual:YASSIN_BALD_TEST_VISUAL,
+    testVisual:YASSIN_STUBBLE_TEST_VISUAL,
     newVisual:{sprite:'character-yassin-new',asset:'assets/characters/yassin-new.png?v=2',previewAsset:'assets/characters/yassin-new-preview.png?v=2'},
   },
   {
@@ -59,8 +61,8 @@ export const CHARACTERS = ORIGINAL_CHARACTERS;
 // Preview cards reuse real character bases; they never create extra server identities.
 export function characterMenuOptions({includePreviews=false}={}){return [
   ...CHARACTERS.map(c=>({c,label:c.name,previewStyle:null})),
-  ...(includePreviews?CHARACTERS.filter(c=>c.experimentalVisual?.menuPreview===true):[])
-    .map(c=>({c,label:c.experimentalVisual.menuLabel??`${c.name} — TEST`,previewStyle:'level3Preview'})),
+  ...(includePreviews?CHARACTERS.filter(c=>c.testVisual):[])
+    .map(c=>({c:{...c,experimentalVisual:c.testVisual},label:c.testVisual.menuLabel??`${c.name} — TEST`,previewStyle:'level3Preview'})),
 ];}
 export const CHARACTER_STORAGE_KEY = 'daa-character-id';
 export const CHARACTER_STYLE_STORAGE_KEY = 'daa-character-style';

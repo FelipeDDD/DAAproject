@@ -40,11 +40,12 @@ test('experimental menu preview is opt-in and does not unlock Tier 3 in normal p
   assert.equal(options.length,5);
   assert.deepEqual(options.slice(0,4).map(option=>option.c.id),['michael','jassine','sarina','felipe']);
   assert.ok(options.slice(0,4).every(option=>option.previewStyle===null));
-  assert.equal(options[4].c,felipe);
-  assert.equal(options[4].label,'Felipe — TEST');
+  assert.equal(options[4].c.id,'jassine');
+  assert.equal(options[4].label,'Yassin — TEST');
   assert.equal(options[4].previewStyle,'level3Preview');
-  assert.match(options[4].c.experimentalVisual.recolorMaskAsset,/felipe-level3-hd-material-mask\.png$/);
-  assert.equal(options[4].c.experimentalVisual.sprite,'character-felipe-level3-hd-recolor-v2');
+  assert.equal(options[4].c.experimentalVisual.recolorMaskAsset,undefined);
+  assert.equal(options[4].c.experimentalVisual.sprite,'character-yassin-stubble-test-v3');
+  assert.match(options[4].c.experimentalVisual.asset,/yassin-stubble-test-v3\.png$/);
   assert.equal(characterById('jassine').experimentalVisual.menuPreview,undefined);
   assert.equal(characterById('jassine').experimentalVisual.wardrobePreview,true);
   assert.equal(canPreviewCharacterSkin(characterById('jassine'),{},false),false);
@@ -71,6 +72,37 @@ test('Yassin third skin and Felipe test load with DEV experiments disabled',()=>
     assert.ok(!loaded.some(([key])=>key===(other.recolorSource??other.sprite)));
     assert.ok(!animations.has(`${other.sprite}-walk-down`));
   }
+});
+
+test('fifth slot selects Yassin stubble and registers it for scene transitions and remote clients',async()=>{
+  const option=characterMenuOptions({includePreviews:true})[4];
+  const claims=[];
+  const menu=Object.assign(Object.create(CharacterMenu.prototype),{
+    mode:'guest',guest:{guestId:'guest-stubble'},sessionId:'session-stubble',
+    render(){},hide(){},message:{},onChoose(){},
+    presence:{api:{players:{claimGuest:'claim'}},enter(){},client:{mutation:async(fn,args)=>{
+      claims.push(args);return {ok:true,playerId:'live-stubble'};
+    }}},
+  });
+  await menu.choose(option.c,option.previewStyle);
+  assert.equal(claims[0].characterBaseId,'jassine');
+  const identity=menu.presence.identity;
+  const canonical=characterById('jassine');
+  const visual=characterVisual(canonical,localCharacterStyle(canonical,'old',identity));
+  assert.equal(visual.sprite,'character-yassin-stubble-test-v3');
+  assert.equal(visual.normalizeUpStride,undefined);
+  const loaded=[],animations=new Map();
+  const scene={textures:{exists:()=>true},load:{svg(){},image(){},spritesheet:(...args)=>loaded.push(args)},
+    anims:{exists:key=>animations.has(key),create:config=>animations.set(config.key,config)}};
+  scene.textures.exists=()=>false;
+  preloadCharacterTextures(scene,[canonical],'/',false,true);
+  assert.ok(loaded.some(([key,path])=>key===visual.sprite&&path===`/${visual.asset}`));
+  scene.textures.exists=()=>true;
+  createCharacterAnimations(scene,[canonical],false,true);
+  assert.deepEqual(animations.get(`${visual.sprite}-walk-left`).frames.map(f=>f.frame),[7,8,9,10,11]);
+  assert.equal(characterVisual(canonical,'level3Preview').sprite,'character-yassin-bald-glasses-test');
+  await menu.choose(canonical);
+  assert.equal(menu.presence.identity.previewSkin,undefined);
 });
 
 test('preview selection claims the original base and normal reselection clears local override',async()=>{

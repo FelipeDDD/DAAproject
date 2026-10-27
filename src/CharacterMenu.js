@@ -19,7 +19,7 @@ export class CharacterMenu {
     this.styleSelect.value='old';this.styleSelect.closest('.character-style-control').hidden=true;
     this.rows=[];this.maxPlayers=MAX_PLAYER_CAPACITY;this.ready=false;this.connectionFailed=false;this.closed=false;
     let saved;try{saved=localStorage.getItem(CHARACTER_STORAGE_KEY);}catch{}
-    const options=characterMenuOptions();
+    const options=characterMenuOptions({includePreviews:import.meta.env?.DEV===true});
     document.getElementById('character-list').classList.toggle('has-experiment',options.some(option=>option.previewStyle));
     this.cards=options.map(({c,label,previewStyle})=>{
       const button=document.createElement('button');button.className='character-card';

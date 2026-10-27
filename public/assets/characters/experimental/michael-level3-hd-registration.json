@@ -1,5 +1,298 @@
 ﻿{
     "source":  "michael-walk-raw-v1.png",
+    "postprocess":  {
+                        "armSwing":  {
+                                         "source":  "michael-arms-registered.png",
+                                         "script":  "scripts/register-michael-arm-swing.ps1",
+                                         "rows":  [
+                                                      0,
+                                                      3
+                                                  ],
+                                         "columns":  [
+                                                         1,
+                                                         2,
+                                                         3,
+                                                         4,
+                                                         5
+                                                     ],
+                                         "description":  "Balanced front/back arm poses with denim-aware cutouts and matching sleeve material labels. Head, cigarette, legs, shoes, idle and side directions unchanged.",
+                                         "spritePixelsChanged":  10808,
+                                         "maskPixelsChanged":  757
+                                     },
+                        "alignment":  {
+                                          "script":  "scripts/align-michael-frames.ps1",
+                                          "method":  "Rigid integer translation registering the head/neck to the idle pose per direction; common upward padding preserves all sole pixels; no resampling or redrawing",
+                                          "sourceBackup":  "assets-drafts/character-customization/michael-before-frame-alignment.png",
+                                          "sourceSha256":  "3FBF9629D96CE2F2DC0DE508BA29C0739AE59A88964C573AE6D5FDFBE33F890F",
+                                          "maskSha256":  "03720CB7393A1F35AF442A482C26CC364C78C6CF8205F17EC4847AA139EB8FFC",
+                                          "frames":  [
+                                                         {
+                                                             "row":  0,
+                                                             "column":  0,
+                                                             "dx":  0,
+                                                             "dy":  -3,
+                                                             "headTopBefore":  15,
+                                                             "headTopAfter":  12,
+                                                             "footBottom":  140,
+                                                             "headCenterBefore":  63.5,
+                                                             "headCenterAfter":  63.5
+                                                         },
+                                                         {
+                                                             "row":  0,
+                                                             "column":  1,
+                                                             "dx":  0,
+                                                             "dy":  0,
+                                                             "headTopBefore":  12,
+                                                             "headTopAfter":  12,
+                                                             "footBottom":  143,
+                                                             "headCenterBefore":  63,
+                                                             "headCenterAfter":  63
+                                                         },
+                                                         {
+                                                             "row":  0,
+                                                             "column":  2,
+                                                             "dx":  -1,
+                                                             "dy":  -1,
+                                                             "headTopBefore":  13,
+                                                             "headTopAfter":  12,
+                                                             "footBottom":  142,
+                                                             "headCenterBefore":  64,
+                                                             "headCenterAfter":  63
+                                                         },
+                                                         {
+                                                             "row":  0,
+                                                             "column":  3,
+                                                             "dx":  0,
+                                                             "dy":  0,
+                                                             "headTopBefore":  12,
+                                                             "headTopAfter":  12,
+                                                             "footBottom":  143,
+                                                             "headCenterBefore":  63.5,
+                                                             "headCenterAfter":  63.5
+                                                         },
+                                                         {
+                                                             "row":  0,
+                                                             "column":  4,
+                                                             "dx":  0,
+                                                             "dy":  -1,
+                                                             "headTopBefore":  16,
+                                                             "headTopAfter":  15,
+                                                             "footBottom":  142,
+                                                             "headCenterBefore":  64,
+                                                             "headCenterAfter":  64
+                                                         },
+                                                         {
+                                                             "row":  0,
+                                                             "column":  5,
+                                                             "dx":  0,
+                                                             "dy":  -1,
+                                                             "headTopBefore":  13,
+                                                             "headTopAfter":  12,
+                                                             "footBottom":  142,
+                                                             "headCenterBefore":  62.5,
+                                                             "headCenterAfter":  62.5
+                                                         },
+                                                         {
+                                                             "row":  1,
+                                                             "column":  0,
+                                                             "dx":  0,
+                                                             "dy":  -1,
+                                                             "headTopBefore":  22,
+                                                             "headTopAfter":  21,
+                                                             "footBottom":  142,
+                                                             "headCenterBefore":  63,
+                                                             "headCenterAfter":  63
+                                                         },
+                                                         {
+                                                             "row":  1,
+                                                             "column":  1,
+                                                             "dx":  0,
+                                                             "dy":  -1,
+                                                             "headTopBefore":  22,
+                                                             "headTopAfter":  21,
+                                                             "footBottom":  142,
+                                                             "headCenterBefore":  63.5,
+                                                             "headCenterAfter":  63.5
+                                                         },
+                                                         {
+                                                             "row":  1,
+                                                             "column":  2,
+                                                             "dx":  -1,
+                                                             "dy":  -1,
+                                                             "headTopBefore":  22,
+                                                             "headTopAfter":  21,
+                                                             "footBottom":  142,
+                                                             "headCenterBefore":  64,
+                                                             "headCenterAfter":  63
+                                                         },
+                                                         {
+                                                             "row":  1,
+                                                             "column":  3,
+                                                             "dx":  -1,
+                                                             "dy":  0,
+                                                             "headTopBefore":  21,
+                                                             "headTopAfter":  21,
+                                                             "footBottom":  143,
+                                                             "headCenterBefore":  63.5,
+                                                             "headCenterAfter":  62.5
+                                                         },
+                                                         {
+                                                             "row":  1,
+                                                             "column":  4,
+                                                             "dx":  -1,
+                                                             "dy":  -1,
+                                                             "headTopBefore":  22,
+                                                             "headTopAfter":  21,
+                                                             "footBottom":  142,
+                                                             "headCenterBefore":  64,
+                                                             "headCenterAfter":  63
+                                                         },
+                                                         {
+                                                             "row":  1,
+                                                             "column":  5,
+                                                             "dx":  -1,
+                                                             "dy":  -1,
+                                                             "headTopBefore":  22,
+                                                             "headTopAfter":  21,
+                                                             "footBottom":  142,
+                                                             "headCenterBefore":  64,
+                                                             "headCenterAfter":  63
+                                                         },
+                                                         {
+                                                             "row":  2,
+                                                             "column":  0,
+                                                             "dx":  0,
+                                                             "dy":  -1,
+                                                             "headTopBefore":  19,
+                                                             "headTopAfter":  18,
+                                                             "footBottom":  142,
+                                                             "headCenterBefore":  63,
+                                                             "headCenterAfter":  63
+                                                         },
+                                                         {
+                                                             "row":  2,
+                                                             "column":  1,
+                                                             "dx":  0,
+                                                             "dy":  -1,
+                                                             "headTopBefore":  20,
+                                                             "headTopAfter":  19,
+                                                             "footBottom":  142,
+                                                             "headCenterBefore":  63.5,
+                                                             "headCenterAfter":  63.5
+                                                         },
+                                                         {
+                                                             "row":  2,
+                                                             "column":  2,
+                                                             "dx":  0,
+                                                             "dy":  0,
+                                                             "headTopBefore":  19,
+                                                             "headTopAfter":  19,
+                                                             "footBottom":  143,
+                                                             "headCenterBefore":  63,
+                                                             "headCenterAfter":  63
+                                                         },
+                                                         {
+                                                             "row":  2,
+                                                             "column":  3,
+                                                             "dx":  0,
+                                                             "dy":  -1,
+                                                             "headTopBefore":  19,
+                                                             "headTopAfter":  18,
+                                                             "footBottom":  142,
+                                                             "headCenterBefore":  62.5,
+                                                             "headCenterAfter":  62.5
+                                                         },
+                                                         {
+                                                             "row":  2,
+                                                             "column":  4,
+                                                             "dx":  0,
+                                                             "dy":  0,
+                                                             "headTopBefore":  19,
+                                                             "headTopAfter":  19,
+                                                             "footBottom":  143,
+                                                             "headCenterBefore":  64,
+                                                             "headCenterAfter":  64
+                                                         },
+                                                         {
+                                                             "row":  2,
+                                                             "column":  5,
+                                                             "dx":  0,
+                                                             "dy":  0,
+                                                             "headTopBefore":  19,
+                                                             "headTopAfter":  19,
+                                                             "footBottom":  143,
+                                                             "headCenterBefore":  63,
+                                                             "headCenterAfter":  63
+                                                         },
+                                                         {
+                                                             "row":  3,
+                                                             "column":  0,
+                                                             "dx":  0,
+                                                             "dy":  -4,
+                                                             "headTopBefore":  22,
+                                                             "headTopAfter":  18,
+                                                             "footBottom":  139,
+                                                             "headCenterBefore":  63.5,
+                                                             "headCenterAfter":  63.5
+                                                         },
+                                                         {
+                                                             "row":  3,
+                                                             "column":  1,
+                                                             "dx":  0,
+                                                             "dy":  -3,
+                                                             "headTopBefore":  19,
+                                                             "headTopAfter":  16,
+                                                             "footBottom":  140,
+                                                             "headCenterBefore":  63.5,
+                                                             "headCenterAfter":  63.5
+                                                         },
+                                                         {
+                                                             "row":  3,
+                                                             "column":  2,
+                                                             "dx":  -1,
+                                                             "dy":  -1,
+                                                             "headTopBefore":  19,
+                                                             "headTopAfter":  18,
+                                                             "footBottom":  142,
+                                                             "headCenterBefore":  64.5,
+                                                             "headCenterAfter":  63.5
+                                                         },
+                                                         {
+                                                             "row":  3,
+                                                             "column":  3,
+                                                             "dx":  0,
+                                                             "dy":  0,
+                                                             "headTopBefore":  18,
+                                                             "headTopAfter":  18,
+                                                             "footBottom":  143,
+                                                             "headCenterBefore":  63,
+                                                             "headCenterAfter":  63
+                                                         },
+                                                         {
+                                                             "row":  3,
+                                                             "column":  4,
+                                                             "dx":  0,
+                                                             "dy":  -1,
+                                                             "headTopBefore":  20,
+                                                             "headTopAfter":  19,
+                                                             "footBottom":  142,
+                                                             "headCenterBefore":  62,
+                                                             "headCenterAfter":  62
+                                                         },
+                                                         {
+                                                             "row":  3,
+                                                             "column":  5,
+                                                             "dx":  -1,
+                                                             "dy":  -3,
+                                                             "headTopBefore":  22,
+                                                             "headTopAfter":  19,
+                                                             "footBottom":  140,
+                                                             "headCenterBefore":  64,
+                                                             "headCenterAfter":  63
+                                                         }
+                                                     ]
+                                      }
+                    },
     "sourceSha256":  "47A198940E39438D2B58669112FAD95DE9B5C6758B4641615BEC079A93171841",
     "columns":  6,
     "rows":  4,

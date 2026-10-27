@@ -11,7 +11,7 @@ test('Yassin back-facing stride alternates legs without changing other direction
   assert.deepEqual(Buffer.from(data),original);
   for(let row=0;row<4;row++)for(let col=0;col<6;col++)for(let y=0;y<144;y++)for(let x=0;x<128;x++){
     const i=((row*144+y)*768+col*128+x)*4;
-    const mirrored=row===3&&(col===3||col===4)&&y>=102;
+    const mirrored=row===3&&(col===3||col===4)&&y>=102&&(y>=112||(x>=44&&x<84));
     const source=mirrored?((row*144+y)*768+(col-2)*128+127-x)*4:i;
     for(let c=0;c<4;c++)assert.equal(result[i+c],data[source+c]);
   }

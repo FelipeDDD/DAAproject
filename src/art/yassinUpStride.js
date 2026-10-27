@@ -6,6 +6,8 @@ export function normalizeYassinUpStride(data,width=768,height=576){
   const result=new Uint8ClampedArray(data);
   for(const [source,target] of [[1,3],[2,4]]){
     for(let y=102;y<144;y++)for(let x=0;x<128;x++){
+      // Hands reach below the waist. Mirror only the central legs until below the hands.
+      if(y<112&&(x<44||x>=84))continue;
       const from=((3*144+y)*width+source*128+(127-x))*4;
       const to=((3*144+y)*width+target*128+x)*4;
       result.set(data.subarray(from,from+4),to);

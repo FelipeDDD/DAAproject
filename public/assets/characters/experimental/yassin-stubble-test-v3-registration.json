@@ -1,0 +1,273 @@
+﻿{
+    "source":  "yassin-michael-body-raw-v1.png",
+    "postprocess": {
+        "finalArmBalance": {
+            "script": "scripts/balance-yassin-arms.ps1",
+            "description": "Final override of earlier arm passes: both hands use the same neutral pose with opposing +/-1px motion; front and back, walk frames only.",
+            "changedPixels": 5411
+        },
+        "subtleLeftArm": {
+            "script": "scripts/reduce-yassin-left-arm-swing.ps1",
+            "rows": [0,3],
+            "columns": [1,2,3,4,5],
+            "description": "Final pass: viewer-left arm uses the approved neutral pose with a +/-1px distal shift. Shoulder fixed; right arm and all other art unchanged.",
+            "changedPixels": 4475
+        },
+        "backArms": {
+            "source": "yassin-back-arms-registered.png",
+            "script": "scripts/register-yassin-stubble-back-arms.ps1",
+            "row": 3,
+            "columns": [1,2,3,4,5],
+            "description": "Opposing arm poses with denim-aware masks and detached-speck removal. Other directions, idle, head, legs and previously corrected shoes preserved.",
+            "changedPixels": 6413,
+            "detachedSpecksRemoved": 2
+        },
+        "frontArms": {
+            "source": "yassin-front-arms-registered.png",
+            "row": 0,
+            "columns": [1,2,3,4,5],
+            "leftPatch": {"x":26,"y":75,"width":22,"height":36},
+            "rightPatch": {"x":80,"y":75,"width":22,"height":36},
+            "sourceColumnsLeftRight": [[3,4],[4,3],[3,4],[4,3],[1,1]],
+            "rightMirrored": true,
+            "description": "Generated arm poses registered and paired in opposition; all coordinates and columns zero-based. All pixels outside arm patches preserved."
+        },
+        "description": "Isolated left shoe correction in back/up frames 3 and 5; all pixels outside the two patches preserved.",
+        "patchSource": "yassin-foot-correction-registered.png",
+        "patches": [{"x":296,"y":546,"width":24,"height":19},{"x":552,"y":546,"width":24,"height":19}],
+        "changedPixels": 758
+    },
+    "sourceSha256":  "10862D31EE967202FF05E391AE414855204DA7D354B8B891AA8D83EDB212F934",
+    "columns":  6,
+    "rows":  4,
+    "frameWidth":  128,
+    "frameHeight":  144,
+    "baseline":  143,
+    "uniformScale":  null,
+    "alphaThreshold":  96,
+    "normalizeDirectionHeight":  true,
+    "directionScales":  [
+                            0.5477178423236515,
+                            0.5665236051502146,
+                            0.5617021276595745,
+                            0.57391304347826089
+                        ],
+    "frames":  [
+                   {
+                       "row":  0,
+                       "column":  0,
+                       "x":  56,
+                       "y":  34,
+                       "width":  127,
+                       "height":  238,
+                       "headCenterX":  120
+                   },
+                   {
+                       "row":  0,
+                       "column":  1,
+                       "x":  297,
+                       "y":  31,
+                       "width":  131,
+                       "height":  241,
+                       "headCenterX":  362
+                   },
+                   {
+                       "row":  0,
+                       "column":  2,
+                       "x":  539,
+                       "y":  32,
+                       "width":  131,
+                       "height":  241,
+                       "headCenterX":  604
+                   },
+                   {
+                       "row":  0,
+                       "column":  3,
+                       "x":  784,
+                       "y":  32,
+                       "width":  126,
+                       "height":  241,
+                       "headCenterX":  844
+                   },
+                   {
+                       "row":  0,
+                       "column":  4,
+                       "x":  1029,
+                       "y":  32,
+                       "width":  124,
+                       "height":  241,
+                       "headCenterX":  1086
+                   },
+                   {
+                       "row":  0,
+                       "column":  5,
+                       "x":  1263,
+                       "y":  32,
+                       "width":  129,
+                       "height":  241,
+                       "headCenterX":  1327.5
+                   },
+                   {
+                       "row":  1,
+                       "column":  0,
+                       "x":  63,
+                       "y":  308,
+                       "width":  107,
+                       "height":  233,
+                       "headCenterX":  116.5
+                   },
+                   {
+                       "row":  1,
+                       "column":  1,
+                       "x":  303,
+                       "y":  308,
+                       "width":  130,
+                       "height":  233,
+                       "headCenterX":  361.5
+                   },
+                   {
+                       "row":  1,
+                       "column":  2,
+                       "x":  550,
+                       "y":  308,
+                       "width":  108,
+                       "height":  233,
+                       "headCenterX":  604
+                   },
+                   {
+                       "row":  1,
+                       "column":  3,
+                       "x":  784,
+                       "y":  308,
+                       "width":  128,
+                       "height":  233,
+                       "headCenterX":  840.5
+                   },
+                   {
+                       "row":  1,
+                       "column":  4,
+                       "x":  1029,
+                       "y":  308,
+                       "width":  107,
+                       "height":  233,
+                       "headCenterX":  1082.5
+                   },
+                   {
+                       "row":  1,
+                       "column":  5,
+                       "x":  1273,
+                       "y":  308,
+                       "width":  112,
+                       "height":  233,
+                       "headCenterX":  1327
+                   },
+                   {
+                       "row":  2,
+                       "column":  0,
+                       "x":  70,
+                       "y":  576,
+                       "width":  107,
+                       "height":  233,
+                       "headCenterX":  123.5
+                   },
+                   {
+                       "row":  2,
+                       "column":  1,
+                       "x":  290,
+                       "y":  576,
+                       "width":  135,
+                       "height":  235,
+                       "headCenterX":  364.5
+                   },
+                   {
+                       "row":  2,
+                       "column":  2,
+                       "x":  549,
+                       "y":  576,
+                       "width":  112,
+                       "height":  235,
+                       "headCenterX":  606
+                   },
+                   {
+                       "row":  2,
+                       "column":  3,
+                       "x":  769,
+                       "y":  576,
+                       "width":  134,
+                       "height":  233,
+                       "headCenterX":  848.5
+                   },
+                   {
+                       "row":  2,
+                       "column":  4,
+                       "x":  1030,
+                       "y":  576,
+                       "width":  113,
+                       "height":  235,
+                       "headCenterX":  1088.5
+                   },
+                   {
+                       "row":  2,
+                       "column":  5,
+                       "x":  1268,
+                       "y":  576,
+                       "width":  117,
+                       "height":  234,
+                       "headCenterX":  1331
+                   },
+                   {
+                       "row":  3,
+                       "column":  0,
+                       "x":  55,
+                       "y":  841,
+                       "width":  131,
+                       "height":  227,
+                       "headCenterX":  120
+                   },
+                   {
+                       "row":  3,
+                       "column":  1,
+                       "x":  296,
+                       "y":  841,
+                       "width":  132,
+                       "height":  230,
+                       "headCenterX":  362
+                   },
+                   {
+                       "row":  3,
+                       "column":  2,
+                       "x":  537,
+                       "y":  842,
+                       "width":  133,
+                       "height":  229,
+                       "headCenterX":  604
+                   },
+                   {
+                       "row":  3,
+                       "column":  3,
+                       "x":  778,
+                       "y":  842,
+                       "width":  123,
+                       "height":  229,
+                       "headCenterX":  844
+                   },
+                   {
+                       "row":  3,
+                       "column":  4,
+                       "x":  1019,
+                       "y":  842,
+                       "width":  133,
+                       "height":  230,
+                       "headCenterX":  1086
+                   },
+                   {
+                       "row":  3,
+                       "column":  5,
+                       "x":  1262,
+                       "y":  841,
+                       "width":  132,
+                       "height":  230,
+                       "headCenterX":  1328
+                   }
+               ]
+}

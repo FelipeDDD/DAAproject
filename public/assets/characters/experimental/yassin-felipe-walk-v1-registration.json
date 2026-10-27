@@ -1,5 +1,10 @@
 ﻿{
     "source":  "yassin-felipe-walk-v1-raw.png",
+    "postprocess": {
+        "script": "scripts/balance-yassin-arms.ps1",
+        "description": "Front/back arms use neutral poses with opposing +/-1px motion. Sleeve mask updated. Runtime up-stride correction excludes lower hands.",
+        "changedPixels": 11522
+    },
     "sourceSha256":  "D37299AFA048D7A9B9BF7CC91CDD7233DEAA306A608396644A79E184402D8C62",
     "columns":  6,
     "rows":  4,
