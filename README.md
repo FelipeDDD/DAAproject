@@ -62,6 +62,23 @@ Na primeira execução, `convex dev` configura o backend de desenvolvimento e gr
 local em `http://127.0.0.1:3210`, sem conta. Reinicie o Vite ao mudar essa variável.
 A seleção exige o Convex disponível para confirmar que o personagem está livre.
 
+### Laboratório de VFX
+
+No Vite de desenvolvimento, abra **Dev Tools → Open VFX Lab** ou acesse
+`http://localhost:5173/tools/vfx-lab/` diretamente. A página funciona sem Convex
+ou relay WebSocket. **Leave Lab** volta para o jogo. O botão nos Dev Tools abre
+uma nova aba e preserva a sessão que já estava aberta.
+
+**Play** apresenta o efeito escolhido junto aos pés do alvo. **Reset** limpa o
+efeito e reposiciona o jogador. **Loop** reapresenta o efeito até ser desmarcado.
+WASD e setas movem o jogador quando a arena tem foco.
+
+O laboratório usa `pvp-arena-test.tmj` e registra suas próprias posições em
+`src/vfx/lab/layout.js`. Para comparar outro efeito, registre uma entrada em
+`src/vfx/lab/effects.js` com duração e uma função que cria uma view com
+`update(elapsedMs, deltaMs)` e `destroy()`. A versão, as adaptações e a licença do
+PixelFX estão em `src/vfx/lab/vendor/pixelfx/`.
+
 ### Login opcional
 
 A tela inicial oferece **Login**, **Create profile** e **Play as Guest**. Profiles

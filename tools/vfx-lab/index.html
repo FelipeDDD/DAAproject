@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VFX Laboratory</title>
+</head>
+<body>
+  <main id="lab" hidden>
+    <header>
+      <h1>VFX Laboratory</h1>
+      <a id="leave" href="/">Leave Lab</a>
+    </header>
+    <div class="controls">
+      <label>Effect <select id="effect"></select></label>
+      <button id="play" type="button" disabled>Play</button>
+      <button id="reset" type="button" disabled>Reset</button>
+      <label class="loop"><input type="checkbox" id="loop"> Loop</label>
+      <label><input type="checkbox" id="casting" checked> Fire Ring cast prep</label>
+      <label><input type="checkbox" id="cast-range" checked> Show cast range</label>
+      <output id="fps" aria-live="off">– FPS</output>
+    </div>
+    <div class="timing-controls" role="group" aria-label="Selected effect timing">
+      <label for="cast-duration">
+        Cast Preparation <span id="cast-value">1500 ms</span>
+      </label>
+      <input id="cast-duration" type="range" min="0" max="1500" step="10" value="1500" disabled>
+      <label for="effect-duration">
+        Effect Duration <span id="effect-value">3000 ms</span>
+      </label>
+      <input id="effect-duration" type="range" value="3000" aria-describedby="timing-hint" disabled>
+      <label for="cast-range-px">
+        Cast Range <span id="cast-range-value">192 px</span>
+      </label>
+      <input id="cast-range-px" type="range" min="32" max="384" step="32" value="192" disabled>
+      <div id="area-control" class="timing-option" hidden>
+        <label for="area-radius">Area Radius (AoE) <span id="area-value"></span></label>
+        <input id="area-radius" type="range" disabled>
+      </div>
+      <div id="projectile-control" class="timing-option" hidden>
+        <label><input id="projectile" type="checkbox" disabled> Projectile</label>
+      </div>
+      <button id="reset-timing" type="button" disabled>Reset to Default</button>
+      <small id="timing-hint"></small>
+    </div>
+    <div id="vfx-canvas"></div>
+    <div id="effect-hotbar" role="group" aria-label="Effect shortcuts"></div>
+    <p>Click the arena to move with WASD or arrows. Aim with the mouse and use 1–6 to play effects.</p>
+  </main>
+  <p id="unavailable">The VFX Laboratory is available in development only.</p>
+  <script type="module" src="/src/vfx/lab/main.js"></script>
+</body>
+</html>

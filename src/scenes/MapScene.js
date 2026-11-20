@@ -5,11 +5,10 @@ import { Player } from '../entities/Player.js';
 import { Door } from '../entities/Door.js';
 import { createPlaceholderTextures } from '../art/placeholders.js';
 import { createDoorTextures } from '../art/doors.js';
-import { drawMapPlaceholders } from '../art/mapPlaceholders.js';
 import { readDoors } from '../maps/doors.js';
 import { addMapCollision } from '../maps/collision.js';
 import { objectsIn, propertiesOf, resolveSpawn } from '../maps/tiledObjects.js';
-import { isForegroundLayer,mapLayerDepth } from '../maps/layerDepth.js';
+import { preloadTiledMap, createTiledWorld } from '../maps/tiledWorld.js';
 import { getPresence } from '../multiplayer/client.js';
 import { RemotePlayers } from '../multiplayer/RemotePlayers.js';
 import { DoorSync } from '../multiplayer/DoorSync.js';
@@ -20,8 +19,6 @@ import { RoomChat } from '../RoomChat.js';
 import { readQuizSeats } from '../maps/quizSeats.js';
 import { QuizLobby } from '../QuizLobby.js';
 import { readSoloStudySeats } from '../maps/soloStudySeats.js';
-import { drawTiledTextObjects } from '../maps/tiledText.js';
-import { tileObjectFrame } from '../maps/tiledTileObjects.js';
 import { SoloStudyController } from '../SoloStudyController.js';
 import { startSceneEmotes,stopSceneEmotes } from '../emotes/sceneEmotes.js';
 import { readChallengeLeaderboards,nearbyChallengeLeaderboard } from '../maps/challengeLeaderboards.js';
@@ -43,7 +40,6 @@ import { WorldPrompt,centeredMessageViewport } from '../ui/WorldPrompt.js';
 import { getGameHud,bindSceneHud } from '../hud/GameHudController.js';
 import { hasProfileSession } from '../ProfileSessionClient.js';
 import { getCurrentCurrencyClient } from '../economy/CurrencyClient.js';
-import { applySmoothDecorativeTextureFilters } from '../maps/decorativeTextureFilters.js';
 import { classRestoreDestination } from '../maps/classState.js';
 import { ArenaEntryController } from '../boss/ArenaEntryController.js';
 import { PvpLobbyController } from '../pvp/PvpLobbyController.js';
@@ -59,18 +55,6 @@ import '../terminal/terminal.css';
 // The main classroom PCs now open the shared PvP lobby from a standing area.
 // Keep their legacy quiz seats inactive; PvP membership does not reserve seats.
 const MULTIPLAYER_QUIZ_DISABLED_MAPS=new Set(['school']);
-
-function readTileset(xml, firstgid) {
-  const root = xml.documentElement;
-  const image = root.querySelector('image');
-  const num = (key) => Number(root.getAttribute(key));
-  return {
-    firstgid, name: root.getAttribute('name'), image: image.getAttribute('source'),
-    tilewidth: num('tilewidth'), tileheight: num('tileheight'), tilecount: num('tilecount'),
-    columns: num('columns'), margin: num('margin'), spacing: num('spacing'),
-    imagewidth: Number(image.getAttribute('width')), imageheight: Number(image.getAttribute('height')),
-  };
-}
 
 // Interior and exterior use this single implementation of loading, collision and travel.
 export class MapScene extends Phaser.Scene {
@@ -94,113 +78,19 @@ export class MapScene extends Phaser.Scene {
     if(!this.textures.exists('school-hanger'))this.load.image('school-hanger',`${import.meta.env.BASE_URL}assets/hanger.png`);
     if(!this.textures.exists('health-potion-pickup'))this.load.image('health-potion-pickup',
       `${import.meta.env.BASE_URL}assets/items/loot-drop.png`);
-    const mapUrl = new URL(`${import.meta.env.BASE_URL}assets/maps/${this.filename}`, window.location.href);
-    if(this.mapLoadVersion!==undefined)mapUrl.searchParams.set('v',String(this.mapLoadVersion));
-    this.load.once(`filecomplete-json-${this.sourceKey}`, (_key, _type, data) => {
-      data.tilesets.forEach((reference, index) => {
-        const key = `${this.mapKey}-tileset-${index}`;
-        const tilesetUrl = reference.source ? new URL(reference.source, mapUrl) : mapUrl;
-        const loadImage = (tileset) => {
-          const url = new URL(tileset.image, tilesetUrl).href;
-          if (/\.svg$/i.test(tileset.image)) this.load.svg(key, url);
-          else this.load.image(key, url);
-        };
-        if (reference.source) {
-          this.load.once(`filecomplete-xml-${key}`, (_k, _t, xml) => loadImage(readTileset(xml, reference.firstgid)));
-          this.load.xml(key, tilesetUrl.href);
-        } else loadImage(reference);
-      });
-      data.layers.filter(layer=>layer.type==='imagelayer'&&layer.image).forEach(layer=>{
-        this.load.image(`${this.mapKey}-image-layer-${layer.id}`,new URL(layer.image,mapUrl).href);
-      });
-    });
-    this.load.json(this.sourceKey, mapUrl.href);
+    preloadTiledMap(this, import.meta.env.BASE_URL);
   }
 
   create(destination = {}) {
     this.gameHud=getGameHud();
     bindSceneHud(this,this.gameHud);
-    this.source = this.cache.json.get(this.sourceKey);
     // This source is much larger than its world display size; keep smoothing scoped to the ground bag.
     this.textures.get('health-potion-pickup').setFilter(Phaser.Textures.FilterMode.LINEAR);
-    const data = {
-      ...this.source,
-      tilesets: this.source.tilesets.map((reference, index) => reference.source
-        ? readTileset(this.cache.xml.get(`${this.mapKey}-tileset-${index}`), reference.firstgid)
-        : reference),
-    };
-    this.cache.tilemap.add(this.mapKey, { format: Phaser.Tilemaps.Formats.TILED_JSON, data });
-    const map = this.make.tilemap({ key: this.mapKey });
-    for(const layer of data.layers.filter(item=>item.type==='imagelayer'&&item.image)){
-      this.add.image((layer.offsetx??0)+(layer.x??0),(layer.offsety??0)+(layer.y??0),`${this.mapKey}-image-layer-${layer.id}`)
-        .setOrigin(0).setDepth(mapLayerDepth(layer,data))
-        .setVisible(layer.visible!==false).setAlpha(layer.opacity??1);
-    }
-    const tilesets = data.tilesets.map((definition, index) => {
-      const key = `${this.mapKey}-tileset-${index}`;
-      // Object tile sprites need explicit atlas frames, unlike tile layers.
-      const texture = this.textures.get(key);
-      for (let i = 0; i < definition.tilecount; i++) {
-        const x = (definition.margin ?? 0) + (i % definition.columns) * (definition.tilewidth + (definition.spacing ?? 0));
-        const y = (definition.margin ?? 0) + Math.floor(i / definition.columns) * (definition.tileheight + (definition.spacing ?? 0));
-        if (!texture.has(i)) texture.add(i, 0, x, y, definition.tilewidth, definition.tileheight);
-      }
-      return map.addTilesetImage(definition.name, key);
+    const map = createTiledWorld(this, () => {
+      createPlaceholderTextures(this);
+      createDoorTextures(this);
+      createCharacterAnimations(this,CHARACTERS,import.meta.env.DEV,true);
     });
-    applySmoothDecorativeTextureFilters({
-      tilesets: data.tilesets,
-      textureManager: this.textures,
-      textureKeyPrefix: `${this.mapKey}-tileset-`,
-      linearFilter: Phaser.Textures.FilterMode.LINEAR,
-    });
-    for (const [name, depth] of [['Floor', -2], ['Decoration', -1.5], ['Walls', -0.5]]) {
-      if (map.getLayer(name)) map.createLayer(name, tilesets).setDepth(depth);
-    }
-    for(const layer of data.layers.filter(item=>item.type==='tilelayer'&&isForegroundLayer(item))){
-      map.createLayer(layer.name,tilesets).setDepth(mapLayerDepth(layer,data))
-        .setVisible(layer.visible!==false).setAlpha(layer.opacity??1);
-    }
-    createPlaceholderTextures(this);
-    createDoorTextures(this);
-    createCharacterAnimations(this,CHARACTERS,import.meta.env.DEV,true);
-    drawMapPlaceholders(this, this.source);
-    this.tiledTextObjects=drawTiledTextObjects(this,this.source);
-    const floorDetails = this.source.layers.find((layer) => layer.name === 'FloorDetails');
-    if (floorDetails) {
-      for (const object of objectsIn(this.source, 'FloorDetails').filter((item) => item.gid)) {
-        const tileFrame = tileObjectFrame(object.gid, data.tilesets);
-        if (!tileFrame) throw new Error(`Unknown tile GID ${object.gid} on floor detail ${object.id}`);
-        const [sprite] = map.createFromObjects('FloorDetails', {
-          id: object.id,
-          key: `${this.mapKey}-tileset-${tileFrame.tilesetIndex}`,
-          frame: tileFrame.frame,
-        });
-        sprite.setDepth(-1.9);
-        sprite.setVisible(floorDetails.visible !== false && object.visible !== false);
-        sprite.setAlpha(floorDetails.opacity ?? 1);
-      }
-    }
-    for (const layerName of ['Entities', 'objectDecoration']) {
-      const objectLayer = this.source.layers.find((layer) => layer.name === layerName);
-      if (!objectLayer) continue;
-      for (const object of objectsIn(this.source, layerName).filter((item) => item.gid)) {
-        const tileFrame = tileObjectFrame(object.gid, data.tilesets);
-        if (!tileFrame) throw new Error(`Unknown tile GID ${object.gid} on object ${object.id}`);
-        // Resolve the texture BEFORE Phaser applies Tiled width/height. Replacing
-        // it afterwards preserves a scale calculated from the missing texture.
-        const [sprite] = map.createFromObjects(layerName, {
-          id: object.id,
-          key: `${this.mapKey}-tileset-${tileFrame.tilesetIndex}`,
-          frame: tileFrame.frame,
-        });
-        const props = propertiesOf(object);
-        sprite.setDepth(props.depth ?? object.y);
-        sprite.setVisible(objectLayer.visible !== false && object.visible !== false);
-        sprite.setAlpha(objectLayer.opacity ?? 1);
-        if (typeof props.flipX === 'boolean') sprite.setFlipX(props.flipX);
-      }
-    }
-    this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     this.player = new Player(this, 0, 0);
     this.remotes = new RemotePlayers(this,{labelFontSize:this.remoteNameLabelFontSize,labelResolution:this.remoteNameLabelResolution??1,
       showLabels:this.remoteNameLabels??true});

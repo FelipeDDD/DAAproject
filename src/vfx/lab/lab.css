@@ -1,0 +1,55 @@
+:root {
+  color-scheme: dark;
+  background: #12161b;
+  color: #e9edf0;
+  font: 14px/1.4 system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; padding: clamp(12px, 3vw, 30px); }
+main { max-width: 1000px; margin: auto; }
+header, .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+header { justify-content: space-between; margin-bottom: 12px; }
+h1 { margin: 0; font-size: clamp(21px, 4vw, 28px); }
+.controls { padding: 10px; background: #202831; border: 1px solid #36414d; border-radius: 6px 6px 0 0; }
+.controls label { display: flex; align-items: center; gap: 7px; }
+button, select, #leave {
+  font: inherit; color: inherit; padding: 6px 10px; background: #293541; border: 1px solid #526373; border-radius: 4px;
+}
+button:enabled, select, #leave { cursor: pointer; }
+button:disabled { opacity: .5; }
+#leave { text-decoration: none; }
+:is(button,select,#leave):hover { border-color: #e1a963; }
+:focus-visible { outline: 2px solid #e1a963; outline-offset: 2px; }
+#fps { margin-left: auto; color: #c2cbd4; font-variant-numeric: tabular-nums; }
+.timing-controls {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; padding: 8px 10px;
+  background: #1a222b; border: 1px solid #36414d; border-top: 0; font-size: 12px;
+}
+.timing-controls label { display: flex; gap: 5px; align-items: baseline; }
+.timing-controls label span { color: #f0c993; font-variant-numeric: tabular-nums; }
+.timing-controls input { accent-color: #e1a963; margin: 0; }
+.timing-controls input[type="range"] { width: clamp(86px,13vw,138px); }
+.timing-option:not([hidden]) { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; }
+.timing-controls button { font-size: 12px; padding: 4px 8px; }
+#timing-hint { flex: 1 1 200px; color: #b9c3cc; font-size: inherit; }
+#vfx-canvas { width: 100%; aspect-ratio: 832 / 576; max-height: 70dvh; background: #15191f; }
+canvas { display: block; image-rendering: pixelated; }
+#effect-hotbar {
+  display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 6px;
+  max-width: 650px; margin: 10px auto 0;
+}
+@media (max-width: 510px) {
+  #effect-hotbar { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+.effect-slot {
+  position: relative; min-height: 54px; min-width: 0;
+  padding: 14px 4px 5px; font-size: 12px; line-height: 1.25;
+  background: linear-gradient(155deg,#293541,#161f29);
+}
+.effect-slot kbd {
+  position: absolute; top: 3px; left: 5px;
+  font: 700 10px/1 system-ui,sans-serif; color: #edc990;
+}
+.effect-slot.is-active { border-color: #e1a963; background: #392b21; }
+.effect-slot:disabled { border-style: dashed; }
+main p { margin: 10px 0 0; color: #b9c3cc; }
