@@ -227,7 +227,8 @@ test('HUD subscription restores backend balance, reacts to gains/spends and igno
 
 test('weights validate config and permit precise one-percent or smaller chances',()=>{
   assert.equal(validateWeightedRewards(ROULETTE_REWARDS),100);assert.equal(ROULETTE_COST,5);
-  assert.equal(COIN_BRACKETS.reduce((sum,bracket)=>sum+bracket.weight,0),40);
+  const coinCategory=ROULETTE_REWARDS.find(reward=>reward.id==='coins');
+  assert.equal(COIN_BRACKETS.reduce((sum,bracket)=>sum+bracket.weight,0),coinCategory.weight);
   assert.equal(selectWeightedReward(ROULETTE_REWARDS,.835).id,'lung_crusher_rare');
   assert.equal(selectWeightedReward(ROULETTE_REWARDS,.845).id,'tier3_skin');
   const precise=[{id:'common',weight:99.99,reward:{type:'none'}},{id:'rare',weight:.01,reward:{type:'none'}}];
@@ -273,22 +274,23 @@ test('collection awards an unowned eligible pack; completed collection stacks vo
   assert.equal(h.db.rows('characterItems').length,4);
   assert.equal((await grantRoulettePrize(h.ctx,event,category)).itemId,CIGARETTE_VOUCHER.itemId);
   await grantRoulettePrize(h.ctx,event,category);
-  assert.equal(h.db.rows('characterItems').find(item=>item.itemId===CIGARETTE_VOUCHER.itemId).quantity,2);
+  assert.equal(h.db.rows('characterItems').find(item=>item.itemId===CIGARETTE_VOUCHER.itemId).quantity,3);
   t.mock.method(Math,'random',()=>.75);
   const args={profileId:h.profileId,spinId:'collection-voucher-id'};
   const result=await resolveRoulette(h.ctx,args);assert.equal(result.outcome.type,'voucher');
+  assert.equal(h.db.rows('characterItems').find(item=>item.itemId===CIGARETTE_VOUCHER.itemId).quantity,4);
   await resolveRoulette(h.ctx,args);
-  assert.equal(h.db.rows('characterItems').find(item=>item.itemId===CIGARETTE_VOUCHER.itemId).quantity,3);
+  assert.equal(h.db.rows('characterItems').find(item=>item.itemId===CIGARETTE_VOUCHER.itemId).quantity,4);
   assert.equal(await h.coins(),25);
 });
 
 test('coin category picks a weighted bracket then an integer amount, preserving the spin receipt',async t=>{
-  const h=await fixture(10),draws=[.33,.1,.5];t.mock.method(Math,'random',()=>draws.shift()??0);
+  const h=await fixture(10),draws=[.45,.1,.5];t.mock.method(Math,'random',()=>draws.shift()??0);
   const args={profileId:h.profileId,spinId:'coin-bracket-id'},result=await resolveRoulette(h.ctx,args);
-  assert.equal(result.categoryId,'coins');assert.deepEqual(result.outcome,{type:'coins',amount:4,label:'Coins \u00d74'});
-  assert.equal(await h.coins(),9);
+  assert.equal(result.categoryId,'coins');assert.deepEqual(result.outcome,{type:'coins',amount:2,label:'Coins \u00d72'});
+  assert.equal(await h.coins(),7);
   assert.deepEqual(await resolveRoulette(h.ctx,args),{...result,duplicate:true});
-  assert.equal(await h.coins(),9);
+  assert.equal(await h.coins(),7);
 });
 
 test('roulette grants appear in inventory after reload and cannot be claimed by the client',async()=>{
