@@ -1,6 +1,6 @@
-// Separate test-slot variant; the regular Yassin Tier 3 skin stays intact.
+// Promoted from the test slot to Yassin's Tier 3 skin.
 export const YASSIN_STUBBLE_TEST_VISUAL=Object.freeze({
-  menuLabel:'Yassin — TEST',
+  wardrobePreview:true,
   sprite:'character-yassin-stubble-test-v3',
   asset:'assets/characters/experimental/yassin-stubble-test-v3.png',
   previewAsset:'assets/characters/experimental/yassin-stubble-test-v3-idle.png',

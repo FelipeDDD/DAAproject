@@ -1,4 +1,4 @@
-// Third skin for the regular Yassin base; no separate character-selection card.
+// Retired Yassin Tier 3 skin, kept for the standalone sprite preview tool.
 export const YASSIN_BALD_TEST_VISUAL=Object.freeze({
   wardrobePreview:true,
   // Build opposite back-facing leg poses from columns 1/2 when registering.

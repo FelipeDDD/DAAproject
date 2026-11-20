@@ -1,5 +1,4 @@
 import { FELIPE_TEST_PALETTE } from './art/felipeRecolor.js';
-import { YASSIN_BALD_TEST_VISUAL } from './experimental/yassinBaldSkin.js';
 import { YASSIN_STUBBLE_TEST_VISUAL } from './experimental/yassinStubbleSkin.js';
 
 // Menu order, names and replaceable sprite assets. Classic sprites use a 32 x 56 canvas.
@@ -26,8 +25,7 @@ const ORIGINAL_CHARACTERS = [
   },
   {
     id: 'jassine', name: 'Yassin', sprite: 'character-jassine', asset: 'assets/characters/jassine.svg',
-    experimentalVisual:YASSIN_BALD_TEST_VISUAL,
-    testVisual:YASSIN_STUBBLE_TEST_VISUAL,
+    experimentalVisual:YASSIN_STUBBLE_TEST_VISUAL,
     newVisual:{sprite:'character-yassin-new',asset:'assets/characters/yassin-new.png?v=2',previewAsset:'assets/characters/yassin-new-preview.png?v=2'},
   },
   {

@@ -5,10 +5,11 @@ import {decodeFelipeMaterialMask} from '../src/art/felipeRecolor.js';
 import {characterColorParts,defaultCharacterPalette,recolorCharacterPixels,prepareCharacterRecolorTexture,updateCharacterRecolorTexture} from '../src/art/characterRecolor.js';
 import {WardrobeController} from '../src/WardrobeController.js';
 import {walkFrames} from '../src/characterVisuals.js';
+import {YASSIN_BALD_TEST_VISUAL} from '../src/experimental/yassinBaldSkin.js';
 import {readRgbaPng} from './helpers/readRgbaPng.js';
 
 for(const id of ['michael','sarina','jassine'])test(id+' third skin recolors all 24 frames, preserves fixed pixels and resets exactly',()=>{
-  const visual=characterById(id).experimentalVisual;
+  const visual=id==='jassine'?YASSIN_BALD_TEST_VISUAL:characterById(id).experimentalVisual;
   const source=readRgbaPng(new URL('../public/'+visual.asset,import.meta.url));
   const labels=readRgbaPng(new URL('../public/'+visual.recolorMaskAsset,import.meta.url));
   assert.equal(labels.width,source.width);assert.equal(labels.height,source.height);
@@ -35,6 +36,10 @@ for(const id of ['michael','sarina','jassine'])test(id+' third skin recolors all
 test('wardrobe controls match each character and reset to their own defaults',()=>{
   for(const id of ['felipe','sarina','michael','jassine']){
     const visual=characterById(id).experimentalVisual;
+    if(id==='jassine'){
+      assert.deepEqual(characterColorParts(visual),[]);
+      continue;
+    }
     assert.deepEqual(characterColorParts(visual),id==='felipe'||id==='sarina'?['hair','shirt','trousers','shoes']:['shirt','trousers','shoes']);
     const identity={characterBaseId:id,characterId:id,visualPreview:'level3Preview'};
     const palettes=[];
@@ -49,9 +54,10 @@ test('wardrobe controls match each character and reset to their own defaults',()
   }
 });
 
-test('all characters reuse source and mask for repeated palette changes without baking previous edits',()=>{
-  for(const id of ['felipe','sarina','michael','jassine']){
-    const visual=characterById(id).experimentalVisual,source={},mask={},cache=new Set(),calls=[];
+test('recolorable skins reuse source and mask for repeated palette changes without baking previous edits',()=>{
+  const visuals=['felipe','sarina','michael'].map(id=>characterById(id).experimentalVisual).concat(YASSIN_BALD_TEST_VISUAL);
+  for(const visual of visuals){
+    const source={},mask={},cache=new Set(),calls=[];
     const canvas={getContext:()=>({clearRect(){},drawImage(){}})};let uploads=0;
     const texture={getSourceImage:()=>canvas,source:[{update(){uploads++;}}]};
     const textures={exists:key=>cache.has(key),get:key=>key===visual.sprite?texture:{getSourceImage:()=>key===visual.recolorSource?source:mask},
@@ -65,8 +71,8 @@ test('all characters reuse source and mask for repeated palette changes without 
   }
 });
 
-test('Yassin uses Felipe walking cadence with registered feet in all 24 frames',()=>{
-  const visual=characterById('jassine').experimentalVisual;
+test('retired Yassin skin uses Felipe walking cadence with registered feet in all 24 frames',()=>{
+  const visual=YASSIN_BALD_TEST_VISUAL;
   const reference=characterById('felipe').experimentalVisual;
   assert.equal(visual.frameWidth,128);assert.equal(visual.frameHeight,144);
   assert.equal(visual.frameRate,reference.frameRate);
