@@ -13,18 +13,23 @@ import { Presence } from '../src/multiplayer/Presence.js';
 import { AVAILABLE_EMOTES } from '../src/emotes/config.js';
 import { readArenaInvitation,consumeArenaInvitation,arenaLobbyErrorMessage } from '../src/boss/arenaLobbyUi.js';
 
+const COOP_DEV_ENV={DEV:true,VITE_ARENA_COOP_ENABLED:'true'};
+
 function fixture(t,count=5){
   t.mock.method(Date,'now',()=>100_000);
   const savedDev=process.env.DEV_TOOLS_ENABLED,savedCloud=process.env.CONVEX_CLOUD_URL;
+  const savedCoop=process.env.ARENA_COOP_ENABLED;
   process.env.DEV_TOOLS_ENABLED='true';
+  process.env.ARENA_COOP_ENABLED='true';
   t.after(()=>{
     if(savedDev===undefined)delete process.env.DEV_TOOLS_ENABLED;else process.env.DEV_TOOLS_ENABLED=savedDev;
     if(savedCloud===undefined)delete process.env.CONVEX_CLOUD_URL;else process.env.CONVEX_CLOUD_URL=savedCloud;
+    if(savedCoop===undefined)delete process.env.ARENA_COOP_ENABLED;else process.env.ARENA_COOP_ENABLED=savedCoop;
   });
   const players=Array.from({length:count},(_,i)=>({_id:`p${i}`,playerId:`p${i}`,profileId:`profile${i}`,
     characterId:'felipe',characterBaseId:'felipe',sessionId:`session-${i}`,name:`Player ${i}`,displayName:`Player ${i}`,
     room:'secret-path',x:10,y:20,direction:'down',presenceMode:'playing',lastSeen:Date.now()}));
-  const tables={players,arenaLobbies:[],messages:[],emoteEvents:[],profileCharacterState:[]};
+  const tables={players,arenaLobbies:[],messages:[],emoteEvents:[],profileCharacterState:[],bossProgress:[]};
   const jobs=[];let next=0;
   const ctx={scheduler:{async runAfter(delay,fn,args){jobs.push({delay,fn,args});return `job${jobs.length}`;}},db:{
     query(table){
@@ -123,8 +128,14 @@ test('new lobby creation closes old hosted lobby; guest session security is pres
   process.env.DEV_TOOLS_ENABLED='false';process.env.CONVEX_CLOUD_URL='https://prod.convex.cloud';
   await assert.rejects(create._handler(ctx,args(1)),/ARENA_DEV_DISABLED/);
   await assert.rejects(join._handler(ctx,{...args(1),lobbyId:b.lobbyId}),/ARENA_DEV_DISABLED/);
-  // Disabling new entries never forcibly ends an existing lobby.
+  // The DEV gate alone does not invalidate existing lobbies.
   assert.ok(await current._handler(ctx,{...args(0),lobbyId:b.lobbyId}));
+
+  delete process.env.ARENA_COOP_ENABLED;
+  await assert.rejects(create._handler(ctx,args(1)),/ARENA_COOP_DISABLED/);
+  await assert.rejects(join._handler(ctx,{...args(1),lobbyId:b.lobbyId}),/ARENA_COOP_DISABLED/);
+  await assert.rejects(start._handler(ctx,{...args(0),lobbyId:b.lobbyId}),/ARENA_COOP_DISABLED/);
+  assert.equal((await current._handler(ctx,{...args(0),lobbyId:b.lobbyId})).closedReason,'disabled');
 });
 
 class Element {
@@ -155,21 +166,25 @@ function uiFixture(t){
 
 test('DEV toggle switches entrance choices immediately and is never enabled in production',t=>{
   const {storage}=uiFixture(t);
-  setCoopArenaEnabled(false,storage);assert.deepEqual(arenaEntryChoices(coopArenaEnabled({DEV:true},storage)),['solo']);
-  setCoopArenaEnabled(true,storage);assert.deepEqual(arenaEntryChoices(coopArenaEnabled({DEV:true},storage)),['solo','create','join']);
+  setCoopArenaEnabled(false,storage);assert.deepEqual(arenaEntryChoices(coopArenaEnabled(COOP_DEV_ENV,storage)),['solo']);
+  setCoopArenaEnabled(true,storage);assert.deepEqual(arenaEntryChoices(coopArenaEnabled(COOP_DEV_ENV,storage)),['solo','create','join']);
   assert.equal(coopArenaEnabled({DEV:false},storage),false);
   setCoopArenaEnabled(false,storage);
 });
 
 test('entrance hides normal Create/Join when OFF, permits explicit code entry; cancelling restores controls',t=>{
   const {scene,documentRef,storage,travel}=uiFixture(t);
-  const options={env:{DEV:true},documentRef,storage};setCoopArenaEnabled(false,storage);
+  const options={env:COOP_DEV_ENV,documentRef,storage};setCoopArenaEnabled(false,storage);
   let entry=new ArenaEntryController(scene,{targetMap:'arena'},options);
   const labels=()=>entry.panel.children.filter(node=>node.tag==='button').map(node=>node.textContent);
   assert.deepEqual(labels(),['Enter Solo','Have an invitation code?','Cancel']);assert.equal(scene.input.keyboard.enabled,false);
   entry.close();assert.equal(scene.input.keyboard.enabled,true);
   setCoopArenaEnabled(true,storage);entry=new ArenaEntryController(scene,{targetMap:'arena'},options);
   assert.deepEqual(labels(),['Enter Solo','Create Co-op Lobby','Join Co-op Lobby','Cancel']);
+  entry.close();
+  entry=new ArenaEntryController(scene,{targetMap:'arena'},{...options,env:{DEV:true}});
+  assert.deepEqual(labels(),['Enter Solo','Co-op (Temporarily Disabled)','Cancel']);
+  assert.equal(entry.buttons[1].disabled,true);
   entry.enterSolo();assert.equal(travel[0].arenaMode,'solo');assert.equal(scene.input.keyboard.enabled,true);
   setCoopArenaEnabled(false,storage);
 });
@@ -177,7 +192,7 @@ test('entrance hides normal Create/Join when OFF, permits explicit code entry; c
 test('started lobby transitions exactly once; stale lobby callbacks cannot re-enter after cancellation',async t=>{
   const {scene,documentRef,storage,state,callbacks,travel,calls,subscriptions}=uiFixture(t);
   setCoopArenaEnabled(true,storage);
-  const entry=new ArenaEntryController(scene,{targetMap:'arena'}, {env:{DEV:true},documentRef,storage});
+  const entry=new ArenaEntryController(scene,{targetMap:'arena'}, {env:COOP_DEV_ENV,documentRef,storage});
   await entry.acquire('create');callbacks[0](state);
   assert.equal(entry.list.children[0].children[1].children[0].textContent,'Alex');
   assert.equal(entry.list.children[0].children[2].textContent,'HOST');
@@ -191,7 +206,7 @@ test('cancelled in-flight lobby creation is released when response arrives and n
   const {scene,documentRef,storage,presence,travel,calls}=uiFixture(t);
   setCoopArenaEnabled(true,storage);let complete;
   presence.client.mutation=(fn,args)=>{calls.push({fn,args});return fn==='create'?new Promise(resolve=>complete=resolve):Promise.resolve({});};
-  const entry=new ArenaEntryController(scene,{targetMap:'arena'}, {env:{DEV:true},documentRef,storage});
+  const entry=new ArenaEntryController(scene,{targetMap:'arena'}, {env:COOP_DEV_ENV,documentRef,storage});
   const pending=entry.acquire('create');entry.close();complete({lobbyId:'late'});await pending;
   assert.equal(travel.length,0);assert.equal(calls.at(-1).fn,'leave');assert.equal(calls.at(-1).args.lobbyId,'late');
   setCoopArenaEnabled(false,storage);
@@ -251,7 +266,7 @@ test('synchronous cached started result is delivered after attaching the owner a
   f.presence.client.onUpdate=(_fn,_args,callback)=>{
     subscribed++;callback({...f.state,status:'started'});return()=>subscribed--;
   };
-  const entry=new ArenaEntryController(f.scene,{targetMap:'arena'}, {env:{DEV:true},documentRef:f.documentRef,storage:f.storage});
+  const entry=new ArenaEntryController(f.scene,{targetMap:'arena'}, {env:COOP_DEV_ENV,documentRef:f.documentRef,storage:f.storage});
   await entry.acquire('create');await Promise.resolve();
   assert.equal(f.travel.length,1);assert.equal(subscribed,0);assert.equal(entry.active,false);
   setCoopArenaEnabled(false,f.storage);
@@ -300,21 +315,27 @@ test('URL invitation is normalized, preserved until explicit join and consumed w
   assert.equal(consumeArenaInvitation({href:'https://example.test/game/?other=1&coop=a7k4q2#map',search:'?other=1&coop=a7k4q2'},history),'A7K4Q2');
   assert.deepEqual(replaced,[{page:1},'','/game/?other=1#map']);
   const f=uiFixture(t);setCoopArenaEnabled(false,f.storage);
+  const paused=new ArenaEntryController(f.scene,{targetMap:'arena'},
+    {env:{DEV:true},documentRef:f.documentRef,storage:f.storage,invitationCode:'A7K4Q2'});
+  assert.equal(paused.code,null);
+  assert.match(paused.panel.children[1].textContent,/temporarily disabled/);
+  assert.deepEqual(paused.buttons.map(button=>button.textContent),['Return to game']);
+  paused.close();
   const before=f.storage.getItem('daa-dev-coop-arena');
   const entry=new ArenaEntryController(f.scene,{targetMap:'arena'},
-    {env:{DEV:true},documentRef:f.documentRef,storage:f.storage,invitationCode:' a7k4q2 '});
+    {env:COOP_DEV_ENV,documentRef:f.documentRef,storage:f.storage,invitationCode:' a7k4q2 '});
   assert.equal(entry.code.value,'A7K4Q2');assert.equal(f.calls.length,0); // Never autojoin.
   entry.key({type:'keydown',key:'Enter',target:entry.code,repeat:false,stopImmediatePropagation(){},preventDefault(){}});
   await Promise.resolve();await Promise.resolve();
   assert.equal(f.calls[0].fn,'join');assert.equal(f.calls[0].args.code,'A7K4Q2');
-  assert.equal(f.storage.getItem('daa-dev-coop-arena'),before);assert.equal(coopArenaEnabled({DEV:true},f.storage),false);
+  assert.equal(f.storage.getItem('daa-dev-coop-arena'),before);assert.equal(coopArenaEnabled(COOP_DEV_ENV,f.storage),false);
   entry.close();
 });
 
 test('create double click is serialized and lobby displays names/classes/vacancies without raw IDs',async t=>{
   const f=uiFixture(t);setCoopArenaEnabled(true,f.storage);let complete;
   f.presence.client.mutation=(fn,args)=>{f.calls.push({fn,args});return fn==='create'?new Promise(resolve=>complete=resolve):Promise.resolve({});};
-  const entry=new ArenaEntryController(f.scene,{targetMap:'arena'}, {env:{DEV:true},documentRef:f.documentRef,storage:f.storage});
+  const entry=new ArenaEntryController(f.scene,{targetMap:'arena'}, {env:COOP_DEV_ENV,documentRef:f.documentRef,storage:f.storage});
   const pending=entry.acquire('create');await entry.acquire('create');
   assert.equal(f.calls.length,1);assert.ok(entry.buttons.filter(b=>!b.arenaAllowBusy).every(b=>b.disabled));
   complete({lobbyId:'lobby-a',code:'A7K4Q2'});await pending;f.callbacks[0](f.state);
@@ -331,7 +352,7 @@ test('create double click is serialized and lobby displays names/classes/vacanci
 
 test('copy code uses Clipboard API, preserves brief feedback through updates, and selects code on failure',async t=>{
   const f=uiFixture(t);setCoopArenaEnabled(true,f.storage);let copied;
-  const entry=new ArenaEntryController(f.scene,{}, {env:{DEV:true},documentRef:f.documentRef,storage:f.storage,
+  const entry=new ArenaEntryController(f.scene,{}, {env:COOP_DEV_ENV,documentRef:f.documentRef,storage:f.storage,
     clipboard:{async writeText(code){copied=code;}}});
   await entry.acquire('create');f.callbacks[0](f.state);
   await entry.copyCode();assert.equal(copied,'A7K4Q2');assert.equal(entry.status.textContent,'Lobby code copied.');
@@ -346,7 +367,7 @@ test('copy code uses Clipboard API, preserves brief feedback through updates, an
 
 test('guest cannot start; failed join/start show actionable errors without losing controls or creating subscriptions',async t=>{
   const f=uiFixture(t);setCoopArenaEnabled(false,f.storage);
-  const entry=new ArenaEntryController(f.scene,{}, {env:{DEV:true},documentRef:f.documentRef,storage:f.storage,invitationCode:'A7K4Q2'});
+  const entry=new ArenaEntryController(f.scene,{}, {env:COOP_DEV_ENV,documentRef:f.documentRef,storage:f.storage,invitationCode:'A7K4Q2'});
   await entry.acquire('join','bad');assert.equal(f.calls.length,0);
   f.presence.client.mutation=async()=>{throw {data:'ARENA_LOBBY_NOT_FOUND'};};
   await entry.acquire('join','A7K4Q2');assert.equal(entry.busy,false);assert.equal(entry.code.disabled,false);
@@ -363,7 +384,7 @@ test('guest cannot start; failed join/start show actionable errors without losin
 
 test('closed lobby clears IDs/subscriptions, shows host reason, ignores stale start and reopens cleanly',async t=>{
   const f=uiFixture(t);setCoopArenaEnabled(true,f.storage);
-  const options={env:{DEV:true},documentRef:f.documentRef,storage:f.storage};
+  const options={env:COOP_DEV_ENV,documentRef:f.documentRef,storage:f.storage};
   const entry=new ArenaEntryController(f.scene,{},options);
   await entry.acquire('create');f.callbacks[0](f.state);
   f.callbacks[0]({...f.state,status:'closed',closedReason:'host-left',participants:[]});
@@ -394,7 +415,7 @@ test('two independent clients: host ON, guest OFF, leave/rejoin/host closure the
     };
   }
   const make=f=>new ArenaEntryController(f.scene,{targetMap:'arena',targetSpawn:'arena-spawn'},
-    {env:{DEV:true},documentRef:f.documentRef,storage:f.storage});
+    {env:COOP_DEV_ENV,documentRef:f.documentRef,storage:f.storage});
   setCoopArenaEnabled(true,a.storage);let host=make(a);await host.acquire('create');await flush();
   setCoopArenaEnabled(false,b.storage);let guest=make(b);guest.renderJoin(host.lobbyState.code.toLowerCase());
   const guestFlag=b.storage.getItem('daa-dev-coop-arena');

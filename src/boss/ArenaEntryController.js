@@ -1,7 +1,7 @@
-import { coopArenaEnabled,arenaEntryChoices } from './devArenaSettings.js';
+import { coopArenaAvailable,coopArenaEnabled,arenaEntryChoices } from './devArenaSettings.js';
 import { ArenaLobbyClient } from './ArenaLobbyClient.js';
 import { ArenaLobbyView } from './ArenaLobbyView.js';
-import { normalizeArenaCode,validArenaCode,arenaClosureMessage,arenaLobbyErrorMessage,setArenaDiagnostics } from './arenaLobbyUi.js';
+import { ARENA_COOP_DISABLED_MESSAGE,normalizeArenaCode,validArenaCode,arenaClosureMessage,arenaLobbyErrorMessage,setArenaDiagnostics } from './arenaLobbyUi.js';
 import { pvpLobbyAvailable } from '../pvp/config.js';
 
 const LABELS={solo:'Enter Solo',create:'Create Co-op Lobby',join:'Join Co-op Lobby'};
@@ -33,13 +33,19 @@ export class ArenaEntryController {
     };
     documentRef.addEventListener('keydown',this.key,true);documentRef.addEventListener('keyup',this.key,true);
     if(notice)this.renderNotice(notice);
-    else if(invitationCode!==null)this.renderJoin(invitationCode);
+    else if(invitationCode!==null){
+      if(coopArenaAvailable(this.env))this.renderJoin(invitationCode);
+      else this.renderNotice(ARENA_COOP_DISABLED_MESSAGE,'CO-OP UNAVAILABLE');
+    }
     else this.renderChoices();
   }
   node(tag,text){const node=this.document.createElement(tag);node.textContent=text;return node;}
-  button(label,action,{kind='secondary',parent=this.panel,allowBusy=false}={}){
+  button(label,action,{kind='secondary',parent=this.panel,allowBusy=false,disabled=false}={}){
     const node=this.node('button',label);node.type='button';node.className=`arena-action arena-action-${kind}`;
-    node.arenaAllowBusy=allowBusy;node.addEventListener('click',action);parent.append(node);this.buttons.push(node);return node;
+    node.arenaAllowBusy=allowBusy;
+    if(disabled)node.disabled=node.arenaDisabled=true;
+    if(action)node.addEventListener('click',action);
+    parent.append(node);this.buttons.push(node);return node;
   }
   header(title,subtitle){
     this.buttons=[];this.code=null;this.panel.replaceChildren(this.node('h2',title));
@@ -55,19 +61,22 @@ export class ArenaEntryController {
   }
   setBusy(busy){
     this.busy=busy;this.root.setAttribute('aria-busy',String(busy));
-    for(const button of this.buttons)button.disabled=busy&&!button.arenaAllowBusy;
+    for(const button of this.buttons)button.disabled=Boolean(button.arenaDisabled)||(busy&&!button.arenaAllowBusy);
     if(this.code)this.code.disabled=busy;
     if(this.lobbyView)this.lobbyView.render(this.lobbyState??this.lobbyView.state);
   }
   renderChoices(){
-    this.header('DIRECTOR ARENA','Enter alone or prepare a co-op encounter.');let first;
-    for(const choice of arenaEntryChoices(coopArenaEnabled(this.env,this.storage))){
+    const available=coopArenaAvailable(this.env);
+    const enabled=coopArenaEnabled(this.env,this.storage);
+    this.header('DIRECTOR ARENA','Choose an arena mode.');let first;
+    for(const choice of arenaEntryChoices(enabled)){
       const button=this.button(LABELS[choice],()=>{
         if(choice==='solo')this.enterSolo();else if(choice==='create')void this.acquire('create');else this.renderJoin();
       },{kind:choice==='solo'?'primary':'secondary'});first??=button;
     }
     // An explicit invitation is distinct from experimental discovery/creation.
-    if(!coopArenaEnabled(this.env,this.storage))this.button('Have an invitation code?',()=>this.renderJoin(),{kind:'link'});
+    if(!available)this.button('Co-op (Temporarily Disabled)',null,{disabled:true});
+    else if(!enabled)this.button('Have an invitation code?',()=>this.renderJoin(),{kind:'link'});
     if(pvpLobbyAvailable(this.env)&&this.scene.openPvpLobby)this.button('PvP Arena (test)',()=>{this.close();this.scene.openPvpLobby();},{kind:'link'});
     this.createStatus();this.button('Cancel',()=>this.close(),{kind:'quiet',allowBusy:true});first?.focus();
   }
@@ -85,6 +94,7 @@ export class ArenaEntryController {
   enterSolo(){if(this.busy||!this.active)return;this.close();this.scene.travelTo({...this.destination,arenaMode:'solo'});}
   async acquire(action,rawCode){
     if(this.busy||!this.active)return;
+    if(!coopArenaAvailable(this.env)){this.showStatus(ARENA_COOP_DISABLED_MESSAGE);return;}
     if(action==='create'&&!coopArenaEnabled(this.env,this.storage))return;
     const code=normalizeArenaCode(rawCode);
     if(action==='join'&&!validArenaCode(code)){this.status.textContent='Enter a valid six-character lobby code.';return;}
@@ -143,8 +153,8 @@ export class ArenaEntryController {
       });
   }
   endLobby(message){this.generation++;this.busy=false;this.releaseLobby();setArenaDiagnostics(this.scene,null);this.renderNotice(message);}
-  renderNotice(message){
-    this.header('CO-OP LOBBY CLOSED',message);this.createStatus();
+  renderNotice(message,title='CO-OP LOBBY CLOSED'){
+    this.header(title,message);this.createStatus();
     this.button('Return to game',()=>this.close(),{kind:'primary',allowBusy:true}).focus();
   }
   reportError(error){

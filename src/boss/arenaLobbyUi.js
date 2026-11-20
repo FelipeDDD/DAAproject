@@ -1,4 +1,5 @@
 export const ARENA_CODE_ALPHABET='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+export const ARENA_COOP_DISABLED_MESSAGE='Co-op Arena is temporarily disabled.';
 export const normalizeArenaCode=value=>String(value??'').trim().toUpperCase();
 export const validArenaCode=value=>/^[A-Z2-9]{6}$/.test(normalizeArenaCode(value));
 
@@ -16,7 +17,7 @@ export function consumeArenaInvitation(location=globalThis.location,history=glob
   return code;
 }
 export function arenaClosureMessage(reason){
-  return ({'host-left':'The host closed the lobby.',
+  return ({disabled:ARENA_COOP_DISABLED_MESSAGE,'host-left':'The host closed the lobby.',
     'host-disconnected':'The host disconnected. The lobby is closed.',
     expired:'This lobby has expired.',removed:'You are no longer in this lobby.'})[reason]
     ??'This lobby is no longer available.';
@@ -32,6 +33,7 @@ export function arenaLobbyErrorMessage(error){
     ARENA_LOBBY_EXPIRED:'This lobby has expired. Ask the host for a new code.',
     ARENA_HOST_LEFT:'The host disconnected. Ask for a new lobby code.',
     ARENA_HOST_ONLY:'Only the host can start the encounter.',
+    ARENA_COOP_DISABLED:ARENA_COOP_DISABLED_MESSAGE,
     ARENA_DEV_DISABLED:'Experimental co-op is disabled on this backend.',
     CHARACTER_SESSION_LOST:'Your character session expired. Choose a character again.',
   };

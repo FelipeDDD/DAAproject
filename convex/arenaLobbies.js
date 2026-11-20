@@ -7,6 +7,10 @@ import { ARENA_COOP_CAPACITY,ARENA_LOBBY_LIFETIME_MS,coopArenaRoom } from '../sr
 
 const identityArgs={playerId:v.string(),sessionId:v.string()};
 const memberArgs={...identityArgs,lobbyId:v.id('arenaLobbies')};
+const coopArenaAvailable=()=>process.env.ARENA_COOP_ENABLED==='true';
+function requireCoopArena(){
+  if(!coopArenaAvailable())throw new ConvexError('ARENA_COOP_DISABLED');
+}
 function requireDev(){
   if(process.env.DEV_TOOLS_ENABLED!=='true'&&!/^https?:\/\/(127\.0\.0\.1|localhost)(:|\/)/.test(process.env.CONVEX_CLOUD_URL??''))
     throw new ConvexError('ARENA_DEV_DISABLED');
@@ -54,6 +58,7 @@ export const current=query({
     await requirePlayer(ctx,args);
     const lobby=await ctx.db.get(args.lobbyId);
     if(!isMember(lobby,args))return null;
+    if(!coopArenaAvailable())return closedLobby(lobby,'disabled');
     if(lobby.status==='closed')return closedLobby(lobby,lobby.closedReason??'host-left');
     if(lobby.expiresAt<=Date.now())return closedLobby(lobby,'expired');
     return publicLobby(lobby,await activeArenaMembers(ctx,lobby))??closedLobby(lobby,'host-disconnected');
@@ -62,6 +67,7 @@ export const current=query({
 export const create=mutation({
   args:identityArgs,
   handler:async(ctx,args)=>{
+    requireCoopArena();
     requireDev();const player=await requirePlayer(ctx,args);
     await leaveOtherLobbies(ctx,args);
     const now=Date.now();
@@ -91,6 +97,7 @@ async function removeMember(ctx,lobby,args){
 export const join=mutation({
   args:{...identityArgs,code:v.optional(v.string()),lobbyId:v.optional(v.id('arenaLobbies'))},
   handler:async(ctx,args)=>{
+    requireCoopArena();
     requireDev();await requirePlayer(ctx,args);
     const code=normalizeArenaCode(args.code);
     if(args.code!==undefined&&!validArenaCode(code))throw new ConvexError('ARENA_CODE_INVALID');
@@ -115,6 +122,7 @@ export const join=mutation({
 export const start=mutation({
   args:memberArgs,
   handler:async(ctx,args)=>{
+    requireCoopArena();
     await requirePlayer(ctx,args);
     const lobby=await ctx.db.get(args.lobbyId);
     if(!isMember(lobby,args)||lobby.hostPlayerId!==args.playerId)throw new ConvexError('ARENA_HOST_ONLY');
@@ -144,6 +152,7 @@ export const expire=internalMutation({
   },
 });
 export async function requireArenaRoomMembership(ctx,player,lobbyId){
+  requireCoopArena();
   const lobby=await ctx.db.get(lobbyId);
   if(lobby?.status!=='started'||!isMember(lobby,player)
     ||!(await activeArenaMembers(ctx,lobby)).some(p=>p.playerId===lobby.hostPlayerId))

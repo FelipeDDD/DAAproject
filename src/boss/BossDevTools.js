@@ -1,6 +1,6 @@
 import { BossProgressClient } from './BossProgressClient.js';
 import { initializeDevPuzzleSettings,setDevPuzzleOneAnswerEnabled } from './devPuzzleSettings.js';
-import { coopArenaEnabled,setCoopArenaEnabled } from './devArenaSettings.js';
+import { coopArenaAvailable,coopArenaEnabled,setCoopArenaEnabled } from './devArenaSettings.js';
 import { pvpEnabled,setPvpEnabled } from '../pvp/config.js';
 
 export const shouldShowBossDevTools=env=>env?.DEV===true;
@@ -17,7 +17,7 @@ const ACTIONS=Object.freeze([
 ]);
 
 export class BossDevTools {
-  constructor(scene,presence,{documentRef=globalThis.document}={}){
+  constructor(scene,presence,{documentRef=globalThis.document,env=import.meta.env}={}){
     const document=documentRef;
     const oneAnswerMode=initializeDevPuzzleSettings();
     this.scene=scene;this.client=new BossProgressClient(presence);this.busy=false;
@@ -54,14 +54,16 @@ export class BossDevTools {
     const freeCollectText=document.createElement('span');freeCollectText.textContent='Collect cigarette packs in any order';
     freeCollectOption.append(this.freeCollectInput,freeCollectText);
     this.coopArenaButton=document.createElement('button');this.coopArenaButton.type='button';
+    this.coopArenaButton.disabled=!coopArenaAvailable(env);
     const updateCoopLabel=()=>{
-      const enabled=coopArenaEnabled({DEV:true});
-      this.coopArenaButton.textContent=`Co-op Arena: ${enabled?'ON':'OFF'}`;
+      const enabled=coopArenaEnabled(env);
+      this.coopArenaButton.textContent=`Co-op Arena: ${this.coopArenaButton.disabled?'Temporarily Disabled':enabled?'ON':'OFF'}`;
       this.coopArenaButton.setAttribute('aria-pressed',String(enabled));
     };
     updateCoopLabel();
     this.coopArenaButton.addEventListener('click',()=>{
-      setCoopArenaEnabled(!coopArenaEnabled({DEV:true}));updateCoopLabel();
+      if(this.coopArenaButton.disabled)return;
+      setCoopArenaEnabled(!coopArenaEnabled(env));updateCoopLabel();
       this.status.textContent='DEV: arena setting applies to the next entrance.';
     });
     this.status=document.createElement('small');this.status.setAttribute('role','status');
@@ -77,7 +79,11 @@ export class BossDevTools {
     if(import.meta.env?.DEV){
       const openLab=document.createElement('button');openLab.type='button';openLab.textContent='Open Realtime Lab';
       openLab.addEventListener('click',()=>globalThis.open('/tools/realtime-lab/','_blank','noopener,noreferrer'));
-      this.content.append(openLab);
+      const openVfxLab=document.createElement('button');openVfxLab.type='button';openVfxLab.textContent='Open VFX Lab';
+      openVfxLab.addEventListener('click',()=>globalThis.open(
+        `${import.meta.env.BASE_URL}tools/vfx-lab/?from=game`,'_blank','noopener,noreferrer',
+      ));
+      this.content.append(openLab,openVfxLab);
     }
     this.setCollapsed(true);
   }
