@@ -11,6 +11,8 @@ const PRESETS=Object.freeze([
 ]);
 const ACTIONS=Object.freeze([
   ['boss','Teleport to boss'],['classroom','Teleport to classroom'],['potion','Drop health potion'],
+  ['swamp','Teleport to swamp'],
+  ['swampLarge','Teleport to swamp V3 (1920 px)'],
   ['coins','Get 30 coins'],
   ['clearPotions','Clear my potions'],['office2Key','Get Office2 key'],
   ['resetCollection','Reset cigarette collection'],['grantCollection','Get all cigarette packs'],
@@ -96,6 +98,8 @@ export class BossDevTools {
     let result=false;
     if(action==='boss')result=this.scene.devTeleport?.('arena','boss-spawn',{offsetX:-260});
     if(action==='classroom')result=this.scene.devTeleport?.('school','default');
+    if(action==='swamp')result=this.scene.devTeleport?.('swamp','default');
+    if(action==='swampLarge')result=this.scene.devTeleport?.('swamp-v3-large','default');
     if(action==='potion')result=Boolean(this.scene.devDropHealthPotion?.());
     this.status.textContent=result?`DEV: ${label}`:`DEV: ${label} unavailable`;
     return result;

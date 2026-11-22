@@ -81,6 +81,10 @@ export class MapScene extends Phaser.Scene {
     preloadTiledMap(this, import.meta.env.BASE_URL);
   }
 
+  createMapCollision(map) {
+    return addMapCollision(this, map, this.player,this.collisionOptions?.()??{});
+  }
+
   create(destination = {}) {
     this.gameHud=getGameHud();
     bindSceneHud(this,this.gameHud);
@@ -94,7 +98,7 @@ export class MapScene extends Phaser.Scene {
     this.player = new Player(this, 0, 0);
     this.remotes = new RemotePlayers(this,{labelFontSize:this.remoteNameLabelFontSize,labelResolution:this.remoteNameLabelResolution??1,
       showLabels:this.remoteNameLabels??true});
-    this.collisionLayer = addMapCollision(this, map, this.player,this.collisionOptions?.()??{});
+    this.collisionLayer = this.createMapCollision(map);
     this.doors = readDoors(this.source).map((definition) => new Door(this, definition));
     this.quizSeats = readQuizSeats(this.source);
     this.soloStudySeats=readSoloStudySeats(this.source);
