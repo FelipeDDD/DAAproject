@@ -34,3 +34,8 @@ palette, radial wave and faceted crystals, without its character poses.
 Both use the original band, crystal or sparkle drawing helpers and position
 their details on a circular ground plane. The persistent timing and particle
 cycles are DAAproject adaptations.
+
+The target reaction panel uses the status and lightning modules and particle cycle
+helper from the same revision. Lab-specific options shorten Haste trails and hide
+the Slowed clock dial. The lab supplies masks from its own sprites and draws a
+brief schematic skeleton over the Electrified jolt.

@@ -64,20 +64,34 @@ A seleção exige o Convex disponível para confirmar que o personagem está liv
 
 ### Laboratório de VFX
 
-No Vite de desenvolvimento, abra **Dev Tools → Open VFX Lab** ou acesse
+Execute `npm run dev`, abra **Dev Tools → Open VFX Lab** ou acesse
 `http://localhost:5173/tools/vfx-lab/` diretamente. A página funciona sem Convex
 ou relay WebSocket. **Leave Lab** volta para o jogo. O botão nos Dev Tools abre
 uma nova aba e preserva a sessão que já estava aberta.
 
-**Play** apresenta o efeito escolhido junto aos pés do alvo. **Reset** limpa o
-efeito e reposiciona o jogador. **Loop** reapresenta o efeito até ser desmarcado.
-WASD e setas movem o jogador quando a arena tem foco.
+Escolha **Essentials**, **Attacks**, **Area & support** ou **Pixelfx Experiments**.
+Os atalhos **1–9 e 0** aparecem em cada habilidade. **Page Up / Page Down** alternam as barras.
+Um clique no slot reproduz o efeito. O seletor **Effect** permite escolher sem
+disparar. Quando houver uma **Variant**, escolha-a e use **Play** ou **Loop** para comparar.
+Mire com o mouse. **Reset** limpa o efeito e reposiciona o jogador. WASD e setas
+movem o jogador quando a arena tem foco.
+Fire Impact, Ice Shards, Hit Spark, Copper Lash e Life Steal também disparam ao clicar na arena.
+Para testar o chicote, caminhe e mude a mira durante o golpe. Em **Smoke Burst →
+Smoke screen**, ajuste **Area radius** e reproduza novamente para comparar a cobertura.
+A variante **Channel** do Arcane Beam mantém o jogador parado durante a canalização.
+Em **Target reactions**, escolha um dummy, habilite **Walk** para movimentá-lo e use
+**Apply status** ou **Test hit** para comparar reações e impactos. **Reset** limpa ambos.
+No cabeçalho, **Combat Sandbox** abre lutas individuais ou mistas contra as quatro variantes de Slime e o Ghost.
+Veja os controles e as áreas de acerto no [guia do Combat Sandbox](tools/vfx-lab/COMBAT.md).
+Veja as combinações e os resultados da inspeção visual na [curadoria do laboratório](tools/vfx-lab/CURATION.md).
 
 O laboratório usa `pvp-arena-test.tmj` e registra suas próprias posições em
 `src/vfx/lab/layout.js`. Para comparar outro efeito, registre uma entrada em
 `src/vfx/lab/effects.js` com duração e uma função que cria uma view com
 `update(elapsedMs, deltaMs)` e `destroy()`. A versão, as adaptações e a licença do
 PixelFX estão em `src/vfx/lab/vendor/pixelfx/`.
+As novas sequências e variantes ficam em `src/vfx/lab/sequenceEffects.js`.
+As folhas, suas fontes e a receita de geração estão em [tools/vfx-lab/SOURCES.md](tools/vfx-lab/SOURCES.md).
 
 ### Login opcional
 

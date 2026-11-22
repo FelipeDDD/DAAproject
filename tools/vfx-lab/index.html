@@ -4,48 +4,115 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>VFX Laboratory</title>
+  <link rel="icon" href="data:,">
 </head>
 <body>
   <main id="lab" hidden>
     <header>
-      <h1>VFX Laboratory</h1>
-      <a id="leave" href="/">Leave Lab</a>
+      <h1 id="lab-title">VFX Laboratory</h1>
+      <nav class="lab-navigation" aria-label="Laboratory modes">
+        <a id="lab-mode" href="?mode=combat">Combat Sandbox</a>
+        <a id="leave" href="/">Leave Lab</a>
+      </nav>
     </header>
-    <div class="controls">
-      <label>Effect <select id="effect"></select></label>
-      <button id="play" type="button" disabled>Play</button>
-      <button id="reset" type="button" disabled>Reset</button>
-      <label class="loop"><input type="checkbox" id="loop"> Loop</label>
-      <label><input type="checkbox" id="casting" checked> Fire Ring cast prep</label>
-      <label><input type="checkbox" id="cast-range" checked> Show cast range</label>
-      <output id="fps" aria-live="off">– FPS</output>
-    </div>
-    <div class="timing-controls" role="group" aria-label="Selected effect timing">
-      <label for="cast-duration">
-        Cast Preparation <span id="cast-value">1500 ms</span>
-      </label>
-      <input id="cast-duration" type="range" min="0" max="1500" step="10" value="1500" disabled>
-      <label for="effect-duration">
-        Effect Duration <span id="effect-value">3000 ms</span>
-      </label>
-      <input id="effect-duration" type="range" value="3000" aria-describedby="timing-hint" disabled>
-      <label for="cast-range-px">
-        Cast Range <span id="cast-range-value">192 px</span>
-      </label>
-      <input id="cast-range-px" type="range" min="32" max="384" step="32" value="192" disabled>
-      <div id="area-control" class="timing-option" hidden>
-        <label for="area-radius">Area Radius (AoE) <span id="area-value"></span></label>
-        <input id="area-radius" type="range" disabled>
+    <section id="vfx-controls" aria-label="VFX controls">
+      <nav id="effect-banks" aria-label="Effect banks"></nav>
+      <div class="controls">
+        <label>Effect <select id="effect"></select></label>
+        <label id="variant-control" hidden>Variant <select id="variant"></select></label>
+        <button id="play" type="button" disabled>Play</button>
+        <button id="reset" type="button" disabled>Reset</button>
+        <label class="loop"><input type="checkbox" id="loop"> Loop</label>
+        <label><input type="checkbox" id="casting" checked> Fire Ring cast prep</label>
+        <label><input type="checkbox" id="cast-range" checked> Show cast range</label>
+        <output id="fps" aria-live="off">– FPS</output>
       </div>
-      <div id="projectile-control" class="timing-option" hidden>
-        <label><input id="projectile" type="checkbox" disabled> Projectile</label>
+      <div class="timing-controls" role="group" aria-label="Selected effect timing">
+        <label for="cast-duration">
+          Cast Preparation <span id="cast-value">1500 ms</span>
+        </label>
+        <input id="cast-duration" type="range" min="0" max="1500" step="10" value="1500" disabled>
+        <label for="effect-duration">
+          Effect Duration <span id="effect-value">3000 ms</span>
+        </label>
+        <input id="effect-duration" type="range" value="3000" aria-describedby="timing-hint" disabled>
+        <label for="cast-range-px">
+          Cast Range <span id="cast-range-value">192 px</span>
+        </label>
+        <input id="cast-range-px" type="range" min="32" max="384" step="32" value="192" disabled>
+        <div id="area-control" class="timing-option" hidden>
+          <label for="area-radius">Area Radius (AoE) <span id="area-value"></span></label>
+          <input id="area-radius" type="range" disabled>
+        </div>
+        <div id="camo-controls" class="timing-option" hidden>
+          <label>Visibility <select id="camo-mode"><option value="teams">Team camouflage</option><option value="all">Fade everyone</option></select></label>
+          <label>Observer <select id="observer"><option value="blue">Team A</option><option value="red">Team B</option></select></label>
+          <label>Opacity <input id="opacity" type="range" min="0" max="1" step="0.05"><span id="opacity-value"></span></label>
+        </div>
+        <div id="projectile-control" class="timing-option" hidden>
+          <label><input id="projectile" type="checkbox" disabled> Projectile</label>
+        </div>
+        <button id="reset-timing" type="button" disabled>Reset to Default</button>
+        <small id="timing-hint"></small>
       </div>
-      <button id="reset-timing" type="button" disabled>Reset to Default</button>
-      <small id="timing-hint"></small>
-    </div>
+      <fieldset class="reactions">
+        <legend>Target reactions</legend>
+        <label>Dummy <select id="reaction-dummy"></select></label>
+        <label><input type="checkbox" id="reaction-motion"> Walk</label>
+        <label>Status <select id="reaction-status"></select></label>
+        <label>Duration <select id="reaction-duration"><option value="1500">1.5 s</option><option value="3000" selected>3 s</option><option value="6000">6 s</option></select></label>
+        <button type="button" id="reaction-apply">Apply status</button>
+        <label><input type="checkbox" id="reaction-crit"> Critical</label>
+        <button type="button" id="reaction-hit">Test hit</button>
+      </fieldset>
+    </section>
+    <section id="combat-controls" class="controls" aria-label="Combat controls" hidden>
+      <label>Enemy <select id="fight-monster"></select></label>
+      <fieldset id="fight-composition" class="reactions" hidden>
+        <legend>Encounter · up to six enemies</legend>
+      </fieldset>
+      <button id="fight-start" type="button" disabled>Start fight</button>
+      <label><input type="checkbox" id="fight-pause"> Pause AI</label>
+      <label id="fight-cloud-option"><input type="checkbox" id="fight-cloud"> Residual poison cloud</label>
+      <label><input type="checkbox" id="fight-boxes"> Show hitboxes</label>
+      <label><input type="checkbox" id="fight-randomized" checked> Randomized timings</label>
+      <label><input type="checkbox" id="fight-retreat" checked> Anti-kiting attacks</label>
+      <label>Special <select id="fight-special">
+        <option value="variant">By variant</option>
+        <option value="homing">Homing Shot</option>
+        <option value="spread">Spread Volley</option>
+      </select></label>
+      <output id="fight-status" aria-live="polite"></output>
+      <details id="fight-boss-debug" hidden>
+        <summary>Mushroom debug</summary>
+        <label>Starting phase <select id="fight-boss-phase"></select></label>
+        <output id="fight-boss-info"></output>
+      </details>
+    </section>
+    <details id="combat-loadout" hidden>
+      <summary>Loadout</summary>
+      <div class="loadout-body">
+        <div class="preset-controls">
+          <label>Preset <select id="combat-preset"></select></label>
+          <label>Name <input id="combat-preset-name" maxlength="28"></label>
+          <button id="combat-load" type="button">Load</button>
+          <button id="combat-save" type="button">Save preset</button>
+          <output id="combat-storage-status" role="status"></output>
+        </div>
+        <div id="combat-slots" class="skill-slots" aria-label="Choose a slot"></div>
+        <div id="combat-library" aria-label="Available skills"></div>
+      </div>
+    </details>
     <div id="vfx-canvas"></div>
-    <div id="effect-hotbar" role="group" aria-label="Effect shortcuts"></div>
-    <p>Click the arena to move with WASD or arrows. Aim with the mouse and use 1–6 to play effects.</p>
+    <section id="combat-bar" aria-label="Equipped skills" hidden>
+      <div id="combat-casting"></div>
+      <div id="combat-hud" class="skill-slots"></div>
+    </section>
+    <div id="vfx-footer">
+      <div id="effect-hotbar" role="group" aria-label="Effect shortcuts"></div>
+      <p>Click the arena to move with WASD or arrows. Aim with the mouse. Use 1–9 and 0 to cast, Page Up / Page Down to change banks.</p>
+    </div>
+    <p id="combat-help" hidden>WASD / arrows to move. Aim in the arena and use LMB, Q, E or R. Edit equipped skills in Loadout.</p>
   </main>
   <p id="unavailable">The VFX Laboratory is available in development only.</p>
   <script type="module" src="/src/vfx/lab/main.js"></script>

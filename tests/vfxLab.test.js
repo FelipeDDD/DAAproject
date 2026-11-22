@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { collisionAreas } from '../src/maps/collision.js';
-import { LAB_EFFECTS, LAB_HOTBAR_SLOTS } from '../src/vfx/lab/effects.js';
+import { LAB_EFFECTS, LAB_BANKS } from '../src/vfx/lab/effects.js';
 import { VFX_LAB_MAP, VFX_LAB_PLAYER, VFX_LAB_SIZE, VFX_LAB_TARGET } from '../src/vfx/lab/layout.js';
 import { VfxPlayback } from '../src/vfx/lab/Playback.js';
 import { trackArenaAim, worldPointAt } from '../src/vfx/lab/ArenaAim.js';
@@ -94,7 +94,7 @@ test('both lab effects replay, switch, loop and release all graphics and texture
 });
 
 test('the hotbar layout is configured and Fire Ring prep can replay, cancel and loop independently',()=>{
-  assert.deepEqual(LAB_HOTBAR_SLOTS,[
+  assert.deepEqual(LAB_BANKS[0].slots.slice(0,6),[
     'fire-zone','fire-ring','campfire-ground','spirit-ground','healing-ground','frost-ground',
   ]);
   const {scene,objects,textures}=sceneFixture();

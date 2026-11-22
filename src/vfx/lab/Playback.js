@@ -57,7 +57,7 @@ export class VfxPlayback {
     }
     if(effect.preparing){
       const {id,captureAim,timing,settings}=effect;
-      const anchor=captureAnchor(captureAim,effect.anchor);
+      const anchor=effect.stage.lockAnchor?effect.anchor:captureAnchor(captureAim,effect.anchor);
       this.startStage({id,anchor,timing,captureAim,settings},false);
       const flash=effect.stage.release;
       if(flash){

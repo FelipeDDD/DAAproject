@@ -9,12 +9,17 @@ import { frostGround } from './frostGround.js';
 import { groundFire } from './groundFire.js';
 import * as fireRing from './vendor/pixelfx/fx/fire/fire-ring.js';
 import * as spiritFlame from './vendor/pixelfx/fx/fire/spirit-flame.js';
+import { sequenceEffects } from './sequenceEffects.js';
 
 const zone=SKILL_DEFAULTS['fire-zone'];
 const defaultCastRange=zone.maxRangeTiles*zone.tileSize;
 const groundFireDuration=5000;
-export const LAB_HOTBAR_SLOTS=Object.freeze([
-  'fire-zone','fire-ring','campfire-ground','spirit-ground','healing-ground','frost-ground',
+export const LAB_BANKS=Object.freeze([
+  {label:'Essentials',slots:['fire-zone','fire-ring','campfire-ground','spirit-ground','healing-ground',
+    'frost-ground','fire-impact','ice-shards','hit-spark','smoke-burst']},
+  {label:'Attacks',slots:['fireball','meteor','chain','slash','shadow-strike','lance','slam','beam','explosion','poison-shot']},
+  {label:'Area & support',keys:'134567890',slots:['sanctuary','portal','cloud','tornado','shield','blizzard','spirits','tempest','vortex']},
+  {label:'Pixelfx Experiments',keys:'123467890',slots:['cleaver','flurry','lash','drain','tesla','snare','skulls','beacon','sporecap']},
 ]);
 
 function persistentGroundFire(label,source,count,spread){
@@ -49,6 +54,7 @@ function persistentArea(label,style,{castRangePx,areaRadiusPx,durationMs}){
 }
 
 export const LAB_EFFECTS=Object.freeze({
+  ...sequenceEffects,
   // Candidate for a one-shot fire burst skill. Sustained ground fire is a separate effect.
   'fire-ring':{
     label:'PixelFX Fire Ring',
