@@ -24,6 +24,8 @@ export const SWAMP_PACK_AGGRO={enabled:true,radius:120};
 
 export const SWAMP_EXPERIMENTAL_GROUPS = {enabled:true};
 
+export const SWAMP_EMERGENCE = {durationMs:380,maxDistance:100,vegetationDepth:40,landingWaitMs:1000};
+
 function encounter(id,kind,x,y,companionX,companionY,checkpoint=null){
   return {
     id,enabled:true,difficulty:['normal','hard'],activation:'on-reset',checkpoint,

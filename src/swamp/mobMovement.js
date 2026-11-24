@@ -1,10 +1,10 @@
 import { createFootCollision, isFootPositionClear } from '../maps/footCollision.js';
 import { acquireAggro } from '../vfx/lab/combatAggro.js';
-import { CombatEnemy } from '../vfx/lab/combatEnemy.js';
+import { CombatEnemy, ENEMIES } from '../vfx/lab/combatEnemy.js';
 import { frogChaseTarget } from '../vfx/lab/frogEnemy.js';
 import { slimeChaseStep } from '../vfx/lab/slimeEnemy.js';
 import { snakeCrawlPose, snakeCrawlStep } from '../vfx/lab/snakeEnemy.js';
-import { SWAMP_AGGRO, SWAMP_MOB_TERRAIN, SWAMP_PACK_AGGRO, SWAMP_ROAMING, SWAMP_ROUTING } from './mobConfig.js';
+import { SWAMP_AGGRO, SWAMP_EMERGENCE, SWAMP_MOB_TERRAIN, SWAMP_PACK_AGGRO, SWAMP_ROAMING, SWAMP_ROUTING } from './mobConfig.js';
 import { createMobRoutes } from './mobRoutes.js';
 
 const dist = (a,b) => Math.hypot(a.x-b.x,a.y-b.y);
@@ -28,8 +28,36 @@ export function createMobTerrain(obstacles,bounds,radius) {
   const clear = point => isFootPositionClear(obstacles,bounds,radius,point);
   const terrain={
     move,clear,
+    inBounds:({x,y})=>x>=bounds.left&&x<=bounds.right&&y>=bounds.top&&y<=bounds.bottom,
     canReach:(from,to)=>clear(from)&&clear(to)&&dist(move(from,to,false),to)<0.01,
     sees:(from,to)=>dist(trace(from,to,false),to)<0.01,
+    canEmerge(origin,landing,vegetation){return !terrain.emergenceError(origin,landing,vegetation);},
+    emergenceError(origin,landing,vegetation){
+      const distance=dist(origin,landing);
+      if(!terrain.inBounds(origin))return 'Place the visual origin inside the map.';
+      if(!clear(landing))return 'The landing point is blocked by collision.';
+      if(distance>SWAMP_EMERGENCE.maxDistance)return 'The landing is more than '+SWAMP_EMERGENCE.maxDistance+' px from the visual origin.';
+      if(dist(trace(landing,origin,false),origin)<0.01)return '';
+      if(!vegetation)return 'The emergence path is blocked. For a bush, enable Emerge from vegetation in Advanced.';
+      // The visual transition can exit a shallow solid cutout. Open barriers are walls.
+      const dx=landing.x-origin.x,dy=landing.y-origin.y;
+      let exitObstacle;
+      const crossings=new Set();
+      for(const obstacle of obstacles)for(const {a,b} of obstacle.edges){
+        const ex=b.x-a.x,ey=b.y-a.y,det=dx*ey-dy*ex;
+        if(Math.abs(det)<1e-8)continue;
+        const ax=a.x-origin.x,ay=a.y-origin.y;
+        const t=(ax*ey-ay*ex)/det,u=(ax*dy-ay*dx)/det;
+        if(t<0||t>1||u<0||u>1)continue;
+        if(!obstacle.solid||(exitObstacle&&exitObstacle!==obstacle)||isFootPositionClear([obstacle],bounds,0.001,origin))
+          return 'The emergence path crosses a wall or a separate obstacle.';
+        exitObstacle=obstacle;
+        if(t*distance>SWAMP_EMERGENCE.vegetationDepth)
+          return 'The visual origin is too deep inside the vegetation. Choose a spot closer to its edge.';
+        crossings.add(Math.round(t*1e6));
+      }
+      return crossings.size===1?'':'The emergence needs one clear exit from the vegetation.';
+    },
     crawlSpace:{left:bounds.left+radius,right:bounds.right-radius,fit:point=>point},
   };
   terrain.findRoute=createMobRoutes(terrain,bounds,SWAMP_ROUTING);
@@ -296,7 +324,9 @@ class SwampNavigation {
 
 export class SwampMob extends CombatEnemy {
   constructor(bout,spawn,terrain,index,{test=false,roaming=SWAMP_ROAMING,random=Math.random,onAggro}={}){
-    super(bout,spawn.kind,index,{x:spawn.x,y:spawn.y});
+    const species=ENEMIES[spawn.kind];
+    const spec=spawn.detectionRange===undefined?species:{...species,detectionRange:spawn.detectionRange};
+    super(bout,spawn.kind,index,{x:spawn.x,y:spawn.y},spec);
     this.footRadius=SWAMP_MOB_TERRAIN[spawn.kind].footRadius;
     this.spawnId=spawn.id;
     this.encounterId=spawn.encounterId;
@@ -313,26 +343,51 @@ export class SwampAmbush {
     this.reset();
   }
 
-  reset(){
+  reset(feet){
     this.phase='hidden';
     this.elapsed=0;
+    this.waitForExit=Boolean(feet&&this.contains(feet));
+  }
+
+  contains(feet){
+    const zone=this.config.trigger;
+    if(zone.shape==='rectangle')return Math.abs(feet.x-zone.x)<=zone.width/2&&Math.abs(feet.y-zone.y)<=zone.height/2;
+    return dist(feet,zone)<=zone.radius;
   }
 
   beginWarning(){
     this.phase='warning';
+    this.elapsed=0;
     return 'warning';
   }
 
-  update(delta,player,canApproach){
+  update(delta,player,canApproach,canLand=()=>true){
     if(this.phase==='hidden'){
-      if(dist(player,this.config.trigger)>this.config.trigger.radius||!canApproach())return;
+      if(!this.contains(player)){
+        this.waitForExit=false;
+        return;
+      }
+      if(this.waitForExit||!canApproach())return;
       return this.beginWarning();
     }
     if(this.phase==='warning'){
       this.elapsed+=delta;
       if(this.elapsed<this.config.warningMs)return;
+      if(this.config.emergeMs){
+        this.phase='emerging';
+        this.elapsed=0;
+        return 'emerging';
+      }
       this.phase='revealed';
       return 'spawn';
+    }
+    if(this.phase==='emerging'){
+      this.elapsed+=delta;
+      if(this.elapsed<this.config.emergeMs)return;
+      const clear=canLand();
+      if(!clear&&this.elapsed<this.config.emergeMs+SWAMP_EMERGENCE.landingWaitMs)return;
+      this.phase='revealed';
+      return clear?'spawn':'cancel';
     }
   }
 }

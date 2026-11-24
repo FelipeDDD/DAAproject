@@ -2,10 +2,10 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { ReturnTrap } from '../src/swamp/ReturnTrap.js';
-import { SWAMP_AMBUSH, SWAMP_MOB_TERRAIN, swampEncounterSpawns } from '../src/swamp/mobConfig.js';
+import { SWAMP_AMBUSH, SWAMP_EMERGENCE, SWAMP_MOB_TERRAIN, swampEncounterSpawns } from '../src/swamp/mobConfig.js';
 import { SwampRun } from '../src/swamp/SwampRun.js';
 import { SwampMobs } from '../src/swamp/SwampMobs.js';
-import { createMobTerrain, SwampAmbush } from '../src/swamp/mobMovement.js';
+import { createMobTerrain } from '../src/swamp/mobMovement.js';
 import { SpawnEdits, validateSpawnPosition } from '../src/swamp/spawnEdits.js';
 import { readFootObstacles } from '../src/maps/footCollision.js';
 
@@ -47,23 +47,31 @@ test('the Snake gets a warning and reaction delay, and the run keeps the trap sp
   const run=new SwampRun(),actors=[];
   const graphics={setPosition(){return this;},setDepth(){return this;},clear(){return this;},
     fillStyle(){return this;},fillTriangle(){return this;},destroy(){}};
-  const scene={add:{graphics:()=>graphics},physics:{world:{bounds:{height:1920}}}};
+  const scene={add:{graphics:()=>graphics,sprite:()=>({setOrigin(){return this;},destroy(){}})},
+    playerFootRadius:8,physics:{world:{bounds:{height:1920}}}};
   function mount(state){
-    return Object.assign(Object.create(SwampMobs.prototype),{
-      run:state,scene,ambushMode:'return-trap',ambush:new SwampAmbush(SWAMP_AMBUSH),
-      returnTrap:new ReturnTrap(config),activeAmbushSpawn:SWAMP_AMBUSH.spawn,bout:{enemies:[]},
-      terrain:{snake:{sees:()=>true}},add(spawn){
+    const terrain={snake:{sees:()=>true,clear:()=>true}};
+    const edits=new SpawnEdits([SWAMP_AMBUSH.spawn,config.a,config.b],terrain,SWAMP_MOB_TERRAIN,SWAMP_AMBUSH,'return-trap');
+    const mobs=Object.assign(Object.create(SwampMobs.prototype),{
+      run:state,scene,ambushes:[],entries:[],editor:{applied:edits.snapshot()},bout:{enemies:[]},
+      terrain,drawEmerging(){},add(spawn){
         const mob={spawn,cooldown:20};
         actors.push(mob);
         return mob;
       },
     });
+    mobs.resetAmbushState();
+    return mobs;
   }
-  const mobs=mount(run);
-  walk(point=>mobs.updateAmbush(16,point),[...advance,...retreat]);
-  assert.equal(mobs.ambush.phase,'warning');
+  const mobs=mount(run),[event]=mobs.ambushes;
+  walk(point=>mobs.updateAmbush(event,16,point),[...advance,...retreat]);
+  assert.equal(event.controller.phase,'warning');
   assert.equal(actors.length,0);
-  mobs.updateAmbush(SWAMP_AMBUSH.warningMs,{x:1665,y:1180});
+  const feet={x:1665,y:1180};
+  mobs.updateAmbush(event,SWAMP_AMBUSH.warningMs,feet);
+  assert.equal(event.controller.phase,'emerging');
+  assert.equal(actors.length,0);
+  mobs.updateAmbush(event,SWAMP_EMERGENCE.durationMs,feet);
   assert.equal(actors.length,1);
   assert.equal(actors[0].spawn.kind,'snake');
   assert.equal(actors[0].cooldown,config.reactionMs);
@@ -71,12 +79,14 @@ test('the Snake gets a warning and reaction delay, and the run keeps the trap sp
   run.respawn();
   const restored=new SwampRun(run.config,run.snapshot());
   const reentered=mount(restored);
-  walk(point=>reentered.updateAmbush(16,point),[...advance,...retreat]);
-  assert.equal(reentered.ambush.phase,'hidden');
+  const walkAgain=()=>walk(point=>reentered.updateAmbush(reentered.ambushes[0],16,point),[...advance,...retreat]);
+  walkAgain();
+  assert.equal(reentered.ambushes[0].controller.phase,'hidden');
   restored.restart();
   reentered.resetAmbushState();
-  walk(point=>reentered.updateAmbush(16,point),[...advance,...retreat]);
-  assert.equal(reentered.ambush.phase,'warning');
+  walkAgain();
+  assert.equal(reentered.ambushes[0].controller.phase,'warning');
+
 });
 
 test('both authored markers and the editable Snake spawn fit the real map',()=>{

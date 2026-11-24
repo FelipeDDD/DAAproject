@@ -162,3 +162,18 @@
 body:has(.swamp-editor[data-mode]:not([data-mode=""])) #game canvas { cursor:crosshair; }
 .swamp-editor-info { margin:0; color:#d6c8ae; overflow-wrap:anywhere; }
 .swamp-editor-info:empty { display:none; }
+.swamp-editor-field { display:grid; gap:3px; }
+.swamp-editor [hidden] { display:none; }
+.swamp-editor-range {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  align-items:end;
+  gap:5px 8px;
+}
+.swamp-editor-range input {
+  box-sizing:border-box;
+  width:100%;
+  margin:0;
+  accent-color:#77d7ff;
+}
+.swamp-editor-range button { grid-column:1 / -1; justify-self:start; }

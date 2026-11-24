@@ -1,7 +1,7 @@
 import { worldPointAt } from '../vfx/lab/ArenaAim.js';
 import { ENEMIES } from '../vfx/lab/combatEnemy.js';
 import { SWAMP_AMBUSH, SWAMP_MOB_TERRAIN } from './mobConfig.js';
-import { SpawnEdits } from './spawnEdits.js';
+import { RANGE_LIMIT, SPAWN_TYPES, SpawnEdits, TRIGGER_RECTANGLE } from './spawnEdits.js';
 
 const STORAGE_KEY='daa.swamp-v3.spawns.v1';
 
@@ -25,13 +25,15 @@ function section(title){
 }
 
 export class SpawnEditor {
-  constructor(mobs){
+  constructor(mobs,variant){
     this.mobs=mobs;
-    this.edits=new SpawnEdits(mobs.baseSpawns(),mobs.terrain,SWAMP_MOB_TERRAIN,SWAMP_AMBUSH,mobs.ambushMode);
+    this.edits=new SpawnEdits(mobs.baseSpawns(),mobs.terrain,SWAMP_MOB_TERRAIN,SWAMP_AMBUSH,variant);
     this.listeners=new AbortController();
     const {signal}=this.listeners;
     this.selected='';
     this.mode='';
+    this.companionGroup='';
+    this.draft={spawnType:'proximity'};
     this.creatures=Object.keys(SWAMP_MOB_TERRAIN).map(kind=>[ENEMIES[kind].label,kind]);
 
     this.root=element('aside');
@@ -50,7 +52,7 @@ export class SpawnEditor {
 
     this.advanced=element('details');
     this.advanced.append(element('summary','Advanced'));
-    this.panel.append(this.status,this.createSpawns(),this.createAmbushes(),this.createChanges(),this.advanced);
+    this.panel.append(this.status,this.createSpawns(),this.createChanges(),this.advanced);
     this.root.append(this.toggle,this.panel);
     document.body.append(this.root);
 
@@ -85,59 +87,143 @@ export class SpawnEditor {
     return {label,input};
   }
 
+  field(label,input){
+    const wrapper=element('label',label);
+    wrapper.className='swamp-editor-field';
+    wrapper.append(input);
+    return wrapper;
+  }
+
+  range(label,field,restore){
+    const root=element('div');
+    root.className='swamp-editor-range';
+    const inputs=['number','range'].map(type=>{
+      const input=element('input');
+      Object.assign(input,{type,min:'1',max:String(RANGE_LIMIT),step:'1'});
+      input.setAttribute('aria-label',type==='range'?label+' slider':label+' px');
+      input.addEventListener(type==='range'?'input':'change',()=>{
+        if(!input.value||!input.checkValidity()){this.render('Enter a range from 1 to '+RANGE_LIMIT+' px.');return;}
+        this.change({[field]:Number(input.value)});
+      },{signal:this.listeners.signal});
+      return input;
+    });
+    root.append(this.field(label+' (px)',inputs[0]),inputs[1]);
+    if(restore)root.append(this.button('Use species default',()=>this.change({[field]:undefined})));
+    return {root,inputs};
+  }
+
   createSpawns(){
-    const root=section('Spawns');
-    this.creature=select('Creature',[['Choose a creature',''],...this.creatures]);
-    this.group=select('Encounter group');
-    this.spawnList=select('Spawn to edit');
-    this.spawnList.addEventListener('change',()=>this.choose(this.spawnList.value),{signal:this.listeners.signal});
+    const root=section('Encounter setup');
+    const actions=element('div');
+    actions.className='swamp-run-controls';
+    this.choices=element('div');
+    this.choices.className='swamp-run-controls';
+    this.newMob=this.button('Add mob',()=>this.startDraft());
+    this.creature=select('Creature',this.creatures);
+    this.creature.addEventListener('change',()=>this.change({kind:this.creature.value,detectionRange:undefined}),{signal:this.listeners.signal});
+    this.kindField=this.field('Creature',this.creature);
+    this.draft.kind=this.creature.value;
+    this.spawnType=select('Spawn Type',Object.entries(SPAWN_TYPES).map(([id,label])=>[label,id]));
+    this.spawnType.addEventListener('change',()=>this.change({spawnType:this.spawnType.value}),{signal:this.listeners.signal});
+    this.ambushEvent=select('Ambush Event',[...this.creatures,['False Alarm','false-alarm']]);
+    this.ambushEvent.addEventListener('change',()=>{
+      const event=this.ambushEvent.value;
+      this.change(event==='false-alarm'?{falseAlarm:true}:{kind:event,falseAlarm:false});
+    },{signal:this.listeners.signal});
+    this.ambushEventField=this.field('Ambush Event',this.ambushEvent);
     this.spawnInfo=element('p');
     this.spawnInfo.className='swamp-editor-info';
-    this.addButton=this.button('Add mob',()=>{
-      if(this.mode==='add'){this.setMode('','Operation cancelled.');return;}
-      if(!this.creature.value){this.report('Choose a creature.');this.creature.focus();return;}
-      this.setMode('add','Click on the map to place. Esc cancels.');
+    this.detection=this.range('Aggro Range','detectionRange',true);
+    this.triggerShape=select('Trigger Zone',[['Circle','circle'],['Rectangle','rectangle']]);
+    this.triggerShape.addEventListener('change',()=>this.change({triggerShape:this.triggerShape.value}),
+      {signal:this.listeners.signal});
+    this.triggerShapeField=this.field('Trigger Zone',this.triggerShape);
+    this.triggerRange=this.range('Radius','triggerRange',false);
+    this.triggerDimensions=element('div');
+    this.triggerDimensions.className='swamp-editor-range';
+    this.triggerSize=['Width','Height'].map(dimension=>{
+      const input=element('input');
+      Object.assign(input,{type:'number',min:'1',max:String(RANGE_LIMIT),step:'1',required:true});
+      input.addEventListener('change',()=>{
+        if(!input.checkValidity()){this.render('Enter a size from 1 to '+RANGE_LIMIT+' px.');return;}
+        this.change({['trigger'+dimension]:Number(input.value)});
+      },{signal:this.listeners.signal});
+      this.triggerDimensions.append(this.field(dimension+' (px)',input));
+      return input;
     });
-    this.selectButton=this.button('Select on map',()=>{
-      if(this.mode==='select'){this.setMode('','Operation cancelled.');return;}
-      this.setMode('select','Click a creature or spawn marker. Esc cancels.');
+    this.vegetation=this.checkbox('Emerge from vegetation',false,checked=>this.change({vegetation:checked}));
+    this.trigger=this.button('Position Trigger Zone',()=>this.arm('triggerPoint','Click the center of the trigger zone.'));
+    this.preview=this.button('Preview Ambush',()=>{
+      const spawn=this.edits.get(this.selected);
+      this.setMode('','Playing the ambush preview.');
+      this.mobs.previewAmbush(this.edits.event(spawn));
     });
-    this.move=this.button('Move',()=>this.startMove());
-    this.remove=this.button('Remove experimental mob',()=>{
-      const id=this.selected;
-      const error=this.edits.remove(id);
+    this.gates=['A','B'].map(letter=>this.button('Move gate '+letter,()=>this.arm('gate'+letter,'Click gate '+letter+'.')));
+    this.addButton=this.button('Add on map',()=>this.arm('add',this.draft.spawnType==='proximity'
+      ?'Click walkable ground.':'Click the Visual Origin. A landing will be suggested.'));
+    this.move=this.button('Move',()=>this.arm('move','Click walkable ground.'));
+    this.companion=this.button('Add companion',()=>this.startDraft(this.edits.get(this.selected).encounterId));
+    this.remove=this.button('Delete',()=>{
+      const spawn=this.edits.get(this.selected);
+      const grouped=!spawn.disabled&&this.edits.entries().some(entry=>
+        entry.id!==spawn.id&&!entry.disabled&&entry.encounterId===spawn.encounterId&&spawn.encounterId);
+      if(grouped&&!window.confirm('Remove this mob from its encounter?'))return;
+      const error=this.edits.remove(this.selected);
       if(error){this.report(error);return;}
-      if(!this.edits.get(id))this.selected='';
+      if(!this.edits.get(this.selected))this.selected='';
       this.save();
       this.setMode('','Change saved. Test changes to apply.');
     });
-    const marker=this.checkbox('Show spawn markers',true,()=>this.refreshDebug());
-    this.spawnMarkers=marker.input;
-    const actions=element('div');
-    actions.className='swamp-run-controls';
-    actions.append(this.selectButton,this.move,this.remove);
-    root.append(this.creature,this.group,this.addButton,marker.label,this.spawnList,this.spawnInfo,actions);
+    const markers=this.checkbox('Show all spawn markers',true,()=>this.refreshDebug());
+    this.spawnMarkers=markers.input;
+    this.advanced.append(markers.label);
+    const ranges=this.checkbox('Show ranges',true,()=>this.refreshDebug());
+    this.ranges=ranges.input;
+    const placement=element('div');
+    placement.className='swamp-run-controls';
+    placement.append(this.addButton,this.move,this.remove,this.companion,this.trigger,...this.gates,this.preview);
+    actions.append(this.newMob);
+    root.append(actions,this.choices,this.spawnInfo,this.kindField,this.field('Spawn Type',this.spawnType),
+      this.ambushEventField,this.detection.root,this.triggerShapeField,this.triggerRange.root,this.triggerDimensions,placement);
+    this.advanced.append(this.vegetation.label,ranges.label);
     return root;
   }
 
-  createAmbushes(){
-    const root=section('Ambushes');
-    this.variant=select('Ambush variant',Object.entries(SWAMP_AMBUSH.variants).map(([id,variant])=>[variant.label,id]));
-    this.variant.addEventListener('change',()=>{
-      this.edits.ambushVariant=this.variant.value;
-      this.save();
-      this.setMode('','Ambush variant saved. Test changes to apply.');
-    },{signal:this.listeners.signal});
-    this.ambushList=select('Ambush point',[['Select an ambush point',''],...this.edits.originals
-      .filter(spawn=>this.edits.isAmbush(spawn)).map(spawn=>[spawn.label??'Creature spawn',spawn.id])]);
-    this.ambushList.addEventListener('change',()=>this.choose(this.ambushList.value),{signal:this.listeners.signal});
-    this.ambushInfo=element('p');
-    this.ambushInfo.className='swamp-editor-info';
-    this.ambushMove=this.button('Move ambush point',()=>this.startMove());
-    const marker=this.checkbox('Show ambush markers',false,()=>this.refreshDebug());
-    this.ambushMarkers=marker.input;
-    root.append(this.variant,marker.label,this.ambushList,this.ambushInfo,this.ambushMove);
-    return root;
+  startDraft(group=''){
+    this.draft={kind:this.edits.get(this.selected)?.kind??this.creatures[0][1],spawnType:'proximity'};
+    this.selected='';
+    this.companionGroup=group;
+    this.setMode('',group?'Configure the companion, then click Add on map.':'Configure the mob, then click Add on map.');
+  }
+
+  arm(mode,message){
+    if(this.mode===mode)this.setMode('','Operation cancelled.');
+    else this.setMode(mode,message+' Esc cancels.');
+  }
+
+  change(patch){
+    if(patch.spawnType){
+      this.mode='';
+      if(patch.spawnType==='ambush'){
+        const current=this.edits.get(this.selected)??this.draft;
+        patch.triggerShape=current.triggerShape??'circle';
+        patch.vegetation=current.vegetation??true;
+      }else{
+        const current=this.edits.get(this.selected)??this.draft;
+        if(current.falseAlarm){
+          patch.falseAlarm=false;
+          patch.kind=current.kind??this.creatures[0][1];
+        }
+      }
+    }
+    if(!this.selected){
+      Object.assign(this.draft,patch);
+      this.render('Click Add on map when ready.');
+      return;
+    }
+    const error=this.edits.configure(this.selected,patch);
+    if(!error)this.save();
+    this.render(error||'Change saved. Test changes to apply.');
   }
 
   createChanges(){
@@ -148,6 +234,7 @@ export class SpawnEditor {
       this.button('Restore original',()=>{
         this.edits.restore();
         this.selected='';
+        this.companionGroup='';
         this.save();
         this.apply('Original encounters restored.');
       }),this.button('Export JSON',()=>this.export()));
@@ -157,24 +244,24 @@ export class SpawnEditor {
 
   get open(){return !this.panel.hidden;}
   get showSpawns(){return this.open&&this.spawnMarkers.checked;}
-  get showAmbush(){return this.open&&this.ambushMarkers.checked;}
+  get showRanges(){return this.open&&this.ranges.checked;}
 
   setOpen(open){
     this.panel.hidden=!open;
     this.toggle.setAttribute('aria-expanded',String(open));
-    if(!open)this.setMode('','Choose a creature or select a spawn.');
+    if(!open){
+      this.mobs.stopAmbushPreview();
+      this.setMode('','Choose a creature or select a spawn.');
+    }
     this.refreshDebug();
   }
 
   choose(id){
     this.selected=id;
-    if(this.edits.isAmbush(this.edits.get(id)))this.ambushMarkers.checked=true;
-    this.setMode('',id?'Spawn selected.':'Select a spawn to move.');
-  }
-
-  startMove(){
-    if(this.mode==='move'){this.setMode('','Operation cancelled.');return;}
-    this.setMode('move','Click on the map to move this spawn. Esc cancels.');
+    this.companionGroup='';
+    const spawn=this.edits.get(id);
+    this.setMode('',spawn.spawnType==='proximity'?'Spawn selected.':spawn.falseAlarm?'Click the green origin ring to move it.':
+      'Click the green origin ring or the landing cross to move it.');
   }
 
   setMode(mode,message){
@@ -185,31 +272,51 @@ export class SpawnEditor {
   report(message){this.status.textContent=message;}
 
   render(message){
-    const group=this.group.value;
-    const groups=this.edits.groups();
-    this.group.replaceChildren(new Option('New independent encounter',''),
-      ...groups.map(id=>new Option(id,id)));
-    this.group.value=groups.includes(group)?group:'';
-    const entries=this.edits.entries().filter(spawn=>!this.edits.isAmbush(spawn));
-    this.spawnList.replaceChildren(new Option('Select a spawn',''),
-      ...entries.map(spawn=>new Option(spawn.id+(spawn.disabled?' (disabled)':''),spawn.id)));
+    this.choices.replaceChildren();
     const spawn=this.edits.get(this.selected);
-    const isAmbush=this.edits.isAmbush(spawn);
-    this.spawnList.value=isAmbush?'':this.selected;
-    this.ambushList.value=isAmbush?this.selected:'';
-    this.variant.value=this.edits.ambushVariant;
-    this.spawnInfo.textContent=spawn&&!isAmbush?
-      ENEMIES[spawn.kind].label+' · '+(spawn.encounterId??'Independent')+' · '+spawn.x+', '+spawn.y+
-      (this.edits.isProtected(spawn)?' · Protected spawn':''):'';
-    this.ambushInfo.textContent=isAmbush?spawn.x+', '+spawn.y:'';
-    this.move.disabled=!spawn||isAmbush||spawn.disabled||this.edits.isProtected(spawn);
-    this.remove.disabled=!spawn||isAmbush||this.edits.isProtected(spawn);
-    this.remove.textContent=this.edits.additions.has(this.selected)?'Remove experimental mob':
-      spawn?.disabled?'Enable spawn':'Disable original spawn';
-    this.ambushMove.disabled=!isAmbush;
-    for(const [mode,button] of [['add',this.addButton],['select',this.selectButton],['move',this.move],['move',this.ambushMove]]){
-      button.setAttribute('aria-pressed',String(this.mode===mode&&!button.disabled));
+    const config=spawn??this.draft;
+    const ambush=config.spawnType!=='proximity';
+    const hasZone=config.spawnType==='ambush';
+    const rectangle=config.triggerShape==='rectangle';
+    const protectedSpawn=spawn&&this.edits.isProtected(spawn);
+    this.creature.value=config.kind??this.creatures[0][1];
+    this.spawnType.value=config.spawnType;
+    this.creature.disabled=this.spawnType.disabled=Boolean(protectedSpawn);
+    this.kindField.hidden=hasZone;
+    this.ambushEventField.hidden=!hasZone;
+    this.ambushEvent.value=config.falseAlarm?'false-alarm':config.kind;
+    this.ambushEvent.disabled=Boolean(protectedSpawn);
+    this.newMob.hidden=!spawn&&!this.companionGroup;
+    this.spawnInfo.textContent=spawn
+      ?'Selected: '+(spawn.id===SWAMP_AMBUSH.id?'East bush':spawn.id)+(spawn.disabled?' (disabled)':'')
+      :this.companionGroup?'Adding a companion to '+this.companionGroup:'';
+    this.vegetation.label.hidden=!ambush||config.falseAlarm;
+    this.vegetation.input.checked=Boolean(config.vegetation);
+    this.detection.root.hidden=ambush;
+    for(const input of this.detection.inputs)input.value=config.detectionRange??ENEMIES[this.creature.value].detectionRange;
+    this.triggerShapeField.hidden=!hasZone;
+    this.triggerShape.value=rectangle?'rectangle':'circle';
+    this.triggerRange.root.hidden=!hasZone||rectangle;
+    for(const input of this.triggerRange.inputs)input.value=config.triggerRange??SWAMP_AMBUSH.trigger.radius;
+    this.triggerDimensions.hidden=!hasZone||!rectangle;
+    this.triggerSize[0].value=config.triggerWidth??TRIGGER_RECTANGLE.width;
+    this.triggerSize[1].value=config.triggerHeight??TRIGGER_RECTANGLE.height;
+    this.addButton.hidden=Boolean(spawn);
+    const canMove=Boolean(spawn&&!protectedSpawn&&!spawn.disabled);
+    this.preview.hidden=!(spawn&&ambush);
+    for(const [button,mode,visible] of [
+      [this.move,'move',canMove&&!config.falseAlarm],
+      [this.trigger,'triggerPoint',canMove&&hasZone],
+      ...this.gates.map((button,i)=>[button,i?'gateB':'gateA',canMove&&config.spawnType==='return-trap']),
+    ]){
+      button.hidden=!visible;
+      button.setAttribute('aria-pressed',String(visible&&this.mode===mode));
     }
+    this.addButton.setAttribute('aria-pressed',String(this.mode==='add'));
+    this.move.textContent=ambush?'Move landing':'Move';
+    this.remove.hidden=!spawn||protectedSpawn||this.edits.isAmbush(spawn);
+    this.remove.textContent=spawn?.disabled?'Enable':'Delete';
+    this.companion.hidden=!canMove||spawn.falseAlarm||!spawn.encounterId;
     this.root.dataset.mode=this.mode;
     this.report(message);
     this.refreshDebug();
@@ -218,50 +325,66 @@ export class SpawnEditor {
   refreshDebug(){this.mobs.syncEditorDebug();}
 
   handleMapClick(event){
-    if(!this.open||!this.mode||event.button!==0||this.mobs.scene.swampRun?.blocking)return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
+    if(!this.open||event.button!==0||this.mobs.scene.swampRun?.blocking)return;
     const {game,cameras}=this.mobs.scene;
     const point=worldPointAt(game.canvas,cameras.main,event.clientX,event.clientY);
     if(!point)return;
     const tile={x:Math.round(point.x),y:Math.round(point.y)};
-    if(this.mode==='select'){
-      const id=this.findSpawn(tile);
-      if(id)this.choose(id);
-      else this.report('No spawn here. Click a creature or marker. Esc cancels.');
+    const targets=this.mode?[]:this.mapTargets(tile);
+    if(!this.mode&&!targets.length)return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    if(!this.mode){
+      this.choices.replaceChildren();
+      if(targets.length===1)targets[0].action();
+      else{
+        this.report('Choose a marker at this position.');
+        this.choices.append(...targets.map(({label,action})=>this.button(label,action)));
+      }
       return;
     }
-    const result=this.mode==='add'?this.edits.add(this.creature.value,this.group.value,tile):
-      {id:this.selected,error:this.edits.move(this.selected,tile)};
+    const patch=this.mode==='triggerPoint'?{triggerPoint:tile,triggerShape:this.triggerShape.value}:{[this.mode]:tile};
+    const previous=this.edits.get(this.selected);
+    if(this.mode==='visualOrigin'&&previous.spawnType==='ambush'&&previous.vegetation===undefined)
+      patch.vegetation=true;
+    const result=this.mode==='add'?this.edits.add(this.draft.kind,this.draft.falseAlarm?'':this.companionGroup,tile,this.draft):
+      {id:this.selected,error:this.mode==='move'?this.edits.move(this.selected,tile):this.edits.configure(this.selected,patch)};
     if(result.error){this.report(result.error+' Choose another point or press Esc.');return;}
     this.selected=result.id;
+    this.companionGroup='';
     this.save();
-    this.setMode('','Spawn saved. Test changes to apply.');
+    const updated=this.edits.get(this.selected);
+    const relocated=this.mode==='visualOrigin'&&(previous.x!==updated.x||previous.y!==updated.y);
+    this.setMode('',relocated?'Origin saved with a nearby walkable landing. Test changes to apply.':
+      'Spawn saved. Test changes to apply.');
   }
 
-  findSpawn(point){
-    const entries=this.edits.entries().filter(spawn=>!this.edits.isAmbush(spawn));
-    let closest=Infinity,selected='';
+  mapTargets(point){
+    const targets=[];
+    const entries=this.edits.entries().filter(spawn=>!spawn.marker);
+    const near=mark=>Math.hypot(mark.x-point.x,mark.y-point.y)<14;
     for(const spawn of entries){
-      const distance=Math.hypot(spawn.x-point.x,spawn.y-point.y);
-      if(this.showSpawns&&distance<Math.min(14,closest)){
-        closest=distance;
-        selected=spawn.id;
+      const selected=spawn.id===this.selected;
+      if(!selected&&!this.showSpawns)continue;
+      const ambush=spawn.spawnType!=='proximity';
+      const origin=ambush&&this.edits.event(spawn).visualOrigin;
+      if(selected&&ambush&&!spawn.disabled&&!this.edits.isProtected(spawn)){
+        if(near(origin))targets.push({label:'Visual Origin',action:()=>this.arm('visualOrigin','Click the hiding spot.')});
+        if(!spawn.falseAlarm&&near(spawn))
+          targets.push({label:'Landing Point',action:()=>this.arm('move','Click walkable ground for the landing.')});
+      }else if(near(spawn.falseAlarm?origin:spawn)){
+        const label=spawn.falseAlarm?'False Alarm':ENEMIES[spawn.kind].label;
+        targets.push({label:label+' · '+spawn.id,action:()=>this.choose(spawn.id)});
       }
     }
-    for(const {mob,sprite} of this.mobs.entries){
-      if(mob.test||!mob.enemy.hp||!entries.some(spawn=>spawn.id===mob.spawnId)||
-        !sprite.getBounds().contains(point.x,point.y))continue;
-      const distance=Math.hypot(mob.enemy.x-point.x,mob.enemy.y-point.y);
-      if(distance<closest){closest=distance;selected=mob.spawnId;}
-    }
-    return selected;
+    return targets;
   }
 
   apply(message){
     this.applied=this.edits.snapshot();
-    this.mobs.scene.swampRun?.respawn();
+    this.mobs.scene.swampRun?.respawn({testing:true});
     this.setMode('',message);
+    document.getElementById('game')?.focus({preventScroll:true});
   }
 
   load(){

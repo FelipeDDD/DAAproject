@@ -86,10 +86,11 @@ export class SwampRunController {
   }
 
   update(dt){
+    const elapsed=Math.min(dt,50);
+    this.mobs.updateAmbushPreview(elapsed);
     if(!this.bout.playerHp)this.syncCombatHealth();
     this.openPendingChoice();
     if(!this.choices.active){
-      const elapsed=Math.min(dt,50);
       if(this.bout.playerHp){
         this.mobs.update(elapsed);
         this.casts.update(elapsed);
@@ -192,12 +193,12 @@ export class SwampRunController {
     if(id&&!this.run.defeated.has(id)&&this.mobs.vanquished.has(id))this.defeatElite(id);
   }
 
-  respawn(){
+  respawn({testing=false}={}){
     this.placeAt(this.run.respawn());
     this.scene.player.setAlpha(1);
     this.casts.reset();
     this.reactions.clear();
-    this.mobs.resetEncounter(this.run.defeated);
+    this.mobs.resetEncounter(this.run.defeated,{testing});
     this.refresh();
   }
 
