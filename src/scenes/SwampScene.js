@@ -2,10 +2,12 @@ import { MapScene } from './MapScene.js';
 import Phaser from 'phaser';
 import { objectsIn,propertiesOf } from '../maps/tiledObjects.js';
 import { createFootCollision,readFootObstacles } from '../maps/footCollision.js';
+import { mapLayerDepth } from '../maps/layerDepth.js';
 import placement from '../../public/assets/maps/swamp-occlusion/placement.json' with {type:'json'};
 
 const FOOT_RADIUS = 8; // World pixels, centered on the Arcade foot body.
 const COLLISION_COLORS = {rectangle:0xa9ef9a,polygon:0xffcc6b,polyline:0x61d9ff,ellipse:0xa9ef9a};
+const SWAMP_OVERLAY_KEY = 'swamp-v3-large-manual-overlay';
 
 export class SwampScene extends MapScene {
   constructor(key='swamp',filename='swamp.tmj') { super(key,filename); }
@@ -55,6 +57,7 @@ export class LargeSwampScene extends SwampScene {
 
   preload(){
     super.preload();
+    this.load.image(SWAMP_OVERLAY_KEY,import.meta.env.BASE_URL+'assets/maps/swamp-v3-large-background-overlay.png');
     for(const name of Object.keys(placement)){
       this.load.image('swamp-cut-'+name,import.meta.env.BASE_URL+'assets/maps/swamp-occlusion/'+name+'.png');
     }
@@ -64,6 +67,11 @@ export class LargeSwampScene extends SwampScene {
   create(destination){
     super.create(destination);
     if (import.meta.env.DEV) this.createCollisionDebug();
+    const background=this.source.layers.find(layer=>layer.type==='imagelayer'&&layer.name==='Background');
+    // Mirror the Tiled image layer transform without changing the authored map.
+    const overlay=this.add.image((background.x??0)+(background.offsetx??0),
+      (background.y??0)+(background.offsety??0),SWAMP_OVERLAY_KEY)
+      .setOrigin(0).setDepth(mapLayerDepth({name:'Overlay'},this.source));
     const outlines=this.add.graphics().setDepth(this.physics.world.bounds.height+2).setVisible(false);
     const cutouts=[];
     const refs=objectsIn(this.source,'OcclusionReferences').map(ref=>[ref.name,ref]);
@@ -81,16 +89,25 @@ export class LargeSwampScene extends SwampScene {
     }
     const label=document.createElement('label'), select=document.createElement('select');
     label.append('Swamp occlusion ',select);
-    for(const option of ['Off','On','Optimized','Debug'])select.add(new Option(option));
+    select.add(new Option('Manual overlay','manual'));
+    select.add(new Option('Off','off'));
+    if(cutouts.length){
+      select.add(new Option('Prototype','prototype'));
+      select.add(new Option('Prototype optimized','optimized'));
+      select.add(new Option('Prototype debug','debug'));
+    }
     select.onchange=()=>{
+      const mode=select.value;
+      const prototype=mode==='prototype'||mode==='optimized'||mode==='debug';
+      overlay.setVisible(mode==='manual');
       for(const cut of cutouts){
-        cut.setVisible(select.value!=='Off');
+        cut.setVisible(prototype);
         if(cut.getData('occlusionName')==='pillar')
-          cut.setTexture(select.value==='Optimized'?'swamp-cut-pillar-optimized':'swamp-cut-pillar');
-        if(select.value==='Debug')cut.setTint(0xf1bdee).setTintMode(Phaser.TintModes.FILL);
+          cut.setTexture(mode==='optimized'?'swamp-cut-pillar-optimized':'swamp-cut-pillar');
+        if(mode==='debug')cut.setTint(0xf1bdee).setTintMode(Phaser.TintModes.FILL);
         else cut.clearTint();
       }
-      outlines.setVisible(select.value==='Debug');
+      outlines.setVisible(mode==='debug');
       select.blur();
     };
     const show=()=>document.getElementById('play-toolbar')?.append(label);
