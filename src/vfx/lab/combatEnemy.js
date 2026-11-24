@@ -5,6 +5,7 @@ import { GHOST_SCALE,ghostBox,updateGhost } from './ghostEnemy.js';
 import { SNAKE } from './snakeEnemy.js';
 import { FROG } from './frogEnemy.js';
 import { MUSHROOM } from './mushroomEnemy.js';
+import { trackAggro } from './combatAggro.js';
 
 const slimeSpec={box:slimeBox,update:updateSlime,onDamaged:onSlimeDamaged,poseMs:350,firstAttack:'jump',deathPose:1440};
 export const ENEMIES={
@@ -38,6 +39,20 @@ export class CombatEnemy{
 
   get finished(){return !this.enemy.hp||!this.bout.playerHp;}
   get deathMs(){return this.spec.deathMs??DEATH_MS;}
+
+  trackTarget(player,distance,dt){
+    return this.navigation?this.navigation.track(this,player,distance,dt):trackAggro(this,distance,dt);
+  }
+
+  canContact(player){return this.bout.clearLine(this.enemy,player);}
+
+  planLanding(point,arenaMargin){
+    return this.navigation?this.navigation.landing(this,point):groundPoint(point,arenaMargin);
+  }
+
+  moveGround(point){
+    Object.assign(this.enemy,this.navigation?this.navigation.terrain.move(this.enemy,point):point);
+  }
 
   stop(){
     if(this.boss)this.boss.event=null;
@@ -77,17 +92,20 @@ export class CombatEnemy{
   groundImpact(kind,radius,damage,player,status,statusMs,slowSpeed){
     const {x,y}=this.enemy;
     this.land={x,y,kind,radius,elapsed:0};
-    if(circleTouchesBox(this.land,radius,playerFeetBox(player))){
+    if(circleTouchesBox(this.land,radius,playerFeetBox(player))&&this.canContact(player)){
       this.contactMs=this.spec.contactCooldown??0;
       this.bout.hurt(damage,boxCenter(playerBox(player)),status,statusMs,slowSpeed);
     }
   }
 
   createCloud(point){
-    if(this.kind==='slime'&&this.bout.cloudEnabled)this.bout.addArea('haze',this.id,groundPoint(point));
+    if(this.kind!=='slime'||!this.bout.cloudEnabled)return;
+    const center=this.navigation?this.navigation.landing(this,point):groundPoint(point);
+    this.bout.addArea('haze',this.id,center);
   }
 
   launchShot(from,to,settings,offset=0){
+    if(!this.bout.clearLine(this.enemy,from))return;
     const dx=to.x-from.x,dy=to.y-from.y;
     const angle=(dx||dy?Math.atan2(dy,dx):Math.PI)+offset;
     this.shots.push({...settings,...from,angle,elapsed:0});
@@ -97,15 +115,23 @@ export class CombatEnemy{
     const body=playerBox(player);
     const stepMs=Math.min(dt,shot.lifetime-shot.elapsed);
     const seconds=stepMs/1000;
-    if(shot.turnRate){
+    if(shot.turnRate||shot.lateTurnRate){
       const target=boxCenter(body);
       const error=Math.atan2(target.y-shot.y,target.x-shot.x)-shot.angle;
       const turn=Math.atan2(Math.sin(error),Math.cos(error));
-      shot.angle+=clamp(turn,-shot.turnRate*seconds,shot.turnRate*seconds);
+      const trackingMs=clamp((shot.trackingMs??Infinity)-shot.elapsed,0,stepMs);
+      const rateLimit=(shot.turnRate*trackingMs+(shot.lateTurnRate??shot.turnRate)*(stepMs-trackingMs))/1000;
+      const maxTurn=Math.min(rateLimit,Math.max(0,(shot.maxTurn??Infinity)-(shot.turnSpent??0)));
+      const correction=clamp(turn,-maxTurn,maxTurn);
+      shot.angle+=correction;
+      if(shot.maxTurn!==undefined)shot.turnSpent=(shot.turnSpent??0)+Math.abs(correction);
     }
-    const end={x:shot.x+Math.cos(shot.angle)*shot.speed*seconds,y:shot.y+Math.sin(shot.angle)*shot.speed*seconds};
+    const desired={x:shot.x+Math.cos(shot.angle)*shot.speed*seconds,y:shot.y+Math.sin(shot.angle)*shot.speed*seconds};
+    const trace=this.bout.space?.trace(shot,desired,shot.radius);
+    const end=trace?.point??desired;
     const hit=segmentContact(shot,end,body,shot.radius);
-    if(hit){
+    const beforeWall=!trace?.blocked||hit&&Math.hypot(hit.x-end.x,hit.y-end.y)>1e-6;
+    if(hit&&beforeWall&&this.bout.clearLine(hit,player)){
       if(!shot.special)this.createCloud(player);
       if(!shot.volley?.hit){
         if(shot.volley)shot.volley.hit=true;
@@ -113,10 +139,11 @@ export class CombatEnemy{
       }
       return false;
     }
+    if(trace?.blocked)return false;
     shot.elapsed+=stepMs;
     Object.assign(shot,end);
-    if(shot.elapsed>=shot.lifetime||end.x<RING.left||end.x>RING.right||
-      end.y<RING.top-(shot.topClearance??45)||end.y>RING.bottom){
+    if(shot.elapsed>=shot.lifetime||!trace&&(end.x<RING.left||end.x>RING.right||
+      end.y<RING.top-(shot.topClearance??45)||end.y>RING.bottom)){
       if(!shot.special)this.createCloud({x:end.x,y:end.y+24});
       return false;
     }
@@ -160,7 +187,7 @@ export class CombatEnemy{
     // A committed attack jump uses the existing landing hit instead of an aerial body hit.
     if(this.finished||!spec.contactDamage||this.contactMs||this.phase==='jump')return;
     const body=playerBox(player);
-    if(boxesOverlap(body,spec.box(this.enemy))&&bout.touch(spec.contactDamage,boxCenter(body))){
+    if(boxesOverlap(body,spec.box(this.enemy))&&this.canContact(player)&&bout.touch(spec.contactDamage,boxCenter(body))){
       this.contactMs=spec.contactCooldown;
     }
   }

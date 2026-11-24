@@ -3,6 +3,10 @@ import Phaser from 'phaser';
 import { objectsIn,propertiesOf } from '../maps/tiledObjects.js';
 import { createFootCollision,readFootObstacles } from '../maps/footCollision.js';
 import { mapLayerDepth } from '../maps/layerDepth.js';
+import { preloadSwampMobs, SwampMobs } from '../swamp/SwampMobs.js';
+import { SwampRunController } from '../swamp/SwampRunController.js';
+import { localSwampRun } from '../swamp/SwampRun.js';
+import { preloadSwampSkills } from '../swamp/SwampCombatCasts.js';
 import placement from '../../public/assets/maps/swamp-occlusion/placement.json' with {type:'json'};
 
 const FOOT_RADIUS = 8; // World pixels, centered on the Arcade foot body.
@@ -29,7 +33,11 @@ export class SwampScene extends MapScene {
 }
 
 export class LargeSwampScene extends SwampScene {
-  constructor() { super('swamp-v3-large','swamp-v3-large.tmj'); }
+  constructor() {
+    super('swamp-v3-large','swamp-v3-large.tmj');
+    this.showInventoryHotbar=false;
+    this.playerFootRadius=FOOT_RADIUS;
+  }
 
   createMapCollision(){
     const world = this.physics.world;
@@ -57,6 +65,10 @@ export class LargeSwampScene extends SwampScene {
 
   preload(){
     super.preload();
+    if(import.meta.env.DEV){
+      preloadSwampMobs(this);
+      preloadSwampSkills(this);
+    }
     this.load.image(SWAMP_OVERLAY_KEY,import.meta.env.BASE_URL+'assets/maps/swamp-v3-large-background-overlay.png');
     for(const name of Object.keys(placement)){
       this.load.image('swamp-cut-'+name,import.meta.env.BASE_URL+'assets/maps/swamp-occlusion/'+name+'.png');
@@ -66,7 +78,7 @@ export class LargeSwampScene extends SwampScene {
 
   create(destination){
     super.create(destination);
-    if (import.meta.env.DEV) this.createCollisionDebug();
+    if (import.meta.env.DEV) this.swampCollisionControl=this.createCollisionDebug();
     const background=this.source.layers.find(layer=>layer.type==='imagelayer'&&layer.name==='Background');
     // Mirror the Tiled image layer transform without changing the authored map.
     const overlay=this.add.image((background.x??0)+(background.offsetx??0),
@@ -112,14 +124,60 @@ export class LargeSwampScene extends SwampScene {
     };
     const show=()=>document.getElementById('play-toolbar')?.append(label);
     const hide=()=>label.remove();
-    show();
-    this.events.on('sleep',hide);
-    this.events.on('wake',show);
+    if(import.meta.env.DEV){
+      this.swampOcclusionControl=label;
+      this.createSwampRun();
+    }else{
+      show();
+      this.events.on('sleep',hide);
+      this.events.on('wake',show);
+      this.events.once('shutdown',()=>{
+        this.events.off('sleep',hide);
+        this.events.off('wake',show);
+        hide();
+      });
+    }
+  }
+
+  createSwampRun(){
+    const start=()=>{
+      this.swampMobs??=new SwampMobs(this,localSwampRun(this.game));
+      this.swampRun??=new SwampRunController(this);
+      this.swampMobs.editor.advanced.append(this.swampCollisionControl,this.swampOcclusionControl);
+    };
+    const stop=()=>{
+      this.swampRun?.destroy();
+      this.swampRun=null;
+      this.swampMobs?.destroy();
+      this.swampMobs=null;
+    };
+    start();
+    this.events.on('wake',start);
+    this.events.on('sleep',stop);
     this.events.once('shutdown',()=>{
-      this.events.off('sleep',hide);
-      this.events.off('wake',show);
-      hide();
+      stop();
+      this.events.off('wake',start);
+      this.events.off('sleep',stop);
     });
+  }
+
+  interactWithScenePickup(){
+    const run=this.swampRun;
+    return run?.acceptsInteractionKey(this.interactKey.originalEvent)&&run.collectNearby();
+  }
+  onUnhandledInteract(){
+    const run=this.swampRun;
+    if(run?.acceptsInteractionKey(this.interactKey.originalEvent))run.casts.use(2);
+  }
+
+  update(time,delta){
+    if(!this.swampRun?.blocking){
+      const speed=this.player.speed;
+      this.player.speed*=this.swampRun?.movementFactor??1;
+      try{super.update(time,delta);}
+      finally{this.player.speed=speed;}
+    }
+    this.swampRun?.update(delta);
   }
 
   createCollisionDebug(){
@@ -136,27 +194,18 @@ export class LargeSwampScene extends SwampScene {
       else outlines.strokeCircle(obstacle.center.x,obstacle.center.y,obstacle.radius);
     }
     const drawFeet = () => {
-      if (!checkbox.checked) return;
+      const visible=checkbox.checked&&Boolean(this.swampMobs?.editor.open);
+      if(outlines.visible!==visible){outlines.setVisible(visible);feet.setVisible(visible);}
+      if(!visible)return;
       const {x,y} = this.player.body.center;
       feet.clear().lineStyle(2,0xff84c6).strokeCircle(x,y,FOOT_RADIUS);
     };
     checkbox.onchange = () => {
-      outlines.setVisible(checkbox.checked);
-      feet.setVisible(checkbox.checked);
       drawFeet();
       checkbox.blur();
     };
-    const show = () => document.getElementById('play-toolbar')?.append(label);
-    const hide = () => label.remove();
-    show();
     this.events.on('postupdate',drawFeet);
-    this.events.on('sleep',hide);
-    this.events.on('wake',show);
-    this.events.once('shutdown',()=>{
-      this.events.off('postupdate',drawFeet);
-      this.events.off('sleep',hide);
-      this.events.off('wake',show);
-      hide();
-    });
+    this.events.once('shutdown',()=>this.events.off('postupdate',drawFeet));
+    return label;
   }
 }

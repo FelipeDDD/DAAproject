@@ -1,4 +1,6 @@
-export const LASH={reach:(11+76)*0.84,radius:7,crackMs:200};
+import balance from '../../combat/balance.json' with {type:'json'};
+
+export const LASH={reach:balance.michael.lash.range,radius:balance.michael.lash.radius,crackMs:200};
 export const DRAIN_ORBS=4;
 export const orbArrivalProgress=index=>0.75+index*0.065;
 const clamp=t=>Math.max(0,Math.min(1,t));
@@ -7,12 +9,12 @@ export function handOf(player){
   return {x:player.body?.center.x??player.x,y:(player.body?.center.y??player.y)-(player.displayHeight??64)*0.34};
 }
 
-export function lashTip(hand,aim){
+export function lashTip(hand,aim,reach=LASH.reach){
   // PixelFX whip-crack's native hand-to-tip offset scaled and rotated about the exported pivot.
   const angle=Math.atan2(aim.y-hand.y,aim.x-hand.x);
   const normal=(aim.x<hand.x?-1:1)*2*0.84;
-  return {x:hand.x+LASH.reach*Math.cos(angle)-normal*Math.sin(angle),
-    y:hand.y+LASH.reach*Math.sin(angle)+normal*Math.cos(angle)};
+  return {x:hand.x+reach*Math.cos(angle)-normal*Math.sin(angle),
+    y:hand.y+reach*Math.sin(angle)+normal*Math.cos(angle)};
 }
 
 export function drainHit(hand,aim,target){
@@ -38,12 +40,13 @@ export function precisionView(scene,clip,anchor,player,captureAim,resolveStrike=
   const victim=scene.selectedDummy??scene.target;
 
   const isLash=clip.precision==='tip';
+  const radius=clip.radius??LASH.radius;
   let releasePoint=resolveStrike?anchor:chestOf(victim);
   let drained=false;
   if(!isLash){
     if(resolveStrike){
       const contact=resolveStrike('drain',anchor);
-      if(contact){releasePoint=contact;drained=true;}
+      if(contact){releasePoint=contact;drained=contact.heal!==0;}
     }else if(drainHit(handOf(player),anchor,releasePoint)){
       drained=true;
       scene.previewHit?.(victim,releasePoint);
@@ -58,21 +61,21 @@ export function precisionView(scene,clip,anchor,player,captureAim,resolveStrike=
     if(isLash){
       if(ms>=LASH.crackMs&&!impact){
         const aim=captureAim?.()??anchor;
-        const tip=lashTip(hand,aim);
+        const tip=lashTip(hand,aim,clip.reach);
         const contact=resolveStrike?resolveStrike('lash',aim):null;
-        const hit=resolveStrike?Boolean(contact):Math.hypot(tip.x-target.x,tip.y-target.y)<=LASH.radius;
+        const hit=resolveStrike?Boolean(contact):Math.hypot(tip.x-target.x,tip.y-target.y)<=radius;
         impact={...tip,hit,contact:contact??target};
         if(hit&&!resolveStrike)scene.previewHit?.(victim,target);
       }
       if(impact&&ms<LASH.crackMs+320){
         const fade=1-(ms-LASH.crackMs)/320;
-        g.lineStyle(2,impact.hit?0x90ffbf:0xd2b69c,fade).strokeCircle(impact.x,impact.y,LASH.radius);
+        g.lineStyle(2,impact.hit?0x90ffbf:0xd2b69c,fade).strokeCircle(impact.x,impact.y,radius);
         if(impact.hit)g.fillStyle(0xfff1b4,fade).fillCircle(impact.contact.x,impact.contact.y,4);
       }
     }else{
       if(ms<160)g.lineStyle(1,drained?0xf68b98:0x957577,1-ms/160)
         .lineBetween(hand.x,hand.y,drained?target.x:anchor.x,drained?target.y:anchor.y);
-if(drained)for(let i=0;i<DRAIN_ORBS;i++){
+      if(drained)for(let i=0;i<DRAIN_ORBS;i++){
         const p=orbPosition(i,t,target,hand);
         if(p.done)continue;
         const tail=orbPosition(i,Math.max(0,t-0.035),target,hand);

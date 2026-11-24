@@ -23,8 +23,9 @@ export class CombatSkillRunner{
 
   use(slot,slots,player,captureAim){
     const skill=SKILLS[slots[slot]],bout=this.bout;
-    if(!skill||!bout.started||!bout.alive||bout.finished||bout.stunMs||this.casting||this.cooldowns.get(skill.id)>0)return false;
-    const anchor=toward(handOf(player),captureAim(),skill.range);
+    if(!skill||!bout.started||!(bout.canCast??bout.alive)||bout.finished||bout.stunMs||this.casting||this.cooldowns.get(skill.id)>0)return false;
+    const aim=toward(handOf(player),captureAim(),skill.range);
+    const anchor=(skill.shape==='ground'&&bout.space?.trace(player,aim).point)||aim;
     const action={skill,anchor,captureAim,age:0,released:false};
     this.cooldowns.set(skill.id,skill.cooldown);
     this.actions.push(action);
@@ -33,10 +34,17 @@ export class CombatSkillRunner{
   }
 
   release(action,player){
+    if(action.released)return;
     const {skill}=action;
     action.released=true;
     if(skill.shape==='missile'){
       const hand=handOf(player),aim=action.captureAim();
+      const muzzle=this.bout.space?.trace(player,hand);
+      if(muzzle?.blocked){
+        action.impactAt=action.age;
+        action.anchor=muzzle.point;
+        return;
+      }
       const angle=Math.atan2(aim.y-hand.y,aim.x-hand.x);
       action.shot={...hand,angle,traveled:0};
     }else{
@@ -52,25 +60,30 @@ export class CombatSkillRunner{
   advanceShot(action,dt,player){
     const {skill,shot}=action;
     const distance=Math.min(skill.speed*dt/1000,skill.range-shot.traveled);
-    const end={x:shot.x+distance*Math.cos(shot.angle),y:shot.y+distance*Math.sin(shot.angle)};
+    const desired={x:shot.x+distance*Math.cos(shot.angle),y:shot.y+distance*Math.sin(shot.angle)};
+    const trace=this.bout.space?.trace(shot,desired,skill.missileRadius);
+    const end=trace?.point??desired;
     let nearest=null,min=Infinity;
     for(const actor of this.bout.enemies){
       if(!actor.enemy.hp)continue;
       const point=segmentContact(shot,end,actor.spec.box(actor.enemy),skill.missileRadius);
       if(!point)continue;
+      if(trace?.blocked&&Math.hypot(point.x-end.x,point.y-end.y)<1e-6)continue;
+      if(this.bout.space&&!this.bout.clearLine(point,actor.enemy))continue;
       const d=Math.hypot(point.x-shot.x,point.y-shot.y);
       if(d<min){min=d;nearest={actor,point};}
     }
     Object.assign(shot,nearest?.point??end);
     shot.traveled+=distance;
-    if(!nearest&&shot.traveled<skill.range)return;
+    if(!nearest&&!trace?.blocked&&shot.traveled<skill.range)return;
     action.impactAt=action.age;
     action.anchor={x:shot.x,y:shot.y};
     action.shot=null;
     if(skill.radius){
       for(const actor of this.bout.enemies){
         const box=actor.spec.box(actor.enemy);
-        if(actor.enemy.hp&&circleTouchesBox(action.anchor,skill.radius,box))this.bout.hitEnemy(skill,actor,boxCenter(box),player);
+        if(actor.enemy.hp&&circleTouchesBox(action.anchor,skill.radius,box)&&
+          (!this.bout.space||this.bout.clearLine(action.anchor,actor.enemy)))this.bout.hitEnemy(skill,actor,boxCenter(box),player);
       }
     }else if(nearest)this.bout.hitEnemy(skill,nearest.actor,nearest.point,player);
   }

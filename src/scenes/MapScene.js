@@ -205,7 +205,7 @@ export class MapScene extends Phaser.Scene {
         onItemCollected:(item,options)=>this.inventoryHotbar?.showItem(item,options),
         onItemUsed:item=>{if(item.itemId===CHARACTER_ITEM_IDS.HEALTH_POTION)this.potionEffects?.show(this.presence.identity.playerId);},
       }):null;
-      this.inventoryHotbar=hasProfileSession(this.presence)?new InventoryHotbar(this.presence,{
+      this.inventoryHotbar=this.showInventoryHotbar!==false&&hasProfileSession(this.presence)?new InventoryHotbar(this.presence,{
         scene:this,
         onToggleItem:item=>this.characterItems?.use(item),
       }):null;
@@ -403,6 +403,7 @@ export class MapScene extends Phaser.Scene {
     if(this.chat?.isInputActive){this.terminalPrompt.setVisible(false);this.quiz?.updateSeatPrompt(false);this.soloStudy?.updateSeatPrompt(false);return;}
     const interact = Phaser.Input.Keyboard.JustDown(this.interactKey);
     const escape = Phaser.Input.Keyboard.JustDown(this.escapeKey);
+    if(interact&&this.interactWithScenePickup?.())return;
     if(interact&&this.npcQuestInteraction?.canInteract()){
       void this.npcQuestInteraction.interact(_time);return;
     }
@@ -531,6 +532,7 @@ export class MapScene extends Phaser.Scene {
       this.positionInteractionHint();
     }
     if (escape && propertiesOf(this.source).escapeReturn && this.returnDestination) this.travelTo(this.returnDestination);
+    else if(interact&&!nearby)this.onUnhandledInteract?.();
   }
 
   positionInteractionHint(){

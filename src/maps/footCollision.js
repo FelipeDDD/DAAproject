@@ -128,13 +128,21 @@ function sweepSegment(point, move, edge, radius, limit) {
   return hit;
 }
 
+export function isFootPositionClear(obstacles, bounds, radius, point) {
+  const {x, y} = point;
+  return Number.isFinite(x) && Number.isFinite(y) &&
+    x >= bounds.left + radius && x <= bounds.right - radius &&
+    y >= bounds.top + radius && y <= bounds.bottom - radius &&
+    !obstacles.some(obstacle => overlap(point, obstacle, radius));
+}
+
 export function createFootCollision(obstacles, {left, top, right, bottom}, radius) {
   const edges = [...obstacles.flatMap(item => item.edges), ...outline(rectangle(left, top, right, bottom), true)];
   const inBounds = point => ({
     x: clamp(point.x, left + radius, right - radius),
     y: clamp(point.y, top + radius, bottom - radius),
   });
-  return (start, end) => {
+  return (start, end, slide = true) => {
     let point = inBounds(start);
     // Recover a spawn in a wall or an overlap from floating point error.
     for (let pass = 0; pass <= MAX_CONTACTS; pass++) {
@@ -161,6 +169,7 @@ export function createFootCollision(obstacles, {left, top, right, bottom}, radiu
       const {t, nx, ny} = hit;
       point.x += move.x * t;
       point.y += move.y * t;
+      if (!slide) return inBounds(point);
       // Keep only the tangent of the unspent motion. Cast again in case it
       // reaches another edge or the round cap at a joint in the same step.
       const inward = Math.min(0, dot(move.x, move.y, nx, ny));

@@ -36,7 +36,10 @@ export class CombatLoadoutPanel{
       for(const button of library.children)button.setAttribute('aria-pressed',String(button.dataset.id===this.state.slots[this.selectedSlot]));
       this.hud.replaceChildren(...this.state.slots.map((id,i)=>this.tile(id,SLOT_KEYS[i],false)));
     };
-    library.replaceChildren(...Object.keys(SKILLS).map(id=>this.tile(id,'',true)));
+    this.refreshBalance=()=>{
+      library.replaceChildren(...Object.keys(SKILLS).map(id=>this.tile(id,'',true)));
+      render();
+    };
     slots.addEventListener('click',event=>{
       const el=event.target.closest('[data-slot]');
       if(el){this.selectedSlot=Number(el.dataset.slot);render();slots.children[this.selectedSlot].focus();}
@@ -59,7 +62,7 @@ export class CombatLoadoutPanel{
     get('load').addEventListener('click',()=>{
       loadPreset(this.state,Number(preset.value));showPresets();render();persist('Preset loaded.');
     },{signal});
-    showPresets();render();
+    showPresets();this.refreshBalance();
     signal.addEventListener('abort',()=>{
       this.bar.hidden=this.panel.hidden=true;
       slots.replaceChildren();library.replaceChildren();this.hud.replaceChildren();

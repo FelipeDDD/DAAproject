@@ -123,7 +123,7 @@ export class InventoryHotbar {
       const usable=item?.quickSlotAction||(Boolean(inventoryItemUseBehavior(item))&&item?.compatible!==false);
       const slot=document.createElement(usable?'button':'div');slot.className='school-hotbar-slot inventory-slot';slot.dataset.slot=String(index+1);
       if(usable)slot.type='button';
-      const hotkey=document.createElement('kbd');hotkey.textContent=String(index+1);slot.append(hotkey);
+      const hotkey=document.createElement('kbd');hotkey.textContent=item?.keyLabel??String(index+1);slot.append(hotkey);
       if(!item){slot.classList.add('empty');slot.setAttribute('aria-label',`Empty inventory slot ${index+1}`);wrapper.append(slot);return wrapper;}
       if(item.quickSlotAction){
         const image=document.createElementNS('http://www.w3.org/2000/svg','svg');
@@ -132,8 +132,14 @@ export class InventoryHotbar {
         path.setAttribute('d',item.iconPath??'M12 3 21 12 12 21 3 12Z');image.append(path);
         const status=document.createElement('span');status.className='inventory-action-status';
         slot.classList.add('inventory-action-slot');slot.disabled=true;slot.append(image,status);
-        slot.onclick=()=>{if(!this.destroyed&&!this.root.hidden&&!slot.disabled)item.onUse?.();};
-        this.actionViews.set(item.id,{slot,image,status,item});
+        const details=item.keyLabel?document.createElement('span'):null;
+        if(details){
+          details.className='inventory-action-details';
+          slot.append(details);
+          slot.disabled=false;
+        }
+        slot.onclick=()=>{if(!this.destroyed&&!this.root.hidden&&!slot.disabled&&(!details||slot.getAttribute('aria-disabled')!=='true'))item.onUse?.();};
+        this.actionViews.set(item.id,{slot,image,status,item,details});
         this.setQuickSlotActionState(item.id,{visible:true,enabled:false,status:'--'});
         wrapper.append(slot);return wrapper;
       }
@@ -164,13 +170,29 @@ export class InventoryHotbar {
     }));
     this.slotsRoot.replaceChildren(this.quickGroup,this.utilityGroup);
   }
-  setQuickSlotActionState(id,{visible=true,enabled=false,status=''}){
+  setQuickSlotActionState(id,{visible=true,enabled=false,status='',presentation}){
     const view=this.actionViews.get(id);if(!view||this.destroyed)return;
-    const {slot,image,item}=view;slot.disabled=!visible||!enabled;
+    const {slot,image,item,details}=view;
+    if(details){
+      const disabled=String(!visible||!enabled);
+      if(slot.getAttribute('aria-disabled')!==disabled)slot.setAttribute('aria-disabled',disabled);
+    }else slot.disabled=!visible||!enabled;
     slot.classList.toggle('empty',!visible);slot.classList.toggle('active',visible&&enabled);
-    image.style.display=visible?'':'none';view.status.hidden=!visible;view.status.textContent=visible?status:'';
-    slot.dataset.tooltip=visible?`${item.label} (${item.slot})\n${status}`:`Empty inventory slot ${item.slot}`;
-    slot.setAttribute('aria-label',slot.dataset.tooltip);
+    image.style.display=visible&&!details?'':'none';view.status.hidden=!visible||Boolean(details&&!status);
+    const statusText=visible?status:'';
+    if(view.status.textContent!==statusText)view.status.textContent=statusText;
+    if(!details||!presentation){
+      slot.dataset.tooltip=visible?`${item.label} (${item.slot})\n${status}`:`Empty inventory slot ${item.slot}`;
+      slot.setAttribute('aria-label',slot.dataset.tooltip);
+      return;
+    }
+    slot.dataset.locked=String(presentation.locked);
+    if(view.presentation===presentation)return;
+    view.presentation=presentation;
+    const label=this.document.createElement('span');label.textContent=presentation.name;
+    details.replaceChildren(presentation.icon,label);
+    slot.dataset.tooltip=presentation.tooltip;
+    slot.setAttribute('aria-label',`${item.keyLabel}. ${presentation.tooltip}`);
   }
   destroy(){
     if(this.destroyed)return;this.destroyed=true;clearTimeout(this.cooldownTimer);

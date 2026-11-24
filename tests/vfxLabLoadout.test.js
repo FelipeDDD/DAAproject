@@ -172,10 +172,32 @@ test('Drain finishes after the last Ghost falls but pending healing cannot reviv
     else if(end==='reset'){bout.reset();runner.reset();}
     else bout.enemies[0].elapsed=460;
     tick(SKILLS.drain.visualMs);
-    assert.equal(bout.playerHp,end==='death'?0:100);
+    assert.equal(bout.playerHp,{victory:98,death:0,reset:100}[end]);
     assert.equal(runner.actions.length,0);
-    assert.deepEqual(results,end==='victory'?[[3]]:[]);
+    assert.deepEqual(results,end==='victory'?[[1]]:[]);
   }
+});
+
+test('Life Steal heals only up to a Mushroom milestone and cannot drain its shield',()=>{
+  const popups=[];
+  const {bout,runner,cast,tick}=fight(['mushroom'],amount=>popups.push(amount));
+  const [actor]=bout.enemies;
+  actor.enemy.hp=723;
+  bout.playerHp=40;
+  assert.ok(cast('drain'));
+  tick(SKILLS.drain.visualMs);
+  assert.equal(actor.enemy.hp,720);
+  assert.equal(bout.playerHp,43);
+  assert.deepEqual(popups,[3]);
+  runner.reset();
+  assert.ok(cast('drain'));
+  tick(SKILLS.drain.cast);
+  assert.equal(runner.actions[0].contact.heal,0);
+  assert.equal(runner.actions[0].returnedOrbs,undefined);
+  tick(SKILLS.drain.visualMs);
+  assert.equal(actor.enemy.hp,720);
+  assert.equal(bout.playerHp,43);
+  assert.deepEqual(popups,[3]);
 });
 
 test('Meteor shows the falling rock before damage and enters the first impact frame at release',()=>{

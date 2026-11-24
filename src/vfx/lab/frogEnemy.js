@@ -1,17 +1,29 @@
-import { acquireAggro,DEFAULT_AGGRO,trackAggro } from './combatAggro.js';
+import { acquireAggro,DEFAULT_AGGRO } from './combatAggro.js';
 import { clamp,groundPoint,toward } from './combatGeometry.js';
+import balance from '../../combat/balance.json' with {type:'json'};
 
 const SCALE=1.5;
 // Native PixelFX time in milliseconds, sampled at the atlas's 20 FPS.
 const CROUCH=950,TAKEOFF=1200,LANDING=1650;
 const AIRBORNE_MS=420,NATIVE_APEX=22.05;
 
+export const frogIdlePose=elapsed=>elapsed%900;
+export const frogHopPose=progress=>TAKEOFF+(LANDING-TAKEOFF)*progress;
+export const frogRecoveryPose=elapsed=>Math.min(2000,LANDING+elapsed);
+
+export function frogChaseTarget(frog,player,preferredRange){
+  const distance=Math.hypot(player.x-frog.x,player.y-frog.y);
+  if(distance>preferredRange+10)return player;
+  if(distance<preferredRange-20)return {x:2*frog.x-player.x,y:2*frog.y-player.y};
+  return null;
+}
+
 export const FROG={
   ...DEFAULT_AGGRO,label:'Frog',size:1,scale:SCALE,maxHp:90,poseMs:0,
   box:frogBox,update:updateFrog,onDamaged:acquireAggro,
-  preferredRange:70,hopDistance:33,hopMs:360,pauseMs:330,
-  leap:{name:'Leaping Slam',range:118,windupMs:420,flightMs:430,recoverMs:540,cooldown:2050,damage:18,radius:24},
-  longLeap:{name:'Long Leap',range:192,windupMs:500,flightMs:560,chance:0.40,retryMs:2400,cooldown:6500},
+  ...structuredClone(balance.frog),
+  leap:{name:'Leaping Slam',...balance.frog.leap},
+  longLeap:{name:'Long Leap',...balance.frog.longLeap},
 };
 
 function frogBox(frog){
@@ -27,7 +39,9 @@ function chooseLeap(actor,distance){
   if(actor.cooldown)return null;
   if(distance<=leap.range)return leap;
   if(distance>longLeap.range||actor.longLeapMs)return null;
-  const selected=actor.aiSample()<longLeap.chance;
+  const reengaged=actor.aggro?.reengaged;
+  const selected=reengaged||actor.aiSample()<longLeap.chance;
+  if(reengaged)actor.navigation.onCounter(actor);
   actor.longLeapMs=selected?longLeap.cooldown:longLeap.retryMs;
   return selected?{...leap, ...longLeap}:null;
 }
@@ -37,7 +51,7 @@ function updateFrog(actor,player,movementDt,dt){
   const leap=attack?.leap;
   actor.longLeapMs=Math.max(0,(actor.longLeapMs??0)-dt);
   const distance=Math.hypot(player.x-enemy.x,player.y-enemy.y);
-  const aggro=trackAggro(actor,distance,dt);
+  const aggro=actor.trackTarget(player,distance,dt);
   if(actor.phase==='windup'){
     enemy.poseMs=CROUCH+(TAKEOFF-CROUCH)*Math.min(elapsed/leap.windupMs,1);
     if(elapsed>=leap.windupMs){
@@ -51,9 +65,8 @@ function updateFrog(actor,player,movementDt,dt){
     const offensive=actor.phase==='jump';
     const t=clamp(elapsed/(offensive?leap.flightMs:spec.hopMs),0,1);
     const {from,to}=actor.hop;
-    enemy.x=from.x+(to.x-from.x)*t;
-    enemy.y=from.y+(to.y-from.y)*t;
-    enemy.poseMs=TAKEOFF+(LANDING-TAKEOFF)*t;
+    actor.moveGround({x:from.x+(to.x-from.x)*t,y:from.y+(to.y-from.y)*t});
+    enemy.poseMs=frogHopPose(t);
     const air=clamp((Math.floor(enemy.poseMs/50)*50-TAKEOFF)/AIRBORNE_MS,0,1);
     // The sprite already contains its vertical displacement and shadow.
     enemy.lift=Math.round(4*NATIVE_APEX*air*(1-air))*SCALE;
@@ -67,21 +80,23 @@ function updateFrog(actor,player,movementDt,dt){
     return;
   }
   if(actor.phase==='recover'){
-    enemy.poseMs=Math.min(2000,LANDING+elapsed);
+    enemy.poseMs=frogRecoveryPose(elapsed);
     if(elapsed<actor.frogPauseMs)return;
     actor.phase='idle';
     actor.elapsed=0;
   }
-  enemy.poseMs=actor.elapsed%900;
-  if(!aggro)return;
-  const choice=chooseLeap(actor,distance);
+  enemy.poseMs=frogIdlePose(actor.elapsed);
+  const choice=aggro&&actor.canContact(player)&&chooseLeap(actor,distance);
   if(choice){
-    const to=groundPoint(player,24);
+    const to=actor.planLanding(player,24);
     face(enemy,to.x);
     actor.windup(choice===spec.leap?'frog-leap':'frog-long-leap',to,spec.leap.cooldown);
     actor.attack.leap=choice;
-  }else if(distance>spec.preferredRange+10||distance<spec.preferredRange-20){
-    const target=distance>=spec.preferredRange?player:{x:2*enemy.x-player.x,y:2*enemy.y-player.y};
+  }else{
+    if(actor.navigation){actor.navigation.chase(actor,player,movementDt);return;}
+    if(!aggro)return;
+    const target=frogChaseTarget(enemy,player,spec.preferredRange);
+    if(!target)return;
     const to=groundPoint(toward(enemy,target,spec.hopDistance),24);
     if(to.x===enemy.x&&to.y===enemy.y)return;
     face(enemy,to.x);

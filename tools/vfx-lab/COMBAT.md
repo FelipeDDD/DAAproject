@@ -14,6 +14,42 @@ ataques e status do encontro. Michael ainda pode se mover e atacar. **Show hitbo
 mostra as áreas do corpo, dos pés e do projétil. **Reset fight** reinicia com 100 HP.
 Trocar de inimigo encerra o encontro e mostra o novo adversário em espera.
 
+## Balance Editor
+
+Abra o Sandbox pelo Vite em `localhost` ou `127.0.0.1`. Em **Balance Editor**,
+escolha uma habilidade ou inimigo e ajuste a coluna **Experimental**. **Reset
+fight and test** aplica o rascunho a um encontro novo. **Save to Source** mostra
+as diferenças e pede confirmação antes de gravar `src/combat/balance.json`.
+Recarregue o Lab ou o Swamp para usar a nova configuração salva.
+
+**Restore Saved** relê o arquivo atual. **Reset Original** carrega o snapshot em
+`src/combat/balance.original.json` como rascunho. **Export JSON** e **Import JSON**
+permitem trocar presets completos. A última versão anterior ao salvamento fica
+em `src/combat/balance.json.bak`. A gravação só está disponível em um servidor
+Vite vinculado ao loopback, com o Quick Tunnel desligado.
+
+## Paridade com Swamp V3
+
+O Sandbox e o Swamp usam `CombatBout`, `CombatSkillRunner` e o registro `ENEMIES`
+para resolver os mesmos ataques. Ajuste as habilidades de Michael em
+[`combatSkills.js`](../../src/vfx/lab/combatSkills.js), os disparos e saltos das
+Slimes em [`slimeVariants.js`](../../src/vfx/lab/slimeVariants.js), e o bote e as
+fintas da Snake em [`snakeEnemy.js`](../../src/vfx/lab/snakeEnemy.js).
+Os parâmetros da Frog ficam em [`frogEnemy.js`](../../src/vfx/lab/frogEnemy.js).
+
+Por padrão, os dois modos ativam **Anti-kiting attacks** e **Residual poison cloud**,
+usam **By variant** e deixam **Randomized timings** desligado. Esses controles
+mudam apenas a sessão do Sandbox. A velocidade base de Michael é 128 px/s nos dois modos.
+
+O Sandbox usa as bordas do anel e permite configurar o encontro e o loadout. O Swamp
+usa as colisões reais do mapa para movimento e ataques, incluindo projéteis e pousos.
+Spawns, emboscadas, A\*, raio dos pés, roaming, Pack Aggro, retorno ao spawn, cura
+fora de combate e reagro ficam em [`mobConfig.js`](../../src/swamp/mobConfig.js).
+O Sandbox usa a regra de aggro do anel. O Swamp pode perder o alvo após 2 s
+além de 500 px ou após o timeout de rota. Ao recuperar o alvo, a navegação pode
+sinalizar uma oportunidade de contra-ataque e o mob usa a mesma execução da habilidade.
+O Return Trap também impõe um tempo mínimo de reação na entrada da Snake.
+
 ## Loadout de Michael
 
 Abra **Loadout**, escolha **LMB**, **Q**, **E** ou **R** e clique numa habilidade. A barra sob a arena muda na hora. O conjunto inicial é Ember Cleave, Copper Lash, Life Steal e Meteor Strike. Também estão disponíveis Frost Knives (arco com Slowed), Fireball (explosão no contato ou no alcance máximo) e Ice Lance (primeiro alvo com Slowed). Passe o mouse sobre a habilidade para consultar valores de combate.
@@ -24,7 +60,7 @@ A recarga começa ao aceitar o comando e pertence à habilidade, inclusive ao tr
 
 Para adicionar uma habilidade, cadastre um ID em `src/vfx/lab/combatSkills.js`, com a miniatura, o efeito e os valores efetivos de combate. Os slots, a biblioteca e os tooltips leem o registro. Reutilize um dos comportamentos de arco, ponta, raio, projétil ou área de chão. Um comportamento novo precisa de resolução em `CombatSkillRunner.js` / `CombatBout.js` e da apresentação correspondente em `CombatSkillView.js`.
 
-Life Steal mede da mão ao centro da hitbox do primeiro alvo atingido. O tooltip lista dano e cura por faixa. Durante os 750 ms de preparação, Michael anda a 30% da velocidade disponível após os outros efeitos de lentidão. O dano aparece sobre o inimigo no acerto. Cada um dos quatro orbes cura uma parcela inteira quando chega à mão. No último, aparece sobre Michael um único número verde com a cura efetiva total, quando maior que zero. Derrota e Reset cancelam as parcelas e o popup pendentes. Copper Lash sorteia 50% de chance de crítico por alvo tocado pela ponta no estalo.
+Life Steal mede da mão ao centro da hitbox do primeiro alvo atingido. O tooltip lista dano e cura por faixa. Durante os 750 ms de preparação, Michael anda a 30% da velocidade disponível após os outros efeitos de lentidão. O dano aparece sobre o inimigo no acerto. A cura fica limitada pelo teto da faixa e pelo HP retirado do alvo. Cada um dos quatro orbes cura uma parcela inteira quando chega à mão. No último, aparece sobre Michael um único número verde com a cura efetiva total, quando maior que zero. Derrota e Reset cancelam as parcelas e o popup pendentes. Copper Lash sorteia 50% de chance de crítico por alvo tocado pela ponta no estalo.
 
 Meteor Strike mantém a área fixa desde o início do aviso. A rocha cai na parte final da preparação e o dano coincide com o primeiro quadro de impacto. Fica para uma próxima rodada comparar o aviso e a queda do Sandbox com a versão do VFX Lab.
 
@@ -36,7 +72,7 @@ causa 24 de dano se o círculo atingir os pés. Poison Shot faz a preparação n
 do Slime e tem um projétil verde visível. Um acerto causa 16 de dano direto e renova
 um único Poisoned de 4 ticks, 3 HP a cada segundo.
 
-Ative **Residual poison cloud** para testar uma névoa de chão após o pouso ou o fim
+**Residual poison cloud** mantém uma névoa de chão após o pouso ou o fim
 do projétil. Cada névoa dura até 2,7 s e é substituída pela seguinte. Após um segundo
 de contato contínuo ela causa 2 de dano, com um intervalo de um segundo entre ticks.
 O status Poisoned tem prioridade sobre os ticks da névoa. Cada Slime verde mantém no máximo uma névoa residual.
@@ -72,7 +108,7 @@ Com **Anti-kiting attacks** ativo, fugir por 450 ms arma o especial. Após uma a
 
 Após o disparo, a Slime recua durante até 300 ms na direção oposta a Michael. A borda da arena encurta o passo. Poison e Frost recuam 34 px, Big recua 26 px e Swift recua 42 px. A Slime continua vulnerável e depois retoma a luta. Para outro especial é preciso voltar a até 140 px e fugir novamente. A recarga individual parte de 6,2 s e há 1,05 s entre inícios de especiais no encontro.
 
-Em **Special**, escolha **By variant** para usar Homing Shot com Poison e Swift ou Spread Volley com Frost e Big. As outras opções forçam a modalidade escolhida para os quatro Slimes. Homing Shot viaja a 220 px/s, curva até 1,75 rad/s e dura até 1,7 s. Uma esquiva lateral tardia explora o limite de curva. Spread Volley mira no lançamento e tem três trajetórias retas a 260 px/s, separadas por cerca de 19,5°, com duração de até 1,5 s. Cada rajada pode causar dano a Michael uma vez. O dano especial por variante é 16 para Poison e Frost, 20 para Big e 12 para Swift. Os projéteis expiram ao sair dos limites da arena. Os valores estão em `src/vfx/lab/slimeVariants.js`.
+Em **Special**, escolha **By variant** para usar Homing Shot com Poison e Swift ou Spread Volley com Frost e Big. As outras opções forçam a modalidade escolhida para os quatro Slimes. Homing Shot viaja a 220 px/s e dura até 1,7 s. A correção é de até 1,10 rad/s nos primeiros 440 ms e 0,18 rad/s depois, com teto acumulado de 0,65 rad. Spread Volley mira no lançamento e tem três trajetórias retas a 260 px/s, separadas por cerca de 19,5°, com duração de até 1,5 s. Cada rajada pode causar dano a Michael uma vez. O dano especial por variante é 16 para Poison e Frost, 20 para Big e 12 para Swift. Os projéteis expiram ao sair dos limites da arena. Os valores estão em `src/vfx/lab/slimeVariants.js`.
 
 ## Snake e Frog
 
@@ -88,7 +124,9 @@ para esquerda e direita durante o movimento.
   com trechos de 300–500 ms e acompanha cada trecho com o espelhamento.
   **Venom Bite** contrai o corpo durante 450 ms, avança na direção escolhida
   e só causa dano quando a cabeça atravessa a hitbox de Michael. Um acerto
-  causa 15 de dano e aplica Poisoned com os quatro ticks habituais. Ajustes em
+  causa 15 de dano e aplica Poisoned com os quatro ticks habituais. O intervalo
+  mínimo entre mordidas é de 2,2 s. A Snake pode recuar 32 px, buscar um flanco
+  e tentar uma finta com 35% de chance quando há espaço. Ajustes em
   `src/vfx/lab/snakeEnemy.js`.
 - **Frog** tem 90 HP, avança em pulos curtos com pausas e tenta ficar a
   cerca de 70 px de Michael. **Leaping Slam** marca um destino a até 118 px,

@@ -100,3 +100,46 @@ main p { margin: 10px 0 0; color: #b9c3cc; }
   transform:scaleY(var(--cooldown,0)); transform-origin:bottom; }
 #combat-hud b { position:absolute; top:16px; color:white; font-variant-numeric:tabular-nums; text-shadow:0 1px 3px black; }
 @media(max-width:600px){ .skill-slots .combat-tile:nth-child(n+3) .combat-tip,#combat-library .combat-tile:nth-child(even) .combat-tip {right:0;left:auto;} }
+
+.balance-editor {
+  margin-top:8px;
+  padding:0 12px 10px;
+  border:1px solid #36414d;
+  border-radius:6px;
+  background:#1b242d;
+}
+.balance-editor:not([open]) { padding-bottom:0; }
+.balance-editor summary { padding:8px 0; color:#edc990; cursor:pointer; }
+.balance-editor > output { display:block; margin:8px 0; color:#e8c99b; }
+.balance-fields { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
+.balance-fields th,.balance-fields td { text-align:left; padding:3px 7px; border-bottom:1px solid #34424e; }
+.balance-fields tbody th { font-weight:500; }
+.balance-fields .balance-stage th { padding-top:9px; color:#e8c99b; font-weight:600; }
+.balance-fields .changed { background:#503d2b; }
+.balance-fields input {
+  width:clamp(65px,14vw,105px);
+  margin-right:5px;
+  padding:4px;
+  border:1px solid #526373;
+  border-radius:4px;
+  background:#151c23;
+  color:inherit;
+  font:inherit;
+}
+.balance-fields input[aria-invalid="true"] { border-color:#ff9b87; }
+.balance-actions { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+.balance-editor p[role="status"] { color:#c9d3dd; margin:8px 0 0; }
+.balance-editor p[role="status"]:empty { display:none; }
+.balance-confirm {
+  max-width:min(540px,calc(100vw - 24px));
+  max-height:80dvh;
+  padding:15px;
+  color:inherit;
+  background:#202831;
+  border:1px solid #b98b58;
+  border-radius:6px;
+}
+.balance-confirm h2 { margin:0; font-size:18px; }
+.balance-confirm ul { max-height:45dvh; padding-left:24px; overflow:auto; }
+.balance-confirm button+button { margin-left:6px; }
+.balance-confirm::backdrop { background:#0a1018cc; }

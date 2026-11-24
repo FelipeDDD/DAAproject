@@ -19,7 +19,8 @@ export function groundArea(kind,sourceId,{x,y}){
 export function updateArea(area,dt,player,bout){
   const activeMs=Math.min(dt,area.lifetime-area.age);
   area.age+=activeMs;
-  const inside=Math.hypot(player.x-area.x,(player.y-area.y)/area.squash)<=area.radius;
+  const inside=Math.hypot(player.x-area.x,(player.y-area.y)/area.squash)<=area.radius&&
+    (!bout.space||bout.clearLine(area,player));
   if(inside){
     if(area.kind==='sporecap'){
       if(area.triggeredAt===undefined){

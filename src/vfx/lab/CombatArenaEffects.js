@@ -28,6 +28,13 @@ function landingShadow(g,point,progress,radius,color){
 
 const fadeGroundArea=area=>Math.min(1,(area.lifetime-area.age)/480);
 
+export function drawSlimeDeathSpores(spores,area){
+  spores.setVisible(Boolean(area));
+  if(!area)return;
+  spores.setPosition(area.x,area.y).setScale(area.radius/70).setAlpha(fadeGroundArea(area));
+  drawField(spores,'spores',area.age/area.lifetime);
+}
+
 export function drawGroundArea(g,area){
   const {x,y,age,radius,squash,kind}=area;
   const time=age/1000,width=radius*2,height=width*squash;
@@ -99,13 +106,7 @@ export class CombatArenaEffects{
   }
 
   draw(bout,deathArea){
-    if(this.spores){
-      this.spores.setVisible(Boolean(deathArea));
-      if(deathArea){
-        this.spores.setPosition(deathArea.x,deathArea.y).setScale(deathArea.radius/70).setAlpha(fadeGroundArea(deathArea));
-        drawField(this.spores,'spores',deathArea.age/deathArea.lifetime);
-      }
-    }
+    if(this.spores)drawSlimeDeathSpores(this.spores,deathArea);
     const {enemy,attack,phase,elapsed,shots,land,spec}=bout;
     const floor=this.floor.clear();
     this.charge?.clear();

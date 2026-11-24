@@ -1,0 +1,178 @@
+{
+  "michael": {
+    "cleaver": {
+      "damage": 24,
+      "range": 48,
+      "cooldown": 1700,
+      "cast": 450
+    },
+    "lash": {
+      "damage": 10,
+      "critical": 30,
+      "criticalChance": 0.5,
+      "range": 73.08,
+      "radius": 7,
+      "cooldown": 1200,
+      "cast": 200
+    },
+    "drain": {
+      "bands": [
+        {
+          "range": 40,
+          "damage": 20,
+          "heal": 20
+        },
+        {
+          "range": 90,
+          "damage": 15,
+          "heal": 15
+        },
+        {
+          "range": 150,
+          "damage": 10,
+          "heal": 10
+        },
+        {
+          "range": 240,
+          "damage": 5,
+          "heal": 5
+        }
+      ],
+      "rayPadding": 3,
+      "cooldown": 3200,
+      "cast": 750,
+      "castSpeed": 0.3
+    },
+    "flurry": {
+      "damage": 18,
+      "range": 32,
+      "cooldown": 1700,
+      "cast": 390,
+      "status": {
+        "percent": 30,
+        "ms": 1600
+      }
+    },
+    "fireball": {
+      "damage": 26,
+      "range": 200,
+      "radius": 29,
+      "missileRadius": 5,
+      "speed": 275,
+      "cooldown": 2400,
+      "cast": 0
+    },
+    "lance": {
+      "damage": 19,
+      "range": 210,
+      "missileRadius": 4,
+      "speed": 325,
+      "cooldown": 2000,
+      "cast": 0,
+      "status": {
+        "percent": 35,
+        "ms": 2000
+      }
+    },
+    "meteor": {
+      "damage": 55,
+      "range": 210,
+      "radius": 35,
+      "cooldown": 6500,
+      "cast": 1690
+    }
+  },
+  "slimes": {
+    "special": {
+      "engageRange": 140,
+      "retreatRange": 170,
+      "retreatHysteresis": 10,
+      "maxRange": 360,
+      "retreatMs": 450,
+      "windupMs": 550,
+      "recoilMs": 300,
+      "cooldown": 6200,
+      "sharedCooldown": 1050,
+      "homing": {
+        "speed": 220,
+        "lifetime": 1700,
+        "turnRate": 1.1,
+        "trackingMs": 440,
+        "lateTurnRate": 0.18,
+        "maxTurn": 0.65
+      },
+      "spread": {
+        "speed": 260,
+        "angle": 0.34,
+        "lifetime": 1500
+      }
+    },
+    "variants": {
+      "slime": {
+        "damage": 16,
+        "recoil": 34
+      },
+      "frost": {
+        "damage": 16,
+        "recoil": 34
+      },
+      "big": {
+        "damage": 20,
+        "recoil": 26
+      },
+      "swift": {
+        "damage": 12,
+        "recoil": 42
+      }
+    }
+  },
+  "snake": {
+    "speed": 78,
+    "lateralSpeed": 28,
+    "diagonalChase": {
+      "angleDeg": 32,
+      "minLegMs": 300,
+      "maxLegMs": 500,
+      "enterRatio": 0.62,
+      "exitRatio": 0.85
+    },
+    "bite": {
+      "range": 86,
+      "windupMs": 450,
+      "lungeMs": 185,
+      "recoverMs": 440,
+      "cooldown": 2200,
+      "damage": 15,
+      "radius": 5
+    },
+    "tactics": {
+      "feintChance": 0.35,
+      "feintDistance": 24,
+      "retreatDistance": 32,
+      "flankDistance": 34
+    }
+  },
+  "frog": {
+    "preferredRange": 70,
+    "hopDistance": 33,
+    "hopMs": 360,
+    "pauseMs": 330,
+    "leap": {
+      "range": 118,
+      "windupMs": 420,
+      "flightMs": 430,
+      "recoverMs": 540,
+      "cooldown": 2050,
+      "damage": 18,
+      "radius": 24
+    },
+    "longLeap": {
+      "range": 192,
+      "windupMs": 500,
+      "flightMs": 560,
+      "chance": 0.4,
+      "retryMs": 2400,
+      "cooldown": 6500
+    }
+  }
+}

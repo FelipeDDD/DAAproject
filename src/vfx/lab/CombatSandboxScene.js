@@ -10,6 +10,7 @@ import { trackArenaAim } from './ArenaAim.js';
 import { CombatSkillRunner } from './CombatSkillRunner.js';
 import { CombatSkillView,combatSheets } from './CombatSkillView.js';
 import { CombatLoadoutPanel } from './CombatLoadoutPanel.js';
+import { BalanceEditor } from './BalanceEditor.js';
 import { slotShortcut } from './combatLoadout.js';
 import { preloadLabSheets } from './SheetSequence.js';
 
@@ -20,6 +21,7 @@ import { MUSHROOM_SHEETS,mushroomPose } from './mushroomArt.js';
 import { nextMark,MUSHROOM_BOSS,eventNames } from './mushroomBoss.js';
 import { labSheets } from './sheetCatalog.js';
 import { CombatArenaEffects,drawGroundArea } from './CombatArenaEffects.js';
+import { drawCombatEnemySprite } from './combatEnemySprite.js';
 import { RING,playerBox,playerFeetBox } from './combatGeometry.js';
 import { VFX_LAB_MAP,VFX_LAB_PLAYER,VFX_LAB_TARGET } from './layout.js';
 import combatArt from '../../../tools/vfx-lab/sheets/combat-pixelfx.json' with {type:'json'};
@@ -90,6 +92,8 @@ export class CombatSandboxScene extends Phaser.Scene{
     const listeners=new AbortController(),{signal}=listeners;
     const aim=trackArenaAim(canvas,this.cameras.main,VFX_LAB_TARGET,{signal});
     this.loadout=new CombatLoadoutPanel(signal);
+    if(['localhost','127.0.0.1','[::1]'].includes(location.hostname))
+      this.balanceEditor=new BalanceEditor(this,document.getElementById('combat-balance'),signal);
     this.skills=new CombatSkillRunner(this.bout,healed=>this.reactions.drainResult(this.player,healed));
     this.skillViews=new Map();
     const cast=slot=>this.skills.use(slot,this.loadout.state.slots,this.player,aim.capture);
@@ -106,6 +110,10 @@ export class CombatSandboxScene extends Phaser.Scene{
     },{signal});
     canvas.addEventListener('blur',()=>this.input.keyboard.resetKeys(),{signal});
     const {start,pause,boxes,monster,composition,cloud,randomized,retreat,special}=this.controls;
+    cloud.checked=this.bout.cloudEnabled;
+    randomized.checked=this.bout.ai.randomized;
+    retreat.checked=this.bout.ai.antiKiting;
+    special.value=this.bout.ai.specialMode;
     const syncAi=()=>{
       this.bout.ai={randomized:randomized.checked,antiKiting:retreat.checked,specialMode:special.value};
       special.disabled=!retreat.checked;
@@ -169,6 +177,7 @@ export class CombatSandboxScene extends Phaser.Scene{
     this.clearSkills();
     this.reactions.clear();
     this.clearViews();
+    this.balanceEditor?.applyPreview();
     this.statusName=null;
     const {monster,composition,cloud,cloudOption,start}=this.controls;
     const mixed=monster.value==='mixed';
@@ -252,10 +261,9 @@ export class CombatSandboxScene extends Phaser.Scene{
       const {sprite,atlas,bar,effects}=this.enemyView(actor);
       const mushroom=actor.kind==='mushroom';
       const dying=!enemy.hp,fade=dying?Math.min(1,actor.elapsed/actor.deathMs):0;
-      const pose=dying&&spec.deathPose!==undefined?spec.deathPose+fade*340:enemy.poseMs;
-      sprite.setPosition(enemy.x,enemy.y).setDepth(enemy.y).setVisible(fade<1);
       const flip=enemy.facing<0;
       if(mushroom){
+        sprite.setPosition(enemy.x,enemy.y).setDepth(enemy.y).setVisible(fade<1);
         const [key,frame]=mushroomPose(actor);
         const art=MUSHROOM_SHEETS[key];
         sprite.setTexture(key,frame).setOrigin(art.anchor[0]/art.width,art.anchor[1]/art.height)
@@ -266,16 +274,7 @@ export class CombatSandboxScene extends Phaser.Scene{
         const info=[boss.phase.name,mark?'Next '+mark+'%':'Final phase','Last: '+(boss.last??'—'),
           current?'Casting: '+current:null,boss.finalPending?'Enraged Big Slime awaiting space':null].filter(Boolean).join(' · ');
         if(this.controls.bossInfo.textContent!==info)this.controls.bossInfo.textContent=info;
-      }else{
-        const widthFactor=(enemy.stretchX??1)*(1+0.24*fade);
-        sprite.setScale(spec.scale*widthFactor,spec.scale*(1-0.8*fade)).setAlpha(1-fade)
-          .setFrame(Math.min(atlas.frameMs.length-1,Math.floor(pose/50)));
-        if(actor.phase==='emerging')sprite.setAlpha(0.25+0.75*actor.elapsed/actor.emergeMs);
-      }
-      if(!mushroom&&flip!==sprite.flipX){
-        const originX=atlas.anchor[0]/atlas.width;
-        sprite.setFlipX(flip).setOrigin(flip?1-originX:originX,atlas.anchor[1]/atlas.height);
-      }
+      }else drawCombatEnemySprite(sprite,atlas,actor);
       if(bar.current!==enemy.hp||bar.max!==spec.maxHp)bar.setHealth(enemy.hp,spec.maxHp).setVisible(!dying);
       bar.updatePosition();
       effects.draw(actor,dying&&this.bout.areas.find(area=>area.kind==='poison'&&area.sourceId===actor.id));

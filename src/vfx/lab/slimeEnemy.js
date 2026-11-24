@@ -1,6 +1,10 @@
 import { clamp,toward,groundPoint,playerBox,boxCenter,POISON_RADIUS } from './combatGeometry.js';
 import { SLIME_SPECIAL } from './slimeVariants.js';
-import { acquireAggro,trackAggro } from './combatAggro.js';
+import { acquireAggro } from './combatAggro.js';
+
+export const slimeHopPose=progress=>900+540*progress;
+export const slimeRecoveryPose=(elapsed,speed)=>Math.min(1780,1440+elapsed*speed);
+export const slimeChaseStep=(spec,distance)=>distance>58?Math.min(spec.step,distance-52):0;
 
 function beginHop(bout,to,phase){
   const {x,y}=bout.enemy;
@@ -22,15 +26,15 @@ export function onSlimeDamaged(actor,player){
   const target=acquireAggro(actor);
   if(target.closest===undefined)target.closest=distance;
   if(actor.bout.ai.antiKiting&&!target.counterUsed&&distance>SLIME_SPECIAL.retreatRange){
-    target.pending=true;
+    target.pending='ranged hit';
     target.counterUsed=true;
   }
 }
 
-function trackTarget(actor,distance,dt){
+function trackTarget(actor,player,distance,dt){
   const config=SLIME_SPECIAL;
   actor.specialMs=Math.max(0,actor.specialMs-dt);
-  const target=trackAggro(actor,distance,dt);
+  const target=actor.trackTarget(player,distance,dt);
   if(!target)return;
   if(target.closest===undefined)target.closest=distance;
   target.retreatMs??=0;
@@ -46,18 +50,21 @@ function trackTarget(actor,distance,dt){
   const trigger=Math.max(config.retreatRange,target.closest+config.retreatRange-config.engageRange);
   if(distance>trigger||(target.retreatMs>0&&distance>=trigger-config.retreatHysteresis)){
     target.retreatMs+=dt;
-    if(target.retreatMs>=config.retreatMs)target.pending=true;
+    if(target.retreatMs>=config.retreatMs)target.pending='retreat';
   }else target.retreatMs=0;
 }
 
 function startSpecial(actor,distance){
   const {ai}=actor.bout,config=SLIME_SPECIAL;
-  if(!actor.spec.special||!ai.antiKiting||!actor.aggro?.pending||distance>config.maxRange||actor.specialMs||
+  const reengaged=actor.aggro?.reengaged;
+  const reason=reengaged?'re-aggro':actor.aggro?.pending;
+  if(!actor.spec.special||!ai.antiKiting||!reason||distance>config.maxRange||actor.specialMs||
     actor.bout.specialGraceMs||actor.shots.length)return false;
   const mode=ai.specialMode==='variant'?actor.spec.special.mode:ai.specialMode;
-  actor.attack={kind:mode,windup:config.windupMs};
+  actor.attack={kind:mode,windup:config.windupMs,reason};
   actor.phase='windup';
   actor.elapsed=0;
+  if(reengaged)actor.navigation.onCounter(actor);
   Object.assign(actor.aggro,{closest:null,retreatMs:0,pending:false,counterUsed:true});
   actor.specialMs=actor.attackInterval(config.cooldown);
   actor.bout.specialGraceMs=config.sharedCooldown;
@@ -67,7 +74,7 @@ function startSpecial(actor,distance){
 function beginRecoil(actor,player){
   const {enemy,spec}=actor;
   const angle=Math.atan2(enemy.y-player.y,enemy.x-player.x);
-  const to=groundPoint({x:enemy.x+Math.cos(angle)*spec.special.recoil,y:enemy.y+Math.sin(angle)*spec.special.recoil});
+  const to=actor.planLanding({x:enemy.x+Math.cos(angle)*spec.special.recoil,y:enemy.y+Math.sin(angle)*spec.special.recoil});
   actor.attack=null;
   if(Math.hypot(to.x-enemy.x,to.y-enemy.y)<1){actor.recover();return;}
   beginHop(actor,to,'recoil');
@@ -77,8 +84,8 @@ function releaseSpecial(actor,player,mode){
   const {enemy,spec}=actor;
   const from={x:enemy.x,y:enemy.y-14*spec.size};
   const aim=boxCenter(playerBox(player));
-  const {speed,lifetime,turnRate,angle}=SLIME_SPECIAL[mode];
-  const settings={kind:projectileKinds[actor.kind],speed,lifetime,turnRate,radius:POISON_RADIUS,
+  const {angle,...motion}=SLIME_SPECIAL[mode];
+  const settings={kind:projectileKinds[actor.kind],...motion,radius:POISON_RADIUS,
     damage:spec.special.damage,special:true};
   if(mode==='spread'){
     const volley={hit:false};
@@ -90,14 +97,13 @@ export function updateSlime(bout,player,_movementDt,dt){
   const slime=bout.enemy;
   const {elapsed,attack,spec}=bout;
   const distance=Math.hypot(player.x-slime.x,player.y-slime.y);
-  trackTarget(bout,distance,dt);
+  trackTarget(bout,player,distance,dt);
   switch(bout.phase){
     case 'recoil':{
       const t=clamp(elapsed/SLIME_SPECIAL.recoilMs,0,1);
       const {from,to}=bout.hop;
-      slime.x=from.x+(to.x-from.x)*t;
-      slime.y=from.y+(to.y-from.y)*t;
-      slime.poseMs=900+540*t;
+      bout.moveGround({x:from.x+(to.x-from.x)*t,y:from.y+(to.y-from.y)*t});
+      slime.poseMs=slimeHopPose(t);
       slime.lift=6*4*t*(1-t);
       if(t===1)bout.recover();
       return;
@@ -107,10 +113,9 @@ export function updateSlime(bout,player,_movementDt,dt){
       const jump=bout.phase==='jump',duration=jump?spec.jumpMs:spec.chaseMs/spec.speed;
       const t=clamp(elapsed/duration,0,1);
       const {from,to}=bout.hop;
-      Object.assign(slime,{
-        x:from.x+(to.x-from.x)*t,y:from.y+(to.y-from.y)*t,
-        poseMs:900+540*t,lift:24*spec.scale*4*t*(1-t),
-      });
+      bout.moveGround({x:from.x+(to.x-from.x)*t,y:from.y+(to.y-from.y)*t});
+      slime.poseMs=slimeHopPose(t);
+      slime.lift=24*spec.scale*4*t*(1-t);
       if(bout.hop.normal&&t<1){
         // Taper at both ends so retargeting the next hop never snaps the sprite.
         const phase=bout.hop.startPhase+t*(bout.zigzagPhase-bout.hop.startPhase);
@@ -127,37 +132,45 @@ export function updateSlime(bout,player,_movementDt,dt){
       return;
     }
     case 'windup':{
-      const {kind,to}=attack;
+      const {kind,to,reason}=attack;
       const special=attack.windup!==undefined;
       if(special&&!bout.bout.ai.antiKiting){bout.recover();return;}
       const windup=attack.windup??(kind==='jump'?spec.jumpWindup:spec.shotWindup);
       slime.poseMs=500+340*clamp(elapsed/windup,0,1);
       if(elapsed<windup)return;
       if(special){
+        const before=bout.shots.length;
         releaseSpecial(bout,player,kind);
+        if(bout.shots.length>before)bout.lastShot={kind:kind==='homing'?'Homing Shot':'Spread Volley',reason};
         beginRecoil(bout,player);
         return;
       }
       if(kind==='jump')beginHop(bout,to,'jump');
       else{
+        const before=bout.shots.length;
         bout.launchShot({x:slime.x,y:slime.y-14*spec.size},to,spec.shot);
+        if(bout.shots.length>before)bout.lastShot={kind:'Poison Shot',reason:'normal'};
         bout.recover();
       }
       return;
     }
     case 'recover':
-      slime.poseMs=Math.min(1780,1440+elapsed*spec.speed);
+      slime.poseMs=slimeRecoveryPose(elapsed,spec.speed);
       if(elapsed>=spec.recoverMs/spec.speed){bout.phase='idle';bout.elapsed=0;}
       return;
     default:{
-      if(!bout.aggro||startSpecial(bout,distance))return;
+      const canAttack=bout.aggro&&bout.canContact(player);
+      if(canAttack&&startSpecial(bout,distance))return;
       const kind=bout.nextAttack;
-      if(!bout.cooldown&&(kind==='jump'||!bout.shots.length)&&distance<=(kind==='jump'?spec.jumpRange:spec.shotRange)){
-        const to=kind==='jump'?groundPoint(toward(slime,player,spec.jumpRange)):boxCenter(playerBox(player));
+      if(canAttack&&!bout.cooldown&&(kind==='jump'||!bout.shots.length)&&distance<=(kind==='jump'?spec.jumpRange:spec.shotRange)){
+        const to=kind==='jump'?bout.planLanding(toward(slime,player,spec.jumpRange)):boxCenter(playerBox(player));
         bout.windup(kind,to,kind==='jump'?spec.jumpCooldown:spec.shotCooldown);
         bout.nextAttack=kind==='jump'&&spec.shot?spec.shot.kind:'jump';
-      }else if(distance>58&&(bout.cooldown===0||distance>84)){
-        beginHop(bout,groundPoint(toward(slime,player,Math.min(spec.step,distance-52))),'chase');
+      }else if(bout.navigation){
+        bout.navigation.chase(bout,player,_movementDt);
+      }else if(bout.aggro&&(bout.cooldown===0||distance>84)){
+        const step=slimeChaseStep(spec,distance);
+        if(step)beginHop(bout,groundPoint(toward(slime,player,step)),'chase');
       }
     }
   }

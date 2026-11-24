@@ -1,3 +1,4 @@
+import { PLAYER_MAX_HP } from '../../boss/config.js';
 import { handOf,lashTip } from './precisionDemo.js';
 import { SKILLS } from './combatSkills.js';
 import { clamp,toward,playerBox,boxCenter,circleTouchesBox,segmentContact,cleaveContact } from './combatGeometry.js';
@@ -12,14 +13,19 @@ const CONTACT_GRACE_MS=200;
 export const MAX_PER_KIND=3;
 const spawns=[{x:476,y:304},{x:440,y:214},{x:440,y:383},{x:517,y:237},{x:517,y:373},{x:357,y:183}];
 export const MAX_ENEMIES=spawns.length;
-const HP=100;
+const COMBAT_DEFAULTS={
+  ai:{randomized:false,antiKiting:true,specialMode:'variant'},
+  cloudEnabled:true,
+};
 
 export class CombatBout{
-  constructor(onHit,random=Math.random,aiRandom=Math.random){
+  constructor(onHit,random=Math.random,aiRandom=Math.random,{space=null,continuous=false}={}){
     this.onHit=onHit;
     this.random=random;
     this.aiRandom=aiRandom;
-    this.ai={randomized:false,antiKiting:false,specialMode:'variant'};
+    this.space=space;
+    this.continuous=continuous;
+    this.ai={...COMBAT_DEFAULTS.ai};
     this.reset();
   }
 
@@ -32,10 +38,10 @@ export class CombatBout{
     this.enemies=kinds.map((kind,i)=>new CombatEnemy(this,kind,i,spawns[i]));
     const boss=this.enemies.find(a=>a.kind==='mushroom');
     if(boss)initMushroomBoss(boss,mushroomPhase);
-    this.playerHp=HP;
+    this.playerHp=PLAYER_MAX_HP;
     this.areas=[];
     this.poison=null;
-    this.cloudEnabled=false;
+    this.cloudEnabled=COMBAT_DEFAULTS.cloudEnabled;
     this.onIce=false;
     this.slows=new Map();
     this.contactGraceMs=0;
@@ -59,8 +65,10 @@ export class CombatBout{
     this.enemies.push(actor);
   }
   get finished(){
-    return !this.playerHp||(!this.alive&&!this.areas.length&&!this.poison&&this.enemies.every(e=>e.elapsed>=e.deathMs));
+    return !this.playerHp||(!this.continuous&&!this.alive&&!this.areas.length&&!this.poison&&this.enemies.every(e=>e.elapsed>=e.deathMs));
   }
+  get canCast(){return this.continuous||Boolean(this.alive);}
+  clearLine(from,to){return !this.space||!this.space.trace(from,to).blocked;}
   get slowMs(){return Math.max(0,...this.slows.values());}
   get speedFactor(){return Math.min(this.onIce?AREAS.ice.speed:1,...this.slows.keys());}
 
@@ -72,7 +80,7 @@ export class CombatBout{
       const box=actor.spec.box(actor.enemy);
       let point,band,critical=false;
       if(skill.shape==='tip'){
-        const tip=lashTip(hand,aim);
+        const tip=lashTip(hand,aim,skill.range);
         if(circleTouchesBox(tip,skill.radius,box)){
           critical=this.random()<skill.criticalChance;
           point={x:clamp(tip.x,box.x,box.x+box.width),y:clamp(tip.y,box.y,box.y+box.height)};
@@ -85,14 +93,17 @@ export class CombatBout{
       }
       else if(skill.shape==='arc')point=cleaveContact(hand,aim,box,skill.range);
       else if(skill.shape==='ground'&&Math.hypot(actor.enemy.x-aim.x,actor.enemy.y-aim.y)<=skill.radius)point=boxCenter(box);
-      if(point)hits.push({actor,point,band,critical,distance:Math.hypot(point.x-hand.x,point.y-hand.y)});
+      if(!point)continue;
+      const ground=skill.shape==='ground';
+      if(!this.clearLine(ground?aim:player,actor.enemy)||!ground&&!this.clearLine(hand,point))continue;
+      hits.push({actor,point,band,critical,distance:Math.hypot(point.x-hand.x,point.y-hand.y)});
     }
     if(!hits.length)return null;
     if(skill.shape==='ray'){
       hits.sort((a,b)=>a.distance-b.distance);
       const [{actor,point,band}]=hits;
       const damage=this.hitEnemy(band,actor,point,player);
-      return {...point,heal:damage?band.heal:0};
+      return {...point,heal:Math.min(damage,band.heal)};
     }
     for(const {actor,critical,point} of hits)this.hitEnemy(skill,actor,point,player,critical);
     return hits[0].point;
@@ -107,7 +118,7 @@ export class CombatBout{
       return 0;
     }
     actor.enemy.hp-=applied;
-    if(actor.enemy.hp)actor.spec.onDamaged?.(actor,player);
+    if(actor.enemy.hp&&(!actor.navigation||actor.navigation.onDamaged(actor,player)))actor.spec.onDamaged?.(actor,player);
     if(skill.status&&actor.enemy.hp)actor.slow={...skill.status};
     this.onHit?.('enemy',applied,point,{critical,actor,status:skill.status?.name});
     if(!actor.enemy.hp){
@@ -119,7 +130,7 @@ export class CombatBout{
   }
 
   restoreHp(amount){
-    const restored=this.playerHp?Math.min(amount,HP-this.playerHp):0;
+    const restored=this.playerHp?Math.min(amount,PLAYER_MAX_HP-this.playerHp):0;
     this.playerHp+=restored;
     return restored;
   }
@@ -201,6 +212,10 @@ export class CombatBout{
     // An actor created during this tick starts its emergence on the following tick.
     this.enemies.forEach(actor=>{
       if(!this.playerHp)return;
+      if(this.continuous&&!actor.enemy.hp){
+        actor.elapsed=Math.min(actor.deathMs,actor.elapsed+dt);
+        return;
+      }
       if(actor.boss?.finalPending)deliverFinalSummon(actor,player);
       actor.update(dt,player);
     });

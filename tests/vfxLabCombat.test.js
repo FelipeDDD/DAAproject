@@ -202,6 +202,8 @@ test('Poisoned has exactly four spaced ticks; a second hit renews one schedule',
 test('optional haze is a single ground patch with limited exposure ticks and reset cleanup',()=>{
   const bout=new CombatBout(),player=playerAt(290,150);
   bout.started=true;
+  assert.equal(bout.cloudEnabled,true);
+  bout.cloudEnabled=false;
   first(bout).createCloud(player);
   assert.equal(haze(bout),null);
   bout.cloudEnabled=true;

@@ -16,3 +16,5 @@ backups/convex/
 /assets-drafts/
 /debug.log
 /tools/teste
+/src/combat/balance.json.bak
+/src/combat/balance.json.*.tmp

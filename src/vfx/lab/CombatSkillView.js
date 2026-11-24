@@ -23,6 +23,7 @@ export class CombatSkillView{
     const {action,scene}=this;
     const {skill,shot,age}=action;
     if(skill.shape==='missile'){
+      if(!action.released)return;
       if(shot){
         this.graphics??=scene.add.graphics();
         this.graphics.clear().setPosition(shot.x,shot.y).setRotation(shot.angle).setDepth(shot.y+24);
@@ -38,7 +39,9 @@ export class CombatSkillView{
     if(skill.castSpeed&&!action.released){this.drawDrainCharge();return;}
     this.graphics?.clear();
     this.track??=this.sequence(skill.clips);
-    this.track.update(age-(skill.effect.preparation?skill.cast:0));
+    const artAge=skill.artImpactMs===undefined?age-(skill.effect.preparation?skill.cast:0):
+      age<skill.cast?age*skill.artImpactMs/skill.cast:age-skill.cast+skill.artImpactMs;
+    this.track.update(artAge);
   }
 
   drawDrainCharge(){
