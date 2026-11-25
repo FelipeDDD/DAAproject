@@ -5,12 +5,20 @@ import { frogChaseTarget } from '../vfx/lab/frogEnemy.js';
 import { slimeChaseStep } from '../vfx/lab/slimeEnemy.js';
 import { snakeCrawlPose, snakeCrawlStep } from '../vfx/lab/snakeEnemy.js';
 import { SWAMP_AGGRO, SWAMP_EMERGENCE, SWAMP_MOB_TERRAIN, SWAMP_PACK_AGGRO, SWAMP_ROAMING, SWAMP_ROUTING } from './mobConfig.js';
-import { createMobRoutes } from './mobRoutes.js';
+import { createMobRoutes, createSpawnReachability } from './mobRoutes.js';
 
 const dist = (a,b) => Math.hypot(a.x-b.x,a.y-b.y);
 const onSegment = (a,b,t) => ({x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t});
 const toward = (a,b,step) => onSegment(a,b,Math.min(1,step/(dist(a,b)||1)));
 const MIN_HOP_FRACTION = 0.25;
+
+export function createSwampSpawnTerrain(obstacles,bounds,playerRadius,entrance){
+  const terrain=Object.fromEntries(Object.entries(SWAMP_MOB_TERRAIN).map(([kind,{footRadius}])=>
+    [kind,createMobTerrain(obstacles,bounds,footRadius)]));
+  terrain.marker=createMobTerrain(obstacles,bounds,playerRadius);
+  terrain.marker.reachable=createSpawnReachability(terrain.marker,bounds,entrance);
+  return terrain;
+}
 
 export function createCombatSpace(obstacles,bounds) {
   const solvers=new Map();
@@ -25,21 +33,24 @@ export function createCombatSpace(obstacles,bounds) {
 export function createMobTerrain(obstacles,bounds,radius) {
   const move = createFootCollision(obstacles,bounds,radius);
   const trace = createFootCollision(obstacles,bounds,1);
+  const exitTraces=new Map();
   const clear = point => isFootPositionClear(obstacles,bounds,radius,point);
   const terrain={
     move,clear,
     inBounds:({x,y})=>x>=bounds.left&&x<=bounds.right&&y>=bounds.top&&y<=bounds.bottom,
     canReach:(from,to)=>clear(from)&&clear(to)&&dist(move(from,to,false),to)<0.01,
     sees:(from,to)=>dist(trace(from,to,false),to)<0.01,
-    canEmerge(origin,landing,vegetation){return !terrain.emergenceError(origin,landing,vegetation);},
-    emergenceError(origin,landing,vegetation){
+    canEmerge(origin,landing,vegetation,limit){
+      return !terrain.emergenceError(origin,landing,vegetation,limit);
+    },
+    emergenceError(origin,landing,vegetation,limit=SWAMP_EMERGENCE.maxDistance){
       const distance=dist(origin,landing);
       if(!terrain.inBounds(origin))return 'Place the visual origin inside the map.';
       if(!clear(landing))return 'The landing point is blocked by collision.';
-      if(distance>SWAMP_EMERGENCE.maxDistance)return 'The landing is more than '+SWAMP_EMERGENCE.maxDistance+' px from the visual origin.';
+      if(distance>limit)return 'The landing is more than '+limit+' px from the visual origin.';
       if(dist(trace(landing,origin,false),origin)<0.01)return '';
       if(!vegetation)return 'The emergence path is blocked. For a bush, enable Emerge from vegetation in Advanced.';
-      // The visual transition can exit a shallow solid cutout. Open barriers are walls.
+      // Only the solid containing the origin may be crossed, and only once.
       const dx=landing.x-origin.x,dy=landing.y-origin.y;
       let exitObstacle;
       const crossings=new Set();
@@ -56,7 +67,11 @@ export function createMobTerrain(obstacles,bounds,radius) {
           return 'The visual origin is too deep inside the vegetation. Choose a spot closer to its edge.';
         crossings.add(Math.round(t*1e6));
       }
-      return crossings.size===1?'':'The emergence needs one clear exit from the vegetation.';
+      if(crossings.size!==1)return 'The emergence needs one clear exit from the vegetation.';
+      if(!exitTraces.has(exitObstacle))exitTraces.set(exitObstacle,
+        createFootCollision(obstacles.filter(obstacle=>obstacle!==exitObstacle),bounds,1));
+      return dist(exitTraces.get(exitObstacle)(landing,origin,false),origin)<0.01?'':
+        'The emergence path crosses a wall or a separate obstacle.';
     },
     crawlSpace:{left:bounds.left+radius,right:bounds.right-radius,fit:point=>point},
   };

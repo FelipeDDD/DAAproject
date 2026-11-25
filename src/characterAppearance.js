@@ -8,11 +8,36 @@ export function appearanceStyle(character,state={}){
   if(style==='lungCrusher')return style;
   return previewVisual(character,state.previewSkin)?`preview:${state.previewSkin}`:style;
 }
-export function selectPreviewSkin(identity,character){
+function devPreviewKey(identity,env){
+  const baseId=characterBaseIdFor(identity);
+  if(env?.DEV===true&&identity?.profileId&&baseId)return 'daa:dev-tier3:'+identity.profileId+':'+baseId;
+}
+
+export function selectPreviewSkin(identity,character,env=import.meta.env){
   identity.visualPreview='level3Preview';
   identity.previewSkin=character.experimentalVisual.sprite;
+  const key=devPreviewKey(identity,env);
+  if(key&&identity.devAllSkins){
+    try{globalThis.localStorage?.setItem(key,'1');}catch{}
+  }
 }
-export function clearPreviewSkin(identity){delete identity.visualPreview;delete identity.previewSkin;}
+export function clearPreviewSkin(identity,env=import.meta.env){
+  delete identity.visualPreview;
+  delete identity.previewSkin;
+  const key=devPreviewKey(identity,env);
+  if(key){
+    try{globalThis.localStorage?.removeItem(key);}catch{}
+  }
+}
+export function restoreDevPreviewSkin(identity,character,env=import.meta.env){
+  const key=devPreviewKey(identity,env);
+  if(!key||!character?.experimentalVisual)return;
+  try{
+    if(globalThis.localStorage?.getItem(key)!=='1')return;
+  }catch{return;}
+  selectPreviewSkin(identity,character,env);
+  identity.devAllSkins=true;
+}
 export function applyLocalAppearance(scene,{activeCharacterItem=scene.activeCharacterItem??null}={}){
   const identity=scene.presence?.identity;
   const character=characterById(characterBaseIdFor(identity));

@@ -18,3 +18,5 @@ backups/convex/
 /tools/teste
 /src/combat/balance.json.bak
 /src/combat/balance.json.*.tmp
+/src/swamp/spawns.json.bak
+/src/swamp/spawns.json.*.tmp

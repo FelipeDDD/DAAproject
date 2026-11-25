@@ -1,6 +1,20 @@
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const DIRECTIONS=[[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[-1,1],[1,-1],[1,1]];
 
+export function createSpawnReachability(terrain,bounds,entrance){
+  const cellSize=16;
+  const maxExpanded=(1+Math.floor((bounds.right-bounds.left)/cellSize))*
+    (1+Math.floor((bounds.bottom-bounds.top)/cellSize));
+  const route=createMobRoutes(terrain,bounds,{cellSize,maxExpanded,maxRouteDistance:Infinity});
+  const results=new Map();
+  return point=>{
+    if(!terrain.clear(point))return false;
+    const key=point.x+':'+point.y;
+    if(!results.has(key))results.set(key,terrain.canReach(entrance,point)||Boolean(route(entrance,point)));
+    return results.get(key);
+  };
+}
+
 // Nodes and swept links are shared by mobs with the same foot radius and
 // cached on demand. Every straight segment uses the actual Tiled geometry.
 export function createMobRoutes(terrain,bounds,{cellSize,maxExpanded,maxRouteDistance}){
@@ -53,7 +67,7 @@ export function createMobRoutes(terrain,bounds,{cellSize,maxExpanded,maxRouteDis
       for(const state of open.values())if(!next||state.score<next.score)next=state;
       const {point,cost}=next;
       open.delete(point);
-      if(cost+(goals.get(point)??Infinity)<=maxRouteDistance){
+      if(goals.has(point)&&cost+goals.get(point)<=maxRouteDistance){
         const path=[];
         if(clearGoal)path.push(goal);
         for(let state=next;state;state=state.previous)path.push(state.point);

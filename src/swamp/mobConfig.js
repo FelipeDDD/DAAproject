@@ -1,4 +1,8 @@
 export const SWAMP_RESPAWN_DELAY_MS = 750;
+export const SWAMP_PLAYER_FOOT_RADIUS = 8;
+export const AMBUSH_DEFAULT_COOLDOWN_SECONDS = 30;
+export const AMBUSH_MAX_COOLDOWN_SECONDS = 3600;
+export const AMBUSH_MAX_QUANTITY = 3;
 
 export const SWAMP_AGGRO = {
   releaseDistance:500,
@@ -24,7 +28,7 @@ export const SWAMP_PACK_AGGRO={enabled:true,radius:120};
 
 export const SWAMP_EXPERIMENTAL_GROUPS = {enabled:true};
 
-export const SWAMP_EMERGENCE = {durationMs:380,maxDistance:100,vegetationDepth:40,landingWaitMs:1000};
+export const SWAMP_EMERGENCE = {durationMs:380,staggerMs:120,maxDistance:100,distanceLimit:180,vegetationDepth:40,landingWaitMs:1000};
 
 function encounter(id,kind,x,y,companionX,companionY,checkpoint=null){
   return {
@@ -75,9 +79,15 @@ export function swampEncounterSpawns(defeated=new Set(),groups=SWAMP_EXPERIMENTA
   return [...originals,...companions];
 }
 
+export function swampEditorSpawns(){
+  const {a,b}=SWAMP_AMBUSH.returnTrap;
+  return [...swampEncounterSpawns(),...(SWAMP_AMBUSH.enabled?[SWAMP_AMBUSH.spawn,a,b]:[])];
+}
+
 // Navigation footprints. Attack and hurtbox definitions come from ENEMIES.
 export const SWAMP_MOB_TERRAIN = {
   snake:{footRadius:15,stopDistance:32},
   frog:{footRadius:12},
   slime:{footRadius:13},
+  frost:{footRadius:13},
 };

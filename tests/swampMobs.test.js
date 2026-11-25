@@ -5,16 +5,96 @@ import { readFootObstacles } from '../src/maps/footCollision.js';
 import { objectsIn } from '../src/maps/tiledObjects.js';
 import { SWAMP_AGGRO, SWAMP_AMBUSH, SWAMP_EMERGENCE, SWAMP_ENCOUNTERS, SWAMP_EXPERIMENTAL_GROUPS, SWAMP_MOB_TERRAIN, SWAMP_ROAMING, SWAMP_SPAWNS,
   swampEncounterSpawns } from '../src/swamp/mobConfig.js';
-import { alertSwampPack, createCombatSpace, createMobTerrain, findNearbyMobSpawn, SwampAmbush, SwampMob } from '../src/swamp/mobMovement.js';
+import { alertSwampPack, createCombatSpace, createMobTerrain, createSwampSpawnTerrain, findNearbyMobSpawn, SwampAmbush, SwampMob } from '../src/swamp/mobMovement.js';
+import { resolveSpawn } from '../src/maps/tiledObjects.js';
 import { SwampMobs } from '../src/swamp/SwampMobs.js';
 import { SpawnEdits } from '../src/swamp/spawnEdits.js';
+import { SpawnEditor } from '../src/swamp/SpawnEditor.js';
+import { createSpawnReachability } from '../src/swamp/mobRoutes.js';
+import { validateSwampSource } from '../scripts/swamp-spawns-vite.mjs';
+import sourceSpawns from '../src/swamp/spawns.json' with {type:'json'};
 import { CombatBout } from '../src/vfx/lab/CombatBout.js';
 import { acquireAggro } from '../src/vfx/lab/combatAggro.js';
+import { SwampRun } from '../src/swamp/SwampRun.js';
 
 const bounds={left:0,top:0,right:1920,bottom:1920};
 const map=JSON.parse(readFileSync(new URL('../public/assets/maps/swamp-v3-large.tmj',import.meta.url)));
 const walls=readFootObstacles(map);
 const terrainFor=(kind,obstacles=walls)=>createMobTerrain(obstacles,bounds,SWAMP_MOB_TERRAIN[kind].footRadius);
+
+test('Escape cancels placement and clears selection without changing the draft or closing the panel',()=>{
+  const edits=new SpawnEdits([],{snake:terrainFor('snake',[])},SWAMP_MOB_TERRAIN,SWAMP_AMBUSH);
+  const {id,error}=edits.add('snake','',{x:200,y:200});
+  assert.equal(error,'');
+  const draft=edits.data();
+  let dialogOpen=true,focused=0,stopped=0,prevented=0,previewsStopped=0;
+  const canvas={ownerDocument:{querySelector:()=>dialogOpen?{}:null},closest:()=>({focus:()=>focused++})};
+  const editor=Object.assign(Object.create(SpawnEditor.prototype),{
+    edits,selected:id,mode:'triggerPoint',rejectedPoint:{x:12,y:16},companionGroup:'',
+    draft:{spawnType:'ambush'},creatures:[['Snake','snake']],panel:{hidden:false},
+    mobs:{scene:{game:{canvas}},stopAmbushPreview:()=>previewsStopped++},
+    choices:{childElementCount:1},root:{contains:()=>true},
+    render(){this.choices.childElementCount=0;},
+  });
+  const key={key:'Escape',stopImmediatePropagation:()=>stopped++,preventDefault:()=>prevented++};
+  editor.handleEscape(key);
+  assert.equal(editor.selected,id);
+  assert.equal(editor.mode,'triggerPoint');
+  assert.equal(stopped,0);
+  assert.equal(prevented,0);
+
+  dialogOpen=false;
+  editor.handleEscape({...key,repeat:true});
+  assert.equal(editor.selected,id);
+  editor.handleEscape(key);
+  assert.equal(editor.selected,'');
+  assert.equal(editor.mode,'');
+  assert.equal(editor.rejectedPoint,null);
+  assert.equal(editor.choices.childElementCount,0);
+  assert.deepEqual(editor.draft,{kind:'snake',spawnType:'proximity'});
+  assert.equal(editor.open,true);
+  assert.equal(previewsStopped,1);
+  assert.equal(focused,1);
+  assert.deepEqual(edits.data(),draft);
+
+  editor.selected=id;
+  editor.handleEscape({...key,target:{closest:()=>({})}});
+  assert.equal(editor.selected,'');
+  assert.equal(stopped,2);
+  assert.equal(prevented,1);
+  assert.equal(focused,1);
+  editor.handleEscape(key);
+  assert.equal(stopped,2);
+});
+
+test('reloading the editor preserves distinct draft and applied placements',t=>{
+  const terrain={snake:terrainFor('snake',[])};
+  const model=()=>new SpawnEdits([],terrain,SWAMP_MOB_TERRAIN,SWAMP_AMBUSH);
+  const edits=model();
+  const saved=edits.data();
+  const {id,error}=edits.add('snake','',{x:200,y:200});
+  assert.equal(error,'');
+  const applied=edits.data();
+  assert.equal(edits.move(id,{x:280,y:200}),'');
+  const draft=edits.data();
+  const descriptor=Object.getOwnPropertyDescriptor(globalThis,'localStorage');
+  Object.defineProperty(globalThis,'localStorage',{configurable:true,value:{getItem:()=>JSON.stringify({base:JSON.stringify(saved),applied,draft})}});
+  t.after(()=>{
+    if(descriptor)Object.defineProperty(globalThis,'localStorage',descriptor);
+    else delete globalThis.localStorage;
+  });
+  const editor=Object.assign(Object.create(SpawnEditor.prototype),{edits:model(),saved,draftStatus:{},sourceHint:{}});
+  editor.load();
+  editor.updateDraftStatus();
+  assert.equal(editor.applied.spawns[0].x,200);
+  assert.equal(editor.edits.get(id).x,280);
+  assert.equal(editor.appliedOnlyMarkers[0].x,200);
+  assert.match(editor.draftStatus.textContent,/Draft changed/);
+  assert.equal(editor.sourceHint.hidden,false);
+  assert.equal(editor.edits.remove(id),'');
+  editor.updateDraftStatus();
+  assert.equal(editor.appliedOnlyMarkers[0].id,id);
+});
 const createMob=(spawn,terrain,{random=Math.random}={})=>{
   const bout=new CombatBout();
   const mob=new SwampMob(bout,spawn,terrain,0,{roaming:{...SWAMP_ROAMING,enabled:false}});
@@ -121,9 +201,9 @@ test('editor rejects blocked or occupied positions and exports only accepted off
   assert.equal(SWAMP_ENCOUNTERS.find(e=>e.id==='southeast-marsh').checkpoint,'southeast');
   assert.match(edits.move('west-curve',{x:4,y:4}),/collision/);
   assert.match(edits.move('west-curve',{x:388,y:1418}),/overlaps/);
-  assert.match(edits.move('east-bush',{x:330,y:390}),/100 px from the visual origin/);
+  assert.equal(edits.move('east-bush',{x:330,y:390}),'');
   assert.equal(edits.move('west-curve',{x:340,y:1306}),'');
-  assert.deepEqual(edits.data().positions,{'west-curve':{x:340,y:1306}});
+  assert.deepEqual(edits.data().positions,{'west-curve':{x:340,y:1306},'east-bush':{x:330,y:390}});
   edits.restore();
   assert.equal(edits.get('west-curve').y,spawns[0].y);
 });
@@ -164,9 +244,9 @@ test('ambush previews are repeatable and leave the real warning and spawn availa
     const calls=[];
     const graphics={
       setPosition(){return this;},setDepth(){return this;},clear(){return this;},
-      fillStyle(){return this;},fillTriangle(){return this;},destroy(){calls.push('destroy warning');},
+      fillStyle(){return this;},fillRect(){return this;},destroy(){calls.push('destroy warning');},
     };
-    const terrain={frog:{sees:()=>true,clear:()=>true},snake:{sees:()=>true,clear:()=>true}};
+    const terrain={frog:{sees:()=>false,clear:()=>true},snake:{sees:()=>false,clear:()=>true}};
     const edits=new SpawnEdits([SWAMP_AMBUSH.spawn],terrain,SWAMP_MOB_TERRAIN,SWAMP_AMBUSH,mode);
     const mobs=Object.assign(Object.create(SwampMobs.prototype),{
       ambushes:[],entries:[],run:{defeated:new Set(),firedTraps:new Set()},editor:{applied:edits.snapshot()},
@@ -185,7 +265,7 @@ test('ambush previews are repeatable and leave the real warning and spawn availa
     assert.ok(mobs.ambushPreview.warning);
     mobs.updateAmbushPreview(SWAMP_AMBUSH.warningMs);
     if(kind){
-      assert.ok(mobs.ambushPreview.sprite);
+      assert.ok(mobs.ambushPreview.sprites[0]);
       mobs.updateAmbushPreview(SWAMP_EMERGENCE.durationMs);
     }
     assert.equal(mobs.ambushPreview,null);
@@ -211,7 +291,7 @@ test('ambush previews are repeatable and leave the real warning and spawn availa
     }else assert.deepEqual(calls,['destroy warning']);
     assert.equal(event.controller.phase,'revealed');
     assert.equal(event.warning,null);
-    assert.equal(event.sprite,null);
+    assert.equal(event.sprites,null);
     if(!kind){
       assert.ok(mobs.run.firedTraps.has(event.spawn.id));
       mobs.resetAmbushState();
@@ -231,8 +311,9 @@ test('editor preserves legacy ranges and round-trips a rectangle positioned away
   assert.equal(terrain.snake.clear(origin),false);
   assert.equal(terrain.snake.canEmerge({x:192,y:240},{x:276,y:240},true),false,'solid wall cannot be traversed');
   assert.equal(terrain.snake.canEmerge({x:249,y:240},{x:183,y:240},true),false,'origin is buried too deep');
-  assert.match(edits.add('snake','',origin,{spawnType:'ambush'}).error,/landing/);
-  const {id,error}=edits.add('snake','',origin,{spawnType:'ambush',vegetation:true,detectionRange:42,triggerRange:96});
+  assert.deepEqual(edits.add('snake','',origin,{spawnType:'ambush'}),{needsLanding:true});
+  const {id,error}=edits.add('snake','',origin,{spawnType:'ambush',vegetation:true,detectionRange:42,triggerRange:96},
+    undefined,{x:183,y:240});
   assert.equal(error,'');
   const snapshot=edits.snapshot();
   assert.equal(snapshot.spawns.length,0);
@@ -241,7 +322,7 @@ test('editor preserves legacy ranges and round-trips a rectangle positioned away
   assert.ok(terrain.snake.clear(spawn));
   assert.equal(spawn.trigger.radius,96);
   assert.equal(spawn.detectionRange,42);
-  assert.match(edits.move(id,origin),/collision/);
+  assert.match(edits.move(id,{x:-1,y:240}),/landing point inside the map/);
   const saved=JSON.parse(JSON.stringify(edits.data()));
   const restored=new SpawnEdits([],terrain,SWAMP_MOB_TERRAIN,SWAMP_AMBUSH);
   restored.load(saved);
@@ -261,7 +342,7 @@ test('editor preserves legacy ranges and round-trips a rectangle positioned away
   assert.deepEqual(imported.snapshot().ambushes[0].trigger,{...triggerPoint,shape:'circle',radius:96});
 });
 
-test('moving an ambush origin relocates a distant landing without moving its trigger',()=>{
+test('ambush markers move independently and preserve blocked landings across walls',()=>{
   const obstacles=readFootObstacles({layers:[{name:'Collision',type:'objectgroup',objects:[
     {x:370,y:200,width:60,height:80},
     {x:443,y:220,polyline:[{x:0,y:0},{x:0,y:40}]},
@@ -269,19 +350,153 @@ test('moving an ambush origin relocates a distant landing without moving its tri
   const terrain=terrainFor('snake',obstacles);
   const edits=new SpawnEdits([],{snake:terrain},SWAMP_MOB_TERRAIN,SWAMP_AMBUSH);
   const initial={x:200,y:240};
-  const {id,error}=edits.add('snake','',initial,{spawnType:'ambush',vegetation:true});
+  const {id,error}=edits.add('snake','',initial,{spawnType:'ambush',triggerShape:'rectangle'},undefined,initial);
   assert.equal(error,'');
-  const origin={x:375,y:240};
-  assert.equal(terrain.clear(origin),false);
+  const landing={x:240,y:240},origin={x:220,y:240},triggerPoint={x:320,y:240};
+  assert.equal(edits.move(id,landing),'');
+  assert.deepEqual(edits.event(edits.get(id)).visualOrigin,initial);
+  assert.equal(edits.event(edits.get(id)).trigger.x,initial.x);
   assert.equal(edits.configure(id,{visualOrigin:origin}),'');
+  assert.equal(edits.event(edits.get(id)).trigger.x,initial.x);
+  assert.equal(edits.configure(id,{triggerPoint}),'');
   const [event]=edits.snapshot().ambushes;
   assert.deepEqual(event.visualOrigin,origin);
-  assert.ok(event.x>initial.x+100&&terrain.clear(event)&&terrain.canEmerge(origin,event,true));
-  assert.deepEqual({x:event.trigger.x,y:event.trigger.y},initial);
-  assert.match(edits.move(id,{x:460,y:240}),/too deep|wall/);
-  assert.deepEqual(edits.snapshot().ambushes[0],event);
+  assert.deepEqual({x:event.x,y:event.y},landing);
+  assert.deepEqual({x:event.trigger.x,y:event.trigger.y},triggerPoint);
+  assert.equal(edits.configure(id,{visualOrigin:{x:655,y:240}}),'');
+  assert.equal(edits.move(id,{x:390,y:240}),'');
+  assert.equal(terrain.clear(edits.get(id)),false);
+  const restored=new SpawnEdits([],{snake:terrain},SWAMP_MOB_TERRAIN,SWAMP_AMBUSH);
+  restored.load(JSON.parse(JSON.stringify(edits.data())));
+  assert.deepEqual(restored.event(restored.get(id)),edits.event(edits.get(id)));
+  assert.deepEqual(restored.event(restored.get(id)).trigger,event.trigger);
+  assert.match(terrain.emergenceError({x:375,y:240},{x:460,y:240},true),/too deep|wall/);
   assert.match(terrain.emergenceError({x:437,y:240},{x:460,y:240},true),/wall/);
   assert.equal(terrain.canReach({x:437,y:240},{x:460,y:240}),false);
+});
+
+test('legacy circle triggers and new Return Trap gates stay fixed when the landing moves',()=>{
+  const terrain={snake:terrainFor('snake',[])};
+  const model=()=>new SpawnEdits([],terrain,SWAMP_MOB_TERRAIN,SWAMP_AMBUSH);
+  const edits=model(),point={x:300,y:300};
+  const circle=edits.add('snake','',point,{spawnType:'ambush'},undefined,point).id;
+  const trap=edits.add('snake','',{x:600,y:300},{spawnType:'return-trap'}).id;
+  const saved=edits.data();
+  delete saved.settings[circle].triggerPoint;
+  const reloaded=model();
+  reloaded.load(saved);
+  assert.equal(reloaded.move(circle,{x:335,y:300}),'');
+  assert.equal(reloaded.event(reloaded.get(circle)).trigger.x,300);
+  const before=reloaded.event(reloaded.get(trap));
+  assert.equal(reloaded.move(trap,{x:630,y:300}),'');
+  assert.equal(reloaded.configure(trap,{visualOrigin:{x:620,y:300}}),'');
+  let after=reloaded.event(reloaded.get(trap));
+  assert.deepEqual([after.a,after.b],[before.a,before.b]);
+  assert.equal(reloaded.configure(trap,{gateB:{x:750,y:300}}),'');
+  after=reloaded.event(reloaded.get(trap));
+  assert.deepEqual([after.x,after.visualOrigin,after.a],[630,{x:620,y:300},before.a]);
+  const roundTrip=model();
+  roundTrip.load(reloaded.data());
+  assert.deepEqual(roundTrip.snapshot(),reloaded.snapshot());
+});
+
+test('spawn reachability follows player routes without admitting an isolated pocket',()=>{
+  const area={left:0,top:0,right:320,bottom:240};
+  const obstacles=readFootObstacles({layers:[{name:'Collision',type:'objectgroup',objects:[
+    {x:100,y:0,width:20,height:170},{x:230,y:0,width:20,height:240},
+  ]}]});
+  const ground=createMobTerrain(obstacles,area,8);
+  ground.reachable=createSpawnReachability(ground,area,{x:32,y:80});
+  const terrain={marker:ground,snake:createMobTerrain(obstacles,area,15)};
+  const edits=new SpawnEdits([],terrain,SWAMP_MOB_TERRAIN,SWAMP_AMBUSH);
+  assert.equal(edits.add('snake','',{x:180,y:80}).error,'');
+  assert.match(edits.add('snake','',{x:285,y:80}).error,/player-accessible/);
+  assert.match(edits.add('snake','',{x:110,y:80}).error,/collision/);
+  assert.equal(edits.add('snake','',{x:285,y:130},{spawnType:'ambush'},undefined,{x:280,y:130}).error,'');
+});
+
+test('Return Trap emergence limits persist without extending the vegetation exception',()=>{
+  const obstacles=readFootObstacles({layers:[{name:'Collision',type:'objectgroup',objects:[
+    {x:200,y:200,width:60,height:80},
+    {x:90,y:230,polyline:[{x:0,y:0},{x:0,y:20}]},
+  ]}]});
+  const snake=terrainFor('snake',obstacles);
+  const edits=new SpawnEdits([],{snake},SWAMP_MOB_TERRAIN,SWAMP_AMBUSH);
+  const origin={x:207,y:240},landing={x:100,y:205};
+  const {id,error}=edits.add('snake','',origin,{spawnType:'return-trap',vegetation:true});
+  assert.equal(error,'');
+  assert.match(edits.move(id,landing),/100 px/);
+  assert.equal(edits.configure(id,{emergenceDistance:160}),'');
+  assert.equal(edits.move(id,landing),'');
+  assert.match(edits.move(id,{x:60,y:240}),/wall/);
+  assert.match(edits.move(id,{x:320,y:240}),/too deep/);
+  const loaded=new SpawnEdits([],{snake},SWAMP_MOB_TERRAIN,SWAMP_AMBUSH);
+  loaded.load(edits.data());
+  assert.deepEqual(loaded.snapshot(),edits.snapshot());
+  assert.match(loaded.configure(id,{emergenceDistance:181}),/180 px/);
+});
+
+test('saved Water Leaps remain compatible and accept manually chosen markers',async()=>{
+  const terrain=createSwampSpawnTerrain(walls,bounds,12,resolveSpawn(map));
+  const edits=new SpawnEdits([],terrain,SWAMP_MOB_TERRAIN,SWAMP_AMBUSH);
+  const origin={x:911,y:1625},landing={x:930,y:1500},triggerPoint={x:960,y:1480};
+  const options={spawnType:'ambush',waterLeap:true,emergenceDistance:180,triggerPoint};
+  assert.equal(terrain.marker.reachable(origin),false);
+  assert.equal(terrain.frost.canEmerge(origin,landing,true,180),false);
+  assert.deepEqual(edits.add('frost','',origin,options),{needsLanding:true});
+  assert.deepEqual(edits.entries(),[]);
+  const {id,error}=edits.add('frost','',origin,options,undefined,landing);
+  assert.equal(error,'');
+  const loaded=new SpawnEdits([],terrain,SWAMP_MOB_TERRAIN,SWAMP_AMBUSH);
+  loaded.load(edits.data());
+  const event=loaded.snapshot().ambushes[0];
+  assert.equal(event.waterLeap,true);
+  assert.deepEqual(event.visualOrigin,origin);
+  assert.deepEqual({x:event.trigger.x,y:event.trigger.y},triggerPoint);
+  assert.equal(loaded.move(id,{x:952,y:1500}),'');
+  assert.deepEqual(loaded.event(loaded.get(id)).trigger,event.trigger);
+  assert.equal(loaded.configure(id,{visualOrigin:{x:1030,y:450}}),'');
+  assert.deepEqual(loaded.event(loaded.get(id)).trigger,event.trigger);
+  const blockedLanding={x:1030,y:450};
+  assert.equal(terrain.frost.clear(blockedLanding),false);
+  assert.equal(loaded.move(id,blockedLanding),'');
+  assert.equal(await validateSwampSource(loaded.data(),process.cwd()),'');
+  assert.equal(await validateSwampSource(edits.data(),process.cwd()),'');
+});
+
+test('Water Leap keeps blocked and distant markers but rejects out-of-map coordinates',()=>{
+  const obstacles=readFootObstacles({layers:[{name:'Collision',type:'objectgroup',objects:[
+    {x:200,y:200,width:60,height:80},
+    {x:275,y:225,polyline:[{x:0,y:0},{x:0,y:45}]},
+  ]}]});
+  const frost=terrainFor('frost',obstacles);
+  const edits=new SpawnEdits([],{frost},SWAMP_MOB_TERRAIN,SWAMP_AMBUSH);
+  const origin={x:225,y:245},landing={x:625,y:245};
+  const options={spawnType:'ambush',waterLeap:true};
+  assert.equal(frost.clear(origin),false);
+  assert.match(edits.add('frost','',{x:-5,y:245},options,undefined,landing).error,/inside the map/);
+  assert.match(edits.add('frost','',origin,options,undefined,{x:-5,y:245}).error,/landing point inside the map/);
+  const {id,error}=edits.add('frost','',origin,options,undefined,landing);
+  assert.equal(error,'');
+  assert.deepEqual({x:edits.get(id).x,y:edits.get(id).y},landing);
+  assert.equal(edits.move(id,{x:242,y:245}),'');
+  assert.equal(edits.configure(id,{visualOrigin:{x:310,y:265}}),'');
+  assert.equal(edits.get(id).waterLeap,true);
+});
+
+test('source validator accepts editor data and rejects paths, protected edits and invalid geometry',async()=>{
+  assert.equal(await validateSwampSource(sourceSpawns,process.cwd()),'');
+  const data=structuredClone(sourceSpawns);
+  data.settings['east-bush']={emergenceDistance:160};
+  assert.equal(await validateSwampSource(data,process.cwd()),'');
+  assert.match(await validateSwampSource({...data,path:'other.json'},process.cwd()),/invalid/);
+  data.positions['north-trail']={x:4,y:4};
+  assert.match(await validateSwampSource(data,process.cwd()),/protected/);
+  delete data.positions['north-trail'];
+  data.positions['east-bush']={x:4,y:4};
+  assert.equal(await validateSwampSource(data,process.cwd()),'');
+  data.positions['east-bush']={x:-4,y:4};
+  assert.match(await validateSwampSource(data,process.cwd()),/invalid/);
 });
 
 test('a species-free False Alarm accepts a blocked origin, persists, and can be removed',()=>{
@@ -300,8 +515,72 @@ test('a species-free False Alarm accepts a blocked origin, persists, and can be 
   assert.deepEqual(copy.snapshot(),edits.snapshot());
   assert.equal(copy.get(id).kind,null);
   assert.deepEqual(copy.snapshot().ambushes[0].visualOrigin,origin);
+  const decoy=copy.add(null,'',{x:390,y:400},{spawnType:'ambush',falseAlarm:true,decoyType:'water-ripples',
+    triggerShape:'rectangle',repeat:true,cooldownSeconds:30});
+  assert.equal(decoy.error,'');
+  assert.notEqual(decoy.id,id);
+  const reloaded=new SpawnEdits([],terrain,SWAMP_MOB_TERRAIN,SWAMP_AMBUSH);
+  reloaded.load(JSON.parse(JSON.stringify(copy.data())));
+  assert.deepEqual(reloaded.snapshot(),copy.snapshot());
+  assert.equal(reloaded.get(id).decoyType,undefined);
+  assert.equal(reloaded.get(decoy.id).decoyType,'water-ripples');
   assert.equal(copy.remove(id),'');
-  assert.deepEqual(copy.snapshot().ambushes,[]);
+  assert.deepEqual(copy.snapshot().ambushes.map(event=>event.id),[decoy.id]);
+});
+
+test('repeat cooldown, no live duplicates and targeted respawn use runtime state only',()=>{
+  const terrain={snake:terrainFor('snake',[])};
+  const originals=[{id:'protected',kind:'snake',x:300,y:110,checkpoint:'north',encounterId:'north-trail'}];
+  const edits=new SpawnEdits(originals,terrain,SWAMP_MOB_TERRAIN,SWAMP_AMBUSH);
+  const alarm=edits.add(null,'',{x:100,y:100},{spawnType:'ambush',falseAlarm:true,repeat:true,cooldownSeconds:30}).id;
+  const snake=edits.add('snake','',{x:320,y:300},{spawnType:'ambush',repeat:true,triggerPoint:{x:380,y:300}},
+    undefined,{x:320,y:300}).id;
+  const nearby=edits.add('snake','',{x:135,y:220}).id;
+  const far=edits.add('snake','',{x:500,y:220}).id;
+  const run=new SwampRun(),feet={x:100,y:100};
+  run.choose('starter','fireball');run.setHealth(37);
+  const playerBefore=run.snapshot();
+  const document=JSON.stringify(edits.data());
+  const mobs=Object.assign(Object.create(SwampMobs.prototype),{
+    terrain,run,editor:{edits,applied:edits.snapshot()},entries:[],ambushes:[],vanquished:new Set(),
+    scene:{playerFootRadius:8,player:{body:{center:feet}}},
+    drawAmbushPhase(){},clearDeathFields(){},
+    removeWhere(predicate){this.entries=this.entries.filter(({mob})=>!predicate(mob));},
+    add(spawn){const mob={spawnId:spawn.id,enemy:{x:spawn.x,y:spawn.y,hp:100},footRadius:15};this.entries.push({mob});return mob;},
+  });
+  mobs.resetAmbushState();
+  const [alarmEvent,snakeEvent]=mobs.ambushes;
+  mobs.updateAmbush(alarmEvent,0,feet,1000);
+  assert.equal(run.ambushReadyAt.get(alarm),31000);
+  mobs.updateAmbush(alarmEvent,760,feet,1760);
+  mobs.updateAmbush(alarmEvent,1,feet,32000);
+  assert.equal(alarmEvent.controller.phase,'hidden');
+  assert.equal(alarmEvent.controller.waitForExit,true);
+  mobs.updateAmbush(alarmEvent,1,{x:220,y:100},32010);
+  mobs.updateAmbush(alarmEvent,1,feet,32020);
+  assert.equal(alarmEvent.controller.phase,'warning');
+  assert.equal(mobs.entries.length,0);
+  assert.match(mobs.respawnApplied({id:alarm}),/Events rearmed: 1/);
+  assert.equal(run.ambushReadyAt.has(alarm),false);
+  assert.equal(alarmEvent.controller.waitForExit,true);
+  const trigger=snakeEvent.spawn.trigger;
+  mobs.updateAmbush(snakeEvent,0,trigger,1000);
+  mobs.updateAmbush(snakeEvent,760,trigger,1760);
+  mobs.updateAmbush(snakeEvent,380,trigger,2140);
+  mobs.updateAmbush(snakeEvent,1,{x:500,y:300},32000);
+  mobs.updateAmbush(snakeEvent,1,trigger,32001);
+  assert.equal(snakeEvent.controller.phase,'revealed');
+  assert.equal(mobs.entries.filter(({mob})=>mob.spawnId===snake).length,1);
+  assert.equal(new SwampRun(run.config,run.snapshot()).ambushReadyAt.get(snake),31000);
+  assert.match(mobs.respawnApplied({radius:250}),/Mobs restored: 1/);
+  assert.ok(mobs.entries.some(({mob})=>mob.spawnId===nearby));
+  assert.ok(!mobs.entries.some(({mob})=>mob.spawnId===far));
+  assert.match(mobs.respawnApplied(),/Mobs restored: 1/);
+  assert.ok(mobs.entries.some(({mob})=>mob.spawnId===far));
+  assert.ok(!mobs.entries.some(({mob})=>mob.spawnId==='protected'));
+  assert.equal(run.hp,playerBefore.hp);
+  assert.deepEqual(run.choices,playerBefore.choices);
+  assert.equal(JSON.stringify(edits.data()),document);
 });
 
 test('a detection override affects only that Swamp mob; restoring it keeps the species default',()=>{
@@ -323,7 +602,7 @@ test('two mobs fight in the authored encounter and reset clears test actors with
   const mobScene={
     bout,entries:[],vanquished:new Set(),groundAreas:{clear(){}},
     ambush:new SwampAmbush(SWAMP_AMBUSH),resetAmbushState(){this.ambush.reset();},
-    clearWarning(){},clearDeathSpores(){},
+    clearWarning(){},clearDeathFields(){},
     removeWhere(){this.entries=[];},
     add(spawn){
       const actor=new SwampMob(bout,spawn,terrainFor(spawn.kind),this.nextActorId++);

@@ -161,8 +161,43 @@
 .swamp-editor[data-mode]:not([data-mode=""]) .swamp-editor-status { color:#ffcc76; }
 body:has(.swamp-editor[data-mode]:not([data-mode=""])) #game canvas { cursor:crosshair; }
 .swamp-editor-info { margin:0; color:#d6c8ae; overflow-wrap:anywhere; }
+.swamp-editor .swamp-editor-info { font-weight:700; }
+.swamp-editor-draft-status { display:block; padding-top:6px; color:#d8c5a5; }
 .swamp-editor-info:empty { display:none; }
+.swamp-editor-landing-warning { margin:0; color:#ffcb87; }
+.swamp-source-review {
+  color:#f5e5c8;
+  background:#181c1f;
+  border:1px solid #8f744b;
+  border-radius:8px;
+  width:min(640px, calc(100vw - 28px));
+  max-height:80dvh;
+  overflow:auto;
+}
+.swamp-source-review li { margin-block:6px; }
+.swamp-source-review button + button { margin-left:8px; }
+.swamp-source-review::backdrop { background:#08090ebd; }
 .swamp-editor-field { display:grid; gap:3px; }
+.swamp-editor .swamp-creature-choice { display:flex; align-items:center; gap:7px; width:100%; text-align:left; }
+.swamp-creature-picker button[aria-haspopup]::after {
+  content:'';
+  margin-left:auto;
+  border:4px solid transparent;
+  border-top-color:currentColor;
+  transform:translateY(2px);
+}
+.swamp-creature-options { display:grid; gap:2px; padding:4px; border:1px solid #695337; border-radius:5px; }
+.swamp-creature-options [aria-selected="true"] { border-color:#c49e65; }
+.swamp-creature-choice:focus-visible { outline:2px solid #a9e7f6; outline-offset:1px; }
+.swamp-creature-swatch,.swamp-creature-heading::before {
+  display:inline-block;
+  width:7px;
+  height:7px;
+  flex:none;
+  border-radius:50%;
+  background:var(--creature-color);
+}
+.swamp-creature-heading::before { content:''; margin-right:6px; vertical-align:2px; }
 .swamp-editor [hidden] { display:none; }
 .swamp-editor-range {
   display:grid;

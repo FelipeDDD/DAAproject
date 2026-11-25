@@ -5,7 +5,7 @@ import { SWAMP_AGGRO, SWAMP_MOB_TERRAIN } from '../src/swamp/mobConfig.js';
 import { createCombatSpace, createMobTerrain, SwampMob } from '../src/swamp/mobMovement.js';
 import { CombatBout, POISON } from '../src/vfx/lab/CombatBout.js';
 import { CombatSkillRunner } from '../src/vfx/lab/CombatSkillRunner.js';
-import { RING, boxCenter } from '../src/vfx/lab/combatGeometry.js';
+import { RING, boxCenter, playerBox } from '../src/vfx/lab/combatGeometry.js';
 import { ENEMIES } from '../src/vfx/lab/combatEnemy.js';
 import { SKILLS } from '../src/vfx/lab/combatSkills.js';
 import { SLIME_SPECIAL } from '../src/vfx/lab/slimeVariants.js';
@@ -171,6 +171,24 @@ test('Fireball can defeat a Slime; it stops acting and leaves its native poison 
   assert.equal(bout.finished,false);
 });
 
+test('Swamp Frost Slime shares Ice Shard, slow, and its death field with the Sandbox',()=>{
+  const {bout,enemy}=setup('frost',{spawn:{x:270,y:160}});
+  assert.equal(enemy.spec,ENEMIES.frost);
+  const target=boxCenter(playerBox(player));
+  enemy.launchShot({x:270,y:target.y},target,enemy.spec.shot);
+  const [shard]=enemy.shots;
+  assert.equal(shard.kind,'frost');
+  assert.equal(enemy.updateShot(shard,400,player),false);
+  assert.equal(bout.playerHp,100-enemy.spec.shot.damage);
+  assert.equal(bout.speedFactor,enemy.spec.shot.slow.speed);
+  bout.hitEnemy({damage:enemy.spec.maxHp},enemy,enemy.enemy,player);
+  const [field]=bout.areas;
+  assert.equal(field.kind,'ice');
+  advance(enemy.deathMs,dt=>bout.update(dt,{...player,x:270}));
+  assert.ok(bout.areas.includes(field));
+  assert.equal(bout.speedFactor,field.speed);
+});
+
 test('Swamp walls intercept missiles, melee, lunges, landing splash and poison fields',()=>{
   const {bout,enemy,runner}=setup('slime',{obstacles:wall,spawn:{x:210,y:160}});
   const left={...player,x:170};
@@ -191,7 +209,13 @@ test('Swamp walls intercept missiles, melee, lunges, landing splash and poison f
   bout.addArea('poison',enemy.id,enemy.enemy);
   advance(1500,dt=>bout.update(dt,{...left,x:178}));
   assert.equal(bout.poison,null);
-  for(const kind of ['snake','frog','slime']){
+  const frost=setup('frost',{obstacles:wall,spawn:{x:210,y:160}});
+  frost.enemy.launchShot({x:210,y:136},{x:170,y:136},frost.enemy.spec.shot);
+  advance(250,dt=>frost.bout.update(dt,left));
+  assert.equal(frost.enemy.shots.length,0);
+  assert.equal(frost.bout.playerHp,100);
+  assert.equal(frost.bout.speedFactor,1);
+  for(const kind of ['snake','frog','slime','frost']){
     const {enemy:mob}=setup(kind,{obstacles:wall});
     const landing=mob.planLanding({x:215,y:160});
     assert.ok(mob.terrain.clear(landing));

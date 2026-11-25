@@ -4,7 +4,7 @@ import { CombatSkillRunner } from '../vfx/lab/CombatSkillRunner.js';
 import { CombatSkillView, combatSheets } from '../vfx/lab/CombatSkillView.js';
 import { preloadLabSheets } from '../vfx/lab/SheetSequence.js';
 import { trackArenaAim } from '../vfx/lab/ArenaAim.js';
-import { slotShortcut } from '../vfx/lab/combatLoadout.js';
+import { bindSwampCastInput } from './swampCastInput.js';
 
 const nearest=Phaser.Textures.FilterMode.NEAREST;
 const meteor='pfx-combat-meteor';
@@ -28,13 +28,7 @@ export class SwampCombatCasts {
     const signal=this.listeners.signal;
     const aim=trackArenaAim(canvas,scene.cameras.main,{x:scene.player.x+80,y:scene.player.y-20},{signal});
     this.aim=aim.capture;
-    canvas.addEventListener('pointerdown',event=>{
-      if(event.button===0)this.use(0);
-    },{signal});
-    window.addEventListener('keydown',event=>{
-      const slot=slotShortcut(event);
-      if((slot===1||slot===3)&&this.use(slot))event.preventDefault();
-    },{signal});
+    bindSwampCastInput(canvas,slot=>this.use(slot),signal);
   }
 
   use(slot){

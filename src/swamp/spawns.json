@@ -1,0 +1,607 @@
+{
+  "map": "swamp-v3-large",
+  "version": 3,
+  "nextOrdinal": 30,
+  "positions": {
+    "west-curve-companion": {
+      "x": 380,
+      "y": 1459
+    },
+    "west-curve": {
+      "x": 274,
+      "y": 1266
+    }
+  },
+  "additions": [
+    {
+      "id": "editor-mob-3",
+      "kind": null,
+      "encounterId": "editor-mob-3",
+      "x": 1276,
+      "y": 1390
+    },
+    {
+      "id": "editor-mob-4",
+      "kind": "snake",
+      "encounterId": "editor-mob-4",
+      "x": 1527,
+      "y": 1570
+    },
+    {
+      "id": "editor-mob-5",
+      "kind": null,
+      "encounterId": "editor-mob-5",
+      "x": 1127,
+      "y": 1655
+    },
+    {
+      "id": "editor-mob-6",
+      "kind": null,
+      "encounterId": "editor-mob-6",
+      "x": 1257,
+      "y": 1601
+    },
+    {
+      "id": "editor-mob-7",
+      "kind": null,
+      "encounterId": "editor-mob-7",
+      "x": 1221,
+      "y": 1586
+    },
+    {
+      "id": "editor-mob-9",
+      "kind": "snake",
+      "encounterId": "editor-mob-9",
+      "x": 1141,
+      "y": 1564
+    },
+    {
+      "id": "editor-mob-10",
+      "kind": "frog",
+      "encounterId": "editor-mob-10",
+      "x": 989,
+      "y": 1448
+    },
+    {
+      "id": "editor-mob-11",
+      "kind": null,
+      "encounterId": "editor-mob-11",
+      "x": 1345,
+      "y": 1641
+    },
+    {
+      "id": "editor-mob-12",
+      "kind": null,
+      "encounterId": "editor-mob-12",
+      "x": 978,
+      "y": 1522
+    },
+    {
+      "id": "editor-mob-13",
+      "kind": "frost",
+      "encounterId": "editor-mob-13",
+      "x": 1582,
+      "y": 1676
+    },
+    {
+      "id": "editor-mob-14",
+      "kind": "frost",
+      "encounterId": "editor-mob-14",
+      "x": 900,
+      "y": 1306
+    },
+    {
+      "id": "editor-mob-15",
+      "kind": "frost",
+      "encounterId": "editor-mob-15",
+      "x": 1505,
+      "y": 1265
+    },
+    {
+      "id": "editor-mob-16",
+      "kind": "snake",
+      "encounterId": "editor-mob-16",
+      "x": 1641,
+      "y": 657
+    },
+    {
+      "id": "editor-mob-18",
+      "kind": "snake",
+      "encounterId": "editor-mob-18",
+      "x": 1629,
+      "y": 1062
+    },
+    {
+      "id": "editor-mob-19",
+      "kind": null,
+      "encounterId": "editor-mob-19",
+      "x": 1779,
+      "y": 950
+    },
+    {
+      "id": "editor-mob-20",
+      "kind": null,
+      "encounterId": "editor-mob-20",
+      "x": 1830,
+      "y": 1000
+    },
+    {
+      "id": "editor-mob-21",
+      "kind": null,
+      "encounterId": "editor-mob-21",
+      "x": 1835,
+      "y": 859
+    },
+    {
+      "id": "editor-mob-22",
+      "kind": "frog",
+      "encounterId": "editor-mob-22",
+      "x": 1791,
+      "y": 797
+    },
+    {
+      "id": "editor-mob-23",
+      "kind": "frost",
+      "encounterId": "editor-mob-23",
+      "x": 1596,
+      "y": 539
+    },
+    {
+      "id": "editor-mob-24",
+      "kind": null,
+      "encounterId": "editor-mob-24",
+      "x": 1409,
+      "y": 537
+    },
+    {
+      "id": "editor-mob-25",
+      "kind": "frog",
+      "encounterId": "editor-mob-25",
+      "x": 1467,
+      "y": 440
+    },
+    {
+      "id": "editor-mob-26",
+      "kind": "snake",
+      "encounterId": "editor-mob-26",
+      "x": 1666,
+      "y": 695
+    },
+    {
+      "id": "editor-mob-27",
+      "kind": "frost",
+      "encounterId": "editor-mob-27",
+      "x": 1785,
+      "y": 1329
+    },
+    {
+      "id": "editor-mob-28",
+      "kind": null,
+      "encounterId": "editor-mob-28",
+      "x": 1876,
+      "y": 709
+    },
+    {
+      "id": "editor-mob-29",
+      "kind": "snake",
+      "encounterId": "editor-mob-29",
+      "x": 1254,
+      "y": 1506
+    }
+  ],
+  "disabled": [],
+  "ambushVariant": "snake",
+  "settings": {
+    "editor-mob-3": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "visualOrigin": {
+        "x": 1277,
+        "y": 1389
+      },
+      "triggerPoint": {
+        "x": 1375,
+        "y": 1470
+      },
+      "falseAlarm": true,
+      "vegetation": true
+    },
+    "editor-mob-4": {
+      "kind": "snake",
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 46,
+      "visualOrigin": {
+        "x": 1621,
+        "y": 1556
+      },
+      "triggerPoint": {
+        "x": 1596,
+        "y": 1669
+      },
+      "vegetation": true
+    },
+    "editor-mob-5": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "visualOrigin": {
+        "x": 1128,
+        "y": 1650
+      },
+      "triggerPoint": {
+        "x": 1119,
+        "y": 1530
+      },
+      "falseAlarm": true,
+      "vegetation": true
+    },
+    "editor-mob-6": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 63,
+      "visualOrigin": {
+        "x": 1257,
+        "y": 1601
+      },
+      "triggerPoint": {
+        "x": 1237,
+        "y": 1566
+      },
+      "falseAlarm": true,
+      "vegetation": true
+    },
+    "editor-mob-7": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 96,
+      "visualOrigin": {
+        "x": 1254,
+        "y": 1605
+      },
+      "falseAlarm": true,
+      "vegetation": true
+    },
+    "editor-mob-9": {
+      "kind": "snake",
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 88,
+      "visualOrigin": {
+        "x": 1230,
+        "y": 1607
+      },
+      "triggerPoint": {
+        "x": 1215,
+        "y": 1592
+      },
+      "vegetation": true
+    },
+    "editor-mob-10": {
+      "kind": "frog",
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 88,
+      "visualOrigin": {
+        "x": 969,
+        "y": 1500
+      },
+      "triggerPoint": {
+        "x": 972,
+        "y": 1514
+      },
+      "vegetation": true,
+      "repeat": false
+    },
+    "west-curve": {
+      "kind": "slime",
+      "detectionRange": 146
+    },
+    "south-trail": {
+      "detectionRange": 179
+    },
+    "editor-mob-11": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "cooldownSeconds": 15,
+      "decoyType": "false-alarm",
+      "visualOrigin": {
+        "x": 1345,
+        "y": 1641
+      },
+      "triggerPoint": {
+        "x": 1351,
+        "y": 1557
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-12": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 54,
+      "cooldownSeconds": 15,
+      "decoyType": "false-alarm",
+      "visualOrigin": {
+        "x": 978,
+        "y": 1522
+      },
+      "triggerPoint": {
+        "x": 1123,
+        "y": 1479
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-13": {
+      "kind": "frost",
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 38,
+      "triggerWidth": 81,
+      "visualOrigin": {
+        "x": 1639,
+        "y": 1812
+      },
+      "triggerPoint": {
+        "x": 1625,
+        "y": 1745
+      },
+      "vegetation": true,
+      "waterLeap": true
+    },
+    "editor-mob-14": {
+      "kind": "frost",
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 30,
+      "visualOrigin": {
+        "x": 754,
+        "y": 1282
+      },
+      "triggerPoint": {
+        "x": 864,
+        "y": 1299
+      },
+      "vegetation": true,
+      "waterLeap": true
+    },
+    "editor-mob-15": {
+      "kind": "frost",
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 46,
+      "visualOrigin": {
+        "x": 1387,
+        "y": 1269
+      },
+      "triggerPoint": {
+        "x": 1457,
+        "y": 1270
+      },
+      "vegetation": true,
+      "waterLeap": true
+    },
+    "editor-mob-16": {
+      "kind": "snake",
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "visualOrigin": {
+        "x": 1615,
+        "y": 664
+      },
+      "triggerPoint": {
+        "x": 1633,
+        "y": 670
+      },
+      "vegetation": true
+    },
+    "editor-mob-18": {
+      "kind": "snake",
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "visualOrigin": {
+        "x": 1523,
+        "y": 1095
+      },
+      "triggerPoint": {
+        "x": 1641,
+        "y": 1070
+      },
+      "falseAlarm": false,
+      "waterLeap": false
+    },
+    "editor-mob-19": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 21,
+      "cooldownSeconds": 7,
+      "decoyType": "false-alarm",
+      "visualOrigin": {
+        "x": 1779,
+        "y": 950
+      },
+      "triggerPoint": {
+        "x": 1699,
+        "y": 999
+      },
+      "falseAlarm": true,
+      "repeat": true,
+      "waterLeap": false
+    },
+    "editor-mob-20": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 54,
+      "cooldownSeconds": 8,
+      "decoyType": "false-alarm",
+      "visualOrigin": {
+        "x": 1830,
+        "y": 1000
+      },
+      "triggerPoint": {
+        "x": 1766,
+        "y": 1111
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-21": {
+      "spawnType": "ambush",
+      "triggerShape": "rectangle",
+      "triggerRange": 54,
+      "triggerWidth": 96,
+      "triggerHeight": 64,
+      "cooldownSeconds": 5,
+      "decoyType": "false-alarm",
+      "visualOrigin": {
+        "x": 1835,
+        "y": 859
+      },
+      "triggerPoint": {
+        "x": 1653,
+        "y": 907
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-22": {
+      "kind": "frog",
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 79,
+      "cooldownSeconds": 30,
+      "visualOrigin": {
+        "x": 1874,
+        "y": 873
+      },
+      "triggerPoint": {
+        "x": 1844,
+        "y": 850
+      },
+      "falseAlarm": false,
+      "repeat": true,
+      "waterLeap": false
+    },
+    "editor-mob-23": {
+      "kind": "frost",
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 96,
+      "visualOrigin": {
+        "x": 1492,
+        "y": 622
+      },
+      "triggerPoint": {
+        "x": 1543,
+        "y": 579
+      },
+      "waterLeap": true
+    },
+    "editor-mob-24": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 104,
+      "cooldownSeconds": 3,
+      "decoyType": "false-alarm",
+      "visualOrigin": {
+        "x": 1409,
+        "y": 537
+      },
+      "triggerPoint": {
+        "x": 1618,
+        "y": 523
+      },
+      "falseAlarm": true,
+      "repeat": true,
+      "waterLeap": false
+    },
+    "editor-mob-25": {
+      "kind": "frog",
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 88,
+      "cooldownSeconds": 45,
+      "visualOrigin": {
+        "x": 1394,
+        "y": 523
+      },
+      "triggerPoint": {
+        "x": 1429,
+        "y": 475
+      },
+      "falseAlarm": false,
+      "repeat": true,
+      "waterLeap": false
+    },
+    "editor-mob-26": {
+      "kind": "snake",
+      "spawnType": "return-trap",
+      "cooldownSeconds": 60,
+      "visualOrigin": {
+        "x": 1699,
+        "y": 756
+      },
+      "gateA": {
+        "x": 1628,
+        "y": 586
+      },
+      "gateB": {
+        "x": 1400,
+        "y": 330
+      },
+      "repeat": true,
+      "waterLeap": false
+    },
+    "editor-mob-27": {
+      "kind": "frost",
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "waterLeap": true,
+      "visualOrigin": {
+        "x": 1892,
+        "y": 1362
+      },
+      "triggerPoint": {
+        "x": 1785,
+        "y": 1329
+      }
+    },
+    "editor-mob-28": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 63,
+      "cooldownSeconds": 7,
+      "decoyType": "false-alarm",
+      "visualOrigin": {
+        "x": 1876,
+        "y": 709
+      },
+      "triggerPoint": {
+        "x": 1768,
+        "y": 731
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-29": {
+      "kind": "snake",
+      "spawnType": "return-trap",
+      "gateALength": 128,
+      "gateBLength": 128,
+      "visualOrigin": {
+        "x": 1233,
+        "y": 1594
+      },
+      "gateA": {
+        "x": 1267,
+        "y": 1487
+      },
+      "gateB": {
+        "x": 1702,
+        "y": 787
+      },
+      "repeat": true,
+      "waterLeap": false
+    }
+  }
+}

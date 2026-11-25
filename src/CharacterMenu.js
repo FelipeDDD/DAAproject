@@ -3,7 +3,7 @@ import { characterVisual } from './characterVisuals.js';
 import { isPlayerActive } from './multiplayer/presencePolicy.js';
 import { createSessionId } from './playerIdentity.js';
 import { MAX_PLAYER_CAPACITY } from './multiplayer/playerCapacity.js';
-import { normalizeEquippedSkin,selectPreviewSkin } from './characterAppearance.js';
+import { normalizeEquippedSkin,restoreDevPreviewSkin,selectPreviewSkin } from './characterAppearance.js';
 
 export const createCharacterSessionId=createSessionId;
 // Presentation only: choosing a base still restores its actual equipped skin.
@@ -128,6 +128,7 @@ export class CharacterMenu {
         ...(this.mode==='guest'?{guestId:this.guest.guestId}:{profileId:result.profile.profileId,classState:result.classState??null}),
       };
       if(previewStyle==='level3Preview'&&c.experimentalVisual)selectPreviewSkin(this.presence.identity,c);
+      else restoreDevPreviewSkin(this.presence.identity,c);
       this.presence.watchAppearance?.();
       try{localStorage.setItem(CHARACTER_STORAGE_KEY,c.id);}catch{}
       // Keep the claim alive while Phaser loads its maps and sprites.

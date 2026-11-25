@@ -132,8 +132,10 @@ export class TargetReactions{
     });
   }
 
-  clear(){
-    this.clearStatuses();
-    while(this.numbers.length)this.removeNumber(this.numbers.length-1);
+  clear(sprite){
+    this.clearStatuses(sprite);
+    for(let i=this.numbers.length-1;i>=0;i--){
+      if(!sprite||this.numbers[i].sprite===sprite)this.removeNumber(i);
+    }
   }
 }

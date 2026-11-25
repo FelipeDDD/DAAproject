@@ -11,6 +11,8 @@ export class SwampRun {
     const defeated=Array.isArray(saved.defeated)?saved.defeated:[];
     const collected=Array.isArray(saved.collected)?saved.collected:[];
     if(Array.isArray(saved.firedTraps))this.firedTraps=new Set(saved.firedTraps.filter(id=>typeof id==='string'));
+    if(Array.isArray(saved.ambushReadyAt))this.ambushReadyAt=new Map(saved.ambushReadyAt.filter(entry=>
+      Array.isArray(entry)&&typeof entry[0]==='string'&&Number.isFinite(entry[1])));
     for(const step of config.checkpoints){
       if(step.elite&&defeated.includes(step.elite))this.defeat(step.elite);
       if(collected.includes(step.id))this.collect(step.id);
@@ -25,6 +27,7 @@ export class SwampRun {
     this.defeated=new Set();
     this.collected=new Set();
     this.firedTraps=new Set();
+    this.ambushReadyAt=new Map();
     this.hp=this.config.maxHp;
   }
 
@@ -84,7 +87,8 @@ export class SwampRun {
 
   snapshot(){
     return {version:1,choices:[...this.choices],defeated:[...this.defeated],collected:[...this.collected],
-      firedTraps:[...this.firedTraps],...(this.ambushVariant?{ambushVariant:this.ambushVariant}:{}),hp:this.hp};
+      firedTraps:[...this.firedTraps],...(this.ambushReadyAt.size?{ambushReadyAt:[...this.ambushReadyAt]}:{}),
+      ...(this.ambushVariant?{ambushVariant:this.ambushVariant}:{}),hp:this.hp};
   }
 }
 

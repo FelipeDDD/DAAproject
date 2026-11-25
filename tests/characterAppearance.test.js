@@ -3,7 +3,7 @@ import test from 'node:test';
 import { Presence } from '../src/multiplayer/Presence.js';
 import { RemotePlayers } from '../src/multiplayer/RemotePlayers.js';
 import { characterById } from '../src/characters.js';
-import { applyLocalAppearance,selectPreviewSkin,clearPreviewSkin } from '../src/characterAppearance.js';
+import { applyLocalAppearance,selectPreviewSkin,clearPreviewSkin,restoreDevPreviewSkin } from '../src/characterAppearance.js';
 import { characterVisual,preloadCharacterTextures,createCharacterAnimations } from '../src/characterVisuals.js';
 import { YASSIN_PROPORTION_TEST_VISUAL } from '../src/experimental/yassinProportionTestSkin.js';
 import { YASSIN_STUBBLE_TEST_VISUAL } from '../src/experimental/yassinStubbleSkin.js';
@@ -89,6 +89,38 @@ test('persistent appearance subscription outlives maps, applies changes to the c
   presence.active={receive(){},appearanceChanged:()=>applyLocalAppearance(next)};
   callback({equippedSkin:'classic'});assert.equal(next.player.visual.sprite,'character-michael');
   presence.close();assert.equal(closed,1);
+});
+
+test('Dev Tools Tier 3 is restored only for the same local profile and class',t=>{
+  const entries=new Map();
+  const previous=Object.getOwnPropertyDescriptor(globalThis,'localStorage');
+  Object.defineProperty(globalThis,'localStorage',{configurable:true,value:{
+    setItem:(key,value)=>entries.set(key,value),getItem:key=>entries.get(key),removeItem:key=>entries.delete(key),
+  }});
+  t.after(()=>{
+    if(previous)Object.defineProperty(globalThis,'localStorage',previous);
+    else delete globalThis.localStorage;
+  });
+  const env={DEV:true};
+  const felipe=characterById('felipe');
+  const identity={profileId:'profile-felipe',characterBaseId:felipe.id};
+  selectPreviewSkin({...identity},felipe,env);
+  assert.equal(entries.size,0);
+  selectPreviewSkin({...identity,devAllSkins:true},felipe,env);
+  for(const [other,character,mode] of [
+    [{...identity,profileId:'another'},felipe,env],
+    [{...identity,characterBaseId:'michael'},characterById('michael'),env],
+    [{...identity},felipe,{DEV:false}],
+  ]){
+    restoreDevPreviewSkin(other,character,mode);
+    assert.equal(other.previewSkin,undefined);
+  }
+  const rejoined={...identity};
+  restoreDevPreviewSkin(rejoined,felipe,env);
+  assert.equal(rejoined.previewSkin,felipe.experimentalVisual.sprite);
+  clearPreviewSkin(rejoined,env);
+  restoreDevPreviewSkin(rejoined,felipe,env);
+  assert.equal(rejoined.previewSkin,undefined);
 });
 
 test('a failed/stale wardrobe read does not reset the selected skin',async()=>{

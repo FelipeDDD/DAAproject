@@ -2,14 +2,15 @@ import { MapScene } from './MapScene.js';
 import Phaser from 'phaser';
 import { objectsIn,propertiesOf } from '../maps/tiledObjects.js';
 import { createFootCollision,readFootObstacles } from '../maps/footCollision.js';
-import { mapLayerDepth } from '../maps/layerDepth.js';
+import { isForegroundLayer, mapLayerDepth } from '../maps/layerDepth.js';
 import { preloadSwampMobs, SwampMobs } from '../swamp/SwampMobs.js';
 import { SwampRunController } from '../swamp/SwampRunController.js';
 import { localSwampRun } from '../swamp/SwampRun.js';
 import { preloadSwampSkills } from '../swamp/SwampCombatCasts.js';
+import { SWAMP_PLAYER_FOOT_RADIUS as FOOT_RADIUS } from '../swamp/mobConfig.js';
+import { bindSwampMovementFocus } from '../swamp/swampCastInput.js';
 import placement from '../../public/assets/maps/swamp-occlusion/placement.json' with {type:'json'};
 
-const FOOT_RADIUS = 8; // World pixels, centered on the Arcade foot body.
 const COLLISION_COLORS = {rectangle:0xa9ef9a,polygon:0xffcc6b,polyline:0x61d9ff,ellipse:0xa9ef9a};
 const SWAMP_OVERLAY_KEY = 'swamp-v3-large-manual-overlay';
 
@@ -78,6 +79,9 @@ export class LargeSwampScene extends SwampScene {
 
   create(destination){
     super.create(destination);
+    const focusListeners=new AbortController();
+    bindSwampMovementFocus(this,focusListeners.signal);
+    this.events.once('shutdown',()=>focusListeners.abort());
     if (import.meta.env.DEV) this.swampCollisionControl=this.createCollisionDebug();
     const background=this.source.layers.find(layer=>layer.type==='imagelayer'&&layer.name==='Background');
     // Mirror the Tiled image layer transform without changing the authored map.
@@ -99,6 +103,8 @@ export class LargeSwampScene extends SwampScene {
         .setOrigin(0).setDepth(depth).setVisible(false).setData('occlusionName',name));
       outlines.lineStyle(1,0x6cfff0).strokeRect(ref.x,ref.y,ref.width,ref.height);
     }
+    this.ambushLeafDepth=Math.max(this.physics.world.bounds.height,overlay.depth,...cutouts.map(cut=>cut.depth),
+      ...this.source.layers.filter(isForegroundLayer).map(layer=>mapLayerDepth(layer,this.source)))+1;
     const label=document.createElement('label'), select=document.createElement('select');
     label.append('Swamp occlusion ',select);
     select.add(new Option('Manual overlay','manual'));
@@ -143,7 +149,7 @@ export class LargeSwampScene extends SwampScene {
     const start=()=>{
       this.swampMobs??=new SwampMobs(this,localSwampRun(this.game));
       this.swampRun??=new SwampRunController(this);
-      this.swampMobs.editor.advanced.append(this.swampCollisionControl,this.swampOcclusionControl);
+      this.swampMobs.editor.advanced.append(this.swampOcclusionControl);
     };
     const stop=()=>{
       this.swampRun?.destroy();
@@ -184,14 +190,18 @@ export class LargeSwampScene extends SwampScene {
     const label = document.createElement('label');
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
-    label.append(checkbox,' Collision debug');
+    label.append(checkbox,' Show Collision Boundaries');
     label.title = 'Green: rectangle · Gold: polygon · Blue: polyline · Pink: feet';
     const outlines = this.add.graphics().setDepth(this.physics.world.bounds.height + 3).setVisible(false);
     const feet = this.add.graphics().setDepth(outlines.depth + 1).setVisible(false);
     for (const obstacle of this.collisionLayer) {
-      outlines.lineStyle(2,COLLISION_COLORS[obstacle.kind],0.9);
-      if (obstacle.points) outlines.strokePoints(obstacle.points,obstacle.solid);
-      else outlines.strokeCircle(obstacle.center.x,obstacle.center.y,obstacle.radius);
+      const color=COLLISION_COLORS[obstacle.kind];
+      outlines.fillStyle(color,0.12).lineStyle(2,color,0.85);
+      if (obstacle.points) {
+        if(obstacle.solid)outlines.fillPoints(obstacle.points,true);
+        outlines.strokePoints(obstacle.points,obstacle.solid);
+      }else outlines.fillCircle(obstacle.center.x,obstacle.center.y,obstacle.radius)
+        .strokeCircle(obstacle.center.x,obstacle.center.y,obstacle.radius);
     }
     const drawFeet = () => {
       const visible=checkbox.checked&&Boolean(this.swampMobs?.editor.open);
