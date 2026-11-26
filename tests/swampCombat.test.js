@@ -1,13 +1,14 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFootObstacles } from '../src/maps/footCollision.js';
-import { SWAMP_AGGRO, SWAMP_MOB_TERRAIN } from '../src/swamp/mobConfig.js';
+import { SWAMP_AGGRO, SWAMP_MOB_TERRAIN, SWAMP_PLAYER_COMBAT_GEOMETRY } from '../src/swamp/mobConfig.js';
 import { createCombatSpace, createMobTerrain, SwampMob } from '../src/swamp/mobMovement.js';
 import { CombatBout, POISON } from '../src/vfx/lab/CombatBout.js';
 import { CombatSkillRunner } from '../src/vfx/lab/CombatSkillRunner.js';
-import { RING, boxCenter, playerBox } from '../src/vfx/lab/combatGeometry.js';
+import { RING, boxCenter, playerBox, playerFeetBox } from '../src/vfx/lab/combatGeometry.js';
 import { ENEMIES } from '../src/vfx/lab/combatEnemy.js';
 import { SKILLS } from '../src/vfx/lab/combatSkills.js';
+import { handOf,lashTip } from '../src/vfx/lab/precisionDemo.js';
 import { SLIME_SPECIAL } from '../src/vfx/lab/slimeVariants.js';
 
 const bounds={left:0,right:1920,top:0,bottom:1920};
@@ -37,6 +38,33 @@ function setupSandbox(kind,spawn){
   Object.assign(enemy.enemy,spawn);
   return {bout,enemy,runner:new CombatSkillRunner(bout)};
 }
+
+test('Swamp combat uses a fixed foot-relative origin and hurtbox for Lash and edge hits',()=>{
+  for(const height of [56,72,144]){
+    const caster={x:350,y:304,displayHeight:height,body:{center:{x:349,y:298}},
+      combatGeometry:SWAMP_PLAYER_COMBAT_GEOMETRY};
+    const hand=handOf(caster),box=playerBox(caster);
+    assert.deepEqual(hand,{x:350,y:271.72});
+    assert.deepEqual(box,{x:338,y:248.56,width:24,height:49.68});
+    assert.deepEqual(playerFeetBox(caster),playerFeetBox({...caster,combatGeometry:undefined}));
+    const whip=setup('frost',{spawn:{x:430,y:304},random:()=>0});
+    const aim={x:500,y:hand.y};
+    const tip=lashTip(hand,aim,SKILLS.lash.range),center=boxCenter(whip.enemy.spec.box(whip.enemy.enemy));
+    whip.enemy.enemy.x+=tip.x-center.x;
+    whip.enemy.enemy.y+=tip.y-center.y;
+    assert.ok(whip.runner.use(0,['lash'],caster,()=>aim));
+    whip.runner.update(SKILLS.lash.cast,caster);
+    assert.equal(whip.enemy.enemy.hp,100-SKILLS.lash.critical);
+    for(const inside of [true,false]){
+      const {bout,enemy}=setup('frost',{spawn:{x:300,y:304}});
+      const {shot}=enemy.spec;
+      const y=box.y-shot.radius-(inside?0:0.01);
+      enemy.launchShot({x:300,y},{x:400,y},shot);
+      enemy.updateShot(enemy.shots[0],420,caster);
+      assert.equal(bout.playerHp,100-(inside?shot.damage:0));
+    }
+  }
+});
 
 test('Homing Shot settings and actual steering match in Sandbox and Swamp',t=>{
   const settings=SLIME_SPECIAL.homing;
@@ -148,9 +176,11 @@ test('equipped skills preserve cooldown, melee crit, slow and Life Steal healing
   advance(170,dt=>runner.update(dt,from));
   assert.equal(enemy.slow.percent,35);
   const hp=enemy.enemy.hp;
-  // This specific target occupies the original whip tip.
-  Object.assign(enemy.enemy,{x:164+SKILLS.lash.range+8,y:151,lift:0});
-  assert.equal(bout.playerStrike('lash',from,{x:400,y:137})!==null,true);
+  const lashAim={x:400,y:handOf(from).y};
+  const tip=lashTip(handOf(from),lashAim,SKILLS.lash.range),center=aim();
+  enemy.enemy.x+=tip.x-center.x;
+  enemy.enemy.y+=tip.y-center.y;
+  assert.equal(bout.playerStrike('lash',from,lashAim)!==null,true);
   assert.equal(enemy.enemy.hp,hp-SKILLS.lash.critical);
 });
 

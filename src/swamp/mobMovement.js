@@ -4,7 +4,7 @@ import { CombatEnemy, ENEMIES } from '../vfx/lab/combatEnemy.js';
 import { frogChaseTarget } from '../vfx/lab/frogEnemy.js';
 import { slimeChaseStep } from '../vfx/lab/slimeEnemy.js';
 import { snakeCrawlPose, snakeCrawlStep } from '../vfx/lab/snakeEnemy.js';
-import { SWAMP_AGGRO, SWAMP_EMERGENCE, SWAMP_MOB_TERRAIN, SWAMP_PACK_AGGRO, SWAMP_ROAMING, SWAMP_ROUTING } from './mobConfig.js';
+import { SWAMP_AGGRO, SWAMP_EMERGENCE, SWAMP_ENCOUNTER_TERRAIN, SWAMP_MOB_TERRAIN, SWAMP_PACK_AGGRO, SWAMP_ROAMING, SWAMP_ROUTING } from './mobConfig.js';
 import { createMobRoutes, createSpawnReachability } from './mobRoutes.js';
 
 const dist = (a,b) => Math.hypot(a.x-b.x,a.y-b.y);
@@ -13,7 +13,7 @@ const toward = (a,b,step) => onSegment(a,b,Math.min(1,step/(dist(a,b)||1)));
 const MIN_HOP_FRACTION = 0.25;
 
 export function createSwampSpawnTerrain(obstacles,bounds,playerRadius,entrance){
-  const terrain=Object.fromEntries(Object.entries(SWAMP_MOB_TERRAIN).map(([kind,{footRadius}])=>
+  const terrain=Object.fromEntries(Object.entries({...SWAMP_MOB_TERRAIN,...SWAMP_ENCOUNTER_TERRAIN}).map(([kind,{footRadius}])=>
     [kind,createMobTerrain(obstacles,bounds,footRadius)]));
   terrain.marker=createMobTerrain(obstacles,bounds,playerRadius);
   terrain.marker.reachable=createSpawnReachability(terrain.marker,bounds,entrance);
@@ -217,7 +217,8 @@ class SwampNavigation {
     return this.terrain.move(enemy,point,false);
   }
 
-  steer(enemy,target){
+  steer(enemy,target,delta=0){
+    if(delta)this.routeRetryMs=Math.max(0,this.routeRetryMs-delta);
     const terrain=this.terrain;
     const direct=terrain.clear(target)?terrain.canReach(enemy,target):terrain.sees(enemy,target);
     if(direct){
@@ -340,12 +341,14 @@ class SwampNavigation {
 export class SwampMob extends CombatEnemy {
   constructor(bout,spawn,terrain,index,{test=false,roaming=SWAMP_ROAMING,random=Math.random,onAggro}={}){
     const species=ENEMIES[spawn.kind];
-    const spec=spawn.detectionRange===undefined?species:{...species,detectionRange:spawn.detectionRange};
+    const overrides=spawn.detectionRange===undefined?spawn.combat:{...spawn.combat,detectionRange:spawn.detectionRange};
+    const spec=overrides?{...species,...overrides}:species;
     super(bout,spawn.kind,index,{x:spawn.x,y:spawn.y},spec);
-    this.footRadius=SWAMP_MOB_TERRAIN[spawn.kind].footRadius;
+    this.footRadius=(SWAMP_MOB_TERRAIN[spawn.kind]??SWAMP_ENCOUNTER_TERRAIN[spawn.kind]).footRadius;
     this.spawnId=spawn.id;
     this.encounterId=spawn.encounterId;
     this.checkpoint=spawn.checkpoint;
+    this.miniBoss=Boolean(spawn.miniBoss);
     this.test=test;
     this.terrain=terrain;
     this.navigation=new SwampNavigation(spawn,terrain,{roaming,random,onAggro});

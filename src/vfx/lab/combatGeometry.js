@@ -12,11 +12,15 @@ export const toward=(from,to,reach)=>{
   return {x:from.x+dx*ratio,y:from.y+dy*ratio};
 };
 
-export function groundPoint(point,sideMargin=20){
-  return {x:clamp(point.x,RING.left+sideMargin,RING.right-sideMargin),y:clamp(point.y,RING.top+6,RING.bottom-6)};
+export function groundPoint(point,sideMargin=20,bounds=RING){
+  return {x:clamp(point.x,bounds.left+sideMargin,bounds.right-sideMargin),y:clamp(point.y,bounds.top+6,bounds.bottom-6)};
 }
 
 export function playerBox(player){
+  if(player.combatGeometry?.hurtbox){
+    const {width,height,offsetY}=player.combatGeometry.hurtbox;
+    return {x:player.x-width/2,y:player.y+offsetY,width,height};
+  }
   return {x:player.x-12,y:player.y-player.displayHeight*0.77,width:24,height:player.displayHeight*0.69};
 }
 

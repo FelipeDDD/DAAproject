@@ -16,7 +16,8 @@ if(import.meta.env.DEV){
       boxes:byId('fight-boxes'),status:byId('fight-status'),monster:byId('fight-monster'),
       composition:byId('fight-composition'),cloud:byId('fight-cloud'),cloudOption:byId('fight-cloud-option'),
       bossDebug:byId('fight-boss-debug'),bossPhase:byId('fight-boss-phase'),bossInfo:byId('fight-boss-info'),
-      randomized:byId('fight-randomized'),retreat:byId('fight-retreat'),special:byId('fight-special')});
+      randomized:byId('fight-randomized'),retreat:byId('fight-retreat'),special:byId('fight-special'),
+      parryVisual:byId('fight-parry-visual')});
     byId('lab-title').textContent=document.title='Combat Sandbox';
     byId('vfx-controls').hidden=byId('vfx-footer').hidden=true;
     byId('combat-controls').hidden=byId('combat-help').hidden=false;

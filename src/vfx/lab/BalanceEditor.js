@@ -1,5 +1,6 @@
 import current from '../../combat/balance.json' with {type:'json'};
-import { BALANCE_ROUTE, BALANCE_FORMAT, original, balanceChanges, balanceFields, balanceValue, validateBalance } from '../../combat/balanceSchema.js';
+import { BALANCE_ROUTE, BALANCE_FORMAT, original, balanceChanges, balanceFields, balanceValue, normalizeBalance, validateBalance } from '../../combat/balanceSchema.js';
+import { scaleDamage } from '../../combat/damageScaling.js';
 import { SKILLS } from './combatSkills.js';
 import { applyCombatBalance } from './combatBalancePreview.js';
 
@@ -10,9 +11,14 @@ const labelIfKnown={
   trackingMs:'Initial tracking time',turnRate:'Initial turn rate',lateTurnRate:'Late turn rate',maxTurn:'Total turn limit',
   longLeap:'Long Leap',leap:'Leaping Slam',bite:'Venom Bite',slime:'Poison Slime',frost:'Frost Slime',
   big:'Big Slime',swift:'Swift Slime',
+  damagePercent:'Overall Damage',
 };
+const slimeDamageLabels={jumpDamage:'Jump Damage',projectileDamage:'Projectile Damage',
+  contactDamage:'Contact Damage',damage:'Special Damage'};
 const label=key=>labelIfKnown[key]??key.replace(/Ms$/,'').replace(/([a-z])([A-Z])/g,'$1 $2')
   .replace(/^./,first=>first.toUpperCase());
+const isSlimeVariant=path=>path[0]==='slimes'&&path[1]==='variants';
+const fieldLabel=path=>isSlimeVariant(path)&&slimeDamageLabels[path.at(-1)]||label(path.at(-1));
 const display=(value,field)=>Number.isFinite(value)?String(Number((value*(field.factor??1)).toFixed(6))):'';
 const displayValue=(value,field)=>display(value,field)+(field.unit?' '+field.unit:'');
 const groupLabel=path=>path[0]==='bands'?'Band '+(Number(path[1])+1):path.map(label).join(' / ');
@@ -26,12 +32,13 @@ function element(tag,text){
 export class BalanceEditor {
   constructor(scene,mount,signal){
     Object.assign(this,{scene,mount,signal});
-    this.saved=structuredClone(current);
-    this.draft=structuredClone(current);
-    this.applied=structuredClone(current);
+    const saved=normalizeBalance(current);
+    this.saved=structuredClone(saved);
+    this.draft=structuredClone(saved);
+    this.applied=structuredClone(saved);
     this.rows=[];
     this.groups=[
-      ...Object.entries(SKILLS).map(([id,skill])=>['Michael · '+skill.name,['michael',id]]),
+      ...Object.keys(current.michael).map(id=>['Michael · '+SKILLS[id].name,['michael',id]]),
       ['Slimes · special attacks',['slimes','special']],['Slimes · variant damage and recoil',['slimes','variants']],
       ['Snake · Venom Bite',['snake','bite']],['Snake · movement and tactics',['snake']],
       ['Frog · Leaping Slam',['frog','leap']],['Frog · Long Leap',['frog','longLeap']],['Frog · movement',['frog']],
@@ -115,7 +122,8 @@ export class BalanceEditor {
     for(const field of fields){
       const relative=field.path.slice(prefix.length),group=groupLabel(relative.slice(0,-1));
       if(group&&group!==lastGroup){
-        const header=element('tr'),title=element('th',group);
+        const swift=isSlimeVariant(field.path)&&relative[0]==='swift';
+        const header=element('tr'),title=element('th',swift?group+' (no standard projectile)':group);
         title.colSpan=3;
         title.scope='colgroup';
         header.className='balance-stage';
@@ -123,11 +131,11 @@ export class BalanceEditor {
         body.append(header);
       }
       lastGroup=group;
-      const row=element('tr'),name=element('th',label(relative.at(-1))),saved=element('td'),experimental=element('td');
+      const row=element('tr'),name=element('th',fieldLabel(field.path)),saved=element('td'),experimental=element('td');
       name.scope='row';
       const input=element('input');
       input.type='number';
-      input.step=field.integer?'1':'any';
+      input.step=String(field.step??(field.integer?1:'any'));
       input.min=String(field.min*(field.factor??1));
       input.max=String(field.max*(field.factor??1));
       input.setAttribute('aria-label',[group,name.textContent,field.unit].filter(Boolean).join(' · '));
@@ -139,9 +147,14 @@ export class BalanceEditor {
         this.updateState();
       });
       experimental.append(input,unit);
+      const effective=isSlimeVariant(field.path)&&Object.hasOwn(slimeDamageLabels,relative.at(-1))?element('small'):null;
+      if(effective){
+        effective.className='balance-effective';
+        experimental.append(effective);
+      }
       row.append(name,saved,experimental);
       body.append(row);
-      this.rows.push({row,saved,input,field});
+      this.rows.push({row,saved,input,field,effective});
     }
     this.table.replaceChildren(head,body);
     this.updateState();
@@ -150,10 +163,16 @@ export class BalanceEditor {
   updateState(){
     const changes=balanceChanges(this.saved,this.draft);
     const error=validateBalance(this.draft);
-    for(const {row,saved,input,field} of this.rows){
+    for(const {row,saved,input,field,effective} of this.rows){
       const value=balanceValue(this.saved,field.path);
+      const draftValue=balanceValue(this.draft,field.path);
       saved.textContent=displayValue(value,field);
-      row.classList.toggle('changed',value!==balanceValue(this.draft,field.path));
+      row.classList.toggle('changed',value!==draftValue);
+      if(effective){
+        const {damagePercent}=balanceValue(this.draft,field.path.slice(0,-1));
+        const damage=scaleDamage(draftValue,damagePercent);
+        effective.textContent=Number.isFinite(damage)?'Effective '+damage+' HP':'Effective —';
+      }
       input.disabled=Boolean(this.restoring);
       if(input.validity.valid&&input.value!=='')input.removeAttribute('aria-invalid');
       else input.setAttribute('aria-invalid','true');
@@ -195,9 +214,9 @@ export class BalanceEditor {
       if(error)throw new Error(error);
       const keepDraft=!confirmDiscard&&this.dirty;
       this.source=source;
-      this.saved=structuredClone(source.data);
+      this.saved=structuredClone(normalizeBalance(source.data));
       // Leave any edits made while the initial source request was loading intact.
-      if(!keepDraft)this.draft=structuredClone(source.data);
+      if(!keepDraft)this.draft=structuredClone(this.saved);
       this.report(confirmDiscard?'Last saved values restored.':'');
     }catch(error){
       if(!this.signal.aborted)this.report('Source unavailable. '+error.message);
@@ -211,7 +230,8 @@ export class BalanceEditor {
   confirmSave(){
     if(this.saveButton.disabled)return;
     this.review.replaceChildren(...balanceChanges(this.saved,this.draft).map(field=>{
-      const path=field.path.map(part=>/^\d+$/.test(part)?String(Number(part)+1):label(part)).join(' / ');
+      const path=[...field.path.slice(0,-1).map(part=>/^\d+$/.test(part)?String(Number(part)+1):label(part)),
+        fieldLabel(field.path)].join(' / ');
       return element('li',path+' · '+displayValue(field.before,field)+' → '+displayValue(field.after,field));
     }));
     this.dialog.showModal();
@@ -225,7 +245,7 @@ export class BalanceEditor {
     this.updateState();
     try{
       this.source=await this.request('PUT',{data,revision:this.source.revision});
-      this.saved=structuredClone(this.source.data);
+      this.saved=structuredClone(normalizeBalance(this.source.data));
       this.report('Saved to source. Reload the Lab or Swamp to load the new defaults.');
     }catch(error){
       if(!this.signal.aborted)this.report('Save failed. '+error.message);
@@ -259,7 +279,7 @@ export class BalanceEditor {
       const error=validateBalance(data);
       if(error)throw new Error(error);
       if(!this.canDiscard())return;
-      this.draft=structuredClone(data);
+      this.draft=structuredClone(normalizeBalance(data));
       this.report('Imported as a draft.');
       this.render();
     }catch(error){this.report('Import failed. '+error.message);}

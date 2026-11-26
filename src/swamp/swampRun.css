@@ -212,3 +212,21 @@ body:has(.swamp-editor[data-mode]:not([data-mode=""])) #game canvas { cursor:cro
   accent-color:#77d7ff;
 }
 .swamp-editor-range button { grid-column:1 / -1; justify-self:start; }
+.swamp-mini-boss-hud {
+  position:absolute;
+  z-index:5;
+  top:12px;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(360px,70%);
+  padding:5px 12px 8px;
+  text-align:center;
+  color:#f5e5c8;
+  background:#151b23ed;
+  border:1px solid #907753;
+  border-radius:6px;
+  font:700 13px/1.3 system-ui,sans-serif;
+  pointer-events:none;
+}
+.swamp-mini-boss-hud[hidden] { display:none; }
+.swamp-mini-boss-hud progress { display:block; width:100%; height:9px; accent-color:#8bd9ee; }

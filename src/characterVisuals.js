@@ -63,8 +63,8 @@ export function animationKey(visual,type,direction){return `${visual.sprite}-${t
 
 // Resolve legacy local preview selectors into the published stable skin ID.
 export function localCharacterStyle(character,style,identity){
-  // Item-specific art has its own animation and must take priority over local skin previews.
-  if(style==='lungCrusher')return style;
+  // An explicit scene style or item transformation takes priority over local previews.
+  if(style==='level3Preview'||style==='lungCrusher')return style;
   if(identity?.characterBaseId===character?.id&&previewVisual(character,identity?.previewSkin))
     return `preview:${identity.previewSkin}`;
   return identity?.visualPreview==='level3Preview'&&identity.characterBaseId===character?.id&&character?.experimentalVisual

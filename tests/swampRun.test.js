@@ -3,10 +3,14 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { CAMERA_ZOOM, cameraZoomForMap } from '../src/game/settings.js';
 import { readFootObstacles, isFootPositionClear } from '../src/maps/footCollision.js';
-import { SWAMP_RUN } from '../src/swamp/runConfig.js';
+import { SWAMP_MINI_BOSS, SWAMP_RUN } from '../src/swamp/runConfig.js';
+import { SwampMiniBoss } from '../src/swamp/SwampMiniBoss.js';
+import { createSwampSpawnTerrain, SwampMob } from '../src/swamp/mobMovement.js';
+import { resolveSpawn } from '../src/maps/tiledObjects.js';
 import { SwampRun, prepareCheckpoint } from '../src/swamp/SwampRun.js';
 import { bindSwampCastInput, bindSwampMovementFocus } from '../src/swamp/swampCastInput.js';
 import { CombatBout } from '../src/vfx/lab/CombatBout.js';
+import { MUSHROOM_BOSS } from '../src/vfx/lab/mushroomBoss.js';
 import { CombatSkillRunner } from '../src/vfx/lab/CombatSkillRunner.js';
 
 const [entrance,southeast,north,ultimate]=SWAMP_RUN.checkpoints;
@@ -93,6 +97,46 @@ test('dev checkpoint jump sets legal prerequisites and creates only one pending 
   assert.equal(run.pendingChoice,ultimate);
   assert.equal(prepareCheckpoint(run,southeast),false);
   assert.equal(prepareCheckpoint(run,ultimate),false);
+});
+
+test('the Mushroom Boss spawns once after North Trail and awards the reachable Ultimate checkpoint once',()=>{
+  const map=JSON.parse(readFileSync(new URL('../public/assets/maps/swamp-v3-large.tmj',import.meta.url)));
+  const terrain=createSwampSpawnTerrain(readFootObstacles(map),{left:0,top:0,right:1920,bottom:1920},8,resolveSpawn(map));
+  const {id,kind,spawn,checkpointDrop}=SWAMP_MINI_BOSS;
+  assert.equal(terrain.marker.reachable(checkpointDrop),true);
+  assert.equal(terrain[kind].canReach(spawn,checkpointDrop),true);
+  const run=new SwampRun(),bout=new CombatBout();
+  const feet={...checkpointDrop};
+  const mobs={bout,terrain,scene:{player:{body:{center:feet}}},entries:[],
+    add(data){
+      const mob=new SwampMob(bout,data,terrain[kind],0);
+      this.entries.push({mob});
+      return mob;
+    }};
+  const encounter=Object.assign(Object.create(SwampMiniBoss.prototype),{mobs,run});
+  assert.equal(encounter.start(),false);
+  assert.ok(prepareCheckpoint(run,ultimate,{defeat:false}));
+  assert.equal(run.activeCheckpoint,north);
+  assert.equal(run.pendingDrop,undefined);
+  feet.y=800;
+  assert.equal(encounter.start(),false);
+  Object.assign(feet,checkpointDrop);
+  assert.equal(encounter.start(),true);
+  assert.equal(encounter.start(),false);
+  assert.equal(encounter.entry.mob.enemy.hp,MUSHROOM_BOSS.maxHp);
+  mobs.entries.length=0;
+  assert.equal(run.respawn(),north);
+  assert.equal(encounter.start(),true);
+  collect(run,ultimate);
+  assert.ok(run.choose('ultimate','meteor'));
+  mobs.entries.length=0;
+  assert.equal(encounter.start(),false);
+  assert.equal(encounter.start({force:true,practice:true}),true);
+  assert.equal(run.defeat(id),false);
+  assert.equal(run.pendingDrop,undefined);
+  run.restart();
+  mobs.entries.length=0;
+  assert.equal(encounter.start(),false);
 });
 
 test('an editor input keeps Q for editing until the player returns to the canvas',()=>{

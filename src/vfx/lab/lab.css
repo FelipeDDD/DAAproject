@@ -127,6 +127,7 @@ main p { margin: 10px 0 0; color: #b9c3cc; }
   font:inherit;
 }
 .balance-fields input[aria-invalid="true"] { border-color:#ff9b87; }
+.balance-effective { display:block; margin-top:3px; color:#a9d6c1; }
 .balance-actions { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
 .balance-editor p[role="status"] { color:#c9d3dd; margin:8px 0 0; }
 .balance-editor p[role="status"]:empty { display:none; }

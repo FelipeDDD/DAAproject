@@ -2,6 +2,16 @@ import { PLAYER_MAX_HP } from '../boss/config.js';
 import { SLOT_KEYS } from '../vfx/lab/combatSkills.js';
 
 export { SLOT_KEYS };
+export const SWAMP_MINI_BOSS = {
+  id:'swamp-mini-boss',
+  name:'Mushroom Boss',
+  kind:'mushroom',
+  spawn:{x:340,y:375},
+  activationRadius:145,
+  arena:{left:90,right:650,top:175,bottom:610},
+  checkpointDrop:{x:350,y:500},
+};
+
 export const SWAMP_RUN = {
   storageKey:'daa.swamp-v3.run.v1',
   maxHp:PLAYER_MAX_HP,
@@ -20,7 +30,7 @@ export const SWAMP_RUN = {
       drop:{x:1650,y:1310}},
     {id:'north',label:'North trail',slot:2,categories:['offense','survival'],elite:'north-trail',excludeCategoryFromSlot:1,
       drop:{x:1180,y:338}},
-    {id:'inner-ruins',label:'Inner ruins',slot:3,categories:['ultimate'],elite:'swamp-mini-boss',
-      drop:{x:1105,y:974}},
+    {id:'inner-ruins',label:'Inner ruins',slot:3,categories:['ultimate'],elite:SWAMP_MINI_BOSS.id,
+      drop:SWAMP_MINI_BOSS.checkpointDrop},
   ],
 };

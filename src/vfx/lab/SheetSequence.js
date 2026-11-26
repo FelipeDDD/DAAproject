@@ -36,6 +36,7 @@ const missiles={
   cinder:[0x952f38,0xff862b,0xffef9a],
   icicle:[0x28577e,0x48b9cf,0xdfffff],
   acid:[0x4b3b60,0x89bc4e,0xe5fa90],
+  heal:[0x276b50,0x82d8ac,0xe2ffd6],
 };
 
 // Draw in flight coordinates. The sprite origin and destination are sampled once per cast.
@@ -73,8 +74,7 @@ function drawArc(g,t,distance,seed){
   g.lineStyle(1,0x83c3ff,alpha).lineBetween(fork.x,fork.y,fork.x+9,fork.y-9);
 }
 
-function drawWard(g,t){
-  const form=Math.min(1,t*6,(1-t)*5);
+export function drawWard(g,t,form=Math.min(1,t*6,(1-t)*5)){
   const pulse=(1+Math.cos(t*14))/2;
   const corners=Array.from({length:6},(_,i)=>{
     const a=i*Math.PI/3;
@@ -85,6 +85,12 @@ function drawWard(g,t){
 }
 
 // The finishing pulse samples allies once. Haste follows its recipient after the grove closes.
+export function drawHealingPulse(g,t,radius=44,squash=0.7){
+  const w=2*radius*(1-(1-t)**2);
+  g.clear().lineStyle(2,0xc6ffc5,0.85*(1-t)).strokeEllipse(0,0,w,w*squash)
+    .lineStyle(1,0x82d8ac,0.6*(1-t)).strokeEllipse(0,0,w*0.89,w*0.89*squash);
+}
+
 export function grovePulse(scene,center){
   const radius=44,squash=0.7;
   const g=scene.add.graphics().setPosition(center.x,center.y).setDepth(center.y-64);
@@ -93,11 +99,7 @@ export function grovePulse(scene,center){
       scene.reactions.apply(ally,'Haste',1700);
     }
   }
-  return {object:g,draw(t){
-    const w=2*radius*(1-(1-t)**2);
-    g.clear().lineStyle(2,0xc6ffc5,0.85*(1-t)).strokeEllipse(0,0,w,w*squash)
-      .lineStyle(1,0x82d8ac,0.6*(1-t)).strokeEllipse(0,0,w*0.89,w*0.89*squash);
-  }};
+  return {object:g,draw:t=>drawHealingPulse(g,t,radius,squash)};
 }
 
 function createLayer(scene,clip,anchor,player,nearest,livePlayer,captureAim,settings,resolveStrike){

@@ -109,18 +109,33 @@
     },
     "variants": {
       "slime": {
+        "damagePercent": 100,
+        "jumpDamage": 24,
+        "projectileDamage": 16,
+        "contactDamage": 6,
         "damage": 16,
         "recoil": 34
       },
       "frost": {
+        "damagePercent": 100,
+        "jumpDamage": 24,
+        "projectileDamage": 15,
+        "contactDamage": 6,
         "damage": 16,
         "recoil": 34
       },
       "big": {
+        "damagePercent": 100,
+        "jumpDamage": 36,
+        "projectileDamage": 25,
+        "contactDamage": 10,
         "damage": 20,
         "recoil": 26
       },
       "swift": {
+        "damagePercent": 100,
+        "jumpDamage": 17,
+        "contactDamage": 4,
         "damage": 12,
         "recoil": 42
       }

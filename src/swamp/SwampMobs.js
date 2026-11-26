@@ -6,6 +6,9 @@ import { CombatBout } from '../vfx/lab/CombatBout.js';
 import { ENEMIES } from '../vfx/lab/combatEnemy.js';
 import { CombatArenaEffects, drawGroundArea, drawSlimeDeathSpores } from '../vfx/lab/CombatArenaEffects.js';
 import { drawCombatEnemySprite } from '../vfx/lab/combatEnemySprite.js';
+import { drawMushroomSprite, MUSHROOM_SHEETS, preloadMushroomSheets } from '../vfx/lab/mushroomArt.js';
+import { initMushroomBoss } from '../vfx/lab/mushroomBoss.js';
+import { labSheets } from '../vfx/lab/sheetCatalog.js';
 import { PlayerHealthBar } from '../ui/PlayerHealthBar.js';
 import { resolveSpawn } from '../maps/tiledObjects.js';
 import { AmbushWarning } from './AmbushWarning.js';
@@ -13,11 +16,13 @@ import { SpawnEditor } from './SpawnEditor.js';
 import { WATER_RIPPLES_DECOY } from './spawnEdits.js';
 import { ReturnTrap, returnTrapAxis } from './ReturnTrap.js';
 import { saveSwampRun } from './SwampRun.js';
-import { AMBUSH_DEFAULT_COOLDOWN_SECONDS, SWAMP_AMBUSH, SWAMP_EMERGENCE, SWAMP_MOB_TERRAIN, swampEncounterSpawns, swampEditorSpawns } from './mobConfig.js';
+import { AMBUSH_DEFAULT_COOLDOWN_SECONDS, SWAMP_AMBUSH, SWAMP_EMERGENCE, SWAMP_ENCOUNTER_TERRAIN, SWAMP_MOB_TERRAIN, swampEncounterSpawns, swampEditorSpawns } from './mobConfig.js';
+import { SWAMP_MINI_BOSS } from './runConfig.js';
 import { alertSwampPack, createCombatSpace, createSwampSpawnTerrain, findNearbyMobSpawn, SwampAmbush, SwampMob } from './mobMovement.js';
 
-const textureKey = kind => 'swamp-mob-'+kind;
-const artFor = kind => atlas['pfx-'+kind];
+const textureKey = kind => kind==='mushroom'?'mushroom-idle':'swamp-mob-'+kind;
+const artFor = kind => kind==='mushroom'?MUSHROOM_SHEETS['mushroom-idle']:atlas['pfx-'+kind];
+const effectSheets={...atlas,'pfx-spores':labSheets['pfx-spores']};
 const MAX_TEST_MOBS = 8;
 const COLORS = {snake:0xffcf73,frog:0xa3ed91,slime:0xa7caff};
 
@@ -29,14 +34,15 @@ function ambushController(spawn){
 
 export function preloadSwampMobs(scene){
   const sheets=Object.keys(SWAMP_MOB_TERRAIN).map(kind=>['pfx-'+kind,textureKey(kind)]);
-  sheets.push(['pfx-frost-nova','pfx-frost-nova']);
+  sheets.push(['pfx-frost-nova','pfx-frost-nova'],['pfx-big',textureKey('big')],['pfx-swift',textureKey('swift')],['pfx-spores','pfx-spores']);
   for(const [asset,key] of sheets){
-    const {width,height,frameMs}=atlas[asset];
+    const {width,height,frameMs}=effectSheets[asset];
     const url=import.meta.env.BASE_URL+'tools/vfx-lab/sheets/'+asset+'.png';
     if(!scene.textures.exists(key))scene.load.spritesheet(key,url,{
       frameWidth:width,frameHeight:height,endFrame:frameMs.length-1,
     });
   }
+  preloadMushroomSheets(scene);
 }
 
 export class SwampMobs {
@@ -52,7 +58,20 @@ export class SwampMobs {
       ?run.ambushVariant:SWAMP_AMBUSH.defaultVariant;
     this.terrain=createSwampSpawnTerrain(scene.collisionLayer,scene.physics.world.bounds,scene.playerFootRadius,resolveSpawn(scene.source));
     const space=createCombatSpace(scene.collisionLayer,scene.physics.world.bounds);
-    this.bout=new CombatBout((...hit)=>this.onHit?.(...hit),Math.random,Math.random,{space,continuous:true});
+    const mushroomArena={
+      bounds:SWAMP_MINI_BOSS.arena,
+      clear:point=>this.terrain.marker.clear(point),
+      canProject:(from,to)=>this.terrain.marker.canReach(from,to),
+      canSummon:(owner,kind,point,others)=>{
+        const radius=(SWAMP_MOB_TERRAIN[kind]??SWAMP_ENCOUNTER_TERRAIN[kind]).footRadius;
+        return others.every(other=>Math.hypot(other.enemy.x-point.x,other.enemy.y-point.y)>=radius+other.footRadius)&&
+          this.terrain[kind].canReach(owner.enemy,point);
+      },
+      createSummon:(owner,kind,point,combat)=>this.add({
+        id:owner.spawnId+':summon',encounterId:owner.encounterId,kind,...point,combat,
+      }),
+    };
+    this.bout=new CombatBout((...hit)=>this.onHit?.(...hit),Math.random,Math.random,{space,continuous:true,mushroomArena});
     this.groundAreas=scene.add.graphics().setDepth(-0.6);
     this.debug=scene.add.graphics().setDepth((scene.ambushLeafDepth??scene.physics.world.bounds.height+1)+4).setVisible(false);
     this.editor=new SpawnEditor(this,variant);
@@ -100,11 +119,12 @@ export class SwampMobs {
     const mob=new SwampMob(this.bout,spawn,terrain,this.nextActorId++,{
       test,onAggro:(source,player)=>alertSwampPack(source,player,this.bout.enemies),
     });
+    if(spawn.kind==='mushroom')initMushroomBoss(mob,1);
     const sprite=this.scene.add.sprite(mob.enemy.x,mob.enemy.y,key,0);
     const art=artFor(mob.kind);
     sprite.setOrigin(art.anchor[0]/art.width,art.anchor[1]/art.height);
-    const bar=new PlayerHealthBar(sprite,{width:35,height:4,offsetY:5});
-    const effects=new CombatArenaEffects(this.scene,mob.kind,atlas);
+    const bar=new PlayerHealthBar(sprite,{width:spawn.combat?Math.round(35*mob.spec.size):35,height:4,offsetY:5});
+    const effects=new CombatArenaEffects(this.scene,mob.kind,effectSheets);
     const entry={mob,sprite,bar,effects,art};
     this.entries.push(entry);
     this.bout.enemies.push(mob);
@@ -113,13 +133,14 @@ export class SwampMobs {
   }
 
   render({mob,sprite,bar,effects,art}){
-    drawCombatEnemySprite(sprite,art,mob);
+    if(mob.boss)drawMushroomSprite(sprite,mob);
+    else drawCombatEnemySprite(sprite,art,mob);
     const {enemy,spec}=mob;
-    const showHp=Boolean(enemy.hp&&(enemy.hp<spec.maxHp||this.debug.visible));
+    const showHp=Boolean(!mob.miniBoss&&enemy.hp&&(enemy.hp<spec.maxHp||this.debug.visible));
     if(bar.current!==enemy.hp||bar.max!==spec.maxHp)bar.setHealth(enemy.hp,spec.maxHp);
     if(bar.visible!==showHp)bar.setVisible(showHp);
     if(showHp)bar.updatePosition();
-    effects.draw(mob,!enemy.hp&&this.bout.areas.find(area=>area.kind==='poison'&&area.sourceId===mob.id));
+    effects.draw(mob,!enemy.hp&&this.bout.areas.find(area=>area.kind==='poison'&&area.sourceId===mob.id),this.scene.player);
   }
 
   update(delta){
@@ -151,7 +172,7 @@ export class SwampMobs {
       if(spawn.repeat&&ambush.waitingRepeat){
         if(now<this.run.ambushReadyAt.get(spawn.id)||this.entries.some(({mob})=>mob.spawnId===spawn.id))return;
         ambush.waitingRepeat=false;
-        controller.reset(wasInside===false?undefined:feet);
+        controller.reset(spawn.falseAlarm||wasInside===false?undefined:feet);
         trap?.reset();
       }else if(controller.phase==='revealed'||(!spawn.repeat&&this.run.firedTraps.has(spawn.id)))return;
     }

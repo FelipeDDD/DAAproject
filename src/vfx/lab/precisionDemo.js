@@ -1,11 +1,13 @@
 import balance from '../../combat/balance.json' with {type:'json'};
 
-export const LASH={reach:balance.michael.lash.range,radius:balance.michael.lash.radius,crackMs:200};
+export const LASH={reach:balance.michael.lash.range,radius:balance.michael.lash.radius,crackMs:200,precisionRatio:0.5};
 export const DRAIN_ORBS=4;
 export const orbArrivalProgress=index=>0.75+index*0.065;
 const clamp=t=>Math.max(0,Math.min(1,t));
 
 export function handOf(player){
+  const offsetY=player.combatGeometry?.attackOriginY;
+  if(offsetY!==undefined)return {x:player.x,y:player.y+offsetY};
   return {x:player.body?.center.x??player.x,y:(player.body?.center.y??player.y)-(player.displayHeight??64)*0.34};
 }
 
@@ -15,6 +17,11 @@ export function lashTip(hand,aim,reach=LASH.reach){
   const normal=(aim.x<hand.x?-1:1)*2*0.84;
   return {x:hand.x+reach*Math.cos(angle)-normal*Math.sin(angle),
     y:hand.y+reach*Math.sin(angle)+normal*Math.cos(angle)};
+}
+
+export function lashPrecisionBox(box){
+  const width=box.width*LASH.precisionRatio,height=box.height*LASH.precisionRatio;
+  return {x:box.x+(box.width-width)/2,y:box.y+(box.height-height)/2,width,height};
 }
 
 export function drainHit(hand,aim,target){

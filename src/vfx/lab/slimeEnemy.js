@@ -124,9 +124,9 @@ export function updateSlime(bout,player,_movementDt,dt){
       }
       if(t<1)return;
       if(jump){
-        bout.createCloud(slime);
-        bout.groundImpact('jump',spec.jumpRadius,spec.damage,player,spec.jumpStatus,
+        const result=bout.groundImpact('jump',spec.jumpRadius,spec.damage,player,spec.jumpStatus,
           spec.jumpSlow?.ms??spec.stunMs,spec.jumpSlow?.speed);
+        if(result!=='blocked'&&bout.bout.playerHp)bout.createCloud(slime);
       }
       if(!bout.finished)bout.recover();
       return;

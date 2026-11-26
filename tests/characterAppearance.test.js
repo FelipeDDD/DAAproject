@@ -2,9 +2,9 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { Presence } from '../src/multiplayer/Presence.js';
 import { RemotePlayers } from '../src/multiplayer/RemotePlayers.js';
-import { characterById } from '../src/characters.js';
+import { CHARACTERS,characterById } from '../src/characters.js';
 import { applyLocalAppearance,selectPreviewSkin,clearPreviewSkin,restoreDevPreviewSkin } from '../src/characterAppearance.js';
-import { characterVisual,preloadCharacterTextures,createCharacterAnimations } from '../src/characterVisuals.js';
+import { characterVisual,localCharacterStyle,preloadCharacterTextures,createCharacterAnimations } from '../src/characterVisuals.js';
 import { YASSIN_PROPORTION_TEST_VISUAL } from '../src/experimental/yassinProportionTestSkin.js';
 import { YASSIN_STUBBLE_TEST_VISUAL } from '../src/experimental/yassinStubbleSkin.js';
 import { claim,update } from '../convex/players.js';
@@ -20,6 +20,36 @@ function scene(presence,mapKey){return {presence,mapKey,player:{
   setCharacter(c,style){this.visual=characterVisual(c,style);}},add:{sprite:object,text:object}};}
 const row=(extra={})=>({playerId:'owner',characterBaseId:'michael',characterId:'michael',
   equippedSkin:'remastered',x:20,y:30,direction:'down',lastSeen:1,...extra});
+
+test('Swamp V3 forces each base to its own Tier 3 locally and remotely without changing saved choices',()=>{
+  const remoteSwamp=new RemotePlayers(scene(null,'swamp-v3-large'));
+  const remoteSchool=new RemotePlayers(scene(null,'school'));
+  const roster=CHARACTERS.map((character,i)=>row({playerId:character.id,characterBaseId:character.id,
+    equippedSkin:i%2?'remastered':'classic'}));
+  remoteSwamp.receive(roster,{movement:false});
+  remoteSchool.receive(roster,{movement:false});
+  for(const [i,character] of CHARACTERS.entries()){
+    const identity=roster[i],before={...identity};
+    const presence={identity},local=scene(presence,'swamp-v3-large'),outside=scene(presence,'swamp');
+    const normal=i%2?character.newVisual.sprite:character.sprite;
+    for(let n=0;n<2;n++)applyLocalAppearance(local);
+    applyLocalAppearance(outside);
+    assert.equal(local.player.visual.sprite,character.experimentalVisual.sprite);
+    assert.equal(remoteSwamp.players.get(identity.playerId).visual.sprite,character.experimentalVisual.sprite);
+    assert.equal(remoteSwamp.players.get(identity.playerId).characterBaseId,character.id);
+    assert.equal(outside.player.visual.sprite,normal);
+    assert.equal(remoteSchool.players.get(identity.playerId).visual.sprite,normal);
+    assert.equal(local.equippedSkin,before.equippedSkin);
+    assert.deepEqual(identity,before);
+  }
+  remoteSwamp.receive(roster.map(row=>({...row,equippedSkin:'classic',previewSkin:null})),{movement:false});
+  for(const character of CHARACTERS)
+    assert.equal(remoteSwamp.players.get(character.id).visual.sprite,character.experimentalVisual.sprite);
+  const yassin={...characterById('jassine'),testVisual:YASSIN_PROPORTION_TEST_VISUAL};
+  const preview={characterBaseId:yassin.id,previewSkin:yassin.testVisual.sprite};
+  assert.equal(localCharacterStyle(yassin,'old',preview),'preview:'+preview.previewSkin);
+  assert.equal(localCharacterStyle(yassin,'level3Preview',preview),'level3Preview');
+});
 
 test('local scene transitions create the selected skin immediately and publish the same choice to another client',async()=>{
   const writes=[];

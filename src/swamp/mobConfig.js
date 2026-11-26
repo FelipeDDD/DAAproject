@@ -1,5 +1,10 @@
 export const SWAMP_RESPAWN_DELAY_MS = 750;
 export const SWAMP_PLAYER_FOOT_RADIUS = 8;
+// World-space geometry relative to the feet, matching the existing Tier 3 layout.
+export const SWAMP_PLAYER_COMBAT_GEOMETRY=Object.freeze({
+  hurtbox:Object.freeze({width:24,height:49.68,offsetY:-55.44}),
+  attackOriginY:-32.28,
+});
 export const AMBUSH_DEFAULT_COOLDOWN_SECONDS = 30;
 export const AMBUSH_MAX_COOLDOWN_SECONDS = 3600;
 export const AMBUSH_MAX_QUANTITY = 3;
@@ -91,3 +96,5 @@ export const SWAMP_MOB_TERRAIN = {
   slime:{footRadius:13},
   frost:{footRadius:13},
 };
+
+export const SWAMP_ENCOUNTER_TERRAIN = {mushroom:{footRadius:24},big:{footRadius:25},swift:{footRadius:10}};

@@ -8,8 +8,10 @@ import { MUSHROOM } from './mushroomEnemy.js';
 import { trackAggro } from './combatAggro.js';
 
 const slimeSpec={box:slimeBox,update:updateSlime,onDamaged:onSlimeDamaged,poseMs:350,firstAttack:'jump',deathPose:1440};
+// Keep the live variant objects so editor previews reach both combat modes.
+for(const spec of Object.values(SLIMES))Object.assign(spec,slimeSpec);
 export const ENEMIES={
-  ...Object.fromEntries(Object.entries(SLIMES).map(([kind,spec])=>[kind,{...slimeSpec,...spec}])),
+  ...SLIMES,
   ghost:{label:'Ghost',scale:GHOST_SCALE,size:1,maxHp:100,box:ghostBox,update:updateGhost,poseMs:0,firstAttack:'bolt'},
   snake:SNAKE,
   frog:FROG,
@@ -94,7 +96,7 @@ export class CombatEnemy{
     this.land={x,y,kind,radius,elapsed:0};
     if(circleTouchesBox(this.land,radius,playerFeetBox(player))&&this.canContact(player)){
       this.contactMs=this.spec.contactCooldown??0;
-      this.bout.hurt(damage,boxCenter(playerBox(player)),status,statusMs,slowSpeed);
+      return this.bout.hurt(damage,boxCenter(playerBox(player)),status,statusMs,slowSpeed);
     }
   }
 
@@ -132,11 +134,12 @@ export class CombatEnemy{
     const hit=segmentContact(shot,end,body,shot.radius);
     const beforeWall=!trace?.blocked||hit&&Math.hypot(hit.x-end.x,hit.y-end.y)>1e-6;
     if(hit&&beforeWall&&this.bout.clearLine(hit,player)){
-      if(!shot.special)this.createCloud(player);
+      let blocked=false;
       if(!shot.volley?.hit){
         if(shot.volley)shot.volley.hit=true;
-        this.bout.hurt(shot.damage,hit,shot.status,shot.slow?.ms,shot.slow?.speed);
+        blocked=this.bout.hurt(shot.damage,hit,shot.status,shot.slow?.ms,shot.slow?.speed)==='blocked';
       }
+      if(!shot.special&&!blocked&&this.bout.playerHp)this.createCloud(player);
       return false;
     }
     if(trace?.blocked)return false;

@@ -1,6 +1,7 @@
 import { WorldPrompt } from '../ui/WorldPrompt.js';
 import { resolveSpawn } from '../maps/tiledObjects.js';
-import { SWAMP_RUN, SLOT_KEYS } from './runConfig.js';
+import { SWAMP_MINI_BOSS, SWAMP_RUN, SLOT_KEYS } from './runConfig.js';
+import { SwampMiniBoss } from './SwampMiniBoss.js';
 import { localSwampRun, prepareCheckpoint, saveSwampRun } from './SwampRun.js';
 import { SwampChoices, SwampSkillHud } from './SwampSkillHud.js';
 import { SwampCombatCasts } from './SwampCombatCasts.js';
@@ -16,6 +17,7 @@ export class SwampRunController {
     this.mobs=scene.swampMobs;
     this.bout=this.mobs.bout;
     this.run=localSwampRun(scene.game);
+    this.miniBoss=new SwampMiniBoss(this.mobs,this.run);
     this.terrain=createMobTerrain(scene.collisionLayer,scene.physics.world.bounds,scene.playerFootRadius);
     this.prompt=new WorldPrompt(scene,'[E] Collect checkpoint reward');
     this.choices=new SwampChoices(scene,this.run,(category,skill)=>this.choose(category,skill),()=>this.restart());
@@ -92,6 +94,7 @@ export class SwampRunController {
     this.openPendingChoice();
     if(!this.choices.active){
       if(this.bout.playerHp){
+        this.miniBoss.start();
         this.mobs.update(elapsed);
         this.casts.update(elapsed);
         this.syncCombatHealth();
@@ -103,6 +106,7 @@ export class SwampRunController {
       this.updateReactions(elapsed);
     }
     this.prompt.setVisible(this.nearDrop());
+    this.miniBoss.updateHud();
     this.hud.update(this.run,this.casts.runner,this.canCast()&&!this.casts.runner.casting);
   }
 
@@ -111,7 +115,7 @@ export class SwampRunController {
     this.bout.started=Boolean(this.run.skills[0]);
     saveSwampRun(this.run);
     this.scene.gameHud?.setHealth(this.run.hp,SWAMP_RUN.maxHp);
-    this.mobs.removeWhere(mob=>mob.enemy.hp&&this.run.defeated.has(mob.spawnId));
+    this.mobs.removeWhere(mob=>mob.enemy.hp&&mob!==this.miniBoss.practiceMob&&this.run.defeated.has(mob.spawnId));
     this.syncDrop();
     this.hud.update(this.run,this.casts.runner,this.canCast()&&!this.casts.runner.casting);
     if(this.devState)this.devState.textContent=SLOT_KEYS.map(
@@ -162,6 +166,7 @@ export class SwampRunController {
     this.deathMs=SWAMP_RESPAWN_DELAY_MS;
     this.scene.player.setVelocity(0,0).setAlpha(0.35);
     this.scene.input.keyboard.resetKeys();
+    this.miniBoss.clearSummons(this.reactions);
     this.reactions.clearStatuses();
     this.casts.reset();
   }
@@ -172,6 +177,7 @@ export class SwampRunController {
     if(actor&&!actor.enemy.hp){
       this.mobs.vanquished.add(actor.spawnId);
       this.reactions.clearStatuses(sprite);
+      if(actor.miniBoss)this.miniBoss.clearSummons(this.reactions);
     }else if(actor&&status==='Slowed'&&sprite)this.reactions.apply(sprite,status,actor.slow.ms);
     else if(victim==='player'&&status==='Cloud'&&!this.statusName)
       this.reactions.apply(sprite,'Poisoned',760);
@@ -247,6 +253,27 @@ export class SwampRunController {
     }),button('Simulate death',()=>this.setHealth(0)),button('Restore HP',()=>{
       if(this.bout.playerHp)this.setHealth(SWAMP_RUN.maxHp);
     }),status,this.devState);
+    const miniBossStep=checkpoints.find(step=>step.elite===SWAMP_MINI_BOSS.id);
+    this.dev.append(button('Start mini-boss here',()=>{
+      if(this.blocking||(!this.run.defeated.has(SWAMP_MINI_BOSS.id)&&!prepareCheckpoint(this.run,miniBossStep,{defeat:false}))){
+        status.textContent='Finish the current activity before testing the mini-boss.';
+        return;
+      }
+      this.placeAt(miniBossStep);
+      this.refresh();
+      this.miniBoss.start({force:true,practice:this.run.defeated.has(SWAMP_MINI_BOSS.id)});
+      status.textContent=this.miniBoss.entry?'Mini-boss ready.':'Mini-boss unavailable.';
+    }),button('Reset mini-boss',()=>{
+      status.textContent=!this.blocking&&this.miniBoss.reset(this.reactions)
+        ?'Mini-boss reset.':'Start the mini-boss encounter first.';
+    }),button('Damage mini-boss for test',()=>{
+      const mob=this.miniBoss.entry?.mob;
+      if(!mob?.enemy.hp||this.blocking){status.textContent='Start the mini-boss encounter first.';return;}
+      this.bout.hitEnemy({damage:mob.enemy.hp},mob,mob.enemy,this.scene.player);
+      this.checkDefeatedCheckpoint();
+      status.textContent=this.run.pendingDrop===miniBossStep?'Ultimate reward ready.':
+        mob.enemy.hp?'Mini-boss at '+mob.enemy.hp+' HP. Let the current milestone finish before hitting again.':'Mini-boss defeated.';
+    }));
     details.append(this.dev);
     this.refresh();
   }
@@ -256,6 +283,7 @@ export class SwampRunController {
     this.casts.destroy();
     this.mobs.onHit=null;
     this.reactions.clear();
+    this.miniBoss.destroy();
     this.hud.destroy();
     this.prompt.destroy();
     this.drop?.destroy();

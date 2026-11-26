@@ -4,9 +4,10 @@ import { toward,segmentContact,circleTouchesBox,boxCenter } from './combatGeomet
 
 // One clock for cast locks, cooldowns, projectile travel and their visuals.
 export class CombatSkillRunner{
-  constructor(bout,onDrainComplete){
+  constructor(bout,onDrainComplete,{onParryComplete}={}){
     this.bout=bout;
     this.onDrainComplete=onDrainComplete;
+    this.onParryComplete=onParryComplete;
     this.reset();
   }
 
@@ -17,13 +18,21 @@ export class CombatSkillRunner{
 
   get casting(){return this.actions.find(action=>!action.released);}
   get castSpeed(){
+    if(this.bout.defending)return SKILLS['healing-parry'].castSpeed;
     if(this.bout.stunMs||this.bout.finished)return 1;
     return this.casting?.skill.castSpeed??1;
   }
 
   use(slot,slots,player,captureAim){
     const skill=SKILLS[slots[slot]],bout=this.bout;
-    if(!skill||!bout.started||!(bout.canCast??bout.alive)||bout.finished||bout.stunMs||this.casting||this.cooldowns.get(skill.id)>0)return false;
+    if(!skill||!bout.started||!(bout.canCast??bout.alive)||bout.finished||bout.stunMs||bout.defending||
+      this.casting||this.cooldowns.get(skill.id)>0)return false;
+    if(skill.parry){
+      if(!bout.beginParry(skill.parry,this.onParryComplete))return false;
+      if(skill.castSpeed===0)player.setVelocity?.(0,0);
+      this.cooldowns.set(skill.id,skill.cooldown);
+      return true;
+    }
     const aim=toward(handOf(player),captureAim(),skill.range);
     const anchor=(skill.shape==='ground'&&bout.space?.trace(player,aim).point)||aim;
     const action={skill,anchor,captureAim,age:0,released:false};

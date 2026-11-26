@@ -22,25 +22,24 @@ export class RemotePlayers {
       remote.sprite.destroy(); remote.label?.destroy(); this.players.delete(id);
     }
     for (const row of rows) {
+      const nextBaseId=characterBaseIdFor(row);
+      const nextCharacter=characterById(nextBaseId);
+      const nextStyle=appearanceStyle(nextCharacter,row,this.scene.mapKey);
       let remote = this.players.get(row.playerId);
       if (!remote) {
-        const character=characterById(characterBaseIdFor(row));
         const sprite = this.scene.add.sprite(row.x,row.y,'student').setOrigin(0.5,1);
-        const style=appearanceStyle(character,row);
-        const visual=applyCharacterVisual(sprite,character,style);
+        const visual=applyCharacterVisual(sprite,nextCharacter,nextStyle);
         const label = this.showLabels?this.scene.add.text(row.x, row.y, row.displayName??row.name,
           {...REMOTE_NAME_LABEL_STYLE,fontSize:this.labelFontSize,resolution:this.labelResolution}).setOrigin(0.5, 1):null;
-        remote = { sprite,label,visual,character,characterBaseId:characterBaseIdFor(row),style,buffer:new RemoteSnapshotBuffer(this.bufferOptions) };
+        remote = {sprite,label,visual,character:nextCharacter,characterBaseId:nextBaseId,style:nextStyle,
+          buffer:new RemoteSnapshotBuffer(this.bufferOptions)};
         this.players.set(row.playerId, remote);
         logPlayerSkin(this.scene,row,visual,'remote','players.inRoom',sprite);
         if(!movement){sprite.setDepth(row.y);label?.setPosition(row.x,row.y-visual.labelOffset).setDepth(row.y+1);}
         this.movementDebug?.('remote created',{playerId:row.playerId,spriteCreated:true,...this.spriteState(remote)});
       }
-      const nextBaseId=characterBaseIdFor(row);
-      const nextCharacter=characterById(nextBaseId);
-      const nextStyle=appearanceStyle(nextCharacter,row);
       if(remote.characterBaseId!==nextBaseId||remote.style!==nextStyle){
-        remote.character=characterById(nextBaseId);remote.characterBaseId=nextBaseId;
+        remote.character=nextCharacter;remote.characterBaseId=nextBaseId;
         remote.style=nextStyle;
         remote.visual=applyCharacterVisual(remote.sprite,remote.character,nextStyle);
         logPlayerSkin(this.scene,row,remote.visual,'remote','players.inRoom update',remote.sprite);

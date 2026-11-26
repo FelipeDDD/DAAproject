@@ -9,6 +9,7 @@ import { addMapCollision } from '../../maps/collision.js';
 import { trackArenaAim } from './ArenaAim.js';
 import { CombatSkillRunner } from './CombatSkillRunner.js';
 import { CombatSkillView,combatSheets } from './CombatSkillView.js';
+import { CombatParryView } from './CombatParryView.js';
 import { CombatLoadoutPanel } from './CombatLoadoutPanel.js';
 import { BalanceEditor } from './BalanceEditor.js';
 import { slotShortcut } from './combatLoadout.js';
@@ -17,12 +18,13 @@ import { preloadLabSheets } from './SheetSequence.js';
 import { TargetReactions } from './targetReactions.js';
 import { CombatBout,MAX_ENEMIES,MAX_PER_KIND } from './CombatBout.js';
 import { ENEMIES } from './combatEnemy.js';
-import { MUSHROOM_SHEETS,mushroomPose } from './mushroomArt.js';
+import { drawMushroomSprite, MUSHROOM_SHEETS, preloadMushroomSheets } from './mushroomArt.js';
 import { nextMark,MUSHROOM_BOSS,eventNames } from './mushroomBoss.js';
 import { labSheets } from './sheetCatalog.js';
 import { CombatArenaEffects,drawGroundArea } from './CombatArenaEffects.js';
 import { drawCombatEnemySprite } from './combatEnemySprite.js';
 import { RING,playerBox,playerFeetBox } from './combatGeometry.js';
+import { lashPrecisionBox } from './precisionDemo.js';
 import { VFX_LAB_MAP,VFX_LAB_PLAYER,VFX_LAB_TARGET } from './layout.js';
 import combatArt from '../../../tools/vfx-lab/sheets/combat-pixelfx.json' with {type:'json'};
 const sheets={...combatArt,'pfx-spores':labSheets['pfx-spores']};
@@ -31,6 +33,14 @@ const nearest=Phaser.Textures.FilterMode.NEAREST;
 const character=characterById('michael');
 const attackNames={jump:'Jump Attack',poison:'Poison Shot',frost:'Ice Shard',glob:'Heavy Glob',bolt:'Spectral Bolt',haunt:'Haunt',
   homing:'Homing Shot',spread:'Spread Volley',spore:'Spore Burst',bloom:'Toxic Bloom'};
+const lashResults={
+  miss:{label:'Miss',color:0xfd7f83},
+  normal:{label:'Normal Hit',color:0xffe38e},
+  precision:{label:'Precision Hit',color:0x81edca},
+  critical:{label:'Critical Hit',color:0xea91ff},
+};
+const precisionBoxColor=0x73c9f5;
+const LASH_DEBUG_MS=750;
 
 
 export class CombatSandboxScene extends Phaser.Scene{
@@ -50,9 +60,7 @@ export class CombatSandboxScene extends Phaser.Scene{
         frameWidth:atlas.width,frameHeight:atlas.height,endFrame:atlas.frameMs.length-1,
       });
     }
-    for(const [name,atlas] of Object.entries(MUSHROOM_SHEETS)){
-      this.load.spritesheet(name,atlas.url,{frameWidth:atlas.width,frameHeight:atlas.height,endFrame:atlas.frames-1});
-    }
+    preloadMushroomSheets(this);
     preloadCharacterTextures(this,[character],base,false);
     preloadTiledMap(this,base);
   }
@@ -76,14 +84,19 @@ export class CombatSandboxScene extends Phaser.Scene{
     this.reactions=new TargetReactions(this,nearest);
     this.groundAreas=this.add.graphics().setDepth(-0.6);
     this.debug=this.add.graphics().setDepth(1000);
+    this.lashDebugLabel=this.add.text(0,0,'',{
+      fontSize:'12px',fontStyle:'bold',stroke:'#201a24',strokeThickness:3,resolution:2,
+    }).setOrigin(0.5,1).setDepth(1001).setVisible(false);
     this.bout=new CombatBout((victim,damage,point,{critical,status,actor,immune})=>{
       const sprite=victim==='enemy'?this.enemyView(actor).sprite:this.player;
-      this.reactions.hit(sprite,critical,point,immune?'Immune':damage);
+      this.reactions.hit(sprite,critical,point,immune?'Immune':Number(damage.toFixed(2)));
       if(!this.bout.playerHp)this.reactions.clearStatuses();
       else if(actor&&!actor.enemy.hp)this.reactions.clearStatuses(sprite);
       else if(actor&&status==='Slowed')this.reactions.apply(sprite,status,actor.slow.ms);
       if(status==='Cloud'&&!this.statusName)this.reactions.apply(sprite,'Poisoned',760);
-    });
+    },undefined,undefined,{allowParry:true,onLashImpact:impact=>{
+      if(this.controls.boxes.checked)this.lashImpact={...impact,expiresAt:this.time.now+LASH_DEBUG_MS};
+    }});
     this.cameras.main.setBounds(0,0,map.widthInPixels,map.heightInPixels).setZoom(1.25).startFollow(this.player,true);
     const canvas=this.game.canvas;
     canvas.tabIndex=0;
@@ -94,9 +107,16 @@ export class CombatSandboxScene extends Phaser.Scene{
     this.loadout=new CombatLoadoutPanel(signal);
     if(['localhost','127.0.0.1','[::1]'].includes(location.hostname))
       this.balanceEditor=new BalanceEditor(this,document.getElementById('combat-balance'),signal);
-    this.skills=new CombatSkillRunner(this.bout,healed=>this.reactions.drainResult(this.player,healed));
+    const showHeal=healed=>this.reactions.drainResult(this.player,Number(healed.toFixed(2)));
+    this.skills=new CombatSkillRunner(this.bout,showHeal,{onParryComplete:({blocked,healed})=>{
+      this.reactions.parryResult(this.player,Number(blocked.toFixed(2)));
+      if(healed>0)showHeal(healed);
+    }});
     this.skillViews=new Map();
-    const cast=slot=>this.skills.use(slot,this.loadout.state.slots,this.player,aim.capture);
+    this.parryView=new CombatParryView(this);
+    const cast=slot=>{
+      if(this.skills.use(slot,this.loadout.state.slots,this.player,aim.capture)&&this.bout.defending)this.drawSkills();
+    };
     canvas.addEventListener('pointerdown',event=>{
       if(event.button!==0)return;
       event.preventDefault();
@@ -154,6 +174,7 @@ export class CombatSandboxScene extends Phaser.Scene{
       this.events.off(Phaser.Scenes.Events.POST_UPDATE,this.afterPhysics,this);
       listeners.abort();
       this.clearSkills();
+      this.parryView.destroy();
       this.reactions.clear();
       this.playerHp.destroy();
       this.clearViews();
@@ -165,12 +186,15 @@ export class CombatSandboxScene extends Phaser.Scene{
   }
 
   clearViews(){
-    for(const {sprite,bar,effects} of this.views){
-      bar.destroy();
-      effects.destroy();
-      sprite.destroy();
-    }
+    this.views.forEach(view=>this.destroyEnemyView(view));
     this.views=[];
+  }
+
+  destroyEnemyView({sprite,bar,effects}){
+    this.reactions.clear(sprite);
+    bar.destroy();
+    effects.destroy();
+    sprite.destroy();
   }
 
   resetBout(){
@@ -179,6 +203,7 @@ export class CombatSandboxScene extends Phaser.Scene{
     this.clearViews();
     this.balanceEditor?.applyPreview();
     this.statusName=null;
+    this.lashImpact=null;
     const {monster,composition,cloud,cloudOption,start}=this.controls;
     const mixed=monster.value==='mixed';
     composition.hidden=!mixed;
@@ -191,6 +216,7 @@ export class CombatSandboxScene extends Phaser.Scene{
     start.disabled=kinds.length===0;
     this.controls.bossDebug.hidden=!kinds.includes('mushroom');
     this.bout.reset(kinds,Number(this.controls.bossPhase.value));
+    this.drawSkills();
     this.bout.cloudEnabled=cloud.checked;
     cloudOption.hidden=!kinds.includes('slime');
     this.player.speed=this.baseSpeed;
@@ -212,6 +238,7 @@ export class CombatSandboxScene extends Phaser.Scene{
   }
 
   clearSkills(){
+    this.bout.parry=null;
     this.skills.reset();
     for(const view of this.skillViews.values())view.destroy();
     this.skillViews.clear();
@@ -225,6 +252,7 @@ export class CombatSandboxScene extends Phaser.Scene{
       if(!this.skillViews.has(action))this.skillViews.set(action,new CombatSkillView(this,action,nearest));
       this.skillViews.get(action).draw();
     }
+    this.parryView.draw(this.player,this.bout.parry,this.controls.parryVisual.value);
     this.loadout.update(this.skills);
   }
 
@@ -252,6 +280,11 @@ export class CombatSandboxScene extends Phaser.Scene{
 
   drawBout(){
     const {enemies,alive,playerHp,started,finished}=this.bout;
+    this.views.forEach((view,id)=>{
+      if(enemies.some(actor=>actor.id===id))return;
+      this.destroyEnemyView(view);
+      delete this.views[id];
+    });
     const boxes=this.controls.boxes.checked;
     this.debug.clear();
     this.groundAreas.clear();
@@ -260,27 +293,24 @@ export class CombatSandboxScene extends Phaser.Scene{
       const {enemy,spec,shots}=actor;
       const {sprite,atlas,bar,effects}=this.enemyView(actor);
       const mushroom=actor.kind==='mushroom';
-      const dying=!enemy.hp,fade=dying?Math.min(1,actor.elapsed/actor.deathMs):0;
-      const flip=enemy.facing<0;
+      const dying=!enemy.hp;
       if(mushroom){
-        sprite.setPosition(enemy.x,enemy.y).setDepth(enemy.y).setVisible(fade<1);
-        const [key,frame]=mushroomPose(actor);
-        const art=MUSHROOM_SHEETS[key];
-        sprite.setTexture(key,frame).setOrigin(art.anchor[0]/art.width,art.anchor[1]/art.height)
-          .setScale(spec.scale).setFlipX(flip).setAlpha(Math.min(1,(1-fade)*6));
-        if(actor.boss.phase===MUSHROOM_BOSS.phases[2])sprite.setTint(0xffad9e);
+        drawMushroomSprite(sprite,actor);
         const mark=nextMark(actor),boss=actor.boss;
         const current=boss.event?.id?eventNames[boss.event.id]:null;
         const info=[boss.phase.name,mark?'Next '+mark+'%':'Final phase','Last: '+(boss.last??'—'),
-          current?'Casting: '+current:null,boss.finalPending?'Enraged Big Slime awaiting space':null].filter(Boolean).join(' · ');
+          current?'Casting: '+current:null,boss.pendingSummons.length?boss.pendingSummons.length+' summons pending':null].filter(Boolean).join(' · ');
         if(this.controls.bossInfo.textContent!==info)this.controls.bossInfo.textContent=info;
       }else drawCombatEnemySprite(sprite,atlas,actor);
       if(bar.current!==enemy.hp||bar.max!==spec.maxHp)bar.setHealth(enemy.hp,spec.maxHp).setVisible(!dying);
       bar.updatePosition();
-      effects.draw(actor,dying&&this.bout.areas.find(area=>area.kind==='poison'&&area.sourceId===actor.id));
+      effects.draw(actor,dying&&this.bout.areas.find(area=>area.kind==='poison'&&area.sourceId===actor.id),this.player);
       if(boxes){
-        const b=spec.box(enemy);
-        if(enemy.hp)this.debug.lineStyle(1,0xffe38e,0.9).strokeRect(b.x,b.y,b.width,b.height);
+        if(enemy.hp){
+          const b=spec.box(enemy),inner=lashPrecisionBox(b);
+          this.debug.lineStyle(1,0xffe38e,0.9).strokeRect(b.x,b.y,b.width,b.height)
+            .lineStyle(1,precisionBoxColor,0.8).strokeRect(inner.x,inner.y,inner.width,inner.height);
+        }
         if(actor.phase==='bite'){
           const head=spec.biteCenter(enemy);
           this.debug.lineStyle(1,0xe7ff9a,0.9).strokeCircle(head.x,head.y,spec.bite.radius);
@@ -298,7 +328,7 @@ export class CombatSandboxScene extends Phaser.Scene{
         (single.attack.kind==='jump'?single.spec.jumpName:attackNames[single.attack.kind])):'Fighting';
     const count=single?single.spec.label+' '+single.enemy.hp+'/'+single.spec.maxHp:
       alive+' alive · '+(enemies.length-alive)+' defeated';
-    const text=label+' · Michael '+playerHp+'/100 · '+count;
+    const text=label+' · Michael '+Number(playerHp.toFixed(2))+'/100 · '+count;
     if(this.controls.status.textContent!==text)this.controls.status.textContent=text;
     const button=started?'Reset fight':'Start fight';
     if(this.controls.start.textContent!==button)this.controls.start.textContent=button;
@@ -308,5 +338,25 @@ export class CombatSandboxScene extends Phaser.Scene{
       this.debug.lineStyle(1,0x93d4ff,0.9).strokeRect(a.x,a.y,a.width,a.height)
         .strokeRect(feet.x,feet.y,feet.width,feet.height);
     }
+    this.drawLashDebug(boxes);
+  }
+
+  drawLashDebug(boxes){
+    const impact=this.lashImpact;
+    const visible=Boolean(boxes&&impact&&this.time.now<impact.expiresAt);
+    this.lashDebugLabel.setVisible(visible);
+    if(!visible)return;
+    const {tip:{x,y},radius,targets}=impact;
+    for(const {box,precisionBox,result} of targets){
+      if(result==='miss')continue;
+      this.debug.lineStyle(2,lashResults[result].color,0.65).strokeRect(box.x,box.y,box.width,box.height)
+        .lineStyle(1,precisionBoxColor,0.95).strokeRect(precisionBox.x,precisionBox.y,precisionBox.width,precisionBox.height);
+    }
+    const result=['critical','precision','normal'].find(value=>targets.some(target=>target.result===value))??'miss';
+    const {color,label}=lashResults[result];
+    this.debug.lineStyle(1,color).strokeCircle(x,y,radius).lineBetween(x-6,y,x+6,y).lineBetween(x,y-6,x,y+6);
+    const left=x>this.cameras.main.worldView.centerX;
+    this.lashDebugLabel.setText(label).setColor('#'+color.toString(16))
+      .setOrigin(left?1:0,0.5).setPosition(x+(left?-18:18),y+4);
   }
 }

@@ -89,11 +89,19 @@ export class TargetReactions{
   }
 
   drainResult(sprite,healed){
+    this.resultNumber(sprite,String(healed),'#63d692','#20322e');
+  }
+
+  parryResult(sprite,blocked){
+    this.resultNumber(sprite,'BLOCK '+blocked,'#c4c9ce','#272a30',-19);
+  }
+
+  resultNumber(sprite,label,color,stroke,offsetY=0){
     if(this.numbers.length>=8)this.removeNumber(0);
-    const text=this.scene.add.text(0,0,String(healed),{
-      fontFamily:'sans-serif',fontStyle:'bold',fontSize:'14px',color:'#63d692',stroke:'#20322e',strokeThickness:3,
+    const text=this.scene.add.text(0,0,label,{
+      fontFamily:'sans-serif',fontStyle:'bold',fontSize:'14px',color,stroke,strokeThickness:3,
     }).setOrigin(0.5,1);
-    const popup={sprite,text,x:sprite.x,y:sprite.y-sprite.displayHeight*0.85,elapsed:0};
+    const popup={sprite,text,x:sprite.x,y:sprite.y-sprite.displayHeight*0.85+offsetY,elapsed:0};
     this.numbers.push(popup);
     this.drawNumber(popup);
   }

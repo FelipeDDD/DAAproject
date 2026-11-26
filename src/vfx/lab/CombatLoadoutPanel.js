@@ -77,7 +77,7 @@ export class CombatLoadoutPanel{
     el.dataset.id=id;
     el.style.setProperty('--accent',skill.effect.color);
     const label=document.createElement('span');
-    label.textContent=skill.name;
+    label.textContent=key||!skill.category?skill.name:skill.name+' · '+skill.category;
     const shortcut=document.createElement('kbd');
     shortcut.textContent=key;
     const tip=document.createElement('span');
@@ -102,7 +102,9 @@ export class CombatLoadoutPanel{
 
   update(runner){
     const casting=runner.casting;
-    const castText=casting?'Casting '+casting.skill.name+' · '+((casting.skill.cast-casting.age)/1000).toFixed(1)+' s':'';
+    let castText=casting?'Casting '+casting.skill.name+' · '+((casting.skill.cast-casting.age)/1000).toFixed(1)+' s':'';
+    if(runner.bout.defending)castText=runner.bout.parry.blockedDamage?'Healing Parry · Blocked':'Healing Parry · Guarding';
+    else if(runner.bout.parry)castText='Healing Parry · Vulnerable';
     if(this.casting.textContent!==castText)this.casting.textContent=castText;
     const bout=runner.bout;
     for(const tile of this.hud.children){
@@ -111,7 +113,7 @@ export class CombatLoadoutPanel{
       if(tile.lastChild.textContent!==label)tile.lastChild.textContent=label;
       tile.style.setProperty('--cooldown',String(ms/skill.cooldown));
       tile.classList.toggle('just-used',ms>skill.cooldown-200);
-      tile.classList.toggle('unavailable',!bout.started||bout.finished||!bout.alive||Boolean(bout.stunMs||casting));
+      tile.classList.toggle('unavailable',!bout.started||bout.finished||!bout.alive||Boolean(bout.stunMs||casting||bout.defending));
     }
   }
 }

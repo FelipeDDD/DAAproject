@@ -3,7 +3,8 @@ import { previewVisual } from './characterPreviewSkins.js';
 import { visualStyleForActiveItem } from './characterVisuals.js';
 
 export const normalizeEquippedSkin=skin=>skin==='remastered'?'remastered':'classic';
-export function appearanceStyle(character,state={}){
+export function appearanceStyle(character,state={},mapKey){
+  if(mapKey==='swamp-v3-large'&&character?.experimentalVisual)return 'level3Preview';
   const style=visualStyleForActiveItem(state.activeCharacterItem,state.equippedSkin);
   if(style==='lungCrusher')return style;
   return previewVisual(character,state.previewSkin)?`preview:${state.previewSkin}`:style;
@@ -42,7 +43,7 @@ export function applyLocalAppearance(scene,{activeCharacterItem=scene.activeChar
   const identity=scene.presence?.identity;
   const character=characterById(characterBaseIdFor(identity));
   scene.equippedSkin=normalizeEquippedSkin(identity?.equippedSkin);
-  if(character)scene.player.setCharacter(character,appearanceStyle(character,{...identity,activeCharacterItem}));
+  if(character)scene.player.setCharacter(character,appearanceStyle(character,{...identity,activeCharacterItem},scene.mapKey));
   return scene.equippedSkin;
 }
 export function logPlayerSkin(scene,state,visual,role,source,sprite){

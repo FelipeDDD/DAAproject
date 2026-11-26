@@ -1,6 +1,6 @@
 import { acquireAggro,DEFAULT_AGGRO,trackAggro } from './combatAggro.js';
 import { boxCenter,groundPoint,playerBox,toward } from './combatGeometry.js';
-import { MUSHROOM_BOSS,bloomTargets,releaseBloom,updateBossEvent } from './mushroomBoss.js';
+import { MUSHROOM_BOSS,bloomTargets,releaseBloom,tickSporecapClock,updateBossEvent } from './mushroomBoss.js';
 
 export const MUSHROOM={
   ...DEFAULT_AGGRO,label:'Mushroom',maxPerEncounter:1,maxHp:MUSHROOM_BOSS.maxHp,scale:0.65,size:1.6,poseMs:0,
@@ -33,6 +33,7 @@ function updateMushroom(actor,player,movementDt,dt){
   const {enemy,spec,elapsed,attack}=actor;
   const dx=player.x-enemy.x,distance=Math.hypot(dx,player.y-enemy.y);
   const aggro=trackAggro(actor,distance,dt);
+  if(aggro)tickSporecapClock(actor,dt);
   if(actor.phase==='windup'){
     if(elapsed>=spec[attack.kind].windupMs)releaseAttack(actor);
     return;
@@ -42,7 +43,7 @@ function updateMushroom(actor,player,movementDt,dt){
     actor.phase='idle';
     actor.elapsed=0;
   }
-  if(updateBossEvent(actor,player))return;
+  if(updateBossEvent(actor,player,Boolean(aggro)))return;
   enemy.poseMs+=movementDt;
   if(!aggro)return;
   // The native art faces left. Keep the direction stable when the opponent is in front.
@@ -50,10 +51,13 @@ function updateMushroom(actor,player,movementDt,dt){
   const kind=actor.nextAttack,config=spec[kind];
   if(!actor.cooldown&&distance<=config.range){
     actor.windup(kind,boxCenter(playerBox(player)),config.cooldown*actor.boss.phase.cooldown);
-    if(kind==='bloom')actor.attack.points=bloomTargets(player,config.spacing);
+    if(kind==='bloom')actor.attack.points=bloomTargets(player,config.spacing,actor.bout.mushroomArena);
     actor.nextAttack=kind==='spore'?'bloom':'spore';
   }else if(distance>70){
     const step=Math.min(distance-70,spec.speed*movementDt/1000);
-    Object.assign(enemy,groundPoint(toward(enemy,player,step),30));
+    const bounds=actor.bout.mushroomArena?.bounds;
+    const target=bounds?groundPoint(player,30,bounds):player;
+    const waypoint=actor.navigation?.steer(enemy,target,dt)??target;
+    actor.moveGround(groundPoint(toward(enemy,waypoint,step),30,bounds));
   }
 }

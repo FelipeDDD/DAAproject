@@ -1,7 +1,7 @@
 {
   "map": "swamp-v3-large",
   "version": 3,
-  "nextOrdinal": 30,
+  "nextOrdinal": 52,
   "positions": {
     "west-curve-companion": {
       "x": 380,
@@ -187,6 +187,160 @@
       "encounterId": "editor-mob-29",
       "x": 1254,
       "y": 1506
+    },
+    {
+      "id": "editor-mob-30",
+      "kind": null,
+      "encounterId": "editor-mob-30",
+      "x": 216,
+      "y": 759
+    },
+    {
+      "id": "editor-mob-31",
+      "kind": null,
+      "encounterId": "editor-mob-31",
+      "x": 415,
+      "y": 756
+    },
+    {
+      "id": "editor-mob-32",
+      "kind": null,
+      "encounterId": "editor-mob-32",
+      "x": 466,
+      "y": 737
+    },
+    {
+      "id": "editor-mob-33",
+      "kind": null,
+      "encounterId": "editor-mob-33",
+      "x": 519,
+      "y": 688
+    },
+    {
+      "id": "editor-mob-34",
+      "kind": null,
+      "encounterId": "editor-mob-34",
+      "x": 566,
+      "y": 902
+    },
+    {
+      "id": "editor-mob-35",
+      "kind": null,
+      "encounterId": "editor-mob-35",
+      "x": 514,
+      "y": 1137
+    },
+    {
+      "id": "editor-mob-36",
+      "kind": null,
+      "encounterId": "editor-mob-36",
+      "x": 144,
+      "y": 1047
+    },
+    {
+      "id": "editor-mob-37",
+      "kind": null,
+      "encounterId": "editor-mob-37",
+      "x": 232,
+      "y": 1090
+    },
+    {
+      "id": "editor-mob-38",
+      "kind": null,
+      "encounterId": "editor-mob-38",
+      "x": 213,
+      "y": 1158
+    },
+    {
+      "id": "editor-mob-39",
+      "kind": null,
+      "encounterId": "editor-mob-39",
+      "x": 556,
+      "y": 60
+    },
+    {
+      "id": "editor-mob-40",
+      "kind": "frost",
+      "encounterId": "editor-mob-40",
+      "x": 529,
+      "y": 219
+    },
+    {
+      "id": "editor-mob-41",
+      "kind": null,
+      "encounterId": "editor-mob-41",
+      "x": 734,
+      "y": 144
+    },
+    {
+      "id": "editor-mob-42",
+      "kind": null,
+      "encounterId": "editor-mob-42",
+      "x": 652,
+      "y": 135
+    },
+    {
+      "id": "editor-mob-43",
+      "kind": null,
+      "encounterId": "editor-mob-43",
+      "x": 706,
+      "y": 244
+    },
+    {
+      "id": "editor-mob-44",
+      "kind": null,
+      "encounterId": "editor-mob-44",
+      "x": 906,
+      "y": 121
+    },
+    {
+      "id": "editor-mob-45",
+      "kind": null,
+      "encounterId": "editor-mob-45",
+      "x": 1065,
+      "y": 226
+    },
+    {
+      "id": "editor-mob-46",
+      "kind": "frost",
+      "encounterId": "editor-mob-46",
+      "x": 937,
+      "y": 302
+    },
+    {
+      "id": "editor-mob-47",
+      "kind": "snake",
+      "encounterId": "editor-mob-47",
+      "x": 199,
+      "y": 1020
+    },
+    {
+      "id": "editor-mob-48",
+      "kind": null,
+      "encounterId": "editor-mob-48",
+      "x": 99,
+      "y": 1540
+    },
+    {
+      "id": "editor-mob-49",
+      "kind": null,
+      "encounterId": "editor-mob-49",
+      "x": 433,
+      "y": 1691
+    },
+    {
+      "id": "editor-mob-50",
+      "kind": null,
+      "encounterId": "editor-mob-50",
+      "x": 694,
+      "y": 1702
+    },
+    {
+      "id": "editor-mob-51",
+      "kind": null,
+      "encounterId": "editor-mob-51",
+      "x": 723,
+      "y": 1311
     }
   ],
   "disabled": [],
@@ -556,7 +710,6 @@
       "kind": "frost",
       "spawnType": "ambush",
       "triggerShape": "circle",
-      "waterLeap": true,
       "visualOrigin": {
         "x": 1892,
         "y": 1362
@@ -564,7 +717,8 @@
       "triggerPoint": {
         "x": 1785,
         "y": 1329
-      }
+      },
+      "waterLeap": true
     },
     "editor-mob-28": {
       "spawnType": "ambush",
@@ -602,6 +756,373 @@
       },
       "repeat": true,
       "waterLeap": false
+    },
+    "editor-mob-30": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 88,
+      "cooldownSeconds": 6,
+      "decoyType": "false-alarm",
+      "visualOrigin": {
+        "x": 216,
+        "y": 759
+      },
+      "triggerPoint": {
+        "x": 302,
+        "y": 768
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-31": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 138,
+      "cooldownSeconds": 5,
+      "decoyType": "false-alarm",
+      "visualOrigin": {
+        "x": 415,
+        "y": 756
+      },
+      "triggerPoint": {
+        "x": 433,
+        "y": 775
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-32": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 138,
+      "cooldownSeconds": 12,
+      "decoyType": "false-alarm",
+      "visualOrigin": {
+        "x": 466,
+        "y": 737
+      },
+      "triggerPoint": {
+        "x": 434,
+        "y": 769
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-33": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 138,
+      "cooldownSeconds": 11,
+      "decoyType": "water-ripples",
+      "visualOrigin": {
+        "x": 519,
+        "y": 688
+      },
+      "triggerPoint": {
+        "x": 441,
+        "y": 664
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-34": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 138,
+      "cooldownSeconds": 8,
+      "decoyType": "water-ripples",
+      "visualOrigin": {
+        "x": 566,
+        "y": 902
+      },
+      "triggerPoint": {
+        "x": 533,
+        "y": 958
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-35": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 138,
+      "cooldownSeconds": 11,
+      "decoyType": "water-ripples",
+      "visualOrigin": {
+        "x": 514,
+        "y": 1137
+      },
+      "triggerPoint": {
+        "x": 447,
+        "y": 1133
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-36": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 96,
+      "cooldownSeconds": 11,
+      "decoyType": "false-alarm",
+      "visualOrigin": {
+        "x": 144,
+        "y": 1047
+      },
+      "triggerPoint": {
+        "x": 172,
+        "y": 1056
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-37": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 96,
+      "cooldownSeconds": 10,
+      "decoyType": "false-alarm",
+      "visualOrigin": {
+        "x": 232,
+        "y": 1090
+      },
+      "triggerPoint": {
+        "x": 232,
+        "y": 1090
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-38": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 96,
+      "cooldownSeconds": 7,
+      "decoyType": "false-alarm",
+      "visualOrigin": {
+        "x": 213,
+        "y": 1158
+      },
+      "triggerPoint": {
+        "x": 300,
+        "y": 1198
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-39": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 96,
+      "cooldownSeconds": 2,
+      "decoyType": "water-ripples",
+      "visualOrigin": {
+        "x": 556,
+        "y": 60
+      },
+      "triggerPoint": {
+        "x": 582,
+        "y": 203
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-40": {
+      "kind": "frost",
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 54,
+      "quantity": 2,
+      "visualOrigin": {
+        "x": 502,
+        "y": 44
+      },
+      "triggerPoint": {
+        "x": 543,
+        "y": 62
+      },
+      "waterLeap": true
+    },
+    "editor-mob-41": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 96,
+      "cooldownSeconds": 5,
+      "decoyType": "false-alarm",
+      "visualOrigin": {
+        "x": 734,
+        "y": 144
+      },
+      "triggerPoint": {
+        "x": 734,
+        "y": 144
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-42": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 96,
+      "cooldownSeconds": 6,
+      "decoyType": "false-alarm",
+      "visualOrigin": {
+        "x": 652,
+        "y": 135
+      },
+      "triggerPoint": {
+        "x": 652,
+        "y": 135
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-43": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 96,
+      "cooldownSeconds": 5,
+      "decoyType": "false-alarm",
+      "visualOrigin": {
+        "x": 706,
+        "y": 244
+      },
+      "triggerPoint": {
+        "x": 706,
+        "y": 244
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-44": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 96,
+      "cooldownSeconds": 2,
+      "decoyType": "water-ripples",
+      "visualOrigin": {
+        "x": 906,
+        "y": 121
+      },
+      "triggerPoint": {
+        "x": 849,
+        "y": 171
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-45": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 96,
+      "cooldownSeconds": 2,
+      "decoyType": "water-ripples",
+      "visualOrigin": {
+        "x": 1065,
+        "y": 226
+      },
+      "triggerPoint": {
+        "x": 1131,
+        "y": 334
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-46": {
+      "kind": "frost",
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 54,
+      "visualOrigin": {
+        "x": 1035,
+        "y": 228
+      },
+      "triggerPoint": {
+        "x": 967,
+        "y": 277
+      },
+      "waterLeap": true
+    },
+    "editor-mob-47": {
+      "kind": "snake",
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 88,
+      "visualOrigin": {
+        "x": 98,
+        "y": 1052
+      },
+      "triggerPoint": {
+        "x": 127,
+        "y": 1055
+      }
+    },
+    "editor-mob-48": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "cooldownSeconds": 5,
+      "decoyType": "water-ripples",
+      "visualOrigin": {
+        "x": 99,
+        "y": 1540
+      },
+      "triggerPoint": {
+        "x": 224,
+        "y": 1630
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-49": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 121,
+      "cooldownSeconds": 6,
+      "decoyType": "water-ripples",
+      "visualOrigin": {
+        "x": 433,
+        "y": 1691
+      },
+      "triggerPoint": {
+        "x": 420,
+        "y": 1641
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-50": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 104,
+      "cooldownSeconds": 6,
+      "decoyType": "water-ripples",
+      "visualOrigin": {
+        "x": 694,
+        "y": 1702
+      },
+      "triggerPoint": {
+        "x": 656,
+        "y": 1647
+      },
+      "falseAlarm": true,
+      "repeat": true
+    },
+    "editor-mob-51": {
+      "spawnType": "ambush",
+      "triggerShape": "circle",
+      "triggerRange": 104,
+      "cooldownSeconds": 11,
+      "decoyType": "water-ripples",
+      "visualOrigin": {
+        "x": 723,
+        "y": 1311
+      },
+      "triggerPoint": {
+        "x": 766,
+        "y": 1439
+      },
+      "falseAlarm": true,
+      "repeat": true
     }
   }
 }

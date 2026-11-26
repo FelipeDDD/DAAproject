@@ -9,7 +9,7 @@ import { CombatSkillView } from '../src/vfx/lab/CombatSkillView.js';
 import { DRAIN_ORBS,handOf,orbArrivalProgress,orbPosition } from '../src/vfx/lab/precisionDemo.js';
 
 function fight(kinds=['slime','ghost'],onDrainComplete){
-  const bout=new CombatBout();
+  const bout=new CombatBout(undefined,undefined,undefined,{allowParry:true});
   bout.reset(kinds);
   bout.started=true;
   const runner=new CombatSkillRunner(bout,onDrainComplete);
@@ -18,11 +18,12 @@ function fight(kinds=['slime','ghost'],onDrainComplete){
     tick:ms=>runner.update(ms,player)};
 }
 
-test('all seven registered skills can launch in each slot, using the same stats as the tooltip',()=>{
-  assert.equal(Object.keys(SKILLS).length,7);
+test('all eight registered skills can launch in each slot, using the same stats as the tooltip',()=>{
+  assert.equal(Object.keys(SKILLS).length,8);
   for(const skill of Object.values(SKILLS)){
     assert.ok(labSheets[skill.icon]||skill.iconSymbol==='blood-drop');
     if(skill.damage)assert.ok(skillTooltip(skill).includes('Damage: '+skill.damage));
+    else if(skill.parry)assert.ok(skillTooltip(skill).includes(skill.parry.activeMs+' ms guard'));
     else for(const band of skill.bands)assert.ok(skillTooltip(skill).includes(band.range+' px · '+band.damage+' / '+band.heal));
     for(let slot=0;slot<4;slot++)assert.ok(fight().cast(skill.id,slot));
   }

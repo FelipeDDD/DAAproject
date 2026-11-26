@@ -6,12 +6,15 @@ import { Readable } from 'node:stream';
 import test from 'node:test';
 import { combatBalancePlugin } from '../scripts/combat-balance-vite.mjs';
 import current from '../src/combat/balance.json' with {type:'json'};
-import { BALANCE_ROUTE, original, validateBalance } from '../src/combat/balanceSchema.js';
-import { CombatBout } from '../src/vfx/lab/CombatBout.js';
+import { BALANCE_ROUTE, normalizeBalance, original, validateBalance } from '../src/combat/balanceSchema.js';
+import { CombatBout, POISON } from '../src/vfx/lab/CombatBout.js';
 import { CombatSkillRunner } from '../src/vfx/lab/CombatSkillRunner.js';
 import { applyCombatBalance } from '../src/vfx/lab/combatBalancePreview.js';
 import { SKILLS } from '../src/vfx/lab/combatSkills.js';
 import { SLIME_SPECIAL } from '../src/vfx/lab/slimeVariants.js';
+import { boxCenter, playerBox } from '../src/vfx/lab/combatGeometry.js';
+import { SUMMONS } from '../src/vfx/lab/mushroomBoss.js';
+import { AREAS } from '../src/vfx/lab/combatAreas.js';
 
 test('balance schema rejects malformed imports and invalid gameplay limits',()=>{
   assert.equal(validateBalance(original),'');
@@ -20,6 +23,11 @@ test('balance schema rejects malformed imports and invalid gameplay limits',()=>
     data=>{data.michael.fireball.damage='26';},
     data=>{data.michael.fireball.cooldown=-5;},
     data=>{data.slimes.special.homing.speed=Infinity;},
+    data=>{data.slimes.variants.big.damagePercent=105.5;},
+    data=>{data.slimes.variants.big.damagePercent=205;},
+    data=>{data.slimes.variants.big.damagePercent=126;},
+    data=>{data.slimes.variants.big.contactDamage=null;},
+    data=>{data.slimes.variants.swift.projectileDamage=10;},
     data=>{data.michael.drain.bands[1].range=35;},
     data=>{data.slimes.special.homing.trackingMs=3000;},
     data=>{data.frog.longLeap.range=50;},
@@ -31,6 +39,104 @@ test('balance schema rejects malformed imports and invalid gameplay limits',()=>
     alter(data);
     assert.notEqual(validateBalance(data),'');
   }
+});
+
+test('old balance files inherit newly exposed fields and keep edited values',()=>{
+  const legacy=structuredClone(original);
+  const big=legacy.slimes.variants.big;
+  for(const key of ['damagePercent','jumpDamage','projectileDamage','contactDamage'])delete big[key];
+  big.damage=29;
+  legacy.michael.lash.damage=7;
+  assert.equal(validateBalance(legacy),'');
+  const next=normalizeBalance(legacy);
+  assert.deepEqual(next.slimes.variants.big,{...original.slimes.variants.big,damage:29});
+  assert.equal(next.michael.lash.damage,7);
+  assert.equal(big.damagePercent,undefined);
+  delete big.damage;
+  assert.notEqual(validateBalance(legacy),'');
+});
+
+const slimeDamages=({damage,shot,contactDamage,special})=>[damage,shot?.damage,contactDamage,special?.damage];
+
+function actualBigHits(){
+  const player={x:350,y:304,displayHeight:64};
+  const aim=boxCenter(playerBox(player));
+  return ['jump','projectile','contact','special'].map(kind=>{
+    const damage=[];
+    const bout=new CombatBout((victim,n)=>{if(victim==='player')damage.push(n);});
+    bout.reset('big');
+    bout.started=true;
+    const [actor]=bout.enemies;
+    const point={x:kind==='jump'||kind==='contact'?player.x:player.x+65,y:player.y};
+    Object.assign(actor.enemy,point);
+    if(kind==='contact')actor.updateContact(player);
+    else if(kind==='jump'){
+      actor.phase='jump';
+      actor.elapsed=actor.spec.jumpMs-1;
+      actor.hop={from:point,to:point};
+      actor.update(1,player);
+    }else{
+      const special=kind==='special';
+      const windup=special?SLIME_SPECIAL.windupMs:actor.spec.shotWindup;
+      actor.attack={kind:special?'spread':actor.spec.shot.kind,to:aim,...(special?{windup,reason:'retreat'}:{})};
+      actor.phase='windup';
+      actor.elapsed=windup-1;
+      actor.update(1,player);
+      assert.equal(actor.shots.length,special?3:1);
+      for(const shot of actor.shots)actor.updateShot(shot,shot.lifetime,player);
+    }
+    assert.equal(damage.length,1,kind+' must deal exactly one hit');
+    return damage[0];
+  });
+}
+
+test('Big Slime uses independent base values and scales each of its four actual hits once',t=>{
+  t.after(()=>applyCombatBalance(current));
+  const draft=structuredClone(original);
+  const big=draft.slimes.variants.big;
+  const untouched={poison:POISON.damage,unstable:AREAS.unstable.damage};
+  for(const [percent,expected] of [[100,[36,25,10,20]],[125,[45,31,13,25]],[80,[29,20,8,16]],[100,[36,25,10,20]]]){
+    big.damagePercent=percent;
+    applyCombatBalance(draft);
+    assert.deepEqual(actualBigHits(),expected);
+    assert.deepEqual([big.jumpDamage,big.projectileDamage,big.contactDamage,big.damage],[36,25,10,20]);
+  }
+  big.damagePercent=125;
+  for(const [field,next,expected] of [
+    ['jumpDamage',40,[50,31,13,25]],['projectileDamage',32,[45,40,13,25]],
+    ['contactDamage',16,[45,31,20,25]],['damage',28,[45,31,13,35]],
+  ]){
+    big[field]=next;
+    applyCombatBalance(draft);
+    assert.deepEqual(actualBigHits(),expected);
+    big[field]=original.slimes.variants.big[field];
+  }
+  assert.deepEqual({poison:POISON.damage,unstable:AREAS.unstable.damage},untouched);
+});
+
+test('variants scale independently and Mushroom summons retain explicit damage overrides',t=>{
+  t.after(()=>applyCombatBalance(current));
+  const draft=structuredClone(original);
+  draft.slimes.variants.big.damagePercent=125;
+  draft.slimes.variants.slime.damagePercent=200;
+  draft.slimes.variants.swift.damagePercent=80;
+  applyCombatBalance(draft);
+  const bout=new CombatBout();
+  bout.reset(['mushroom','big','frost','swift','slime']);
+  const [boss,big,frost,swift,slime]=bout.enemies;
+  assert.deepEqual(slimeDamages(big.spec),[45,31,13,25]);
+  assert.deepEqual(slimeDamages(frost.spec),[24,15,6,16]);
+  assert.deepEqual(slimeDamages(swift.spec),[14,undefined,3,10]);
+  assert.deepEqual(slimeDamages(slime.spec),[48,32,12,32]);
+  const player={x:300,y:385};
+  const mini=bout.summonCreature(boss,SUMMONS.mini,player,420);
+  const enraged=bout.summonCreature(boss,SUMMONS.final,player,420);
+  assert.deepEqual(slimeDamages(mini.spec),[12,undefined,3,undefined]);
+  assert.deepEqual(slimeDamages(enraged.spec),[42,31,12,25]);
+  assert.equal(enraged.enemy.hp,260);
+  assert.equal(big.spec.shot.speed,147);
+  assert.equal(big.spec.contactCooldown,1000);
+  assert.equal(frost.spec.shot.status,'Slowed');
 });
 
 test('a reset can activate draft timing and damage through the real skill and enemy registry',t=>{
@@ -103,6 +209,8 @@ test('save route checks local authorization, validates data, backs up the previo
   const headers={origin:'http://127.0.0.1:5173','content-type':'application/json','x-combat-balance-token':state.token};
   const data=structuredClone(state.data);
   data.michael.cleaver.damage=39;
+  data.slimes.variants.big.damagePercent=125;
+  data.slimes.variants.big.projectileDamage=33;
   const body={revision:state.revision,data};
   assert.equal((await call('PUT',{body})).status,403);
   assert.equal((await call('PUT',{body:{...body,path:'some-other-file.json'},headers})).status,400);
@@ -110,7 +218,9 @@ test('save route checks local authorization, validates data, backs up the previo
   assert.equal(await readFile(path,'utf8'),baseline);
   const saved=await call('PUT',{body,headers});
   assert.equal(saved.status,200);
-  assert.equal(JSON.parse(await readFile(path,'utf8')).michael.cleaver.damage,39);
+  const persisted=JSON.parse(await readFile(path,'utf8'));
+  assert.equal(persisted.michael.cleaver.damage,39);
+  assert.deepEqual(persisted.slimes.variants.big,{...original.slimes.variants.big,damagePercent:125,projectileDamage:33});
   assert.equal(await readFile(path+'.bak','utf8'),baseline);
   assert.equal((await call('PUT',{body,headers})).status,409);
 });

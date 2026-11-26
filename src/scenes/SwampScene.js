@@ -7,7 +7,7 @@ import { preloadSwampMobs, SwampMobs } from '../swamp/SwampMobs.js';
 import { SwampRunController } from '../swamp/SwampRunController.js';
 import { localSwampRun } from '../swamp/SwampRun.js';
 import { preloadSwampSkills } from '../swamp/SwampCombatCasts.js';
-import { SWAMP_PLAYER_FOOT_RADIUS as FOOT_RADIUS } from '../swamp/mobConfig.js';
+import { SWAMP_PLAYER_COMBAT_GEOMETRY,SWAMP_PLAYER_FOOT_RADIUS as FOOT_RADIUS } from '../swamp/mobConfig.js';
 import { bindSwampMovementFocus } from '../swamp/swampCastInput.js';
 import placement from '../../public/assets/maps/swamp-occlusion/placement.json' with {type:'json'};
 
@@ -79,6 +79,7 @@ export class LargeSwampScene extends SwampScene {
 
   create(destination){
     super.create(destination);
+    this.player.combatGeometry=SWAMP_PLAYER_COMBAT_GEOMETRY;
     const focusListeners=new AbortController();
     bindSwampMovementFocus(this,focusListeners.signal);
     this.events.once('shutdown',()=>focusListeners.abort());

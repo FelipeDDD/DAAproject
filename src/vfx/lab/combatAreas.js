@@ -33,7 +33,7 @@ export function updateArea(area,dt,player,bout){
         bout.stun(area.stunMs);
         area.nextPulse=area.age+area.interval;
       }
-    }else if(area.kind==='ice')bout.onIce||=area.age<area.lifetime;
+    }else if(area.kind==='ice')bout.onIce||=area.age<area.lifetime&&!bout.protectingPhaseHeal;
     else if(area.kind==='poison'||area.kind==='toxic-bloom'){
       if(!area.contact)bout.renewPoison();
       area.exposure+=activeMs;
@@ -46,7 +46,8 @@ export function updateArea(area,dt,player,bout){
       area.exposure+=activeMs;
       while(area.exposure>=area.interval&&bout.playerHp){
         area.exposure-=area.interval;
-        bout.hurt(area.damage,boxCenter(playerBox(player)),area.kind==='haze'?'Cloud':undefined);
+        bout.hurt(area.damage,boxCenter(playerBox(player)),area.kind==='haze'?'Cloud':undefined,
+          undefined,undefined,{periodic:true});
       }
     }
   }else area.exposure=0;

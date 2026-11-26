@@ -43,14 +43,29 @@ test('skin preview cards keep only four real character bases',()=>{
   for(const character of CHARACTERS)assert.equal(baseCharacterId(character.id),character.id);
 });
 
-test('shared visuals are queued once for all four selectable bases',()=>{
-  const loaded=[];
+test('map preload queues each base and its Tier 3 sources outside dev mode',()=>{
+  const loaded=new Map();
+  const load=(key,url)=>{
+    assert.equal(loaded.has(key),false,'Duplicate load for '+key);
+    loaded.set(key,url);
+  };
   const scene={textures:{exists:()=>false},load:{
-    svg:key=>loaded.push(key),spritesheet:key=>loaded.push(key),image:key=>loaded.push(key),
+    svg:load,spritesheet:load,image:load,
   }};
-  preloadCharacterTextures(scene,CHARACTERS,'/');
-  assert.equal(loaded.length,new Set(loaded).size);
-  assert.equal(loaded.length,13); // Four classic, four Remastered, item sheet, Yassin/Felipe sources + masks.
+  preloadCharacterTextures(scene,CHARACTERS,'/',false,true);
+  for(const character of CHARACTERS){
+    const tier3=character.experimentalVisual;
+    assert.ok(loaded.has(character.sprite));
+    assert.ok(loaded.has(character.newVisual.sprite));
+    const url=loaded.get(tier3.recolorSource??tier3.sourceImage??tier3.sprite);
+    assert.equal(url,'/'+tier3.asset);
+    assert.ok(readFileSync(new URL('../public'+url,import.meta.url)).length>0);
+    if(tier3.recolorMaskSource){
+      const mask=loaded.get(tier3.recolorMaskSource);
+      assert.equal(mask,'/'+tier3.recolorMaskAsset);
+      assert.ok(readFileSync(new URL('../public'+mask,import.meta.url)).length>0);
+    }
+  }
 });
 
 test('style preference persists with a safe old-style fallback',()=>{

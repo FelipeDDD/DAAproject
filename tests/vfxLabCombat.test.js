@@ -2,10 +2,12 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {CombatBout,SLOW_MS} from '../src/vfx/lab/CombatBout.js';
-import {RING,slimeBox,playerBox,segmentContact} from '../src/vfx/lab/combatGeometry.js';
+import {RING,boxCenter,slimeBox,playerBox,segmentContact} from '../src/vfx/lab/combatGeometry.js';
 import {VFX_LAB_MAP} from '../src/vfx/lab/layout.js';
-import {LASH,handOf} from '../src/vfx/lab/precisionDemo.js';
+import {LASH,handOf,lashTip} from '../src/vfx/lab/precisionDemo.js';
 import {ENEMIES} from '../src/vfx/lab/combatEnemy.js';
+import {SKILLS} from '../src/vfx/lab/combatSkills.js';
+import {SUMMONS} from '../src/vfx/lab/mushroomBoss.js';
 
 import {AREAS} from '../src/vfx/lab/combatAreas.js';
 
@@ -86,7 +88,7 @@ test('Cleave respects reach, Lash hits only at its tip, and a drain miss cannot 
   const aim={x:first(bout).enemy.x,y:handOf(player).y};
   assert.equal(bout.playerStrike('cleaver',player,aim),null);
   assert.ok(bout.playerStrike('lash',player,aim));
-  assert.equal(first(bout).enemy.hp,70);
+  assert.equal(first(bout).enemy.hp,100-SKILLS.lash.critical);
   assert.equal(hits[0][3].critical,true);
   player.x=first(bout).enemy.x-35;
   assert.equal(bout.playerStrike('lash',player,aim),null);
@@ -95,11 +97,11 @@ test('Cleave respects reach, Lash hits only at its tip, and a drain miss cannot 
   assert.equal(bout.playerHp,96);
   assert.ok(bout.playerStrike('drain',player,aim));
   assert.equal(bout.playerHp,96);
-  assert.equal(first(bout).enemy.hp,26);
+  assert.equal(first(bout).enemy.hp,100-SKILLS.lash.critical-44);
   assert.equal(slimeBox(first(bout).enemy).y+24,first(bout).enemy.y-first(bout).enemy.lift);
 });
 
-test('Copper Lash rolls once per actual hit with the same tip for near and distant cursor positions',()=>{
+test('Copper Lash rolls once per precision hit with the same tip for near and distant cursor positions',()=>{
   let rolls=0;
   const random=()=>[0.49,0.50][rolls++];
   const bout=new CombatBout(undefined,random),player=playerAt(340);
@@ -114,11 +116,45 @@ test('Copper Lash rolls once per actual hit with the same tip for near and dista
   assert.equal(rolls,0);
   bout.playerStrike('lash',player,near);
   assert.equal(rolls,2);
-  assert.deepEqual(bout.enemies.map(actor=>actor.enemy.hp),[70,90,60]);
+  assert.deepEqual(bout.enemies.map(actor=>actor.enemy.hp),[100-SKILLS.lash.critical,100-SKILLS.lash.damage,60]);
   rolls=0;
   bout.playerStrike('lash',player,far);
   assert.equal(rolls,2);
-  assert.deepEqual(bout.enemies.map(actor=>actor.enemy.hp),[40,80,60]);
+  assert.deepEqual(bout.enemies.map(actor=>actor.enemy.hp),[100-2*SKILLS.lash.critical,100-2*SKILLS.lash.damage,60]);
+});
+
+test('Lash classifies a miss, an outer graze and both center outcomes using each enemy body',()=>{
+  const {range,radius,damage,critical,criticalChance}=SKILLS.lash;
+  const player=playerAt(350),hand=handOf(player),aim={x:hand.x+200,y:hand.y};
+  const tip=lashTip(hand,aim,range);
+  for(const kind of ['frog','big','mushroom','summon']){
+    for(const [result,roll,expected] of [
+      ['miss',0,0],['normal',0,damage],['precision',criticalChance,damage],['critical',criticalChance/2,critical],
+    ]){
+      let rolls=0,impact;
+      const hits=[];
+      const bout=new CombatBout((...args)=>hits.push(args),()=>{rolls++;return roll;},undefined,
+        {onLashImpact:trace=>{impact=trace;}});
+      bout.reset(kind==='summon'?'mushroom':kind);
+      bout.started=true;
+      const actor=kind==='summon'?bout.summonCreature(first(bout),SUMMONS.mini,player,420):first(bout);
+      const box=actor.spec.box(actor.enemy),center=boxCenter(box);
+      const targetX=result==='miss'?box.x-radius-1:result==='normal'?box.x-radius/2:center.x;
+      actor.enemy.x+=tip.x-targetX;
+      actor.enemy.y+=tip.y-center.y;
+      const before=actor.enemy.hp;
+      assert.equal(Boolean(bout.playerStrike('lash',player,aim)),Boolean(expected));
+      assert.equal(before-actor.enemy.hp,expected);
+      assert.equal(hits.length,expected?1:0);
+      assert.equal(rolls,result==='critical'||result==='precision'?1:0);
+      assert.deepEqual(impact.tip,tip);
+      assert.equal(impact.radius,radius);
+      const trace=impact.targets.at(-1);
+      assert.equal(trace.result,result);
+      assert.equal(trace.precisionBox.width,box.width*LASH.precisionRatio);
+      assert.equal(trace.precisionBox.height,box.height*LASH.precisionRatio);
+    }
+  }
 });
 
 test('touch damage uses each Slime body, with a one-second cooldown and no simultaneous contact burst',()=>{

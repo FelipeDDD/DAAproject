@@ -5,7 +5,7 @@ import { METEOR_ART_MS, METEOR_FALL_MS, METEOR_SHEET } from '../../combat/meteor
 
 const definitions={
   cleaver:{description:'Sweep through enemies in a short frontal arc.',icon:'pfx-cleave',shape:'arc'},
-  lash:{description:'Fixed reach. Only the whip tip hits, with a high critical chance on contact.',icon:'pfx-whip',shape:'tip'},
+  lash:{description:'Fixed reach. Aim the whip tip at the center of an enemy for a chance to crit.',icon:'pfx-whip',shape:'tip'},
   drain:{description:'Closer hits deal more damage. Four returning orbs heal up to the HP actually removed.',
     iconSymbol:'blood-drop',shape:'ray'},
   flurry:{description:'Sweep nearby enemies with icy blades, slowing each enemy hit.',icon:'pfx-ice-daggers',shape:'arc'},
@@ -38,14 +38,28 @@ export function configureCombatSkills(config){
 }
 
 configureCombatSkills(balance.michael);
+SKILLS['healing-parry']={
+  id:'healing-parry',name:'Healing Parry',category:'Survival',shape:'parry',
+  description:'Stand still and block direct hits. Heal once based on the total damage blocked.',
+  effect:sequenceEffects.shield,icon:'barrier',clips:[],cooldown:8000,castSpeed:0,
+  parry:{activeMs:300,blockFraction:1,healFraction:0.5,maxHeal:60,recoveryMs:400,recoveryDamageMultiplier:1.2},
+};
 export const SLOT_KEYS=['LMB','Q','E','R'];
 export const DEFAULT_SLOTS=['cleaver','lash','drain','meteor'];
 
 export function skillTooltip(skill){
+  if(skill.parry){
+    const {activeMs,blockFraction,healFraction,maxHeal,recoveryMs,recoveryDamageMultiplier}=skill.parry;
+    return [skill.name+' · '+skill.category,skill.description,
+      activeMs+' ms guard · '+Math.round(blockFraction*100)+'% block · '+Math.round(healFraction*100)+'% healing (max '+maxHeal+' HP)',
+      'Miss: '+recoveryMs+' ms recovery · +'+Math.round((recoveryDamageMultiplier-1)*100)+'% incoming damage',
+      'Cooldown: '+skill.cooldown/1000+' s'].join('\n');
+  }
   const effect=skill.status;
   const damage=skill.bands?['Distance from hand to target center · Damage / Max healing',
     ...skill.bands.map(band=>'≤ '+band.range+' px · '+band.damage+' / '+band.heal+' HP')]:
-    ['Damage: '+skill.damage+(skill.critical?' · '+skill.critical+' critical ('+Math.round(skill.criticalChance*100)+'% on hit)':'')];
+    ['Damage: '+skill.damage+(skill.critical?' · '+skill.critical+' critical ('+Math.round(skill.criticalChance*100)+
+      '% on '+(skill.shape==='tip'?'precision hit':'hit')+')':'')];
   return [skill.name,skill.description,...damage,
     'Range: '+Math.round(skill.range)+' px'+(skill.radius?' · Radius: '+skill.radius+' px':''),
     'Cooldown: '+skill.cooldown/1000+' s · Cast: '+(skill.cast?skill.cast/1000+' s':'instant'),

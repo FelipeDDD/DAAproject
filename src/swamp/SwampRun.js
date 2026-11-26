@@ -108,7 +108,7 @@ export function saveSwampRun(run){
 
 // Dev tools can jump ahead with legal defaults for earlier choices. The
 // selected checkpoint still goes through its normal defeat and drop flow.
-export function prepareCheckpoint(run,target){
+export function prepareCheckpoint(run,target,{defeat=true}={}){
   if(!run.next||target.slot<run.next.slot)return false;
   while(run.next&&run.next.slot<target.slot){
     const step=run.next;
@@ -116,5 +116,5 @@ export function prepareCheckpoint(run,target){
     const [offer]=run.offers();
     if(!offer||!run.choose(offer.id,offer.skills[0]))return false;
   }
-  return run.next===target&&(Boolean(run.pendingDrop)||run.defeat(target.elite));
+  return run.next===target&&(!defeat||Boolean(run.pendingDrop)||run.defeat(target.elite));
 }
