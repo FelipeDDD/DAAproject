@@ -1,19 +1,22 @@
 import { SKILLS,SLOT_KEYS,skillTooltip } from './combatSkills.js';
-import { LOADOUT_KEY,readLoadout,savePreset,loadPreset } from './combatLoadout.js';
+import catalog from '../../combat/skillCatalog.json' with {type:'json'};
+import { SKILL_CATEGORIES,canEquip } from '../../combat/skillCatalogSchema.js';
+import { LOADOUT_KEY,readLoadout,savePreset,loadPreset,resolveLoadout } from './combatLoadout.js';
 import { thumbnail } from './EffectHotbar.js';
 
 export class CombatLoadoutPanel{
-  constructor(signal){
+  constructor(signal,editSkill){
     const get=id=>document.getElementById('combat-'+id);
-    this.bar=get('bar');
-    this.panel=get('loadout');
-    this.bar.hidden=this.panel.hidden=false;
     this.casting=get('casting');
     this.hud=get('hud');
     const slots=get('slots'),library=get('library'),preset=get('preset'),name=get('preset-name'),message=get('storage-status');
+    const search=get('search'),categoryFilter=get('category');
+    categoryFilter.append(...Object.entries(SKILL_CATEGORIES).map(([id,label])=>new Option(label,id)));
+    const compatibility=get('compatibility');
     let storage;
     try{storage=window.localStorage;}catch{/* Use in-memory editing. */}
     this.state=readLoadout(storage);
+    this.catalog=catalog;
     this.selectedSlot=0;
     const persist=text=>{
       try{
@@ -27,26 +30,74 @@ export class CombatLoadoutPanel{
       name.value=this.state.presets[this.state.selected].name;
     };
     const render=()=>{
-      slots.replaceChildren(...this.state.slots.map((id,i)=>{
+      this.equipped=resolveLoadout(this.state.slots,this.catalog);
+      const changed=SLOT_KEYS.filter((key,i)=>this.equipped[i]!==this.state.slots[i]);
+      compatibility.textContent=changed.length?'Slot rules adjusted '+changed.join(', ')+' for this test. Stored choices are kept.':'';
+      slots.replaceChildren(...this.equipped.map((id,i)=>{
         const button=this.tile(id,SLOT_KEYS[i],true);
         button.dataset.slot=i;
         button.setAttribute('aria-pressed',String(i===this.selectedSlot));
         return button;
       }));
-      for(const button of library.children)button.setAttribute('aria-pressed',String(button.dataset.id===this.state.slots[this.selectedSlot]));
-      this.hud.replaceChildren(...this.state.slots.map((id,i)=>this.tile(id,SLOT_KEYS[i],false)));
+      renderAvailability();
+      this.hud.replaceChildren(...this.equipped.map((id,i)=>this.tile(id,SLOT_KEYS[i],false)));
+    };
+    const renderAvailability=()=>{
+      for(const button of library.querySelectorAll('[data-equip]')){
+        button.setAttribute('aria-pressed',String(button.dataset.id===this.equipped[this.selectedSlot]));
+        const allowed=canEquip(this.catalog,button.dataset.id,this.selectedSlot);
+        button.disabled=!allowed;
+        button.parentElement.classList.toggle('is-incompatible',!allowed);
+        button.title=allowed?'Equip in '+SLOT_KEYS[this.selectedSlot]:'Allowed slots: '+this.catalog[button.dataset.id].slots.join(', ');
+      }
+    };
+    this.applyCatalog=data=>{this.catalog=data;this.refreshBalance();};
+    const renderLibrary=()=>{
+      const query=search.value.trim().toLowerCase(),filter=categoryFilter.value;
+      const groups=Object.entries(SKILL_CATEGORIES).flatMap(([category,label])=>{
+        if(filter&&filter!==category)return [];
+        const ids=Object.keys(SKILLS).filter(id=>this.catalog[id]?.category===category&&SKILLS[id].name.toLowerCase().includes(query));
+        if(!ids.length)return [];
+        const group=document.createElement('section'),heading=document.createElement('h3'),tiles=document.createElement('div');
+        heading.textContent=label;
+        tiles.className='library-tiles';
+        tiles.append(...ids.map(id=>{
+          const card=document.createElement('div'),equip=this.tile(id,'',true),edit=document.createElement('button');
+          card.className='skill-library-card';
+          equip.dataset.equip='';
+          equip.setAttribute('aria-label','Equip '+SKILLS[id].name+'\n'+skillTooltip(SKILLS[id]));
+          edit.type='button';
+          edit.className='skill-edit-button';
+          edit.dataset.editSkill=id;
+          edit.textContent='✎';
+          edit.title='Edit skill';
+          edit.setAttribute('aria-label','Edit '+SKILLS[id].name);
+          card.append(equip,edit);
+          return card;
+        }));
+        group.append(heading,tiles);
+        return [group];
+      });
+      if(groups.length)library.replaceChildren(...groups);
+      else library.textContent='No matching skills.';
     };
     this.refreshBalance=()=>{
-      library.replaceChildren(...Object.keys(SKILLS).map(id=>this.tile(id,'',true)));
+      renderLibrary();
       render();
     };
+    const refilter=()=>{renderLibrary();renderAvailability();};
+    search.addEventListener('input',refilter,{signal});
+    categoryFilter.addEventListener('change',refilter,{signal});
+    this.focusSkill=id=>(library.querySelector('[data-edit-skill="'+id+'"]')??search).focus();
     slots.addEventListener('click',event=>{
       const el=event.target.closest('[data-slot]');
       if(el){this.selectedSlot=Number(el.dataset.slot);render();slots.children[this.selectedSlot].focus();}
     },{signal});
     library.addEventListener('click',event=>{
-      const el=event.target.closest('[data-id]');
-      if(!el)return;
+      const edit=event.target.closest('[data-edit-skill]');
+      if(edit){editSkill(edit.dataset.editSkill);return;}
+      const el=event.target.closest('[data-equip]');
+      if(!el||!canEquip(this.catalog,el.dataset.id,this.selectedSlot))return;
       this.state.slots[this.selectedSlot]=el.dataset.id;
       render();
       persist(SLOT_KEYS[this.selectedSlot]+' equipped.');
@@ -56,7 +107,7 @@ export class CombatLoadoutPanel{
       message.textContent='';
     },{signal});
     get('save').addEventListener('click',()=>{
-      savePreset(this.state,Number(preset.value),name.value);
+      savePreset(this.state,Number(preset.value),name.value,this.equipped.map((id,i)=>id??this.state.slots[i]));
       showPresets();persist('Preset saved.');
     },{signal});
     get('load').addEventListener('click',()=>{
@@ -64,7 +115,6 @@ export class CombatLoadoutPanel{
     },{signal});
     showPresets();this.refreshBalance();
     signal.addEventListener('abort',()=>{
-      this.bar.hidden=this.panel.hidden=true;
       slots.replaceChildren();library.replaceChildren();this.hud.replaceChildren();
     },{once:true});
   }
@@ -74,10 +124,17 @@ export class CombatLoadoutPanel{
     if(button)el.type='button';
     else el.tabIndex=0;
     el.className='combat-tile';
-    el.dataset.id=id;
+    if(id)el.dataset.id=id;
+    if(!skill){
+      el.classList.add('unavailable');
+      const shortcut=document.createElement('kbd');
+      shortcut.textContent=key;
+      el.append(shortcut,document.createTextNode('Empty slot'));
+      return el;
+    }
     el.style.setProperty('--accent',skill.effect.color);
     const label=document.createElement('span');
-    label.textContent=key||!skill.category?skill.name:skill.name+' · '+skill.category;
+    label.textContent=skill.name;
     const shortcut=document.createElement('kbd');
     shortcut.textContent=key;
     const tip=document.createElement('span');
@@ -109,6 +166,7 @@ export class CombatLoadoutPanel{
     const bout=runner.bout;
     for(const tile of this.hud.children){
       const id=tile.dataset.id,skill=SKILLS[id],ms=runner.cooldowns.get(id)??0;
+      if(!skill)continue;
       const label=ms?(Math.ceil(ms/100)/10).toFixed(1)+'s':'';
       if(tile.lastChild.textContent!==label)tile.lastChild.textContent=label;
       tile.style.setProperty('--cooldown',String(ms/skill.cooldown));

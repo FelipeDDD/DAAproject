@@ -1,4 +1,5 @@
 import { createFootCollision, isFootPositionClear } from '../maps/footCollision.js';
+export { createCombatSpace } from '../maps/footCollision.js';
 import { acquireAggro } from '../vfx/lab/combatAggro.js';
 import { CombatEnemy, ENEMIES } from '../vfx/lab/combatEnemy.js';
 import { frogChaseTarget } from '../vfx/lab/frogEnemy.js';
@@ -18,16 +19,6 @@ export function createSwampSpawnTerrain(obstacles,bounds,playerRadius,entrance){
   terrain.marker=createMobTerrain(obstacles,bounds,playerRadius);
   terrain.marker.reachable=createSpawnReachability(terrain.marker,bounds,entrance);
   return terrain;
-}
-
-export function createCombatSpace(obstacles,bounds) {
-  const solvers=new Map();
-  return {trace(from,to,radius=0.01){
-    if(!isFootPositionClear(obstacles,bounds,radius,from))return {point:{x:from.x,y:from.y},blocked:true};
-    if(!solvers.has(radius))solvers.set(radius,createFootCollision(obstacles,bounds,radius));
-    const point=solvers.get(radius)(from,to,false);
-    return {point,blocked:dist(point,to)>1e-6};
-  }};
 }
 
 export function createMobTerrain(obstacles,bounds,radius) {

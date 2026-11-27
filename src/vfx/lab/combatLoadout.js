@@ -1,4 +1,5 @@
 import { SKILLS,DEFAULT_SLOTS,SLOT_KEYS } from './combatSkills.js';
+import { canEquip } from '../../combat/skillCatalogSchema.js';
 
 export const LOADOUT_KEY='daa.combat-sandbox.loadout.v1';
 const validSlots=slots=>DEFAULT_SLOTS.map((fallback,i)=>{
@@ -6,6 +7,14 @@ const validSlots=slots=>DEFAULT_SLOTS.map((fallback,i)=>{
   return typeof id==='string'&&Object.hasOwn(SKILLS,id)?id:fallback;
 });
 const presetName=(value,i)=>(typeof value==='string'?value.trim().slice(0,28):'')||'Preset '+(i+1);
+
+export function resolveLoadout(slots,catalog){
+  return DEFAULT_SLOTS.map((fallback,i)=>{
+    if(slots[i]&&canEquip(catalog,slots[i],i))return slots[i];
+    if(canEquip(catalog,fallback,i))return fallback;
+    return Object.keys(SKILLS).find(id=>canEquip(catalog,id,i))??null;
+  });
+}
 
 export function readLoadout(storage){
   let data;
@@ -21,9 +30,9 @@ export function readLoadout(storage){
   return {version:1,presets,selected,slots:validSlots(data?.slots??presets[selected].slots)};
 }
 
-export function savePreset(state,index,name){
+export function savePreset(state,index,name,slots=state.slots){
   state.selected=index;
-  state.presets[index]={name:presetName(name,index),slots:[...state.slots]};
+  state.presets[index]={name:presetName(name,index),slots:[...slots]};
 }
 
 export function loadPreset(state,index){

@@ -1,0 +1,12 @@
+{
+  "cleaver": {"category":"damage","slots":["LMB","Q","E"]},
+  "lash": {"category":"damage","slots":["LMB","Q","E"]},
+  "drain": {"category":"survival","slots":["LMB","Q","E"]},
+  "flurry": {"category":"damage","slots":["LMB","Q","E"]},
+  "fireball": {"category":"damage","slots":["LMB","Q","E"]},
+  "lance": {"category":"damage","slots":["LMB","Q","E"]},
+  "meteor": {"category":"ultimate","slots":["R"]},
+  "fire-ring": {"category":"ultimate","slots":["R"]},
+  "tesla": {"category":"ultimate","slots":["R"]},
+  "healing-parry": {"category":"survival","slots":["LMB","Q","E"]}
+}

@@ -4,29 +4,40 @@ import './lab.css';
 export let game;
 
 if(import.meta.env.DEV){
-  const {default:Phaser}=await import('phaser');
-  const {VFX_LAB_SIZE}=await import('./layout.js');
+  const [{default:Phaser},{VFX_LAB_SIZE},{CombatSandboxScene},{VfxLabScene}]=await Promise.all([
+    import('phaser'),import('./layout.js'),import('./CombatSandboxScene.js'),import('./VfxLabScene.js'),
+  ]);
   const byId=id=>document.getElementById(id);
   const params=new URLSearchParams(location.search);
-  const combat=params.get('mode')==='combat';
-  let scene;
-  if(combat){
-    const {CombatSandboxScene}=await import('./CombatSandboxScene.js');
-    scene=new CombatSandboxScene({start:byId('fight-start'),pause:byId('fight-pause'),
+  const fromGame=params.get('from')==='game';
+  let mode=(params.get('mode')??(fromGame?'vfx':'combat'))==='vfx'?'vfx':'combat';
+  const buttons={combat:byId('mode-combat'),vfx:byId('mode-vfx')};
+  const panels={
+    combat:['combat-controls','fight-actions','combat-loadout','combat-bar','combat-help','combat-balance'],
+    vfx:['vfx-controls','vfx-targets','vfx-footer','vfx-help'],
+  };
+  const loading=byId('arena-loading');
+  const showMode=(ready)=>{
+    loading.hidden=ready;
+    for(const [id,button] of Object.entries(buttons)){
+      button.disabled=!ready;
+      button.setAttribute('aria-pressed',String(id===mode));
+      for(const panel of panels[id])byId(panel).hidden=!ready||id!==mode;
+    }
+  };
+  const ready=()=>{
+    showMode(true);
+    scenes[mode].focusArena();
+  };
+  const scenes={
+    combat:new CombatSandboxScene({ready,start:byId('fight-start'),reset:byId('fight-reset'),pause:byId('fight-pause'),
       boxes:byId('fight-boxes'),status:byId('fight-status'),monster:byId('fight-monster'),
       composition:byId('fight-composition'),cloud:byId('fight-cloud'),cloudOption:byId('fight-cloud-option'),
       bossDebug:byId('fight-boss-debug'),bossPhase:byId('fight-boss-phase'),bossInfo:byId('fight-boss-info'),
       randomized:byId('fight-randomized'),retreat:byId('fight-retreat'),special:byId('fight-special'),
-      parryVisual:byId('fight-parry-visual')});
-    byId('lab-title').textContent=document.title='Combat Sandbox';
-    byId('vfx-controls').hidden=byId('vfx-footer').hidden=true;
-    byId('combat-controls').hidden=byId('combat-help').hidden=false;
-    byId('lab-mode').textContent='VFX Laboratory';
-    params.delete('mode');
-  }else{
-    const {VfxLabScene}=await import('./VfxLabScene.js');
-    const controls={
-      select:byId('effect'),play:byId('play'),reset:byId('reset'),loop:byId('loop'),
+      parryVisual:byId('fight-parry-visual')}),
+    vfx:new VfxLabScene({
+      ready,select:byId('effect'),play:byId('play'),reset:byId('reset'),loop:byId('loop'),
       casting:byId('casting'),hotbar:byId('effect-hotbar'),fps:byId('fps'),
       banks:byId('effect-banks'),variant:byId('variant'),variantControl:byId('variant-control'),
       reactions:{dummy:byId('reaction-dummy'),status:byId('reaction-status'),duration:byId('reaction-duration'),
@@ -39,28 +50,40 @@ if(import.meta.env.DEV){
       areaControl:byId('area-control'),areaRadius:byId('area-radius'),areaValue:byId('area-value'),
       projectileControl:byId('projectile-control'),projectile:byId('projectile'),
       timingHint:byId('timing-hint'),resetTiming:byId('reset-timing'),
-    };
-    scene=new VfxLabScene(controls);
-    params.set('mode','combat');
+    }),
+  };
+  for(const [id,button] of Object.entries(buttons)){
+    button.addEventListener('click',()=>{
+      if(id===mode)return;
+      const previous=scenes[mode],next=scenes[id];
+      const sleeping=next.sys.isSleeping();
+      game.canvas.blur();
+      game.scene.sleep(previous);
+      mode=id;
+      if(!sleeping)showMode(false);
+      // Sleeping preserves both the combat draft and the preview's local timing settings.
+      game.scene.run(next);
+      if(sleeping)ready();
+    });
   }
-  byId('lab-mode').href=location.pathname+(params.size?'?'+params.toString():'');
   byId('lab').hidden=false;
   byId('unavailable').hidden=true;
   const leave=byId('leave');
   leave.href=import.meta.env.BASE_URL;
-  if(new URLSearchParams(location.search).get('from')==='game'){
+  if(fromGame){
     leave.addEventListener('click',event=>{
       event.preventDefault();
       window.close();
       if(!window.closed)location.replace(leave.href);
     });
   }
+  showMode(false);
   game=new Phaser.Game({
     type:Phaser.AUTO,parent:'vfx-canvas',...VFX_LAB_SIZE,
     backgroundColor:'#15191f',pixelArt:true,roundPixels:true,
     scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_BOTH,autoRound:true},
     physics:{default:'arcade',arcade:{gravity:{x:0,y:0}}},
-    scene:[scene],
+    scene:[scenes[mode],scenes[mode==='combat'?'vfx':'combat']],
   });
   window.addEventListener('pagehide',event=>{
     if(!event.persisted)game.destroy(true);

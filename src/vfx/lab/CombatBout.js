@@ -1,6 +1,6 @@
 import { PLAYER_MAX_HP } from '../../boss/config.js';
 import { handOf,lashTip,lashPrecisionBox } from './precisionDemo.js';
-import { SKILLS } from './combatSkills.js';
+import { BURN_TICK_MS,SKILLS } from './combatSkills.js';
 import { clamp,groundPoint,toward,playerBox,boxCenter,circleTouchesBox,segmentContact,cleaveContact } from './combatGeometry.js';
 import { CombatEnemy,ENEMIES } from './combatEnemy.js';
 import { AREAS,groundArea,updateArea } from './combatAreas.js';
@@ -106,6 +106,7 @@ export class CombatBout{
   playerStrike(id,player,aim){
     if(!this.started||!this.playerHp||this.stunMs||this.defending)return null;
     const skill=SKILLS[id],hand=handOf(player),hits=[];
+    const ground=skill.shape==='ground'||skill.shape==='self-area';
     const tip=skill.shape==='tip'?lashTip(hand,aim,skill.range):null;
     const targets=tip&&this.onLashImpact?[]:null;
     for(const actor of this.enemies){
@@ -127,8 +128,8 @@ export class CombatBout{
       }
       else if(skill.shape==='arc')point=cleaveContact(hand,aim,box,skill.range);
       else if(skill.shape==='ground'&&Math.hypot(actor.enemy.x-aim.x,actor.enemy.y-aim.y)<=skill.radius)point=boxCenter(box);
+      else if(skill.shape==='self-area'&&circleTouchesBox(aim,skill.radius,box))point=boxCenter(box);
       if(!point)continue;
-      const ground=skill.shape==='ground';
       if(!this.clearLine(ground?aim:player,actor.enemy)||!ground&&!this.clearLine(hand,point))continue;
       const precision=Boolean(precisionBox&&circleTouchesBox(tip,0,precisionBox));
       const critical=precision&&this.random()<skill.criticalChance;
@@ -147,7 +148,7 @@ export class CombatBout{
     return hits[0].point;
   }
 
-  hitEnemy(skill,actor,point,player,critical=false){
+  hitEnemy(skill,actor,point,player,critical=false,{periodic=false}={}){
     if(!actor.enemy.hp||!this.playerHp)return 0;
     const damage=critical?skill.critical:skill.damage;
     const applied=actor.boss?mushroomDamage(actor,damage):Math.min(damage,actor.enemy.hp);
@@ -156,10 +157,12 @@ export class CombatBout{
       return 0;
     }
     actor.enemy.hp-=applied;
-    if(actor.enemy.hp&&(!actor.navigation||actor.navigation.onDamaged(actor,player)))actor.spec.onDamaged?.(actor,player);
+    if(!periodic&&actor.enemy.hp&&(!actor.navigation||actor.navigation.onDamaged(actor,player)))actor.spec.onDamaged?.(actor,player);
     if(skill.status&&actor.enemy.hp)actor.slow={...skill.status};
-    this.onHit?.('enemy',applied,point,{critical,actor,status:skill.status?.name});
+    if(skill.burning&&actor.enemy.hp)actor.burning={damage:skill.burning.damage,remaining:skill.burning.ms,untilTick:BURN_TICK_MS};
+    this.onHit?.('enemy',applied,point,{critical,actor,status:skill.status?.name,reaction:skill.reaction});
     if(!actor.enemy.hp){
+      actor.burning=undefined;
       actor.stop();
       if(actor.boss){
         actor.boss.pendingSummons.length=0;
@@ -169,6 +172,19 @@ export class CombatBout{
       if(actor.spec.hazard)this.addArea(actor.spec.hazard,actor.id,actor.enemy);
     }
     return applied;
+  }
+
+  advanceBurning(actor,dt,player){
+    const burn=actor.burning;
+    if(!burn)return;
+    const elapsed=Math.min(dt,burn.remaining);
+    burn.remaining-=elapsed;
+    burn.untilTick-=elapsed;
+    while(actor.burning&&burn.untilTick<=0){
+      burn.untilTick+=BURN_TICK_MS;
+      this.hitEnemy(burn,actor,boxCenter(actor.spec.box(actor.enemy)),player,false,{periodic:true});
+    }
+    if(!burn.remaining)actor.burning=undefined;
   }
 
   restoreHp(amount){
@@ -253,6 +269,7 @@ export class CombatBout{
     this.onHit?.('player',applied,point,{status});
     if(!this.playerHp){
       for(const actor of this.enemies){
+        actor.burning=undefined;
         if(actor.boss){
           actor.boss.pendingSummons.length=0;
           actor.boss.reinforcementRemaining=null;
@@ -310,6 +327,7 @@ export class CombatBout{
         actor.elapsed=Math.min(actor.deathMs,actor.elapsed+dt);
         return;
       }
+      this.advanceBurning(actor,dt,player);
       if(actor.enemy.hp&&actor.boss)tickBossSummons(actor,player,dt);
       actor.update(dt,player);
     });

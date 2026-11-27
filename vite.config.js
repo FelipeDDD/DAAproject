@@ -2,10 +2,11 @@ import { defineConfig } from 'vite';
 import { PVP_MOVEMENT_CONFIG } from './src/pvp/movementConfig.js';
 import { REALTIME_CONFIG } from './src/realtime/config.js';
 import { combatBalancePlugin } from './scripts/combat-balance-vite.mjs';
+import { combatSkillCatalogPlugin } from './scripts/combat-skill-catalog-vite.mjs';
 import { swampSpawnsPlugin } from './scripts/swamp-spawns-vite.mjs';
 
 export default defineConfig({
-  plugins: [combatBalancePlugin(),swampSpawnsPlugin()],
+  plugins: [combatBalancePlugin(),combatSkillCatalogPlugin(),swampSpawnsPlugin()],
   build: {
     rollupOptions: {
       input: {

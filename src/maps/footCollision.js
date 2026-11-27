@@ -178,3 +178,13 @@ export function createFootCollision(obstacles, {left, top, right, bottom}, radiu
     return inBounds(point);
   };
 }
+
+export function createCombatSpace(obstacles,bounds){
+  const solvers=new Map();
+  return {trace(from,to,radius=0.01){
+    if(!isFootPositionClear(obstacles,bounds,radius,from))return {point:{x:from.x,y:from.y},blocked:true};
+    if(!solvers.has(radius))solvers.set(radius,createFootCollision(obstacles,bounds,radius));
+    const point=solvers.get(radius)(from,to,false);
+    return {point,blocked:Math.hypot(point.x-to.x,point.y-to.y)>1e-6};
+  }};
+}

@@ -12,6 +12,7 @@ import { bindSwampCastInput, bindSwampMovementFocus } from '../src/swamp/swampCa
 import { CombatBout } from '../src/vfx/lab/CombatBout.js';
 import { MUSHROOM_BOSS } from '../src/vfx/lab/mushroomBoss.js';
 import { CombatSkillRunner } from '../src/vfx/lab/CombatSkillRunner.js';
+import catalog from '../src/combat/skillCatalog.json' with {type:'json'};
 
 const [entrance,southeast,north,ultimate]=SWAMP_RUN.checkpoints;
 function collect(run,step){
@@ -21,6 +22,29 @@ function collect(run,step){
   assert.equal(run.collect(step.id),true);
   assert.equal(run.collect(step.id),false);
 }
+
+test('new Swamp offers use catalog slots and categories while earned choices survive edits',()=>{
+  const run=new SwampRun();
+  assert.ok(run.choose('starter','lash'));
+  collect(run,southeast);
+  assert.ok(run.choose('offense','cleaver'));
+  const draft=structuredClone(catalog);
+  draft.lash={category:'survival',slots:['Q','E']};
+  draft.cleaver={category:'survival',slots:['LMB']};
+  draft.meteor.slots.push('LMB','Q','E');
+  draft.tesla={category:'damage',slots:['LMB','Q','E','R']};
+  const fresh=new SwampRun(SWAMP_RUN,undefined,draft);
+  const offered=fresh.offers()[0].skills;
+  assert.ok(offered.includes('flurry'));
+  for(const id of ['lash','cleaver','meteor','tesla'])assert.ok(!offered.includes(id));
+  const resumed=new SwampRun(SWAMP_RUN,run.snapshot(),draft);
+  assert.deepEqual(resumed.skills,['lash','cleaver',null,null]);
+  collect(resumed,north);
+  assert.deepEqual(resumed.offers().map(offer=>offer.id),['survival']);
+  assert.ok(resumed.choose('survival','drain'));
+  collect(resumed,ultimate);
+  assert.deepEqual(resumed.offers()[0].skills,['meteor']);
+});
 
 test('Swamp V3 is the only map with the experimental zoom factor',()=>{
   assert.equal(CAMERA_ZOOM.swampV3Factor,0.85);

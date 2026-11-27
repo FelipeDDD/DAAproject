@@ -3,6 +3,8 @@ import test from 'node:test';
 import { CombatBout,POISON } from '../src/vfx/lab/CombatBout.js';
 import { CombatSkillRunner } from '../src/vfx/lab/CombatSkillRunner.js';
 import { SKILLS } from '../src/vfx/lab/combatSkills.js';
+import { applyCombatBalance } from '../src/vfx/lab/combatBalancePreview.js';
+import current from '../src/combat/balance.json' with {type:'json'};
 
 function fight(allowParry=true){
   const heals=[],blocks=[],hits=[];
@@ -20,6 +22,22 @@ function fight(allowParry=true){
   bout.playerHp=50;
   return {bout,runner,player,use,step,heals,blocks,hits};
 }
+
+test('the balance draft drives parry healing, guard duration and cooldown in combat',t=>{
+  t.after(()=>applyCombatBalance(current));
+  const draft=structuredClone(current),skill=draft.michael['healing-parry'];
+  skill.cooldown=9000;
+  Object.assign(skill.parry,{activeMs:350,healFraction:0.6});
+  applyCombatBalance(draft);
+  const {bout,player,runner,use,step,heals}=fight();
+  assert.ok(use(1));
+  assert.equal(runner.cooldowns.get('healing-parry'),9000);
+  step(349);
+  assert.equal(bout.hurt(50,player),'blocked');
+  step(1);
+  assert.deepEqual(heals,[30]);
+  assert.equal(bout.playerHp,80);
+});
 
 test('a weak direct strike is blocked immediately and Michael cannot move or cast through the guard',()=>{
   const {bout,runner,player,use,step,heals,blocks,hits}=fight();

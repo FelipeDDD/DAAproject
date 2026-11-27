@@ -1,6 +1,6 @@
 import { labSheets as sheets } from './sheetCatalog.js';
 import { drawField, lurePath } from './fieldDetails.js';
-import { createEncounter } from './proximityDemo.js';
+import { createEncounter,createSentryVisual } from './proximityDemo.js';
 import { handOf as emitterFor, precisionView } from './precisionDemo.js';
 import { camouflageView } from './visibilityDemo.js';
 
@@ -14,6 +14,7 @@ for(const [name,sheet] of Object.entries(sheets)){
 
 export function preloadLabSheets(scene,baseUrl,names=frames.keys()){
   for(const name of names){
+    if(scene.textures.exists(key(name)))continue;
     const {width,height,ends}=frames.get(name);
     scene.load.spritesheet(key(name),baseUrl+'tools/vfx-lab/sheets/'+name+'.png',{
       frameWidth:width,frameHeight:height,endFrame:ends.length-1,
@@ -196,6 +197,10 @@ function createLayer(scene,clip,anchor,player,nearest,livePlayer,captureAim,sett
     if(clip.flight)drawFlight(g,clip.flight,t,distance);
     else drawArc(g,t,distance,clip.seed??0);
   }};
+}
+
+export function createSentryView(scene,anchor,radius,nearest){
+  return createSentryVisual(scene,anchor,radius,(clip,point)=>createLayer(scene,clip,point,anchor,nearest));
 }
 
 // All layers sample the playback clock. No Phaser timers, tweens or global animations.

@@ -1,23 +1,23 @@
 # Combat Sandbox
 
-Execute `npm run dev` e selecione **Combat Sandbox** no cabeçalho do VFX Lab.
-Abra diretamente em `/tools/vfx-lab/?mode=combat` se preferir. O link **VFX Laboratory**
-leva de volta às quatro barras de efeitos.
+Execute `npm run dev` e abra `/tools/vfx-lab/`. Escolha o encontro à esquerda e
+equipe as habilidades à direita. Use **VFX preview** para testar efeitos como
+Tesla Coil na arena e **Skills** para retomar o combate na mesma página.
 
-Escolha um inimigo em **Enemy** ou selecione **Mixed encounter** e clique em **Start fight**.
+Escolha um inimigo em **Enemy** ou selecione **Mixed encounter** e clique em **Start** na arena.
 A composição mista inicial tem uma Poison Slime, uma Frost Slime e uma Big Slime.
 Cada seletor permite de zero a três do mesmo tipo. Mushroom tem uma vaga e o
 encontro aceita até seis inimigos no total.
-Alterar a composição prepara a luta. **Reset fight** repete a composição atual. Use WASD ou
+Alterar a composição prepara a luta. **Reset** repete a composição atual. Use WASD ou
 as setas para mover Michael e o mouse para mirar. **Pause AI** congela os movimentos,
 ataques e status do encontro. Michael ainda pode se mover e atacar. **Show hitboxes**
-mostra as áreas do corpo, dos pés e do projétil. **Reset fight** reinicia com 100 HP.
+mostra as áreas do corpo, dos pés e do projétil. **Reset** reinicia com 100 HP.
 Trocar de inimigo encerra o encontro e mostra o novo adversário em espera.
 
 ## Balance Editor
 
-Abra o Sandbox pelo Vite em `localhost` ou `127.0.0.1`. Em **Balance Editor**,
-escolha uma habilidade ou inimigo e ajuste a coluna **Experimental**. **Reset
+Abra o Sandbox pelo Vite em `localhost` ou `127.0.0.1`. O **Balance Editor** abaixo da arena
+edita os inimigos e oferece operações avançadas para o balanceamento inteiro. **Reset
 fight and test** aplica o rascunho a um encontro novo. **Save to Source** mostra
 as diferenças e pede confirmação antes de gravar `src/combat/balance.json`.
 Recarregue o Lab ou o Swamp para usar a nova configuração salva.
@@ -50,9 +50,19 @@ além de 500 px ou após o timeout de rota. Ao recuperar o alvo, a navegação p
 sinalizar uma oportunidade de contra-ataque e o mob usa a mesma execução da habilidade.
 O Return Trap também impõe um tempo mínimo de reação na entrada da Snake.
 
-## Loadout de Michael
+## Loadout
 
-Abra **Loadout**, escolha **LMB**, **Q**, **E** ou **R** e clique numa habilidade. A barra sob a arena muda na hora. O conjunto inicial é Ember Cleave, Copper Lash, Life Steal e Meteor Strike. Também estão disponíveis Frost Knives (arco com Slowed), Fireball (explosão no contato ou no alcance máximo) e Ice Lance (primeiro alvo com Slowed). Passe o mouse sobre a habilidade para consultar valores de combate.
+Em **Loadout**, escolha **LMB**, **Q**, **E** ou **R** e clique numa habilidade compatível. A barra sob a arena muda na hora. O conjunto inicial é Ember Cleave, Copper Lash, Life Steal e Meteor Strike. A biblioteca agrupa as habilidades em **Damage**, **Survival** e **Ultimate**. Passe o mouse sobre o ícone para consultar valores de combate.
+
+Busque pelo nome ou filtre por categoria na biblioteca. Clique no cartão para equipar a habilidade ou no lápis **Edit skill** para editar seus parâmetros, categoria e slots. **Apply / Test** aplica o rascunho da habilidade para um novo encontro. **Restore Saved** recupera o que está gravado, e **Reset Original values** carrega os valores originais de gameplay como rascunho.
+
+**Save to Source** confirma as mudanças da habilidade e grava números em `src/combat/balance.json` e regras de categoria e slots em `src/combat/skillCatalog.json`, pelo Vite local. Os presets continuam guardados no navegador. O Lab usa uma escolha compatível temporária quando um preset antigo contém uma habilidade num slot que ela já não aceita.
+
+No Swamp, o catálogo filtra as novas escolhas por categoria e slot. O primeiro checkpoint continua oferecendo Damage, e Q e E precisam vir de categorias diferentes. R continua dependendo do Mushroom Boss. As escolhas já conquistadas na run mantêm seus IDs, categorias e checkpoints. Healing Parry, Fire Ring e Tesla Coil continuam disponíveis para testes no Sandbox.
+
+### Tesla Coil
+
+Equipe **Tesla Coil** em R e mire no chão. Depois de **500 ms** de carga, a bobina permanece fixa no ponto selecionado por **6 s**. Ela detecta inimigos em **54 px** e causa **12 HP** por descarga, com um intervalo de **1 s por alvo**. O alcance de colocação é **160 px** e o cooldown é de **18 s**. O caminho de colocação e as descargas respeitam paredes. O lápis ao lado de **Tesla Coil** abre os sete parâmetros. **Sentry** e **Relay array** continuam disponíveis separadamente no VFX Preview.
 
 Escolha um dos três presets, digite um nome e use **Save preset** para gravar os quatro slots. **Load** recupera esse conjunto. O navegador também guarda a configuração em uso, inclusive edições posteriores ao último Save. O formato local tem versão e usa IDs de habilidade. Reset reinicia a luta com os slots atuais.
 

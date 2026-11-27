@@ -69,7 +69,12 @@ Execute `npm run dev`, abra **Dev Tools → Open VFX Lab** ou acesse
 ou relay WebSocket. **Leave Lab** volta para o jogo. O botão nos Dev Tools abre
 uma nova aba e preserva a sessão que já estava aberta.
 
-Escolha **Essentials**, **Attacks**, **Area & support** ou **Pixelfx Experiments**.
+O **Combat Lab** abre com os encontros à esquerda, a arena no centro e o
+**Loadout** à direita. Na mesma coluna, **VFX preview** troca a arena para a
+visualização de efeitos. **Skills** retoma o combate e mantém o rascunho do
+Balance Editor. Para abrir direto no preview, use `/tools/vfx-lab/?mode=vfx`.
+
+No preview, escolha **Essentials**, **Attacks**, **Area & support** ou **Pixelfx Experiments**.
 Os atalhos **1–9 e 0** aparecem em cada habilidade. **Page Up / Page Down** alternam as barras.
 Um clique no slot reproduz o efeito. O seletor **Effect** permite escolher sem
 disparar. Quando houver uma **Variant**, escolha-a e use **Play** ou **Loop** para comparar.
@@ -81,7 +86,6 @@ Smoke screen**, ajuste **Area radius** e reproduza novamente para comparar a cob
 A variante **Channel** do Arcane Beam mantém o jogador parado durante a canalização.
 Em **Target reactions**, escolha um dummy, habilite **Walk** para movimentá-lo e use
 **Apply status** ou **Test hit** para comparar reações e impactos. **Reset** limpa ambos.
-No cabeçalho, **Combat Sandbox** abre lutas individuais ou mistas contra as quatro variantes de Slime e o Ghost.
 Veja os controles e as áreas de acerto no [guia do Combat Sandbox](tools/vfx-lab/COMBAT.md).
 Veja as combinações e os resultados da inspeção visual na [curadoria do laboratório](tools/vfx-lab/CURATION.md).
 

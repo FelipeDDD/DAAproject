@@ -80,6 +80,37 @@
       "radius": 35,
       "cooldown": 6500,
       "cast": 1690
+    },
+    "fire-ring": {
+      "damage": 60,
+      "radius": 145,
+      "cast": 3000,
+      "castSpeed": 0.1,
+      "cooldown": 25000,
+      "burning": {
+        "damage": 10,
+        "ms": 6000
+      }
+    },
+    "tesla": {
+      "damage": 12,
+      "radius": 54,
+      "targetCooldownMs": 1000,
+      "durationMs": 6000,
+      "range": 160,
+      "cast": 500,
+      "cooldown": 18000
+    },
+    "healing-parry": {
+      "cooldown": 8000,
+      "parry": {
+        "activeMs": 300,
+        "blockFraction": 1,
+        "healFraction": 0.5,
+        "maxHeal": 60,
+        "recoveryMs": 400,
+        "recoveryDamageMultiplier": 1.2
+      }
     }
   },
   "slimes": {

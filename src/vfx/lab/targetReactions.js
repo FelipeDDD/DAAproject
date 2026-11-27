@@ -38,11 +38,10 @@ export class TargetReactions{
     this.serial=0;
   }
 
-  apply(sprite,name,ms){
+  apply(sprite,name,ms,{group=name==='Haste'?'Haste':'status'}={}){
     const frame=reactionFrame(sprite.frame);
     if(!frame||!modules[name]||!(ms>0))return;
-    // One selected status per dummy; the Grove's short Haste can overlap it.
-    const previous=this.active.findIndex(r=>r.sprite===sprite&&(r.name==='Haste')===(name==='Haste'));
+    const previous=this.active.findIndex(r=>r.sprite===sprite&&r.group===group);
     if(previous>=0)this.active.splice(previous,1)[0].view.destroy();
     const options={actor:frame.actor};
     if(name==='Slowed')options.showDial=false;
@@ -50,14 +49,14 @@ export class TargetReactions{
       palette:['#163735','#28544a','#407966','#64aa87','#98dca3','#d3f5bc','#fbffe5']});
     const view=new PixelFxView(this.scene,modules[name],sprite,this.nearest,options,
       {texturePrefix:'lab-reaction-'+(++this.serial)});
-    const entry={sprite,name,view,elapsed:0,duration:ms};
+    const entry={sprite,name,group,view,elapsed:0,duration:ms};
     this.active.push(entry);
     this.place(entry,0);
   }
 
-  place({view,sprite,elapsed,duration,name},dt){
+  place({view,sprite,elapsed,duration,name,group},dt){
     const f=reactionFrame(sprite.frame);
-    const strength=name==='Poisoned'||name==='Haste'?0.74:1;
+    const strength=group==='Burning'?0.68:name==='Poisoned'||name==='Haste'?0.74:1;
     const alpha=f&&sprite.visible?sprite.alpha*strength:0;
     if(f){
       view.effect.options.actor=f.actor;
@@ -132,9 +131,9 @@ export class TargetReactions{
     }
   }
 
-  clearStatuses(sprite){
+  clearStatuses(sprite,group){
     this.active=this.active.filter(r=>{
-      if(sprite&&r.sprite!==sprite)return true;
+      if((sprite&&r.sprite!==sprite)||(group&&r.group!==group))return true;
       r.view.destroy();
       return false;
     });

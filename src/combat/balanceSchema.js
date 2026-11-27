@@ -5,7 +5,7 @@ import { DAMAGE_PERCENT } from './damageScaling.js';
 export { original };
 export const BALANCE_ROUTE='/__combat-balance';
 export const BALANCE_FORMAT='daa-combat-balance-v1';
-const proportions=new Set(['criticalChance','feintChance','chance','castSpeed','enterRatio','exitRatio']);
+const proportions=new Set(['criticalChance','feintChance','chance','castSpeed','enterRatio','exitRatio','blockFraction','healFraction']);
 const timed=/(?:Ms|^ms)$|^(cast|cooldown|sharedCooldown|lifetime)$/;
 const distance=/range|distance|radius|padding|^recoil$|hysteresis/i;
 const newSlimeFields=['damagePercent','jumpDamage','projectileDamage','contactDamage'];
@@ -16,11 +16,16 @@ function bounds(path){
     const {min,max,step}=DAMAGE_PERCENT;
     return {min,max,step,unit:'%',integer:true};
   }
-  if(proportions.has(key))return {min:key==='castSpeed'?0.01:0,max:1,unit:'%',factor:100};
+  if(proportions.has(key))return {min:key==='castSpeed'&&path[1]!=='fire-ring'?0.01:0,max:1,unit:'%',factor:100};
+  if(key==='recoveryDamageMultiplier')return {min:1,max:4,unit:'%',factor:100};
+  if(key==='maxHeal')return {min:0,max:1000,unit:'HP',integer:true};
   if(key==='percent')return {min:0,max:100,unit:'%'};
   if(timed.test(key)){
-    const allowZero=key==='trackingMs'||(key==='cast'&&['fireball','lance'].includes(path[1]));
-    const min=path.join('.')==='michael.meteor.cast'?METEOR_FALL_MS:allowZero?0:1;
+    const allowZero=key==='trackingMs'||(key==='recoveryMs'&&path[1]==='healing-parry')||
+      (key==='cast'&&['fireball','lance'].includes(path[1]));
+    const field=path.join('.');
+    const min=field==='michael.meteor.cast'?METEOR_FALL_MS:
+      field==='michael.fire-ring.burning.ms'?1000:allowZero?0:1;
     return {min,max:60000,unit:'ms',integer:true};
   }
   if(/^(damage|jumpDamage|projectileDamage|contactDamage|heal|critical)$/.test(key))return {min:1,max:1000,unit:'HP',integer:true};
@@ -41,6 +46,17 @@ export const balanceFields=describe(original);
 export const balanceValue=(data,path)=>path.reduce((object,key)=>object[key],data);
 
 export function normalizeBalance(data){
+  const player=data?.michael;
+  if(player&&typeof player==='object'&&!Array.isArray(player)){
+    const missing=['fire-ring','tesla','healing-parry'].filter(id=>!Object.hasOwn(player,id));
+    if(missing.length){
+      data={...data,michael:{...player,...Object.fromEntries(missing.map(id=>[id,structuredClone(original.michael[id])]))}};
+    }
+    const ring=data.michael['fire-ring'];
+    if(ring&&typeof ring==='object'&&!Array.isArray(ring)&&!Object.hasOwn(ring,'castSpeed')){
+      data={...data,michael:{...data.michael,'fire-ring':{...ring,castSpeed:original.michael['fire-ring'].castSpeed}}};
+    }
+  }
   const variants=data?.slimes?.variants;
   if(!variants||typeof variants!=='object'||Array.isArray(variants))return data;
   const defaults=original.slimes.variants;

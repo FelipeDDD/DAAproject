@@ -1,7 +1,7 @@
 import { PLAYER_MAX_HP } from '../boss/config.js';
-import { SLOT_KEYS } from '../vfx/lab/combatSkills.js';
+import { SKILL_CATEGORIES } from '../combat/skillCatalogSchema.js';
 
-export { SLOT_KEYS };
+export { SLOT_KEYS } from '../combat/skillCatalogSchema.js';
 export const SWAMP_MINI_BOSS = {
   id:'swamp-mini-boss',
   name:'Mushroom Boss',
@@ -19,10 +19,10 @@ export const SWAMP_RUN = {
   pickupRange:32,
   requireUnusedMiddleCategory:true,
   categories:{
-    starter:{label:'Offense',skills:['cleaver','lash','flurry','fireball','lance']},
-    offense:{label:'Offense',skills:['cleaver','lash','flurry','fireball','lance']},
-    survival:{label:'Survival',skills:['drain']},
-    ultimate:{label:'Ultimate',skills:['meteor']},
+    starter:{label:SKILL_CATEGORIES.damage,category:'damage'},
+    offense:{label:SKILL_CATEGORIES.damage,category:'damage'},
+    survival:{label:SKILL_CATEGORIES.survival,category:'survival'},
+    ultimate:{label:SKILL_CATEGORIES.ultimate,category:'ultimate'},
   },
   checkpoints:[
     {id:'entrance',label:'Swamp entrance',slot:0,categories:['starter'],spawn:'default'},

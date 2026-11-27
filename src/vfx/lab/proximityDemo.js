@@ -1,12 +1,19 @@
 import { drawField } from './fieldDetails.js';
+import original from '../../combat/balance.original.json' with {type:'json'};
+
+export const SENTRY_SHEET='pfx-coil';
+export const SENTRY_DEFAULTS=original.michael.tesla;
+export const SENTRY_FLASH_MS=210;
 
 // Per cast, each dummy can enter once. A mine spends its only charge on the first entry.
-export function proximityTrigger(radius,charges=Infinity,cooldownMs=Infinity,centerY=0){
+export function proximityTrigger(radius,charges=Infinity,cooldownMs=Infinity,centerY=0,eligible=()=>true){
   const lastShot=new Map();
   let remaining=charges;
-  return (targets,ms=0)=>targets.filter(({id,x,y,team})=>{
+  return (targets,ms=0)=>targets.filter(target=>{
+    const {id,x,y,team}=target;
     if(team!=='red'||!remaining||x*x+(y-centerY)**2>radius*radius)return false;
     if(lastShot.has(id)&&ms-lastShot.get(id)<cooldownMs)return false;
+    if(!eligible(target))return false;
     remaining--;
     lastShot.set(id,ms);
     return true;
@@ -19,17 +26,42 @@ function visitor(i,ms){
   return {id:i,team:'red',x:(i?-1:1)*(92-74*progress),y:(i?18:-10)+6*Math.sin(progress*Math.PI)};
 }
 
+export function createSentryVisual(scene,anchor,radius,layer){
+  const stand=layer({sheet:SENTRY_SHEET,scale:0.73},anchor);
+  const circle=scene.add.graphics().setPosition(anchor.x,anchor.y).setDepth(anchor.y-2);
+  circle.lineStyle(1,0x59bda6,0.48).strokeCircle(0,0,radius);
+  const arcs=scene.add.graphics().setDepth(anchor.y+7);
+  return {
+    draw(ms,flashes){
+      stand.draw((ms%2400)/2400);
+      arcs.clear();
+      for(const {x,y,age} of flashes){
+        if(!(age>=0&&age<SENTRY_FLASH_MS))continue;
+        const alpha=1-age/SENTRY_FLASH_MS;
+        const points=Array.from({length:7},(_,i)=>{
+          const u=i/6,j=i===0||i===6?0:3*Math.sin(i*6.9+Math.floor(age/45));
+          return {x:anchor.x+u*(x-anchor.x)+j,y:anchor.y-39+u*(y-anchor.y+39)};
+        });
+        arcs.lineStyle(3,0x737be8,alpha).strokePoints(points)
+          .lineStyle(1,0xe1ffff,alpha).strokePoints(points)
+          .fillStyle(0xa0efff,alpha).fillCircle(x,y,4);
+      }
+    },
+    destroy(){arcs.destroy();stand.object.destroy();circle.destroy();},
+  };
+}
+
 export function createEncounter(scene,clip,anchor,layer){
   const mine=clip.encounter==='mine',sentry=clip.encounter==='sentry';
-  const radius=mine?32:sentry?54:62;
+  const radius=mine?32:sentry?SENTRY_DEFAULTS.radius:62;
   // The flame base in shadow/necro-skulls is 32 source pixels above the export pivot.
   const centerY=clip.encounter==='altar'?-32*1.05:0;
-  const enter=proximityTrigger(radius,mine?1:Infinity,sentry?1000:Infinity,centerY);
-  const stand=layer({sheet:clip.sheet,scale:mine?0.85:sentry?0.73:1.05,tint:mine?0xcafa91:undefined},anchor);
-  const circle=scene.add.graphics().setPosition(anchor.x,anchor.y+centerY).setDepth(anchor.y-2);
-  circle.lineStyle(1,mine?0xa4b969:0x59bda6,0.48).strokeCircle(0,0,radius);
+  const enter=proximityTrigger(radius,mine?1:Infinity,sentry?SENTRY_DEFAULTS.targetCooldownMs:Infinity,centerY);
+  const coil=sentry?createSentryVisual(scene,anchor,radius,layer):null;
+  const stand=sentry?null:layer({sheet:clip.sheet,scale:mine?0.85:1.05,tint:mine?0xcafa91:undefined},anchor);
+  const circle=sentry?null:scene.add.graphics().setPosition(anchor.x,anchor.y+centerY).setDepth(anchor.y-2);
+  circle?.lineStyle(1,mine?0xa4b969:0x59bda6,0.48).strokeCircle(0,0,radius);
   const markers=Array.from({length:mine?2:3},()=>scene.add.graphics());
-  const arcs=sentry?scene.add.graphics().setDepth(anchor.y+7):null;
   const discharge=new Map();
 
   const launches=[];
@@ -63,20 +95,7 @@ export function createEncounter(scene,clip,anchor,layer){
       if(progress<1)stand.draw(progress);
 
     }else if(sentry){
-      stand.draw((ms%2400)/2400);
-      arcs.clear();
-      for(const p of targets){
-        const age=ms-discharge.get(p.id);
-        if(!(age>=0&&age<210))continue;
-        const alpha=1-age/210;
-        const points=Array.from({length:7},(_,i)=>{
-          const u=i/6,j=i===0||i===6?0:3*Math.sin(i*6.9+Math.floor(age/45));
-          return {x:anchor.x+u*p.x+j,y:anchor.y-39+u*(p.y+28)};
-        });
-        arcs.lineStyle(3,0x737be8,alpha).strokePoints(points)
-          .lineStyle(1,0xe1ffff,alpha).strokePoints(points)
-          .fillStyle(0xa0efff,alpha).fillCircle(anchor.x+p.x,anchor.y+p.y-11,4);
-      }
+      coil.draw(ms,targets.map(p=>({x:anchor.x+p.x,y:anchor.y+p.y-11,age:ms-discharge.get(p.id)})));
     }else{
       stand.draw(ms%3000/3000);
       for(const shot of launches){
@@ -101,9 +120,9 @@ export function createEncounter(scene,clip,anchor,layer){
   }
   function destroy(){
 
-    arcs?.destroy();
-    stand.object.destroy();
-    circle.destroy();
+    coil?.destroy();
+    stand?.object.destroy();
+    circle?.destroy();
     markers.forEach(g=>g.destroy());
     for(const shot of launches){shot.skull?.object.destroy();shot.impact?.object.destroy();}
   }

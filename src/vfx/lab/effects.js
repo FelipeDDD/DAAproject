@@ -7,7 +7,7 @@ import { PersistentGroundView } from './PersistentGroundView.js';
 import { healingGround } from './healingGround.js';
 import { frostGround } from './frostGround.js';
 import { groundFire } from './groundFire.js';
-import * as fireRing from './vendor/pixelfx/fx/fire/fire-ring.js';
+import { createFireRingView,FIRE_RING_ART_MS } from './fireRingVisual.js';
 import * as spiritFlame from './vendor/pixelfx/fx/fire/spirit-flame.js';
 import { sequenceEffects } from './sequenceEffects.js';
 
@@ -58,17 +58,17 @@ export const LAB_EFFECTS=Object.freeze({
   // Candidate for a one-shot fire burst skill. Sustained ground fire is a separate effect.
   'fire-ring':{
     label:'PixelFX Fire Ring',
-    durationMs:fireRing.meta.duration*1000,
+    durationMs:FIRE_RING_ART_MS,
     aim:'pointer',
     castRangePx:defaultCastRange,
     timing:{mode:'playback',defaultMs:3000,minMs:500,maxMs:8000,stepMs:50,
-      hint:`Original: ${fireRing.meta.duration*1000} ms · changes playback speed.`},
+      hint:`Original: ${FIRE_RING_ART_MS} ms · changes playback speed.`},
     preparation:{
       durationMs:1500,
       create:(scene,anchor,_nearest,player)=>new CastingSparks(scene,player,anchor),
       release:{durationMs:85,create:(scene,anchor,_nearest,player)=>new CastingFlash(scene,player,anchor)},
     },
-    create:(scene,anchor,nearest)=>new PixelFxView(scene,fireRing,anchor,nearest,{reach:zone.radius}),
+    create:(scene,anchor,nearest)=>createFireRingView(scene,anchor,nearest,{reach:zone.radius}),
   },
   'fire-zone':{
     label:'Current Fire Zone',

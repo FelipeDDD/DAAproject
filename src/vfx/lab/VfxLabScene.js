@@ -9,6 +9,7 @@ import { LAB_EFFECTS, LAB_BANKS } from './effects.js';
 import { preloadLabSheets } from './SheetSequence.js';
 import { mountEffectHotbar } from './EffectHotbar.js';
 import { trackArenaAim } from './ArenaAim.js';
+import { bindArenaInput } from './arenaInput.js';
 import { CastRangeIndicator } from './CastRangeIndicator.js';
 import { mountTimingControls } from './TimingControls.js';
 import { mountReactionControls } from './ReactionControls.js';
@@ -58,9 +59,6 @@ export class VfxLabScene extends Phaser.Scene {
     this.nextFpsUpdate=0;
 
     const canvas=this.game.canvas;
-    canvas.tabIndex=0;
-    canvas.setAttribute('aria-label','VFX test arena. Move with WASD or arrow keys.');
-    this.input.keyboard.disableGlobalCapture();
     const listeners=new AbortController();
     const {signal}=listeners;
     this.practice=mountReactionControls(this,[
@@ -69,10 +67,6 @@ export class VfxLabScene extends Phaser.Scene {
     ],this.controls.reactions,signal);
     const aim=trackArenaAim(canvas,this.cameras.main,VFX_LAB_TARGET,{signal});
     const {select,play,reset}=this.controls;
-    const focusArena=()=>{
-      if(document.activeElement!==canvas)this.input.keyboard.resetKeys();
-      canvas.focus({preventScroll:true});
-    };
     const captureAim=id=>{
       const point=aim.capture();
       const range=timing.get(id).castRangePx;
@@ -83,7 +77,7 @@ export class VfxLabScene extends Phaser.Scene {
       this.playback.play(id,{
         anchor:VFX_LAB_TARGET,captureAim:effect.aim==='pointer'?()=>captureAim(id):undefined,
       });
-      focusArena();
+      this.focusArena();
     };
     this.hotbar=mountEffectHotbar(this.controls,LAB_BANKS,LAB_EFFECTS,{
       signal,activate,selectEffect:()=>{this.playback.stop();timing.render();},
@@ -93,17 +87,12 @@ export class VfxLabScene extends Phaser.Scene {
       LAB_EFFECTS,(stage,anchor,context)=>this.createEffectView(stage,anchor,context,timing.get),
       {canPrepare:()=>this.controls.casting.checked,settings:timing.get},
     );
-    canvas.addEventListener('pointerdown',event=>{
-      if(event.button!==0)return;
-      event.preventDefault();
-      focusArena();
-      if(LAB_EFFECTS[select.value].clickToCast)activate(select.value);
-    },{signal});
-    canvas.addEventListener('keydown',event=>{
-      if(event.key.startsWith('Arrow'))event.preventDefault();
-    },{signal});
-    window.addEventListener('keydown',event=>this.hotbar.onKey(event),{signal});
-    canvas.addEventListener('blur',()=>this.input.keyboard.resetKeys(),{signal});
+    this.focusArena=bindArenaInput(this,{
+      label:'VFX test arena',onPointer:()=>{
+        if(LAB_EFFECTS[select.value].clickToCast)activate(select.value);
+      },
+      onKey:event=>this.hotbar.onKey(event),
+    },signal);
     play.addEventListener('click',()=>activate(select.value),{signal});
     reset.addEventListener('click',()=>{
       this.playback.stop();
@@ -113,10 +102,9 @@ export class VfxLabScene extends Phaser.Scene {
       this.player.setDepth(VFX_LAB_PLAYER.y);
       this.player.setFacing('down');
       this.input.keyboard.resetKeys();
-      focusArena();
+      this.focusArena();
     },{signal});
     play.disabled=reset.disabled=false;
-    focusArena();
     const aimPreview=new CastRangeIndicator(this,this.player,'vfx-lab-aim-preview');
     // Arcade copies the simulated position to the sprite before this callback.
     const updateEffects=(time,delta)=>{
@@ -137,6 +125,7 @@ export class VfxLabScene extends Phaser.Scene {
       this.hotbar.destroy();
       play.disabled=reset.disabled=true;
     });
+    this.events.once(Phaser.Scenes.Events.CREATE,this.controls.ready);
   }
 
   createEffectView(stage,anchor,{id,preparing,effect,captureAim,durationMs,settings}={},getSettings){

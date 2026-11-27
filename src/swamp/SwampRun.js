@@ -1,9 +1,14 @@
 import { SKILLS } from '../vfx/lab/combatSkills.js';
+import catalog from '../combat/skillCatalog.json' with {type:'json'};
+import { canEquip } from '../combat/skillCatalogSchema.js';
 import { SWAMP_RUN } from './runConfig.js';
 
+const availableInCampaign=id=>Object.hasOwn(SKILLS,id)&&!SKILLS[id].sandboxOnly;
+
 export class SwampRun {
-  constructor(config=SWAMP_RUN,saved){
+  constructor(config=SWAMP_RUN,saved,skillCatalog=catalog){
     this.config=config;
+    this.skillCatalog=skillCatalog;
     this.restart();
     if(saved?.version!==1)return;
     if(typeof saved.ambushVariant==='string')this.ambushVariant=saved.ambushVariant;
@@ -17,7 +22,12 @@ export class SwampRun {
       if(step.elite&&defeated.includes(step.elite))this.defeat(step.elite);
       if(collected.includes(step.id))this.collect(step.id);
       const choice=saved.choices?.[step.slot];
-      if(choice)this.choose(choice.category,choice.skill);
+      // Previously earned choices keep their checkpoint and category, even if
+      // the catalog now offers that skill in another category or slot.
+      if(this.pendingChoice===step&&choice&&step.categories.includes(choice.category)&&
+        this.allowsCategory(step,choice.category)&&availableInCampaign(choice.skill)&&!this.skills.includes(choice.skill)){
+        this.recordChoice(step,choice.category,choice.skill);
+      }
     }
     if(Number.isFinite(saved.hp))this.setHealth(saved.hp);
   }
@@ -49,11 +59,16 @@ export class SwampRun {
     if(!step)return [];
     const chosen=new Set(this.skills);
     return step.categories.flatMap(id=>{
-      if(this.config.requireUnusedMiddleCategory&&this.choices[step.excludeCategoryFromSlot]?.category===id)return [];
-      const {label,skills}=this.config.categories[id];
-      const available=skills.filter(skill=>SKILLS[skill]&&!chosen.has(skill));
+      if(!this.allowsCategory(step,id))return [];
+      const {label,category}=this.config.categories[id];
+      const available=Object.keys(this.skillCatalog).filter(skill=>this.skillCatalog[skill].category===category&&
+        canEquip(this.skillCatalog,skill,step.slot)&&availableInCampaign(skill)&&!chosen.has(skill));
       return available.length?[{id,label,skills:available}]:[];
     });
+  }
+
+  allowsCategory(step,category){
+    return !this.config.requireUnusedMiddleCategory||this.choices[step.excludeCategoryFromSlot]?.category!==category;
   }
 
   defeat(elite){
@@ -71,9 +86,13 @@ export class SwampRun {
   choose(category,skill){
     const step=this.pendingChoice;
     if(!step||!this.offers(step).some(offer=>offer.id===category&&offer.skills.includes(skill)))return false;
+    this.recordChoice(step,category,skill);
+    return true;
+  }
+
+  recordChoice(step,category,skill){
     this.choices[step.slot]={category,skill};
     this.setHealth(this.hp+this.config.checkpointHeal);
-    return true;
   }
 
   setHealth(hp){

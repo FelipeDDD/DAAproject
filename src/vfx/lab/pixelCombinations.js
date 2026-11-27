@@ -1,4 +1,5 @@
 import { handOf, LASH } from './precisionDemo.js';
+import { SENTRY_DEFAULTS,SENTRY_SHEET } from './proximityDemo.js';
 
 const shot=(sheet,at,ms,props={})=>({sheet,at,ms,...props});
 const fx=(name,at,ms,props)=>shot('pfx-'+name,at,ms,props);
@@ -70,7 +71,7 @@ export function addPixelCombinations(effects,add){
       },destroy:()=>g.destroy()};
     },
   };
-  add('tesla','Sentry',[{sheet:'pfx-coil',encounter:'sentry',at:0,ms:6000}]);
+  add('tesla','Sentry',[{sheet:SENTRY_SHEET,encounter:'sentry',at:0,ms:SENTRY_DEFAULTS.durationMs}]);
   effects.tesla.defaultVariant='Sentry';
   add('sporecap','Proximity mine',[{sheet:'pfx-spores',encounter:'mine',at:0,ms:5900}]);
   effects.sporecap.defaultVariant='Proximity mine';

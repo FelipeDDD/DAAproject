@@ -38,7 +38,10 @@ test('every sheet is used, loads from the lab and has valid cells, pivots, poste
     }
   }
   assert.deepEqual([...used].sort(),Object.keys(sheets).sort());
-  preloadLabSheets({load:{spritesheet(key,url,config){
+  const loaded=new Set();
+  const scene={textures:{exists:key=>loaded.has(key)},load:{spritesheet(key,url,config){
+    assert.ok(!loaded.has(key),'both scenes share the texture cache');
+    loaded.add(key);
     const name=key.slice('vfx-lab-sheet-'.length);
     const {width,height,frameMs,anchor,poster:[index,x,y,w,h]}=sheets[name];
     assert.equal(url,'/tools/vfx-lab/sheets/'+name+'.png');
@@ -49,7 +52,10 @@ test('every sheet is used, loads from the lab and has valid cells, pivots, poste
     assert.ok(frameMs.length>1&&frameMs.every(ms=>ms>0));
     assert.ok(index>=0&&index<frameMs.length&&w>0&&h>0&&x+w<=width&&y+h<=height);
     assert.ok(anchor[0]>=0&&anchor[0]<=width&&anchor[1]>=0&&anchor[1]<=height);
-  }}},'/');
+  }}};
+  preloadLabSheets(scene,'/');
+  assert.equal(loaded.size,used.size);
+  preloadLabSheets(scene,'/');
 });
 
 test('a layered meteor can switch variants, finish, loop and reset without leaving display objects',()=>{

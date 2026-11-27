@@ -6,11 +6,16 @@ import { createCharacterAnimations, preloadCharacterTextures } from '../../chara
 import { createPlaceholderTextures } from '../../art/placeholders.js';
 import { preloadTiledMap, createTiledWorld } from '../../maps/tiledWorld.js';
 import { addMapCollision } from '../../maps/collision.js';
+import { createCombatSpace,readFootObstacles } from '../../maps/footCollision.js';
 import { trackArenaAim } from './ArenaAim.js';
+import { bindArenaInput } from './arenaInput.js';
 import { CombatSkillRunner } from './CombatSkillRunner.js';
 import { CombatSkillView,combatSheets } from './CombatSkillView.js';
 import { CombatParryView } from './CombatParryView.js';
 import { CombatLoadoutPanel } from './CombatLoadoutPanel.js';
+import { SkillEditor } from './SkillEditor.js';
+import { CombatEditorState } from './CombatEditorState.js';
+import { CombatSaveDialog } from './CombatSaveDialog.js';
 import { BalanceEditor } from './BalanceEditor.js';
 import { slotShortcut } from './combatLoadout.js';
 import { preloadLabSheets } from './SheetSequence.js';
@@ -87,49 +92,51 @@ export class CombatSandboxScene extends Phaser.Scene{
     this.lashDebugLabel=this.add.text(0,0,'',{
       fontSize:'12px',fontStyle:'bold',stroke:'#201a24',strokeThickness:3,resolution:2,
     }).setOrigin(0.5,1).setDepth(1001).setVisible(false);
-    this.bout=new CombatBout((victim,damage,point,{critical,status,actor,immune})=>{
+    this.bout=new CombatBout((victim,damage,point,{critical,status,actor,immune,reaction})=>{
       const sprite=victim==='enemy'?this.enemyView(actor).sprite:this.player;
       this.reactions.hit(sprite,critical,point,immune?'Immune':Number(damage.toFixed(2)));
       if(!this.bout.playerHp)this.reactions.clearStatuses();
       else if(actor&&!actor.enemy.hp)this.reactions.clearStatuses(sprite);
       else if(actor&&status==='Slowed')this.reactions.apply(sprite,status,actor.slow.ms);
+      else if(actor&&reaction)this.reactions.apply(sprite,reaction,420,{group:reaction});
       if(status==='Cloud'&&!this.statusName)this.reactions.apply(sprite,'Poisoned',760);
     },undefined,undefined,{allowParry:true,onLashImpact:impact=>{
       if(this.controls.boxes.checked)this.lashImpact={...impact,expiresAt:this.time.now+LASH_DEBUG_MS};
     }});
     this.cameras.main.setBounds(0,0,map.widthInPixels,map.heightInPixels).setZoom(1.25).startFollow(this.player,true);
     const canvas=this.game.canvas;
-    canvas.tabIndex=0;
-    canvas.setAttribute('aria-label','Combat Sandbox arena');
-    this.input.keyboard.disableGlobalCapture();
     const listeners=new AbortController(),{signal}=listeners;
     const aim=trackArenaAim(canvas,this.cameras.main,VFX_LAB_TARGET,{signal});
-    this.loadout=new CombatLoadoutPanel(signal);
-    if(['localhost','127.0.0.1','[::1]'].includes(location.hostname))
-      this.balanceEditor=new BalanceEditor(this,document.getElementById('combat-balance'),signal);
+    this.loadout=new CombatLoadoutPanel(signal,id=>this.skillEditor.open(id));
+    this.editorState=new CombatEditorState(this.loadout,signal);
+    const saveDialog=new CombatSaveDialog(this.editorState,signal);
+    this.skillEditor=new SkillEditor(this,document.getElementById('combat-skill-editor'),
+      document.getElementById('combat-library-view'),this.editorState,saveDialog,signal);
+    this.balanceEditor=new BalanceEditor(this,document.getElementById('combat-balance'),this.editorState,saveDialog,signal);
+    void this.editorState.restore(null,{initial:true}).then(message=>{
+      if(message&&!signal.aborted)this.balanceEditor.report(message);
+    });
     const showHeal=healed=>this.reactions.drainResult(this.player,Number(healed.toFixed(2)));
-    this.skills=new CombatSkillRunner(this.bout,showHeal,{onParryComplete:({blocked,healed})=>{
-      this.reactions.parryResult(this.player,Number(blocked.toFixed(2)));
-      if(healed>0)showHeal(healed);
-    }});
+    this.skills=new CombatSkillRunner(this.bout,showHeal,{
+      sentrySpace:createCombatSpace(readFootObstacles(this.source),RING),
+      onParryComplete:({blocked,healed})=>{
+        this.reactions.parryResult(this.player,Number(blocked.toFixed(2)));
+        if(healed>0)showHeal(healed);
+      },
+    });
     this.skillViews=new Map();
     this.parryView=new CombatParryView(this);
     const cast=slot=>{
-      if(this.skills.use(slot,this.loadout.state.slots,this.player,aim.capture)&&this.bout.defending)this.drawSkills();
+      if(this.skills.use(slot,this.loadout.equipped,this.player,aim.capture)&&this.bout.defending)this.drawSkills();
     };
-    canvas.addEventListener('pointerdown',event=>{
-      if(event.button!==0)return;
-      event.preventDefault();
-      canvas.focus({preventScroll:true});
-      cast(0);
-    },{signal});
-    canvas.addEventListener('keydown',event=>{
-      if(event.key.startsWith('Arrow'))event.preventDefault();
-      const slot=slotShortcut(event);
-      if(slot>0){event.preventDefault();cast(slot);}
-    },{signal});
-    canvas.addEventListener('blur',()=>this.input.keyboard.resetKeys(),{signal});
-    const {start,pause,boxes,monster,composition,cloud,randomized,retreat,special}=this.controls;
+    this.focusArena=bindArenaInput(this,{
+      label:'Combat Sandbox arena',onPointer:()=>cast(0),
+      onKey:event=>{
+        const slot=slotShortcut(event);
+        if(slot>0){event.preventDefault();cast(slot);}
+      },
+    },signal);
+    const {start,reset,monster,composition,cloud,randomized,retreat,special}=this.controls;
     cloud.checked=this.bout.cloudEnabled;
     randomized.checked=this.bout.ai.randomized;
     retreat.checked=this.bout.ai.antiKiting;
@@ -155,20 +162,12 @@ export class CombatSandboxScene extends Phaser.Scene{
       select.addEventListener('change',()=>this.resetBout(),{signal});
     }
     monster.add(new Option('Mixed encounter','mixed'));
-    start.addEventListener('click',()=>{
-      this.resetBout();
-      this.bout.started=true;
-      canvas.focus({preventScroll:true});
-    },{signal});
+    for(const button of [start,reset])button.addEventListener('click',()=>this.startBout(),{signal});
     monster.addEventListener('change',()=>this.resetBout(),{signal});
     cloud.addEventListener('change',()=>{
       this.bout.cloudEnabled=cloud.checked;
       if(!cloud.checked)this.bout.areas=this.bout.areas.filter(area=>area.kind!=='haze');
     },{signal});
-    for(const toggle of [pause,boxes,cloud,randomized,retreat,special]){
-      toggle.addEventListener('change',()=>canvas.focus({preventScroll:true}),{signal});
-    }
-    start.disabled=false;
     this.events.on(Phaser.Scenes.Events.POST_UPDATE,this.afterPhysics,this);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN,()=>{
       this.events.off(Phaser.Scenes.Events.POST_UPDATE,this.afterPhysics,this);
@@ -180,9 +179,19 @@ export class CombatSandboxScene extends Phaser.Scene{
       this.clearViews();
       this.controls.bossPhase.replaceChildren();
       composition.querySelectorAll('label').forEach(label=>label.remove());
-      start.disabled=true;
+      start.disabled=reset.disabled=true;
     });
     this.resetBout();
+    this.events.once(Phaser.Scenes.Events.CREATE,this.controls.ready);
+  }
+
+  startBout(){
+    if(!this.sys.isActive()||!this.bout.enemies.length)return false;
+    this.resetBout();
+    this.bout.started=true;
+    this.drawBout();
+    this.focusArena();
+    return true;
   }
 
   clearViews(){
@@ -201,10 +210,9 @@ export class CombatSandboxScene extends Phaser.Scene{
     this.clearSkills();
     this.reactions.clear();
     this.clearViews();
-    this.balanceEditor?.applyPreview();
     this.statusName=null;
     this.lashImpact=null;
-    const {monster,composition,cloud,cloudOption,start}=this.controls;
+    const {monster,composition,cloud,cloudOption}=this.controls;
     const mixed=monster.value==='mixed';
     composition.hidden=!mixed;
     const kinds=mixed?Array.from(this.counts,([kind,select])=>Array(Number(select.value)).fill(kind)).flat():[monster.value];
@@ -213,7 +221,6 @@ export class CombatSandboxScene extends Phaser.Scene{
         option.disabled=kinds.length-Number(select.value)+Number(option.value)>MAX_ENEMIES;
       }
     }
-    start.disabled=kinds.length===0;
     this.controls.bossDebug.hidden=!kinds.includes('mushroom');
     this.bout.reset(kinds,Number(this.controls.bossPhase.value));
     this.drawSkills();
@@ -274,8 +281,8 @@ export class CombatSandboxScene extends Phaser.Scene{
       if(status)this.reactions.apply(this.player,status,Infinity);
       this.statusName=status;
     }
-    this.reactions.update(dt,{pauseStatuses:this.controls.pause.checked});
     this.drawBout();
+    this.reactions.update(dt,{pauseStatuses:this.controls.pause.checked});
   }
 
   drawBout(){
@@ -291,7 +298,8 @@ export class CombatSandboxScene extends Phaser.Scene{
     for(const area of this.bout.areas)drawGroundArea(this.groundAreas,area);
     for(const actor of enemies){
       const {enemy,spec,shots}=actor;
-      const {sprite,atlas,bar,effects}=this.enemyView(actor);
+      const view=this.enemyView(actor);
+      const {sprite,atlas,bar,effects}=view;
       const mushroom=actor.kind==='mushroom';
       const dying=!enemy.hp;
       if(mushroom){
@@ -302,6 +310,11 @@ export class CombatSandboxScene extends Phaser.Scene{
           current?'Casting: '+current:null,boss.pendingSummons.length?boss.pendingSummons.length+' summons pending':null].filter(Boolean).join(' · ');
         if(this.controls.bossInfo.textContent!==info)this.controls.bossInfo.textContent=info;
       }else drawCombatEnemySprite(sprite,atlas,actor);
+      if(view.burning!==actor.burning){
+        if(actor.burning)this.reactions.apply(sprite,'Burning',Infinity,{group:'Burning'});
+        else this.reactions.clearStatuses(sprite,'Burning');
+        view.burning=actor.burning;
+      }
       if(bar.current!==enemy.hp||bar.max!==spec.maxHp)bar.setHealth(enemy.hp,spec.maxHp).setVisible(!dying);
       bar.updatePosition();
       effects.draw(actor,dying&&this.bout.areas.find(area=>area.kind==='poison'&&area.sourceId===actor.id),this.player);
@@ -330,8 +343,8 @@ export class CombatSandboxScene extends Phaser.Scene{
       alive+' alive · '+(enemies.length-alive)+' defeated';
     const text=label+' · Michael '+Number(playerHp.toFixed(2))+'/100 · '+count;
     if(this.controls.status.textContent!==text)this.controls.status.textContent=text;
-    const button=started?'Reset fight':'Start fight';
-    if(this.controls.start.textContent!==button)this.controls.start.textContent=button;
+    this.controls.start.disabled=started||!enemies.length;
+    this.controls.reset.disabled=!started||!enemies.length;
 
     if(boxes){
       const a=playerBox(this.player),feet=playerFeetBox(this.player);

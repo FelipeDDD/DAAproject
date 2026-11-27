@@ -15,6 +15,8 @@ export function mountTimingControls(controls,effects,{signal}){
     controls.variantControl.hidden=variants.length<2;
     controls.variant.replaceChildren(...variants.map(name=>new Option(name,name)));
     controls.variant.value=current.variant??variants[0]??'';
+    controls.casting.labels[0].hidden=!effect.preparation||Boolean(effect.preparation.always);
+    controls.showCastRange.labels[0].hidden=effect.castRangePx===undefined;
     castDuration.disabled=!effect.preparation;
     castDuration.value=current.castMs;
     castValue.textContent=effect.preparation?`${current.castMs} ms`:'Unavailable';

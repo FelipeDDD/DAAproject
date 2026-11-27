@@ -3,7 +3,9 @@ import test from 'node:test';
 import { CombatBout } from '../src/vfx/lab/CombatBout.js';
 import { CombatSkillRunner } from '../src/vfx/lab/CombatSkillRunner.js';
 import { SKILLS,DEFAULT_SLOTS,skillTooltip } from '../src/vfx/lab/combatSkills.js';
-import { LOADOUT_KEY,readLoadout,loadPreset,savePreset,slotShortcut } from '../src/vfx/lab/combatLoadout.js';
+import { LOADOUT_KEY,readLoadout,loadPreset,savePreset,slotShortcut,resolveLoadout } from '../src/vfx/lab/combatLoadout.js';
+import catalog from '../src/combat/skillCatalog.json' with {type:'json'};
+import { SKILL_IDS,SLOT_KEYS,canEquip,validateSkillCatalog } from '../src/combat/skillCatalogSchema.js';
 import { labSheets } from '../src/vfx/lab/sheetCatalog.js';
 import { CombatSkillView } from '../src/vfx/lab/CombatSkillView.js';
 import { DRAIN_ORBS,handOf,orbArrivalProgress,orbPosition } from '../src/vfx/lab/precisionDemo.js';
@@ -18,15 +20,32 @@ function fight(kinds=['slime','ghost'],onDrainComplete){
     tick:ms=>runner.update(ms,player)};
 }
 
-test('all eight registered skills can launch in each slot, using the same stats as the tooltip',()=>{
-  assert.equal(Object.keys(SKILLS).length,8);
+test('each registered skill launches in the slots allowed by the catalog and shows its stats',()=>{
+  assert.deepEqual(Object.keys(SKILLS).sort(),[...SKILL_IDS].sort());
+  assert.equal(validateSkillCatalog(catalog),'');
   for(const skill of Object.values(SKILLS)){
     assert.ok(labSheets[skill.icon]||skill.iconSymbol==='blood-drop');
     if(skill.damage)assert.ok(skillTooltip(skill).includes('Damage: '+skill.damage));
     else if(skill.parry)assert.ok(skillTooltip(skill).includes(skill.parry.activeMs+' ms guard'));
     else for(const band of skill.bands)assert.ok(skillTooltip(skill).includes(band.range+' px · '+band.damage+' / '+band.heal));
-    for(let slot=0;slot<4;slot++)assert.ok(fight().cast(skill.id,slot));
+    for(let slot=0;slot<4;slot++)if(canEquip(catalog,skill.id,slot))assert.ok(fight().cast(skill.id,slot));
   }
+});
+
+test('slot rules substitute incompatible equipment without changing the previous preset',()=>{
+  const state=readLoadout(),draft=structuredClone(catalog);
+  state.slots[1]='meteor'; // Older Lab versions allowed this.
+  savePreset(state,2,'Legacy');
+  assert.equal(resolveLoadout(state.presets[2].slots,catalog)[1],'lash');
+  assert.equal(state.presets[2].slots[1],'meteor');
+  draft.meteor={category:'survival',slots:['Q']};
+  assert.equal(resolveLoadout(state.presets[2].slots,draft)[1],'meteor');
+  assert.equal(validateSkillCatalog(draft),'');
+  for(const slots of [[],['Q','Q'],['B']]){
+    draft.meteor.slots=slots;
+    assert.notEqual(validateSkillCatalog(draft),'');
+  }
+  assert.deepEqual(SLOT_KEYS,['LMB','Q','E','R']);
 });
 
 test('duplicate slots and equipment changes share one cooldown by ID, while unrelated skills remain ready',()=>{

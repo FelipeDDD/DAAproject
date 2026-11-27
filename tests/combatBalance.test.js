@@ -32,6 +32,11 @@ test('balance schema rejects malformed imports and invalid gameplay limits',()=>
     data=>{data.slimes.special.homing.trackingMs=3000;},
     data=>{data.frog.longLeap.range=50;},
     data=>{data.michael.meteor.cast=0;},
+    data=>{data.michael['fire-ring'].burning.ms=999;},
+    data=>{data.michael['fire-ring'].castSpeed=1.1;},
+    data=>{data.michael['healing-parry'].parry.healFraction=60;},
+    data=>{data.michael['healing-parry'].parry.activeMs=0;},
+    data=>{data.michael['healing-parry'].parry.recoveryDamageMultiplier=0.8;},
     data=>{data.path='outside.json';},
   ];
   for(const alter of cases){
@@ -47,10 +52,20 @@ test('old balance files inherit newly exposed fields and keep edited values',()=
   for(const key of ['damagePercent','jumpDamage','projectileDamage','contactDamage'])delete big[key];
   big.damage=29;
   legacy.michael.lash.damage=7;
+  delete legacy.michael['fire-ring'];
+  delete legacy.michael.tesla;
+  delete legacy.michael['healing-parry'];
   assert.equal(validateBalance(legacy),'');
   const next=normalizeBalance(legacy);
   assert.deepEqual(next.slimes.variants.big,{...original.slimes.variants.big,damage:29});
   assert.equal(next.michael.lash.damage,7);
+  assert.deepEqual(next.michael['fire-ring'],original.michael['fire-ring']);
+  assert.deepEqual(next.michael.tesla,original.michael.tesla);
+  assert.deepEqual(next.michael['healing-parry'],original.michael['healing-parry']);
+  const lastRing=structuredClone(current);
+  delete lastRing.michael['fire-ring'].castSpeed;
+  lastRing.michael['fire-ring'].damage=64;
+  assert.deepEqual(normalizeBalance(lastRing).michael['fire-ring'],{...current.michael['fire-ring'],damage:64});
   assert.equal(big.damagePercent,undefined);
   delete big.damage;
   assert.notEqual(validateBalance(legacy),'');
@@ -209,6 +224,7 @@ test('save route checks local authorization, validates data, backs up the previo
   const headers={origin:'http://127.0.0.1:5173','content-type':'application/json','x-combat-balance-token':state.token};
   const data=structuredClone(state.data);
   data.michael.cleaver.damage=39;
+  Object.assign(data.michael['fire-ring'],{radius:156,burning:{damage:12,ms:7500}});
   data.slimes.variants.big.damagePercent=125;
   data.slimes.variants.big.projectileDamage=33;
   const body={revision:state.revision,data};
@@ -220,6 +236,8 @@ test('save route checks local authorization, validates data, backs up the previo
   assert.equal(saved.status,200);
   const persisted=JSON.parse(await readFile(path,'utf8'));
   assert.equal(persisted.michael.cleaver.damage,39);
+  assert.equal(persisted.michael['fire-ring'].radius,156);
+  assert.deepEqual(persisted.michael['fire-ring'].burning,{damage:12,ms:7500});
   assert.deepEqual(persisted.slimes.variants.big,{...original.slimes.variants.big,damagePercent:125,projectileDamage:33});
   assert.equal(await readFile(path+'.bak','utf8'),baseline);
   assert.equal((await call('PUT',{body,headers})).status,409);

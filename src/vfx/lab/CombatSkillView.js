@@ -1,10 +1,13 @@
-import { SheetSequence,drawFlight } from './SheetSequence.js';
+import { SheetSequence,createSentryView,drawFlight } from './SheetSequence.js';
 import { SKILLS } from './combatSkills.js';
 import { handOf } from './precisionDemo.js';
+import { boxCenter } from './combatGeometry.js';
+import { createFireRingView,FIRE_RING_ART_CHARGE_MS,FIRE_RING_ART_RADIUS } from './fireRingVisual.js';
 import sheets from '../../../tools/vfx-lab/sheets/combat-pixelfx.json' with {type:'json'};
 
 export const combatSheets=[...new Set(Object.values(SKILLS).filter(skill=>!skill.meteor)
   .flatMap(skill=>skill.clips.map(c=>c.sheet).filter(Boolean)))];
+let fireRingSerial=0;
 
 export class CombatSkillView{
   constructor(scene,action,filter){
@@ -35,6 +38,8 @@ export class CombatSkillView{
       }
       return;
     }
+    if(skill.shape==='self-area'){this.drawFireRing();return;}
+    if(skill.shape==='sentry'){this.drawSentry();return;}
     if(skill.meteor){this.drawMeteor();return;}
     if(skill.castSpeed&&!action.released){this.drawDrainCharge();return;}
     this.graphics?.clear();
@@ -42,6 +47,44 @@ export class CombatSkillView{
     const artAge=skill.artImpactMs===undefined?age-(skill.effect.preparation?skill.cast:0):
       age<skill.cast?age*skill.artImpactMs/skill.cast:age-skill.cast+skill.artImpactMs;
     this.track.update(artAge);
+  }
+
+  drawSentry(){
+    const {scene,action,filter}=this;
+    const {skill,age,anchor,sentry}=action;
+    if(!sentry){
+      this.graphics??=scene.add.graphics().setPosition(anchor.x,anchor.y).setDepth(-0.3);
+      this.graphics.clear().lineStyle(1,0x81c9ff,0.35+0.55*age/skill.cast)
+        .strokeCircle(0,0,skill.radius);
+      return;
+    }
+    this.graphics?.clear();
+    this.coil??=createSentryView(scene,anchor,skill.radius,filter);
+    const ms=age-skill.cast;
+    this.coil.draw(ms,Array.from(sentry.flashes,([actor,at])=>({
+      ...boxCenter(actor.spec.box(actor.enemy)),age:ms-at,
+    })));
+  }
+
+  drawFireRing(){
+    const {scene,action,filter}=this;
+    const {skill,age,released}=action;
+    const center=released?action.anchor:scene.player;
+    const progress=Math.min(1,age/skill.cast);
+    const artAge=released?FIRE_RING_ART_CHARGE_MS+age-skill.cast:progress*FIRE_RING_ART_CHARGE_MS;
+    this.fireRing??=createFireRingView(scene,center,filter,undefined,{texturePrefix:'combat-fire-ring-'+(++fireRingSerial)});
+    for(const {image,name} of this.fireRing.layers){
+      image.setPosition(center.x,center.y).setScale(skill.radius/FIRE_RING_ART_RADIUS);
+      if(name==='front')image.setDepth(center.y+1);
+    }
+    this.fireRing.update(artAge,artAge-(this.fireRingAge??0));
+    this.fireRingAge=artAge;
+    this.graphics?.clear();
+    if(released)return;
+    this.graphics??=scene.add.graphics().setDepth(-0.3);
+    this.graphics.setPosition(center.x,center.y)
+      .lineStyle(1,0xff9554,0.25+0.45*progress).strokeCircle(0,0,skill.radius)
+      .lineStyle(2,0xffbc71,0.2+0.6*progress).strokeCircle(0,0,skill.radius*progress);
   }
 
   drawDrainCharge(){
@@ -92,6 +135,8 @@ export class CombatSkillView{
   destroy(){
     this.track?.destroy();
     this.meteor?.destroy();
+    this.fireRing?.destroy();
+    this.coil?.destroy();
     this.graphics?.destroy();
   }
 }
